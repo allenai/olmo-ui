@@ -2,14 +2,6 @@
 # It can be attached to a variety of triggers, the default being whenever
 # someone merges changes to the `main` branch.
 steps:
-- id: 'ui.pull.js'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [ 'pull', 'gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:latest' ]
-  waitFor: [ '-' ]
-- id: 'ui.pull.nginx'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [ 'pull', 'gcr.io/$PROJECT_ID/$REPO_NAME-ui:latest' ]
-  waitFor: [ '-' ]
 - id: 'ui.build.js'
   name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -21,8 +13,6 @@ steps:
     '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
     '.',
   ]
-  waitFor: [ 'ui.pull.js' ]
-  dir: 'ui'
 - id: 'ui.build.nginx'
   name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -34,8 +24,7 @@ steps:
     '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
     '.',
   ]
-  waitFor: [ 'ui.pull.nginx', 'ui.build.js' ]
-  dir: 'ui'
+  waitFor: [ 'ui.build.js' ]
 - id: 'ui.push'
   name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -59,7 +48,7 @@ steps:
     '--tla-str', 'buildId=$BUILD_ID',
     './webapp.jsonnet'
   ]
-  dir: 'ui/.skiff'
+  dir: '.skiff'
   waitFor: [ '-' ]
 # Deploy the image to Kubernetes
 - id: 'deploy'
@@ -69,7 +58,7 @@ steps:
     '-f',
     'webapp.yaml'
   ]
-  dir: 'ui/.skiff'
+  dir: '.skiff'
   waitFor: [ 'ui.push', 'config' ]
 substitutions:
   _ENV: prod
@@ -82,7 +71,7 @@ images: [
 artifacts:
   objects:
     location: 'gs://skiff-archive/$REPO_NAME/$_ENV/$BUILD_ID/$COMMIT_SHA'
-    paths: ['ui/.skiff/webapp.yaml']
+    paths: ['.skiff/webapp.yaml']
 options:
   env:
     - "DOCKER_BUILDKIT=1"
