@@ -6,6 +6,8 @@ export const olmoTheme = {
         N7: new Color('Black7', '#333333', true),
         N8: new Color('Black8', '#282828', true),
         N9: new Color('Black9', '#262626', true),
+        B6: new Color('Blue6', '#BBF4FF', true),
+        O6: new Color('Orange6', '#FFF1BD', true),
     },
     components: {
         MuiButton: {

@@ -14,7 +14,6 @@ import {
     AccordionSummary as MuiAccordionSummary,
     LinearProgress,
     Stack,
-    Avatar,
 } from '@mui/material';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
@@ -22,7 +21,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { ThreadControls } from './ThreadControls';
 import { Message, MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
-import userAvatarURL from './assets/user.jpg';
+import { UserAvatar } from './avatars/UserAvatar';
 
 interface ThreadAccordianProps {
     title: string;
@@ -101,7 +100,9 @@ export const ThreadAccordianView = ({
             <AccordionSummary aria-controls={`${threadKey}-content`} id={`${threadKey}-header`}>
                 {isExpanded ? (
                     <Stack direction="row">
-                        <PaddedHeadingAvatar src={userAvatarURL} />
+                        <PaddedHeading>
+                            <UserAvatar />
+                        </PaddedHeading>
                         <TitleContainer>
                             <TitleTypography sx={{ fontWeight: 'bold' }}>{title}</TitleTypography>
                         </TitleContainer>
@@ -184,7 +185,7 @@ const TitleTypography = styled(Typography)`
     color: ${({ theme }) => theme.color2.B5};
 `;
 
-const PaddedHeadingAvatar = styled(Avatar)`
+const PaddedHeading = styled.span`
     margin-left: ${({ theme }) => theme.spacing(0.5)};
     margin-top: ${({ theme }) => theme.spacing(1)};
 `;

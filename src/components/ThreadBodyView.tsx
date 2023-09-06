@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    Avatar,
     Box,
     Chip,
     Grid,
@@ -27,10 +26,9 @@ import { Role } from '../api/Role';
 import { HoverDecorationContainer } from './HoverDecorationContainer';
 import { useAppContext } from '../AppContext';
 
-import robotAvatarURL from './assets/robot.jpg';
-import userAvatarURL from './assets/user.jpg';
-
 import 'highlight.js/styles/github-dark.css';
+import { RobotAvatar } from './avatars/RobotAvatar';
+import { UserAvatar } from './avatars/UserAvatar';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -60,7 +58,7 @@ const LLMResponseView = ({ response, msgId }: AgentResponseProps) => {
     const html = DOMPurify.sanitize(marked.parse(response));
     return (
         <Stack direction="row">
-            <Avatar src={robotAvatarURL} />
+            <RobotAvatar />
             <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
         </Stack>
     );
@@ -69,7 +67,7 @@ const LLMResponseView = ({ response, msgId }: AgentResponseProps) => {
 const UserResponseView = ({ response, msgId }: AgentResponseProps) => {
     return (
         <Stack direction="row">
-            <Avatar src={userAvatarURL} />
+            <UserAvatar />
             <UserResponseContainer id={msgId}>
                 <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
             </UserResponseContainer>
