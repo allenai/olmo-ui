@@ -175,7 +175,7 @@ const ControlsGrid = styled(Grid)`
 `;
 
 const TitleContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(1)};
+    padding-top: ${({ theme }) => theme.spacing(2)};
     padding-bottom: ${({ theme }) => theme.spacing(2)};
     margin-left: ${({ theme }) => theme.spacing(1)};
 `;
@@ -186,6 +186,7 @@ const TitleTypography = styled(Typography)`
 
 const PaddedHeadingAvatar = styled(Avatar)`
     margin-left: ${({ theme }) => theme.spacing(0.5)};
+    margin-top: ${({ theme }) => theme.spacing(1)};
 `;
 
 const Accordion = MuiStyled((props: AccordionProps) => (
