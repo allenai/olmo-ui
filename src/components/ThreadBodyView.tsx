@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Box, Chip, Grid, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material';
+import {
+    Box,
+    Chip,
+    Grid,
+    IconButton,
+    Menu,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material';
 import styled from 'styled-components';
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
@@ -17,6 +27,8 @@ import { HoverDecorationContainer } from './HoverDecorationContainer';
 import { useAppContext } from '../AppContext';
 
 import 'highlight.js/styles/github-dark.css';
+import { RobotAvatar } from './avatars/RobotAvatar';
+import { UserAvatar } from './avatars/UserAvatar';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -44,14 +56,22 @@ const LLMResponseView = ({ response, msgId }: AgentResponseProps) => {
         headerIds: false,
     });
     const html = DOMPurify.sanitize(marked.parse(response));
-    return <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />;
+    return (
+        <Stack direction="row">
+            <RobotAvatar />
+            <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
+        </Stack>
+    );
 };
 
 const UserResponseView = ({ response, msgId }: AgentResponseProps) => {
     return (
-        <UserResponseContainer id={msgId}>
-            <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
-        </UserResponseContainer>
+        <Stack direction="row">
+            <UserAvatar />
+            <UserResponseContainer id={msgId}>
+                <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
+            </UserResponseContainer>
+        </Stack>
     );
 };
 
@@ -237,7 +257,7 @@ const MenuWrapperContainer = styled.div`
 `;
 
 const UserResponseContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(2)};
+    padding-top: ${({ theme }) => theme.spacing(1)};
     padding-bottom: ${({ theme }) => theme.spacing(2)};
     margin-left: ${({ theme }) => theme.spacing(1)};
 `;

@@ -13,6 +13,7 @@ import {
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
     LinearProgress,
+    Stack,
 } from '@mui/material';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
@@ -20,6 +21,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { ThreadControls } from './ThreadControls';
 import { Message, MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
+import { UserAvatar } from './avatars/UserAvatar';
 
 interface ThreadAccordianProps {
     title: string;
@@ -91,14 +93,23 @@ export const ThreadAccordianView = ({
     };
 
     const currentClient = userInfo.data?.client;
+    const isExpanded = expanded === threadKey;
 
     return (
-        <Accordion
-            id={threadKey}
-            expanded={expanded === threadKey}
-            onChange={handleAccordianChange(threadKey)}>
+        <Accordion id={threadKey} expanded={isExpanded} onChange={handleAccordianChange(threadKey)}>
             <AccordionSummary aria-controls={`${threadKey}-content`} id={`${threadKey}-header`}>
-                <TitleTypography sx={{ fontWeight: 'bold' }}>{title}</TitleTypography>
+                {isExpanded ? (
+                    <Stack direction="row">
+                        <PaddedHeading>
+                            <UserAvatar />
+                        </PaddedHeading>
+                        <TitleContainer>
+                            <TitleTypography sx={{ fontWeight: 'bold' }}>{title}</TitleTypography>
+                        </TitleContainer>
+                    </Stack>
+                ) : (
+                    <TitleTypography sx={{ fontWeight: 'bold' }}>{title}</TitleTypography>
+                )}
             </AccordionSummary>
             <AccordionBody>{body}</AccordionBody>
             {showControls && (
@@ -164,8 +175,19 @@ const ControlsGrid = styled(Grid)`
     padding-bottom: ${({ theme }) => theme.spacing(2)};
 `;
 
+const TitleContainer = styled.div`
+    padding-top: ${({ theme }) => theme.spacing(2)};
+    padding-bottom: ${({ theme }) => theme.spacing(2)};
+    margin-left: ${({ theme }) => theme.spacing(1)};
+`;
+
 const TitleTypography = styled(Typography)`
     color: ${({ theme }) => theme.color2.B5};
+`;
+
+const PaddedHeading = styled.span`
+    margin-left: ${({ theme }) => theme.spacing(0.5)};
+    margin-top: ${({ theme }) => theme.spacing(1)};
 `;
 
 const Accordion = MuiStyled((props: AccordionProps) => (
