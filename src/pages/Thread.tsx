@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { LinearProgress } from '@mui/material';
+import { Alert, LinearProgress } from '@mui/material';
 
 import { Content } from '../components/shared';
 import { MajorityScreen } from '../components/MajorityScreen';
@@ -27,7 +27,12 @@ export const Thread = () => {
                     {!selectedThreadInfo.error &&
                     !selectedThreadInfo.loading &&
                     selectedThreadInfo.data ? (
-                        <ThreadBodyView messages={[selectedThreadInfo.data]} />
+                        <>
+                            {selectedThreadInfo.data.deleted ? (
+                                <Alert severity="warning">This message has been deleted.</Alert>
+                            ) : null}
+                            <ThreadBodyView messages={[selectedThreadInfo.data]} />
+                        </>
                     ) : null}
                     {selectedThreadInfo.loading ? <LinearProgress /> : null}
                 </ThreadContainer>

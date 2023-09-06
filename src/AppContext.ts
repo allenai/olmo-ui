@@ -19,7 +19,7 @@ import {
     PromptTemplateApiUrl,
 } from './api/PromptTemplate';
 import { Schema, SchemaApiUrl } from './api/Schema';
-import { JSONLabel, Label, LabelApiUrl, LabelPost, parseLabel } from './api/Label';
+import { JSONLabel, Label, LabelApiUrl, LabelPost, LabelsApiUrl, parseLabel } from './api/Label';
 
 interface APIError {
     error: { code: number; message: string };
@@ -106,6 +106,7 @@ type State = {
     postMessageInfo: FetchInfo<Message>;
     postLabelInfo: FetchInfo<Label>;
     deleteLabelInfo: FetchInfo<void>;
+    allLabelInfo: FetchInfo<Label[]>;
     schema: FetchInfo<Schema>;
 };
 
@@ -125,6 +126,7 @@ type Action = {
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
     postLabel: (newLabel: LabelPost, msg: Message) => Promise<FetchInfo<Label>>;
     deleteLabel: (labelId: string, msg: Message) => Promise<FetchInfo<void>>;
+    getAllLabels: () => Promise<FetchInfo<Label[]>>;
     getSchema: () => Promise<FetchInfo<Schema>>;
 };
 
@@ -141,6 +143,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     postMessageInfo: {},
     postLabelInfo: {},
     deleteLabelInfo: {},
+    allLabelInfo: {},
     schema: {},
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
@@ -627,6 +630,39 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }));
         }
         return get().postLabelInfo;
+    },
+
+    getAllLabels: async () => {
+        try {
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
+            }));
+            const labels = await fetchAPI<JSONLabel[]>(LabelsApiUrl, {
+                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
+                retry401: true,
+                onUserRefresh: (user) => {
+                    set((state) => ({
+                        userInfo: { ...state.userInfo, data: user },
+                    }));
+                },
+            });
+            const parsedLabels = labels.map((m) => parseLabel(m));
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, data: parsedLabels, loading: false },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error getting labels.`,
+                    err
+                )
+            );
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
+            }));
+        }
+        return get().allLabelInfo;
     },
 
     getSchema: async () => {

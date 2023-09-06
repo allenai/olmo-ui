@@ -6,6 +6,7 @@ import { Button, ButtonProps, Grid, LinearProgress, Typography } from '@mui/mate
 
 import { Home } from './pages/Home';
 import { Thread } from './pages/Thread';
+import { Admin } from './pages/Admin';
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
@@ -70,6 +71,10 @@ const ROUTES: AppRoute[] = [
     {
         path: '/prompt-templates',
         Component: PromptTemplates,
+    },
+    {
+        path: '/admin',
+        Component: Admin,
     },
 ];
 
