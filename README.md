@@ -15,10 +15,7 @@ to the production API to get things working.
 1. Start by connecting to the Kubernetes cluster:
 
     ```
-    gcloud container clusters get-credentials \
-        --project ai2-reviz \
-        --zone us-west1-b \
-        skiff-prod
+    gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
     ```
 
 2. Then port forward `8000` to the API:
@@ -35,7 +32,7 @@ to the production API to get things working.
 
 ### Changing the Local User
 
-By default the local user is `murphy@allenai.org`. To change the email of the logged in user, 
+By default the local user is `murphy@allenai.org`. To change the email of the logged in user,
 set the `USER_EMAIL` environment variable when starting the application:
 
 ```
