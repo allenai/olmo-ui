@@ -106,8 +106,10 @@ export const App = () => {
                 />
                 <DisclaimerDiv>
                     This demo is currently using{' '}
-                    <a href="https://huggingface.co/meta-llama/Llama-2-70b-chat-hf">LLaMa2 (70B Chat)</a>.
-                    It'll be updated to use the 70B parameter OLMo model.
+                    <a href="https://huggingface.co/meta-llama/Llama-2-70b-chat-hf">
+                        LLaMa2 (70B Chat)
+                    </a>
+                    . It'll be updated to use the 70B parameter OLMo model once it's available.
                 </DisclaimerDiv>
                 <Content bgcolor="transparent" main>
                     <GlobalAlertList />
