@@ -70,7 +70,7 @@ export const Admin = () => {
             headerName: 'Deleted',
             align: 'right',
             valueGetter: (params: GridValueGetterParams) =>
-                dayjs(params.value).format(dateTimeFormat),
+                params.value ? dayjs(params.value).format(dateTimeFormat) : '',
             minWidth: 150,
             flex: 1,
         },
