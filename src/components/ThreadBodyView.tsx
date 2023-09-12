@@ -106,12 +106,15 @@ export const ThreadBodyView = ({ parent, messages }: ThreadBodyProps) => {
 
     const branchCount = messages.length;
     const curMessage = messages[curMessageIndex];
+    const curMessageRole = curMessage.role;
 
     const editMessage = async function () {
         setIsEditing(false);
         setIsLoading(true);
         const payload: MessagePost = {
             content: editMessageContent,
+            role: curMessageRole,
+            original: curMessage.id,
         };
         handleSelect(0); // 0 because the new message is unshifted
         const postMessageInfo = await postMessage(payload, parent);
@@ -179,11 +182,9 @@ export const ThreadBodyView = ({ parent, messages }: ThreadBodyProps) => {
                                 </>
                             )}
                         </Grid>
-                        {!isEditing &&
-                        // TODO: only supporting editing of user message for now, we expect to remove this check asap
-                        curMessage.role === Role.User ? (
+                        {!isEditing && (
                             <EditButton disabled={isLoading} onClick={() => setIsEditing(true)} />
-                        ) : null}
+                        )}
                         {branchCount > 1 && (
                             <Grid item>
                                 <MenuWrapperContainer>
