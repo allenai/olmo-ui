@@ -25,7 +25,6 @@ export interface Message {
     logprobs?: Logprob[];
     opts: InferenceOpts;
     parent?: string;
-    original?: string;
     role: Role;
     root: string;
     template: string;
