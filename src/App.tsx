@@ -105,10 +105,11 @@ export const App = () => {
                     endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                 />
                 <DisclaimerDiv>
-                    This demo is currently using the{' '}
-                    <a href="https://huggingface.co/allenai/tulu-65b">Tulu Model</a> (specifically
-                    gptq-flanv2-cot-oasst1-dolly-sharegpt-gpt4alpaca-codealpaca-65B). We will update
-                    to use the 70B parameter OLMo model when it is trained.
+                    This demo is currently using{' '}
+                    <a href="https://huggingface.co/meta-llama/Llama-2-70b-chat-hf">
+                        LLaMa2 (70B Chat)
+                    </a>
+                    . It'll be updated to use the 70B parameter OLMo model once it's available.
                 </DisclaimerDiv>
                 <Content bgcolor="transparent" main>
                     <GlobalAlertList />
