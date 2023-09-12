@@ -6,6 +6,8 @@ export const MessagesApiUrl = `${process.env.LLMX_API_URL}/v2/messages`;
 
 export interface MessagePost {
     content: string;
+    role?: string; // in the case of edited messages
+    original?: string; // in the case of edited messages
     parent?: string;
     prompt_template_id?: string;
     opts?: InferenceOpts;
