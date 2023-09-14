@@ -7,6 +7,7 @@ import { Button, ButtonProps, Grid, LinearProgress, Typography } from '@mui/mate
 import { Home } from './pages/Home';
 import { Thread } from './pages/Thread';
 import { Admin } from './pages/Admin';
+import { Search } from './pages/Search';
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
@@ -75,6 +76,10 @@ const ROUTES: AppRoute[] = [
     {
         path: '/admin',
         Component: Admin,
+    },
+    {
+        path: '/search',
+        Component: Search,
     },
 ];
 
