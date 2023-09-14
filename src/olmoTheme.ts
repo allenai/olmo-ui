@@ -14,8 +14,8 @@ export const olmoTheme = {
             styleOverrides: {
                 root: {
                     '&.Mui-disabled': {
-                        background: 'green',
-                        color: '#dadada',
+                        background: 'transparent',
+                        color: color2.N3.hex,
                     },
                 },
             },
