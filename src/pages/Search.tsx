@@ -6,6 +6,8 @@ import { useAppContext } from '../AppContext';
 
 interface SearchMeta {
     took_ms: number;
+    total: number;
+    overflow: boolean;
 }
 
 interface Highlights {
@@ -76,6 +78,13 @@ export function Search() {
             />
             {response ? (
                 <Grid container direction="column" spacing={2} p={2}>
+                    <Grid item>
+                        <strong>
+                            {response.meta.overflow ? 'More than ' : ''}
+                            {Intl.NumberFormat().format(response.meta.total)} results (
+                            {response.meta.took_ms}ms)
+                        </strong>
+                    </Grid>
                     {response.results.map((r) => (
                         <Grid item key={r.id}>
                             <strong>ID: {r.id}</strong> | <small>{r.source}</small>
