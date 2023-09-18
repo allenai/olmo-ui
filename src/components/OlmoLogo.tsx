@@ -1,11 +1,16 @@
 import React from 'react';
 
-export const OlmoLogo = () => {
+interface Props {
+    width?: string;
+    height?: string;
+}
+
+export const OlmoLogo = ({ width = '69', height = '36' }: Props) => {
     return (
         <svg
-            width="69"
-            height="36"
-            viewBox="0 0 69 36"
+            width={width}
+            height={height}
+            viewBox={`0 0 ${width} ${height}`}
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_992_4046)">
@@ -28,7 +33,7 @@ export const OlmoLogo = () => {
             </g>
             <defs>
                 <clipPath id="clip0_992_4046">
-                    <rect width="69" height="36" fill="white" />
+                    <rect width={width} height={height} fill="white" />
                 </clipPath>
             </defs>
         </svg>

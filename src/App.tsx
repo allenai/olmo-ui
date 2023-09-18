@@ -62,10 +62,10 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                     )}
                 </Grid>
                 <Grid item>
-                    <FeedbackButton />
+                    <ExploreDataButton />
                 </Grid>
                 <Grid item>
-                    <ExploreDataButton />
+                    <FeedbackButton />
                 </Grid>
             </Grid>
         </>
@@ -127,11 +127,13 @@ export const App = () => {
                     endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                 />
                 <DisclaimerDiv>
-                    This demo is currently using{' '}
+                    This site uses the{' '}
                     <a href="https://huggingface.co/meta-llama/Llama-2-70b-chat-hf">
                         LLaMa2 (70B Chat)
-                    </a>
-                    . It'll be updated to use the 70B parameter OLMo model once it's available.
+                    </a>{' '}
+                    model and provides search over the{' '}
+                    <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>. We
+                    will update this site to use the 70B parameter OLMo model once it's available.
                 </DisclaimerDiv>
                 <Content bgcolor="transparent" main>
                     <GlobalAlertList />

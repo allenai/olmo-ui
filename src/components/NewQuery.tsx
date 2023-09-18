@@ -19,7 +19,6 @@ import { Confirm } from './Confirm';
 import { MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
-import { SubmitButton } from './shared';
 
 export const NewQuery = () => {
     const { postMessage, allPromptTemplateInfo, getAllPromptTemplates } = useAppContext();
@@ -159,12 +158,12 @@ export const NewQuery = () => {
 
                         <Grid>
                             <ButtonArea>
-                                <SubmitButton
+                                <Button
                                     variant="contained"
                                     onClick={() => postNewMessage()}
                                     disabled={isLoading}>
                                     Prompt
-                                </SubmitButton>
+                                </Button>
                                 <span />
                                 <Button
                                     variant="outlined"

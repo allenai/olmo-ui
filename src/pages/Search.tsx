@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, TextField, Grid, Divider, Stack } from '@mui/material';
+import { Box, TextField, Grid, Divider, Stack, Button } from '@mui/material';
 
 import styled from 'styled-components';
 
 import { useAppContext } from '../AppContext';
-import { SubmitButton } from '../components/shared';
 
 interface SearchMeta {
     took_ms: number;
@@ -79,9 +78,9 @@ export function Search() {
                     onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
                     onKeyDown={(e) => submitSearch(e)}
                 />
-                <SubmitButton variant="contained" onClick={() => submitSearch()}>
-                    Submit
-                </SubmitButton>
+                <Button variant="contained" onClick={() => submitSearch()}>
+                    Search
+                </Button>
             </Stack>
             {response ? (
                 <Grid container direction="column" spacing={2} p={2}>
@@ -101,7 +100,6 @@ export function Search() {
                                     __html: result.highlights.text.join('…'),
                                 }}
                             />
-                            {/* This can be large, and should probably be omitted. */}
                             <p>{result.text}</p>
                             <Divider />
                         </Grid>
