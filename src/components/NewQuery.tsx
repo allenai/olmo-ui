@@ -158,12 +158,12 @@ export const NewQuery = () => {
 
                         <Grid>
                             <ButtonArea>
-                                <SubmitButton
+                                <Button
                                     variant="contained"
                                     onClick={() => postNewMessage()}
                                     disabled={isLoading}>
                                     Prompt
-                                </SubmitButton>
+                                </Button>
                                 <span />
                                 <Button
                                     variant="outlined"
@@ -236,10 +236,4 @@ const TemplateArea = styled.div`
 const ButtonArea = styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto;
-`;
-
-const SubmitButton = styled(Button)`
-    && {
-        background-color: ${({ theme }) => theme.color2.B4};
-    }
 `;
