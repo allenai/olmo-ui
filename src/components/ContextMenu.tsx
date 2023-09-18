@@ -12,7 +12,15 @@ export interface MenuOption {
 export const SearchTrainingDatasetMenuOption: MenuOption = {
     label: 'Search Training Datasets',
     action: (selectedText: string) => {
-        window.location.href = `/search?query="${selectedText}"`;
+        const params = new URLSearchParams();
+        if (selectedText.startsWith('"') && selectedText.startsWith("'")) {
+            selectedText.slice(1);
+        }
+        if (selectedText.endsWith('"') && selectedText.endsWith("'")) {
+            selectedText.slice(-1);
+        }
+        params.set('query', `"${selectedText}"`);
+        window.location.href = `/search?query=${params}`;
     },
 };
 
