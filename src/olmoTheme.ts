@@ -12,12 +12,15 @@ export const olmoTheme = {
     components: {
         MuiButton: {
             styleOverrides: {
-                root: {
+                root: ({ ownerState }: any) => ({
+                    ...(ownerState.variant === 'contained' && {
+                        backgroundColor: color2.B4.hex,
+                    }),
                     '&.Mui-disabled': {
                         background: 'transparent',
                         color: color2.N3.hex,
                     },
-                },
+                }),
             },
         },
         MuiIconButton: {
