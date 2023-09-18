@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Content, Footer } from '@allenai/varnish2/components';
+import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Route, Routes } from 'react-router-dom';
 import { Button, ButtonProps, Grid, LinearProgress, Typography } from '@mui/material';
 
@@ -15,6 +15,7 @@ import { WallpaperCircle } from './components/WallpaperCircle';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { olmoTheme } from './olmoTheme';
 import { useFeatureToggles } from './FeatureToggleContext';
+import { OlmoLogo } from './components/OlmoLogo';
 
 export interface AppRoute {
     path: string;
@@ -38,6 +39,14 @@ const FeedbackButton = () => {
     );
 };
 
+const ExploreDataButton = () => {
+    return (
+        <BannerButton rel="noopener noreferrer" to="/search" href="/search" variant="outlined">
+            Explore Dataset
+        </BannerButton>
+    );
+};
+
 const feedbackFormUrl =
     'https://docs.google.com/forms/d/e/1FAIpQLSfmPUnxBss08X8aq7Aiy17YSPhH-OqHzHMIzXg4zsIhAbvqxg/viewform?usp=sf_link';
 
@@ -54,6 +63,9 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                 </Grid>
                 <Grid item>
                     <FeedbackButton />
+                </Grid>
+                <Grid item>
+                    <ExploreDataButton />
                 </Grid>
             </Grid>
         </>
@@ -106,6 +118,11 @@ export const App = () => {
             </AbsoluteContainer>
             <RelativeContainer>
                 <OlmoBanner
+                    bannerLogo={
+                        <BannerLink href="https://olmo.allen.ai">
+                            <OlmoLogo />
+                        </BannerLink>
+                    }
                     transparentBackground={true}
                     endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                 />
@@ -128,7 +145,15 @@ export const App = () => {
                     ) : null}
                 </Content>
                 <BottomBanner>
-                    <OlmoBanner transparentBackground={false} endSlot={<FeedbackButton />} />
+                    <OlmoBanner
+                        bannerLogo={
+                            <BannerLink href="https://allenai.org">
+                                <logos.AI2Logo color="white" size="md" />
+                            </BannerLink>
+                        }
+                        transparentBackground={false}
+                        endSlot={<FeedbackButton />}
+                    />
                 </BottomBanner>
                 <OlmoFooter />
             </RelativeContainer>

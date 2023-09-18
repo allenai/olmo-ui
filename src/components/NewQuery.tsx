@@ -19,6 +19,7 @@ import { Confirm } from './Confirm';
 import { MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
+import { SubmitButton } from './shared';
 
 export const NewQuery = () => {
     const { postMessage, allPromptTemplateInfo, getAllPromptTemplates } = useAppContext();
@@ -236,10 +237,4 @@ const TemplateArea = styled.div`
 const ButtonArea = styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto;
-`;
-
-const SubmitButton = styled(Button)`
-    && {
-        background-color: ${({ theme }) => theme.color2.B4};
-    }
 `;
