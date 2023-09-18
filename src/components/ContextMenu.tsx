@@ -10,7 +10,7 @@ export interface MenuOption {
 
 // default implementation of searching the training datasets on the selected text
 export const SearchTrainingDatasetMenuOption: MenuOption = {
-    label: 'Search Training Datasets',
+    label: 'Search Pretraining Data',
     action: (selectedText: string) => {
         const params = new URLSearchParams();
         const qStrings = ["'", '"', '`', '“', '”'];
