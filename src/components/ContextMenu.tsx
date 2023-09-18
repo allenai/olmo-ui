@@ -13,14 +13,15 @@ export const SearchTrainingDatasetMenuOption: MenuOption = {
     label: 'Search Training Datasets',
     action: (selectedText: string) => {
         const params = new URLSearchParams();
-        if (selectedText.startsWith('"') && selectedText.startsWith("'")) {
-            selectedText.slice(1);
+        const qStrings = ["'", '"', '`', '“', '”'];
+        if (qStrings.some((str) => selectedText.startsWith(str))) {
+            selectedText = selectedText.slice(1);
         }
-        if (selectedText.endsWith('"') && selectedText.endsWith("'")) {
-            selectedText.slice(-1);
+        if (qStrings.some((str) => selectedText.endsWith(str))) {
+            selectedText = selectedText.slice(0, -1);
         }
         params.set('query', `"${selectedText}"`);
-        window.location.href = `/search?query=${params}`;
+        window.location.href = `/search?${params}`;
     },
 };
 
