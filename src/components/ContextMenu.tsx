@@ -13,14 +13,8 @@ export const SearchTrainingDatasetMenuOption: MenuOption = {
     label: 'Search Pretraining Data',
     action: (selectedText: string) => {
         const params = new URLSearchParams();
+        selectedText = selectedText.replace(/[/"/']/g, '\\"');
         if (selectedText.indexOf(' ') !== -1) {
-            const qStrings = ["'", '"', '`', '“', '”'];
-            if (qStrings.some((str) => selectedText.startsWith(str))) {
-                selectedText = selectedText.slice(1);
-            }
-            if (qStrings.some((str) => selectedText.endsWith(str))) {
-                selectedText = selectedText.slice(0, -1);
-            }
             selectedText = `"${selectedText}"`;
         }
         params.set('query', selectedText);
