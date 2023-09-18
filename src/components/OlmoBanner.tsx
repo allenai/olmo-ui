@@ -1,10 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Grid from '@mui/material/Grid';
-import { Content } from '@allenai/varnish2/components';
+import { Content, logos } from '@allenai/varnish2/components';
 
 export interface BannerProps {
-    bannerLogo: React.ReactNode; // the logo to display on the left side of the banner
     transparentBackground?: boolean;
     endSlot?: React.ReactNode; // a space on the right side of the banner for additional content
 }
@@ -28,11 +27,15 @@ const BannerContainer = styled.div<{ transparentBackground?: boolean }>`
 `;
 
 export const OlmoBanner = React.forwardRef<HTMLDivElement, BannerProps>(
-    ({ bannerLogo, transparentBackground, endSlot }) => (
+    ({ transparentBackground, endSlot }) => (
         <BannerContainer transparentBackground={transparentBackground}>
             <BannerContent>
                 <Grid container justifyContent="space-between" spacing={2}>
-                    <Grid item>{bannerLogo}</Grid>
+                    <Grid item>
+                        <BannerLink href="https://allenai.org">
+                            <logos.AI2Logo color="white" size="md" />
+                        </BannerLink>
+                    </Grid>
                     {endSlot && <Grid item>{endSlot}</Grid>}
                 </Grid>
             </BannerContent>

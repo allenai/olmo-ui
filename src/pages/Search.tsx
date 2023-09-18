@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, TextField, Grid, Divider, Stack } from '@mui/material';
-
-import styled from 'styled-components';
+import { Box, TextField, Grid } from '@mui/material';
 
 import { useAppContext } from '../AppContext';
-import { SubmitButton } from '../components/shared';
 
 interface SearchMeta {
     took_ms: number;
@@ -58,8 +55,8 @@ export function Search() {
     }, [userInfo.data?.token, query, size, offset]);
 
     const nav = useNavigate();
-    const submitSearch = (e?: React.KeyboardEvent) => {
-        if (e && e.key !== 'Enter') {
+    const submitSearch = (e: React.KeyboardEvent) => {
+        if (e.key !== 'Enter') {
             return;
         }
         const qs = new URLSearchParams({
@@ -72,17 +69,13 @@ export function Search() {
 
     return (
         <Box sx={{ background: 'white', borderRadius: 2, p: 2 }}>
-            <Stack direction={'row'} spacing={3}>
-                <PartialWidthTextField
-                    value={form.query}
-                    placeholder="Search pretraining data…"
-                    onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
-                    onKeyDown={(e) => submitSearch(e)}
-                />
-                <SubmitButton variant="contained" onClick={() => submitSearch()}>
-                    Submit
-                </SubmitButton>
-            </Stack>
+            <TextField
+                value={form.query}
+                fullWidth
+                placeholder="Search pretraining data…"
+                onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
+                onKeyDown={(e) => submitSearch(e)}
+            />
             {response ? (
                 <Grid container direction="column" spacing={2} p={2}>
                     <Grid item>
@@ -92,18 +85,12 @@ export function Search() {
                             {response.meta.took_ms}ms)
                         </strong>
                     </Grid>
-                    {response.results.map((result) => (
-                        <Grid item key={result.id}>
-                            <strong>ID: {result.id}</strong> |{' '}
-                            <small>Source: {result.source}</small>
-                            <p
-                                dangerouslySetInnerHTML={{
-                                    __html: result.highlights.text.join('…'),
-                                }}
-                            />
+                    {response.results.map((r) => (
+                        <Grid item key={r.id}>
+                            <strong>ID: {r.id}</strong> | <small>{r.source}</small>
+                            <p dangerouslySetInnerHTML={{ __html: r.highlights.text.join('…') }} />
                             {/* This can be large, and should probably be omitted. */}
-                            <p>{result.text}</p>
-                            <Divider />
+                            <p>{r.text}</p>
                         </Grid>
                     ))}
                 </Grid>
@@ -111,7 +98,3 @@ export function Search() {
         </Box>
     );
 }
-
-const PartialWidthTextField = styled(TextField)`
-    width: 95%;
-`;
