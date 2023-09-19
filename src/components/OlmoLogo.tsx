@@ -13,7 +13,7 @@ export const OlmoLogo = ({ width = '69', height = '36' }: Props) => {
             viewBox={`0 0 ${width} ${height}`}
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
-            <g clip-path="url(#clip0_992_4046)">
+            <g clipPath="url(#clip0_992_4046)">
                 <path
                     d="M0 7.5V22.5C0 26.643 3.357 30 7.5 30C11.643 30 15 26.643 15 22.5V7.5C15 3.357 11.643 0 7.5 0C3.357 0 0 3.357 0 7.5ZM7.5 24C6.672 24 6 23.328 6 22.5V7.5C6 6.672 6.672 6 7.5 6C8.328 6 9 6.672 9 7.5V22.5C9 23.328 8.328 24 7.5 24Z"
                     fill="white"
