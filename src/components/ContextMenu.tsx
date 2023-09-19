@@ -18,7 +18,7 @@ export const SearchTrainingDatasetMenuOption: MenuOption = {
     icon: <SearchIcon />,
     action: (selectedText: string) => {
         const params = new URLSearchParams();
-        selectedText = selectedText.replace(/[/"/']/g, '\\"');
+        selectedText = selectedText.replaceAll('"', '\\"')
         if (selectedText.indexOf(' ') !== -1) {
             selectedText = `"${selectedText}"`;
         }
