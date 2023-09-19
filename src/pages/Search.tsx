@@ -29,6 +29,10 @@ interface SearchResults {
     results: Result[];
 }
 
+interface SearchIndexMeta {
+    count: number;
+}
+
 export function Search() {
     const loc = useLocation();
 
@@ -39,6 +43,7 @@ export function Search() {
 
     const [form, setForm] = useState<{ query: string }>({ query });
     const [response, setResponse] = useState<SearchResults | undefined>();
+    const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
 
     const { userInfo } = useAppContext();
     useEffect(() => {
@@ -55,6 +60,21 @@ export function Search() {
             .then((r) => r.json())
             .then((r) => setResponse(r));
     }, [userInfo.data?.token, query, size, offset]);
+
+    useEffect(() => {
+        const url = `${process.env.LLMX_API_URL}/v2/data/meta`;
+        const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.data?.token}`,
+        };
+        fetch(url, { headers })
+            .then((r) => r.json())
+            .then(({ count }: SearchIndexMeta) => {
+                setPlaceholder(
+                    `Search ${Intl.NumberFormat().format(count)} pretraining documents…`
+                );
+            });
+    }, []);
 
     const nav = useNavigate();
     const submitSearch = (e?: React.KeyboardEvent) => {
@@ -74,7 +94,7 @@ export function Search() {
             <Stack direction={'row'} spacing={3}>
                 <PartialWidthTextField
                     value={form.query}
-                    placeholder="Search pretraining data…"
+                    placeholder={placeholder}
                     onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
                     onKeyDown={(e) => submitSearch(e)}
                 />
