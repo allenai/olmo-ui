@@ -50,6 +50,7 @@ export const ContextMenu = ({
     });
 
     const [showDial, setShowDial] = useState<boolean>(false);
+    const [selText, setSelText] = useState<string>();
 
     const divRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,18 +64,21 @@ export const ContextMenu = ({
     const buttonHeight = 56;
     const menuShiftY = 10 + buttonHeight * menuOptions.length;
 
-    const handleOpen = (event: MouseEvent) => {
-        let clientX = event.clientX;
-        let clientY = event.clientY;
-        const elementOffset = divRef.current?.getBoundingClientRect();
-        if (elementOffset) {
-            clientX -= elementOffset.x;
-            clientY -= elementOffset.y;
+    const handleOpen = (event: MouseEvent, text?: string) => {
+        // only update pos if text has changed, this keeps us from movoing when we click click on the toggle menu
+        if (selText !== text) {
+            let clientX = event.clientX;
+            let clientY = event.clientY;
+            const elementOffset = divRef.current?.getBoundingClientRect();
+            if (elementOffset) {
+                clientX -= elementOffset.x;
+                clientY -= elementOffset.y;
+            }
+            setContextPos({
+                mouseX: clientX,
+                mouseY: clientY - menuShiftY,
+            });
         }
-        setContextPos({
-            mouseX: clientX,
-            mouseY: clientY - menuShiftY,
-        });
         setShowDial(true);
     };
 
@@ -85,10 +89,11 @@ export const ContextMenu = ({
     const handleMouseUp = (event: MouseEvent) => {
         const text = getSelectionText();
         if (text) {
-            handleOpen(event);
+            handleOpen(event, text);
         } else {
             handleClose();
         }
+        setSelText(text);
     };
 
     const handleMouseDown = (_event: MouseEvent) => {
@@ -102,7 +107,7 @@ export const ContextMenu = ({
             window.removeEventListener('mouseup', handleMouseUp);
             window.removeEventListener('mousedown', handleMouseDown);
         };
-    }, []);
+    }, [selText]);
 
     return (
         <Box sx={{ position: 'relative' }} ref={divRef}>

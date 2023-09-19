@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { createGlobalStyle } from 'styled-components';
@@ -27,4 +27,9 @@ const VarnishedApp = () => (
     </BrowserRouter>
 );
 
-ReactDOM.render(<VarnishedApp />, document.getElementById('root'));
+const container = document.getElementById('root');
+if (!container) {
+    throw new Error("No element with an id of 'root' was found.");
+}
+const root = createRoot(container);
+root.render(<VarnishedApp />);
