@@ -29,7 +29,6 @@ import { useAppContext } from '../AppContext';
 import 'highlight.js/styles/github-dark.css';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
-import { ContextMenu } from './ContextMenu';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -60,9 +59,7 @@ const LLMResponseView = ({ response, msgId }: AgentResponseProps) => {
     return (
         <Stack direction="row">
             <RobotAvatar />
-            <ContextMenu>
-                <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
-            </ContextMenu>
+            <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
         </Stack>
     );
 };
