@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
 
 import SearchIcon from '@mui/icons-material/Search';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { useFeatureToggles } from '../FeatureToggleContext';
 
@@ -18,21 +17,12 @@ export const SearchTrainingDatasetMenuOption: MenuOption = {
     icon: <SearchIcon />,
     action: (selectedText: string) => {
         const params = new URLSearchParams();
-        selectedText = selectedText.replaceAll('"', '\\"')
+        selectedText = selectedText.replace(/"/g, '\\"');
         if (selectedText.indexOf(' ') !== -1) {
             selectedText = `"${selectedText}"`;
         }
         params.set('query', selectedText);
         window.location.href = `/search?${params}`;
-    },
-};
-
-// default implementation of copy of the selected text
-export const CopyMenuOption: MenuOption = {
-    label: 'Copy',
-    icon: <ContentCopyIcon />,
-    action: (selectedText: string) => {
-        navigator.clipboard.writeText(selectedText);
     },
 };
 
@@ -42,12 +32,12 @@ interface Props extends React.PropsWithChildren {
 }
 
 export const ContextMenu = ({
-    menuOptions = [SearchTrainingDatasetMenuOption, CopyMenuOption],
+    menuOptions = [SearchTrainingDatasetMenuOption],
     children,
 }: Props) => {
     const toggles = useFeatureToggles();
 
-    if (!toggles.contextMenu || !menuOptions.length) {
+    if (!menuOptions.length) {
         return <>{children}</>;
     }
 
@@ -118,11 +108,19 @@ export const ContextMenu = ({
                 ariaLabel="Options for selected text"
                 hidden={!showDial}
                 FabProps={{ size: 'small' }}
-                sx={{
-                    position: 'absolute',
-                    top: contextPos?.mouseY,
-                    left: contextPos?.mouseX,
-                }}
+                sx={
+                    !toggles.contextMenuFixed
+                        ? {
+                              position: 'absolute',
+                              top: contextPos?.mouseY,
+                              left: contextPos?.mouseX,
+                          }
+                        : {
+                              position: 'fixed',
+                              right: 60,
+                              bottom: 40,
+                          }
+                }
                 icon={<SpeedDialIcon />}>
                 {menuOptions.map((action) => (
                     <SpeedDialAction
