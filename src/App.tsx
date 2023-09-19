@@ -8,6 +8,7 @@ import { Home } from './pages/Home';
 import { Thread } from './pages/Thread';
 import { Admin } from './pages/Admin';
 import { Search } from './pages/Search';
+import { Doc } from './pages/Doc';
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
@@ -92,6 +93,10 @@ const ROUTES: AppRoute[] = [
     {
         path: '/search',
         Component: Search,
+    },
+    {
+        path: '/doc/:id',
+        Component: Doc,
     },
 ];
 
