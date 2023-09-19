@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ThreadAccordianView } from './ThreadAccordianView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
+import { ContextMenu } from './ContextMenu';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -65,28 +66,30 @@ export const RecentQueries = () => {
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
-                {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data
-                    ? allThreadInfo.data.map((t) => {
-                          if (
-                              queriesView === QueryToggleOptions.Mine &&
-                              t.creator !== userInfo.data?.client
-                          ) {
-                              return null;
-                          }
-                          return (
-                              <ThreadAccordianView
-                                  key={t.id}
-                                  defaultExpandedId={(allThreadInfo.data ?? [])[0].id}
-                                  title={t.content}
-                                  body={<ThreadBodyView messages={t.children} parent={t} />}
-                                  threadKey={t.id}
-                                  rootMessage={t}
-                                  threadCreator={t.creator}
-                                  showControls
-                              />
-                          );
-                      })
-                    : null}
+                <ContextMenu>
+                    {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data
+                        ? allThreadInfo.data.map((t) => {
+                              if (
+                                  queriesView === QueryToggleOptions.Mine &&
+                                  t.creator !== userInfo.data?.client
+                              ) {
+                                  return null;
+                              }
+                              return (
+                                  <ThreadAccordianView
+                                      key={t.id}
+                                      defaultExpandedId={(allThreadInfo.data ?? [])[0].id}
+                                      title={t.content}
+                                      body={<ThreadBodyView messages={t.children} parent={t} />}
+                                      threadKey={t.id}
+                                      rootMessage={t}
+                                      threadCreator={t.creator}
+                                      showControls
+                                  />
+                              );
+                          })
+                        : null}
+                </ContextMenu>
             </div>
         </>
     );

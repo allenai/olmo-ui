@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
+import { Box, SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
 
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -60,6 +60,9 @@ export const ContextMenu = ({
         return window.getSelection()?.toString();
     };
 
+    const buttonHeight = 56;
+    const menuShiftY = 10 + buttonHeight * menuOptions.length;
+
     const handleOpen = (event: MouseEvent) => {
         let clientX = event.clientX;
         let clientY = event.clientY;
@@ -70,7 +73,7 @@ export const ContextMenu = ({
         }
         setContextPos({
             mouseX: clientX,
-            mouseY: clientY,
+            mouseY: clientY - menuShiftY,
         });
         setShowDial(true);
     };
@@ -102,7 +105,7 @@ export const ContextMenu = ({
     }, []);
 
     return (
-        <div ref={divRef}>
+        <Box sx={{ position: 'relative' }} ref={divRef}>
             {children}
             <SpeedDial
                 ariaLabel="Options for selected text"
@@ -137,6 +140,6 @@ export const ContextMenu = ({
                     />
                 ))}
             </SpeedDial>
-        </div>
+        </Box>
     );
 };
