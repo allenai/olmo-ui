@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Grid, LinearProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import styled from 'styled-components';
 
-import { ThreadAccordianView } from './ThreadAccordianView';
+import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
@@ -76,7 +76,7 @@ export const RecentQueries = () => {
                                   return null;
                               }
                               return (
-                                  <ThreadAccordianView
+                                  <ThreadAccordionView
                                       key={t.id}
                                       defaultExpandedId={(allThreadInfo.data ?? [])[0].id}
                                       title={t.content}
