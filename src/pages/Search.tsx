@@ -51,7 +51,7 @@ export function Search() {
             return;
         }
         const qs = new URLSearchParams({ query, size, offset });
-        const url = `${process.env.LLMX_API_URL}/v2/data/search?${qs}`;
+        const url = `${process.env.LLMX_API_URL}/v3/data/search?${qs}`;
         const headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${userInfo.data?.token}`,
@@ -62,7 +62,7 @@ export function Search() {
     }, [userInfo.data?.token, query, size, offset]);
 
     useEffect(() => {
-        const url = `${process.env.LLMX_API_URL}/v2/data/meta`;
+        const url = `${process.env.LLMX_API_URL}/v3/data/meta`;
         const headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${userInfo.data?.token}`,

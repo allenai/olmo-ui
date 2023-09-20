@@ -1,6 +1,6 @@
 import { InferenceOpts } from './Message';
 
-export const SchemaApiUrl = `${process.env.LLMX_API_URL}/v2/schema`;
+export const SchemaApiUrl = `${process.env.LLMX_API_URL}/v3/schema`;
 
 export interface Field {
     name: string;
