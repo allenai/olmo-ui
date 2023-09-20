@@ -52,6 +52,11 @@ const QueriesHeader = (props: QueriesHeaderProps) => {
     );
 };
 
+enum QueryStringParam {
+    View = 'view',
+    Page = 'page',
+}
+
 export const RecentQueries = () => {
     const { userInfo, getAllThreads, allThreadInfo } = useAppContext();
 
@@ -59,9 +64,9 @@ export const RecentQueries = () => {
     const nav = useNavigate();
 
     const qs = new URLSearchParams(loc.search);
-    const queriesView = qs.get('view') ?? QueryToggleOptions.Mine;
+    const queriesView = qs.get(QueryStringParam.View) ?? QueryToggleOptions.Mine;
 
-    const p = parseInt(qs.get('page') ?? '');
+    const p = parseInt(qs.get(QueryStringParam.Page) ?? '');
     const page = isNaN(p) ? 1 : p;
 
     const onQueriesToggleChange = (
@@ -69,7 +74,7 @@ export const RecentQueries = () => {
         queriesViewOption: string | null
     ) => {
         if (queriesViewOption !== null) {
-            const qs = new URLSearchParams({ view: queriesViewOption });
+            const qs = new URLSearchParams({ [QueryStringParam.View]: queriesViewOption });
             nav(`${loc.pathname}?${qs}`);
         }
     };
@@ -112,7 +117,7 @@ export const RecentQueries = () => {
                                         count={count}
                                         onChange={(_, page: number) => {
                                             const qs = new URLSearchParams(loc.search);
-                                            qs.set('page', `${page}`);
+                                            qs.set(QueryStringParam.Page, `${page}`);
                                             nav(`${loc.pathname}?${qs}`);
                                         }}
                                     />
