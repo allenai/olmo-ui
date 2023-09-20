@@ -8,6 +8,7 @@ import {
     MessageApiUrl,
     MessagePost,
     MessagesApiUrl,
+    JSONMessageList,
     JSONMessage,
     parseMessage,
     InferenceOpts,
@@ -348,7 +349,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             set((state) => ({
                 allThreadInfo: { ...state.allThreadInfo, loading: true, error: false },
             }));
-            const messages = await fetchAPI<JSONMessage[]>(`${MessagesApiUrl}${relUrl || ''}`, {
+            const ml = await fetchAPI<JSONMessageList>(`${MessagesApiUrl}${relUrl || ''}`, {
                 headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
                 retry401: true,
                 onUserRefresh: (user) => {
@@ -357,7 +358,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     }));
                 },
             });
-            const parsedMessages = messages.map((m) => parseMessage(m));
+            const parsedMessages = ml.messages.map((m) => parseMessage(m));
             set((state) => ({
                 allThreadInfo: { ...state.allThreadInfo, data: parsedMessages, loading: false },
             }));
@@ -486,7 +487,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             return parentMsg?.children || get().allThreadInfo.data || [];
         };
 
-        const url = `${process.env.LLMX_API_URL}/v2/message/stream`;
+        const url = `${process.env.LLMX_API_URL}/v3/message/stream`;
         const resp = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({

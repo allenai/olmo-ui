@@ -20,7 +20,7 @@ export function Doc() {
 
     const { userInfo } = useAppContext();
     useEffect(() => {
-        const url = `${process.env.LLMX_API_URL}/v2/data/doc/${params.id}`;
+        const url = `${process.env.LLMX_API_URL}/v3/data/doc/${params.id}`;
         const headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${userInfo.data?.token}`,

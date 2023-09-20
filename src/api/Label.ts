@@ -1,5 +1,5 @@
-export const LabelApiUrl = `${process.env.LLMX_API_URL}/v2/label`;
-export const LabelsApiUrl = `${process.env.LLMX_API_URL}/v2/labels`;
+export const LabelApiUrl = `${process.env.LLMX_API_URL}/v3/label`;
+export const LabelsApiUrl = `${process.env.LLMX_API_URL}/v3/labels`;
 
 export enum LabelRating {
     Flag = -1,

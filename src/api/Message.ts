@@ -1,8 +1,8 @@
 import { Label } from './Label';
 import { Role } from './Role';
 
-export const MessageApiUrl = `${process.env.LLMX_API_URL}/v2/message`;
-export const MessagesApiUrl = `${process.env.LLMX_API_URL}/v2/messages`;
+export const MessageApiUrl = `${process.env.LLMX_API_URL}/v3/message`;
+export const MessagesApiUrl = `${process.env.LLMX_API_URL}/v3/messages`;
 
 export interface MessagePost {
     content: string;
@@ -29,6 +29,22 @@ export interface Message {
     root: string;
     template: string;
     final: boolean;
+}
+
+export interface MessageListMeta {
+    total: number;
+    offset?: number;
+    limit?: number;
+}
+
+export interface MessageList {
+    messages: Message[];
+    meta: MessageListMeta;
+}
+
+export interface JSONMessageList {
+    messages: JSONMessage[];
+    meta: MessageListMeta;
 }
 
 export interface MessageChunk {

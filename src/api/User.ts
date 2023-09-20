@@ -1,4 +1,4 @@
-export const WhoamiApiUrl = `${process.env.LLMX_API_URL}/v2/whoami`;
+export const WhoamiApiUrl = `${process.env.LLMX_API_URL}/v3/whoami`;
 
 export interface User {
     client: string;
