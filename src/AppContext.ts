@@ -8,6 +8,7 @@ import {
     MessageApiUrl,
     MessagePost,
     MessagesApiUrl,
+    MessageList,
     JSONMessageList,
     JSONMessage,
     parseMessage,
@@ -101,7 +102,7 @@ type State = {
     allPromptTemplateInfo: FetchInfo<PromptTemplate[]>;
     postPromptTemplateInfo: FetchInfo<PromptTemplate>;
     deletedPromptTemplateInfo: FetchInfo<void>;
-    allThreadInfo: FetchInfo<Message[]>;
+    allThreadInfo: FetchInfo<MessageList>;
     deletedThreadInfo: FetchInfo<void>;
     selectedThreadInfo: FetchInfo<Message>;
     postMessageInfo: FetchInfo<Message>;
@@ -121,7 +122,7 @@ type Action = {
         newPromptTemplate: PromptTemplatePost
     ) => Promise<FetchInfo<PromptTemplate>>;
     deletePromptTemplate: (promptTemplateId: string) => Promise<FetchInfo<void>>;
-    getAllThreads: (relUrl?: string) => Promise<FetchInfo<Message[]>>;
+    getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
     getSelectedThread: (threadId: string) => Promise<FetchInfo<Message>>;
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
@@ -344,12 +345,16 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         return get().deletedPromptTemplateInfo;
     },
 
-    getAllThreads: async (relUrl?: string) => {
+    getAllThreads: async (offset: number = 0, creator?: string) => {
         try {
             set((state) => ({
                 allThreadInfo: { ...state.allThreadInfo, loading: true, error: false },
             }));
-            const ml = await fetchAPI<JSONMessageList>(`${MessagesApiUrl}${relUrl || ''}`, {
+            const qs = new URLSearchParams({ offset: `${offset}` });
+            if (creator) {
+                qs.set('creator', creator);
+            }
+            const ml = await fetchAPI<JSONMessageList>(`${MessagesApiUrl}?${qs}`, {
                 headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
                 retry401: true,
                 onUserRefresh: (user) => {
@@ -358,14 +363,18 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     }));
                 },
             });
-            const parsedMessages = ml.messages.map((m) => parseMessage(m));
+            const messages = ml.messages.map((m) => parseMessage(m));
             set((state) => ({
-                allThreadInfo: { ...state.allThreadInfo, data: parsedMessages, loading: false },
+                allThreadInfo: {
+                    ...state.allThreadInfo,
+                    data: { messages, meta: ml.meta },
+                    loading: false,
+                },
             }));
         } catch (err) {
             get().addAlertMessage(
                 errorToAlert(
-                    `fetch-${MessagesApiUrl}-${relUrl || ''}-${new Date().getTime()}`.toLowerCase(),
+                    `fetch-${MessagesApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting threads.`,
                     err
                 )
@@ -392,14 +401,22 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     }));
                 },
             });
-            // EFFECT: remove the deleted message from the local store
-            const filteredMessages: Message[] = [...(get().allThreadInfo.data || [])].filter(
-                (m: Message) => m.id !== threadId
-            );
-            set((state) => ({
-                deletedThreadInfo: { ...state.deletedThreadInfo, loading: false },
-                allThreadInfo: { ...state.allThreadInfo, data: filteredMessages },
-            }));
+            set((state) => {
+                const deletedThreadInfo = { ...state.deletedThreadInfo, loading: false };
+
+                // TODO: this should be factored out w/ better abstractions
+                if (!state.allThreadInfo.data) {
+                    return { deletedThreadInfo };
+                }
+
+                // EFFECT: remove the deleted message from the local store
+                // TODO: when this occurs we should be refetching the list; the metadata
+                // we have is no longer out of date, and needs to be updated from the server.
+                const messages = state.allThreadInfo.data.messages.filter((m) => m.id !== threadId);
+                const data = { ...state.allThreadInfo.data, messages };
+                const allThreadInfo = { ...state.allThreadInfo, data };
+                return { deletedThreadInfo, allThreadInfo };
+            });
         } catch (err) {
             get().addAlertMessage(
                 errorToAlert(
@@ -474,8 +491,14 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         // to use it we should be using immer or something like it.
         const rerenderMessages = () =>
             set((state) => {
-                const updated = (state.allThreadInfo.data ?? []).slice();
-                return { allThreadInfo: { ...state.allThreadInfo, data: updated } };
+                // TODO: this should never be the case; this is indicative of an issue w/ our
+                // abstraction and should be factored away
+                if (!state.allThreadInfo.data) {
+                    return state;
+                }
+                const updated = state.allThreadInfo.data?.messages.slice();
+                const data = { ...state.allThreadInfo.data, ...{ messages: updated } };
+                return { allThreadInfo: { ...state.allThreadInfo, data } };
             });
 
         const branch = () => {
@@ -484,7 +507,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }
             // TODO: by this point allThreadInfo.data should always be set, so silly stuff
             // like this shouldn't be required
-            return parentMsg?.children || get().allThreadInfo.data || [];
+            return parentMsg?.children || get().allThreadInfo.data?.messages || [];
         };
 
         const url = `${process.env.LLMX_API_URL}/v3/message/stream`;
@@ -524,7 +547,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     if (!('id' in payload)) {
                         throw new Error(`malformed preamble: ${line}`);
                     }
-                    const msg: Message = parseMessage(payload);
+                    const msg = parseMessage(payload);
                     branch().unshift(msg);
                     rerenderMessages();
                     preamble = false;

@@ -1,6 +1,14 @@
 import React, { useEffect } from 'react';
-import { Grid, LinearProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import {
+    Grid,
+    LinearProgress,
+    ToggleButton,
+    ToggleButtonGroup,
+    Pagination,
+    Stack,
+} from '@mui/material';
 import styled from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
@@ -32,11 +40,11 @@ const QueriesHeader = (props: QueriesHeaderProps) => {
                     exclusive
                     onChange={props.onToggleChange}
                     aria-label="Toggle queries view">
-                    <QueryToggleButton value={QueryToggleOptions.All} aria-label="All queries">
-                        All Queries
-                    </QueryToggleButton>
                     <QueryToggleButton value={QueryToggleOptions.Mine} aria-label="My queries">
                         My Queries
+                    </QueryToggleButton>
+                    <QueryToggleButton value={QueryToggleOptions.All} aria-label="All queries">
+                        All Queries
                     </QueryToggleButton>
                 </PaddedButtonGroup>
             </Grid>
@@ -45,21 +53,36 @@ const QueriesHeader = (props: QueriesHeaderProps) => {
 };
 
 export const RecentQueries = () => {
-    const [queriesView, setQueriesView] = React.useState<string>(QueryToggleOptions.Mine);
     const { userInfo, getAllThreads, allThreadInfo } = useAppContext();
 
-    useEffect(() => {
-        getAllThreads();
-    }, []);
+    const loc = useLocation();
+    const nav = useNavigate();
+
+    const qs = new URLSearchParams(loc.search);
+    const queriesView = qs.get('view') ?? QueryToggleOptions.Mine;
+
+    const p = parseInt(qs.get('page') ?? '');
+    const page = isNaN(p) ? 1 : p;
 
     const onQueriesToggleChange = (
         _event: React.MouseEvent<HTMLElement>,
         queriesViewOption: string | null
     ) => {
         if (queriesViewOption !== null) {
-            setQueriesView(queriesViewOption);
+            const qs = new URLSearchParams({ view: queriesViewOption });
+            nav(`${loc.pathname}?${qs}`);
         }
     };
+
+    const size = 10;
+    const count = allThreadInfo.data ? Math.ceil(allThreadInfo.data?.meta.total / size) : 0;
+
+    useEffect(() => {
+        const creator =
+            queriesView === QueryToggleOptions.Mine ? userInfo?.data?.client : undefined;
+        const offset = (page - 1) * size;
+        getAllThreads(offset, creator);
+    }, [queriesView, userInfo, page, size]);
 
     return (
         <>
@@ -67,28 +90,36 @@ export const RecentQueries = () => {
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
                 <ContextMenu>
-                    {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data
-                        ? allThreadInfo.data.map((t) => {
-                              if (
-                                  queriesView === QueryToggleOptions.Mine &&
-                                  t.creator !== userInfo.data?.client
-                              ) {
-                                  return null;
-                              }
-                              return (
-                                  <ThreadAccordionView
-                                      key={t.id}
-                                      defaultExpandedId={(allThreadInfo.data ?? [])[0].id}
-                                      title={t.content}
-                                      body={<ThreadBodyView messages={t.children} parent={t} />}
-                                      threadKey={t.id}
-                                      rootMessage={t}
-                                      threadCreator={t.creator}
-                                      showControls
-                                  />
-                              );
-                          })
-                        : null}
+                    {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
+                        <Stack direction="column">
+                            {allThreadInfo.data.messages.map((t) => (
+                                <ThreadAccordionView
+                                    key={t.id}
+                                    defaultExpandedId={(allThreadInfo.data?.messages ?? [])[0].id}
+                                    title={t.content}
+                                    body={<ThreadBodyView messages={t.children} parent={t} />}
+                                    threadKey={t.id}
+                                    rootMessage={t}
+                                    threadCreator={t.creator}
+                                    showControls
+                                />
+                            ))}
+                            {count > 0 ? (
+                                <Stack alignItems="center">
+                                    <InvertedPagination
+                                        boundaryCount={3}
+                                        page={page}
+                                        count={count}
+                                        onChange={(_, page: number) => {
+                                            const qs = new URLSearchParams(loc.search);
+                                            qs.set('page', `${page}`);
+                                            nav(`${loc.pathname}?${qs}`);
+                                        }}
+                                    />
+                                </Stack>
+                            ) : null}
+                        </Stack>
+                    ) : null}
                 </ContextMenu>
             </div>
         </>
@@ -113,4 +144,15 @@ const QueryToggleButton = styled(ToggleButton)`
 
 const PaddedButtonGroup = styled(ToggleButtonGroup)`
     padding-top: ${({ theme }) => theme.spacing(4.5)};
+`;
+
+const InvertedPagination = styled(Pagination)`
+    & .MuiPaginationItem-root {
+        color: ${({ theme }) => theme.color2.N3};
+    }
+
+    && .Mui-selected {
+        background-color: ${({ theme }) => theme.color2.N6};
+        color: ${({ theme }) => theme.color2.N2};
+    }
 `;
