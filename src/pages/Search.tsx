@@ -38,6 +38,14 @@ enum QueryStringParam {
     Offset = 'offset',
 }
 
+function toQueryString(query: string, offset: number): string {
+    const qs = new URLSearchParams({
+        [QueryStringParam.Query]: query,
+        [QueryStringParam.Offset]: `${offset}`,
+    });
+    return `${qs}`;
+}
+
 export function Search() {
     const loc = useLocation();
     const size = 10; // size is fixed to 10, can modify in the future
@@ -57,11 +65,10 @@ export function Search() {
         if (!query) {
             return;
         }
-        const qs = new URLSearchParams({
-            [QueryStringParam.Query]: query,
-            [QueryStringParam.Offset]: `${offset}`,
-        });
-        const url = `${process.env.LLMX_API_URL}/v3/data/search?${qs}`;
+        const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(
+            form.query,
+            offset
+        )}`;
         const headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${userInfo.data?.token}`,
@@ -91,11 +98,7 @@ export function Search() {
         if (e && e.key !== 'Enter') {
             return;
         }
-        const qs = new URLSearchParams({
-            [QueryStringParam.Query]: form.query,
-            [QueryStringParam.Offset]: `${offset}`,
-        });
-        nav(`${loc.pathname}?${qs.toString()}`);
+        nav(`${loc.pathname}?${toQueryString(form.query, offset)}`);
     };
 
     return (
@@ -142,11 +145,12 @@ export function Search() {
                             count={Math.ceil(response.meta.total / size)}
                             page={page}
                             onChange={(_, page: number) => {
-                                const qs = new URLSearchParams({
-                                    [QueryStringParam.Query]: form.query,
-                                    [QueryStringParam.Offset]: `${(page - 1) * size}`,
-                                });
-                                nav(`${loc.pathname}?${qs.toString()}`);
+                                nav(
+                                    `${loc.pathname}?${toQueryString(
+                                        form.query,
+                                        (page - 1) * size
+                                    )}`
+                                );
                             }}
                         />
                     </Stack>
