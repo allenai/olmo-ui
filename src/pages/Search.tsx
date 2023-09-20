@@ -35,11 +35,11 @@ interface SearchIndexMeta {
 
 export function Search() {
     const loc = useLocation();
-    const shiftSizeForPagination = 10;
+    const shiftSizeForPagination = 10; // size is fixed to 10, can modify in the future
 
     const params = new URLSearchParams(loc.search);
     const query = params.get('query')?.trim() ?? '';
-    const size = shiftSizeForPagination.toString(); // currently fixing size at 10, can modify this in the future
+    const size = shiftSizeForPagination.toString(); // currently fixing size to be constant, can modify this in the future
     const offset = params.get('offset')?.trim() ?? '0';
 
     const [currentOffset, setCurrentOffset] = useState<number>(parseInt(offset, 10));
@@ -102,6 +102,8 @@ export function Search() {
             size: size.toString(),
             offset: newOffset.toString(),
         });
+        // this is necessary to update the query params in the URL for ease of copy/pasting the 
+        // correct desired search page URL in pagination view
         window.history.replaceState(null, '', `${loc.pathname}?${qs.toString()}`);
         setPage(value);
     };
