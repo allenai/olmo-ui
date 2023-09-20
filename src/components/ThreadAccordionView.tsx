@@ -23,7 +23,7 @@ import { Message, MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 
-interface ThreadAccordianProps {
+interface ThreadAccordionProps {
     title: string;
     body: ReactNode;
     threadKey: string;
@@ -33,7 +33,7 @@ interface ThreadAccordianProps {
     defaultExpandedId: string | false;
 }
 
-export const ThreadAccordianView = ({
+export const ThreadAccordionView = ({
     title,
     body,
     threadKey,
@@ -41,7 +41,7 @@ export const ThreadAccordianView = ({
     showControls = false,
     rootMessage,
     defaultExpandedId,
-}: ThreadAccordianProps) => {
+}: ThreadAccordionProps) => {
     const { userInfo, postMessage } = useAppContext();
     const [expanded, setExpanded] = React.useState<string | false>(defaultExpandedId);
     useEffect(() => {
@@ -96,7 +96,13 @@ export const ThreadAccordianView = ({
     const isExpanded = expanded === threadKey;
 
     return (
-        <Accordion id={threadKey} expanded={isExpanded} onChange={handleAccordianChange(threadKey)}>
+        <Accordion
+            // setting unmountOnExit to help with performance
+            // see: https://mui.com/material-ui/react-accordion/#performance
+            TransitionProps={{ unmountOnExit: true }}
+            id={threadKey}
+            expanded={isExpanded}
+            onChange={handleAccordianChange(threadKey)}>
             <AccordionSummary aria-controls={`${threadKey}-content`} id={`${threadKey}-header`}>
                 {isExpanded ? (
                     <Stack direction="row">

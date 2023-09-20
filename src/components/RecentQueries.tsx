@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { Grid, LinearProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import styled from 'styled-components';
 
-import { ThreadAccordianView } from './ThreadAccordianView';
+import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
+import { ContextMenu } from './ContextMenu';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -65,28 +66,30 @@ export const RecentQueries = () => {
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
-                {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data
-                    ? allThreadInfo.data.map((t) => {
-                          if (
-                              queriesView === QueryToggleOptions.Mine &&
-                              t.creator !== userInfo.data?.client
-                          ) {
-                              return null;
-                          }
-                          return (
-                              <ThreadAccordianView
-                                  key={t.id}
-                                  defaultExpandedId={(allThreadInfo.data ?? [])[0].id}
-                                  title={t.content}
-                                  body={<ThreadBodyView messages={t.children} parent={t} />}
-                                  threadKey={t.id}
-                                  rootMessage={t}
-                                  threadCreator={t.creator}
-                                  showControls
-                              />
-                          );
-                      })
-                    : null}
+                <ContextMenu>
+                    {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data
+                        ? allThreadInfo.data.map((t) => {
+                              if (
+                                  queriesView === QueryToggleOptions.Mine &&
+                                  t.creator !== userInfo.data?.client
+                              ) {
+                                  return null;
+                              }
+                              return (
+                                  <ThreadAccordionView
+                                      key={t.id}
+                                      defaultExpandedId={(allThreadInfo.data ?? [])[0].id}
+                                      title={t.content}
+                                      body={<ThreadBodyView messages={t.children} parent={t} />}
+                                      threadKey={t.id}
+                                      rootMessage={t}
+                                      threadCreator={t.creator}
+                                      showControls
+                                  />
+                              );
+                          })
+                        : null}
+                </ContextMenu>
             </div>
         </>
     );
