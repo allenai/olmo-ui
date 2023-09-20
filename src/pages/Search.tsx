@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, TextField, Grid, Divider, Stack, Button } from '@mui/material';
+import { Box, TextField, Grid, Divider, Stack, Button, Pagination } from '@mui/material';
 
 import styled from 'styled-components';
 
@@ -35,8 +35,9 @@ export function Search() {
     const params = new URLSearchParams(loc.search);
     const query = params.get('query')?.trim() ?? '';
     const size = params.get('size')?.trim() ?? '10';
-    const offset = params.get('offset')?.trim() ?? '0';
+    let offset = params.get('offset')?.trim() ?? '0';
 
+    // const [offset, setOffset] = useState<Number>(20);
     const [form, setForm] = useState<{ query: string }>({ query });
     const [response, setResponse] = useState<SearchResults | undefined>();
 
@@ -45,6 +46,7 @@ export function Search() {
         if (!query) {
             return;
         }
+        // const offsetString = offset.toString();
         const qs = new URLSearchParams({ query, size, offset });
         const url = `${process.env.LLMX_API_URL}/v2/data/search?${qs}`;
         const headers = {
@@ -83,28 +85,31 @@ export function Search() {
                 </Button>
             </Stack>
             {response ? (
-                <Grid container direction="column" spacing={2} p={2}>
-                    <Grid item>
-                        <strong>
-                            {response.meta.overflow ? 'More than ' : ''}
-                            {Intl.NumberFormat().format(response.meta.total)} results (
-                            {response.meta.took_ms}ms)
-                        </strong>
-                    </Grid>
-                    {response.results.map((result) => (
-                        <Grid item key={result.id}>
-                            <strong>ID: {result.id}</strong> |{' '}
-                            <small>Source: {result.source}</small>
-                            <p
-                                dangerouslySetInnerHTML={{
-                                    __html: result.highlights.text.join('…'),
-                                }}
-                            />
-                            <p>{result.text}</p>
-                            <Divider />
+                <>
+                    <Grid container direction="column" spacing={2} p={2}>
+                        <Grid item>
+                            <strong>
+                                {response.meta.overflow ? 'More than ' : ''}
+                                {Intl.NumberFormat().format(response.meta.total)} results (
+                                {response.meta.took_ms}ms)
+                            </strong>
                         </Grid>
-                    ))}
-                </Grid>
+                        {response.results.map((result) => (
+                            <Grid item key={result.id}>
+                                <strong>ID: {result.id}</strong> |{' '}
+                                <small>Source: {result.source}</small>
+                                <ResultsContainer> 
+                                    <p
+                                    dangerouslySetInnerHTML={{
+                                        __html: result.highlights.text.join('… '),
+                                    }}/>
+                                </ResultsContainer>
+                                <Divider />
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Pagination count={Math.round(response.meta.total / 10)} page={page} onChange={handleChange} />
+                </>
             ) : null}
         </Box>
     );
@@ -112,4 +117,13 @@ export function Search() {
 
 const PartialWidthTextField = styled(TextField)`
     width: 95%;
+`;
+
+const ResultsContainer = styled.p`
+    &&& {
+        em {
+            font-style: normal;
+            font-weight: bold;
+        }
+    }
 `;
