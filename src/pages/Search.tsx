@@ -35,13 +35,15 @@ interface SearchIndexMeta {
 
 export function Search() {
     const loc = useLocation();
+    const shiftSizeForPagination = 10;
 
     const params = new URLSearchParams(loc.search);
     const query = params.get('query')?.trim() ?? '';
-    const size = params.get('size')?.trim() ?? '10';
-    let offset = params.get('offset')?.trim() ?? '0';
+    const size = shiftSizeForPagination.toString(); // currently fixing size at 10, can modify this in the future
+    const offset = params.get('offset')?.trim() ?? '0';
 
-    // const [offset, setOffset] = useState<Number>(20);
+    const [currentOffset, setCurrentOffset] = useState<number>(parseInt(offset, 10));
+
     const [form, setForm] = useState<{ query: string }>({ query });
     const [response, setResponse] = useState<SearchResults | undefined>();
     const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
@@ -51,8 +53,8 @@ export function Search() {
         if (!query) {
             return;
         }
-        // const offsetString = offset.toString();
-        const qs = new URLSearchParams({ query, size, offset });
+        const currentOffsetString = currentOffset.toString();
+        const qs = new URLSearchParams({ query, size, offset: currentOffsetString });
         const url = `${process.env.LLMX_API_URL}/v3/data/search?${qs}`;
         const headers = {
             'Content-Type': 'application/json',
@@ -61,7 +63,7 @@ export function Search() {
         fetch(url, { headers })
             .then((r) => r.json())
             .then((r) => setResponse(r));
-    }, [userInfo.data?.token, query, size, offset]);
+    }, [userInfo.data?.token, query, size, currentOffset]);
 
     useEffect(() => {
         const url = `${process.env.LLMX_API_URL}/v3/data/meta`;
@@ -86,9 +88,22 @@ export function Search() {
         const qs = new URLSearchParams({
             query: form.query,
             size: size.toString(),
-            offset: offset.toString(),
+            offset: currentOffset.toString(),
         });
         nav(`${loc.pathname}?${qs.toString()}`);
+    };
+
+    const [page, setPage] = React.useState(Math.floor(currentOffset / 10) + 1);
+    const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+        const newOffset = value * shiftSizeForPagination - shiftSizeForPagination;
+        setCurrentOffset(newOffset);
+        const qs = new URLSearchParams({
+            query: form.query,
+            size: size.toString(),
+            offset: newOffset.toString(),
+        });
+        window.history.replaceState(null, '', `${loc.pathname}?${qs.toString()}`);
+        setPage(value);
     };
 
     return (
@@ -118,17 +133,25 @@ export function Search() {
                             <Grid item key={result.id}>
                                 <strong>ID: {result.id}</strong> |{' '}
                                 <small>Source: {result.source}</small>
-                                <ResultsContainer> 
+                                <ResultsContainer>
                                     <p
-                                    dangerouslySetInnerHTML={{
-                                        __html: result.highlights.text.join('… '),
-                                    }}/>
+                                        dangerouslySetInnerHTML={{
+                                            __html: result.highlights.text.join('… '),
+                                        }}
+                                    />
                                 </ResultsContainer>
                                 <Divider />
                             </Grid>
                         ))}
                     </Grid>
-                    <Pagination count={Math.round(response.meta.total / 10)} page={page} onChange={handleChange} />
+                    <Stack alignItems="center">
+                        <Pagination
+                            boundaryCount={3}
+                            count={Math.round(response.meta.total / shiftSizeForPagination)}
+                            page={page}
+                            onChange={handleChange}
+                        />
+                    </Stack>
                 </>
             ) : null}
         </Box>
