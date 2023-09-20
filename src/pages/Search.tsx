@@ -33,16 +33,20 @@ interface SearchIndexMeta {
     count: number;
 }
 
+enum QueryStringParam {
+    Query = 'query',
+    Offset = 'offset',
+}
+
 export function Search() {
     const loc = useLocation();
-    const shiftSizeForPagination = 10; // size is fixed to 10, can modify in the future
+    const size = 10; // size is fixed to 10, can modify in the future
 
     const params = new URLSearchParams(loc.search);
-    const query = params.get('query')?.trim() ?? '';
-    const size = shiftSizeForPagination.toString(); // currently fixing size to be constant, can modify this in the future
-    const offset = params.get('offset')?.trim() ?? '0';
-
-    const [currentOffset, setCurrentOffset] = useState<number>(parseInt(offset, 10));
+    const query = params.get(QueryStringParam.Query)?.trim() ?? '';
+    const os = parseInt(params.get(QueryStringParam.Offset) ?? '');
+    const offset = isNaN(os) ? 0 : os;
+    const page = Math.ceil(offset / size) + 1;
 
     const [form, setForm] = useState<{ query: string }>({ query });
     const [response, setResponse] = useState<SearchResults | undefined>();
@@ -53,8 +57,10 @@ export function Search() {
         if (!query) {
             return;
         }
-        const currentOffsetString = currentOffset.toString();
-        const qs = new URLSearchParams({ query, size, offset: currentOffsetString });
+        const qs = new URLSearchParams({
+            [QueryStringParam.Query]: query,
+            [QueryStringParam.Offset]: `${offset}`,
+        });
         const url = `${process.env.LLMX_API_URL}/v3/data/search?${qs}`;
         const headers = {
             'Content-Type': 'application/json',
@@ -63,7 +69,7 @@ export function Search() {
         fetch(url, { headers })
             .then((r) => r.json())
             .then((r) => setResponse(r));
-    }, [userInfo.data?.token, query, size, currentOffset]);
+    }, [userInfo.data?.token, query, size, offset]);
 
     useEffect(() => {
         const url = `${process.env.LLMX_API_URL}/v3/data/meta`;
@@ -86,26 +92,10 @@ export function Search() {
             return;
         }
         const qs = new URLSearchParams({
-            query: form.query,
-            size: size.toString(),
-            offset: currentOffset.toString(),
+            [QueryStringParam.Query]: form.query,
+            [QueryStringParam.Offset]: `${offset}`,
         });
         nav(`${loc.pathname}?${qs.toString()}`);
-    };
-
-    const [page, setPage] = React.useState(Math.floor(currentOffset / 10) + 1);
-    const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-        const newOffset = value * shiftSizeForPagination - shiftSizeForPagination;
-        setCurrentOffset(newOffset);
-        const qs = new URLSearchParams({
-            query: form.query,
-            size: size.toString(),
-            offset: newOffset.toString(),
-        });
-        // this is necessary to update the query params in the URL for ease of copy/pasting the 
-        // correct desired search page URL in pagination view
-        window.history.replaceState(null, '', `${loc.pathname}?${qs.toString()}`);
-        setPage(value);
     };
 
     return (
@@ -149,9 +139,15 @@ export function Search() {
                     <Stack alignItems="center">
                         <Pagination
                             boundaryCount={3}
-                            count={Math.round(response.meta.total / shiftSizeForPagination)}
+                            count={Math.ceil(response.meta.total / size)}
                             page={page}
-                            onChange={handleChange}
+                            onChange={(_, page: number) => {
+                                const qs = new URLSearchParams({
+                                    [QueryStringParam.Query]: form.query,
+                                    [QueryStringParam.Offset]: `${(page - 1) * size}`,
+                                });
+                                nav(`${loc.pathname}?${qs.toString()}`);
+                            }}
                         />
                     </Stack>
                 </>
