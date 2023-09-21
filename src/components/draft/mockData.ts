@@ -2,7 +2,7 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { RawDraftContentState } from 'draft-js';
 
 // todo: get this from the api
-export const mentions: MentionData[] = [
+export const mockChips: MentionData[] = [
     {
         name: 'Chicken Jokes',
         content:
@@ -21,7 +21,7 @@ export const mentions: MentionData[] = [
 ];
 
 // todo: get this from the api
-export const curRawData: RawDraftContentState = {
+export const mockRawData: RawDraftContentState = {
     blocks: [
         {
             key: 'glbo',
@@ -41,14 +41,14 @@ export const curRawData: RawDraftContentState = {
             type: 'mention',
             mutability: 'IMMUTABLE',
             data: {
-                mention: mentions[0],
+                mention: mockChips[0],
             },
         },
         '1': {
             type: 'mention',
             mutability: 'IMMUTABLE',
             data: {
-                mention: mentions[2],
+                mention: mockChips[2],
             },
         },
     },

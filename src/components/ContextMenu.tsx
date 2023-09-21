@@ -37,7 +37,7 @@ export const ContextMenu = ({
 }: Props) => {
     const toggles = useFeatureToggles();
 
-    if (!menuOptions.length) {
+    if (toggles.chips || !menuOptions.length) {
         return <>{children}</>;
     }
 

@@ -15,6 +15,7 @@ export const ChipDisplay = (props: SubMentionComponentProps) => {
 
 const HoverBadge = styled(Badge)`
     &&& {
+        vertical-align: unset;
         .MuiBadge-badge {
             visibility: hidden;
         }
