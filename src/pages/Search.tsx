@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { CopyToClipboardButton } from '@allenai/varnish2/components';
 
 import { useAppContext } from '../AppContext';
+import { DolmaLogo } from '../components/logos/DolmaLogo';
 
 interface SearchMeta {
     took_ms: number;
@@ -107,83 +108,97 @@ export function Search() {
     };
 
     return (
-        <Box sx={{ background: 'white', borderRadius: 2, p: 2 }}>
-            <Stack direction={'row'} spacing={3}>
-                <PartialWidthTextField
-                    value={form.query}
-                    placeholder={placeholder}
-                    onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
-                    onKeyDown={(e) => submitSearch(e)}
-                />
-                <Button variant="contained" onClick={() => submitSearch()}>
-                    Search
-                </Button>
-            </Stack>
-            {response ? (
-                <>
-                    <Grid container direction="column" spacing={2} p={2}>
-                        <EqualPaddingGridItem item>
-                            {response.meta.overflow ? 'More than ' : ''}
-                            <strong>{Intl.NumberFormat().format(response.meta.total)}</strong>{' '}
-                            results ({response.meta.took_ms}ms)
-                        </EqualPaddingGridItem>
-                        {response.results.length === 0 && (
-                            <NoPaddingGridItem item>
-                                <h4>No results for {form.query}.</h4>
-                                <p>Your search did not match any documents.</p>
-                            </NoPaddingGridItem>
-                        )}
-                        {response.results.map((result) => (
-                            <NoPaddingGridItem item key={result.id}>
-                                <ResultsContainer>
-                                    <ResultMetadataContainer direction="row">
-                                        <strong>Dolma ID:</strong>
-                                        <CopyToClipboardButton
-                                            buttonContent={<ContentCopyIcon fontSize="inherit" />}
-                                            text={result.dolma_id}>
-                                            <PaddedTypography noWrap>
-                                                {result.dolma_id}
-                                            </PaddedTypography>
-                                        </CopyToClipboardButton>
-
-                                        <span>
-                                            <strong>Source: </strong> {result.source}
-                                        </span>
-                                    </ResultMetadataContainer>
-                                    <SearchTitleContainer>
-                                        <SearchTitle href={`/doc/${result.id}`}>
-                                            {result.first_n}
-                                        </SearchTitle>
-                                    </SearchTitleContainer>
-                                    <ResultsHighlights
-                                        dangerouslySetInnerHTML={{
-                                            __html: result.highlights.text.join('… '),
-                                        }}
-                                    />
-                                </ResultsContainer>
-                            </NoPaddingGridItem>
-                        ))}
-                    </Grid>
-                    <Stack alignItems="center">
-                        <Pagination
-                            boundaryCount={3}
-                            count={Math.ceil(response.meta.total / size)}
-                            page={page}
-                            onChange={(_, page: number) => {
-                                nav(
-                                    `${loc.pathname}?${toQueryString(
-                                        form.query,
-                                        (page - 1) * size
-                                    )}`
-                                );
-                            }}
+        <Box sx={{ background: 'white', borderRadius: 2, p: 6 }}>
+            <Stack direction='row' spacing={3}>
+                <div>
+                    <DolmaLogo />
+                    <DolmaParagraph>
+                        Dolma is the open dataset used for OLMo pretraining. It consists of 3 trillion tokens from a diverse mix of web content, academic publications, code, books, and encyclopedic materials. It is the largest open dataset to date for LLM training, and is distributed under <a href='https://allenai.org/impact-license'>AI2's ImpACT license</a>.
+                    </DolmaParagraph>
+                </div>
+                <div>
+                    <Stack direction={'row'} spacing={3}>
+                        <PartialWidthTextField
+                            value={form.query}
+                            placeholder={placeholder}
+                            onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
+                            onKeyDown={(e) => submitSearch(e)}
                         />
+                        <Button variant="contained" onClick={() => submitSearch()}>
+                            Search
+                        </Button>
                     </Stack>
-                </>
-            ) : null}
+                    {response ? (
+                        <>
+                            <Grid container direction="column" spacing={2} p={2}>
+                                <EqualPaddingGridItem item>
+                                    {response.meta.overflow ? 'More than ' : ''}
+                                    <strong>{Intl.NumberFormat().format(response.meta.total)}</strong>{' '}
+                                    results ({response.meta.took_ms}ms)
+                                </EqualPaddingGridItem>
+                                {response.results.length === 0 && (
+                                    <NoPaddingGridItem item>
+                                        <h4>No results for {form.query}.</h4>
+                                        <p>Your search did not match any documents.</p>
+                                    </NoPaddingGridItem>
+                                )}
+                                {response.results.map((result) => (
+                                    <NoPaddingGridItem item key={result.id}>
+                                        <ResultsContainer>
+                                            <ResultMetadataContainer direction="row">
+                                                <strong>Dolma ID:</strong>
+                                                <CopyToClipboardButton
+                                                    buttonContent={<ContentCopyIcon fontSize="inherit" />}
+                                                    text={result.dolma_id}>
+                                                    <PaddedTypography noWrap>
+                                                        {result.dolma_id}
+                                                    </PaddedTypography>
+                                                </CopyToClipboardButton>
+
+                                                <span>
+                                                    <strong>Source: </strong> {result.source}
+                                                </span>
+                                            </ResultMetadataContainer>
+                                            <SearchTitleContainer>
+                                                <SearchTitle href={`/doc/${result.id}`}>
+                                                    {result.first_n}
+                                                </SearchTitle>
+                                            </SearchTitleContainer>
+                                            <ResultsHighlights
+                                                dangerouslySetInnerHTML={{
+                                                    __html: result.highlights.text.join('… '),
+                                                }}
+                                            />
+                                        </ResultsContainer>
+                                    </NoPaddingGridItem>
+                                ))}
+                            </Grid>
+                            <Stack alignItems="center">
+                                <Pagination
+                                    boundaryCount={3}
+                                    count={Math.ceil(response.meta.total / size)}
+                                    page={page}
+                                    onChange={(_, page: number) => {
+                                        nav(
+                                            `${loc.pathname}?${toQueryString(
+                                                form.query,
+                                                (page - 1) * size
+                                            )}`
+                                        );
+                                    }}
+                                />
+                            </Stack>
+                        </>
+                    ) : null}
+                </div>
+            </Stack>
         </Box>
     );
 }
+
+const DolmaParagraph = styled.p`
+    width: 300px;
+`;
 
 const EqualPaddingGridItem = styled(Grid)`
     padding-top: ${({ theme }) => theme.spacing(2)};

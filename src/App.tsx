@@ -16,7 +16,7 @@ import { WallpaperCircle } from './components/WallpaperCircle';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { olmoTheme } from './olmoTheme';
 import { useFeatureToggles } from './FeatureToggleContext';
-import { OlmoLogo } from './components/OlmoLogo';
+import { OlmoLogo } from './components/logos/OlmoLogo';
 
 export interface AppRoute {
     path: string;
