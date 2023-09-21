@@ -217,13 +217,13 @@ const ResultsContainer = styled.div`
 
 const NoPaddingGridItem = styled(Grid)`
     &&& {
-        padding-top: 0px;
+        padding-top: 0;
     }
 `;
 
 const ResultsHighlights = styled.p`
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     &&& {
         em {
             font-style: normal;
