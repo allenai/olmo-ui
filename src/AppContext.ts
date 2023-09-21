@@ -110,6 +110,7 @@ type State = {
     deleteLabelInfo: FetchInfo<void>;
     allLabelInfo: FetchInfo<Label[]>;
     schema: FetchInfo<Schema>;
+    expandedThreadID?: string;
 };
 
 type Action = {
@@ -130,6 +131,7 @@ type Action = {
     deleteLabel: (labelId: string, msg: Message) => Promise<FetchInfo<void>>;
     getAllLabels: () => Promise<FetchInfo<Label[]>>;
     getSchema: () => Promise<FetchInfo<Schema>>;
+    setExpandedThreadID: (id: string | undefined) => void;
 };
 
 export const useAppContext = create<State & Action>()((set, get) => ({
@@ -550,6 +552,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     const msg = parseMessage(payload);
                     branch().unshift(msg);
                     rerenderMessages();
+                    get().setExpandedThreadID(msg.root);
                     preamble = false;
                     break;
                 } else {
@@ -706,5 +709,11 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             set({ schema: { loading: false, error: true } });
         }
         return get().schema;
+    },
+
+    setExpandedThreadID: (id: string | undefined) => {
+        set((state) => {
+            return { ...state, expandedThreadID: id };
+        });
     },
 }));

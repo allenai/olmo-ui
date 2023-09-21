@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
     AccordionDetails,
     AccordionProps,
@@ -26,27 +26,21 @@ import { UserAvatar } from './avatars/UserAvatar';
 interface ThreadAccordionProps {
     title: string;
     body: ReactNode;
-    threadKey: string;
+    threadID: string;
     threadCreator: string;
     showControls: boolean;
     rootMessage: Message;
-    defaultExpandedId: string | false;
 }
 
 export const ThreadAccordionView = ({
     title,
     body,
-    threadKey,
+    threadID,
     threadCreator,
     showControls = false,
     rootMessage,
-    defaultExpandedId,
 }: ThreadAccordionProps) => {
-    const { userInfo, postMessage } = useAppContext();
-    const [expanded, setExpanded] = React.useState<string | false>(defaultExpandedId);
-    useEffect(() => {
-        setExpanded(defaultExpandedId);
-    }, [defaultExpandedId]);
+    const { userInfo, postMessage, expandedThreadID, setExpandedThreadID } = useAppContext();
 
     const [followUpPrompt, setFollowUpPrompt] = useState<string>();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,11 +48,6 @@ export const ThreadAccordionView = ({
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
-
-    const handleAccordianChange =
-        (panel: string) => (_event: React.SyntheticEvent, newExpanded: boolean) => {
-            setExpanded(newExpanded ? panel : false);
-        };
 
     const MetadataModal = () => {
         return (
@@ -93,17 +82,20 @@ export const ThreadAccordionView = ({
     };
 
     const currentClient = userInfo.data?.client;
-    const isExpanded = expanded === threadKey;
+    const isExpanded = expandedThreadID === threadID;
 
     return (
         <Accordion
             // setting unmountOnExit to help with performance
             // see: https://mui.com/material-ui/react-accordion/#performance
             TransitionProps={{ unmountOnExit: true }}
-            id={threadKey}
+            id={threadID}
             expanded={isExpanded}
-            onChange={handleAccordianChange(threadKey)}>
-            <AccordionSummary aria-controls={`${threadKey}-content`} id={`${threadKey}-header`}>
+            onChange={() => {
+                const id = threadID === expandedThreadID ? undefined : threadID;
+                setExpandedThreadID(id);
+            }}>
+            <AccordionSummary aria-controls={`${threadID}-content`} id={`${threadID}-header`}>
                 {isExpanded ? (
                     <Stack direction="row">
                         <PaddedHeading>

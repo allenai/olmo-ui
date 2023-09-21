@@ -58,7 +58,7 @@ enum QueryStringParam {
 }
 
 export const RecentQueries = () => {
-    const { userInfo, getAllThreads, allThreadInfo } = useAppContext();
+    const { userInfo, getAllThreads, allThreadInfo, setExpandedThreadID } = useAppContext();
 
     const loc = useLocation();
     const nav = useNavigate();
@@ -100,11 +100,10 @@ export const RecentQueries = () => {
                             {allThreadInfo.data.messages.map((t) => (
                                 <ThreadAccordionView
                                     key={t.id}
-                                    defaultExpandedId={(allThreadInfo.data?.messages ?? [])[0].id}
                                     title={t.content}
                                     body={<ThreadBodyView messages={t.children} parent={t} />}
-                                    threadKey={t.id}
                                     rootMessage={t}
+                                    threadID={t.id}
                                     threadCreator={t.creator}
                                     showControls
                                 />
@@ -119,6 +118,7 @@ export const RecentQueries = () => {
                                             const qs = new URLSearchParams(loc.search);
                                             qs.set(QueryStringParam.Page, `${page}`);
                                             nav(`${loc.pathname}?${qs}`);
+                                            setExpandedThreadID(undefined);
                                         }}
                                     />
                                 </Stack>
