@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, TextField, Grid, Divider, Stack, Button, Pagination } from '@mui/material';
+import { Box, TextField, Grid, Stack, Button, Pagination, Typography } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import styled from 'styled-components';
+
+import { CopyToClipboardButton } from '@allenai/varnish2/components';
 
 import { useAppContext } from '../AppContext';
 
@@ -17,6 +20,8 @@ interface Highlights {
 }
 
 interface Result {
+    dolma_id: string;
+    first_n: string;
     id: string;
     text: string;
     source: string;
@@ -117,26 +122,46 @@ export function Search() {
             {response ? (
                 <>
                     <Grid container direction="column" spacing={2} p={2}>
-                        <Grid item>
-                            <strong>
-                                {response.meta.overflow ? 'More than ' : ''}
-                                {Intl.NumberFormat().format(response.meta.total)} results (
-                                {response.meta.took_ms}ms)
-                            </strong>
-                        </Grid>
+                        <EqualPaddingGridItem item>
+                            {response.meta.overflow ? 'More than ' : ''}
+                            <strong>{Intl.NumberFormat().format(response.meta.total)}</strong>{' '}
+                            results ({response.meta.took_ms}ms)
+                        </EqualPaddingGridItem>
+                        {response.results.length === 0 && (
+                            <NoPaddingGridItem item>
+                                <h4>No results for {form.query}.</h4>
+                                <p>Your search did not match any documents.</p>
+                            </NoPaddingGridItem>
+                        )}
                         {response.results.map((result) => (
-                            <Grid item key={result.id}>
-                                <strong>ID: {result.id}</strong> |{' '}
-                                <small>Source: {result.source}</small>
+                            <NoPaddingGridItem item key={result.id}>
                                 <ResultsContainer>
-                                    <p
+                                    <ResultMetadataContainer direction="row">
+                                        <strong>Dolma ID:</strong>
+                                        <CopyToClipboardButton
+                                            buttonContent={<ContentCopyIcon fontSize="inherit" />}
+                                            text={result.dolma_id}>
+                                            <PaddedTypography noWrap>
+                                                {result.dolma_id}
+                                            </PaddedTypography>
+                                        </CopyToClipboardButton>
+
+                                        <span>
+                                            <strong>Source: </strong> {result.source}
+                                        </span>
+                                    </ResultMetadataContainer>
+                                    <SearchTitleContainer>
+                                        <SearchTitle href={`/doc/${result.id}`}>
+                                            {result.first_n}
+                                        </SearchTitle>
+                                    </SearchTitleContainer>
+                                    <ResultsHighlights
                                         dangerouslySetInnerHTML={{
                                             __html: result.highlights.text.join('… '),
                                         }}
                                     />
                                 </ResultsContainer>
-                                <Divider />
-                            </Grid>
+                            </NoPaddingGridItem>
                         ))}
                     </Grid>
                     <Stack alignItems="center">
@@ -160,15 +185,60 @@ export function Search() {
     );
 }
 
+const EqualPaddingGridItem = styled(Grid)`
+    padding-top: ${({ theme }) => theme.spacing(2)};
+    padding-bottom: ${({ theme }) => theme.spacing(2)};
+`;
+
 const PartialWidthTextField = styled(TextField)`
     width: 95%;
 `;
 
-const ResultsContainer = styled.p`
+const ResultsContainer = styled.div`
+    border-top: 1px solid ${({ theme }) => theme.color2.N2};
+    padding-top: ${({ theme }) => theme.spacing(3.5)};
+    padding-bottom: ${({ theme }) => theme.spacing(3.5)};
+`;
+
+const NoPaddingGridItem = styled(Grid)`
+    &&& {
+        padding-top: 0;
+    }
+`;
+
+const ResultsHighlights = styled.p`
+    margin-top: 0;
+    margin-bottom: 0;
     &&& {
         em {
             font-style: normal;
             font-weight: bold;
         }
     }
+    font-size: ${({ theme }) => theme.typography.body1.fontSize};
+    color: ${({ theme }) => theme.color2.N5};
+`;
+
+const PaddedTypography = styled(Typography)`
+    padding-left: ${({ theme }) => theme.spacing(0.5)};
+    width: 75px;
+`;
+
+const ResultMetadataContainer = styled(Stack)`
+    font-size: ${({ theme }) => theme.typography.body1.fontSize};
+    color: ${({ theme }) => theme.color2.N4};
+    &&& svg {
+        color: ${({ theme }) => theme.color2.N4};
+    }
+`;
+
+const SearchTitleContainer = styled.div`
+    padding-top: ${({ theme }) => theme.spacing(0.5)};
+    padding-bottom: ${({ theme }) => theme.spacing(1)};
+`;
+
+const SearchTitle = styled.a`
+    font-size: ${({ theme }) => theme.typography.h4.fontSize};
+    font-weight: bold;
+    color: ${({ theme }) => theme.color2.B3};
 `;
