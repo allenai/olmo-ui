@@ -552,7 +552,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     const msg = parseMessage(payload);
                     branch().unshift(msg);
                     rerenderMessages();
-                    get().setExpandedThreadID(msg.root);
+                    state.setExpandedThreadID(msg.root);
                     preamble = false;
                     break;
                 } else {
