@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
+import { Box, Fab } from '@mui/material';
 
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -62,7 +62,7 @@ export const ContextMenu = ({
     };
 
     const buttonHeight = 56;
-    const menuShiftY = 10 + buttonHeight * menuOptions.length;
+    const menuShiftY = buttonHeight * menuOptions.length;
 
     const handleOpen = (event: MouseEvent, text?: string) => {
         // only update pos if text has changed, this keeps us from movoing when we click click on the toggle menu
@@ -112,39 +112,37 @@ export const ContextMenu = ({
     return (
         <Box sx={{ position: 'relative' }} ref={divRef}>
             {children}
-            <SpeedDial
-                ariaLabel="Options for selected text"
-                hidden={!showDial}
-                FabProps={{ size: 'small' }}
-                sx={
-                    !toggles.contextMenuFixed
-                        ? {
-                              position: 'absolute',
-                              top: contextPos?.mouseY,
-                              left: contextPos?.mouseX,
+            {showDial
+                ? menuOptions.map((action, i) => (
+                      <Fab
+                          sx={
+                              !toggles.contextMenuFixed
+                                  ? {
+                                        position: 'absolute',
+                                        top: contextPos?.mouseY + i * buttonHeight,
+                                        left: contextPos?.mouseX,
+                                    }
+                                  : {
+                                        position: 'fixed',
+                                        right: 60,
+                                        bottom: 40 + i * buttonHeight,
+                                    }
                           }
-                        : {
-                              position: 'fixed',
-                              right: 60,
-                              bottom: 40,
-                          }
-                }
-                icon={<SpeedDialIcon />}>
-                {menuOptions.map((action) => (
-                    <SpeedDialAction
-                        key={action.label}
-                        icon={action.icon}
-                        tooltipTitle={action.label}
-                        onClick={() =>
-                            action.action(
-                                getSelectionText() || '',
-                                contextPos?.mouseX,
-                                contextPos?.mouseY
-                            )
-                        }
-                    />
-                ))}
-            </SpeedDial>
+                          size="small"
+                          variant="extended"
+                          aria-label={action.label}
+                          key={action.label}
+                          onClick={() =>
+                              action.action(
+                                  getSelectionText() || '',
+                                  contextPos?.mouseX,
+                                  contextPos?.mouseY
+                              )
+                          }>
+                          {action.icon}
+                      </Fab>
+                  ))
+                : null}
         </Box>
     );
 };
