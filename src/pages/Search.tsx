@@ -127,6 +127,11 @@ export function Search() {
                             <strong>{Intl.NumberFormat().format(response.meta.total)}</strong>{' '}
                             results ({response.meta.took_ms}ms)
                         </EqualPaddingGridItem>
+                        {response.results.length === 0 && 
+                        <NoPaddingGridItem item>
+                            <h4>No results for {form.query}.</h4> 
+                            <p>Your search did not match any documents.</p>   
+                        </NoPaddingGridItem>}
                         {response.results.map((result) => (
                             <NoPaddingGridItem item key={result.id}>
                                 <ResultsContainer>
