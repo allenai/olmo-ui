@@ -145,7 +145,7 @@ export function Search() {
                                         </span>
                                     </ResultMetadataContainer>
                                     <SearchTitleContainer>
-                                        <SearchTitle href={`/search/data/${result.id}`}>
+                                        <SearchTitle href={`/doc/${result.id}`}>
                                             {result.first_n}
                                         </SearchTitle>
                                     </SearchTitleContainer>
