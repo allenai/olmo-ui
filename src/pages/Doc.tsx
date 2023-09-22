@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, LinearProgress } from '@mui/material';
 
-import { useAppContext } from '../AppContext';
-
 interface DataDoc {
     id: string;
     dolma_id: string;
@@ -18,17 +16,12 @@ export function Doc() {
 
     const [doc, setDoc] = useState<DataDoc | undefined>();
 
-    const { userInfo } = useAppContext();
     useEffect(() => {
         const url = `${process.env.LLMX_API_URL}/v3/data/doc/${params.id}`;
-        const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userInfo.data?.token}`,
-        };
-        fetch(url, { headers })
+        fetch(url, { credentials: 'include' })
             .then((r) => r.json())
             .then((r) => setDoc(r));
-    }, [userInfo.data?.token, params]);
+    }, [params]);
 
     return (
         <Box sx={{ background: 'white', borderRadius: 2, p: 2 }}>
