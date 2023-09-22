@@ -7,8 +7,6 @@ import styled from 'styled-components';
 
 import { CopyToClipboardButton } from '@allenai/varnish2/components';
 
-import { useAppContext } from '../AppContext';
-
 interface SearchMeta {
     took_ms: number;
     total: number;
@@ -65,7 +63,6 @@ export function Search() {
     const [response, setResponse] = useState<SearchResults | undefined>();
     const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
 
-    const { userInfo } = useAppContext();
     useEffect(() => {
         if (!query) {
             return;
@@ -74,22 +71,14 @@ export function Search() {
             form.query,
             offset
         )}`;
-        const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userInfo.data?.token}`,
-        };
-        fetch(url, { headers })
+        fetch(url, { credentials: 'include' })
             .then((r) => r.json())
             .then((r) => setResponse(r));
-    }, [userInfo.data?.token, query, size, offset]);
+    }, [query, size, offset]);
 
     useEffect(() => {
         const url = `${process.env.LLMX_API_URL}/v3/data/meta`;
-        const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userInfo.data?.token}`,
-        };
-        fetch(url, { headers })
+        fetch(url, { credentials: 'include' })
             .then((r) => r.json())
             .then(({ count }: SearchIndexMeta) => {
                 setPlaceholder(

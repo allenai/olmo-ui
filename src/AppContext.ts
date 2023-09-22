@@ -27,48 +27,25 @@ interface APIError {
     error: { code: number; message: string };
 }
 
-const HeaderContentTypeJSON = { 'Content-Type': 'application/json' };
-
-function withAuth(u?: User): { [name: string]: string } {
-    // We send an empty token when the user isn't logged in. This shouldn't happen
-    // in practice but if it were to would result in a 401, which would get retried.
-    return { Authorization: `Bearer ${u?.token}` };
-}
-
-function headers(...h: { [name: string]: string }[]): { [name: string]: string } {
-    return Object.assign({}, ...h);
-}
-
-// eslint doesn't know about RequestInit
-// eslint-disable-next-line no-undef
-interface APIRequestInit extends Omit<RequestInit, 'headers'> {
-    // eslint-disable-line no-undef
-    retry401?: boolean;
-    headers?: { [name: string]: string };
-    onUserRefresh?: (user: User) => void;
-}
-
 // Similarly, eslint doesn't know about RequestInfo
 // eslint-disable-next-line no-undef
-async function fetchAPI<T>(url: RequestInfo | string, opts?: APIRequestInit): Promise<T> {
+async function fetchAPI<T>(url: RequestInfo | string, opts?: RequestInit): Promise<T> {
+    // Set defaults
+    // TODO: factor this into an API client, as this is a little rough right now
+    if (!opts) {
+        opts = {};
+    }
+    if (!('headers' in opts)) {
+        opts.headers = {};
+    }
+    opts.headers = { ...opts.headers, 'Content-Type': 'application/json' };
+
+    if (!('credentials' in opts)) {
+        opts.credentials = 'include';
+    }
+
     const r = await fetch(url, opts);
     if (!r.ok) {
-        if (r.status === 401 && opts?.retry401) {
-            const user = await fetchAPI<User>(WhoamiApiUrl, {
-                credentials: 'include',
-                headers: headers(HeaderContentTypeJSON),
-            });
-            if (opts.onUserRefresh) {
-                opts.onUserRefresh(user);
-            }
-            return fetchAPI<T>(
-                url,
-                Object.assign({}, opts, {
-                    headers: headers(opts.headers || {}, withAuth(user)),
-                    retry401: false,
-                })
-            );
-        }
         switch (r.headers.get('content-type')) {
             // This captures errors returned by the API.
             case 'application/json': {
@@ -177,10 +154,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             set((state) => ({
                 userInfo: { ...state.userInfo, loading: true, error: false },
             }));
-            const user = await fetchAPI<User>(WhoamiApiUrl, {
-                credentials: 'include',
-                headers: headers(HeaderContentTypeJSON),
-            });
+            const user = await fetchAPI<User>(WhoamiApiUrl);
             set((state) => ({
                 userInfo: { ...state.userInfo, data: user, loading: false },
             }));
@@ -209,15 +183,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     error: false,
                 },
             }));
-            const promptTemplates = await fetchAPI<PromptTemplate[]>(PromptsTemplateApiUrl, {
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
-            });
+            const promptTemplates = await fetchAPI<PromptTemplate[]>(PromptsTemplateApiUrl);
             set((state) => ({
                 allPromptTemplateInfo: {
                     ...state.allPromptTemplateInfo,
@@ -256,13 +222,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             const promptTemplate = await fetchAPI<PromptTemplate>(PromptTemplateApiUrl, {
                 body: JSON.stringify(newPromptTemplate),
                 method: 'POST',
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
             });
             // EFFECT: add the new promptTemplate to the local store
             set((state) => ({
@@ -306,13 +265,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }));
             await fetchAPI(`${PromptTemplateApiUrl}/${promptTemplateId}`, {
                 method: 'DELETE',
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
             });
             // EFFECT: remove the deleted template from the local store
             const filteredPromptTemplates: PromptTemplate[] = [
@@ -356,15 +308,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             if (creator) {
                 qs.set('creator', creator);
             }
-            const ml = await fetchAPI<JSONMessageList>(`${MessagesApiUrl}?${qs}`, {
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
-            });
+            const ml = await fetchAPI<JSONMessageList>(`${MessagesApiUrl}?${qs}`);
             const messages = ml.messages.map((m) => parseMessage(m));
             set((state) => ({
                 allThreadInfo: {
@@ -395,13 +339,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }));
             await fetchAPI(`${MessageApiUrl}/${threadId}`, {
                 method: 'DELETE',
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
             });
             set((state) => {
                 const deletedThreadInfo = { ...state.deletedThreadInfo, loading: false };
@@ -443,15 +380,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     error: false,
                 },
             }));
-            const message = await fetchAPI<JSONMessage>(`${MessageApiUrl}/${threadId}`, {
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
-            });
+            const message = await fetchAPI<JSONMessage>(`${MessageApiUrl}/${threadId}`);
             const parsedMessage = parseMessage(message);
             set((state) => ({
                 selectedThreadInfo: {
@@ -520,7 +449,8 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                 parent: parentMsg?.id,
                 opts: state.inferenceOpts,
             }),
-            headers: headers(HeaderContentTypeJSON, withAuth(state.userInfo.data)),
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
         });
         if (!resp.ok) {
             throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
@@ -586,13 +516,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }));
             await fetchAPI<void>(`${LabelApiUrl}/${labelId}`, {
                 method: 'DELETE',
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
             });
 
             // EFFECT: add the label to the correct message
@@ -626,13 +549,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             const label = await fetchAPI<JSONLabel>(LabelApiUrl, {
                 body: JSON.stringify(newLabel),
                 method: 'POST',
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
             });
             const parsedLabel = parseLabel(label);
             // EFFECT: add the new label to the message
@@ -664,15 +580,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
             }));
-            const labels = await fetchAPI<JSONLabel[]>(LabelsApiUrl, {
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
-            });
+            const labels = await fetchAPI<JSONLabel[]>(LabelsApiUrl);
             const parsedLabels = labels.map((m) => parseLabel(m));
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, data: parsedLabels, loading: false },
@@ -695,15 +603,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     getSchema: async () => {
         try {
             set({ schema: { loading: true, error: false } });
-            const schema = await fetchAPI<Schema>(SchemaApiUrl, {
-                headers: headers(HeaderContentTypeJSON, withAuth(get().userInfo.data)),
-                retry401: true,
-                onUserRefresh: (user) => {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user },
-                    }));
-                },
-            });
+            const schema = await fetchAPI<Schema>(SchemaApiUrl);
             set({ schema: { data: schema, loading: false } });
         } catch (err) {
             set({ schema: { loading: false, error: true } });
