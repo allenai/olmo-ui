@@ -69,7 +69,7 @@ export const Editor = ({ disabled, placeholder, initialRawData, onChange, chips 
 const EditorWrapper = styled.div`
     border: #cbcbcb 1px solid;
     color: ${({ theme }) => theme.color2.N5};
-    border-radius: 4px;
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
     padding: 16.5px 14px;
     min-height: 260px;
 
