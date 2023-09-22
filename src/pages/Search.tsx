@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, TextField, Grid, Stack, Button, Pagination, Typography } from '@mui/material';
+import {
+    Box,
+    TextField,
+    Grid,
+    Stack,
+    Button,
+    Pagination,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import styled from 'styled-components';
@@ -96,18 +106,36 @@ export function Search() {
         }
         nav(`${loc.pathname}?${toQueryString(form.query, offset)}`);
     };
+    const theme = useTheme();
+    const greaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
 
     return (
-        <Box sx={{ background: 'white', borderRadius: 2, p: 6 }}>
-            <Stack direction='row' spacing={3}>
+        <Box sx={{ background: 'white', borderRadius: 2, pt: 5, pb: 5, pr: 6, pl: 6 }}>
+            <Stack direction={greaterThanMd ? 'row' : 'column'} spacing={6}>
                 <div>
                     <DolmaLogo />
                     <DolmaParagraph>
-                        Dolma is the open dataset used for OLMo pretraining. It consists of 3 trillion tokens from a diverse mix of web content, academic publications, code, books, and encyclopedic materials. It is the largest open dataset to date for LLM training, and is distributed under <a href='https://allenai.org/impact-license'>AI2's ImpACT license</a>.
+                        Dolma is the open dataset used for OLMo pretraining. It consists of 3
+                        trillion tokens from a diverse mix of web content, academic publications,
+                        code, books, and encyclopedic materials. It is the largest open dataset to
+                        date for LLM training, and is distributed under{' '}
+                        <a href="https://allenai.org/impact-license">AI2's ImpACT license</a>.
                     </DolmaParagraph>
+                    <Stack spacing={1}>
+                        <a href="https://huggingface.co/datasets/allenai/dolma">
+                            Download on HuggingFace
+                        </a>
+                        <a href="https://github.com/allenai/dolma">GitHub Repository</a>
+                        <a href="https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64">
+                            Blog Post
+                        </a>
+                        <a href="https://drive.google.com/file/d/12gOf5I5RytsD159nSP7iim_5zN31FCXq/view?usp=drive_link">
+                            Data Sheet
+                        </a>
+                    </Stack>
                 </div>
                 <div>
-                    <Stack direction={'row'} spacing={3}>
+                    <Stack direction={'row'} spacing={2}>
                         <PartialWidthTextField
                             value={form.query}
                             placeholder={placeholder}
@@ -123,7 +151,9 @@ export function Search() {
                             <Grid container direction="column" spacing={2} p={2}>
                                 <EqualPaddingGridItem item>
                                     {response.meta.overflow ? 'More than ' : ''}
-                                    <strong>{Intl.NumberFormat().format(response.meta.total)}</strong>{' '}
+                                    <strong>
+                                        {Intl.NumberFormat().format(response.meta.total)}
+                                    </strong>{' '}
                                     results ({response.meta.took_ms}ms)
                                 </EqualPaddingGridItem>
                                 {response.results.length === 0 && (
@@ -138,7 +168,9 @@ export function Search() {
                                             <ResultMetadataContainer direction="row">
                                                 <strong>Dolma ID:</strong>
                                                 <CopyToClipboardButton
-                                                    buttonContent={<ContentCopyIcon fontSize="inherit" />}
+                                                    buttonContent={
+                                                        <ContentCopyIcon fontSize="inherit" />
+                                                    }
                                                     text={result.dolma_id}>
                                                     <PaddedTypography noWrap>
                                                         {result.dolma_id}
@@ -187,12 +219,15 @@ export function Search() {
 }
 
 const DolmaParagraph = styled.p`
-    width: 300px;
+    width: ${({ theme }) => theme.spacing(38)};
 `;
 
 const EqualPaddingGridItem = styled(Grid)`
     padding-top: ${({ theme }) => theme.spacing(2)};
     padding-bottom: ${({ theme }) => theme.spacing(2)};
+    &&& {
+        padding-left: 0;
+    }
 `;
 
 const PartialWidthTextField = styled(TextField)`
@@ -208,6 +243,7 @@ const ResultsContainer = styled.div`
 const NoPaddingGridItem = styled(Grid)`
     &&& {
         padding-top: 0;
+        padding-left: 0;
     }
 `;
 
