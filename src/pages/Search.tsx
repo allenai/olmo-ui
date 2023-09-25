@@ -143,11 +143,10 @@ export function Search() {
             sx={{
                 background: 'white',
                 borderRadius: 2,
-                pt: 5,
-                pb: 5,
-                pr: 6,
-                pl: 6,
-                margin: greaterThanMd ? 0 : 2,
+                pt: greaterThanMd ? 5 : 2,
+                pb: greaterThanMd ? 5 : 2,
+                pr: greaterThanMd ? 6 : 3,
+                pl: greaterThanMd ? 6 : 3,
             }}>
             <Stack direction={greaterThanMd ? 'row' : 'column'} spacing={6}>
                 <div>
