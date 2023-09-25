@@ -12,7 +12,6 @@ import {
     useTheme,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
 import styled from 'styled-components';
 
 import { CopyToClipboardButton } from '@allenai/varnish2/components';
