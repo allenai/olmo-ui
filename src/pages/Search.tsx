@@ -47,6 +47,10 @@ interface SearchIndexMeta {
     count: number;
 }
 
+interface NoResultsProps {
+    query: string;
+}
+
 enum QueryStringParam {
     Query = 'query',
     Offset = 'offset',
@@ -59,6 +63,31 @@ function toQueryString(query: string, offset: number): string {
     });
     return `${qs}`;
 }
+
+const NoResultsGridItem = ({ query }: NoResultsProps) => {
+    return (
+        <NoPaddingGrid item>
+            <h4>No results for {query}.</h4>
+            <p>Your search did not match any documents.</p>
+        </NoPaddingGrid>
+    );
+};
+
+const NewSearchPlaceholder = () => {
+    return (
+        <NoPaddingGrid item>
+            <h4>Finally, a pretraining dataset you can inspect for yourself.</h4>
+            <p>Not sure what to search for? Try one of the following queries:</p>
+            <Stack direction="row" spacing={1.5}>
+                <a href='/search?query="Joe+Biden"'>"Joe Biden"</a>
+                <span>&#183;</span>
+                <a href="/search?query=Seattle">"Seattle"</a>
+                <span>&#183;</span>
+                <a href='/search?query="ham+sandwich"'>"ham sandwich"</a>
+            </Stack>
+        </NoPaddingGrid>
+    );
+};
 
 export function Search() {
     const loc = useLocation();
@@ -109,7 +138,16 @@ export function Search() {
     const greaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
 
     return (
-        <Box sx={{ background: 'white', borderRadius: 2, pt: 5, pb: 5, pr: 6, pl: 6 }}>
+        <Box
+            sx={{
+                background: 'white',
+                borderRadius: 2,
+                pt: 5,
+                pb: 5,
+                pr: 6,
+                pl: 6,
+                margin: greaterThanMd ? 0 : 2,
+            }}>
             <Stack direction={greaterThanMd ? 'row' : 'column'} spacing={6}>
                 <div>
                     <DolmaLogo />
@@ -133,7 +171,7 @@ export function Search() {
                         </a>
                     </Stack>
                 </div>
-                <div>
+                <FullWidthContainer>
                     <Stack direction={'row'} spacing={2}>
                         <PartialWidthTextField
                             value={form.query}
@@ -148,21 +186,18 @@ export function Search() {
                     {response ? (
                         <>
                             <Grid container direction="column" spacing={2} p={2}>
-                                <EqualPaddingGridItem item>
+                                <EqualPaddingGrid item>
                                     {response.meta.overflow ? 'More than ' : ''}
                                     <strong>
                                         {Intl.NumberFormat().format(response.meta.total)}
                                     </strong>{' '}
                                     results ({response.meta.took_ms}ms)
-                                </EqualPaddingGridItem>
+                                </EqualPaddingGrid>
                                 {response.results.length === 0 && (
-                                    <NoPaddingGridItem item>
-                                        <h4>No results for {form.query}.</h4>
-                                        <p>Your search did not match any documents.</p>
-                                    </NoPaddingGridItem>
+                                    <NoResultsGridItem query={form.query} />
                                 )}
                                 {response.results.map((result) => (
-                                    <NoPaddingGridItem item key={result.id}>
+                                    <NoPaddingGrid item key={result.id}>
                                         <ResultsContainer>
                                             <ResultMetadataContainer direction="row">
                                                 <strong>Dolma ID:</strong>
@@ -191,7 +226,7 @@ export function Search() {
                                                 }}
                                             />
                                         </ResultsContainer>
-                                    </NoPaddingGridItem>
+                                    </NoPaddingGrid>
                                 ))}
                             </Grid>
                             <Stack alignItems="center">
@@ -210,23 +245,42 @@ export function Search() {
                                 />
                             </Stack>
                         </>
-                    ) : null}
-                </div>
+                    ) : (
+                        <NewSearchPlaceholder />
+                    )}
+                </FullWidthContainer>
             </Stack>
         </Box>
     );
 }
 
 const DolmaParagraph = styled.p`
-    width: ${({ theme }) => theme.spacing(38)};
+    ${({ theme }) => theme.breakpoints.up('md')} {
+        width: ${({ theme }) => theme.spacing(38)};
+    }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        width: 100%;
+    }
 `;
 
-const EqualPaddingGridItem = styled(Grid)`
+const EqualPaddingGrid = styled(Grid)`
     padding-top: ${({ theme }) => theme.spacing(2)};
     padding-bottom: ${({ theme }) => theme.spacing(2)};
     &&& {
         padding-left: 0;
     }
+`;
+
+const NoPaddingGrid = styled(Grid)`
+    &&& {
+        padding-top: 0;
+        padding-left: 0;
+    }
+`;
+
+const FullWidthContainer = styled.div`
+    width: 100%;
 `;
 
 const PartialWidthTextField = styled(TextField)`
@@ -237,13 +291,6 @@ const ResultsContainer = styled.div`
     border-top: 1px solid ${({ theme }) => theme.color2.N2};
     padding-top: ${({ theme }) => theme.spacing(3.5)};
     padding-bottom: ${({ theme }) => theme.spacing(3.5)};
-`;
-
-const NoPaddingGridItem = styled(Grid)`
-    &&& {
-        padding-top: 0;
-        padding-left: 0;
-    }
 `;
 
 const ResultsHighlights = styled.p`
