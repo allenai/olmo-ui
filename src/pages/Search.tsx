@@ -10,6 +10,7 @@ import {
     Typography,
     useMediaQuery,
     useTheme,
+    Tooltip,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import styled from 'styled-components';
@@ -201,16 +202,20 @@ export function Search() {
                                         <ResultsContainer>
                                             <ResultMetadataContainer direction="row">
                                                 <strong>Dolma ID:</strong>
+
                                                 <CopyToClipboardButton
                                                     buttonContent={
                                                         <ContentCopyIcon fontSize="inherit" />
                                                     }
                                                     text={result.dolma_id}>
-                                                    <PaddedTypography noWrap>
-                                                        {result.dolma_id}
-                                                    </PaddedTypography>
+                                                    <Tooltip
+                                                        title={result.dolma_id}
+                                                        placement="top">
+                                                        <PaddedTypography noWrap>
+                                                            {result.dolma_id}
+                                                        </PaddedTypography>
+                                                    </Tooltip>
                                                 </CopyToClipboardButton>
-
                                                 <span>
                                                     <strong>Source: </strong> {result.source}
                                                 </span>
@@ -231,7 +236,7 @@ export function Search() {
                             </Grid>
                             <Stack alignItems="center">
                                 <Pagination
-                                    boundaryCount={3}
+                                    boundaryCount={1}
                                     count={Math.ceil(response.meta.total / size)}
                                     page={page}
                                     onChange={(_, page: number) => {
