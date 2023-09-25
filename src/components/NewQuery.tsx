@@ -22,6 +22,7 @@ import { Parameters } from './configuration/Parameters';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './draft/Editor';
 import { mockChips } from './draft/mockData';
+import { StandardContainer } from './StandardContainer';
 
 export const NewQuery = () => {
     const toggles = useFeatureToggles();
@@ -96,7 +97,7 @@ export const NewQuery = () => {
     };
 
     return (
-        <NewQueryContainer>
+        <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
                 <Grid
                     display="grid"
@@ -216,7 +217,7 @@ export const NewQuery = () => {
                     ) : null}
                 </Grid>
             </FullScreenCapableContainer>
-        </NewQueryContainer>
+        </StandardContainer>
     );
 };
 
@@ -237,12 +238,6 @@ const FullScreenCapableContainer = ({
     }
     return <>{children}</>;
 };
-
-const NewQueryContainer = styled.div`
-    background-color: white;
-    border-radius: 10px;
-    padding: ${({ theme }) => theme.spacing(2)};
-`;
 
 const PaddedDialog = styled(Dialog)`
     padding: ${({ theme }) => theme.spacing(2)};

@@ -7,6 +7,7 @@ import { Content } from '../components/shared';
 import { MajorityScreen } from '../components/MajorityScreen';
 import { ThreadBodyView } from '../components/ThreadBodyView';
 import { useAppContext } from '../AppContext';
+import { StandardContainer } from '../components/StandardContainer';
 
 export const Thread = () => {
     const { id } = useParams();
@@ -23,7 +24,7 @@ export const Thread = () => {
     return (
         <MajorityScreen>
             <Content>
-                <ThreadContainer>
+                <StandardContainer>
                     {!selectedThreadInfo.error &&
                     !selectedThreadInfo.loading &&
                     selectedThreadInfo.data ? (
@@ -35,7 +36,7 @@ export const Thread = () => {
                         </>
                     ) : null}
                     {selectedThreadInfo.loading ? <LinearProgress /> : null}
-                </ThreadContainer>
+                </StandardContainer>
                 <NewQueryLink to={'/'}>New Query</NewQueryLink>
             </Content>
         </MajorityScreen>
@@ -46,10 +47,4 @@ const NewQueryLink = styled(Link)`
     &&& {
         color: white;
     }
-`;
-
-const ThreadContainer = styled.div`
-    padding: ${({ theme }) => theme.spacing(2)};
-    background-color: white;
-    border-radius: 10px;
 `;
