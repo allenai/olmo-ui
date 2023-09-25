@@ -25,7 +25,7 @@ export function Doc() {
     const MetadataModal = () => {
         return (
             <Dialog onClose={handleModalClose} open={metadataModalOpen}>
-                <Metadata>{JSON.stringify(doc, null, 2)}</Metadata>
+                <Metadata><pre>{JSON.stringify(doc, null, 2)}</pre></Metadata>
             </Dialog>
         );
     };
