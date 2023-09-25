@@ -1,19 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { LinkProps, Route, Routes } from 'react-router-dom';
+import { LinkProps, Outlet } from 'react-router-dom';
 import { Button, ButtonProps, Grid, LinearProgress, Typography } from '@mui/material';
 
-import { Home } from './pages/Home';
-import { Thread } from './pages/Thread';
-import { Admin } from './pages/Admin';
-import { Search } from './pages/Search';
-import { Doc } from './pages/Doc';
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
 import { WallpaperCircle } from './components/WallpaperCircle';
-import { PromptTemplates } from './pages/PromptTemplates';
 import { olmoTheme } from './olmoTheme';
 import { useFeatureToggles } from './FeatureToggleContext';
 import { OlmoLogo } from './components/logos/OlmoLogo';
@@ -73,33 +67,6 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
     );
 };
 
-const ROUTES: AppRoute[] = [
-    {
-        path: '/',
-        Component: Home,
-    },
-    {
-        path: '/thread/:id',
-        Component: Thread,
-    },
-    {
-        path: '/prompt-templates',
-        Component: PromptTemplates,
-    },
-    {
-        path: '/admin',
-        Component: Admin,
-    },
-    {
-        path: '/search',
-        Component: Search,
-    },
-    {
-        path: '/doc/:id',
-        Component: Doc,
-    },
-];
-
 export const App = () => {
     const { userInfo, getUserInfo, schema, getSchema } = useAppContext();
     const toggles = useFeatureToggles();
@@ -143,13 +110,7 @@ export const App = () => {
                 <Content bgcolor="transparent" main>
                     <GlobalAlertList />
                     {isLoading ? <LinearProgress /> : null}
-                    {hasUserData && hasSchema ? (
-                        <Routes>
-                            {ROUTES.map(({ path, Component }) => (
-                                <Route key={path} path={path} element={<Component />} />
-                            ))}
-                        </Routes>
-                    ) : null}
+                    {hasUserData && hasSchema ? <Outlet /> : null}
                 </Content>
                 <BottomBanner>
                     <OlmoBanner
