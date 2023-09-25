@@ -11,6 +11,7 @@ import {
     useMediaQuery,
     useTheme,
     Tooltip,
+    LinearProgress,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import styled from 'styled-components';
@@ -102,19 +103,22 @@ export function Search() {
 
     const [form, setForm] = useState<{ query: string }>({ query });
     const [response, setResponse] = useState<SearchResults | undefined>();
+    const [loading, setLoading] = useState<boolean>(false);
     const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
 
     useEffect(() => {
         if (!query) {
             return;
         }
+        setLoading(true);
         const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(
             form.query,
             offset
         )}`;
         fetch(url, { credentials: 'include' })
             .then((r) => r.json())
-            .then((r) => setResponse(r));
+            .then((r) => setResponse(r))
+            .finally(() => setLoading(false));
     }, [query, size, offset]);
 
     useEffect(() => {
@@ -174,16 +178,22 @@ export function Search() {
                 <FullWidthContainer>
                     <Stack direction={'row'} spacing={2}>
                         <PartialWidthTextField
+                            disabled={loading}
                             value={form.query}
                             placeholder={placeholder}
                             onChange={(e) => setForm({ ...form, query: e.currentTarget.value })}
                             onKeyDown={(e) => submitSearch(e)}
                         />
-                        <Button variant="contained" onClick={() => submitSearch()}>
+                        <Button
+                            variant="contained"
+                            disabled={loading}
+                            onClick={() => submitSearch()}>
                             Search
                         </Button>
                     </Stack>
-                    {response ? (
+                    {loading ? <LinearProgress sx={{ mt: 3 }} /> : null}
+                    {!loading && !response ? <NewSearchPlaceholder /> : null}
+                    {!loading && response ? (
                         <>
                             <Grid container direction="column" spacing={2} p={2}>
                                 <EqualPaddingGrid item>
@@ -249,9 +259,7 @@ export function Search() {
                                 />
                             </Stack>
                         </>
-                    ) : (
-                        <NewSearchPlaceholder />
-                    )}
+                    ) : null}
                 </FullWidthContainer>
             </Stack>
         </Box>
