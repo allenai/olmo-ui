@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
     Box,
     TextField,
@@ -77,16 +77,24 @@ const NoResultsGridItem = ({ query }: NoResultsProps) => {
 };
 
 const NewSearchPlaceholder = () => {
+    const loc = useLocation();
+    const path = loc.pathname;
+
+    const exampleQueries = ['"Joe Biden"', 'Seattle', '"ham sandwhich"'];
+
     return (
         <NoPaddingGrid item>
             <h4>Finally, a pretraining dataset you can inspect for yourself.</h4>
             <p>Not sure what to search for? Try one of the following queries:</p>
             <Stack direction="row" spacing={1.5}>
-                <a href='/search?query="Joe+Biden"'>"Joe Biden"</a>
-                <span>&#183;</span>
-                <a href="/search?query=Seattle">"Seattle"</a>
-                <span>&#183;</span>
-                <a href='/search?query="ham+sandwich"'>"ham sandwich"</a>
+                {exampleQueries.map((query, i) => (
+                    <React.Fragment key={query}>
+                        <span key={query}>
+                            <Link to={`${path}?${toQueryString(query, 0)}`}>{query}</Link>
+                        </span>
+                        {i !== exampleQueries.length - 1 ? <span>&#183;</span> : null}
+                    </React.Fragment>
+                ))}
             </Stack>
         </NoPaddingGrid>
     );
@@ -111,11 +119,9 @@ export function Search() {
         if (!query) {
             return;
         }
+        setForm({ query });
         setLoading(true);
-        const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(
-            form.query,
-            offset
-        )}`;
+        const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(query, offset)}`;
         fetch(url, { credentials: 'include' })
             .then((r) => loginOn401(r))
             .then((r) => r.json())
