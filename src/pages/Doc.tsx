@@ -45,6 +45,7 @@ export function Doc() {
                                 id={doc.dolma_id}
                                 source={doc.source}
                                 truncateId={false}
+                                url={doc.url}
                             />
                             <h4 style={{ marginTop: '8px' }}>{doc.first_n}</h4>
 

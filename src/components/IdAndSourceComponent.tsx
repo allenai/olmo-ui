@@ -10,6 +10,7 @@ export interface IdAndSourceProps {
     id: string;
     source: string;
     truncateId?: boolean;
+    url?: string;
 }
 
 export const IdAndSourceComponent = ({
@@ -17,6 +18,7 @@ export const IdAndSourceComponent = ({
     id,
     source,
     truncateId = true,
+    url,
 }: IdAndSourceProps) => {
     return (
         <ResultMetadataContainer direction="row">
@@ -27,7 +29,7 @@ export const IdAndSourceComponent = ({
                         <PaddedTypography noWrap>{id}</PaddedTypography>
                     </Tooltip>
                 ) : (
-                    <span>{id}</span>
+                    <>{url ? <a href={url}>{id}</a> : <span>{id}</span>}</>
                 )}
             </CopyToClipboardButton>
             <span>
