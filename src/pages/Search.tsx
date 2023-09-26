@@ -80,7 +80,7 @@ const NewSearchPlaceholder = () => {
     const loc = useLocation();
     const path = loc.pathname;
 
-    const exampleQueries = ['Joe Biden', 'Seattle', 'ham sandwhich'];
+    const exampleQueries = ['"Joe Biden"', 'Seattle', '"ham sandwhich"'];
 
     return (
         <NoPaddingGrid item>
@@ -119,6 +119,7 @@ export function Search() {
         if (!query) {
             return;
         }
+        setForm({ query });
         setLoading(true);
         const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(query, offset)}`;
         fetch(url, { credentials: 'include' })
