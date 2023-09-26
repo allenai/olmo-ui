@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos, MaxWidthText } from '@allenai/varnish2/components';
-import { LinkProps, Outlet } from 'react-router-dom';
+import { LinkProps, Link, Outlet } from 'react-router-dom';
 import { Button, ButtonProps, Box, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
@@ -24,6 +24,7 @@ interface HeaderEndSlotProps {
 const FeedbackButton = () => {
     return (
         <BannerButton
+            component={Link}
             rel="noopener noreferrer"
             target="_blank"
             to={feedbackFormUrl}
@@ -36,7 +37,12 @@ const FeedbackButton = () => {
 
 const ExploreDataButton = () => {
     return (
-        <BannerButton rel="noopener noreferrer" to="/search" href="/search" variant="outlined">
+        <BannerButton
+            component={Link}
+            rel="noopener noreferrer"
+            to="/search"
+            href="/search"
+            variant="outlined">
             Explore Dataset
         </BannerButton>
     );
@@ -71,17 +77,17 @@ export const App = () => {
     const { userInfo, getUserInfo, schema, getSchema } = useAppContext();
     const toggles = useFeatureToggles();
 
-    useEffect(() => {
-        getUserInfo().then(getSchema);
+    const [isLoading, setLoading] = useState(true);
 
+    useEffect(() => {
+        setLoading(true);
+        getUserInfo()
+            .then(getSchema)
+            .finally(() => setLoading(false));
         if (toggles.logToggles) {
             console.log(toggles);
         }
     }, []);
-
-    const hasUserData = !userInfo.loading && !userInfo.error && userInfo.data;
-    const hasSchema = !schema.loading && !schema.error && schema.data;
-    const isLoading = userInfo.loading || schema.loading;
 
     return (
         <OuterContainer>
@@ -93,7 +99,7 @@ export const App = () => {
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
             ) : null}
-            {!isLoading && !hasUserData ? (
+            {!isLoading && userInfo.error ? (
                 <RelativeContainer>
                     <Content bgcolor="transparent">
                         <Box sx={{ background: 'white', borderRadius: 2, p: 4 }}>
@@ -111,7 +117,7 @@ export const App = () => {
                     <OlmoFooter />
                 </RelativeContainer>
             ) : null}
-            {!isLoading && hasUserData ? (
+            {!isLoading && userInfo.data && schema.data ? (
                 <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={
@@ -129,7 +135,7 @@ export const App = () => {
                     </Disclaimer>
                     <Content bgcolor="transparent" main>
                         <GlobalAlertList />
-                        {hasUserData && hasSchema ? <Outlet /> : null}
+                        <Outlet />
                     </Content>
                     <BottomBanner>
                         <OlmoBanner
@@ -207,7 +213,9 @@ const OuterContainer = styled.div`
         `linear-gradient(122deg, ${theme.color2.N7} 0%, transparent 100%), ${theme.color2.N8}`};
 `;
 
-const BannerButton = styled(Button)<ButtonProps & LinkProps>`
+// TODO: find a better way to capture the intended type; my brain isn't big enough to
+// parse MUI's Button types
+const BannerButton = styled(Button)<ButtonProps & { component: typeof Link } & LinkProps>`
     && {
         color: white;
         border-color: white;
