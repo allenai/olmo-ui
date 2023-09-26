@@ -193,7 +193,7 @@ const Accordion = MuiStyled((props: AccordionProps) => (
 ))(({ theme }) => ({
     marginBottom: theme.spacing(1),
     border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.spacing(1), // TODO: switch this out with theme.shape?
+    borderRadius: 10,
     '&:before': {
         display: 'none',
     },
