@@ -89,8 +89,6 @@ export const RecentQueries = () => {
         getAllThreads(offset, creator);
     }, [queriesView, userInfo, page, size]);
 
-    const currentClient = userInfo.data?.client;
-
     return (
         <>
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
@@ -107,7 +105,7 @@ export const RecentQueries = () => {
                                         <ThreadBodyView
                                             messages={t.children}
                                             parent={t}
-                                            showFollowUp={currentClient === t.creator}
+                                            showFollowUp={userInfo.data?.client === t.creator}
                                         />
                                     }
                                     rootMessage={t}
