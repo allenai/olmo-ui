@@ -1,13 +1,12 @@
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import React from 'react';
-
 import styled from 'styled-components';
 
 import { DolmaLogo } from './logos/DolmaLogo';
 
 export const DolmaPanel = () => {
     return (
-        <div style={{ padding: '8px' }}>
+        <Box sx={{ p: 1 }}>
             <DolmaLogo />
             <DolmaParagraph>
                 Dolma is the open dataset used for OLMo pretraining. It consists of 3 trillion
@@ -26,7 +25,7 @@ export const DolmaPanel = () => {
                     Data Sheet
                 </a>
             </Stack>
-        </div>
+        </Box>
     );
 };
 

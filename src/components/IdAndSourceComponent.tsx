@@ -26,7 +26,9 @@ export const IdAndSourceComponent = ({
             <CopyToClipboardButton buttonContent={<ContentCopyIcon fontSize="inherit" />} text={id}>
                 {truncateId ? (
                     <Tooltip title={id} placement="top">
-                        <PaddedTypography noWrap>{id}</PaddedTypography>
+                        <Typography noWrap sx={{ pl: 0.5, w: 9.5 }}>
+                            {id}
+                        </Typography>
                     </Tooltip>
                 ) : (
                     <>{idUrl ? <a href={idUrl}>{id}</a> : <span>{id}</span>}</>
@@ -38,11 +40,6 @@ export const IdAndSourceComponent = ({
         </ResultMetadataContainer>
     );
 };
-
-const PaddedTypography = styled(Typography)`
-    padding-left: ${({ theme }) => theme.spacing(0.5)};
-    width: 75px;
-`;
 
 const ResultMetadataContainer = styled(Stack)`
     font-size: ${({ theme }) => theme.typography.body1.fontSize};

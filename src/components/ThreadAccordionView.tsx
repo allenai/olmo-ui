@@ -79,8 +79,8 @@ export const ThreadAccordionView = ({
                                 <Typography>View Metadata</Typography>
                             </Button>
                             <MetadataModal
-                                handleModalClose={handleModalClose}
-                                metadataModalOpen={metadataModalOpen}
+                                onClose={handleModalClose}
+                                open={metadataModalOpen}
                                 metadata={rootMessage}
                             />
                         </Grid>

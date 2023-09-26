@@ -8,7 +8,7 @@ import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
 
-interface DataDoc {
+export interface DataDoc {
     id: string;
     dolma_id: string;
     text: string;
@@ -21,16 +21,19 @@ export function Doc() {
     const params = useParams<{ id: string }>();
 
     const [doc, setDoc] = useState<DataDoc | undefined>();
+    const [isLoading, setIsLoading] = useState(false);
 
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
 
     useEffect(() => {
+        setIsLoading(true);
         const url = `${process.env.LLMX_API_URL}/v3/data/doc/${params.id}`;
         fetch(url, { credentials: 'include' })
             .then((r) => r.json())
-            .then((r) => setDoc(r));
+            .then((r) => setDoc(r))
+            .finally(() => setIsLoading(false));
     }, [params]);
 
     return (
@@ -38,7 +41,7 @@ export function Doc() {
             <Stack direction={'row'} spacing={6}>
                 <DolmaPanel />
                 <Container>
-                    {doc ? (
+                    {doc && !isLoading ? (
                         <>
                             <IdAndSourceComponent
                                 idDescriptor="Dolma ID"
@@ -58,15 +61,14 @@ export function Doc() {
                                 onClick={handleModalOpen}>
                                 <Typography>View Metadata</Typography>
                                 <MetadataModal
-                                    handleModalClose={handleModalClose}
-                                    metadataModalOpen={metadataModalOpen}
+                                    onClose={handleModalClose}
+                                    open={metadataModalOpen}
                                     metadata={doc}
                                 />
                             </Button>
                         </>
-                    ) : (
-                        <LinearProgress />
-                    )}
+                    ) : null}
+                    {!doc || isLoading ? <LinearProgress /> : null}
                 </Container>
             </Stack>
         </SearchResultsContainer>
