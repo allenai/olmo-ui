@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, LinearProgress } from '@mui/material';
 
-import { LoginApiUrl } from '../api/User';
+import { loginOn401 } from '../api/User';
 
 interface DataDoc {
     id: string;
@@ -21,13 +21,8 @@ export function Doc() {
     useEffect(() => {
         const url = `${process.env.LLMX_API_URL}/v3/data/doc/${params.id}`;
         fetch(url, { credentials: 'include' })
-            .then((r) => {
-                if (r.status === 401) {
-                    document.location.href = LoginApiUrl;
-                    return Promise.reject(new Error('Unauthorized'));
-                }
-                r.json();
-            })
+            .then((r) => loginOn401(r))
+            .then((r) => r.json())
             .then((r) => setDoc(r));
     }, [params]);
 

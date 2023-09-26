@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { User, WhoamiApiUrl, LoginApiUrl } from './api/User';
+import { User, WhoamiApiUrl, loginOn401 } from './api/User';
 import { AlertMessage, AlertMessageSeverity } from './components/GlobalAlertList';
 import {
     Message,
@@ -43,13 +43,9 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
 
     const r = await fetch(url, opts);
 
-    // TODO: clean this up, it'd be ideal if we raised an exception that individual invocations
-    // handle, rather than changing the URL inline.
-    if (r.status === 401) {
-        document.location.href = LoginApiUrl;
-        // This shouldn't ever happen
-        throw new Error('Unauthorized');
-    }
+    // TODO: clean this up; throw an Error instead of changing browser inline
+    // This might change the browser location, thereby halting execution
+    loginOn401(r);
 
     if (!r.ok) {
         switch (r.headers.get('content-type')) {
@@ -459,11 +455,10 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
         });
-        if (resp.status === 401) {
-            document.location.href = LoginApiUrl;
-            // This shouldn't ever happen
-            throw new Error('Unauthorized');
-        }
+
+        // This might change the browser location, thereby halting execution
+        loginOn401(resp);
+
         if (!resp.ok) {
             throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
         }

@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import { CopyToClipboardButton } from '@allenai/varnish2/components';
 
 import { DolmaLogo } from '../components/logos/DolmaLogo';
-import { LoginApiUrl } from '../api/User';
+import { loginOn401 } from '../api/User';
 
 interface SearchMeta {
     took_ms: number;
@@ -117,13 +117,8 @@ export function Search() {
             offset
         )}`;
         fetch(url, { credentials: 'include' })
-            .then((r) => {
-                if (r.status === 401) {
-                    document.location.href = LoginApiUrl;
-                    return Promise.reject(new Error('Unauthorized'));
-                }
-                r.json();
-            })
+            .then((r) => loginOn401(r))
+            .then((r) => r.json())
             .then((r) => setResponse(r))
             .finally(() => setLoading(false));
     }, [query, size, offset]);
