@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos, MaxWidthText } from '@allenai/varnish2/components';
-import { LinkProps, Outlet } from 'react-router-dom';
+import { LinkProps, Link, Outlet } from 'react-router-dom';
 import { Button, ButtonProps, Box, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
@@ -24,6 +24,7 @@ interface HeaderEndSlotProps {
 const FeedbackButton = () => {
     return (
         <BannerButton
+            component={Link}
             rel="noopener noreferrer"
             target="_blank"
             to={feedbackFormUrl}
@@ -36,7 +37,12 @@ const FeedbackButton = () => {
 
 const ExploreDataButton = () => {
     return (
-        <BannerButton rel="noopener noreferrer" to="/search" href="/search" variant="outlined">
+        <BannerButton
+            component={Link}
+            rel="noopener noreferrer"
+            to="/search"
+            href="/search"
+            variant="outlined">
             Explore Dataset
         </BannerButton>
     );
@@ -207,7 +213,9 @@ const OuterContainer = styled.div`
         `linear-gradient(122deg, ${theme.color2.N7} 0%, transparent 100%), ${theme.color2.N8}`};
 `;
 
-const BannerButton = styled(Button)<ButtonProps & LinkProps>`
+// TODO: find a better way to capture the intended type; my brain isn't big enough to
+// parse MUI's Button types
+const BannerButton = styled(Button)<ButtonProps & { component: typeof Link } & LinkProps>`
     && {
         color: white;
         border-color: white;
