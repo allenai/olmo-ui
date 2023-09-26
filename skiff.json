@@ -3,6 +3,5 @@
     "contact": "sams",
     "team": "olmo",
     "replicas": { "prod": 2 },
-    "login": "ai2",
     "customDomains": [ "olmo.allen.ai" ]
 }
