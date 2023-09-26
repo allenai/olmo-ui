@@ -119,7 +119,7 @@ export function Search() {
         fetch(url, { credentials: 'include' })
             .then((r) => {
                 if (r.status === 401) {
-                    window.open(LoginApiUrl);
+                    document.location.href = LoginApiUrl;
                     return Promise.reject(new Error('Unauthorized'));
                 }
                 r.json();

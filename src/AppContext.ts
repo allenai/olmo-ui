@@ -44,9 +44,11 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
     const r = await fetch(url, opts);
 
     // TODO: clean this up, it'd be ideal if we raised an exception that individual invocations
-    // handle, rather than calling window.open() inline.
+    // handle, rather than changing the URL inline.
     if (r.status === 401) {
-        window.open(LoginApiUrl);
+        document.location.href = LoginApiUrl;
+        // This shouldn't ever happen
+        throw new Error('Unauthorized');
     }
 
     if (!r.ok) {
@@ -458,7 +460,9 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             credentials: 'include',
         });
         if (resp.status === 401) {
-            window.open(LoginApiUrl);
+            document.location.href = LoginApiUrl;
+            // This shouldn't ever happen
+            throw new Error('Unauthorized');
         }
         if (!resp.ok) {
             throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
