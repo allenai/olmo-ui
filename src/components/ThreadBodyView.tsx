@@ -4,6 +4,7 @@ import {
     Chip,
     Grid,
     IconButton,
+    LinearProgress,
     Menu,
     MenuItem,
     Stack,
@@ -33,6 +34,7 @@ import { UserAvatar } from './avatars/UserAvatar';
 interface ThreadBodyProps {
     parent?: Message;
     messages?: Message[];
+    showFollowUp?: boolean;
 }
 
 interface AgentResponseProps {
@@ -77,7 +79,7 @@ const UserResponseView = ({ response, msgId }: AgentResponseProps) => {
 
 const MENU_MAX_HEIGHT = 48 * 4.5;
 
-export const ThreadBodyView = ({ parent, messages }: ThreadBodyProps) => {
+export const ThreadBodyView = ({ parent, messages, showFollowUp }: ThreadBodyProps) => {
     if (!messages) {
         return null;
     }
@@ -90,6 +92,9 @@ export const ThreadBodyView = ({ parent, messages }: ThreadBodyProps) => {
     // the anchor element anchors the expanded dropdown menu to the dropdown menu button element
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [followUpPrompt, setFollowUpPrompt] = useState<string>();
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -107,6 +112,19 @@ export const ThreadBodyView = ({ parent, messages }: ThreadBodyProps) => {
     const branchCount = messages.length;
     const curMessage = messages[curMessageIndex];
     const curMessageRole = curMessage.role;
+
+    const postFollowupMessage = async function () {
+        setIsSubmitting(true);
+        const parent = curMessage;
+        const payload: MessagePost = {
+            content: followUpPrompt || '',
+        };
+        const postMessageInfo = await postMessage(payload, parent);
+        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
+            setFollowUpPrompt('');
+        }
+        setIsSubmitting(false);
+    };
 
     const editMessage = async function () {
         setIsEditing(false);
@@ -223,7 +241,29 @@ export const ThreadBodyView = ({ parent, messages }: ThreadBodyProps) => {
                     </Grid>
                 </Box>
                 {curMessage.children ? (
-                    <ThreadBodyView messages={curMessage.children} parent={curMessage} />
+                    <ThreadBodyView
+                        messages={curMessage.children}
+                        parent={curMessage}
+                        showFollowUp={showFollowUp}
+                    />
+                ) : showFollowUp ? (
+                    <FollowUpContainer>
+                        <TextField
+                            sx={{ width: '100%' }}
+                            multiline
+                            placeholder="Follow Up"
+                            disabled={isSubmitting}
+                            maxRows={13}
+                            value={followUpPrompt}
+                            onChange={(v) => setFollowUpPrompt(v.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    postFollowupMessage();
+                                }
+                            }}
+                        />
+                        {isSubmitting ? <LinearProgress /> : null}
+                    </FollowUpContainer>
                 ) : null}
             </>
         </HoverDecorationContainer>
@@ -245,6 +285,12 @@ const EditButton = ({ disabled, onClick }: { disabled: boolean; onClick: () => v
     </Grid>
 );
 
+const FollowUpContainer = styled.div`
+    padding-left: ${({ theme }) => theme.spacing(2)};
+    padding-right: ${({ theme }) => theme.spacing(1)};
+    margin: ${({ theme }) => theme.spacing(2)};
+`;
+
 const OutlinedIconButton = styled(IconButton)`
     &&& {
         border: 1px solid;
@@ -265,7 +311,7 @@ const UserResponseContainer = styled.div`
 
 const LLMResponseContainer = styled.div`
     background-color: ${({ theme }) => theme.color2.N1};
-    border-radius: 5px;
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
     padding: ${({ theme }) => theme.spacing(2)};
     margin-left: ${({ theme }) => theme.spacing(1)};
 `;

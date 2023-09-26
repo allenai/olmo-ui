@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
+import { BannerLink, Content, Footer, logos, MaxWidthText } from '@allenai/varnish2/components';
 import { LinkProps, Outlet } from 'react-router-dom';
-import { Button, ButtonProps, Grid, LinearProgress, Typography } from '@mui/material';
+import { Button, ButtonProps, Box, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
@@ -88,44 +88,68 @@ export const App = () => {
             <AbsoluteContainer>
                 <WallpaperCircle color={olmoTheme.color2.N8.hex} />
             </AbsoluteContainer>
-            <RelativeContainer>
-                <OlmoBanner
-                    bannerLogo={
-                        <BannerLink href="https://olmo.allen.ai">
-                            <OlmoLogo />
-                        </BannerLink>
-                    }
-                    transparentBackground={true}
-                    endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
-                />
-                <DisclaimerDiv>
-                    This site uses the Tulu2 model model and provides search over the{' '}
-                    <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>. We
-                    will eventually update this site to use the OLMo model.
-                </DisclaimerDiv>
-                <Content bgcolor="transparent" main>
-                    <GlobalAlertList />
-                    {isLoading ? <LinearProgress /> : null}
-                    {hasUserData && hasSchema ? <Outlet /> : null}
-                </Content>
-                <BottomBanner>
+            {isLoading ? (
+                <LoadingContainer>
+                    <CircularProgress sx={{ color: '#fff' }} />
+                </LoadingContainer>
+            ) : null}
+            {!isLoading && !hasUserData ? (
+                <RelativeContainer>
+                    <Content bgcolor="transparent">
+                        <Box sx={{ background: 'white', borderRadius: 2, p: 4 }}>
+                            <MaxWidthText>
+                                <Typography variant="h3" sx={{ mt: 0 }}>
+                                    Unauthorized
+                                </Typography>
+                                <Typography component="p" sx={{ mb: 0 }}>
+                                    You're not logged in and access to this application is currently
+                                    restricted. If this is an error, please refresh the page.
+                                </Typography>
+                            </MaxWidthText>
+                        </Box>
+                    </Content>
+                    <OlmoFooter />
+                </RelativeContainer>
+            ) : null}
+            {!isLoading && hasUserData ? (
+                <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={
-                            <BannerLink href="https://allenai.org">
-                                <logos.AI2Logo color="white" size="md" />
+                            <BannerLink href="https://olmo.allen.ai">
+                                <OlmoLogo />
                             </BannerLink>
                         }
-                        transparentBackground={false}
-                        endSlot={<FeedbackButton />}
+                        transparentBackground={true}
+                        endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                     />
-                </BottomBanner>
-                <OlmoFooter />
-            </RelativeContainer>
+                    <Disclaimer>
+                        This site uses the Tulu2 model model and provides search over the{' '}
+                        <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>.
+                        We will eventually update this site to use the OLMo model.
+                    </Disclaimer>
+                    <Content bgcolor="transparent" main>
+                        <GlobalAlertList />
+                        {hasUserData && hasSchema ? <Outlet /> : null}
+                    </Content>
+                    <BottomBanner>
+                        <OlmoBanner
+                            bannerLogo={
+                                <BannerLink href="https://allenai.org">
+                                    <logos.AI2Logo color="white" size="md" />
+                                </BannerLink>
+                            }
+                            transparentBackground={false}
+                            endSlot={<FeedbackButton />}
+                        />
+                    </BottomBanner>
+                    <OlmoFooter />
+                </RelativeContainer>
+            ) : null}
         </OuterContainer>
     );
 };
 
-const DisclaimerDiv = styled.div`
+const Disclaimer = styled.div`
     background-color: transparent;
     color: ${({ theme }) => theme.color2.N3};
     margin-left: ${({ theme }) => theme.spacing(3)};
@@ -149,6 +173,16 @@ const RelativeContainer = styled.div`
     position: relative;
     z-index: 10;
     min-height: 100vh;
+`;
+
+const LoadingContainer = styled.div`
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    display: grid;
+    align-items: center;
+    justify-items: center;
 `;
 
 const OlmoFooter = styled(Footer)`

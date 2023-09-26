@@ -101,7 +101,13 @@ export const RecentQueries = () => {
                                 <ThreadAccordionView
                                     key={t.id}
                                     title={t.content}
-                                    body={<ThreadBodyView messages={t.children} parent={t} />}
+                                    body={
+                                        <ThreadBodyView
+                                            messages={t.children}
+                                            parent={t}
+                                            showFollowUp={userInfo.data?.client === t.creator}
+                                        />
+                                    }
                                     rootMessage={t}
                                     threadID={t.id}
                                     threadCreator={t.creator}

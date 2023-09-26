@@ -49,7 +49,7 @@ export const ContextMenu = ({
         mouseY: 0,
     });
 
-    const [showDial, setShowDial] = useState<boolean>(false);
+    const [showMenu, setShowMenu] = useState<boolean>(false);
     const [selText, setSelText] = useState<string>();
 
     const divRef = useRef<HTMLDivElement | null>(null);
@@ -79,11 +79,11 @@ export const ContextMenu = ({
                 mouseY: clientY - menuShiftY,
             });
         }
-        setShowDial(true);
+        setShowMenu(true);
     };
 
     const handleClose = () => {
-        setShowDial(false);
+        setShowMenu(false);
     };
 
     const handleMouseUp = (event: MouseEvent) => {
@@ -96,23 +96,17 @@ export const ContextMenu = ({
         setSelText(text);
     };
 
-    const handleMouseDown = (_event: MouseEvent) => {
-        handleClose();
-    };
-
     useEffect(() => {
         window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('mousedown', handleMouseDown);
         return () => {
             window.removeEventListener('mouseup', handleMouseUp);
-            window.removeEventListener('mousedown', handleMouseDown);
         };
     }, [selText]);
 
     return (
         <Box sx={{ position: 'relative' }} ref={divRef}>
             {children}
-            {showDial
+            {showMenu
                 ? menuOptions.map((action, i) => (
                       <Fab
                           sx={
@@ -132,13 +126,13 @@ export const ContextMenu = ({
                           variant="extended"
                           aria-label={action.label}
                           key={action.label}
-                          onClick={() =>
+                          onClick={() => {
                               action.action(
                                   getSelectionText() || '',
                                   contextPos?.mouseX,
                                   contextPos?.mouseY
-                              )
-                          }>
+                              );
+                          }}>
                           {action.icon}
                       </Fab>
                   ))
