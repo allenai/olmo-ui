@@ -43,6 +43,7 @@ export function Doc() {
             <Stack direction={'row'} spacing={6}>
                 <DolmaPanel />
                 <Container>
+                    {!doc || isLoading ? <LinearProgress /> : null}
                     {doc && !isLoading ? (
                         <>
                             <IdAndSourceComponent
@@ -70,7 +71,6 @@ export function Doc() {
                             </Button>
                         </>
                     ) : null}
-                    {!doc || isLoading ? <LinearProgress /> : null}
                 </Container>
             </Stack>
         </SearchResultsContainer>
