@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { User, WhoamiApiUrl } from './api/User';
+import { User, WhoamiApiUrl, LoginApiUrl } from './api/User';
 import { AlertMessage, AlertMessageSeverity } from './components/GlobalAlertList';
 import {
     Message,
@@ -42,6 +42,13 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
     }
 
     const r = await fetch(url, opts);
+
+    // TODO: clean this up, it'd be ideal if we raised an exception that individual invocations
+    // handle, rather than calling window.open() inline.
+    if (r.status === 401) {
+        window.open(LoginApiUrl);
+    }
+
     if (!r.ok) {
         switch (r.headers.get('content-type')) {
             // This captures errors returned by the API.
@@ -55,6 +62,7 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
                 throw new Error(`HTTP ${r.status}: ${r.statusText}`);
         }
     }
+
     return r.json();
 }
 
@@ -449,6 +457,9 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
         });
+        if (resp.status === 401) {
+            window.open(LoginApiUrl);
+        }
         if (!resp.ok) {
             throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
         }
