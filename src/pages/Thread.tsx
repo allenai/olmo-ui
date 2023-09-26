@@ -32,7 +32,10 @@ export const Thread = () => {
                             {selectedThreadInfo.data.deleted ? (
                                 <Alert severity="warning">This message has been deleted.</Alert>
                             ) : null}
-                            <ThreadBodyView messages={[selectedThreadInfo.data]} />
+                            <ThreadBodyView
+                                messages={[selectedThreadInfo.data]}
+                                showFollowUp={false}
+                            />
                         </>
                     ) : null}
                     {selectedThreadInfo.loading ? <LinearProgress /> : null}

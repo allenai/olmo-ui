@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import {
     AccordionDetails,
     AccordionProps,
@@ -6,20 +6,18 @@ import {
     Typography,
     styled as MuiStyled,
     Grid,
-    TextField,
     Button,
     Dialog,
     DialogTitle,
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
-    LinearProgress,
     Stack,
 } from '@mui/material';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
 import { ThreadControls } from './ThreadControls';
-import { Message, MessagePost } from '../api/Message';
+import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 
@@ -40,10 +38,7 @@ export const ThreadAccordionView = ({
     showControls = false,
     rootMessage,
 }: ThreadAccordionProps) => {
-    const { userInfo, postMessage, expandedThreadID, setExpandedThreadID } = useAppContext();
-
-    const [followUpPrompt, setFollowUpPrompt] = useState<string>();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { expandedThreadID, setExpandedThreadID } = useAppContext();
 
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
@@ -57,31 +52,6 @@ export const ThreadAccordionView = ({
         );
     };
 
-    // we have the top level message, but we need the last child for use of follow up
-    // this will need to be altered if we allow message forking (follow up of a specific message)
-    const getLastMessageInThread = (msg: Message) => {
-        let leaf = msg;
-        while (leaf.children?.length) {
-            // assumes only one child, (i.e. we are getting the first leaf)
-            leaf = leaf.children[0];
-        }
-        return leaf;
-    };
-
-    const postFollowupMessage = async function () {
-        setIsSubmitting(true);
-        const parent = getLastMessageInThread(rootMessage);
-        const payload: MessagePost = {
-            content: followUpPrompt || '',
-        };
-        const postMessageInfo = await postMessage(payload, parent);
-        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
-            setFollowUpPrompt('');
-        }
-        setIsSubmitting(false);
-    };
-
-    const currentClient = userInfo.data?.client;
     const isExpanded = expandedThreadID === threadID;
 
     return (
@@ -112,25 +82,6 @@ export const ThreadAccordionView = ({
             <AccordionBody>{body}</AccordionBody>
             {showControls && (
                 <>
-                    {currentClient === threadCreator && (
-                        <FollowUpContainer>
-                            <TextField
-                                sx={{ width: '100%' }}
-                                multiline
-                                placeholder="Follow Up"
-                                disabled={isSubmitting || !rootMessage.final}
-                                maxRows={13}
-                                value={followUpPrompt}
-                                onChange={(v) => setFollowUpPrompt(v.target.value)}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                        postFollowupMessage();
-                                    }
-                                }}
-                            />
-                            {isSubmitting ? <LinearProgress /> : null}
-                        </FollowUpContainer>
-                    )}
                     <ControlsGrid container justifyContent="space-between" spacing={2}>
                         <Grid item>
                             <MetadataButton variant="text" onClick={handleModalOpen}>
@@ -159,12 +110,6 @@ const MetadataButton = styled(Button)`
 
 const Metadata = styled(DialogTitle)`
     white-space: pre;
-`;
-
-const FollowUpContainer = styled.div`
-    padding-left: ${({ theme }) => theme.spacing(2)};
-    padding-right: ${({ theme }) => theme.spacing(1)};
-    margin: ${({ theme }) => theme.spacing(2)};
 `;
 
 const ControlsGrid = styled(Grid)`
