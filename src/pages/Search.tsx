@@ -19,6 +19,7 @@ import styled from 'styled-components';
 import { CopyToClipboardButton } from '@allenai/varnish2/components';
 
 import { DolmaLogo } from '../components/logos/DolmaLogo';
+import { loginOn401 } from '../api/User';
 
 interface SearchMeta {
     took_ms: number;
@@ -116,6 +117,7 @@ export function Search() {
             offset
         )}`;
         fetch(url, { credentials: 'include' })
+            .then((r) => loginOn401(r))
             .then((r) => r.json())
             .then((r) => setResponse(r))
             .finally(() => setLoading(false));
