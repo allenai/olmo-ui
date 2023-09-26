@@ -99,13 +99,9 @@ export const App = () => {
                     endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                 />
                 <DisclaimerDiv>
-                    This site uses the{' '}
-                    <a href="https://huggingface.co/meta-llama/Llama-2-70b-chat-hf">
-                        LLaMa2 (70B Chat)
-                    </a>{' '}
-                    model and provides search over the{' '}
+                    This site uses the Tulu2 model model and provides search over the{' '}
                     <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>. We
-                    will update this site to use the 70B parameter OLMo model once it's available.
+                    will eventually update this site to use the OLMo model.
                 </DisclaimerDiv>
                 <Content bgcolor="transparent" main>
                     <GlobalAlertList />
