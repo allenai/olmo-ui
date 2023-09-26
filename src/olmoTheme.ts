@@ -16,6 +16,9 @@ export const olmoTheme = {
                     ...(ownerState.variant === 'contained' && {
                         backgroundColor: color2.B4.hex,
                     }),
+                    ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
+                        color: color2.B4.hex,
+                    }),
                     '&.Mui-disabled': {
                         background: 'transparent',
                         color: color2.N3.hex,

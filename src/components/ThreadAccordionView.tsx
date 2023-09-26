@@ -7,8 +7,6 @@ import {
     styled as MuiStyled,
     Grid,
     Button,
-    Dialog,
-    DialogTitle,
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
     Stack,
@@ -20,6 +18,7 @@ import { ThreadControls } from './ThreadControls';
 import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
+import { MetadataModal } from './MetadataModal';
 
 interface ThreadAccordionProps {
     title: string;
@@ -43,14 +42,6 @@ export const ThreadAccordionView = ({
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
-
-    const MetadataModal = () => {
-        return (
-            <Dialog onClose={handleModalClose} open={metadataModalOpen}>
-                <Metadata>{JSON.stringify(rootMessage, null, 4)}</Metadata>
-            </Dialog>
-        );
-    };
 
     const isExpanded = expandedThreadID === threadID;
 
@@ -84,10 +75,14 @@ export const ThreadAccordionView = ({
                 <>
                     <ControlsGrid container justifyContent="space-between" spacing={2}>
                         <Grid item>
-                            <MetadataButton variant="text" onClick={handleModalOpen}>
+                            <Button disableRipple={true} variant="text" onClick={handleModalOpen}>
                                 <Typography>View Metadata</Typography>
-                            </MetadataButton>
-                            <MetadataModal />
+                            </Button>
+                            <MetadataModal
+                                onClose={handleModalClose}
+                                open={metadataModalOpen}
+                                metadata={rootMessage}
+                            />
                         </Grid>
                         <Grid item>
                             <ThreadControls
@@ -101,16 +96,6 @@ export const ThreadAccordionView = ({
         </Accordion>
     );
 };
-
-const MetadataButton = styled(Button)`
-    && {
-        color: ${({ theme }) => theme.color2.B4};
-    }
-`;
-
-const Metadata = styled(DialogTitle)`
-    white-space: pre;
-`;
 
 const ControlsGrid = styled(Grid)`
     padding-left: ${({ theme }) => theme.spacing(3)};
