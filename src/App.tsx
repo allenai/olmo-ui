@@ -92,22 +92,26 @@ export const App = () => {
                 <LoadingContainer>
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
-            ) : !hasUserData ? (
+            ) : null}
+            {!isLoading && !hasUserData ? (
                 <RelativeContainer>
                     <Content bgcolor="transparent">
                         <Box sx={{ background: 'white', borderRadius: 2, p: 4 }}>
                             <MaxWidthText>
-                                <h3 style={{ marginTop: 0 }}>Unauthorized</h3>
-                                <p style={{ marginBottom: 0 }}>
+                                <Typography variant="h3" sx={{ mt: 0 }}>
+                                    Unauthorized
+                                </Typography>
+                                <Typography component="p" sx={{ mb: 0 }}>
                                     You're not logged in and access to this application is currently
                                     restricted. If this is an error, please refresh the page.
-                                </p>
+                                </Typography>
                             </MaxWidthText>
                         </Box>
                     </Content>
                     <OlmoFooter />
                 </RelativeContainer>
-            ) : (
+            ) : null}
+            {!isLoading && hasUserData ? (
                 <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={
@@ -118,11 +122,11 @@ export const App = () => {
                         transparentBackground={true}
                         endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                     />
-                    <DisclaimerDiv>
+                    <Disclaimer>
                         This site uses the Tulu2 model model and provides search over the{' '}
                         <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>.
                         We will eventually update this site to use the OLMo model.
-                    </DisclaimerDiv>
+                    </Disclaimer>
                     <Content bgcolor="transparent" main>
                         <GlobalAlertList />
                         {hasUserData && hasSchema ? <Outlet /> : null}
@@ -140,12 +144,12 @@ export const App = () => {
                     </BottomBanner>
                     <OlmoFooter />
                 </RelativeContainer>
-            )}
+            ) : null}
         </OuterContainer>
     );
 };
 
-const DisclaimerDiv = styled.div`
+const Disclaimer = styled.div`
     background-color: transparent;
     color: ${({ theme }) => theme.color2.N3};
     margin-left: ${({ theme }) => theme.spacing(3)};

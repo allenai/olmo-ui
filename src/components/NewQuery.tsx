@@ -103,7 +103,7 @@ export const NewQuery = () => {
                     display="grid"
                     gap={2}
                     gridTemplateColumns="1fr min-content"
-                    style={{ height: '100%' }}>
+                    sx={{ height: '100%' }}>
                     <Grid display="grid" gap={1} gridTemplateRows="min-content 1fr min-content">
                         <Grid>
                             <TemplateArea>
@@ -166,7 +166,7 @@ export const NewQuery = () => {
                                     placeholder="Select a Prompt Template above or type a free form prompt"
                                     value={prompt}
                                     onChange={(v) => updatePrompt(v.target.value)}
-                                    style={{ height: '100%' }}
+                                    sx={{ height: '100%' }}
                                     InputProps={{
                                         sx: {
                                             height: '100%',
