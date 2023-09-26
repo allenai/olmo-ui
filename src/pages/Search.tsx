@@ -190,7 +190,7 @@ export function Search() {
                                                 source={result.source}
                                             />
                                             <SearchTitleContainer>
-                                                <SearchTitle href={`/doc/${result.id}`}>
+                                                <SearchTitle to={`/doc/${result.id}`}>
                                                     {result.first_n}
                                                 </SearchTitle>
                                             </SearchTitleContainer>
@@ -273,7 +273,7 @@ const SearchTitleContainer = styled.div`
     padding-bottom: ${({ theme }) => theme.spacing(1)};
 `;
 
-const SearchTitle = styled.a`
+const SearchTitle = styled(Link)`
     font-size: ${({ theme }) => theme.typography.h4.fontSize};
     font-weight: bold;
     color: ${({ theme }) => theme.color2.B3};
