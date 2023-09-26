@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-    Box,
     TextField,
     Grid,
     Stack,
     Button,
     Pagination,
-    Typography,
     useMediaQuery,
     useTheme,
-    Tooltip,
     LinearProgress,
 } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import styled from 'styled-components';
 
-import { CopyToClipboardButton } from '@allenai/varnish2/components';
-
-import { DolmaLogo } from '../components/logos/DolmaLogo';
+import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
+import { DolmaPanel } from '../components/DolmaPanel';
+import { SearchResultsContainer } from '../components/shared';
 
 interface SearchMeta {
     took_ms: number;
@@ -143,38 +139,9 @@ export function Search() {
     const greaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
 
     return (
-        <Box
-            sx={{
-                background: 'white',
-                borderRadius: 2,
-                pt: greaterThanMd ? 5 : 2,
-                pb: greaterThanMd ? 5 : 2,
-                pr: greaterThanMd ? 6 : 3,
-                pl: greaterThanMd ? 6 : 3,
-            }}>
+        <SearchResultsContainer>
             <Stack direction={greaterThanMd ? 'row' : 'column'} spacing={6}>
-                <div>
-                    <DolmaLogo />
-                    <DolmaParagraph>
-                        Dolma is the open dataset used for OLMo pretraining. It consists of 3
-                        trillion tokens from a diverse mix of web content, academic publications,
-                        code, books, and encyclopedic materials. It is the largest open dataset to
-                        date for LLM training, and is distributed under{' '}
-                        <a href="https://allenai.org/impact-license">AI2's ImpACT license</a>.
-                    </DolmaParagraph>
-                    <Stack spacing={1}>
-                        <a href="https://huggingface.co/datasets/allenai/dolma">
-                            Download on HuggingFace
-                        </a>
-                        <a href="https://github.com/allenai/dolma">GitHub Repository</a>
-                        <a href="https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64">
-                            Blog Post
-                        </a>
-                        <a href="https://drive.google.com/file/d/12gOf5I5RytsD159nSP7iim_5zN31FCXq/view?usp=drive_link">
-                            Data Sheet
-                        </a>
-                    </Stack>
-                </div>
+                <DolmaPanel />
                 <FullWidthContainer>
                     <Stack direction={'row'} spacing={2}>
                         <PartialWidthTextField
@@ -209,26 +176,11 @@ export function Search() {
                                 {response.results.map((result) => (
                                     <NoPaddingGrid item key={result.id}>
                                         <ResultsContainer>
-                                            <ResultMetadataContainer direction="row">
-                                                <strong>Dolma ID:</strong>
-
-                                                <CopyToClipboardButton
-                                                    buttonContent={
-                                                        <ContentCopyIcon fontSize="inherit" />
-                                                    }
-                                                    text={result.dolma_id}>
-                                                    <Tooltip
-                                                        title={result.dolma_id}
-                                                        placement="top">
-                                                        <PaddedTypography noWrap>
-                                                            {result.dolma_id}
-                                                        </PaddedTypography>
-                                                    </Tooltip>
-                                                </CopyToClipboardButton>
-                                                <span>
-                                                    <strong>Source: </strong> {result.source}
-                                                </span>
-                                            </ResultMetadataContainer>
+                                            <IdAndSourceComponent
+                                                idDescriptor="Dolma ID"
+                                                id={result.dolma_id}
+                                                source={result.source}
+                                            />
                                             <SearchTitleContainer>
                                                 <SearchTitle href={`/doc/${result.id}`}>
                                                     {result.first_n}
@@ -262,19 +214,9 @@ export function Search() {
                     ) : null}
                 </FullWidthContainer>
             </Stack>
-        </Box>
+        </SearchResultsContainer>
     );
 }
-
-const DolmaParagraph = styled.p`
-    ${({ theme }) => theme.breakpoints.up('md')} {
-        width: ${({ theme }) => theme.spacing(38)};
-    }
-
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        width: 100%;
-    }
-`;
 
 const EqualPaddingGrid = styled(Grid)`
     padding-top: ${({ theme }) => theme.spacing(2)};
@@ -316,19 +258,6 @@ const ResultsHighlights = styled.p`
     }
     font-size: ${({ theme }) => theme.typography.body1.fontSize};
     color: ${({ theme }) => theme.color2.N5};
-`;
-
-const PaddedTypography = styled(Typography)`
-    padding-left: ${({ theme }) => theme.spacing(0.5)};
-    width: 75px;
-`;
-
-const ResultMetadataContainer = styled(Stack)`
-    font-size: ${({ theme }) => theme.typography.body1.fontSize};
-    color: ${({ theme }) => theme.color2.N4};
-    &&& svg {
-        color: ${({ theme }) => theme.color2.N4};
-    }
 `;
 
 const SearchTitleContainer = styled.div`

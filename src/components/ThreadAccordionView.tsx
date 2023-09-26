@@ -8,8 +8,6 @@ import {
     Grid,
     TextField,
     Button,
-    Dialog,
-    DialogTitle,
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
     LinearProgress,
@@ -22,6 +20,7 @@ import { ThreadControls } from './ThreadControls';
 import { Message, MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
+import { MetadataModal } from './MetadataModal';
 
 interface ThreadAccordionProps {
     title: string;
@@ -48,14 +47,6 @@ export const ThreadAccordionView = ({
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
-
-    const MetadataModal = () => {
-        return (
-            <Dialog onClose={handleModalClose} open={metadataModalOpen}>
-                <Metadata>{JSON.stringify(rootMessage, null, 4)}</Metadata>
-            </Dialog>
-        );
-    };
 
     // we have the top level message, but we need the last child for use of follow up
     // this will need to be altered if we allow message forking (follow up of a specific message)
@@ -133,10 +124,14 @@ export const ThreadAccordionView = ({
                     )}
                     <ControlsGrid container justifyContent="space-between" spacing={2}>
                         <Grid item>
-                            <MetadataButton variant="text" onClick={handleModalOpen}>
+                            <Button disableRipple={true} variant="text" onClick={handleModalOpen}>
                                 <Typography>View Metadata</Typography>
-                            </MetadataButton>
-                            <MetadataModal />
+                            </Button>
+                            <MetadataModal
+                                handleModalClose={handleModalClose}
+                                metadataModalOpen={metadataModalOpen}
+                                metadata={rootMessage}
+                            />
                         </Grid>
                         <Grid item>
                             <ThreadControls
@@ -150,16 +145,6 @@ export const ThreadAccordionView = ({
         </Accordion>
     );
 };
-
-const MetadataButton = styled(Button)`
-    && {
-        color: ${({ theme }) => theme.color2.B4};
-    }
-`;
-
-const Metadata = styled(DialogTitle)`
-    white-space: pre;
-`;
 
 const FollowUpContainer = styled.div`
     padding-left: ${({ theme }) => theme.spacing(2)};
