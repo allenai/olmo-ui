@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos, MaxWidthText } from '@allenai/varnish2/components';
 import { LinkProps, Outlet } from 'react-router-dom';
@@ -71,17 +71,17 @@ export const App = () => {
     const { userInfo, getUserInfo, schema, getSchema } = useAppContext();
     const toggles = useFeatureToggles();
 
-    useEffect(() => {
-        getUserInfo().then(getSchema);
+    const [isLoading, setLoading] = useState(true);
 
+    useEffect(() => {
+        setLoading(true);
+        getUserInfo()
+            .then(getSchema)
+            .finally(() => setLoading(false));
         if (toggles.logToggles) {
             console.log(toggles);
         }
     }, []);
-
-    const hasUserData = !userInfo.loading && !userInfo.error && userInfo.data;
-    const hasSchema = !schema.loading && !schema.error && schema.data;
-    const isLoading = userInfo.loading || schema.loading;
 
     return (
         <OuterContainer>
@@ -93,7 +93,7 @@ export const App = () => {
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
             ) : null}
-            {!isLoading && !hasUserData ? (
+            {!isLoading && userInfo.error ? (
                 <RelativeContainer>
                     <Content bgcolor="transparent">
                         <Box sx={{ background: 'white', borderRadius: 2, p: 4 }}>
@@ -111,7 +111,7 @@ export const App = () => {
                     <OlmoFooter />
                 </RelativeContainer>
             ) : null}
-            {!isLoading && hasUserData ? (
+            {!isLoading && userInfo.data && schema.data ? (
                 <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={
@@ -129,7 +129,7 @@ export const App = () => {
                     </Disclaimer>
                     <Content bgcolor="transparent" main>
                         <GlobalAlertList />
-                        {hasUserData && hasSchema ? <Outlet /> : null}
+                        <Outlet />
                     </Content>
                     <BottomBanner>
                         <OlmoBanner
