@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { User, WhoamiApiUrl } from './api/User';
+import { User, WhoamiApiUrl, loginOn401 } from './api/User';
 import { AlertMessage, AlertMessageSeverity } from './components/GlobalAlertList';
 import {
     Message,
@@ -42,6 +42,11 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
     }
 
     const r = await fetch(url, opts);
+
+    // TODO: clean this up; throw an Error instead of changing browser inline
+    // This might change the browser location, thereby halting execution
+    loginOn401(r);
+
     if (!r.ok) {
         switch (r.headers.get('content-type')) {
             // This captures errors returned by the API.
@@ -55,6 +60,7 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
                 throw new Error(`HTTP ${r.status}: ${r.statusText}`);
         }
     }
+
     return r.json();
 }
 
@@ -449,6 +455,10 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
         });
+
+        // This might change the browser location, thereby halting execution
+        loginOn401(resp);
+
         if (!resp.ok) {
             throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
         }

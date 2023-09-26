@@ -15,6 +15,7 @@ import styled from 'styled-components';
 import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
+import { loginOn401 } from '../api/User';
 
 interface SearchMeta {
     took_ms: number;
@@ -112,6 +113,7 @@ export function Search() {
             offset
         )}`;
         fetch(url, { credentials: 'include' })
+            .then((r) => loginOn401(r))
             .then((r) => r.json())
             .then((r) => setResponse(r))
             .finally(() => setLoading(false));

@@ -7,6 +7,7 @@ import { MetadataModal } from '../components/MetadataModal';
 import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
+import { loginOn401 } from '../api/User';
 
 export interface DataDoc {
     id: string;
@@ -31,6 +32,7 @@ export function Doc() {
         setIsLoading(true);
         const url = `${process.env.LLMX_API_URL}/v3/data/doc/${params.id}`;
         fetch(url, { credentials: 'include' })
+            .then((r) => loginOn401(r))
             .then((r) => r.json())
             .then((r) => setDoc(r))
             .finally(() => setIsLoading(false));
