@@ -4,7 +4,6 @@ import {
     AccordionProps,
     AccordionSummaryProps,
     Typography,
-    styled as MuiStyled,
     Grid,
     Button,
     Accordion as MuiAccordion,
@@ -63,11 +62,11 @@ export const ThreadAccordionView = ({
                             <UserAvatar />
                         </PaddedHeading>
                         <TitleContainer>
-                            <TitleTypography sx={{ fontWeight: 'bold' }}>{title}</TitleTypography>
+                            <CopyableTitle title={title} />
                         </TitleContainer>
                     </Stack>
                 ) : (
-                    <TitleTypography sx={{ fontWeight: 'bold' }}>{title}</TitleTypography>
+                    <CopyableTitle title={title} />
                 )}
             </AccordionSummary>
             <AccordionBody>{body}</AccordionBody>
@@ -97,6 +96,21 @@ export const ThreadAccordionView = ({
     );
 };
 
+// title of accordion can be clicked to open/close, but if the user selects text, we prevent
+// open/close so they can copy the text.
+const CopyableTitle = ({ title }: { title: string }) => {
+    return (
+        <TitleTypography
+            onClick={(e) => {
+                if (window.getSelection && window.getSelection()?.toString().length) {
+                    e.stopPropagation();
+                }
+            }}>
+            {title}
+        </TitleTypography>
+    );
+};
+
 const ControlsGrid = styled(Grid)`
     padding-left: ${({ theme }) => theme.spacing(3)};
     padding-right: ${({ theme }) => theme.spacing(2)};
@@ -110,7 +124,10 @@ const TitleContainer = styled.div`
 `;
 
 const TitleTypography = styled(Typography)`
-    color: ${({ theme }) => theme.color2.B5};
+    &&& {
+        color: ${({ theme }) => theme.color2.B5};
+        font-weight: bold;
+    }
 `;
 
 const PaddedHeading = styled.span`
@@ -118,37 +135,43 @@ const PaddedHeading = styled.span`
     margin-top: ${({ theme }) => theme.spacing(1)};
 `;
 
-const Accordion = MuiStyled((props: AccordionProps) => (
+const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
-    marginBottom: theme.spacing(1),
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 10,
-    '&:before': {
-        display: 'none',
+    '&&&': {
+        marginBottom: theme.spacing(1),
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: 10,
+        '&:before': {
+            display: 'none',
+        },
+        backgroundColor: 'white',
     },
-    backgroundColor: 'white',
 }));
 
-const AccordionSummary = MuiStyled((props: AccordionSummaryProps) => (
+const AccordionSummary = styled((props: AccordionSummaryProps) => (
     <MuiAccordionSummary
         expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '12px' }} />}
         {...props}
     />
 ))(({ theme }) => ({
-    userSelect: 'text',
-    flexDirection: 'row-reverse',
-    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-        transform: 'rotate(90deg)',
-    },
-    '& .MuiAccordionSummary-content': {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(2),
+    '&&&': {
+        userSelect: 'text',
+        flexDirection: 'row-reverse',
+        '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+            transform: 'rotate(90deg)',
+        },
+        '& .MuiAccordionSummary-content': {
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(2),
+        },
     },
 }));
 
-const AccordionBody = MuiStyled(AccordionDetails)(({ theme }) => ({
-    padding: theme.spacing(1),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+const AccordionBody = styled(AccordionDetails)(({ theme }) => ({
+    '&&&': {
+        padding: theme.spacing(1),
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+    },
 }));
