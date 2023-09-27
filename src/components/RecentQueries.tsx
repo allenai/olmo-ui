@@ -58,7 +58,8 @@ enum QueryStringParam {
 }
 
 export const RecentQueries = () => {
-    const { userInfo, getAllThreads, allThreadInfo, setExpandedThreadID } = useAppContext();
+    const { userInfo, getAllThreads, allThreadInfo, setExpandedThreadID, postMessageInfo } =
+        useAppContext();
 
     const loc = useLocation();
     const nav = useNavigate();
@@ -106,6 +107,7 @@ export const RecentQueries = () => {
                                             messages={t.children}
                                             parent={t}
                                             showFollowUp={userInfo.data?.client === t.creator}
+                                            disabledActions={postMessageInfo.loading}
                                         />
                                     }
                                     rootMessage={t}
