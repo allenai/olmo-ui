@@ -27,6 +27,23 @@ interface APIError {
     error: { code: number; message: string };
 }
 
+export async function unpackError(r: Response): Promise<Response> {
+    if (!r.ok) {
+        switch (r.headers.get('content-type')) {
+            // This captures errors returned by the API.
+            case 'application/json': {
+                const err: APIError = await r.json();
+                throw new Error(err.error.message);
+            }
+            // This is probably an error returned by the NGINX proxy. In this case don't attempt
+            // to parse the response. Use the HTTP status instead.
+            default:
+                throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+        }
+    }
+    return r;
+}
+
 // Similarly, eslint doesn't know about RequestInfo
 // eslint-disable-next-line no-undef
 async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): Promise<T> {
@@ -41,26 +58,9 @@ async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): P
         opts.credentials = 'include';
     }
 
-    const r = await fetch(url, opts);
-
     // TODO: clean this up; throw an Error instead of changing browser inline
     // This might change the browser location, thereby halting execution
-    loginOn401(r);
-
-    if (!r.ok) {
-        switch (r.headers.get('content-type')) {
-            // This captures errors returned by the API.
-            case 'application/json': {
-                const err: APIError = await r.json();
-                throw new Error(err.error.message);
-            }
-            // This is probably an error returned by the NGINX proxy. In this case don't attempt
-            // to parse the response. Use the HTTP status instead.
-            default:
-                throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-        }
-    }
-
+    const r = await unpackError(loginOn401(await fetch(url, opts)));
     return r.json();
 }
 
