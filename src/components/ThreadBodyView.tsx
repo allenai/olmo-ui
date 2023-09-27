@@ -35,6 +35,7 @@ interface ThreadBodyProps {
     parent?: Message;
     messages?: Message[];
     showFollowUp?: boolean;
+    disabledActions?: boolean;
 }
 
 interface AgentResponseProps {
@@ -79,7 +80,12 @@ const UserResponseView = ({ response, msgId }: AgentResponseProps) => {
 
 const MENU_MAX_HEIGHT = 48 * 4.5;
 
-export const ThreadBodyView = ({ parent, messages, showFollowUp }: ThreadBodyProps) => {
+export const ThreadBodyView = ({
+    parent,
+    messages,
+    showFollowUp,
+    disabledActions = false,
+}: ThreadBodyProps) => {
     if (!messages) {
         return null;
     }
@@ -201,7 +207,10 @@ export const ThreadBodyView = ({ parent, messages, showFollowUp }: ThreadBodyPro
                             )}
                         </Grid>
                         {!isEditing && (
-                            <EditButton disabled={isLoading} onClick={() => setIsEditing(true)} />
+                            <EditButton
+                                disabled={isLoading || disabledActions}
+                                onClick={() => setIsEditing(true)}
+                            />
                         )}
                         {branchCount > 1 && (
                             <Grid item>
@@ -245,6 +254,7 @@ export const ThreadBodyView = ({ parent, messages, showFollowUp }: ThreadBodyPro
                         messages={curMessage.children}
                         parent={curMessage}
                         showFollowUp={showFollowUp}
+                        disabledActions={disabledActions}
                     />
                 ) : showFollowUp ? (
                     <FollowUpContainer>
@@ -252,7 +262,7 @@ export const ThreadBodyView = ({ parent, messages, showFollowUp }: ThreadBodyPro
                             sx={{ width: '100%' }}
                             multiline
                             placeholder="Follow Up"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || disabledActions}
                             maxRows={13}
                             value={followUpPrompt}
                             onChange={(v) => setFollowUpPrompt(v.target.value)}
