@@ -123,18 +123,25 @@ export function Search() {
     const [error, setError] = useState<string | undefined>();
 
     useEffect(() => {
+        setForm({ query });
         if (!query) {
+            setResponse(undefined);
+            setLoading(false);
+            setError(undefined);
             return;
         }
-        setForm({ query });
         setLoading(true);
+        setError(undefined);
         const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(query, offset)}`;
         fetch(url, { credentials: 'include' })
             .then((r) => loginOn401(r))
             .then((r) => unpackError(r))
             .then((r) => r.json())
             .then((r) => setResponse(r))
-            .catch((e) => setError(e.message))
+            .catch((e) => {
+                setResponse(undefined);
+                setError(e.message);
+            })
             .finally(() => setLoading(false));
     }, [query, size, offset]);
 
