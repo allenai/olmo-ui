@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { BannerLink, Content, Footer, logos, MaxWidthText } from '@allenai/varnish2/components';
+import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Link, Outlet } from 'react-router-dom';
-import { Button, ButtonProps, Box, Grid, CircularProgress, Typography } from '@mui/material';
+import { Button, ButtonProps, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
@@ -79,6 +79,9 @@ export const App = () => {
 
     const [isLoading, setLoading] = useState(true);
 
+    // TODO: There's an edge case where these XHR requests fail that we're not handling now.
+    // This is a temporary compromise to avoid "flashing" an error to users while they're
+    // being taken to the login page.
     useEffect(() => {
         setLoading(true);
         getUserInfo()
@@ -99,24 +102,6 @@ export const App = () => {
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
             ) : null}
-            {!isLoading && userInfo.error ? (
-                <RelativeContainer>
-                    <Content bgcolor="transparent">
-                        <Box sx={{ background: 'white', borderRadius: 2, p: 4 }}>
-                            <MaxWidthText>
-                                <Typography variant="h3" sx={{ mt: 0 }}>
-                                    Unauthorized
-                                </Typography>
-                                <Typography component="p" sx={{ mb: 0 }}>
-                                    You're not logged in and access to this application is currently
-                                    restricted. If this is an error, please refresh the page.
-                                </Typography>
-                            </MaxWidthText>
-                        </Box>
-                    </Content>
-                    <OlmoFooter />
-                </RelativeContainer>
-            ) : null}
             {!isLoading && userInfo.data && schema.data ? (
                 <RelativeContainer>
                     <OlmoBanner
@@ -129,7 +114,7 @@ export const App = () => {
                         endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                     />
                     <Disclaimer>
-                        This site uses the Tulu2 model model and provides search over the{' '}
+                        This site uses the Tulu2 model and allows you to search the{' '}
                         <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>.
                         We will eventually update this site to use the OLMo model.
                     </Disclaimer>
