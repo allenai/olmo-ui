@@ -154,7 +154,7 @@ export const ThreadBodyView = ({
         <HoverDecorationContainer showDecoration={branchCount > 1}>
             <>
                 <Box sx={{ width: '100%', p: 2 }}>
-                    <Grid container spacing={2}>
+                    <Stack direction="row" spacing={1}>
                         <Grid item sx={{ flexGrow: 1 }}>
                             {isEditing ? (
                                 <Grid container spacing={0.5}>
@@ -247,7 +247,7 @@ export const ThreadBodyView = ({
                                 </MenuWrapperContainer>
                             </Grid>
                         )}
-                    </Grid>
+                    </Stack>
                 </Box>
                 {curMessage.children ? (
                     <ThreadBodyView
