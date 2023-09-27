@@ -16,6 +16,7 @@ import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
 import { loginOn401 } from '../api/User';
+import { unpackError } from '../AppContext';
 
 interface SearchMeta {
     took_ms: number;
@@ -96,6 +97,15 @@ const NewSearchPlaceholder = () => {
     );
 };
 
+const SearchError = ({ message }: { message: string }) => {
+    return (
+        <NoPaddingGrid>
+            <h4>Something went wrong</h4>
+            <p>{message}</p>
+        </NoPaddingGrid>
+    );
+};
+
 export function Search() {
     const loc = useLocation();
     const size = 10; // size is fixed to 10, can modify in the future
@@ -110,18 +120,28 @@ export function Search() {
     const [response, setResponse] = useState<SearchResults | undefined>();
     const [loading, setLoading] = useState<boolean>(false);
     const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
+    const [error, setError] = useState<string | undefined>();
 
     useEffect(() => {
+        setForm({ query });
         if (!query) {
+            setResponse(undefined);
+            setLoading(false);
+            setError(undefined);
             return;
         }
-        setForm({ query });
         setLoading(true);
+        setError(undefined);
         const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(query, offset)}`;
         fetch(url, { credentials: 'include' })
             .then((r) => loginOn401(r))
+            .then((r) => unpackError(r))
             .then((r) => r.json())
             .then((r) => setResponse(r))
+            .catch((e) => {
+                setResponse(undefined);
+                setError(e.message);
+            })
             .finally(() => setLoading(false));
     }, [query, size, offset]);
 
@@ -167,7 +187,8 @@ export function Search() {
                         </Button>
                     </Stack>
                     {loading ? <LinearProgress sx={{ mt: 3 }} /> : null}
-                    {!loading && !response ? <NewSearchPlaceholder /> : null}
+                    {!loading && error ? <SearchError message={error} /> : null}
+                    {!loading && !error && !response ? <NewSearchPlaceholder /> : null}
                     {!loading && response ? (
                         <>
                             <Grid container direction="column" spacing={2} p={2}>
