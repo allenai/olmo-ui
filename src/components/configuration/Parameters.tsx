@@ -17,6 +17,9 @@ export const Parameters = () => {
     const opts = schema.data.Message.InferenceOpts;
     const [stopWordsInput, setStopWordsInput] = useState('');
 
+    // TODO: The sliders for N and LogProbs have been commented out because they do not work
+    // with v3 API endpoints, so we want to block users from using them. We will re-enable these
+    // once the endpoints are updated.
     return (
         <Stack spacing={2}>
             <InputSlider
@@ -35,14 +38,14 @@ export const Parameters = () => {
                 initialValue={opts.temperature.default}
                 onChange={(v) => updateInferenceOpts({ temperature: v })}
             />
-            <InputSlider
+            {/* <InputSlider
                 label="N"
                 min={opts.n.min}
                 max={opts.n.max}
                 step={opts.n.step}
                 initialValue={opts.n.default}
                 onChange={(v) => updateInferenceOpts({ n: v })}
-            />
+            /> */}
             <InputSlider
                 label="Top P"
                 min={opts.top_p.min}
@@ -51,14 +54,14 @@ export const Parameters = () => {
                 initialValue={opts.top_p.default}
                 onChange={(v) => updateInferenceOpts({ top_p: v })}
             />
-            <InputSlider
+            {/* <InputSlider
                 label="Log Probs"
                 min={opts.logprobs.min}
                 max={opts.logprobs.max}
                 step={opts.logprobs.step}
                 initialValue={opts.logprobs.default}
                 onChange={(v) => updateInferenceOpts({ logprobs: v })}
-            />
+            /> */}
             <Box sx={{ width: '100%' }}>
                 <Typography>Stop Words</Typography>
                 <Typography variant="caption">Hit "Tab" to add a new word.</Typography>
