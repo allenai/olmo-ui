@@ -69,7 +69,9 @@ export const NewQuery = () => {
     const getPromptTemplates = async function () {
         const allPromptTemplateInfo = await getAllPromptTemplates();
         if (!allPromptTemplateInfo.error && allPromptTemplateInfo.data) {
-            setPromptTemplates([DefaultPromptTemplate].concat(allPromptTemplateInfo.data));
+            const pt = allPromptTemplateInfo.data.slice();
+            pt.sort((a, b) => a.name.localeCompare(b.name));
+            setPromptTemplates([DefaultPromptTemplate].concat(pt));
         }
     };
 
