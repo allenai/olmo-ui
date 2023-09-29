@@ -157,7 +157,7 @@ export const NewQuery = () => {
                                 <Editor
                                     disabled={isLoading}
                                     placeholder="Select a Prompt Template above or type a free form prompt"
-                                    chips={mockChips}
+                                    chips={mockChips} // todo: get these from api
                                 />
                             ) : (
                                 <TextField

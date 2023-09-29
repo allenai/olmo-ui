@@ -3,11 +3,13 @@ import { MentionData, defaultSuggestionsFilter } from '@draft-js-plugins/mention
 import { EditorPlugin } from '@draft-js-plugins/editor';
 import { MentionSuggestionsPubProps } from '@draft-js-plugins/mention/lib/MentionSuggestions/MentionSuggestions';
 
+import { DataChip } from '../../api/DataChip';
+
 interface Props {
     mentionPlugin: EditorPlugin & {
         MentionSuggestions: React.ComponentType<MentionSuggestionsPubProps>;
     };
-    chips: MentionData[];
+    chips: DataChip[];
 }
 
 export const ChipSuggestions = ({ mentionPlugin, chips }: Props) => {
@@ -19,7 +21,9 @@ export const ChipSuggestions = ({ mentionPlugin, chips }: Props) => {
     }, []);
 
     const onSearchChange = useCallback(({ trigger, value }: { trigger: string; value: string }) => {
-        setSuggestions(defaultSuggestionsFilter(value, chips, trigger));
+        setSuggestions(
+            defaultSuggestionsFilter(value, chips as MentionData[], trigger) as DataChip[]
+        );
     }, []);
 
     return (
