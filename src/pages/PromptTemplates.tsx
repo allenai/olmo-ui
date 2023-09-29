@@ -1,28 +1,29 @@
+/*
+TODO:
+  1- (blocked on api) need to be able to restore templates
+  2- (blocked) archived templates are currently being filtered out by the backend
+*/
+
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Divider,
-    LinearProgress,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    TextField,
-} from '@mui/material';
+    DataGrid,
+    GridColDef,
+    GridRenderCellParams,
+    GridValueGetterParams,
+} from '@mui/x-data-grid';
+import dayjs from 'dayjs';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import TuneIcon from '@mui/icons-material/Tune';
 
 import { useAppContext } from '../AppContext';
 import { PromptTemplate } from '../api/PromptTemplate';
+import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
 
-export const PromptTemplates = () => {
+export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const {
         getAllPromptTemplates,
         allPromptTemplateInfo,
@@ -36,121 +37,165 @@ export const PromptTemplates = () => {
         getAllPromptTemplates();
     }, []);
 
-    const [newName, setNewName] = useState<string>();
-    const [newContent, setNewContent] = useState<string>();
-    const [openConfirm, setOpenConfirm] = React.useState(false);
-    const [templateId, settemplateId] = React.useState<string>();
+    const [editorOpen, setEditorOpen] = useState(false);
+    const [focusedPromptTemplate, setFocusedPromptTemplate] = useState<PromptTemplate>();
 
-    const handleClickOpen = (templateId: string) => {
-        settemplateId(templateId);
-        setOpenConfirm(true);
+    const dateTimeFormat = 'M/D/YY h:mm a';
+
+    const promptTemplateColumns: GridColDef<PromptTemplate>[] = [
+        {
+            field: 'name',
+            headerName: 'Name',
+            minWidth: 170,
+            flex: 2,
+        },
+        {
+            field: 'content',
+            headerName: 'Content',
+            renderCell: (params: GridRenderCellParams<PromptTemplate>) => (
+                <Typography sx={{ fontWeight: 'bold' }} noWrap>
+                    {params.value}
+                </Typography>
+            ),
+            minWidth: 170,
+            flex: 5,
+        },
+        {
+            field: 'characters',
+            headerName: 'Characters',
+            align: 'right',
+            sortComparator: (a: number, b: number) => a - b,
+            valueGetter: (params: GridValueGetterParams<PromptTemplate>) =>
+                params.row.content.length,
+            renderCell: (params: GridRenderCellParams<PromptTemplate>) =>
+                params.value.toLocaleString(),
+            minWidth: 100,
+            flex: 1,
+        },
+        {
+            field: 'creator',
+            headerName: 'Creator',
+            minWidth: 150,
+            flex: 1,
+        },
+        {
+            field: 'created',
+            headerName: 'Created',
+            align: 'right',
+            valueGetter: (params: GridValueGetterParams) =>
+                dayjs(params.value).format(dateTimeFormat),
+            minWidth: 150,
+            flex: 1,
+        },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            filterable: false,
+            sortable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridRenderCellParams<PromptTemplate>) => (
+                <>
+                    {!params.row.deleted ? (
+                        <IconButton
+                            aria-label="visible"
+                            onClick={() => setArchivePromptTemplate(params.row, true)}>
+                            <VisibilityIcon />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            aria-label="hidden"
+                            onClick={() => setArchivePromptTemplate(params.row, false)}>
+                            <VisibilityOffIcon />
+                        </IconButton>
+                    )}
+                    <IconButton
+                        aria-label="hidden"
+                        onClick={() => {
+                            setFocusedPromptTemplate(params.row);
+                            setEditorOpen(true);
+                        }}>
+                        <TuneIcon />
+                    </IconButton>
+                </>
+            ),
+            minWidth: 90,
+            flex: 1,
+        },
+    ];
+
+    const createPromptTemplate = (name: string, content: string) => {
+        postPromptTemplates({
+            name,
+            content,
+        });
     };
 
-    const handleClose = (success: boolean) => {
-        setOpenConfirm(false);
-        if (success && templateId) {
-            deletePromptTemplate(templateId);
+    const setArchivePromptTemplate = (
+        promptTemplate: PromptTemplate | undefined,
+        value: boolean
+    ) => {
+        if (promptTemplate) {
+            if (value) {
+                deletePromptTemplate(promptTemplate.id);
+            } else {
+                // todo: we need the ability to restore
+            }
         }
     };
 
-    if (
-        deletedPromptTemplateInfo.loading ||
-        postPromptTemplateInfo.loading ||
-        allPromptTemplateInfo.loading
-    ) {
-        return <LinearProgress />;
-    }
-
     return (
         <Box sx={{ width: '100%', background: 'white', p: 2 }}>
-            <Stack spacing={3}>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell width="15%">Name</TableCell>
-                            <TableCell width="85%">Content</TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {allPromptTemplateInfo.data?.map((template: PromptTemplate) => (
-                            <TableRow key={template.name}>
-                                <TableCell component="th" scope="row">
-                                    {template.name}
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        InputProps={{ disableUnderline: true }}
-                                        fullWidth
-                                        size="small"
-                                        variant="standard"
-                                        multiline
-                                        maxRows={6}
-                                        value={template.content}></TextField>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={() => handleClickOpen(template.id)}>
-                                        Delete
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+            <PromptTemplateEditor
+                promptTemplate={focusedPromptTemplate}
+                open={editorOpen}
+                onCancel={() => setEditorOpen(false)}
+                onSuccess={(name: string, content: string) => {
+                    setEditorOpen(false);
+                    createPromptTemplate(name, content);
+                }}
+                onRestore={() => setArchivePromptTemplate(focusedPromptTemplate, false)}
+            />
 
-                        <TableRow>
-                            <TableCell component="th" scope="row">
-                                <TextField
-                                    fullWidth
-                                    size="small"
-                                    value={newName}
-                                    placeholder="Type name"
-                                    onChange={(v) => setNewName(v.currentTarget.value)}
-                                />
-                            </TableCell>
-                            <TableCell>
-                                <TextField
-                                    fullWidth
-                                    size="small"
-                                    multiline
-                                    maxRows={5}
-                                    value={newContent}
-                                    placeholder="Type content"
-                                    onChange={(v) => setNewContent(v.currentTarget.value)}
-                                />
-                            </TableCell>
-                            <TableCell>
-                                <Button
-                                    variant="contained"
-                                    disabled={!newName || !newContent}
-                                    onClick={() =>
-                                        postPromptTemplates({
-                                            name: newName || '',
-                                            content: newContent || '',
-                                        })
-                                    }>
-                                    Add New
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-                <Divider />
-                <Link to={'/'}>New Query</Link>
-            </Stack>
+            {!hideTitle ? (
+                <Typography variant="h1" sx={{ m: 0 }}>
+                    Prompt Templates
+                </Typography>
+            ) : null}
 
-            <Dialog open={openConfirm} onClose={() => handleClose(false)}>
-                <DialogTitle>{'Are you sure?'}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        This will affect all users and cannot be undone.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => handleClose(false)}>Cancel</Button>
-                    <Button onClick={() => handleClose(true)}>Continue</Button>
-                </DialogActions>
-            </Dialog>
+            <DataGrid
+                loading={
+                    deletedPromptTemplateInfo.loading ||
+                    postPromptTemplateInfo.loading ||
+                    allPromptTemplateInfo.loading
+                }
+                rows={allPromptTemplateInfo.data || []}
+                columns={promptTemplateColumns}
+                initialState={{
+                    pagination: {
+                        paginationModel: {
+                            pageSize: 25,
+                        },
+                    },
+                }}
+                pageSizeOptions={[10, 25, 50, 100]}
+                disableRowSelectionOnClick
+                slots={{
+                    footer: () => (
+                        <Box alignSelf="end" sx={{ mt: 2 }}>
+                            <Button
+                                variant="contained"
+                                endIcon={<AddIcon />}
+                                aria-label="Create New"
+                                onClick={() => {
+                                    setFocusedPromptTemplate(undefined);
+                                    setEditorOpen(true);
+                                }}>
+                                Create New Prompt Template
+                            </Button>
+                        </Box>
+                    ),
+                }}
+            />
         </Box>
     );
 };

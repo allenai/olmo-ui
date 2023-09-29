@@ -19,6 +19,8 @@ import {
     PromptsTemplateApiUrl,
     PromptTemplatePost,
     PromptTemplateApiUrl,
+    parsePromptTemplate,
+    JSONPromptTemplate,
 } from './api/PromptTemplate';
 import { Schema, SchemaApiUrl } from './api/Schema';
 import { JSONLabel, Label, LabelApiUrl, LabelPost, LabelsApiUrl, parseLabel } from './api/Label';
@@ -186,7 +188,8 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     error: false,
                 },
             }));
-            const promptTemplates = await fetchAPI<PromptTemplate[]>(PromptsTemplateApiUrl);
+            const pts = await fetchAPI<JSONPromptTemplate[]>(PromptsTemplateApiUrl);
+            const promptTemplates = pts.map((m) => parsePromptTemplate(m));
             set((state) => ({
                 allPromptTemplateInfo: {
                     ...state.allPromptTemplateInfo,
