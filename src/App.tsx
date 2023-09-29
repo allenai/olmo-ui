@@ -164,6 +164,8 @@ const RelativeContainer = styled.div`
     position: relative;
     z-index: 10;
     min-height: 100vh;
+    max-width: 1200px;
+    margin: auto;
 `;
 
 const LoadingContainer = styled.div`
