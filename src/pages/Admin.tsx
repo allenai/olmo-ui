@@ -36,7 +36,6 @@ export const Admin = () => {
         PromptTemplates = 'promptTemplates',
     }
 
-
     const labelColumns: GridColDef[] = [
         {
             field: 'message',
