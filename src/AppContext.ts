@@ -188,8 +188,8 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     error: false,
                 },
             }));
-            const pts = await fetchAPI<JSONPromptTemplate[]>(PromptsTemplateApiUrl);
-            const promptTemplates = pts.map((m) => parsePromptTemplate(m));
+            const jsonPromptTemplates = await fetchAPI<JSONPromptTemplate[]>(PromptsTemplateApiUrl);
+            const promptTemplates = jsonPromptTemplates.map((m) => parsePromptTemplate(m));
             set((state) => ({
                 allPromptTemplateInfo: {
                     ...state.allPromptTemplateInfo,
