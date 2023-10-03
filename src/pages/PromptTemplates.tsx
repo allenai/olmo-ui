@@ -22,6 +22,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { useAppContext } from '../AppContext';
 import { PromptTemplate } from '../api/PromptTemplate';
 import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
+import { dateTimeFormat } from '../olmoTheme';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const {
@@ -39,8 +40,6 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
 
     const [editorOpen, setEditorOpen] = useState(false);
     const [focusedPromptTemplate, setFocusedPromptTemplate] = useState<PromptTemplate>();
-
-    const dateTimeFormat = 'M/D/YY h:mm a';
 
     const promptTemplateColumns: GridColDef<PromptTemplate>[] = [
         {
