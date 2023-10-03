@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { Box, Tab, Typography } from '@mui/material';
 import {
     DataGrid,
@@ -8,9 +9,12 @@ import {
 } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Link } from 'react-router-dom';
 
 import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
+import { DataChips } from './DataChips';
+import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../olmoTheme';
 
 export const Admin = () => {
@@ -26,12 +30,18 @@ export const Admin = () => {
         setCurTab(newValue);
     };
 
+    enum TabKey {
+        Labels = 'labels',
+        DataChips = 'dataChips',
+        PromptTemplates = 'promptTemplates',
+    }
+
     const labelColumns: GridColDef[] = [
         {
             field: 'message',
             headerName: 'Message',
             renderCell: (params: GridRenderCellParams<Date>) => (
-                <a href={`/thread/${params.value}`}>{params.value}</a>
+                <Link to={`/thread/${params.value}`}>{params.value}</Link>
             ),
             minWidth: 160,
             flex: 1,
@@ -82,16 +92,14 @@ export const Admin = () => {
             </Typography>
             <TabContext value={curTab}>
                 <TabList onChange={handleTabChange}>
+                    <Tab label={<TabLabel>Labels</TabLabel>} value={TabKey.Labels} />
+                    <Tab label={<TabLabel>Data Chips</TabLabel>} value={TabKey.DataChips} />
                     <Tab
-                        label={
-                            <Typography variant="h4" sx={{ m: 0 }}>
-                                Labels
-                            </Typography>
-                        }
-                        value="labels"
+                        label={<TabLabel>Prompt Templates</TabLabel>}
+                        value={TabKey.PromptTemplates}
                     />
                 </TabList>
-                <TabPanel value="labels">
+                <TabPanel value={TabKey.Labels}>
                     {!allLabelInfo.error ? (
                         <DataGrid
                             loading={allLabelInfo.loading}
@@ -104,12 +112,24 @@ export const Admin = () => {
                                     },
                                 },
                             }}
-                            pageSizeOptions={[10, 25, 50, 100, 1000]}
+                            pageSizeOptions={[10, 25, 50, 100]}
                             disableRowSelectionOnClick
                         />
                     ) : null}
+                </TabPanel>
+                <TabPanel value={TabKey.DataChips}>
+                    <DataChips hideTitle />
+                </TabPanel>
+                <TabPanel value={TabKey.PromptTemplates}>
+                    <PromptTemplates hideTitle />
                 </TabPanel>
             </TabContext>
         </Box>
     );
 };
+
+const TabLabel = styled(Typography).attrs({ variant: 'h4' })`
+    &&& {
+        margin: 0;
+    }
+`;

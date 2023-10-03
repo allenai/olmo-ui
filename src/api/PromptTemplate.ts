@@ -10,10 +10,29 @@ export interface PromptTemplate {
     id: string;
     name: string;
     content: string;
+    creator: string;
+    created: Date;
+    deleted?: Date;
 }
+
+// The serialized representation, where certain fields (dates) are encoded as strings.
+export interface JSONPromptTemplate extends Omit<PromptTemplate, 'created' | 'deleted'> {
+    created: string;
+    deleted?: string;
+}
+
+export const parsePromptTemplate = (promptTemplate: JSONPromptTemplate): PromptTemplate => {
+    return {
+        ...promptTemplate,
+        created: new Date(promptTemplate.created),
+        deleted: promptTemplate.deleted ? new Date(promptTemplate.deleted) : undefined,
+    };
+};
 
 export const DefaultPromptTemplate = {
     id: 'defaultPromptTemplateId',
     name: 'Free Form Prompt',
     content: '',
+    creator: '',
+    created: new Date(),
 };
