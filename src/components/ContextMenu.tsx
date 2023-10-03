@@ -97,11 +97,11 @@ export const ContextMenu = ({
     };
 
     useEffect(() => {
-        const mainElement = document.getElementsByTagName('main')[0];
-        if (mainElement) {
-            mainElement.addEventListener('mouseup', handleMouseUp);
+        const targetElement = divRef.current;
+        if (targetElement) {
+            targetElement.addEventListener('mouseup', handleMouseUp);
             return () => {
-                mainElement.removeEventListener('mouseup', handleMouseUp);
+                targetElement.removeEventListener('mouseup', handleMouseUp);
             };
         }
     }, [selText]);
