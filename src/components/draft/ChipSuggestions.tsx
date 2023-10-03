@@ -22,6 +22,9 @@ export const ChipSuggestions = ({ mentionPlugin, chips }: Props) => {
 
     const onSearchChange = useCallback(({ trigger, value }: { trigger: string; value: string }) => {
         setSuggestions(
+            // We are converting into and out of MentionData. DaaChip is a MentionData, but I had
+            // trouble making Typescript agree because MentionData interface is defined as a
+            // dictionary.
             defaultSuggestionsFilter(value, chips as MentionData[], trigger) as DataChip[]
         );
     }, []);

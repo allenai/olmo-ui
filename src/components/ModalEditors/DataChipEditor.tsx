@@ -16,11 +16,17 @@ import { DataChip } from '../../api/DataChip';
 import { ArchivedAlert, Metadata } from './Shared';
 
 interface Props {
+    // called when the user saves
     onSuccess: (name: string, content: string) => void;
+    // called whne the user cancels/leaves
     onCancel: () => void;
+    // called when the user clicks restore on an archived chip
     onRestore: () => void;
+    // conteols if the modal is open
     open: boolean;
+    // if a chip is passed, it is the readonly chip
     chip?: DataChip;
+    // if no chip is passed, the user can pass a seed content to start a new chip
     seedContent?: string;
 }
 
