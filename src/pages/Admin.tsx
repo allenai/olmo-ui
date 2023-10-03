@@ -15,6 +15,7 @@ import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
 import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
+import { dateTimeFormat } from '../olmoTheme';
 
 export const Admin = () => {
     const { getAllLabels, allLabelInfo } = useAppContext();
@@ -29,13 +30,12 @@ export const Admin = () => {
         setCurTab(newValue);
     };
 
-    const dateTimeFormat = 'M/D/YY h:mm a';
-
     enum TabKey {
         Labels = 'labels',
         DataChips = 'dataChips',
         PromptTemplates = 'promptTemplates',
     }
+
 
     const labelColumns: GridColDef[] = [
         {

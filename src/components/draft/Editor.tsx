@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { EditorState, RawDraftContentState, convertFromRaw } from 'draft-js';
 import DraftJsEditor from '@draft-js-plugins/editor';
-import createMentionPlugin, { MentionData } from '@draft-js-plugins/mention';
+import createMentionPlugin from '@draft-js-plugins/mention';
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
 
 import { ChipDisplay } from './ChipDisplay';
@@ -11,13 +11,14 @@ import { ToolBar } from './Toolbar';
 
 import '@draft-js-plugins/mention/lib/plugin.css';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
+import { DataChip } from '../../api/DataChip';
 
 interface Props {
     disabled?: boolean;
     placeholder?: string;
     initialRawData?: RawDraftContentState;
     onChange?: (editorState: EditorState) => void;
-    chips: MentionData[];
+    chips: DataChip[];
 }
 
 export const Editor = ({ disabled, placeholder, initialRawData, onChange, chips }: Props) => {
@@ -41,27 +42,29 @@ export const Editor = ({ disabled, placeholder, initialRawData, onChange, chips 
     }, []);
 
     return (
-        <OuterContainer
-            onClick={() => {
-                ref.current?.focus();
-            }}>
-            <EditorWrapper>
-                <DraftJsEditor
-                    readOnly={disabled}
-                    placeholder={placeholder}
-                    editorKey={'editor'}
-                    editorState={editorState}
-                    onChange={(editorState: EditorState) => {
-                        setEditorState(editorState);
-                        onChange && onChange(editorState);
-                    }}
-                    plugins={[mentionPlugin, inlineToolbarPlugin]}
-                    ref={ref}
-                />
-                <InlineToolbar>{(externalProps) => <ToolBar {...externalProps} />}</InlineToolbar>
-                <ChipSuggestions mentionPlugin={mentionPlugin} chips={chips} />
-            </EditorWrapper>
-        </OuterContainer>
+        <>
+            <OuterContainer
+                onClick={() => {
+                    ref.current?.focus();
+                }}>
+                <EditorWrapper>
+                    <DraftJsEditor
+                        readOnly={disabled}
+                        placeholder={placeholder}
+                        editorKey={'editor'}
+                        editorState={editorState}
+                        onChange={(editorState: EditorState) => {
+                            setEditorState(editorState);
+                            onChange && onChange(editorState);
+                        }}
+                        plugins={[mentionPlugin, inlineToolbarPlugin]}
+                        ref={ref}
+                    />
+                    <ChipSuggestions mentionPlugin={mentionPlugin} chips={chips} />
+                </EditorWrapper>
+            </OuterContainer>
+            <InlineToolbar>{(externalProps) => <ToolBar {...externalProps} />}</InlineToolbar>
+        </>
     );
 };
 

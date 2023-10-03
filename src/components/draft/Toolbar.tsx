@@ -5,12 +5,14 @@ import { ToolbarChildrenProps } from '@draft-js-plugins/inline-toolbar/lib/compo
 import { BlockMap, ContentBlock, ContentState, SelectionState } from 'draft-js';
 
 import { SearchButton } from './SearchButton';
+import { DataChipButton } from './DataChipButton';
 import { LogRawButton } from './CopyRawButton';
 
 export const ToolBar = (externalProps: ToolbarChildrenProps) => {
     return (
         <>
             <SearchButton {...externalProps} />
+            <DataChipButton {...externalProps} />
             <BoldButton {...externalProps} />
             <ItalicButton {...externalProps} />
             <UnderlineButton {...externalProps} />
