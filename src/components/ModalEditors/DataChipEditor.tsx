@@ -21,14 +21,22 @@ interface Props {
     onRestore: () => void;
     open: boolean;
     chip?: DataChip;
+    seedContent?: string;
 }
 
-export const DataChipEditor = ({ onSuccess, onCancel, onRestore, open, chip }: Props) => {
+export const DataChipEditor = ({
+    onSuccess,
+    onCancel,
+    onRestore,
+    open,
+    chip,
+    seedContent,
+}: Props) => {
     const [name, setName] = useState<string>('');
     const [content, setContent] = useState<string>('');
     useEffect(() => {
-        setName(chip?.name || '');
-        setContent(chip?.content || '');
+        setName(chip?.name || `${seedContent?.slice(0, 10)}…` || '');
+        setContent(chip?.content || seedContent || '');
     }, [open]);
     return (
         <Dialog fullWidth maxWidth="md" onClose={onCancel} open={open}>
@@ -55,7 +63,7 @@ export const DataChipEditor = ({ onSuccess, onCancel, onRestore, open, chip }: P
                                         autocomplete: 'off',
                                     },
                                 }}
-                                placeholder="Enter a name for the Data Chip..."
+                                placeholder="Enter a name for the Data Chip…"
                                 value={name}
                                 onChange={(v) => setName(v.target.value)}
                             />
@@ -77,7 +85,7 @@ export const DataChipEditor = ({ onSuccess, onCancel, onRestore, open, chip }: P
                                 multiline
                                 minRows={6}
                                 maxRows={10}
-                                placeholder="Enter full content for the Data Chip..."
+                                placeholder="Enter full content for the Data Chip…"
                                 value={content}
                                 onChange={(v) => setContent(v.target.value)}
                             />

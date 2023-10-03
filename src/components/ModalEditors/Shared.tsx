@@ -17,10 +17,10 @@ export const ArchivedAlert = ({ onRestore }: { onRestore: () => void }) => (
 
 export const Metadata = ({ data }: { data: string[] }) => (
     <FormHelperText>
-        {data.map((d, j) => {
+        {data.map((d, i) => {
             return (
                 <React.Fragment key={d}>
-                    {d} {j < data.length - 1 ? <span>&#183; </span> : null}
+                    {d} {i < data.length - 1 ? <span>&#183; </span> : null}
                 </React.Fragment>
             );
         })}

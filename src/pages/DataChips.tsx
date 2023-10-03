@@ -5,8 +5,8 @@
     2- (blocked on api) save changes to chips to api
 */
 
-import React, { useState } from 'react';
-import { Box, Button, IconButton, Typography, Chip } from '@mui/material';
+import React from 'react';
+import { Box, Button, IconButton, Typography, Chip, ButtonProps } from '@mui/material';
 import {
     DataGrid,
     GridColDef,
@@ -22,14 +22,10 @@ import TuneIcon from '@mui/icons-material/Tune';
 
 import { DataChip } from '../api/DataChip';
 import { mockChips } from '../components/draft/mockData';
-import { DataChipEditor } from '../components/ModalEditors/DataChipEditor';
+import { DataChipEditorButtonWrapper } from '../components/ModalEditors/DataChipEditorButtonWrapper';
+import { dateTimeFormat } from '../olmoTheme';
 
 export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
-    const [editorOpen, setEditorOpen] = useState(false);
-    const [focusedChip, setFocusedChip] = useState<DataChip>();
-
-    const dateTimeFormat = 'M/D/YY h:mm a';
-
     const chipColumns: GridColDef<DataChip>[] = [
         {
             field: 'name',
@@ -95,14 +91,14 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
                             <VisibilityOffIcon />
                         </IconButton>
                     )}
-                    <IconButton
-                        aria-label="hidden"
-                        onClick={() => {
-                            setFocusedChip(params.row);
-                            setEditorOpen(true);
-                        }}>
-                        <TuneIcon />
-                    </IconButton>
+                    <DataChipEditorButtonWrapper
+                        chip={params.row}
+                        renderButton={(props: ButtonProps) => (
+                            <IconButton aria-label="hidden" {...props}>
+                                <TuneIcon />
+                            </IconButton>
+                        )}
+                    />
                 </>
             ),
             minWidth: 90,
@@ -110,10 +106,7 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
         },
     ];
 
-    const createChip = (name: string, content: string) => {
-        console.log(`todo: make new chip: ${name}`, content);
-    };
-
+    // likely to be replaced with a direct call to app context
     const setArchiveChip = (chip: DataChip | undefined, value: boolean) => {
         if (chip) {
             console.log(`todo: ${value ? 'archive' : 'restore'} chip: ${chip.name}`);
@@ -122,17 +115,6 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
 
     return (
         <Box sx={{ width: '100%', background: 'white', p: 2 }}>
-            <DataChipEditor
-                chip={focusedChip}
-                open={editorOpen}
-                onCancel={() => setEditorOpen(false)}
-                onSuccess={(name: string, content: string) => {
-                    setEditorOpen(false);
-                    createChip(name, content);
-                }}
-                onRestore={() => setArchiveChip(focusedChip, false)}
-            />
-
             {!hideTitle ? (
                 <Typography variant="h1" sx={{ m: 0 }}>
                     Data Chips
@@ -155,16 +137,17 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
                 slots={{
                     footer: () => (
                         <Box alignSelf="end" sx={{ mt: 2 }}>
-                            <Button
-                                variant="contained"
-                                endIcon={<AddIcon />}
-                                aria-label="Create New"
-                                onClick={() => {
-                                    setFocusedChip(undefined);
-                                    setEditorOpen(true);
-                                }}>
-                                Create New Data Chip
-                            </Button>
+                            <DataChipEditorButtonWrapper
+                                renderButton={(props) => (
+                                    <Button
+                                        variant="contained"
+                                        endIcon={<AddIcon />}
+                                        aria-label="Create New"
+                                        {...props}>
+                                        Create New Data Chip
+                                    </Button>
+                                )}
+                            />
                         </Box>
                     ),
                 }}

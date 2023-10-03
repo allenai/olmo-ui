@@ -61,7 +61,7 @@ const router = createBrowserRouter([
                 errorElement: <ErrorPage />,
             },
             {
-                path: '/chips',
+                path: '/data-chips',
                 element: <DataChips />,
                 errorElement: <ErrorPage />,
             },
