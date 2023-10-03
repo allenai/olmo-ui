@@ -24,8 +24,14 @@ import { DataChip } from '../api/DataChip';
 import { mockChips } from '../components/draft/mockData';
 import { DataChipEditorButtonWrapper } from '../components/ModalEditors/DataChipEditorButtonWrapper';
 import { dateTimeFormat } from '../olmoTheme';
+import { useFeatureToggles } from '../FeatureToggleContext';
 
 export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
+    const toggles = useFeatureToggles();
+    if (!toggles.chips) {
+        return;
+    }
+
     const chipColumns: GridColDef<DataChip>[] = [
         {
             field: 'name',
