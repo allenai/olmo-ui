@@ -18,6 +18,7 @@ import { App } from './App';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
 import { FeatureToggleProvider } from './FeatureToggleContext';
+import { DataChips } from './pages/DataChips';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -57,6 +58,11 @@ const router = createBrowserRouter([
             {
                 path: '/prompt-templates',
                 element: <PromptTemplates />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/data-chips',
+                element: <DataChips />,
                 errorElement: <ErrorPage />,
             },
             {

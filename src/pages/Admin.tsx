@@ -11,6 +11,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
+import { dateTimeFormat } from '../olmoTheme';
 
 export const Admin = () => {
     const { getAllLabels, allLabelInfo } = useAppContext();
@@ -24,8 +25,6 @@ export const Admin = () => {
     const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
         setCurTab(newValue);
     };
-
-    const dateTimeFormat = 'M/D/YY h:mm a';
 
     const labelColumns: GridColDef[] = [
         {
