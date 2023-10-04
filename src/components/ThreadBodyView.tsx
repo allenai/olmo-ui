@@ -42,10 +42,10 @@ interface ThreadBodyProps {
 interface AgentResponseProps {
     msgId: string;
     response: string;
-    editedResponse?: boolean;
+    isEditedResponse?: boolean;
 }
 
-const LLMResponseView = ({ response, msgId, editedResponse = false }: AgentResponseProps) => {
+const LLMResponseView = ({ response, msgId, isEditedResponse = false }: AgentResponseProps) => {
     const marked = new Marked(
         markedHighlight({
             langPrefix: 'hljs language-',
@@ -63,7 +63,7 @@ const LLMResponseView = ({ response, msgId, editedResponse = false }: AgentRespo
     const html = DOMPurify.sanitize(marked.parse(response));
     return (
         <Stack direction="row">
-            {editedResponse ? (
+            {isEditedResponse ? (
                 <AvatarGroup max={2}>
                     <RobotAvatar />
                     <UserAvatar />
@@ -210,7 +210,7 @@ export const ThreadBodyView = ({
                                         <LLMResponseView
                                             response={curMessage.content}
                                             msgId={curMessage.id}
-                                            editedResponse={
+                                            isEditedResponse={
                                                 curMessage.original !== undefined &&
                                                 curMessage.original?.length > 0
                                             }
