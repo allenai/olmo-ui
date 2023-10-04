@@ -223,22 +223,22 @@ export function Search() {
                                         </ResultsContainer>
                                     </NoPaddingGrid>
                                 ))}
+                                <NoPaddingGrid item>
+                                    <Pagination
+                                        boundaryCount={1}
+                                        count={Math.ceil(response.meta.total / size)}
+                                        page={page}
+                                        onChange={(_, page: number) => {
+                                            nav(
+                                                `${loc.pathname}?${toQueryString(
+                                                    form.query,
+                                                    (page - 1) * size
+                                                )}`
+                                            );
+                                        }}
+                                    />
+                                </NoPaddingGrid>
                             </Grid>
-                            <Stack alignItems="center">
-                                <Pagination
-                                    boundaryCount={1}
-                                    count={Math.ceil(response.meta.total / size)}
-                                    page={page}
-                                    onChange={(_, page: number) => {
-                                        nav(
-                                            `${loc.pathname}?${toQueryString(
-                                                form.query,
-                                                (page - 1) * size
-                                            )}`
-                                        );
-                                    }}
-                                />
-                            </Stack>
                         </>
                     ) : null}
                 </FullWidthContainer>
