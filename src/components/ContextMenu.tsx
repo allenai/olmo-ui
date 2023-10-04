@@ -97,10 +97,13 @@ export const ContextMenu = ({
     };
 
     useEffect(() => {
-        window.addEventListener('mouseup', handleMouseUp);
-        return () => {
-            window.removeEventListener('mouseup', handleMouseUp);
-        };
+        const targetElement = divRef.current;
+        if (targetElement) {
+            targetElement.addEventListener('mouseup', handleMouseUp);
+            return () => {
+                targetElement.removeEventListener('mouseup', handleMouseUp);
+            };
+        }
     }, [selText]);
 
     return (
