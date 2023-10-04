@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+    AvatarGroup,
     Box,
     Chip,
     Grid,
@@ -41,9 +42,10 @@ interface ThreadBodyProps {
 interface AgentResponseProps {
     msgId: string;
     response: string;
+    isEditedResponse?: boolean;
 }
 
-const LLMResponseView = ({ response, msgId }: AgentResponseProps) => {
+const LLMResponseView = ({ response, msgId, isEditedResponse = false }: AgentResponseProps) => {
     const marked = new Marked(
         markedHighlight({
             langPrefix: 'hljs language-',
@@ -61,7 +63,14 @@ const LLMResponseView = ({ response, msgId }: AgentResponseProps) => {
     const html = DOMPurify.sanitize(marked.parse(response));
     return (
         <Stack direction="row">
-            <RobotAvatar />
+            {isEditedResponse ? (
+                <AvatarGroup max={2}>
+                    <RobotAvatar />
+                    <UserAvatar />
+                </AvatarGroup>
+            ) : (
+                <RobotAvatar />
+            )}
             <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
         </Stack>
     );
@@ -201,6 +210,10 @@ export const ThreadBodyView = ({
                                         <LLMResponseView
                                             response={curMessage.content}
                                             msgId={curMessage.id}
+                                            isEditedResponse={
+                                                curMessage.original !== undefined &&
+                                                curMessage.original?.length > 0
+                                            }
                                         />
                                     )}
                                 </>
