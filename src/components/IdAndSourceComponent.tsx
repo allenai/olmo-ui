@@ -26,7 +26,7 @@ export const IdAndSourceComponent = ({
             <CopyToClipboardButton buttonContent={<ContentCopyIcon fontSize="inherit" />} text={id}>
                 {truncateId ? (
                     <Tooltip title={id} placement="top">
-                        <Typography noWrap sx={{ pl: 0.5, w: 9.5 }}>
+                        <Typography noWrap sx={{ pl: 0.5, maxWidth: '200px' }}>
                             {id}
                         </Typography>
                     </Tooltip>
