@@ -24,6 +24,7 @@ export interface Message {
     completion?: string;
     logprobs?: Logprob[];
     opts: InferenceOpts;
+    original?: string;
     parent?: string;
     role: Role;
     root: string;
