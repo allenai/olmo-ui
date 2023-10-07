@@ -5,7 +5,7 @@ function login() {
     document.location = `${self.origin}/v3/login/skiff`;
 }
 
-async function processResponse<T>(response: Response): Promise<T> {
+async function unpack<T>(response: Response): Promise<T> {
     switch (response.status) {
         case 200:
             return await response.json();
@@ -28,18 +28,18 @@ export class Client {
             size
         )}`;
         const resp = await fetch(url, { credentials: 'include' });
-        return await processResponse<dolma.search.Results>(resp);
+        return await unpack<dolma.search.Results>(resp);
     }
 
     async indexMeta(): Promise<dolma.search.IndexMeta> {
         const url = `${this.origin}/v3/data/meta`;
         const resp = await fetch(url, { credentials: 'include' });
-        return await processResponse<dolma.search.IndexMeta>(resp);
+        return await unpack<dolma.search.IndexMeta>(resp);
     }
 
     async doc(id: string): Promise<dolma.Doc> {
         const url = `${this.origin}/v3/data/doc/${id}`;
         const resp = await fetch(url, { credentials: 'include' });
-        return await processResponse<dolma.Doc>(resp);
+        return await unpack<dolma.Doc>(resp);
     }
 }
