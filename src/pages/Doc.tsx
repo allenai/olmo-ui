@@ -48,7 +48,6 @@ export function Doc() {
             );
     }, [params]);
 
-    console.log(loading, error);
 
     return (
         <SearchResultsContainer>
