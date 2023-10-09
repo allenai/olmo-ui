@@ -48,7 +48,6 @@ export function Doc() {
             );
     }, [params]);
 
-
     return (
         <SearchResultsContainer>
             <Stack direction={'row'} spacing={6}>
