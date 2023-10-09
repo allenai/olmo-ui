@@ -2,13 +2,13 @@ import React from 'react';
 import { Dialog, DialogTitle } from '@mui/material';
 import styled from 'styled-components';
 
-import { DataDoc } from '../pages/Doc';
 import { Message } from '../api/Message';
+import { dolma } from '../api/dolma';
 
 interface Props {
     onClose: () => void;
     open: boolean;
-    metadata: DataDoc | Message;
+    metadata: dolma.Document | Message;
 }
 
 export const MetadataModal = ({ onClose, open, metadata }: Props) => {

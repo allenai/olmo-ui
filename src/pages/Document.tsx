@@ -7,35 +7,44 @@ import { MetadataModal } from '../components/MetadataModal';
 import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
-import { loginOn401 } from '../api/User';
+import { dolma } from '../api/dolma';
+import { Client } from '../api/Client';
+import { RemoteStore } from '../store/RemoteStore';
 
-export interface DataDoc {
-    id: string;
-    dolma_id: string;
-    text: string;
-    first_n: string;
-    source: string;
-    url?: string;
+interface Store extends RemoteStore {
+    doc?: dolma.Document;
 }
 
-export function Doc() {
+export function Document() {
     const params = useParams<{ id: string }>();
 
-    const [doc, setDoc] = useState<DataDoc | undefined>();
-    const [isLoading, setIsLoading] = useState(false);
+    const [{ loading, error, doc }, updateStore] = useState<Store>({ loading: false });
 
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
 
+    const api = new Client();
     useEffect(() => {
-        setIsLoading(true);
-        const url = `${process.env.LLMX_API_URL}/v3/data/doc/${params.id}`;
-        fetch(url, { credentials: 'include' })
-            .then((r) => loginOn401(r))
-            .then((r) => r.json())
-            .then((r) => setDoc(r))
-            .finally(() => setIsLoading(false));
+        if (!params.id) {
+            return;
+        }
+        updateStore({ loading: true, error: undefined });
+        api.getDolmaDocument(params.id)
+            .then((doc) =>
+                updateStore({
+                    loading: false,
+                    error: undefined,
+                    doc,
+                })
+            )
+            .catch((e) =>
+                updateStore({
+                    loading: false,
+                    error: e.message,
+                    doc: undefined,
+                })
+            );
     }, [params]);
 
     return (
@@ -43,8 +52,14 @@ export function Doc() {
             <Stack direction={'row'} spacing={6}>
                 <DolmaPanel />
                 <Container>
-                    {!doc || isLoading ? <LinearProgress /> : null}
-                    {doc && !isLoading ? (
+                    {loading ? <LinearProgress /> : null}
+                    {!loading && error ? (
+                        <div>
+                            <h4>Something went wrong.</h4>
+                            <p>{error}</p>
+                        </div>
+                    ) : null}
+                    {!loading && !error && doc ? (
                         <>
                             <IdAndSourceComponent
                                 idDescriptor="Dolma ID"

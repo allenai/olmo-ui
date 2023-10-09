@@ -15,53 +15,12 @@ import styled from 'styled-components';
 import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
-import { loginOn401 } from '../api/User';
-import { unpackError } from '../AppContext';
-
-interface SearchMeta {
-    took_ms: number;
-    total: number;
-    overflow: boolean;
-}
-
-interface Highlights {
-    text: string[];
-}
-
-interface Result {
-    dolma_id: string;
-    first_n: string;
-    id: string;
-    text: string;
-    source: string;
-    highlights: Highlights;
-    score: number;
-}
-
-interface SearchResults {
-    meta: SearchMeta;
-    results: Result[];
-}
-
-interface SearchIndexMeta {
-    count: number;
-}
+import { dolma } from '../api/dolma';
+import { Client } from '../api/Client';
+import { RemoteStore } from '../store/RemoteStore';
 
 interface NoResultsProps {
     query: string;
-}
-
-enum QueryStringParam {
-    Query = 'query',
-    Offset = 'offset',
-}
-
-function toQueryString(query: string, offset: number): string {
-    const qs = new URLSearchParams({
-        [QueryStringParam.Query]: query,
-        [QueryStringParam.Offset]: `${offset}`,
-    });
-    return `${qs}`;
 }
 
 const NoResultsGridItem = ({ query }: NoResultsProps) => {
@@ -87,7 +46,7 @@ const NewSearchPlaceholder = () => {
                 {exampleQueries.map((query, i) => (
                     <React.Fragment key={query}>
                         <span key={query}>
-                            <Link to={`${path}?${toQueryString(query, 0)}`}>{query}</Link>
+                            <Link to={`${path}?${dolma.search.toQueryString(query)}`}>{query}</Link>
                         </span>
                         {i !== exampleQueries.length - 1 ? <span>&#183;</span> : null}
                     </React.Fragment>
@@ -106,54 +65,56 @@ const SearchError = ({ message }: { message: string }) => {
     );
 };
 
+interface Store extends RemoteStore {
+    response?: dolma.search.Results;
+}
+
 export function Search() {
     const loc = useLocation();
     const size = 10; // size is fixed to 10, can modify in the future
 
     const params = new URLSearchParams(loc.search);
-    const query = params.get(QueryStringParam.Query)?.trim() ?? '';
-    const os = parseInt(params.get(QueryStringParam.Offset) ?? '');
+    const query = params.get(dolma.search.QueryStringParam.Query)?.trim() ?? '';
+    const os = parseInt(params.get(dolma.search.QueryStringParam.Offset) ?? '');
     const offset = isNaN(os) ? 0 : os;
     const page = Math.ceil(offset / size) + 1;
 
     const [form, setForm] = useState<{ query: string }>({ query });
-    const [response, setResponse] = useState<SearchResults | undefined>();
-    const [loading, setLoading] = useState<boolean>(false);
     const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
-    const [error, setError] = useState<string | undefined>();
+    const [{ loading, error, response }, updateStore] = useState<Store>({ loading: false });
+
+    const api = new Client();
 
     useEffect(() => {
         setForm({ query });
         if (!query) {
-            setResponse(undefined);
-            setLoading(false);
-            setError(undefined);
+            updateStore({ loading: false, error: undefined, response: undefined });
             return;
         }
-        setLoading(true);
-        setError(undefined);
-        const url = `${process.env.LLMX_API_URL}/v3/data/search?${toQueryString(query, offset)}`;
-        fetch(url, { credentials: 'include' })
-            .then((r) => loginOn401(r))
-            .then((r) => unpackError(r))
-            .then((r) => r.json())
-            .then((r) => setResponse(r))
-            .catch((e) => {
-                setResponse(undefined);
-                setError(e.message);
-            })
-            .finally(() => setLoading(false));
+
+        updateStore({ loading: true, error: undefined });
+        api.searchDolma(query, offset, size)
+            .then((r) =>
+                updateStore({
+                    loading: false,
+                    error: undefined,
+                    response: r,
+                })
+            )
+            .catch((e) =>
+                updateStore({
+                    loading: false,
+                    error: e.message,
+                    response: undefined,
+                })
+            );
     }, [query, size, offset]);
 
     useEffect(() => {
-        const url = `${process.env.LLMX_API_URL}/v3/data/meta`;
-        fetch(url, { credentials: 'include' })
-            .then((r) => r.json())
-            .then(({ count }: SearchIndexMeta) => {
-                setPlaceholder(
-                    `Search ${Intl.NumberFormat().format(count)} pretraining documents…`
-                );
-            });
+        api.getDolmaIndexMeta().then((m) => {
+            const txt = `Search ${Intl.NumberFormat().format(m.count)} pretraining documents…`;
+            setPlaceholder(txt);
+        });
     }, []);
 
     const nav = useNavigate();
@@ -161,7 +122,7 @@ export function Search() {
         if (e && e.key !== 'Enter') {
             return;
         }
-        nav(`${loc.pathname}?${toQueryString(form.query, offset)}`);
+        nav(`${loc.pathname}?${dolma.search.toQueryString(form.query, offset)}`);
     };
     const theme = useTheme();
     const greaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
@@ -230,7 +191,7 @@ export function Search() {
                                         page={page}
                                         onChange={(_, page: number) => {
                                             nav(
-                                                `${loc.pathname}?${toQueryString(
+                                                `${loc.pathname}?${dolma.search.toQueryString(
                                                     form.query,
                                                     (page - 1) * size
                                                 )}`
