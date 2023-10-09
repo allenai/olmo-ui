@@ -45,7 +45,7 @@ const NewSearchPlaceholder = () => {
                 {exampleQueries.map((query, i) => (
                     <React.Fragment key={query}>
                         <span key={query}>
-                            <Link to={`${path}?${dolma.search.toQueryString(query, 0)}`}>
+                            <Link to={`${path}?${dolma.search.toQueryString(query)}`}>
                                 {query}
                             </Link>
                         </span>
