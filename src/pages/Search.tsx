@@ -17,6 +17,7 @@ import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
 import { dolma } from '../api/dolma';
 import { Client } from '../api/Client';
+import { RemoteStore } from '../store/RemoteStore';
 
 interface NoResultsProps {
     query: string;
@@ -45,9 +46,7 @@ const NewSearchPlaceholder = () => {
                 {exampleQueries.map((query, i) => (
                     <React.Fragment key={query}>
                         <span key={query}>
-                            <Link to={`${path}?${dolma.search.toQueryString(query)}`}>
-                                {query}
-                            </Link>
+                            <Link to={`${path}?${dolma.search.toQueryString(query)}`}>{query}</Link>
                         </span>
                         {i !== exampleQueries.length - 1 ? <span>&#183;</span> : null}
                     </React.Fragment>
@@ -66,9 +65,7 @@ const SearchError = ({ message }: { message: string }) => {
     );
 };
 
-interface Store {
-    loading: boolean;
-    error?: string;
+interface Store extends RemoteStore {
     response?: dolma.search.Results;
 }
 
@@ -96,7 +93,7 @@ export function Search() {
         }
 
         updateStore({ loading: true, error: undefined });
-        api.search(query, offset, size)
+        api.searchDolma(query, offset, size)
             .then((r) =>
                 updateStore({
                     loading: false,
@@ -114,7 +111,7 @@ export function Search() {
     }, [query, size, offset]);
 
     useEffect(() => {
-        api.indexMeta().then((m) => {
+        api.getDolmaIndexMeta().then((m) => {
             const txt = `Search ${Intl.NumberFormat().format(m.count)} pretraining documents…`;
             setPlaceholder(txt);
         });

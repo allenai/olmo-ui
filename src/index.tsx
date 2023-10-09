@@ -13,7 +13,7 @@ import { Home } from './pages/Home';
 import { Thread } from './pages/Thread';
 import { Admin } from './pages/Admin';
 import { Search } from './pages/Search';
-import { Doc } from './pages/Doc';
+import { Document } from './pages/Document';
 import { App } from './App';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/doc/:id',
-                element: <Doc />,
+                element: <Document />,
                 errorElement: <ErrorPage />,
             },
             {

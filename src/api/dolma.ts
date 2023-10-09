@@ -1,5 +1,5 @@
 export namespace dolma {
-    export interface Doc {
+    export interface Document {
         id: string;
         dolma_id: string;
         text: string;
@@ -19,7 +19,7 @@ export namespace dolma {
             text: string[];
         }
 
-        export interface Result extends Doc {
+        export interface Result extends Document {
             highlights: Highlights;
             score: number;
         }

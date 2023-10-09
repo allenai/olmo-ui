@@ -9,14 +9,13 @@ import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
 import { dolma } from '../api/dolma';
 import { Client } from '../api/Client';
+import { RemoteStore } from '../store/RemoteStore';
 
-interface Store {
-    loading: boolean;
-    error?: string;
-    doc?: dolma.Doc;
+interface Store extends RemoteStore {
+    doc?: dolma.Document;
 }
 
-export function Doc() {
+export function Document() {
     const params = useParams<{ id: string }>();
 
     const [{ loading, error, doc }, updateStore] = useState<Store>({ loading: false });
@@ -31,7 +30,7 @@ export function Doc() {
             return;
         }
         updateStore({ loading: true, error: undefined });
-        api.doc(params.id)
+        api.getDolmaDocument(params.id)
             .then((doc) =>
                 updateStore({
                     loading: false,

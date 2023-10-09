@@ -8,7 +8,7 @@ import { dolma } from '../api/dolma';
 interface Props {
     onClose: () => void;
     open: boolean;
-    metadata: dolma.Doc | Message;
+    metadata: dolma.Document | Message;
 }
 
 export const MetadataModal = ({ onClose, open, metadata }: Props) => {
