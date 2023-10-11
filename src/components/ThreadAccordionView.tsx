@@ -66,7 +66,7 @@ export const ThreadAccordionView = ({
                         </TitleContainer>
                     </Stack>
                 ) : (
-                    <CopyableTitle title={title} />
+                    <CopyableTitle noWrap={true} title={title} />
                 )}
             </AccordionSummary>
             <AccordionBody>{body}</AccordionBody>
@@ -96,11 +96,17 @@ export const ThreadAccordionView = ({
     );
 };
 
+interface CopyableTitleProps {
+    title: string;
+    noWrap?: boolean;
+}
+
 // title of accordion can be clicked to open/close, but if the user selects text, we prevent
 // open/close so they can copy the text.
-const CopyableTitle = ({ title }: { title: string }) => {
+const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
     return (
         <TitleTypography
+            noWrap={noWrap}
             onClick={(e) => {
                 if (window.getSelection && window.getSelection()?.toString().length) {
                     e.stopPropagation();
@@ -127,6 +133,12 @@ const TitleTypography = styled(Typography)`
     &&& {
         color: ${({ theme }) => theme.color2.B5};
         font-weight: bold;
+        ${({ theme }) => theme.breakpoints.up('md')} {
+            max-width: 900px;
+        }
+        ${({ theme }) => theme.breakpoints.down('md')} {
+            max-width: 450px;
+        }
     }
 `;
 
