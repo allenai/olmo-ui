@@ -24,7 +24,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 import { Message, MessagePost } from '../api/Message';
 import { Role } from '../api/Role';
-import { DecorationContainer } from './DecorationContainer';
+import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 
 import 'highlight.js/styles/github-dark.css';
@@ -155,11 +155,11 @@ export const ThreadBodyView = ({
         }
     };
 
-    // we add mouseover functionality via the DecorationContainer to enable a right side border on hover.
+    // we add mouseover functionality via the BarOnRightContainer to enable a right side border on hover.
     // we do this using mouseover and mouseout (and onblur/onfocus for a11y) because the :hover css
     // pseudo-class does not preserve the border if you click into the menu, so this is more robust.
     return (
-        <DecorationContainer showDecoration={branchCount > 1}>
+        <BarOnRightContainer displayBar={branchCount > 1}>
             <>
                 <Box sx={{ width: '100%', p: 2 }}>
                     <Stack direction="row" spacing={1}>
@@ -288,7 +288,7 @@ export const ThreadBodyView = ({
                     </FollowUpContainer>
                 ) : null}
             </>
-        </DecorationContainer>
+        </BarOnRightContainer>
     );
 };
 

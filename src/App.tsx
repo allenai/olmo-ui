@@ -24,16 +24,16 @@ interface HeaderEndSlotProps {
 interface HeaderButtonProps {
     url: string;
     label: string;
-    blank?: boolean;
+    openOnNewPage?: boolean;
 }
 
-const HeaderButton = ({ url, label, blank = false }: HeaderButtonProps) => {
+const HeaderButton = ({ url, label, openOnNewPage = false }: HeaderButtonProps) => {
     return (
         <BannerButton
-            onState={useLocation().pathname === url}
+            isCurrentPage={useLocation().pathname === url}
             component={Link}
             rel="noopener noreferrer"
-            target={blank ? '_blank' : ''}
+            target={openOnNewPage ? '_blank' : ''}
             to={url}
             href={url}
             variant="outlined">
@@ -63,7 +63,7 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                     <HeaderButton url="/search" label="Explore Dataset" />
                 </Grid>
                 <Grid item>
-                    <HeaderButton blank={true} url={feedbackFormUrl} label="Feedback" />
+                    <HeaderButton openOnNewPage={true} url={feedbackFormUrl} label="Feedback" />
                 </Grid>
             </Grid>
         </>
@@ -198,7 +198,7 @@ const OuterContainer = styled.div`
 `;
 
 interface BannerButtonProps {
-    onState: boolean;
+    isCurrentPage: boolean;
 }
 
 // TODO: find a better way to capture the intended type; my brain isn't big enough to
@@ -208,10 +208,10 @@ const BannerButton = styled(Button)<
 >`
     && {
         color: white;
-        border-color: ${(props) => (props.onState ? '#F4D35E' : 'white')};
+        border-color: ${(props) => (props.isCurrentPage ? props.theme.color2.O7 : 'white')};
         margin: ${({ theme }) => theme.spacing(0.5)};
     }
     &&:hover {
-        border-color: ${(props) => (props.onState ? '#F4D35E' : 'white')};
+        border-color: ${(props) => (props.isCurrentPage ? props.theme.color2.O7 : 'white')};
     }
 `;
