@@ -1,3 +1,5 @@
+import { Client } from './Client';
+
 export const WhoamiApiUrl = `${process.env.LLMX_API_URL}/v3/whoami`;
 
 /**
@@ -6,10 +8,13 @@ export const WhoamiApiUrl = `${process.env.LLMX_API_URL}/v3/whoami`;
  *
  * The Response is returned in the event that the response was not a 401. This
  * makes it convenient to use in a Promise chain.
+ *
+ * @deprecated See api/Client.ts
  */
 export function loginOn401(r: Response): Response {
     if (r.status === 401) {
-        document.location.href = `${process.env.LLMX_API_URL}/v3/login/skiff`;
+        const c = new Client();
+        c.login();
         // This shouldn't ever happen
         throw new Error('Unauthorized');
     }
