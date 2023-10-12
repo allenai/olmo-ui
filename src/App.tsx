@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { LinkProps, Link, Outlet } from 'react-router-dom';
+import { LinkProps, Link, Outlet, useLocation } from 'react-router-dom';
 import { Button, ButtonProps, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
@@ -21,29 +21,23 @@ interface HeaderEndSlotProps {
     client?: string;
 }
 
-const FeedbackButton = () => {
-    return (
-        <BannerButton
-            component={Link}
-            rel="noopener noreferrer"
-            target="_blank"
-            to={feedbackFormUrl}
-            href={feedbackFormUrl}
-            variant="outlined">
-            Feedback
-        </BannerButton>
-    );
-};
+interface HeaderButtonProps {
+    url: string;
+    label: string;
+    openOnNewPage?: boolean;
+}
 
-const ExploreDataButton = () => {
+const HeaderButton = ({ url, label, openOnNewPage = false }: HeaderButtonProps) => {
     return (
         <BannerButton
+            isCurrentPage={useLocation().pathname === url}
             component={Link}
             rel="noopener noreferrer"
-            to="/search"
-            href="/search"
+            target={openOnNewPage ? '_blank' : ''}
+            to={url}
+            href={url}
             variant="outlined">
-            Explore Dataset
+            {label}
         </BannerButton>
     );
 };
@@ -63,10 +57,13 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                     )}
                 </Grid>
                 <Grid item>
-                    <ExploreDataButton />
+                    <HeaderButton url="/" label="Query OLMo" />
                 </Grid>
                 <Grid item>
-                    <FeedbackButton />
+                    <HeaderButton url="/search" label="Explore Dataset" />
+                </Grid>
+                <Grid item>
+                    <HeaderButton openOnNewPage={true} url={feedbackFormUrl} label="Feedback" />
                 </Grid>
             </Grid>
         </>
@@ -130,7 +127,7 @@ export const App = () => {
                                 </BannerLink>
                             }
                             transparentBackground={false}
-                            endSlot={<FeedbackButton />}
+                            endSlot={<HeaderButton url={feedbackFormUrl} label="Feedback" />}
                         />
                     </BottomBanner>
                     <OlmoFooter />
@@ -200,15 +197,21 @@ const OuterContainer = styled.div`
         `linear-gradient(122deg, ${theme.color2.N7} 0%, transparent 100%), ${theme.color2.N8}`};
 `;
 
+interface BannerButtonProps {
+    isCurrentPage: boolean;
+}
+
 // TODO: find a better way to capture the intended type; my brain isn't big enough to
 // parse MUI's Button types
-const BannerButton = styled(Button)<ButtonProps & { component: typeof Link } & LinkProps>`
+const BannerButton = styled(Button)<
+    ButtonProps & { component: typeof Link } & LinkProps & BannerButtonProps
+>`
     && {
         color: white;
-        border-color: white;
+        border-color: ${(props) => (props.isCurrentPage ? props.theme.color2.O7 : 'white')};
         margin: ${({ theme }) => theme.spacing(0.5)};
     }
     &&:hover {
-        border-color: white;
+        border-color: ${(props) => (props.isCurrentPage ? props.theme.color2.O7 : 'white')};
     }
 `;

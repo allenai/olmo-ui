@@ -116,7 +116,7 @@ export const RecentQueries = () => {
                                     showControls
                                 />
                             ))}
-                            {count > 0 ? (
+                            {count > 1 ? (
                                 <Stack alignItems="center">
                                     <InvertedPagination
                                         boundaryCount={3}

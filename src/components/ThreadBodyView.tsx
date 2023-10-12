@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    AvatarGroup,
     Box,
     Chip,
     Grid,
@@ -25,7 +24,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 import { Message, MessagePost } from '../api/Message';
 import { Role } from '../api/Role';
-import { HoverDecorationContainer } from './HoverDecorationContainer';
+import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 
 import 'highlight.js/styles/github-dark.css';
@@ -64,10 +63,10 @@ const LLMResponseView = ({ response, msgId, isEditedResponse = false }: AgentRes
     return (
         <Stack direction="row">
             {isEditedResponse ? (
-                <AvatarGroup max={2}>
+                <Stack direction="column" spacing={-1}>
                     <RobotAvatar />
                     <UserAvatar />
-                </AvatarGroup>
+                </Stack>
             ) : (
                 <RobotAvatar />
             )}
@@ -156,11 +155,11 @@ export const ThreadBodyView = ({
         }
     };
 
-    // we add mouseover functionality via the HoverDecorationContainer to enable a right side border on hover.
+    // we add mouseover functionality via the BarOnRightContainer to enable a right side border on hover.
     // we do this using mouseover and mouseout (and onblur/onfocus for a11y) because the :hover css
     // pseudo-class does not preserve the border if you click into the menu, so this is more robust.
     return (
-        <HoverDecorationContainer showDecoration={branchCount > 1}>
+        <BarOnRightContainer displayBar={branchCount > 1}>
             <>
                 <Box sx={{ width: '100%', p: 2 }}>
                     <Stack direction="row" spacing={1}>
@@ -289,7 +288,7 @@ export const ThreadBodyView = ({
                     </FollowUpContainer>
                 ) : null}
             </>
-        </HoverDecorationContainer>
+        </BarOnRightContainer>
     );
 };
 
@@ -337,6 +336,7 @@ const LLMResponseContainer = styled.div`
     border-radius: ${({ theme }) => theme.shape.borderRadius};
     padding: ${({ theme }) => theme.spacing(2)};
     margin-left: ${({ theme }) => theme.spacing(1)};
+    width: 100%;
 `;
 
 const TitleTypography = styled(Typography)`
