@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Link, Outlet, useLocation } from 'react-router-dom';
-import { Button, ButtonProps, Grid, CircularProgress, Typography } from '@mui/material';
+import { Button, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
