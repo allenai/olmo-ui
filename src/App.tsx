@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Link, Outlet, useLocation } from 'react-router-dom';
-import { Button, ButtonProps, Grid, CircularProgress, Typography } from '@mui/material';
+import { Button, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
@@ -30,7 +30,7 @@ interface HeaderButtonProps {
 const HeaderButton = ({ url, label, openOnNewPage = false }: HeaderButtonProps) => {
     return (
         <BannerButton
-            isCurrentPage={useLocation().pathname === url}
+            current={useLocation().pathname === url ? 'true' : 'false'}
             component={Link}
             rel="noopener noreferrer"
             target={openOnNewPage ? '_blank' : ''}
@@ -198,20 +198,17 @@ const OuterContainer = styled.div`
 `;
 
 interface BannerButtonProps {
-    isCurrentPage: boolean;
+    current: string;
+    component: typeof Link;
 }
 
-// TODO: find a better way to capture the intended type; my brain isn't big enough to
-// parse MUI's Button types
-const BannerButton = styled(Button)<
-    ButtonProps & { component: typeof Link } & LinkProps & BannerButtonProps
->`
+const BannerButton = styled(Button)<LinkProps & BannerButtonProps>`
     && {
         color: white;
-        border-color: ${(props) => (props.isCurrentPage ? props.theme.color2.O7 : 'white')};
+        border-color: ${(props) => (props.current === 'true' ? props.theme.color2.O7 : 'white')};
         margin: ${({ theme }) => theme.spacing(0.5)};
     }
     &&:hover {
-        border-color: ${(props) => (props.isCurrentPage ? props.theme.color2.O7 : 'white')};
+        border-color: ${(props) => (props.current === 'true' ? props.theme.color2.O7 : 'white')};
     }
 `;
