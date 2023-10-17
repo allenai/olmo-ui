@@ -19,7 +19,7 @@ import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
 import { useFeatureToggles } from '../FeatureToggleContext';
-import { Viewer } from './draft/Viewer';
+import { Viewer } from './richTextEditor/Viewer';
 import { convertHtmlToText } from '../util';
 
 interface ThreadAccordionProps {

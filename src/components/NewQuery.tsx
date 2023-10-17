@@ -20,8 +20,8 @@ import { MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { useFeatureToggles } from '../FeatureToggleContext';
-import { Editor } from './draft/Editor';
-import { mockChips } from './draft/mockData';
+import { Editor } from './richTextEditor/Editor';
+import { mockChips } from './richTextEditor/mockData';
 import { StandardContainer } from './StandardContainer';
 
 export const NewQuery = () => {

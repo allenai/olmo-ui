@@ -29,9 +29,9 @@ import { useAppContext } from '../AppContext';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
-import { Editor } from './draft/Editor';
-import { mockChips } from './draft/mockData';
-import { Viewer } from './draft/Viewer';
+import { Editor } from './richTextEditor/Editor';
+import { mockChips } from './richTextEditor/mockData';
+import { Viewer } from './richTextEditor/Viewer';
 import { convertHtmlToText } from '../util';
 
 import 'highlight.js/styles/github-dark.css';
