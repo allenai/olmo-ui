@@ -45,5 +45,3 @@ export const olmoTheme = {
         },
     },
 };
-
-export const dateTimeFormat = 'M/D/YY h:mm a';

@@ -18,6 +18,9 @@ import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
+import { useFeatureToggles } from '../FeatureToggleContext';
+import { Viewer } from './draft/Viewer';
+import { convertHtmlToText } from '../util';
 
 interface ThreadAccordionProps {
     title: string;
@@ -104,16 +107,31 @@ interface CopyableTitleProps {
 // title of accordion can be clicked to open/close, but if the user selects text, we prevent
 // open/close so they can copy the text.
 const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
+    const toggles = useFeatureToggles();
     return (
-        <TitleTypography
-            noWrap={noWrap}
-            onClick={(e) => {
-                if (window.getSelection && window.getSelection()?.toString().length) {
-                    e.stopPropagation();
-                }
-            }}>
-            {title}
-        </TitleTypography>
+        <>
+            {toggles.chips ? (
+                <Viewer
+                    maxRows={noWrap ? 1 : undefined}
+                    value={noWrap ? convertHtmlToText(title) : title}
+                    onClick={(e) => {
+                        if (window.getSelection && window.getSelection()?.toString().length) {
+                            e.stopPropagation();
+                        }
+                    }}
+                />
+            ) : (
+                <TitleTypography
+                    noWrap={noWrap}
+                    onClick={(e) => {
+                        if (window.getSelection && window.getSelection()?.toString().length) {
+                            e.stopPropagation();
+                        }
+                    }}>
+                    {title}
+                </TitleTypography>
+            )}
+        </>
     );
 };
 

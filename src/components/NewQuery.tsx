@@ -147,17 +147,13 @@ export const NewQuery = () => {
 
                         <Grid>
                             {toggles.chips ? (
-                                /* TODO: this is just example ui, we will need to make more changes
-                                    1- this needs to be used on all user inputs
-                                    2- need to properly set value from the new editor and get value from backend (blocked on api)
-                                    e.g.
-                                    initialRawData={prompt}
-                                    onChange={(v) => updatePrompt(v.target.value)}
-                                */
                                 <Editor
                                     disabled={isLoading}
-                                    placeholder="Select a Prompt Template above or type a free form prompt"
-                                    chips={mockChips} // todo: get these from api
+                                    label="Select a Prompt Template above or type a free form prompt"
+                                    chips={mockChips} // TODO: get these from api
+                                    initialHtmlString={prompt}
+                                    onChange={(v) => updatePrompt(v)}
+                                    minRows={10}
                                 />
                             ) : (
                                 <TextField

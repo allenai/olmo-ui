@@ -15,7 +15,7 @@ import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
 import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
-import { dateTimeFormat } from '../olmoTheme';
+import { dateTimeFormat } from '../util';
 
 export const Admin = () => {
     const { getAllLabels, allLabelInfo } = useAppContext();

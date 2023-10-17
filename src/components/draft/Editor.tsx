@@ -1,91 +1,121 @@
-import React, { useMemo, useRef, useState } from 'react';
+// todo: x
+
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { EditorState, RawDraftContentState, convertFromRaw } from 'draft-js';
-import DraftJsEditor from '@draft-js-plugins/editor';
-import createMentionPlugin from '@draft-js-plugins/mention';
-import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 
-import { ChipDisplay } from './ChipDisplay';
-import { ChipSuggestions } from './ChipSuggestions';
-import { ToolBar } from './Toolbar';
-
-import '@draft-js-plugins/mention/lib/plugin.css';
-import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
+import DataChipsPlugin from './DataChipsPlugin';
 import { DataChip } from '../../api/DataChip';
+import { HtmlPlugin } from './HtmlPlugin';
+import { Nodes } from './Nodes';
+import FloatingTextFormatToolbarPlugin from './FloatingTextFormatToolbarPlugin';
+import { OnKeyDownPlugin } from './OnKeyDownPlugin';
+import { ThemeWrapper, theme } from './ThemeWrapper';
 
-interface Props {
-    disabled?: boolean;
-    placeholder?: string;
-    initialRawData?: RawDraftContentState;
-    onChange?: (editorState: EditorState) => void;
-    chips: DataChip[];
+function AutoFocusPlugin() {
+    const [editor] = useLexicalComposerContext();
+
+    useEffect(() => {
+        // Focus the editor when the effect fires!
+        editor.focus();
+    }, [editor]);
+
+    return null;
 }
 
-export const Editor = ({ disabled, placeholder, initialRawData, onChange, chips }: Props) => {
-    const ref = useRef<DraftJsEditor>(null);
+function UpdateEditablePlugin({ isEditable }: { isEditable: boolean }) {
+    const [editor] = useLexicalComposerContext();
 
-    const [editorState, setEditorState] = useState<EditorState>(
-        initialRawData
-            ? EditorState.createWithContent(convertFromRaw(initialRawData))
-            : () => EditorState.createEmpty()
-    );
+    useEffect(() => {
+        editor.setEditable(isEditable);
+    }, [isEditable]);
 
-    const { mentionPlugin, inlineToolbarPlugin, InlineToolbar } = useMemo(() => {
-        const inlineToolbarPlugin = createInlineToolbarPlugin();
-        const mentionPlugin = createMentionPlugin({
-            entityMutability: 'IMMUTABLE',
-            supportWhitespace: true,
-            mentionComponent: ChipDisplay,
-        });
-        const { InlineToolbar } = inlineToolbarPlugin;
-        return { mentionPlugin, inlineToolbarPlugin, InlineToolbar };
-    }, []);
+    return null;
+}
+
+interface Props {
+    chips?: DataChip[];
+    disabled?: boolean;
+    label?: string;
+    initialHtmlString?: string;
+    onChange?: (htmlString: string) => void;
+    onKeyDown?: (e: KeyboardEvent) => void;
+    minRows?: number;
+}
+
+export const Editor = ({
+    disabled,
+    label,
+    chips,
+    onChange,
+    initialHtmlString,
+    onKeyDown,
+    minRows = 1,
+}: Props) => {
+    const initialConfig = {
+        namespace: 'MyEditor',
+        theme,
+        onError: (e: Error) => console.error(e),
+        nodes: [...Nodes],
+        editable: !disabled,
+    };
 
     return (
-        <>
-            <OuterContainer
-                onClick={() => {
-                    ref.current?.focus();
-                }}>
-                <EditorWrapper>
-                    <DraftJsEditor
-                        readOnly={disabled}
-                        placeholder={placeholder}
-                        editorKey={'editor'}
-                        editorState={editorState}
-                        onChange={(editorState: EditorState) => {
-                            setEditorState(editorState);
-                            onChange && onChange(editorState);
-                        }}
-                        plugins={[mentionPlugin, inlineToolbarPlugin]}
-                        ref={ref}
+        <ThemeWrapper>
+            <Label>{label}</Label>
+            <EditorWrapper minRows={minRows}>
+                <LexicalComposer initialConfig={initialConfig}>
+                    <RichTextPlugin
+                        ErrorBoundary={LexicalErrorBoundary}
+                        contentEditable={<ContentEditable className="editor-input" />}
+                        placeholder={null}
                     />
-                    <ChipSuggestions mentionPlugin={mentionPlugin} chips={chips} />
-                </EditorWrapper>
-            </OuterContainer>
-            <InlineToolbar>{(externalProps) => <ToolBar {...externalProps} />}</InlineToolbar>
-        </>
+                    <OnKeyDownPlugin
+                        onKeyDown={(e: KeyboardEvent) => {
+                            onKeyDown && onKeyDown(e);
+                        }}
+                    />
+                    <HistoryPlugin />
+                    <AutoFocusPlugin />
+                    <FloatingTextFormatToolbarPlugin />
+                    {chips ? <DataChipsPlugin chips={chips} /> : <></>}
+                    <UpdateEditablePlugin isEditable={!disabled} />
+                    <HtmlPlugin
+                        onHtmlChanged={(html) => onChange && onChange(html)}
+                        initialHtml={initialHtmlString}
+                        isReadOnly={!initialConfig.editable}
+                    />
+                </LexicalComposer>
+            </EditorWrapper>
+        </ThemeWrapper>
     );
 };
 
 // styles are matching mui textblock, so not using varnish directly
-const EditorWrapper = styled.div`
-    border: #cbcbcb 1px solid;
-    color: ${({ theme }) => theme.color2.N5};
-    border-radius: ${({ theme }) => theme.shape.borderRadius};
-    padding: 16.5px 14px;
-    min-height: 260px;
+const EditorWrapper = styled('div')<{ minRows: number }>`
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    // height of a line of text times min number plus margins
+    min-height: ${({ minRows }) => minRows * 23.19 + 16 + 16 + 16.5 + 16.5}px;
 
-    .public-DraftEditorPlaceholder-inner {
-        color: ${({ theme }) => theme.color2.N3};
-    }
-
-    :hover {
-        border-color: ${({ theme }) => theme.color2.N5};
+    .editor-input {
+        border: #cbcbcb 1px solid;
+        color: ${({ theme }) => theme.color2.N5};
+        border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+        padding: 16.5px 14px;
+        flex: 1 1 auto;
+        :hover {
+            border-color: ${({ theme }) => theme.color2.N5};
+        }
     }
 `;
 
-const OuterContainer = styled.div`
-    background-color: white;
-    border-radius: 10px;
+const Label = styled.div`
+    color: ${({ theme }) => theme.color2.N4};
 `;
