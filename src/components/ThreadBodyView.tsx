@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import {
     Box,
-    Chip,
     Grid,
     IconButton,
     LinearProgress,
-    Menu,
+    ListItemIcon,
+    ListItemText,
     MenuItem,
     Stack,
     TextField,
     Typography,
 } from '@mui/material';
 import styled from 'styled-components';
-import { Marked } from 'marked';
-import { markedHighlight } from 'marked-highlight';
-import hljs from 'highlight.js';
-import DOMPurify from 'dompurify';
 
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -26,12 +23,11 @@ import { Message, MessagePost } from '../api/Message';
 import { Role } from '../api/Role';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
+import { LLMResponseView, UserResponseView } from './ResponseViews';
+import { MenuWrapperContainer, MessageActionsMenu } from './MessageActionsMenu';
 import { useFeatureToggles } from '../FeatureToggleContext';
-import { RobotAvatar } from './avatars/RobotAvatar';
-import { UserAvatar } from './avatars/UserAvatar';
 import { Editor } from './richTextEditor/Editor';
 import { mockChips } from './richTextEditor/util/mockData';
-import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
 import { convertHtmlToText } from '../util';
 
 import 'highlight.js/styles/github-dark.css';
@@ -42,69 +38,6 @@ interface ThreadBodyProps {
     showFollowUp?: boolean;
     disabledActions?: boolean;
 }
-
-interface AgentResponseProps {
-    msgId: string;
-    response: string;
-    isEditedResponse?: boolean;
-}
-
-const LLMResponseView = ({ response, msgId, isEditedResponse = false }: AgentResponseProps) => {
-    const marked = new Marked(
-        markedHighlight({
-            langPrefix: 'hljs language-',
-            highlight(code, lang) {
-                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                return hljs.highlight(code, { language }).value;
-            },
-        })
-    );
-    // turning off features as they pop dom warnings
-    marked.use({
-        mangle: false,
-        headerIds: false,
-    });
-
-    const toggles = useFeatureToggles();
-    const html = DOMPurify.sanitize(marked.parse(response));
-    return (
-        <Stack direction="row">
-            {isEditedResponse ? (
-                <Stack direction="column" spacing={-1}>
-                    <RobotAvatar />
-                    <UserAvatar />
-                </Stack>
-            ) : (
-                <RobotAvatar />
-            )}
-            {toggles.chips ? (
-                <LLMResponseContainer id={msgId}>
-                    <ReadonlyEditor value={response} />
-                </LLMResponseContainer>
-            ) : (
-                <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
-            )}
-        </Stack>
-    );
-};
-
-const UserResponseView = ({ response, msgId }: AgentResponseProps) => {
-    const toggles = useFeatureToggles();
-    return (
-        <Stack direction="row">
-            <UserAvatar />
-            <UserResponseContainer id={msgId}>
-                {toggles.chips ? (
-                    <ReadonlyEditor value={response} />
-                ) : (
-                    <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
-                )}
-            </UserResponseContainer>
-        </Stack>
-    );
-};
-
-const MENU_MAX_HEIGHT = 48 * 4.5;
 
 export const ThreadBodyView = ({
     parent,
@@ -122,25 +55,17 @@ export const ThreadBodyView = ({
     const [isLoading, setIsLoading] = useState(false);
     const [editMessageContent, setEditMessageContent] = useState('');
     const [curMessageIndex, setCurMessageIndex] = React.useState(0);
-    // the anchor element anchors the expanded dropdown menu to the dropdown menu button element
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
+    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+
+    const handleBranchMenuSelect = (index: number) => {
+        setCurMessageIndex(index);
+        setBranchMenuAnchorEl(null);
+    };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [followUpPrompt, setFollowUpPrompt] = useState<string>();
-
-    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleSelect = (index: number) => {
-        setCurMessageIndex(index);
-        setAnchorEl(null);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     const branchCount = messages.length;
     const curMessage = messages[curMessageIndex];
@@ -167,16 +92,53 @@ export const ThreadBodyView = ({
             role: curMessageRole,
             original: curMessage.id,
         };
-        handleSelect(0); // 0 because the new message is unshifted
+        handleBranchMenuSelect(0); // 0 because the new message is unshifted
         const postMessageInfo = await postMessage(payload, parent);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
             setIsLoading(false);
         }
     };
 
-    // we add mouseover functionality via the BarOnRightContainer to enable a right side border on hover.
-    // we do this using mouseover and mouseout (and onblur/onfocus for a11y) because the :hover css
-    // pseudo-class does not preserve the border if you click into the menu, so this is more robust.
+    const contextMenu = (
+        <MessageActionsMenu
+            setMenuAnchorEl={setContextMenuAnchorEl}
+            menuAnchorEl={contextMenuAnchorEl}
+            primaryIcon={<MoreHorizIcon />}
+            disabled={isLoading || disabledActions}>
+            <MenuItem
+                key={'edit'}
+                onClick={() => {
+                    setIsEditing(true);
+                    setContextMenuAnchorEl(null);
+                }}>
+                <ListItemIcon>
+                    <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Edit</ListItemText>
+            </MenuItem>
+        </MessageActionsMenu>
+    );
+
+    const branchesMenu = (
+        <MessageActionsMenu
+            setMenuAnchorEl={setBranchMenuAnchorEl}
+            menuAnchorEl={branchMenuAnchorEl}
+            startIcon={<KeyboardArrowDown />}
+            label={'View ' + branchCount + ' branches'}>
+            {messages.map((msg, i) => (
+                <MenuItem
+                    key={i}
+                    onClick={() => handleBranchMenuSelect(i)}
+                    selected={i === curMessageIndex}
+                    title={msg.content}>
+                    <Typography variant="inherit" noWrap>
+                        {convertHtmlToText(msg.content)}
+                    </Typography>
+                </MenuItem>
+            ))}
+        </MessageActionsMenu>
+    );
+
     return (
         <BarOnRightContainer displayBar={branchCount > 1}>
             <>
@@ -208,7 +170,6 @@ export const ThreadBodyView = ({
                                             <OutlinedIconButton
                                                 sx={{ border: 1, borderRadius: 0, p: 0 }}
                                                 size="small"
-                                                // color="primary"
                                                 disabled={!editMessageContent?.length}
                                                 onClick={editMessage}>
                                                 <CheckIcon />
@@ -220,7 +181,6 @@ export const ThreadBodyView = ({
                                             <OutlinedIconButton
                                                 sx={{ border: 1, borderRadius: 0, p: 0 }}
                                                 size="small"
-                                                // color="primary"
                                                 onClick={() => setIsEditing(false)}>
                                                 <ClearIcon />
                                             </OutlinedIconButton>
@@ -233,6 +193,8 @@ export const ThreadBodyView = ({
                                         <UserResponseView
                                             response={curMessage.content}
                                             msgId={curMessage.id}
+                                            contextMenu={!isEditing ? contextMenu : undefined}
+                                            branchMenu={branchCount > 1 ? branchesMenu : undefined}
                                         />
                                     ) : (
                                         <LLMResponseView
@@ -242,52 +204,13 @@ export const ThreadBodyView = ({
                                                 curMessage.original !== undefined &&
                                                 curMessage.original?.length > 0
                                             }
+                                            contextMenu={!isEditing ? contextMenu : undefined}
+                                            branchMenu={branchCount > 1 ? branchesMenu : undefined}
                                         />
                                     )}
                                 </>
                             )}
                         </Grid>
-                        {!isEditing && (
-                            <EditButton
-                                disabled={isLoading || disabledActions}
-                                onClick={() => setIsEditing(true)}
-                            />
-                        )}
-                        {branchCount > 1 && (
-                            <Grid item>
-                                <MenuWrapperContainer>
-                                    <Chip
-                                        icon={<KeyboardArrowDown />}
-                                        label={'View ' + branchCount + ' branches'}
-                                        variant="outlined"
-                                        clickable
-                                        onClick={handleMenuClick}
-                                    />
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        PaperProps={{
-                                            style: {
-                                                maxHeight: MENU_MAX_HEIGHT,
-                                                width: '20ch',
-                                            },
-                                        }}>
-                                        {messages.map((msg, i) => (
-                                            <MenuItem
-                                                key={i}
-                                                onClick={() => handleSelect(i)}
-                                                selected={i === curMessageIndex}
-                                                title={msg.content}>
-                                                <Typography variant="inherit" noWrap>
-                                                    {convertHtmlToText(msg.content)}
-                                                </Typography>
-                                            </MenuItem>
-                                        ))}
-                                    </Menu>
-                                </MenuWrapperContainer>
-                            </Grid>
-                        )}
                     </Stack>
                 </Box>
                 {curMessage.children ? (
@@ -338,21 +261,6 @@ export const ThreadBodyView = ({
     );
 };
 
-const EditButton = ({ disabled, onClick }: { disabled: boolean; onClick: () => void }) => (
-    <Grid item>
-        <MenuWrapperContainer>
-            <Chip
-                icon={<EditIcon sx={{ fontSize: 16 }} />}
-                label={'Edit'}
-                disabled={disabled}
-                variant="outlined"
-                clickable
-                onClick={onClick}
-            />
-        </MenuWrapperContainer>
-    </Grid>
-);
-
 const FollowUpContainer = styled.div`
     padding-left: ${({ theme }) => theme.spacing(2)};
     padding-right: ${({ theme }) => theme.spacing(1)};
@@ -365,26 +273,4 @@ const OutlinedIconButton = styled(IconButton)`
         border-radius: 0;
         padding: 0;
     }
-`;
-
-const MenuWrapperContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(1)};
-`;
-
-const UserResponseContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(1)};
-    padding-bottom: ${({ theme }) => theme.spacing(2)};
-    margin-left: ${({ theme }) => theme.spacing(1)};
-`;
-
-const LLMResponseContainer = styled.div`
-    background-color: ${({ theme }) => theme.color2.N1};
-    border-radius: ${({ theme }) => theme.shape.borderRadius};
-    padding: ${({ theme }) => theme.spacing(2)};
-    margin-left: ${({ theme }) => theme.spacing(1)};
-    width: 100%;
-`;
-
-const TitleTypography = styled(Typography)`
-    color: ${({ theme }) => theme.color2.B5};
 `;
