@@ -124,13 +124,13 @@ export const ThreadBodyView = ({
             setMenuAnchorEl={setBranchMenuAnchorEl}
             menuAnchorEl={branchMenuAnchorEl}
             startIcon={<KeyboardArrowDown />}
-            label={'View ' + branchCount + ' branches'}>
+            label={`View ${branchCount} branches`}>
             {messages.map((msg, i) => (
                 <MenuItem
                     key={i}
                     onClick={() => handleBranchMenuSelect(i)}
                     selected={i === curMessageIndex}
-                    title={msg.content}>
+                    title={convertHtmlToText(msg.content)}>
                     <Typography variant="inherit" noWrap>
                         {convertHtmlToText(msg.content)}
                     </Typography>
