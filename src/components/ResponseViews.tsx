@@ -23,7 +23,9 @@ const ResponseContainer = ({ children, setHover }: ResponseContainerProps) => {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             onFocus={() => setHover(true)}
-            onBlur={() => setHover(true)}>
+            onBlur={() => {
+                setHover(false);
+            }}>
             {children}
         </div>
     );
@@ -104,9 +106,12 @@ export const UserResponseView = ({ response, msgId, contextMenu, branchMenu }: R
                         <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
                     </UserResponseContainer>
                 </Stack>
-                <Stack direction="row" spacing={1}>
-                    {contextMenu && hover ? contextMenu : null}
-                    {branchMenu && hover ? branchMenu : null}
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    style={{ visibility: hover ? 'visible' : 'hidden' }}>
+                    {contextMenu || null}
+                    {branchMenu || null}
                 </Stack>
             </Stack>
         </ResponseContainer>

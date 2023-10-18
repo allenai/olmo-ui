@@ -49,8 +49,8 @@ export const ThreadBodyView = ({
     const [editMessageContent, setEditMessageContent] = useState('');
     const [curMessageIndex, setCurMessageIndex] = React.useState(0);
     // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
-    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = React.useState<null | HTMLElement>();
-    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>();
+    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleBranchMenuSelect = (index: number) => {
         setCurMessageIndex(index);
@@ -95,7 +95,7 @@ export const ThreadBodyView = ({
     const contextMenu = (
         <MessageActionsMenu
             setMenuAnchorEl={setContextMenuAnchorEl}
-            menuAnchorEl={contextMenuAnchorEl}
+            menuAnchorEl={contextMenuAnchorEl || null}
             primaryIcon={<MoreHorizIcon />}
             disabled={isLoading || disabledActions}>
             <MenuItem
@@ -115,22 +115,20 @@ export const ThreadBodyView = ({
     const branchesMenu = (
         <MessageActionsMenu
             setMenuAnchorEl={setBranchMenuAnchorEl}
-            menuAnchorEl={branchMenuAnchorEl}
+            menuAnchorEl={branchMenuAnchorEl || null}
             startIcon={<KeyboardArrowDown />}
             label={'View ' + branchCount + ' branches'}>
-            <>
-                {messages.map((msg, i) => (
-                    <MenuItem
-                        key={i}
-                        onClick={() => handleBranchMenuSelect(i)}
-                        selected={i === curMessageIndex}
-                        title={msg.content}>
-                        <Typography variant="inherit" noWrap>
-                            {msg.content}
-                        </Typography>
-                    </MenuItem>
-                ))}
-            </>
+            {messages.map((msg, i) => (
+                <MenuItem
+                    key={i}
+                    onClick={() => handleBranchMenuSelect(i)}
+                    selected={i === curMessageIndex}
+                    title={msg.content}>
+                    <Typography variant="inherit" noWrap>
+                        {msg.content}
+                    </Typography>
+                </MenuItem>
+            ))}
         </MessageActionsMenu>
     );
 

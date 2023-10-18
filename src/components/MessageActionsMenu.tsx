@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Button, Menu, Typography } from '@mui/material';
 
 interface ResponseContainerProps {
-    children: JSX.Element;
-    setMenuAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null | undefined>>;
-    menuAnchorEl: HTMLElement | null | undefined;
+    children: JSX.Element | JSX.Element[];
+    setMenuAnchorEl: (value: HTMLElement | null) => void;
+    menuAnchorEl?: HTMLElement | null | undefined;
     startIcon?: React.ReactNode;
     primaryIcon?: React.ReactNode;
     label?: string;
