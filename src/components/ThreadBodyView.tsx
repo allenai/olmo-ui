@@ -30,8 +30,8 @@ import { useFeatureToggles } from '../FeatureToggleContext';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
 import { Editor } from './richTextEditor/Editor';
-import { mockChips } from './richTextEditor/mockData';
-import { Viewer } from './richTextEditor/Viewer';
+import { mockChips } from './richTextEditor/util/mockData';
+import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
 import { convertHtmlToText } from '../util';
 
 import 'highlight.js/styles/github-dark.css';
@@ -79,7 +79,7 @@ const LLMResponseView = ({ response, msgId, isEditedResponse = false }: AgentRes
             )}
             {toggles.chips ? (
                 <LLMResponseContainer id={msgId}>
-                    <Viewer value={response} />
+                    <ReadonlyEditor value={response} />
                 </LLMResponseContainer>
             ) : (
                 <LLMResponseContainer id={msgId} dangerouslySetInnerHTML={{ __html: html }} />
@@ -95,7 +95,7 @@ const UserResponseView = ({ response, msgId }: AgentResponseProps) => {
             <UserAvatar />
             <UserResponseContainer id={msgId}>
                 {toggles.chips ? (
-                    <Viewer value={response} />
+                    <ReadonlyEditor value={response} />
                 ) : (
                     <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
                 )}

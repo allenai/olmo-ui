@@ -5,11 +5,11 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 
-import { Nodes } from './Nodes';
-import { HtmlPlugin } from './HtmlPlugin';
-import { OnClickPlugin } from './OnClickPlugin';
-import { ThemeWrapper, theme } from './ThemeWrapper';
-import FloatingTextFormatToolbarPlugin from './FloatingTextFormatToolbarPlugin';
+import { Nodes } from './nodes/Nodes';
+import { HtmlPlugin } from './plugins/HtmlPlugin';
+import { OnClickPlugin } from './plugins/OnClickPlugin';
+import { ThemeWrapper, theme } from './util/ThemeWrapper';
+import { FloatingTextFormatToolbarPlugin } from './toolbar/FloatingTextFormatToolbarPlugin';
 
 interface Props {
     value?: string;
@@ -18,7 +18,7 @@ interface Props {
 }
 
 // readonly version of the editor
-export const Viewer = ({ value, onClick, maxRows }: Props) => {
+export const ReadonlyEditor = ({ value, onClick, maxRows }: Props) => {
     const initialConfig = {
         namespace: 'MyViewer',
         theme,

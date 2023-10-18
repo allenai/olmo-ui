@@ -1,5 +1,3 @@
-// todo: x
-
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
@@ -26,14 +24,15 @@ import SubscriptIcon from '@mui/icons-material/Subscript';
 import SuperscriptIcon from '@mui/icons-material/Superscript';
 import CodeIcon from '@mui/icons-material/Code';
 
-import { getDOMRangeRect } from './getDOMRangeRect';
-import { setFloatingElemPosition } from './setFloatingElemPosition';
-import { getSelectedNode } from './getSelectedNode';
+import { getDOMRangeRect } from '../util/getDOMRangeRect';
+import { setFloatingElemPosition } from '../util/setFloatingElemPosition';
+import { getSelectedNode } from '../util/getSelectedNode';
 import { DataChipButton } from './DataChipButton';
 import { SearchButton } from './SearchButton';
 import { ToolbarButton } from './ToolbarButton';
 
-function TextFormatFloatingToolbar({
+// display a popup toolbar for editing text
+const TextFormatFloatingToolbar = ({
     editor,
     anchorElem,
     isBold,
@@ -53,12 +52,12 @@ function TextFormatFloatingToolbar({
     isSubscript: boolean;
     isSuperscript: boolean;
     isUnderline: boolean;
-}): JSX.Element {
+}): JSX.Element => {
     const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
     const [selectedText, setSelectedText] = useState<string>();
 
-    function mouseMoveListener(e: MouseEvent) {
+    const mouseMoveListener = (e: MouseEvent) => {
         if (popupCharStylesEditorRef?.current && (e.buttons === 1 || e.buttons === 3)) {
             if (popupCharStylesEditorRef.current.style.pointerEvents !== 'none') {
                 const x = e.clientX;
@@ -71,14 +70,14 @@ function TextFormatFloatingToolbar({
                 }
             }
         }
-    }
-    function mouseUpListener(_e: MouseEvent) {
+    };
+    const mouseUpListener = (_e: MouseEvent) => {
         if (popupCharStylesEditorRef?.current) {
             if (popupCharStylesEditorRef.current.style.pointerEvents !== 'auto') {
                 popupCharStylesEditorRef.current.style.pointerEvents = 'auto';
             }
         }
-    }
+    };
 
     useEffect(() => {
         if (popupCharStylesEditorRef?.current) {
@@ -162,7 +161,7 @@ function TextFormatFloatingToolbar({
     }, [editor, updateTextFormatFloatingToolbar]);
 
     return (
-        <div ref={popupCharStylesEditorRef} className="floating-text-format-popup">
+        <FloatingTextFormatPopup ref={popupCharStylesEditorRef}>
             {editor.isEditable() && (
                 <>
                     <ToolbarButton
@@ -170,7 +169,7 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
                         }}
-                        className={'popup-item spaced ' + (isBold ? 'active' : '')}
+                        className={isBold ? 'active' : ''}
                         aria-label="Format text as bold">
                         <FormatBoldIcon />
                     </ToolbarButton>
@@ -179,7 +178,7 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
                         }}
-                        className={'popup-item spaced ' + (isItalic ? 'active' : '')}
+                        className={isItalic ? 'active' : ''}
                         aria-label="Format text as italics">
                         <FormatItalicIcon />
                     </ToolbarButton>
@@ -188,7 +187,7 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
                         }}
-                        className={'popup-item spaced ' + (isUnderline ? 'active' : '')}
+                        className={isUnderline ? 'active' : ''}
                         aria-label="Format text to underlined">
                         <FormatUnderlinedIcon />
                     </ToolbarButton>
@@ -197,7 +196,7 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
                         }}
-                        className={'popup-item spaced ' + (isStrikethrough ? 'active' : '')}
+                        className={isStrikethrough ? 'active' : ''}
                         aria-label="Format text with a strikethrough">
                         <StrikethroughSIcon />
                     </ToolbarButton>
@@ -206,7 +205,7 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript');
                         }}
-                        className={'popup-item spaced ' + (isSubscript ? 'active' : '')}
+                        className={isSubscript ? 'active' : ''}
                         title="Subscript"
                         aria-label="Format Subscript">
                         <SubscriptIcon />
@@ -216,7 +215,7 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'superscript');
                         }}
-                        className={'popup-item spaced ' + (isSuperscript ? 'active' : '')}
+                        className={isSuperscript ? 'active' : ''}
                         title="Superscript"
                         aria-label="Format Superscript">
                         <SuperscriptIcon />
@@ -226,30 +225,22 @@ function TextFormatFloatingToolbar({
                         onClick={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
                         }}
-                        className={'popup-item spaced ' + (isCode ? 'active' : '')}
+                        className={isCode ? 'active' : ''}
                         aria-label="Insert code block">
                         <CodeIcon />
                     </ToolbarButton>
                 </>
             )}
-            <DataChipButton
-                selection={selectedText}
-                className={'popup-item spaced '}
-                aria-label="Generate Data Chip"
-            />
-            <SearchButton
-                selection={selectedText}
-                className={'popup-item spaced '}
-                aria-label="Search Pretraining Data"
-            />
-        </div>
+            <DataChipButton selection={selectedText} aria-label="Generate Data Chip" />
+            <SearchButton selection={selectedText} aria-label="Search Pretraining Data" />
+        </FloatingTextFormatPopup>
     );
-}
+};
 
-function useFloatingTextFormatToolbar(
+const useFloatingTextFormatToolbar = (
     editor: LexicalEditor,
     anchorElem: HTMLElement
-): JSX.Element | null {
+): JSX.Element | null => {
     const [isText, setIsText] = useState(false);
     const [isBold, setIsBold] = useState(false);
     const [isItalic, setIsItalic] = useState(false);
@@ -335,162 +326,45 @@ function useFloatingTextFormatToolbar(
     }
 
     return createPortal(
-        <Container>
-            <TextFormatFloatingToolbar
-                editor={editor}
-                anchorElem={anchorElem}
-                isBold={isBold}
-                isItalic={isItalic}
-                isStrikethrough={isStrikethrough}
-                isSubscript={isSubscript}
-                isSuperscript={isSuperscript}
-                isUnderline={isUnderline}
-                isCode={isCode}
-            />
-        </Container>,
+        <TextFormatFloatingToolbar
+            editor={editor}
+            anchorElem={anchorElem}
+            isBold={isBold}
+            isItalic={isItalic}
+            isStrikethrough={isStrikethrough}
+            isSubscript={isSubscript}
+            isSuperscript={isSuperscript}
+            isUnderline={isUnderline}
+            isCode={isCode}
+        />,
         anchorElem
     );
-}
+};
 
-export default function FloatingTextFormatToolbarPlugin({
+export const FloatingTextFormatToolbarPlugin = ({
     anchorElem = document.body,
 }: {
     anchorElem?: HTMLElement;
-}): JSX.Element | null {
+}): JSX.Element | null => {
     const [editor] = useLexicalComposerContext();
     return useFloatingTextFormatToolbar(editor, anchorElem);
-}
+};
 
-const Container = styled.div`
-    .floating-text-format-popup {
-        display: flex;
-        background: #fff;
-        padding: 4px;
-        vertical-align: middle;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 10;
-        opacity: 0;
-        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        transition: opacity 0.5s;
-        height: 35px;
-        will-change: transform;
-    }
-
-    .floating-text-format-popup button.popup-item {
-        border: 0;
-        display: flex;
-        background: none;
-        border-radius: 10px;
-        cursor: pointer;
-        vertical-align: middle;
-    }
-
-    .floating-text-format-popup button.popup-item:disabled {
-        cursor: not-allowed;
-    }
-
-    .floating-text-format-popup button.popup-item.spaced {
-        margin-right: 2px;
-    }
-
-    .floating-text-format-popup button.popup-item i.format {
-        background-size: contain;
-        height: 18px;
-        width: 18px;
-        margin-top: 2px;
-        vertical-align: -0.25em;
-        display: flex;
-        opacity: 0.6;
-    }
-
-    .floating-text-format-popup button.popup-item:disabled i.format {
-        opacity: 0.2;
-    }
-
-    .floating-text-format-popup button.popup-item.active {
-        background-color: rgba(223, 232, 250, 0.3);
-    }
-
-    .floating-text-format-popup button.popup-item.active i {
-        opacity: 1;
-    }
-
-    .floating-text-format-popup .popup-item:hover:not([disabled]) {
-        background-color: #eee;
-    }
-
-    .floating-text-format-popup select.popup-item {
-        border: 0;
-        display: flex;
-        background: none;
-        border-radius: 10px;
-        vertical-align: middle;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        width: 70px;
-        font-size: 14px;
-        color: #777;
-        text-overflow: ellipsis;
-    }
-
-    .floating-text-format-popup select.code-language {
-        text-transform: capitalize;
-        width: 130px;
-    }
-
-    .floating-text-format-popup .popup-item .text {
-        display: flex;
-        line-height: 20px;
-        vertical-align: middle;
-        font-size: 14px;
-        color: #777;
-        text-overflow: ellipsis;
-        width: 70px;
-        overflow: hidden;
-        height: 20px;
-        text-align: left;
-    }
-
-    .floating-text-format-popup .popup-item .icon {
-        display: flex;
-        width: 20px;
-        height: 20px;
-        user-select: none;
-        margin-right: 8px;
-        line-height: 16px;
-        background-size: contain;
-    }
-
-    .floating-text-format-popup i.chevron-down {
-        margin-top: 3px;
-        width: 16px;
-        height: 16px;
-        display: flex;
-        user-select: none;
-    }
-
-    .floating-text-format-popup i.chevron-down.inside {
-        width: 16px;
-        height: 16px;
-        display: flex;
-        margin-left: -25px;
-        margin-top: 11px;
-        margin-right: 10px;
-        pointer-events: none;
-    }
-
-    .floating-text-format-popup .divider {
-        width: 1px;
-        background-color: #eee;
-        margin: 0 4px;
-    }
-
-    @media (max-width: 1024px) {
-        .floating-text-format-popup button.insert-comment {
-            display: none;
-        }
-    }
+const FloatingTextFormatPopup = styled.div`
+    display: flex;
+    background: ${({ theme }) => theme.color2.N1};
+    padding: ${({ theme }) => theme.spacing(0.5)};
+    vertical-align: middle;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    opacity: 0;
+    // match mui
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 5px -3px, rgba(0, 0, 0, 0.14) 0px 8px 10px 1px,
+        rgba(0, 0, 0, 0.12) 0px 3px 14px 2px;
+    border-radius: ${({ theme }) => theme.spacing(0.5)};
+    transition: opacity 0.5s;
+    height: 35px;
+    will-change: transform;
 `;

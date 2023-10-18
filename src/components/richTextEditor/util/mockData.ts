@@ -1,4 +1,4 @@
-import { DataChip } from '../../api/DataChip';
+import { DataChip } from '../../../api/DataChip';
 
 // todo: get this from the api
 export const mockChips: DataChip[] = [

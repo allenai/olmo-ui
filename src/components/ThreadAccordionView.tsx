@@ -19,7 +19,7 @@ import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
 import { useFeatureToggles } from '../FeatureToggleContext';
-import { Viewer } from './richTextEditor/Viewer';
+import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
 import { convertHtmlToText } from '../util';
 
 interface ThreadAccordionProps {
@@ -111,7 +111,7 @@ const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
     return (
         <>
             {toggles.chips ? (
-                <Viewer
+                <ReadonlyEditor
                     maxRows={noWrap ? 1 : undefined}
                     value={noWrap ? convertHtmlToText(title) : title}
                     onClick={(e) => {

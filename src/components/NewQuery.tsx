@@ -21,7 +21,7 @@ import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './richTextEditor/Editor';
-import { mockChips } from './richTextEditor/mockData';
+import { mockChips } from './richTextEditor/util/mockData';
 import { StandardContainer } from './StandardContainer';
 
 export const NewQuery = () => {

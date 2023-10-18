@@ -1,42 +1,19 @@
-// todo: x
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 
-import DataChipsPlugin from './DataChipsPlugin';
+import { DataChipsPlugin } from './plugins/DataChipsPlugin';
 import { DataChip } from '../../api/DataChip';
-import { HtmlPlugin } from './HtmlPlugin';
-import { Nodes } from './Nodes';
-import FloatingTextFormatToolbarPlugin from './FloatingTextFormatToolbarPlugin';
-import { OnKeyDownPlugin } from './OnKeyDownPlugin';
-import { ThemeWrapper, theme } from './ThemeWrapper';
-
-function AutoFocusPlugin() {
-    const [editor] = useLexicalComposerContext();
-
-    useEffect(() => {
-        // Focus the editor when the effect fires!
-        editor.focus();
-    }, [editor]);
-
-    return null;
-}
-
-function UpdateEditablePlugin({ isEditable }: { isEditable: boolean }) {
-    const [editor] = useLexicalComposerContext();
-
-    useEffect(() => {
-        editor.setEditable(isEditable);
-    }, [isEditable]);
-
-    return null;
-}
+import { HtmlPlugin } from './plugins/HtmlPlugin';
+import { Nodes } from './nodes/Nodes';
+import { FloatingTextFormatToolbarPlugin } from './toolbar/FloatingTextFormatToolbarPlugin';
+import { OnKeyDownPlugin } from './plugins/OnKeyDownPlugin';
+import { ThemeWrapper, theme } from './util/ThemeWrapper';
+import { UpdateEditablePlugin } from './plugins/UpdateEditablePlugin';
 
 interface Props {
     chips?: DataChip[];
@@ -48,6 +25,7 @@ interface Props {
     minRows?: number;
 }
 
+// Richtext editor
 export const Editor = ({
     disabled,
     label,
@@ -81,7 +59,6 @@ export const Editor = ({
                         }}
                     />
                     <HistoryPlugin />
-                    <AutoFocusPlugin />
                     <FloatingTextFormatToolbarPlugin />
                     {chips ? <DataChipsPlugin chips={chips} /> : <></>}
                     <UpdateEditablePlugin isEditable={!disabled} />

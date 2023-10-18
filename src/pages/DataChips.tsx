@@ -21,7 +21,7 @@ import AddIcon from '@mui/icons-material/Add';
 import TuneIcon from '@mui/icons-material/Tune';
 
 import { DataChip } from '../api/DataChip';
-import { mockChips } from '../components/richTextEditor/mockData';
+import { mockChips } from '../components/richTextEditor/util/mockData';
 import { DataChipEditorButtonWrapper } from '../components/ModalEditors/DataChipEditorButtonWrapper';
 import { dateTimeFormat } from '../util';
 import { useFeatureToggles } from '../FeatureToggleContext';

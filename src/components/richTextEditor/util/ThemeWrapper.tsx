@@ -80,9 +80,6 @@ export const theme: EditorThemeClasses = {
     tableAddColumns: 'theme_tableAddColumns',
     tableAddRows: 'theme_tableAddRows',
     tableCell: 'theme_tableCell',
-    tableCellActionButton: 'theme_tableCellActionButton',
-    tableCellActionButtonContainer: 'theme_tableCellActionButtonContainer',
-    tableCellEditing: 'theme_tableCellEditing',
     tableCellHeader: 'theme_tableCellHeader',
     tableCellPrimarySelected: 'theme_tableCellPrimarySelected',
     tableCellResizer: 'theme_tableCellResizer',
@@ -104,7 +101,7 @@ export const theme: EditorThemeClasses = {
 };
 
 // wrapper to convert classes above to styles
-// todo: convert to use varnish in a different pr
+// roughly matched varnish, but we could do more/less as needed
 export const ThemeWrapper = styled.div`
     .theme_ltr {
         text-align: left;
@@ -118,35 +115,35 @@ export const ThemeWrapper = styled.div`
     }
     .theme_quote {
         margin: 0;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        font-size: 15px;
-        color: rgb(101, 103, 107);
-        border-left-color: rgb(206, 208, 212);
-        border-left-width: 4px;
+        margin-left: ${({ theme }) => theme.spacing(2.5)};
+        margin-bottom: ${({ theme }) => theme.spacing(1.5)};
+        font-size: ${({ theme }) => theme.spacing(2)};
+        color:${({ theme }) => theme.color2.N4};
+        border-left-color: ${({ theme }) => theme.color2.P1};
+        border-left-width: ${({ theme }) => theme.spacing(0.5)};
         border-left-style: solid;
-        padding-left: 16px;
+        padding-left: ${({ theme }) => theme.spacing(2)};
     }
     .theme_h1 {
-        font-size: 24px;
-        color: rgb(5, 5, 5);
-        font-weight: 400;
+        font-size: ${({ theme }) => theme.typography.h1.fontSize};
+        color: ${({ theme }) => theme.typography.h1.color};
+        font-weight: ${({ theme }) => theme.typography.h1.fontWeight};
         margin: 0;
     }
     .theme_h2 {
-        font-size: 15px;
-        color: rgb(101, 103, 107);
-        font-weight: 700;
+        font-size: ${({ theme }) => theme.typography.h2.fontSize};
+        color: ${({ theme }) => theme.typography.h2.color};
+        font-weight: ${({ theme }) => theme.typography.h2.fontWeight};
         margin: 0;
-        text-transform: uppercase;
     }
     .theme_h3 {
-        font-size: 12px;
+        font-size: ${({ theme }) => theme.typography.h3.fontSize};
+        color: ${({ theme }) => theme.typography.h3.color};
+        font-weight: ${({ theme }) => theme.typography.h3.fontWeight};
         margin: 0;
-        text-transform: uppercase;
     }
     .theme_indent {
-        --lexical-indent-base-value: 40px;
+        --lexical-indent-base-value: ${({ theme }) => theme.spacing(5)};
     }
     .theme_textBold {
         font-weight: bold;
@@ -172,17 +169,17 @@ export const ThemeWrapper = styled.div`
         vertical-align: super;
     }
     .theme_textCode {
-        background-color: rgb(240, 242, 245);
+        background-color: ${({ theme }) => theme.color2.B1};
         padding: 1px 0.25rem;
-        font-family: Menlo, Consolas, Monaco, monospace;
+        font-family: 'Roboto Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,Courier,monospace;
         font-size: 94%;
     }
     .theme_hashtag {
-        background-color: rgba(88, 144, 255, 0.15);
-        border-bottom: 1px solid rgba(88, 144, 255, 0.3);
+        background-color:  ${({ theme }) => theme.color2.B2};
+        border-bottom: 1px solid  ${({ theme }) => theme.color2.B3};
     }
     .theme_link {
-        color: rgb(33, 111, 219);
+        color: ${({ theme }) => theme.color2.B3};
         text-decoration: none;
     }
     .theme_link:hover {
@@ -190,15 +187,16 @@ export const ThemeWrapper = styled.div`
         cursor: pointer;
     }
     .theme_code {
-        background-color: rgb(240, 242, 245);
-        font-family: Menlo, Consolas, Monaco, monospace;
+        background-color:  ${({ theme }) => theme.color2.B1};
+        font-family: 'Roboto Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,Courier,monospace;
         display: block;
-        padding: 8px 8px 8px 52px;
+        padding: ${({ theme }) =>
+            `${theme.spacing(1)} ${theme.spacing(1)} ${theme.spacing(1)} 52px`};
         line-height: 1.53;
-        font-size: 13px;
+        font-size: ${({ theme }) => theme.spacing(2)};
         margin: 0;
-        margin-top: 8px;
-        margin-bottom: 8px;
+        margin-top: ${({ theme }) => theme.spacing(1)};
+        margin-bottom: ${({ theme }) => theme.spacing(1)};
         overflow-x: auto;
         position: relative;
         tab-size: 2;
@@ -206,15 +204,15 @@ export const ThemeWrapper = styled.div`
     .theme_code:before {
         content: attr(data-gutter);
         position: absolute;
-        background-color: #eee;
+        background-color:  ${({ theme }) => theme.color2.P1};
         left: 0;
         top: 0;
-        border-right: 1px solid #ccc;
-        padding: 8px;
-        color: #777;
+        border-right: 1px solid  ${({ theme }) => theme.color2.N3};
+        padding: ${({ theme }) => theme.spacing(1)};
+        color:  ${({ theme }) => theme.color2.N4};
         white-space: pre-wrap;
         text-align: right;
-        min-width: 25px;
+        min-width: ${({ theme }) => theme.spacing(3.5)};
     }
     .theme_table {
         border-collapse: collapse;
@@ -223,21 +221,21 @@ export const ThemeWrapper = styled.div`
         overflow-x: scroll;
         table-layout: fixed;
         width: max-content;
-        margin: 30px 0;
+        margin: ${({ theme }) => theme.spacing(4)}; 0;
     }
     .theme_tableSelection *::selection {
         background-color: transparent;
     }
     .theme_tableSelected {
-        outline: 2px solid rgb(60, 132, 244);
+        outline: 2px solid  ${({ theme }) => theme.color2.B3};
     }
     .theme_tableCell {
-        border: 1px solid #bbb;
-        width: 75px;
-        min-width: 75px;
+        border: 1px solid  ${({ theme }) => theme.color2.N3};
+        width: ${({ theme }) => theme.spacing(9.5)};
+        min-width: ${({ theme }) => theme.spacing(9.5)};
         vertical-align: top;
         text-align: start;
-        padding: 6px 8px;
+        padding: ${({ theme }) => theme.spacing(1)};
         position: relative;
         outline: none;
     }
@@ -248,27 +246,27 @@ export const ThemeWrapper = styled.div`
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 4px;
-        background-color: #999;
+        height: ${({ theme }) => theme.spacing(0.5)};
+        background-color:  ${({ theme }) => theme.color2.N3};
     }
     .theme_tableCellResizer {
         position: absolute;
-        right: -4px;
+        right: -${({ theme }) => theme.spacing(0.5)};
         height: 100%;
-        width: 8px;
+        width: ${({ theme }) => theme.spacing(1)};
         cursor: ew-resize;
         z-index: 10;
         top: 0;
     }
     .theme_tableCellHeader {
-        background-color: #f2f3f5;
+        background-color:  ${({ theme }) => theme.color2.B1};
         text-align: start;
     }
     .theme_tableCellSelected {
-        background-color: #c9dbf0;
+        background-color:  ${({ theme }) => theme.color2.P1};
     }
     .theme_tableCellPrimarySelected {
-        border: 2px solid rgb(60, 132, 244);
+        border: 2px solid  ${({ theme }) => theme.color2.B3};
         display: block;
         height: calc(100% - 2px);
         position: absolute;
@@ -276,108 +274,6 @@ export const ThemeWrapper = styled.div`
         left: -1px;
         top: -1px;
         z-index: 2;
-    }
-    .theme_tableCellEditing {
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-        border-radius: 3px;
-    }
-    .theme_tableAddColumns {
-        position: absolute;
-        top: 0;
-        width: 20px;
-        background-color: #eee;
-        height: 100%;
-        right: -25px;
-        animation: table-controls 0.2s ease;
-        border: 0;
-        cursor: pointer;
-    }
-    .theme_tableAddColumns:after {
-        background-image: url(../images/icons/plus.svg);
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: block;
-        content: ' ';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.4;
-    }
-    .theme_tableAddColumns:hover {
-        background-color: #c9dbf0;
-    }
-    .theme_tableAddRows {
-        position: absolute;
-        bottom: -25px;
-        width: calc(100% - 25px);
-        background-color: #eee;
-        height: 20px;
-        left: 0;
-        animation: table-controls 0.2s ease;
-        border: 0;
-        cursor: pointer;
-    }
-    .theme_tableAddRows:after {
-        background-image: url(../images/icons/plus.svg);
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: block;
-        content: ' ';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.4;
-    }
-    .theme_tableAddRows:hover {
-        background-color: #c9dbf0;
-    }
-    @keyframes table-controls {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    .theme_tableCellResizeRuler {
-        display: block;
-        position: absolute;
-        width: 1px;
-        background-color: rgb(60, 132, 244);
-        height: 100%;
-        top: 0;
-    }
-    .theme_tableCellActionButtonContainer {
-        display: block;
-        right: 5px;
-        top: 6px;
-        position: absolute;
-        z-index: 4;
-        width: 20px;
-        height: 20px;
-    }
-    .theme_tableCellActionButton {
-        background-color: #eee;
-        display: block;
-        border: 0;
-        border-radius: 20px;
-        width: 20px;
-        height: 20px;
-        color: #222;
-        cursor: pointer;
-    }
-    .theme_tableCellActionButton:hover {
-        background-color: #ddd;
-    }
-    .theme_characterLimit {
-        display: inline;
-        background-color: #ffbbbb !important;
     }
     .theme_ol1 {
         padding: 0;
@@ -414,15 +310,15 @@ export const ThemeWrapper = styled.div`
         list-style-position: inside;
     }
     .theme_listItem {
-        margin: 0 32px;
+        margin: 0 ${({ theme }) => theme.spacing(4)};
     }
     .theme_listItemChecked,
     .theme_listItemUnchecked {
         position: relative;
-        margin-left: 8px;
-        margin-right: 8px;
-        padding-left: 24px;
-        padding-right: 24px;
+        margin-left: ${({ theme }) => theme.spacing(1)};
+        margin-right: ${({ theme }) => theme.spacing(1)};
+        padding-left: ${({ theme }) => theme.spacing(3)};
+        padding-right: ${({ theme }) => theme.spacing(3)};
         list-style-type: none;
         outline: none;
     }
@@ -432,8 +328,8 @@ export const ThemeWrapper = styled.div`
     .theme_listItemUnchecked:before,
     .theme_listItemChecked:before {
         content: '';
-        width: 16px;
-        height: 16px;
+        width: ${({ theme }) => theme.spacing(2)};
+        height: ${({ theme }) => theme.spacing(2)};
         top: 2px;
         left: 0;
         cursor: pointer;
@@ -448,17 +344,17 @@ export const ThemeWrapper = styled.div`
     }
     .theme_listItemUnchecked:focus:before,
     .theme_listItemChecked:focus:before {
-        box-shadow: 0 0 0 2px #a6cdfe;
+        box-shadow: 0 0 0 2px  ${({ theme }) => theme.color2.T2};
         border-radius: 2px;
     }
     .theme_listItemUnchecked:before {
-        border: 1px solid #999;
+        border: 1px solid  ${({ theme }) => theme.color2.N3};
         border-radius: 2px;
     }
     .theme_listItemChecked:before {
-        border: 1px solid rgb(61, 135, 245);
+        border: 1px solid  ${({ theme }) => theme.color2.B3};
         border-radius: 2px;
-        background-color: #3d87f5;
+        background-color:  ${({ theme }) => theme.color2.B3};
         background-repeat: no-repeat;
     }
     .theme_listItemChecked:after {
@@ -484,59 +380,59 @@ export const ThemeWrapper = styled.div`
         display: none;
     }
     .theme_tokenComment {
-        color: slategray;
+        color:  ${({ theme }) => theme.color2.N4};
     }
     .theme_tokenPunctuation {
-        color: #999;
+        color:  ${({ theme }) => theme.color2.N3};
     }
     .theme_tokenProperty {
-        color: #905;
+        color:  ${({ theme }) => theme.color2.R5};
     }
     .theme_tokenSelector {
-        color: #690;
+        color: ${({ theme }) => theme.color2.G5};
     }
     .theme_tokenOperator {
-        color: #9a6e3a;
+        color:${({ theme }) => theme.color2.O5};
     }
     .theme_tokenAttr {
-        color: #07a;
+        color: ${({ theme }) => theme.color2.T4};
     }
     .theme_tokenVariable {
-        color: #e90;
+        color: ${({ theme }) => theme.color2.O4};
     }
     .theme_tokenFunction {
-        color: #dd4a68;
+        color: ${({ theme }) => theme.color2.R4};
     }
     .theme_mark {
-        background: rgba(255, 212, 0, 0.14);
-        border-bottom: 2px solid rgba(255, 212, 0, 0.3);
+        background: ${({ theme }) => theme.color2.O3};
+        border-bottom: 2px solid ${({ theme }) => theme.color2.O4};
         padding-bottom: 2px;
     }
     .theme_markOverlap {
-        background: rgba(255, 212, 0, 0.3);
-        border-bottom: 2px solid rgba(255, 212, 0, 0.7);
+        background: ${({ theme }) => theme.color2.O4};
+        border-bottom: 2px solid ${({ theme }) => theme.color2.O4};
     }
     .theme_mark.selected {
-        background: rgba(255, 212, 0, 0.5);
-        border-bottom: 2px solid rgba(255, 212, 0, 1);
+        background: ${({ theme }) => theme.color2.O4};
+        border-bottom: 2px solid ${({ theme }) => theme.color2.O5};
     }
     .theme_markOverlap.selected {
-        background: rgba(255, 212, 0, 0.7);
-        border-bottom: 2px solid rgba(255, 212, 0, 0.7);
+        background: ${({ theme }) => theme.color2.O4};
+        border-bottom: 2px solid ${({ theme }) => theme.color2.O4};
     }
     .theme_embedBlock {
         user-select: none;
     }
     .theme_embedBlockFocus {
-        outline: 2px solid rgb(60, 132, 244);
+        outline: 2px solid ${({ theme }) => theme.color2.B3};
     }
     .theme_layoutContaner {
         display: grid;
-        gap: 10px;
-        margin: 10px 0;
+        gap: ${({ theme }) => theme.spacing(1.5)};
+        margin: ${({ theme }) => theme.spacing(1.5)}; 0;
     }
     .theme_layoutItem {
         border: 1px dashed #ddd;
-        padding: 8px 16px;
+        padding: ${({ theme }) => `${theme.spacing(2)} ${theme.spacing(2)}`};
     }
 `;

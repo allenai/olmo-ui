@@ -1,7 +1,7 @@
 import React from 'react';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 
-import { DataChipEditorButtonWrapper } from '../ModalEditors/DataChipEditorButtonWrapper';
+import { DataChipEditorButtonWrapper } from '../../ModalEditors/DataChipEditorButtonWrapper';
 import { ToolbarButton } from './ToolbarButton';
 
 // custom button added to toolbar to add a data chip
