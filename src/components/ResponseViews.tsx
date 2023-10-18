@@ -6,16 +6,17 @@ import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
 import DOMPurify from 'dompurify';
 
-import 'highlight.js/styles/github-dark.css';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
 
-interface WrapperProps {
+import 'highlight.js/styles/github-dark.css';
+
+interface ResponseContainerProps {
     children: JSX.Element;
     setHover: (value: boolean) => void;
 }
 
-const Wrapper = ({ children, setHover }: WrapperProps) => {
+const ResponseContainer = ({ children, setHover }: ResponseContainerProps) => {
     return (
         <div
             role="presentation" // TODO: need a better a11y keyboard-only story pre-release
@@ -28,7 +29,7 @@ const Wrapper = ({ children, setHover }: WrapperProps) => {
     );
 };
 
-interface AgentResponseProps {
+interface ResponseProps {
     msgId: string;
     response: string;
     contextMenu?: JSX.Element;
@@ -42,7 +43,7 @@ export const LLMResponseView = ({
     contextMenu,
     branchMenu,
     isEditedResponse = false,
-}: AgentResponseProps) => {
+}: ResponseProps) => {
     const [hover, setHover] = useState(false);
 
     const marked = new Marked(
@@ -61,7 +62,7 @@ export const LLMResponseView = ({
     });
     const html = DOMPurify.sanitize(marked.parse(response));
     return (
-        <Wrapper setHover={setHover}>
+        <ResponseContainer setHover={setHover}>
             <Stack direction="row">
                 {isEditedResponse ? (
                     <Stack direction="column" spacing={-1}>
@@ -87,20 +88,15 @@ export const LLMResponseView = ({
                     </Stack>
                 </LLMResponseContainer>
             </Stack>
-        </Wrapper>
+        </ResponseContainer>
     );
 };
 
-export const UserResponseView = ({
-    response,
-    msgId,
-    contextMenu,
-    branchMenu,
-}: AgentResponseProps) => {
+export const UserResponseView = ({ response, msgId, contextMenu, branchMenu }: ResponseProps) => {
     const [hover, setHover] = useState(false);
 
     return (
-        <Wrapper setHover={setHover}>
+        <ResponseContainer setHover={setHover}>
             <Stack direction="row" justifyContent="space-between">
                 <Stack direction="row">
                     <UserAvatar />
@@ -113,7 +109,7 @@ export const UserResponseView = ({
                     {branchMenu && hover ? branchMenu : null}
                 </Stack>
             </Stack>
-        </Wrapper>
+        </ResponseContainer>
     );
 };
 

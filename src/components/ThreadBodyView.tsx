@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import {
     Box,
-    Button,
     Grid,
     IconButton,
     LinearProgress,
     ListItemIcon,
     ListItemText,
-    Menu,
     MenuItem,
     Stack,
     TextField,
@@ -26,6 +24,7 @@ import { Role } from '../api/Role';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 import { LLMResponseView, UserResponseView } from './ResponseViews';
+import { MenuWrapperContainer, MessageActionsMenu } from './MessageActionsMenu';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -33,9 +32,6 @@ interface ThreadBodyProps {
     showFollowUp?: boolean;
     disabledActions?: boolean;
 }
-
-const MENU_MAX_HEIGHT = 48 * 4.5;
-const MENU_WIDTH = '20ch';
 
 export const ThreadBodyView = ({
     parent,
@@ -53,16 +49,13 @@ export const ThreadBodyView = ({
     const [editMessageContent, setEditMessageContent] = useState('');
     const [curMessageIndex, setCurMessageIndex] = React.useState(0);
     // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
-    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = React.useState<null | HTMLElement>();
+    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>();
 
     const handleBranchMenuSelect = (index: number) => {
         setCurMessageIndex(index);
         setBranchMenuAnchorEl(null);
     };
-
-    const branchMenuOpen = Boolean(branchMenuAnchorEl);
-    const contextMenuOpen = Boolean(contextMenuAnchorEl);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [followUpPrompt, setFollowUpPrompt] = useState<string>();
@@ -99,56 +92,33 @@ export const ThreadBodyView = ({
         }
     };
 
-    const menuPaperStyle = {
-        maxHeight: MENU_MAX_HEIGHT,
-        width: MENU_WIDTH,
-    };
-
     const contextMenu = (
-        <MenuWrapperContainer>
-            <ResponseMenuButton
-                variant="outlined"
-                disabled={isLoading || disabledActions}
-                onClick={(e) => setContextMenuAnchorEl(e.currentTarget)}>
-                <MoreHorizIcon />
-            </ResponseMenuButton>
-            <Menu
-                anchorEl={contextMenuAnchorEl}
-                open={contextMenuOpen}
-                onClose={() => setContextMenuAnchorEl(null)}
-                PaperProps={{
-                    style: menuPaperStyle,
+        <MessageActionsMenu
+            setMenuAnchorEl={setContextMenuAnchorEl}
+            menuAnchorEl={contextMenuAnchorEl}
+            primaryIcon={<MoreHorizIcon />}
+            disabled={isLoading || disabledActions}>
+            <MenuItem
+                key={'edit'}
+                onClick={() => {
+                    setIsEditing(true);
+                    setContextMenuAnchorEl(null);
                 }}>
-                <MenuItem
-                    key={'edit'}
-                    onClick={() => {
-                        setIsEditing(true);
-                        setContextMenuAnchorEl(null);
-                    }}>
-                    <ListItemIcon>
-                        <EditIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Edit</ListItemText>
-                </MenuItem>
-            </Menu>
-        </MenuWrapperContainer>
+                <ListItemIcon>
+                    <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Edit</ListItemText>
+            </MenuItem>
+        </MessageActionsMenu>
     );
 
     const branchesMenu = (
-        <MenuWrapperContainer>
-            <ResponseMenuButton
-                startIcon={<KeyboardArrowDown />}
-                variant="outlined"
-                onClick={(e) => setBranchMenuAnchorEl(e.currentTarget)}>
-                <Typography noWrap>View {branchCount} branches</Typography>
-            </ResponseMenuButton>
-            <Menu
-                anchorEl={branchMenuAnchorEl}
-                open={branchMenuOpen}
-                onClose={() => setBranchMenuAnchorEl(null)}
-                PaperProps={{
-                    style: menuPaperStyle,
-                }}>
+        <MessageActionsMenu
+            setMenuAnchorEl={setBranchMenuAnchorEl}
+            menuAnchorEl={branchMenuAnchorEl}
+            startIcon={<KeyboardArrowDown />}
+            label={'View ' + branchCount + ' branches'}>
+            <>
                 {messages.map((msg, i) => (
                     <MenuItem
                         key={i}
@@ -160,8 +130,8 @@ export const ThreadBodyView = ({
                         </Typography>
                     </MenuItem>
                 ))}
-            </Menu>
-        </MenuWrapperContainer>
+            </>
+        </MessageActionsMenu>
     );
 
     return (
@@ -259,17 +229,6 @@ export const ThreadBodyView = ({
     );
 };
 
-const ResponseMenuButton = styled(Button)`
-    &&& {
-        padding: ${({ theme }) => theme.spacing(0.75)};
-        min-width: 20px;
-        height: 25px;
-        color: ${({ theme }) => theme.color2.N5};
-        border-color: ${({ theme }) => theme.color2.N5};
-        font-size: 12px;
-    }
-`;
-
 const FollowUpContainer = styled.div`
     padding-left: ${({ theme }) => theme.spacing(2)};
     padding-right: ${({ theme }) => theme.spacing(1)};
@@ -282,8 +241,4 @@ const OutlinedIconButton = styled(IconButton)`
         border-radius: 0;
         padding: 0;
     }
-`;
-
-const MenuWrapperContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(1)};
 `;
