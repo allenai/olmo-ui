@@ -95,7 +95,7 @@ export const ThreadBodyView = ({
     const contextMenu = (
         <MessageActionsMenu
             setMenuAnchorEl={setContextMenuAnchorEl}
-            menuAnchorEl={contextMenuAnchorEl || null}
+            menuAnchorEl={contextMenuAnchorEl}
             primaryIcon={<MoreHorizIcon />}
             disabled={isLoading || disabledActions}>
             <MenuItem
@@ -115,7 +115,7 @@ export const ThreadBodyView = ({
     const branchesMenu = (
         <MessageActionsMenu
             setMenuAnchorEl={setBranchMenuAnchorEl}
-            menuAnchorEl={branchMenuAnchorEl || null}
+            menuAnchorEl={branchMenuAnchorEl}
             startIcon={<KeyboardArrowDown />}
             label={'View ' + branchCount + ' branches'}>
             {messages.map((msg, i) => (

@@ -5,7 +5,7 @@ import { Button, Menu, Typography } from '@mui/material';
 interface ResponseContainerProps {
     children: JSX.Element | JSX.Element[];
     setMenuAnchorEl: (value: HTMLElement | null) => void;
-    menuAnchorEl?: HTMLElement | null | undefined;
+    menuAnchorEl: HTMLElement | null | undefined;
     startIcon?: React.ReactNode;
     primaryIcon?: React.ReactNode;
     label?: string;
