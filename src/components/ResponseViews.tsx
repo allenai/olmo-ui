@@ -77,27 +77,25 @@ export const LLMResponseView = ({
                 ) : (
                     <RobotAvatar />
                 )}
-                {toggles.chips ? (
-                    <LLMResponseContainer id={msgId}>
-                        <ReadonlyEditor value={response} />
-                    </LLMResponseContainer>
-                ) : (
-                    <LLMResponseContainer id={msgId}>
-                        <Stack direction="row" justifyContent="space-between">
+                <LLMResponseContainer id={msgId}>
+                    <Stack direction="row" justifyContent="space-between">
+                        {toggles.chips ? (
+                            <ReadonlyEditor value={response} />
+                        ) : (
                             <div
                                 dangerouslySetInnerHTML={{ __html: html }}
                                 style={{ background: 'transparent' }}
                             />
-                            <Stack
-                                direction="row"
-                                spacing={1}
-                                style={{ visibility: hover ? 'visible' : 'hidden' }}>
-                                {contextMenu || null}
-                                {branchMenu || null}
-                            </Stack>
+                        )}
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            style={{ visibility: hover ? 'visible' : 'hidden' }}>
+                            {contextMenu || null}
+                            {branchMenu || null}
                         </Stack>
-                    </LLMResponseContainer>
-                )}
+                    </Stack>
+                </LLMResponseContainer>
             </Stack>
         </ResponseContainer>
     );
