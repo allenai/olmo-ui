@@ -129,9 +129,9 @@ export const ThreadBodyView = ({
                     key={i}
                     onClick={() => handleBranchMenuSelect(i)}
                     selected={i === curMessageIndex}
-                    title={msg.text_content}>
+                    title={msg.snippet}>
                     <Typography variant="inherit" noWrap>
-                        {msg.text_content}
+                        {msg.snippet}
                     </Typography>
                 </MenuItem>
             ))}

@@ -16,7 +16,7 @@ export interface MessagePost {
 export interface Message {
     children?: Message[];
     content: string;
-    text_content: string;
+    snippet: string;
     created: Date;
     creator: string;
     deleted?: Date;
@@ -70,9 +70,8 @@ export interface Logprob {
 }
 
 // The serialized representation, where certain fields (dates) are encoded as strings.
-// note: when backend passes unformattedContent, remove it from the omit
-export interface JSONMessage
-    extends Omit<Message, 'created' | 'deleted' | 'children' | 'text_content'> {
+// note: when backend passes snippet, remove it from the omit
+export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children' | 'snippet'> {
     created: string;
     deleted?: string;
     children?: JSONMessage[];
@@ -81,8 +80,8 @@ export interface JSONMessage
 export const parseMessage = (message: JSONMessage): Message => {
     return {
         ...message,
-        // currently, we generate this here, but soon the backend will pass it in, att hat time, remove this line
-        text_content: convertHtmlToText(message.content),
+        // currently, we generate snippet here, but soon the backend will pass it in, at that time, remove this line
+        snippet: convertHtmlToText(message.content).slice(0, 100),
         created: new Date(message.created),
         deleted: message.deleted ? new Date(message.deleted) : undefined,
         children: message.children ? message.children.map((c) => parseMessage(c)) : undefined,
