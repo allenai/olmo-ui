@@ -4,8 +4,6 @@ import {
     Grid,
     IconButton,
     LinearProgress,
-    ListItemIcon,
-    ListItemText,
     MenuItem,
     Stack,
     TextField,
@@ -13,23 +11,20 @@ import {
 } from '@mui/material';
 import styled from 'styled-components';
 
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
+import { KeyboardArrowDown, MoreHoriz, Check, Clear } from '@mui/icons-material';
 
 import { Message, MessagePost } from '../api/Message';
 import { Role } from '../api/Role';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 import { LLMResponseView, UserResponseView } from './ResponseViews';
-import { MenuWrapperContainer, MessageActionsMenu } from './MessageActionsMenu';
+import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './richTextEditor/Editor';
 import { mockChips } from './richTextEditor/util/mockData';
 
 import 'highlight.js/styles/github-dark.css';
+import { LabelRating } from '../api/Label';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -47,7 +42,7 @@ export const ThreadBodyView = ({
     if (!messages) {
         return null;
     }
-    const { postMessage } = useAppContext();
+    const { postMessage, postLabel } = useAppContext();
     const toggles = useFeatureToggles();
 
     const [isEditing, setIsEditing] = useState(false);
@@ -98,23 +93,27 @@ export const ThreadBodyView = ({
         }
     };
 
+    const handleEdit = () => {
+        setIsEditing(true);
+        setContextMenuAnchorEl(null);
+    };
+
+    const addLabel = async (rating: LabelRating, id: string, msg: Message) => {
+        postLabel({ rating, message: id }, msg);
+        setContextMenuAnchorEl(null);
+    };
+
     const contextMenu = (
         <MessageActionsMenu
             setMenuAnchorEl={setContextMenuAnchorEl}
             menuAnchorEl={contextMenuAnchorEl}
-            primaryIcon={<MoreHorizIcon />}
+            primaryIcon={<MoreHoriz />}
             disabled={isLoading || disabledActions}>
-            <MenuItem
-                key={'edit'}
-                onClick={() => {
-                    setIsEditing(true);
-                    setContextMenuAnchorEl(null);
-                }}>
-                <ListItemIcon>
-                    <EditIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Edit</ListItemText>
-            </MenuItem>
+            <MessageContextMenu
+                handleEdit={handleEdit}
+                addLabel={addLabel}
+                curMessage={curMessage}
+            />
         </MessageActionsMenu>
     );
 
@@ -171,7 +170,7 @@ export const ThreadBodyView = ({
                                                 size="small"
                                                 disabled={!editMessageContent?.length}
                                                 onClick={editMessage}>
-                                                <CheckIcon />
+                                                <Check />
                                             </OutlinedIconButton>
                                         </MenuWrapperContainer>
                                     </Grid>
@@ -181,7 +180,7 @@ export const ThreadBodyView = ({
                                                 sx={{ border: 1, borderRadius: 0, p: 0 }}
                                                 size="small"
                                                 onClick={() => setIsEditing(false)}>
-                                                <ClearIcon />
+                                                <Clear />
                                             </OutlinedIconButton>
                                         </MenuWrapperContainer>
                                     </Grid>
@@ -194,6 +193,7 @@ export const ThreadBodyView = ({
                                             msgId={curMessage.id}
                                             contextMenu={!isEditing ? contextMenu : undefined}
                                             branchMenu={branchCount > 1 ? branchesMenu : undefined}
+                                            displayBranchIcon={branchCount > 1}
                                         />
                                     ) : (
                                         <LLMResponseView
@@ -205,6 +205,7 @@ export const ThreadBodyView = ({
                                             }
                                             contextMenu={!isEditing ? contextMenu : undefined}
                                             branchMenu={branchCount > 1 ? branchesMenu : undefined}
+                                            displayBranchIcon={branchCount > 1}
                                         />
                                     )}
                                 </>

@@ -1,6 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Menu, Typography } from '@mui/material';
+import {
+    Button,
+    Divider,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Typography,
+} from '@mui/material';
+import { Edit, ThumbUp, ThumbDown, Flag } from '@mui/icons-material';
+
+import { LabelRating } from '../api/Label';
+import { Role } from '../api/Role';
+import { Message } from '../api/Message';
 
 interface ResponseContainerProps {
     children: JSX.Element | JSX.Element[];
@@ -49,6 +62,64 @@ export const MessageActionsMenu = ({
                 {children}
             </Menu>
         </MenuWrapperContainer>
+    );
+};
+
+interface MessageContextMenuProps {
+    handleEdit: () => void;
+    addLabel: (rating: LabelRating, id: string, msg: Message) => Promise<void>;
+    curMessage: Message;
+}
+
+export const MessageContextMenu = ({
+    handleEdit,
+    addLabel,
+    curMessage,
+}: MessageContextMenuProps) => {
+    return (
+        <>
+            <MenuItem key={'edit'} onClick={handleEdit}>
+                <ListItemIcon>
+                    <Edit fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Edit</ListItemText>
+            </MenuItem>
+            <>
+                {curMessage.role !== Role.User ? (
+                    <>
+                        <Divider />
+                        <MenuItem
+                            key={'good'}
+                            onClick={() =>
+                                addLabel(LabelRating.Positive, curMessage.id, curMessage)
+                            }>
+                            <ListItemIcon>
+                                <ThumbUp fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Good</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            key={'bad'}
+                            onClick={() =>
+                                addLabel(LabelRating.Negative, curMessage.id, curMessage)
+                            }>
+                            <ListItemIcon>
+                                <ThumbDown fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Bad</ListItemText>
+                        </MenuItem>
+                        <MenuItem
+                            key={'inappropriate'}
+                            onClick={() => addLabel(LabelRating.Flag, curMessage.id, curMessage)}>
+                            <ListItemIcon>
+                                <Flag fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Inappropriate</ListItemText>
+                        </MenuItem>
+                    </>
+                ) : null}
+            </>
+        </>
     );
 };
 

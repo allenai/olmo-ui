@@ -12,6 +12,7 @@ import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
 
 import 'highlight.js/styles/github-dark.css';
+import { BranchIcon } from './assets/BranchIcon';
 
 interface ResponseContainerProps {
     children: JSX.Element;
@@ -21,6 +22,7 @@ interface ResponseContainerProps {
 const ResponseContainer = ({ children, setHover }: ResponseContainerProps) => {
     return (
         <div
+            style={{ position: 'relative' }}
             role="presentation" // TODO: need a better a11y keyboard-only story pre-release
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
@@ -38,6 +40,7 @@ interface ResponseProps {
     response: string;
     contextMenu?: JSX.Element;
     branchMenu?: JSX.Element;
+    displayBranchIcon?: boolean;
     isEditedResponse?: boolean;
 }
 
@@ -46,6 +49,7 @@ export const LLMResponseView = ({
     msgId,
     contextMenu,
     branchMenu,
+    displayBranchIcon = false,
     isEditedResponse = false,
 }: ResponseProps) => {
     const toggles = useFeatureToggles();
@@ -87,47 +91,55 @@ export const LLMResponseView = ({
                                 style={{ background: 'transparent' }}
                             />
                         )}
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            style={{ visibility: hover ? 'visible' : 'hidden' }}>
+                        <HideAndShowContainer direction="row" spacing={1} show={hover}>
                             {contextMenu || null}
                             {branchMenu || null}
-                        </Stack>
+                        </HideAndShowContainer>
                     </Stack>
+                    <IconContainer show={displayBranchIcon && !hover}>
+                        <BranchIcon />
+                    </IconContainer>
                 </LLMResponseContainer>
             </Stack>
         </ResponseContainer>
     );
 };
 
-export const UserResponseView = ({ response, msgId, contextMenu, branchMenu }: ResponseProps) => {
+export const UserResponseView = ({
+    response,
+    msgId,
+    contextMenu,
+    branchMenu,
+    displayBranchIcon = false,
+}: ResponseProps) => {
     const toggles = useFeatureToggles();
     const [hover, setHover] = useState(false);
 
     return (
         <ResponseContainer setHover={setHover}>
-            <Stack direction="row" justifyContent="space-between">
-                <Stack direction="row">
-                    <UserAvatar />
-                    <UserResponseContainer id={msgId}>
-                        {toggles.chips ? (
-                            <ReadonlyEditor value={response} />
-                        ) : (
-                            <TitleTypography sx={{ fontWeight: 'bold' }}>
-                                {response}
-                            </TitleTypography>
-                        )}
-                    </UserResponseContainer>
+            <>
+                <Stack direction="row" justifyContent="space-between">
+                    <Stack direction="row">
+                        <UserAvatar />
+                        <UserResponseContainer id={msgId}>
+                            {toggles.chips ? (
+                                <ReadonlyEditor value={response} />
+                            ) : (
+                                <TitleTypography sx={{ fontWeight: 'bold' }}>
+                                    {response}
+                                </TitleTypography>
+                            )}
+                        </UserResponseContainer>
+                    </Stack>
+                    <HideAndShowContainer direction="row" spacing={1} show={hover}>
+                        {contextMenu || null}
+                        {branchMenu || null}
+                    </HideAndShowContainer>
                 </Stack>
-                <Stack
-                    direction="row"
-                    spacing={1}
-                    style={{ visibility: hover ? 'visible' : 'hidden' }}>
-                    {contextMenu || null}
-                    {branchMenu || null}
-                </Stack>
-            </Stack>
+                <IconContainer show={displayBranchIcon && !hover}>
+                    <BranchIcon />
+                </IconContainer>
+            </>
         </ResponseContainer>
     );
 };
@@ -140,12 +152,28 @@ const UserResponseContainer = styled.div`
 
 const LLMResponseContainer = styled.div`
     background-color: ${({ theme }) => theme.color2.N1};
-    border-radius: ${({ theme }) => theme.shape.borderRadius};
-    padding: ${({ theme }) => theme.spacing(2)};
+    border-radius: ${({ theme }) => theme.spacing(1)};
+    padding-left: ${({ theme }) => theme.spacing(1.5)};
+    padding-right: ${({ theme }) => theme.spacing(1.5)};
+    padding-top: ${({ theme }) => theme.spacing(0.5)};
+    padding-bottom: ${({ theme }) => theme.spacing(0.5)};
     margin-left: ${({ theme }) => theme.spacing(1)};
     width: 100%;
 `;
 
 const TitleTypography = styled(Typography)`
     color: ${({ theme }) => theme.color2.B5};
+`;
+
+const HideAndShowContainer = styled(Stack)<{ show?: boolean }>`
+    opacity: ${({ show }) => (show ? `1` : `0`)};
+    transition: 0.25s ease-out;
+`;
+
+const IconContainer = styled(HideAndShowContainer)`
+    position: absolute;
+    top: ${({ theme }) => theme.spacing(0.5)};
+    right: ${({ theme }) => theme.spacing(1.5)};
+    opacity: ${({ show }) => (show ? `1` : `0`)};
+    transition: 0.25s ease-out;
 `;
