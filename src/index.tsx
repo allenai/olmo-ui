@@ -21,9 +21,14 @@ import { FeatureToggleProvider } from './FeatureToggleContext';
 import { DataChips } from './pages/DataChips';
 
 const GlobalStyle = createGlobalStyle`
-  html {
-    background: ${({ theme }: { theme: typeof olmoTheme }) => theme.color2.N9.hex};
-  }
+    html {
+        background: ${({ theme }: { theme: typeof olmoTheme }) => theme.color2.N9.hex};
+
+        // force chip selector to be on top
+        #typeahead-menu {
+            z-index: 999;
+        }
+    }
 `;
 
 const VarnishedApp = ({ children }: PropsWithChildren) => (

@@ -1,6 +1,4 @@
-import { RawDraftContentState } from 'draft-js';
-
-import { DataChip } from '../../api/DataChip';
+import { DataChip } from '../../../api/DataChip';
 
 // todo: get this from the api
 export const mockChips: DataChip[] = [
@@ -38,37 +36,3 @@ export const mockChips: DataChip[] = [
         created: new Date('2023-9-27 GMT'),
     },
 ];
-
-// todo: get this from the api
-export const mockRawData: RawDraftContentState = {
-    blocks: [
-        {
-            key: 'glbo',
-            text: 'test Chicken Jokes and Gettysburg Address. hi there!',
-            type: 'unstyled',
-            depth: 0,
-            inlineStyleRanges: [],
-            entityRanges: [
-                { offset: 5, length: 13, key: 0 },
-                { offset: 23, length: 18, key: 1 },
-            ],
-            data: {},
-        },
-    ],
-    entityMap: {
-        '0': {
-            type: 'mention',
-            mutability: 'IMMUTABLE',
-            data: {
-                mention: mockChips[0],
-            },
-        },
-        '1': {
-            type: 'mention',
-            mutability: 'IMMUTABLE',
-            data: {
-                mention: mockChips[2],
-            },
-        },
-    },
-};

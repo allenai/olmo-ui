@@ -16,6 +16,7 @@ export interface MessagePost {
 export interface Message {
     children?: Message[];
     content: string;
+    snippet: string;
     created: Date;
     creator: string;
     deleted?: Date;

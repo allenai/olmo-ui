@@ -29,8 +29,10 @@ export const DataChipEditorButtonWrapper = ({ seedContent, chip, renderButton }:
     return (
         <>
             {renderButton({
-                onClick: () => {
+                onClick: (event: React.MouseEvent) => {
                     setEditorOpen(true);
+                    // if we click this button, not continue the event
+                    event.stopPropagation();
                 },
             })}
             <DataChipEditor

@@ -22,7 +22,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { useAppContext } from '../AppContext';
 import { PromptTemplate } from '../api/PromptTemplate';
 import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
-import { dateTimeFormat } from '../olmoTheme';
+import { dateTimeFormat } from '../util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const {

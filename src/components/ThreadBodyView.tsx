@@ -25,6 +25,11 @@ import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 import { LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu } from './MessageActionsMenu';
+import { useFeatureToggles } from '../FeatureToggleContext';
+import { Editor } from './richTextEditor/Editor';
+import { mockChips } from './richTextEditor/util/mockData';
+
+import 'highlight.js/styles/github-dark.css';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -43,6 +48,7 @@ export const ThreadBodyView = ({
         return null;
     }
     const { postMessage } = useAppContext();
+    const toggles = useFeatureToggles();
 
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -117,15 +123,15 @@ export const ThreadBodyView = ({
             setMenuAnchorEl={setBranchMenuAnchorEl}
             menuAnchorEl={branchMenuAnchorEl}
             startIcon={<KeyboardArrowDown />}
-            label={'View ' + branchCount + ' branches'}>
+            label={`View ${branchCount} branches`}>
             {messages.map((msg, i) => (
                 <MenuItem
                     key={i}
                     onClick={() => handleBranchMenuSelect(i)}
                     selected={i === curMessageIndex}
-                    title={msg.content}>
+                    title={msg.snippet}>
                     <Typography variant="inherit" noWrap>
-                        {msg.content}
+                        {msg.snippet}
                     </Typography>
                 </MenuItem>
             ))}
@@ -141,12 +147,22 @@ export const ThreadBodyView = ({
                             {isEditing ? (
                                 <Grid container spacing={0.5}>
                                     <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
-                                        <TextField
-                                            defaultValue={curMessage.content}
-                                            fullWidth
-                                            multiline
-                                            onChange={(v) => setEditMessageContent(v.target.value)}
-                                        />
+                                        {toggles.chips ? (
+                                            <Editor
+                                                chips={mockChips} // TODO: get these from api
+                                                initialHtmlString={curMessage.content}
+                                                onChange={(v) => setEditMessageContent(v)}
+                                            />
+                                        ) : (
+                                            <TextField
+                                                defaultValue={curMessage.content}
+                                                fullWidth
+                                                multiline
+                                                onChange={(v) =>
+                                                    setEditMessageContent(v.target.value)
+                                                }
+                                            />
+                                        )}
                                     </Grid>
                                     <Grid item>
                                         <MenuWrapperContainer>
@@ -205,20 +221,37 @@ export const ThreadBodyView = ({
                     />
                 ) : showFollowUp ? (
                     <FollowUpContainer>
-                        <TextField
-                            sx={{ width: '100%' }}
-                            multiline
-                            placeholder="Follow Up"
-                            disabled={isSubmitting || disabledActions}
-                            maxRows={13}
-                            value={followUpPrompt}
-                            onChange={(v) => setFollowUpPrompt(v.target.value)}
-                            onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                    postFollowupMessage();
-                                }
-                            }}
-                        />
+                        {toggles.chips ? (
+                            <Editor
+                                disabled={isSubmitting || disabledActions}
+                                label="Follow Up"
+                                chips={mockChips} // TODO: get these from api
+                                initialHtmlString={followUpPrompt}
+                                onChange={(v) => {
+                                    setFollowUpPrompt(v);
+                                }}
+                                onKeyDown={(event: KeyboardEvent) => {
+                                    if (event.key === 'Enter') {
+                                        postFollowupMessage();
+                                    }
+                                }}
+                            />
+                        ) : (
+                            <TextField
+                                fullWidth
+                                multiline
+                                placeholder="Follow Up"
+                                disabled={isSubmitting || disabledActions}
+                                maxRows={13}
+                                value={followUpPrompt}
+                                onChange={(v) => setFollowUpPrompt(v.target.value)}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                        postFollowupMessage();
+                                    }
+                                }}
+                            />
+                        )}
                         {isSubmitting ? <LinearProgress /> : null}
                     </FollowUpContainer>
                 ) : null}

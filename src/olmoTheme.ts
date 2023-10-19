@@ -43,7 +43,15 @@ export const olmoTheme = {
                 },
             },
         },
+        MuiTooltip: {
+            styleOverrides: {
+                tooltip: ({ theme }: any) => ({
+                    backgroundColor: theme.palette.common.white,
+                    color: color2.N5.hex,
+                    boxShadow: theme.shadows[1],
+                    fontSize: 12,
+                }),
+            },
+        },
     },
 };
-
-export const dateTimeFormat = 'M/D/YY h:mm a';

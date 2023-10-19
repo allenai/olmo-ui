@@ -6,6 +6,8 @@ import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
 import DOMPurify from 'dompurify';
 
+import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
+import { useFeatureToggles } from '../FeatureToggleContext';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
 
@@ -46,6 +48,7 @@ export const LLMResponseView = ({
     branchMenu,
     isEditedResponse = false,
 }: ResponseProps) => {
+    const toggles = useFeatureToggles();
     const [hover, setHover] = useState(false);
 
     const marked = new Marked(
@@ -74,27 +77,34 @@ export const LLMResponseView = ({
                 ) : (
                     <RobotAvatar />
                 )}
-                <LLMResponseContainer id={msgId}>
-                    <Stack direction="row" justifyContent="space-between">
-                        <div
-                            dangerouslySetInnerHTML={{ __html: html }}
-                            style={{ background: 'transparent' }}
-                        />
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            style={{ visibility: hover ? 'visible' : 'hidden' }}>
-                            {contextMenu || null}
-                            {branchMenu || null}
+                {toggles.chips ? (
+                    <LLMResponseContainer id={msgId}>
+                        <ReadonlyEditor value={response} />
+                    </LLMResponseContainer>
+                ) : (
+                    <LLMResponseContainer id={msgId}>
+                        <Stack direction="row" justifyContent="space-between">
+                            <div
+                                dangerouslySetInnerHTML={{ __html: html }}
+                                style={{ background: 'transparent' }}
+                            />
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                style={{ visibility: hover ? 'visible' : 'hidden' }}>
+                                {contextMenu || null}
+                                {branchMenu || null}
+                            </Stack>
                         </Stack>
-                    </Stack>
-                </LLMResponseContainer>
+                    </LLMResponseContainer>
+                )}
             </Stack>
         </ResponseContainer>
     );
 };
 
 export const UserResponseView = ({ response, msgId, contextMenu, branchMenu }: ResponseProps) => {
+    const toggles = useFeatureToggles();
     const [hover, setHover] = useState(false);
 
     return (
@@ -103,7 +113,13 @@ export const UserResponseView = ({ response, msgId, contextMenu, branchMenu }: R
                 <Stack direction="row">
                     <UserAvatar />
                     <UserResponseContainer id={msgId}>
-                        <TitleTypography sx={{ fontWeight: 'bold' }}>{response}</TitleTypography>
+                        {toggles.chips ? (
+                            <ReadonlyEditor value={response} />
+                        ) : (
+                            <TitleTypography sx={{ fontWeight: 'bold' }}>
+                                {response}
+                            </TitleTypography>
+                        )}
                     </UserResponseContainer>
                 </Stack>
                 <Stack
