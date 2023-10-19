@@ -79,11 +79,14 @@ export const LLMResponseView = ({
                 )}
                 <LLMResponseContainer id={msgId}>
                     <Stack direction="row" justifyContent="space-between">
-                        {toggles.chips ? ( <ReadonlyEditor value={response} /> ) : (
-                        <div
-                            dangerouslySetInnerHTML={{ __html: html }}
-                            style={{ background: 'transparent' }}
-                        />)}
+                        {toggles.chips ? (
+                            <ReadonlyEditor value={response} />
+                        ) : (
+                            <div
+                                dangerouslySetInnerHTML={{ __html: html }}
+                                style={{ background: 'transparent' }}
+                            />
+                        )}
                         <Stack
                             direction="row"
                             spacing={1}
@@ -93,7 +96,6 @@ export const LLMResponseView = ({
                         </Stack>
                     </Stack>
                 </LLMResponseContainer>
-                
             </Stack>
         </ResponseContainer>
     );
