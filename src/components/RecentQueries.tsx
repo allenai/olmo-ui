@@ -102,6 +102,7 @@ export const RecentQueries = () => {
                                 <ThreadAccordionView
                                     key={t.id}
                                     title={t.content}
+                                    unformattedTitle={t.text_content}
                                     body={
                                         <ThreadBodyView
                                             messages={t.children}

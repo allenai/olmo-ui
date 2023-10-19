@@ -28,7 +28,6 @@ import { MenuWrapperContainer, MessageActionsMenu } from './MessageActionsMenu';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './richTextEditor/Editor';
 import { mockChips } from './richTextEditor/util/mockData';
-import { convertHtmlToText } from '../util';
 
 import 'highlight.js/styles/github-dark.css';
 
@@ -130,9 +129,9 @@ export const ThreadBodyView = ({
                     key={i}
                     onClick={() => handleBranchMenuSelect(i)}
                     selected={i === curMessageIndex}
-                    title={convertHtmlToText(msg.content)}>
+                    title={msg.text_content}>
                     <Typography variant="inherit" noWrap>
-                        {convertHtmlToText(msg.content)}
+                        {msg.text_content}
                     </Typography>
                 </MenuItem>
             ))}
@@ -239,7 +238,7 @@ export const ThreadBodyView = ({
                             />
                         ) : (
                             <TextField
-                                sx={{ width: '100%' }}
+                                fullWidth
                                 multiline
                                 placeholder="Follow Up"
                                 disabled={isSubmitting || disabledActions}

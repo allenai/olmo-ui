@@ -59,6 +59,8 @@ export const HtmlPlugin = ({ initialHtml, onHtmlChanged, isReadOnly }: Props) =>
     }, [initialHtml]);
 
     // remove inline styles from our saved message.
+    // by default, lexical adds a bunch of inline styles that are meaningless to the llm
+    // eg: <span style="lexical_mini">...
     const removeStyles = (html: string) => {
         const regStyle = /style="[^"]*"/g;
         const regDir = /dir="[^"]*"/g;

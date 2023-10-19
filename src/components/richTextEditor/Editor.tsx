@@ -73,19 +73,22 @@ export const Editor = ({
     );
 };
 
+const lineHeight = 23.19;
 // styles are matching mui textblock, so not using varnish directly
 const EditorWrapper = styled('div')<{ minRows: number }>`
     display: flex;
     flex-flow: column;
     height: 100%;
-    // height of a line of text times min number plus margins
-    min-height: ${({ minRows }) => minRows * 23.19 + 16 + 16 + 16.5 + 16.5}px;
+    // height of a line of text times min rows plus margins
+    min-height: calc(
+        ${({ minRows }) => minRows * lineHeight}px + ${({ theme }) => theme.spacing(2 * 4)}
+    );
 
     .editor-input {
         border: #cbcbcb 1px solid;
         color: ${({ theme }) => theme.color2.N5};
         border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-        padding: 16.5px 14px;
+        padding: ${({ theme }) => theme.spacing(2)} 14px;
         flex: 1 1 auto;
         :hover {
             border-color: ${({ theme }) => theme.color2.N5};

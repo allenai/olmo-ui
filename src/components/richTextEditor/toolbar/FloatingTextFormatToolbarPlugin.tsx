@@ -1,3 +1,5 @@
+// see: https://github.com/facebook/lexical/blob/4b4db176bc9a373a33f81f11c0e63dee74a25a20/packages/lexical-playground/src/plugins/FloatingTextFormatToolbarPlugin/index.tsx
+
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';

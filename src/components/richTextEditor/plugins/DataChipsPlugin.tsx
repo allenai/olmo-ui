@@ -1,4 +1,4 @@
-// see: https://github.com/facebook/lexical/blob/4b4db176bc9a373a33f81f11c0e63dee74a25a20/packages/lexical-playground/src/plugins/DataChipsPlugin/index.tsx
+// see: https://github.com/facebook/lexical/blob/4b4db176bc9a373a33f81f11c0e63dee74a25a20/packages/lexical-playground/src/plugins/MentionsPlugin/index.tsx
 
 import styled from 'styled-components';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';

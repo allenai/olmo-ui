@@ -20,10 +20,10 @@ import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
-import { convertHtmlToText } from '../util';
 
 interface ThreadAccordionProps {
     title: string;
+    unformattedTitle: string;
     body: ReactNode;
     threadID: string;
     threadCreator: string;
@@ -33,6 +33,7 @@ interface ThreadAccordionProps {
 
 export const ThreadAccordionView = ({
     title,
+    unformattedTitle,
     body,
     threadID,
     threadCreator,
@@ -69,7 +70,7 @@ export const ThreadAccordionView = ({
                         </TitleContainer>
                     </Stack>
                 ) : (
-                    <CopyableTitle noWrap={true} title={title} />
+                    <CopyableTitle noWrap={true} title={unformattedTitle} />
                 )}
             </AccordionSummary>
             <AccordionBody>{body}</AccordionBody>
@@ -113,8 +114,10 @@ const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
             {toggles.chips ? (
                 <ReadonlyEditor
                     maxRows={noWrap ? 1 : undefined}
-                    value={noWrap ? convertHtmlToText(title) : title}
+                    value={title}
                     onClick={(e) => {
+                        // this title is on a mui accordion header. so when clicked, it opens and closes the panel.
+                        // we want to allow copying text, so if text is selected, we cancel the click event.
                         if (window.getSelection && window.getSelection()?.toString().length) {
                             e.stopPropagation();
                         }
@@ -124,6 +127,8 @@ const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
                 <TitleTypography
                     noWrap={noWrap}
                     onClick={(e) => {
+                        // this title is on a mui accordion header. so when clicked, it opens and closes the panel.
+                        // we want to allow copying text, so if text is selected, we cancel the click event.
                         if (window.getSelection && window.getSelection()?.toString().length) {
                             e.stopPropagation();
                         }
