@@ -1,6 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Menu, Typography } from '@mui/material';
+import {
+    Button,
+    Divider,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Typography,
+} from '@mui/material';
+import { Edit, ThumbUp, ThumbDown, Flag } from '@mui/icons-material';
+
+import { LabelRating } from '../api/Label';
+import { Role } from '../api/Role';
+import { Message } from '../api/Message';
 
 interface ResponseContainerProps {
     children: JSX.Element | JSX.Element[];
@@ -49,6 +62,73 @@ export const MessageActionsMenu = ({
                 {children}
             </Menu>
         </MenuWrapperContainer>
+    );
+};
+
+interface ContextMenuItem {
+    menuItemLabel: string;
+    icon: JSX.Element;
+    onClickHandler: () => void | Promise<void>;
+}
+
+interface MessageContextMenuProps {
+    handleEdit: () => void;
+    addLabel: (rating: LabelRating, id: string, msg: Message) => Promise<void>;
+    curMessage: Message;
+}
+
+export const MessageContextMenu = ({
+    handleEdit,
+    addLabel,
+    curMessage,
+}: MessageContextMenuProps) => {
+    const permanentMenuItems: ContextMenuItem[] = [
+        {
+            menuItemLabel: 'Edit',
+            icon: <Edit fontSize="small" />,
+            onClickHandler: handleEdit,
+        },
+    ];
+
+    const llmSpecificMenuItems: ContextMenuItem[] = [
+        {
+            menuItemLabel: 'Good',
+            icon: <ThumbUp fontSize="small" />,
+            onClickHandler: () => addLabel(LabelRating.Positive, curMessage.id, curMessage),
+        },
+        {
+            menuItemLabel: 'Bad',
+            icon: <ThumbDown fontSize="small" />,
+            onClickHandler: () => addLabel(LabelRating.Negative, curMessage.id, curMessage),
+        },
+        {
+            menuItemLabel: 'Inappropriate',
+            icon: <Flag fontSize="small" />,
+            onClickHandler: () => addLabel(LabelRating.Flag, curMessage.id, curMessage),
+        },
+    ];
+
+    return (
+        <>
+            {permanentMenuItems.map((item) => (
+                <MenuItem key={item.menuItemLabel} onClick={item.onClickHandler}>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText>{item.menuItemLabel}</ListItemText>
+                </MenuItem>
+            ))}
+
+            {curMessage.role !== Role.User ? (
+                <>
+                    <Divider />
+                    {llmSpecificMenuItems.map((item) => (
+                        <MenuItem key={item.menuItemLabel} onClick={item.onClickHandler}>
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText>{item.menuItemLabel}</ListItemText>
+                        </MenuItem>
+                    ))}
+                </>
+            ) : null}
+        </>
     );
 };
 
