@@ -166,6 +166,7 @@ const TitleTypography = styled(Typography)`
 `;
 
 const HideAndShowContainer = styled(Stack)<{ show?: boolean }>`
+    padding-left: ${({ theme }) => theme.spacing(0.5)};
     opacity: ${({ show }) => (show ? `1` : `0`)};
     transition: 0.25s ease-out;
 `;
