@@ -83,7 +83,7 @@ export const LLMResponseView = ({
                 )}
                 <LLMResponseContainer id={msgId}>
                     <Stack direction="row" justifyContent="space-between">
-                        {toggles.chips ? (
+                        {toggles.datachips ? (
                             <ReadonlyEditor value={response} />
                         ) : (
                             <div
@@ -125,7 +125,7 @@ export const UserResponseView = ({
                     <Stack direction="row">
                         <UserAvatar />
                         <UserResponseContainer id={msgId}>
-                            {toggles.chips ? (
+                            {toggles.datachips ? (
                                 <ReadonlyEditor value={response} />
                             ) : (
                                 <TitleTypography sx={{ fontWeight: 'bold' }}>

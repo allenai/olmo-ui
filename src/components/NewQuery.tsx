@@ -146,7 +146,7 @@ export const NewQuery = () => {
                         </Grid>
 
                         <Grid>
-                            {toggles.chips ? (
+                            {toggles.datachips ? (
                                 <Editor
                                     disabled={isLoading}
                                     label="Select a Prompt Template above or type a free form prompt"

@@ -28,7 +28,7 @@ import { useFeatureToggles } from '../FeatureToggleContext';
 
 export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
     const toggles = useFeatureToggles();
-    if (!toggles.chips) {
+    if (!toggles.datachips) {
         return <></>;
     }
 

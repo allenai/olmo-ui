@@ -146,7 +146,7 @@ export const ThreadBodyView = ({
                             {isEditing ? (
                                 <Grid container spacing={0.5}>
                                     <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
-                                        {toggles.chips ? (
+                                        {toggles.datachips ? (
                                             <Editor
                                                 chips={mockChips} // TODO: get these from api
                                                 initialHtmlString={curMessage.content}
@@ -222,7 +222,7 @@ export const ThreadBodyView = ({
                     />
                 ) : showFollowUp ? (
                     <FollowUpContainer>
-                        {toggles.chips ? (
+                        {toggles.datachips ? (
                             <Editor
                                 disabled={isSubmitting || disabledActions}
                                 label="Follow Up"
