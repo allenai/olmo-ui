@@ -91,12 +91,15 @@ export const LLMResponseView = ({
                                 style={{ background: 'transparent' }}
                             />
                         )}
-                        <HideAndShowContainer direction="row" spacing={1} show={hover}>
+                        <HideAndShowContainer
+                            direction="row"
+                            spacing={1}
+                            show={hover ? 'true' : 'false'}>
                             {contextMenu || null}
                             {branchMenu || null}
                         </HideAndShowContainer>
                     </Stack>
-                    <IconContainer show={displayBranchIcon && !hover}>
+                    <IconContainer show={displayBranchIcon && !hover ? 'true' : 'false'}>
                         <BranchIcon />
                     </IconContainer>
                 </LLMResponseContainer>
@@ -131,12 +134,15 @@ export const UserResponseView = ({
                             )}
                         </UserResponseContainer>
                     </Stack>
-                    <HideAndShowContainer direction="row" spacing={1} show={hover}>
+                    <HideAndShowContainer
+                        direction="row"
+                        spacing={1}
+                        show={hover ? 'true' : 'false'}>
                         {contextMenu || null}
                         {branchMenu || null}
                     </HideAndShowContainer>
                 </Stack>
-                <IconContainer show={displayBranchIcon && !hover}>
+                <IconContainer show={displayBranchIcon && !hover ? 'true' : 'false'}>
                     <BranchIcon />
                 </IconContainer>
             </>
@@ -165,9 +171,9 @@ const TitleTypography = styled(Typography)`
     color: ${({ theme }) => theme.color2.B5};
 `;
 
-const HideAndShowContainer = styled(Stack)<{ show?: boolean }>`
+const HideAndShowContainer = styled(Stack)<{ show?: string }>`
     padding-left: ${({ theme }) => theme.spacing(0.5)};
-    opacity: ${({ show }) => (show ? `1` : `0`)};
+    opacity: ${({ show }) => (show === 'true' ? `1` : `0`)};
     transition: 0.25s ease-out;
 `;
 
@@ -175,6 +181,6 @@ const IconContainer = styled(HideAndShowContainer)`
     position: absolute;
     top: ${({ theme }) => theme.spacing(0.5)};
     right: ${({ theme }) => theme.spacing(1.5)};
-    opacity: ${({ show }) => (show ? `1` : `0`)};
+    opacity: ${({ show }) => (show === 'true' ? `1` : `0`)};
     transition: 0.25s ease-out;
 `;
