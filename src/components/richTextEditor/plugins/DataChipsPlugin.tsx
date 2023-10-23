@@ -217,7 +217,7 @@ export const DataChipsPlugin = ({ chips }: { chips: DataChip[] }): JSX.Element |
             closeMenu: () => void
         ) => {
             editor.update(() => {
-                const dataChipNode = createDataChipNode(selectedOption.chip);
+                const dataChipNode = createDataChipNode(selectedOption.chip.id);
                 if (nodeToReplace) {
                     nodeToReplace.replace(dataChipNode);
                 }

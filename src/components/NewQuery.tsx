@@ -21,8 +21,9 @@ import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './richTextEditor/Editor';
-import { mockChips } from './richTextEditor/util/mockData';
 import { StandardContainer } from './StandardContainer';
+import { DataChip } from '../api/DataChip';
+import { useClient } from '../ClientContext';
 
 export const NewQuery = () => {
     const toggles = useFeatureToggles();
@@ -50,6 +51,24 @@ export const NewQuery = () => {
     const [showParams, setShowParams] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // datachips
+    const { dataChipClient } = useClient();
+    const [dataChips, setDataChips] = useState<DataChip[]>([]);
+    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const getDataChips = async function () {
+        setDataChipsLoading(true);
+        dataChipClient
+            .getDataChips()
+            .then((chipData) => {
+                setDataChips(chipData.dataChips);
+            })
+            .finally(() => {
+                setDataChipsLoading(false);
+            });
+    };
+    // listen ofr changes
+    dataChipClient.addOnChangeObserver(getDataChips);
+
     // force a rerender with default data and load new thread
     const Clear = () => {
         setPrompt('');
@@ -58,11 +77,13 @@ export const NewQuery = () => {
         setSelectedPromptTemplateId(DefaultPromptTemplate.id);
     };
 
-    const isLoading = isSubmitting || allPromptTemplateInfo.loading;
+    // see if any loading state is active
+    const isLoading = isSubmitting || allPromptTemplateInfo.loading || dataChipsLoading;
 
-    // on load fetch prompts
+    // on load fetch data
     useEffect(() => {
         getPromptTemplates();
+        getDataChips();
     }, []);
 
     // go get the prompt templates
@@ -150,7 +171,7 @@ export const NewQuery = () => {
                                 <Editor
                                     disabled={isLoading}
                                     label="Select a Prompt Template above or type a free form prompt"
-                                    chips={mockChips} // TODO: get these from api
+                                    chips={dataChips}
                                     initialHtmlString={prompt}
                                     onChange={(v) => updatePrompt(v)}
                                     minRows={10}

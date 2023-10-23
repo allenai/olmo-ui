@@ -8,8 +8,8 @@ import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
 import { dolma } from '../api/dolma';
-import { Client } from '../api/Client';
 import { RemoteStore } from '../store/RemoteStore';
+import { useClient } from '../ClientContext';
 
 interface Store extends RemoteStore {
     doc?: dolma.Document;
@@ -24,13 +24,14 @@ export function Document() {
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
 
-    const api = new Client();
+    const { dolmaClient } = useClient();
     useEffect(() => {
         if (!params.id) {
             return;
         }
         updateStore({ loading: true, error: undefined });
-        api.getDolmaDocument(params.id)
+        dolmaClient
+            .getDolmaDocument(params.id)
             .then((doc) =>
                 updateStore({
                     loading: false,

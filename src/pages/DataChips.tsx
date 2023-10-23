@@ -1,11 +1,4 @@
-/*
-    TODO:
-    1- (blocked on api) load chips form api
-    set loading flag on table
-    2- (blocked on api) save changes to chips to api
-*/
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, IconButton, Typography, Chip, ButtonProps } from '@mui/material';
 import {
     DataGrid,
@@ -21,16 +14,38 @@ import AddIcon from '@mui/icons-material/Add';
 import TuneIcon from '@mui/icons-material/Tune';
 
 import { DataChip } from '../api/DataChip';
-import { mockChips } from '../components/richTextEditor/util/mockData';
 import { DataChipEditorButtonWrapper } from '../components/ModalEditors/DataChipEditorButtonWrapper';
 import { dateTimeFormat } from '../util';
-import { useFeatureToggles } from '../FeatureToggleContext';
+import { useClient } from '../ClientContext';
+import { useAppContext } from '../AppContext';
 
 export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
-    const toggles = useFeatureToggles();
-    if (!toggles.datachips) {
-        return <></>;
-    }
+    const { userInfo } = useAppContext();
+    const { dataChipClient } = useClient();
+
+    const [dataChips, setDataChips] = useState<DataChip[]>([]);
+    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const getDataChips = async function () {
+        setDataChipsLoading(true);
+        dataChipClient
+            .getDataChips(true)
+            .then((chipData) => {
+                setDataChips(
+                    chipData.dataChips.filter((chip) => {
+                        return userInfo.data?.client === chip.creator || !chip.deleted;
+                    })
+                );
+            })
+            .finally(() => {
+                setDataChipsLoading(false);
+            });
+    };
+    // listen ofr changes
+    dataChipClient.addOnChangeObserver(getDataChips);
+
+    useEffect(() => {
+        getDataChips();
+    }, []);
 
     const chipColumns: GridColDef<DataChip>[] = [
         {
@@ -82,42 +97,41 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
             filterable: false,
             sortable: false,
             disableColumnMenu: true,
-            renderCell: (params: GridRenderCellParams<DataChip>) => (
-                <>
-                    {!params.row.deleted ? (
-                        <IconButton
-                            aria-label="visible"
-                            onClick={() => setArchiveChip(params.row, true)}>
-                            <VisibilityIcon />
-                        </IconButton>
-                    ) : (
-                        <IconButton
-                            aria-label="hidden"
-                            onClick={() => setArchiveChip(params.row, false)}>
-                            <VisibilityOffIcon />
-                        </IconButton>
-                    )}
-                    <DataChipEditorButtonWrapper
-                        chip={params.row}
-                        renderButton={(props: ButtonProps) => (
-                            <IconButton aria-label="hidden" {...props}>
-                                <TuneIcon />
+            renderCell: (params: GridRenderCellParams<DataChip>) => {
+                return userInfo.data?.client === params.row.creator ? (
+                    <>
+                        {!params.row.deleted ? (
+                            <IconButton
+                                aria-label="visible"
+                                onClick={() =>
+                                    dataChipClient.updateDeletedOnDataChip(params.row.id, true)
+                                }>
+                                <VisibilityIcon />
+                            </IconButton>
+                        ) : (
+                            <IconButton
+                                aria-label="hidden"
+                                onClick={() =>
+                                    dataChipClient.updateDeletedOnDataChip(params.row.id, false)
+                                }>
+                                <VisibilityOffIcon />
                             </IconButton>
                         )}
-                    />
-                </>
-            ),
+                        <DataChipEditorButtonWrapper
+                            chip={params.row}
+                            renderButton={(props: ButtonProps) => (
+                                <IconButton aria-label="hidden" {...props}>
+                                    <TuneIcon />
+                                </IconButton>
+                            )}
+                        />
+                    </>
+                ) : null;
+            },
             minWidth: 90,
             flex: 1,
         },
     ];
-
-    // likely to be replaced with a direct call to app context
-    const setArchiveChip = (chip: DataChip | undefined, value: boolean) => {
-        if (chip) {
-            console.log(`todo: ${value ? 'archive' : 'restore'} chip: ${chip.name}`);
-        }
-    };
 
     return (
         <Box sx={{ width: '100%', background: 'white', p: 2 }}>
@@ -128,8 +142,8 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
             ) : null}
 
             <DataGrid
-                loading={false /* todo */}
-                rows={mockChips}
+                loading={dataChipsLoading}
+                rows={dataChips}
                 columns={chipColumns}
                 initialState={{
                     pagination: {

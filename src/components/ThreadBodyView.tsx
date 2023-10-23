@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Grid,
@@ -21,10 +21,11 @@ import { LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './richTextEditor/Editor';
-import { mockChips } from './richTextEditor/util/mockData';
 
 import 'highlight.js/styles/github-dark.css';
 import { LabelRating } from '../api/Label';
+import { DataChip } from '../api/DataChip';
+import { useClient } from '../ClientContext';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -45,8 +46,26 @@ export const ThreadBodyView = ({
     const { postMessage, postLabel } = useAppContext();
     const toggles = useFeatureToggles();
 
+    // datachips
+    const { dataChipClient } = useClient();
+    const [dataChips, setDataChips] = useState<DataChip[]>([]);
+    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const getDataChips = async function () {
+        setDataChipsLoading(true);
+        dataChipClient
+            .getDataChips()
+            .then((chipData) => {
+                setDataChips(chipData.dataChips);
+            })
+            .finally(() => {
+                setDataChipsLoading(false);
+            });
+    };
+    // listen ofr changes
+    dataChipClient.addOnChangeObserver(getDataChips);
+
     const [isEditing, setIsEditing] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [messageLoading, setMessageLoading] = useState(false);
     const [editMessageContent, setEditMessageContent] = useState('');
     const [curMessageIndex, setCurMessageIndex] = React.useState(0);
     // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
@@ -65,6 +84,14 @@ export const ThreadBodyView = ({
     const curMessage = messages[curMessageIndex];
     const curMessageRole = curMessage.role;
 
+    // on load fetch data
+    useEffect(() => {
+        getDataChips();
+    }, []);
+
+    // see if any loading state is active
+    const isLoading = messageLoading || dataChipsLoading || isSubmitting;
+
     const postFollowupMessage = async function () {
         setIsSubmitting(true);
         const parent = curMessage;
@@ -80,7 +107,7 @@ export const ThreadBodyView = ({
 
     const editMessage = async function () {
         setIsEditing(false);
-        setIsLoading(true);
+        setMessageLoading(true);
         const payload: MessagePost = {
             content: editMessageContent,
             role: curMessageRole,
@@ -89,7 +116,7 @@ export const ThreadBodyView = ({
         handleBranchMenuSelect(0); // 0 because the new message is unshifted
         const postMessageInfo = await postMessage(payload, parent);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
-            setIsLoading(false);
+            setMessageLoading(false);
         }
     };
 
@@ -148,7 +175,7 @@ export const ThreadBodyView = ({
                                     <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
                                         {toggles.datachips ? (
                                             <Editor
-                                                chips={mockChips} // TODO: get these from api
+                                                chips={dataChips}
                                                 initialHtmlString={curMessage.content}
                                                 onChange={(v) => setEditMessageContent(v)}
                                             />
@@ -224,9 +251,9 @@ export const ThreadBodyView = ({
                     <FollowUpContainer>
                         {toggles.datachips ? (
                             <Editor
-                                disabled={isSubmitting || disabledActions}
+                                disabled={isLoading || disabledActions}
                                 label="Follow Up"
-                                chips={mockChips} // TODO: get these from api
+                                chips={dataChips}
                                 initialHtmlString={followUpPrompt}
                                 onChange={(v) => {
                                     setFollowUpPrompt(v);
@@ -242,7 +269,7 @@ export const ThreadBodyView = ({
                                 fullWidth
                                 multiline
                                 placeholder="Follow Up"
-                                disabled={isSubmitting || disabledActions}
+                                disabled={isLoading || disabledActions}
                                 maxRows={13}
                                 value={followUpPrompt}
                                 onChange={(v) => setFollowUpPrompt(v.target.value)}

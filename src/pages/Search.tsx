@@ -16,8 +16,8 @@ import { IdAndSourceComponent } from '../components/IdAndSourceComponent';
 import { DolmaPanel } from '../components/DolmaPanel';
 import { SearchResultsContainer } from '../components/shared';
 import { dolma } from '../api/dolma';
-import { Client } from '../api/Client';
 import { RemoteStore } from '../store/RemoteStore';
+import { useClient } from '../ClientContext';
 
 interface NoResultsProps {
     query: string;
@@ -83,7 +83,7 @@ export function Search() {
     const [placeholder, setPlaceholder] = useState('Search pretraining documents…');
     const [{ loading, error, response }, updateStore] = useState<Store>({ loading: false });
 
-    const api = new Client();
+    const { dolmaClient } = useClient();
 
     useEffect(() => {
         setForm({ query });
@@ -93,7 +93,8 @@ export function Search() {
         }
 
         updateStore({ loading: true, error: undefined });
-        api.searchDolma(query, offset, size)
+        dolmaClient
+            .searchDolma(query, offset, size)
             .then((r) =>
                 updateStore({
                     loading: false,
@@ -111,7 +112,7 @@ export function Search() {
     }, [query, size, offset]);
 
     useEffect(() => {
-        api.getDolmaIndexMeta().then((m) => {
+        dolmaClient.getDolmaIndexMeta().then((m) => {
             const txt = `Search ${Intl.NumberFormat().format(m.count)} pretraining documents…`;
             setPlaceholder(txt);
         });

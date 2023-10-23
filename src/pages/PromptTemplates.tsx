@@ -1,9 +1,3 @@
-/*
-TODO:
-  1- (blocked on api) need to be able to restore templates
-  2- (blocked) archived templates are currently being filtered out by the backend
-*/
-
 import React, { useState, useEffect } from 'react';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import {
@@ -122,13 +116,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
         },
     ];
 
-    const createPromptTemplate = (name: string, content: string) => {
-        postPromptTemplates({
-            name,
-            content,
-        });
-    };
-
+    // todo: replace this code with the code patterned by datachips
     const setArchivePromptTemplate = (
         promptTemplate: PromptTemplate | undefined,
         value: boolean
@@ -137,7 +125,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             if (value) {
                 deletePromptTemplate(promptTemplate.id);
             } else {
-                // todo: we need the ability to restore
+                // todo
             }
         }
     };
@@ -150,7 +138,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                 onCancel={() => setEditorOpen(false)}
                 onSuccess={(name: string, content: string) => {
                     setEditorOpen(false);
-                    createPromptTemplate(name, content);
+                    postPromptTemplates({ name, content });
                 }}
                 onRestore={() => setArchivePromptTemplate(focusedPromptTemplate, false)}
             />
