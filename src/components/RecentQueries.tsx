@@ -13,7 +13,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
-import { ContextMenu } from './ContextMenu';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -95,46 +94,44 @@ export const RecentQueries = () => {
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
-                <ContextMenu>
-                    {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
-                        <Stack direction="column">
-                            {allThreadInfo.data.messages.map((t) => (
-                                <ThreadAccordionView
-                                    key={t.id}
-                                    title={t.content}
-                                    unformattedTitle={t.snippet}
-                                    body={
-                                        <ThreadBodyView
-                                            messages={t.children}
-                                            parent={t}
-                                            showFollowUp={userInfo.data?.client === t.creator}
-                                            disabledActions={postMessageInfo.loading}
-                                        />
-                                    }
-                                    rootMessage={t}
-                                    threadID={t.id}
-                                    threadCreator={t.creator}
-                                    showControls
-                                />
-                            ))}
-                            {count > 1 ? (
-                                <Stack alignItems="center">
-                                    <InvertedPagination
-                                        boundaryCount={3}
-                                        page={page}
-                                        count={count}
-                                        onChange={(_, page: number) => {
-                                            const qs = new URLSearchParams(loc.search);
-                                            qs.set(QueryStringParam.Page, `${page}`);
-                                            nav(`${loc.pathname}?${qs}`);
-                                            setExpandedThreadID(undefined);
-                                        }}
+                {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
+                    <Stack direction="column">
+                        {allThreadInfo.data.messages.map((t) => (
+                            <ThreadAccordionView
+                                key={t.id}
+                                title={t.content}
+                                unformattedTitle={t.snippet}
+                                body={
+                                    <ThreadBodyView
+                                        messages={t.children}
+                                        parent={t}
+                                        showFollowUp={userInfo.data?.client === t.creator}
+                                        disabledActions={postMessageInfo.loading}
                                     />
-                                </Stack>
-                            ) : null}
-                        </Stack>
-                    ) : null}
-                </ContextMenu>
+                                }
+                                rootMessage={t}
+                                threadID={t.id}
+                                threadCreator={t.creator}
+                                showControls
+                            />
+                        ))}
+                        {count > 1 ? (
+                            <Stack alignItems="center">
+                                <InvertedPagination
+                                    boundaryCount={3}
+                                    page={page}
+                                    count={count}
+                                    onChange={(_, page: number) => {
+                                        const qs = new URLSearchParams(loc.search);
+                                        qs.set(QueryStringParam.Page, `${page}`);
+                                        nav(`${loc.pathname}?${qs}`);
+                                        setExpandedThreadID(undefined);
+                                    }}
+                                />
+                            </Stack>
+                        ) : null}
+                    </Stack>
+                ) : null}
             </div>
         </>
     );
