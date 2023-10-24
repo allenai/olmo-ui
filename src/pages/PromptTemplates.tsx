@@ -116,7 +116,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
         },
     ];
 
-    // todo: replace this code with the code patterned by datachips
+    // todo: https://github.com/allenai/olmo-ui/issues/124
     const setArchivePromptTemplate = (
         promptTemplate: PromptTemplate | undefined,
         value: boolean
@@ -125,7 +125,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             if (value) {
                 deletePromptTemplate(promptTemplate.id);
             } else {
-                // todo
+                // need to complete #124 to get this functionality
             }
         }
     };
