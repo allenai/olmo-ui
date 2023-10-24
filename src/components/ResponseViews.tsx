@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import styled from 'styled-components';
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
-import DOMPurify from 'dompurify';
 
 import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
-import { useFeatureToggles } from '../FeatureToggleContext';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
+import { BranchIcon } from './assets/BranchIcon';
 
 import 'highlight.js/styles/github-dark.css';
-import { BranchIcon } from './assets/BranchIcon';
 
 interface ResponseContainerProps {
     children: JSX.Element;
@@ -52,7 +50,6 @@ export const LLMResponseView = ({
     displayBranchIcon = false,
     isEditedResponse = false,
 }: ResponseProps) => {
-    const toggles = useFeatureToggles();
     const [hover, setHover] = useState(false);
 
     const marked = new Marked(
@@ -69,7 +66,7 @@ export const LLMResponseView = ({
         mangle: false,
         headerIds: false,
     });
-    const html = DOMPurify.sanitize(marked.parse(response));
+
     return (
         <ResponseContainer setHover={setHover}>
             <Stack direction="row">
@@ -83,14 +80,7 @@ export const LLMResponseView = ({
                 )}
                 <LLMResponseContainer id={msgId}>
                     <Stack direction="row" justifyContent="space-between">
-                        {toggles.datachips ? (
-                            <ReadonlyEditor value={response} />
-                        ) : (
-                            <div
-                                dangerouslySetInnerHTML={{ __html: html }}
-                                style={{ background: 'transparent' }}
-                            />
-                        )}
+                        <ReadonlyEditor value={response} />
                         <HideAndShowContainer
                             direction="row"
                             spacing={1}
@@ -115,7 +105,6 @@ export const UserResponseView = ({
     branchMenu,
     displayBranchIcon = false,
 }: ResponseProps) => {
-    const toggles = useFeatureToggles();
     const [hover, setHover] = useState(false);
 
     return (
@@ -125,13 +114,7 @@ export const UserResponseView = ({
                     <Stack direction="row">
                         <UserAvatar />
                         <UserResponseContainer id={msgId}>
-                            {toggles.datachips ? (
-                                <ReadonlyEditor value={response} />
-                            ) : (
-                                <TitleTypography sx={{ fontWeight: 'bold' }}>
-                                    {response}
-                                </TitleTypography>
-                            )}
+                            <ReadonlyEditor value={response} />
                         </UserResponseContainer>
                     </Stack>
                     <HideAndShowContainer
@@ -165,10 +148,6 @@ const LLMResponseContainer = styled.div`
     padding-bottom: ${({ theme }) => theme.spacing(0.5)};
     margin-left: ${({ theme }) => theme.spacing(1)};
     width: 100%;
-`;
-
-const TitleTypography = styled(Typography)`
-    color: ${({ theme }) => theme.color2.B5};
 `;
 
 const HideAndShowContainer = styled(Stack)<{ show?: string }>`

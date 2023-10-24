@@ -18,7 +18,6 @@ import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
-import { useFeatureToggles } from '../FeatureToggleContext';
 import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
 
 interface ThreadAccordionProps {
@@ -108,10 +107,9 @@ interface CopyableTitleProps {
 // title of accordion can be clicked to open/close, but if the user selects text, we prevent
 // open/close so they can copy the text.
 const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
-    const toggles = useFeatureToggles();
     return (
         <>
-            {!noWrap && toggles.datachips ? (
+            {!noWrap ? (
                 <ReadonlyEditor
                     value={title}
                     onClick={(e) => {
