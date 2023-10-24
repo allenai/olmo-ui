@@ -111,9 +111,8 @@ const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
     const toggles = useFeatureToggles();
     return (
         <>
-            {toggles.chips ? (
+            {!noWrap && toggles.datachips ? (
                 <ReadonlyEditor
-                    maxRows={noWrap ? 1 : undefined}
                     value={title}
                     onClick={(e) => {
                         // this title is on a mui accordion header. so when clicked, it opens and closes the panel.

@@ -1,5 +1,6 @@
 import { Label } from './Label';
 import { Role } from './Role';
+import { PaginationData } from './Schema';
 
 export const MessageApiUrl = `${process.env.LLMX_API_URL}/v3/message`;
 export const MessagesApiUrl = `${process.env.LLMX_API_URL}/v3/messages`;
@@ -33,20 +34,14 @@ export interface Message {
     final: boolean;
 }
 
-export interface MessageListMeta {
-    total: number;
-    offset?: number;
-    limit?: number;
-}
-
 export interface MessageList {
     messages: Message[];
-    meta: MessageListMeta;
+    meta: PaginationData;
 }
 
 export interface JSONMessageList {
     messages: JSONMessage[];
-    meta: MessageListMeta;
+    meta: PaginationData;
 }
 
 export interface MessageChunk {

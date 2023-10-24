@@ -19,6 +19,7 @@ import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
 import { FeatureToggleProvider } from './FeatureToggleContext';
 import { DataChips } from './pages/DataChips';
+import { ClientProvider } from './ClientContext';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -33,11 +34,13 @@ const GlobalStyle = createGlobalStyle`
 
 const VarnishedApp = ({ children }: PropsWithChildren) => (
     <FeatureToggleProvider>
-        <ScrollToTopOnPageChange />
-        <VarnishApp layout="left-aligned" theme={olmoTheme}>
-            <GlobalStyle />
-            {children}
-        </VarnishApp>
+        <ClientProvider>
+            <ScrollToTopOnPageChange />
+            <VarnishApp layout="left-aligned" theme={olmoTheme}>
+                <GlobalStyle />
+                {children}
+            </VarnishApp>
+        </ClientProvider>
     </FeatureToggleProvider>
 );
 
@@ -66,7 +69,7 @@ const router = createBrowserRouter([
                 errorElement: <ErrorPage />,
             },
             {
-                path: '/data-chips',
+                path: '/datachips',
                 element: <DataChips />,
                 errorElement: <ErrorPage />,
             },

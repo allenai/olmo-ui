@@ -28,6 +28,8 @@ interface Props {
     chip?: DataChip;
     // if no chip is passed, the user can pass a seed content to start a new chip
     seedContent?: string;
+    // is the dialog busy
+    isLoading?: boolean;
 }
 
 export const DataChipEditor = ({
@@ -37,20 +39,23 @@ export const DataChipEditor = ({
     open,
     chip,
     seedContent,
+    isLoading,
 }: Props) => {
     const [name, setName] = useState<string>('');
     const [content, setContent] = useState<string>('');
     useEffect(() => {
-        setName(chip?.name || `${seedContent?.slice(0, 10)}…` || '');
+        setName(chip?.name || (seedContent && `${seedContent?.slice(0, 10)}…`) || '');
         setContent(chip?.content || seedContent || '');
     }, [open]);
     return (
         <Dialog fullWidth maxWidth="md" onClose={onCancel} open={open}>
-            {chip && chip.deleted ? <ArchivedAlert onRestore={onRestore} /> : null}
+            {chip && chip.deleted ? (
+                <ArchivedAlert onRestore={onRestore} disabled={isLoading} />
+            ) : null}
             <DialogTitle>{!chip ? 'Create New Data Chip' : 'Data Chip Details'}</DialogTitle>
             <DialogContent>
                 <Stack component="form" noValidate autoComplete="off" spacing={1}>
-                    <FormControl>
+                    <FormControl disabled={isLoading}>
                         <FormLabel>Name</FormLabel>
                         {chip ? (
                             <FilledInput
@@ -109,7 +114,7 @@ export const DataChipEditor = ({
                 {!chip ? (
                     <>
                         <Button
-                            disabled={!name || !content}
+                            disabled={isLoading || !name || !content}
                             variant="contained"
                             onClick={() => onSuccess(name!, content!)}>
                             Save
@@ -117,7 +122,9 @@ export const DataChipEditor = ({
                         <Button onClick={onCancel}>Cancel</Button>
                     </>
                 ) : (
-                    <Button onClick={onCancel}>Close</Button>
+                    <Button disabled={isLoading} onClick={onCancel}>
+                        Close
+                    </Button>
                 )}
             </DialogActions>
         </Dialog>

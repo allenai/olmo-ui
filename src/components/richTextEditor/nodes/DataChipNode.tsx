@@ -13,56 +13,52 @@ import {
 } from 'lexical';
 
 import { DataChipDisplay } from './DataChipDisplay';
-import { DataChip } from '../../../api/DataChip';
-import { mockChips } from '../util/mockData';
 
 const dataChipIdAttributeName = 'data-datachip-id';
 
 export type SerializedDataChipNode = Spread<
     {
-        chip: DataChip;
+        chipId: string;
     },
     SerializedLexicalNode
 >;
 
 const convertDataChipElement = (domNode: HTMLElement): DOMConversionOutput | null => {
-    const id = domNode.getAttribute(dataChipIdAttributeName);
-    const chips = mockChips.filter((c) => c.id === id);
-    if (chips && chips.length) {
-        return {
-            node: createDataChipNode(chips[0]),
-        };
+    const chipId = domNode.getAttribute(dataChipIdAttributeName);
+    if (!chipId) {
+        return null;
     }
-    // chip does not exist...
-    return null;
+    return {
+        node: createDataChipNode(chipId),
+    };
 };
 
 // Nodes are items that can be added to a lexical document. This one is for showing datachips.
 export class DataChipNode extends DecoratorNode<ReactNode> {
-    dataChip: DataChip;
+    chipId: string;
 
     static getType(): string {
         return 'datachip';
     }
 
     static clone(node: DataChipNode): DataChipNode {
-        return new DataChipNode(node.dataChip, node.__key);
+        return new DataChipNode(node.chipId, node.__key);
     }
 
     static importJSON(serializedNode: SerializedDataChipNode): DataChipNode {
-        const node = createDataChipNode(serializedNode.chip);
+        const node = createDataChipNode(serializedNode.chipId);
         return node;
     }
 
-    constructor(dataChip: DataChip, key?: NodeKey) {
+    constructor(chipId: string, key?: NodeKey) {
         super(key);
-        this.dataChip = dataChip;
+        this.chipId = chipId;
     }
 
     exportJSON(): SerializedDataChipNode {
         return {
             ...super.exportJSON(),
-            chip: this.dataChip,
+            chipId: this.chipId,
             type: this.getType(),
             version: 1,
         };
@@ -70,7 +66,7 @@ export class DataChipNode extends DecoratorNode<ReactNode> {
 
     createDOM(): HTMLElement {
         const el = document.createElement('span');
-        el.setAttribute(dataChipIdAttributeName, this.dataChip.id);
+        el.setAttribute(dataChipIdAttributeName, this.chipId);
         return el;
     }
 
@@ -79,7 +75,7 @@ export class DataChipNode extends DecoratorNode<ReactNode> {
     }
 
     decorate(): ReactNode {
-        return <DataChipDisplay chip={this.dataChip} />;
+        return <DataChipDisplay chipId={this.chipId} />;
     }
 
     static importDOM(): DOMConversionMap | null {
@@ -101,8 +97,8 @@ export class DataChipNode extends DecoratorNode<ReactNode> {
     }
 }
 
-export const createDataChipNode = (dataChip: DataChip): DataChipNode => {
-    return new DataChipNode(dataChip);
+export const createDataChipNode = (chipId: string): DataChipNode => {
+    return new DataChipNode(chipId);
 };
 
 export const isDataChipNode = (node: LexicalNode | null | undefined): node is DataChipNode => {

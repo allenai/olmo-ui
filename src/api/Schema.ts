@@ -17,3 +17,9 @@ export interface MessageSchema {
 export interface Schema {
     Message: MessageSchema;
 }
+
+export interface PaginationData {
+    total: number;
+    offset?: number;
+    limit?: number;
+}

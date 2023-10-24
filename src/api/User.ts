@@ -1,4 +1,4 @@
-import { Client } from './Client';
+import { ClientBase } from './ClientBase';
 
 export const WhoamiApiUrl = `${process.env.LLMX_API_URL}/v3/whoami`;
 
@@ -13,7 +13,7 @@ export const WhoamiApiUrl = `${process.env.LLMX_API_URL}/v3/whoami`;
  */
 export function loginOn401(r: Response): Response {
     if (r.status === 401) {
-        const c = new Client();
+        const c = new ClientBase();
         c.login();
         // This shouldn't ever happen
         throw new Error('Unauthorized');
