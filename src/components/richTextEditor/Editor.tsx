@@ -65,7 +65,6 @@ export const Editor = ({
                     <HtmlPlugin
                         onHtmlChanged={(html) => onChange && onChange(html)}
                         initialHtml={initialHtmlString}
-                        isReadOnly={!initialConfig.editable}
                     />
                 </LexicalComposer>
             </EditorWrapper>

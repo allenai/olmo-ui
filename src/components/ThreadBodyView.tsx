@@ -230,7 +230,7 @@ export const ThreadBodyView = ({
                             disabled={isLoading || disabledActions}
                             label="Follow Up"
                             chips={dataChips}
-                            initialHtmlString={followUpPrompt}
+                            initialHtmlString=""
                             onChange={(v) => {
                                 setFollowUpPrompt(v);
                             }}

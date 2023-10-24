@@ -14,14 +14,6 @@ import {
     parseMessage,
     InferenceOpts,
 } from './api/Message';
-import {
-    PromptTemplate,
-    PromptsTemplateApiUrl,
-    PromptTemplatePost,
-    PromptTemplateApiUrl,
-    parsePromptTemplate,
-    JSONPromptTemplate,
-} from './api/PromptTemplate';
 import { Schema, SchemaApiUrl } from './api/Schema';
 import { JSONLabel, Label, LabelApiUrl, LabelPost, LabelsApiUrl, parseLabel } from './api/Label';
 
@@ -81,9 +73,6 @@ type State = {
     inferenceOpts: InferenceOpts;
     alertMessages: AlertMessage[];
     userInfo: FetchInfo<User>;
-    allPromptTemplateInfo: FetchInfo<PromptTemplate[]>;
-    postPromptTemplateInfo: FetchInfo<PromptTemplate>;
-    deletedPromptTemplateInfo: FetchInfo<void>;
     allThreadInfo: FetchInfo<MessageList>;
     deletedThreadInfo: FetchInfo<void>;
     selectedThreadInfo: FetchInfo<Message>;
@@ -100,11 +89,6 @@ type Action = {
     addAlertMessage: (newAlertMessage: AlertMessage) => void;
     deleteAlertMessage: (alertMessageId: string) => void;
     getUserInfo: () => Promise<FetchInfo<User>>;
-    getAllPromptTemplates: () => Promise<FetchInfo<PromptTemplate[]>>;
-    postPromptTemplates: (
-        newPromptTemplate: PromptTemplatePost
-    ) => Promise<FetchInfo<PromptTemplate>>;
-    deletePromptTemplate: (promptTemplateId: string) => Promise<FetchInfo<void>>;
     getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
     getSelectedThread: (threadId: string) => Promise<FetchInfo<Message>>;
@@ -120,9 +104,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     inferenceOpts: {},
     alertMessages: [],
     userInfo: {},
-    allPromptTemplateInfo: {},
-    postPromptTemplateInfo: {},
-    deletedPromptTemplateInfo: {},
     allDataChipInfo: {},
     postDataChipInfo: {},
     deletedDataChipInfo: {},
@@ -180,132 +161,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         }
 
         return get().userInfo;
-    },
-
-    getAllPromptTemplates: async () => {
-        try {
-            set((state) => ({
-                allPromptTemplateInfo: {
-                    ...state.allPromptTemplateInfo,
-                    loading: true,
-                    error: false,
-                },
-            }));
-            const jsonPromptTemplates = await fetchAPI<JSONPromptTemplate[]>(PromptsTemplateApiUrl);
-            const promptTemplates = jsonPromptTemplates.map((m) => parsePromptTemplate(m));
-            set((state) => ({
-                allPromptTemplateInfo: {
-                    ...state.allPromptTemplateInfo,
-                    data: promptTemplates,
-                    loading: false,
-                },
-            }));
-        } catch (err) {
-            get().addAlertMessage(
-                errorToAlert(
-                    `fetch-${PromptsTemplateApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                    `Error getting prompt templates.`,
-                    err
-                )
-            );
-            set((state) => ({
-                allPromptTemplateInfo: {
-                    ...state.allPromptTemplateInfo,
-                    error: true,
-                    loading: false,
-                },
-            }));
-        }
-        return get().allPromptTemplateInfo;
-    },
-
-    postPromptTemplates: async (newPromptTemplate: PromptTemplatePost) => {
-        try {
-            set((state) => ({
-                postPromptTemplateInfo: {
-                    ...state.postPromptTemplateInfo,
-                    loading: true,
-                    error: false,
-                },
-            }));
-            const promptTemplate = await fetchAPI<PromptTemplate>(PromptTemplateApiUrl, {
-                body: JSON.stringify(newPromptTemplate),
-                method: 'POST',
-            });
-            // EFFECT: add the new promptTemplate to the local store
-            set((state) => ({
-                postPromptTemplateInfo: {
-                    ...state.postPromptTemplateInfo,
-                    data: promptTemplate,
-                    loading: false,
-                },
-                allPromptTemplateInfo: {
-                    ...state.allPromptTemplateInfo,
-                    data: (state.allPromptTemplateInfo.data || []).concat(promptTemplate),
-                },
-            }));
-        } catch (err) {
-            get().addAlertMessage(
-                errorToAlert(
-                    `post-${PromptsTemplateApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                    `Error making new Prompt Template.`,
-                    err
-                )
-            );
-            set((state) => ({
-                postPromptTemplateInfo: {
-                    ...state.postPromptTemplateInfo,
-                    error: true,
-                    loading: false,
-                },
-            }));
-        }
-        return get().postPromptTemplateInfo;
-    },
-
-    deletePromptTemplate: async (promptTemplateId: string) => {
-        try {
-            set((state) => ({
-                deletedPromptTemplateInfo: {
-                    ...state.deletedPromptTemplateInfo,
-                    loading: true,
-                    error: false,
-                },
-            }));
-            await fetchAPI(`${PromptTemplateApiUrl}/${promptTemplateId}`, {
-                method: 'DELETE',
-            });
-            // EFFECT: remove the deleted template from the local store
-            const filteredPromptTemplates: PromptTemplate[] = [
-                ...(get().allPromptTemplateInfo.data || []),
-            ].filter((m: PromptTemplate) => m.id !== promptTemplateId);
-            set((state) => ({
-                deletedPromptTemplateInfo: {
-                    ...state.deletedPromptTemplateInfo,
-                    loading: false,
-                },
-                allPromptTemplateInfo: {
-                    ...state.allPromptTemplateInfo,
-                    data: filteredPromptTemplates,
-                },
-            }));
-        } catch (err) {
-            get().addAlertMessage(
-                errorToAlert(
-                    `delete-${PromptsTemplateApiUrl}-${promptTemplateId}-${new Date().getTime()}`.toLowerCase(),
-                    `Error deleting promptTemplate ${promptTemplateId}.`,
-                    err
-                )
-            );
-            set((state) => ({
-                deletedPromptTemplateInfo: {
-                    ...state.deletedPromptTemplateInfo,
-                    error: true,
-                    loading: false,
-                },
-            }));
-        }
-        return get().deletedPromptTemplateInfo;
     },
 
     getAllThreads: async (offset: number = 0, creator?: string) => {

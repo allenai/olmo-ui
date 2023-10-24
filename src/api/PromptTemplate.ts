@@ -1,4 +1,4 @@
-export const PromptsTemplateApiUrl = `${process.env.LLMX_API_URL}/v3/templates/prompts`;
+export const PromptTemplatesApiUrl = `${process.env.LLMX_API_URL}/v3/templates/prompts`;
 export const PromptTemplateApiUrl = `${process.env.LLMX_API_URL}/v3/templates/prompt`;
 
 export interface PromptTemplatePost {
@@ -14,6 +14,10 @@ export interface PromptTemplate {
     created: Date;
     deleted?: Date;
 }
+
+// todo: add pagination if api adds it
+export type PromptTemplateList = PromptTemplate[];
+export type JSONPromptTemplateList = JSONPromptTemplate[];
 
 // The serialized representation, where certain fields (dates) are encoded as strings.
 export interface JSONPromptTemplate extends Omit<PromptTemplate, 'created' | 'deleted'> {

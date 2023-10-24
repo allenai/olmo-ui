@@ -24,14 +24,12 @@ import { DataChip } from '../api/DataChip';
 import { useClient } from '../ClientContext';
 
 export const NewQuery = () => {
-    const { postMessage, allPromptTemplateInfo, getAllPromptTemplates } = useAppContext();
+    const { postMessage } = useAppContext();
 
-    const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
-        DefaultPromptTemplate,
-    ]);
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
+    const [initialPrompt, setInitialPrompt] = useState<string>();
     const [prompt, setPrompt] = useState<string>();
     // has user edited the prompy
     const [promptIsDirty, setPromptIsDirty] = useState<boolean>(false);
@@ -65,32 +63,44 @@ export const NewQuery = () => {
     // listen ofr changes
     dataChipClient.addOnChangeObserver(getDataChips);
 
+    // prompt templates
+    const { promptTemplateClient } = useClient();
+    const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
+        DefaultPromptTemplate,
+    ]);
+    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(false);
+    const getPromptTemplates = async function () {
+        setPromptTemplatesLoading(true);
+        promptTemplateClient
+            .getPromptTemplates()
+            .then((promptTemplateData) => {
+                promptTemplateData.sort((a, b) => a.name.localeCompare(b.name));
+                setPromptTemplates([DefaultPromptTemplate].concat(promptTemplateData));
+            })
+            .finally(() => {
+                setPromptTemplatesLoading(false);
+            });
+    };
+    // listen ofr changes
+    promptTemplateClient.addOnChangeObserver(getPromptTemplates);
+
     // force a rerender with default data and load new thread
     const Clear = () => {
         setPrompt('');
+        setInitialPrompt('');
         setPromptIsDirty(false);
         setIsFullScreen(false);
         setSelectedPromptTemplateId(DefaultPromptTemplate.id);
     };
 
     // see if any loading state is active
-    const isLoading = isSubmitting || allPromptTemplateInfo.loading || dataChipsLoading;
+    const isLoading = isSubmitting || promptTemplatesLoading || dataChipsLoading;
 
     // on load fetch data
     useEffect(() => {
         getPromptTemplates();
         getDataChips();
     }, []);
-
-    // go get the prompt templates
-    const getPromptTemplates = async function () {
-        const allPromptTemplateInfo = await getAllPromptTemplates();
-        if (!allPromptTemplateInfo.error && allPromptTemplateInfo.data) {
-            const pt = allPromptTemplateInfo.data.slice();
-            pt.sort((a, b) => a.name.localeCompare(b.name));
-            setPromptTemplates([DefaultPromptTemplate].concat(pt));
-        }
-    };
 
     const postNewMessage = async function () {
         setIsSubmitting(true);
@@ -107,7 +117,7 @@ export const NewQuery = () => {
     // when a selected prompt changes, update the user prompt
     useEffect(() => {
         const foundPrompt = promptTemplates?.find((p) => p.id === selectedPromptTemplateId);
-        updatePrompt(foundPrompt?.content, false);
+        setInitialPrompt(foundPrompt?.content);
     }, [selectedPromptTemplateId]);
 
     const updatePrompt = (value?: string, setDirty: boolean = true) => {
@@ -139,15 +149,13 @@ export const NewQuery = () => {
                                             setSelectedPromptTemplateId(evt.target.value);
                                         }
                                     }}>
-                                    {!allPromptTemplateInfo.error && promptTemplates
-                                        ? promptTemplates.map((pt) => {
-                                              return (
-                                                  <MenuItem key={pt.id} value={pt.id}>
-                                                      {pt.name}
-                                                  </MenuItem>
-                                              );
-                                          })
-                                        : null}
+                                    {promptTemplates.map((pt) => {
+                                        return (
+                                            <MenuItem key={pt.id} value={pt.id}>
+                                                {pt.name}
+                                            </MenuItem>
+                                        );
+                                    })}
                                 </Select>
                                 <span />
                                 <IconButton
@@ -167,7 +175,7 @@ export const NewQuery = () => {
                                 disabled={isLoading}
                                 label="Select a Prompt Template above or type a free form prompt"
                                 chips={dataChips}
-                                initialHtmlString={prompt}
+                                initialHtmlString={initialPrompt}
                                 onChange={(v) => updatePrompt(v)}
                                 minRows={10}
                             />

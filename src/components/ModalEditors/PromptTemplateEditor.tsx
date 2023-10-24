@@ -21,6 +21,8 @@ interface Props {
     onRestore: () => void;
     open: boolean;
     promptTemplate?: PromptTemplate;
+    // is the dialog busy
+    isLoading?: boolean;
 }
 
 export const PromptTemplateEditor = ({
@@ -29,6 +31,7 @@ export const PromptTemplateEditor = ({
     onRestore,
     open,
     promptTemplate,
+    isLoading,
 }: Props) => {
     const [name, setName] = useState<string>('');
     const [content, setContent] = useState<string>('');
@@ -39,14 +42,14 @@ export const PromptTemplateEditor = ({
     return (
         <Dialog fullWidth maxWidth="md" onClose={onCancel} open={open}>
             {promptTemplate && promptTemplate.deleted ? (
-                <ArchivedAlert onRestore={onRestore} />
+                <ArchivedAlert onRestore={onRestore} disabled={isLoading} />
             ) : null}
             <DialogTitle>
                 {!promptTemplate ? 'Create New Prompt Template' : 'Prompt Template Details'}
             </DialogTitle>
             <DialogContent>
                 <Stack component="form" noValidate autoComplete="off" spacing={1}>
-                    <FormControl>
+                    <FormControl disabled={isLoading}>
                         <FormLabel>Name</FormLabel>
                         {promptTemplate ? (
                             <FilledInput
@@ -71,7 +74,7 @@ export const PromptTemplateEditor = ({
                             />
                         )}
                     </FormControl>
-                    <FormControl>
+                    <FormControl disabled={isLoading}>
                         <FormLabel>Content</FormLabel>
                         {promptTemplate ? (
                             <FilledInput
@@ -111,7 +114,7 @@ export const PromptTemplateEditor = ({
                 {!promptTemplate ? (
                     <>
                         <Button
-                            disabled={!name || !content}
+                            disabled={isLoading || !name || !content}
                             variant="contained"
                             onClick={() => onSuccess(name!, content!)}>
                             Save
@@ -119,7 +122,9 @@ export const PromptTemplateEditor = ({
                         <Button onClick={onCancel}>Cancel</Button>
                     </>
                 ) : (
-                    <Button onClick={onCancel}>Close</Button>
+                    <Button disabled={isLoading} onClick={onCancel}>
+                        Close
+                    </Button>
                 )}
             </DialogActions>
         </Dialog>
