@@ -13,23 +13,42 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import TuneIcon from '@mui/icons-material/Tune';
 
+import { useClient } from '../ClientContext';
 import { useAppContext } from '../AppContext';
-import { PromptTemplate } from '../api/PromptTemplate';
+import { PromptTemplate, PromptTemplatePost } from '../api/PromptTemplate';
 import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
 import { dateTimeFormat } from '../util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
-    const {
-        getAllPromptTemplates,
-        allPromptTemplateInfo,
-        deletePromptTemplate,
-        deletedPromptTemplateInfo,
-        postPromptTemplates,
-        postPromptTemplateInfo,
-    } = useAppContext();
+    const { userInfo } = useAppContext();
+    const { promptTemplateClient } = useClient();
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([]);
+    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(false);
+    const getPromptTemplates = async function () {
+        setPromptTemplatesLoading(true);
+        promptTemplateClient
+            .getPromptTemplates(true)
+            .then((promptTemplateData) => {
+                setPromptTemplates(
+                    promptTemplateData.filter((promptTemplate) => {
+                        return (
+                            userInfo.data?.client === promptTemplate.creator ||
+                            !promptTemplate.deleted
+                        );
+                    })
+                );
+            })
+            .finally(() => {
+                setPromptTemplatesLoading(false);
+            });
+    };
+    // listen ofr changes
+    promptTemplateClient.addOnChangeObserver(getPromptTemplates);
 
     useEffect(() => {
-        getAllPromptTemplates();
+        getPromptTemplates();
     }, []);
 
     const [editorOpen, setEditorOpen] = useState(false);
@@ -86,61 +105,79 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             filterable: false,
             sortable: false,
             disableColumnMenu: true,
-            renderCell: (params: GridRenderCellParams<PromptTemplate>) => (
-                <>
-                    {!params.row.deleted ? (
-                        <IconButton
-                            aria-label="visible"
-                            onClick={() => setArchivePromptTemplate(params.row, true)}>
-                            <VisibilityIcon />
-                        </IconButton>
-                    ) : (
+            renderCell: (params: GridRenderCellParams<PromptTemplate>) => {
+                return userInfo.data?.client === params.row.creator ? (
+                    <>
+                        {!params.row.deleted ? (
+                            <IconButton
+                                aria-label="visible"
+                                onClick={() =>
+                                    promptTemplateClient.updateDeletedOnPromptTemplate(
+                                        params.row.id,
+                                        true
+                                    )
+                                }>
+                                <VisibilityIcon />
+                            </IconButton>
+                        ) : (
+                            <IconButton
+                                aria-label="hidden"
+                                onClick={() =>
+                                    promptTemplateClient.updateDeletedOnPromptTemplate(
+                                        params.row.id,
+                                        false
+                                    )
+                                }>
+                                <VisibilityOffIcon />
+                            </IconButton>
+                        )}
                         <IconButton
                             aria-label="hidden"
-                            onClick={() => setArchivePromptTemplate(params.row, false)}>
-                            <VisibilityOffIcon />
+                            onClick={() => {
+                                setFocusedPromptTemplate(params.row);
+                                setEditorOpen(true);
+                            }}>
+                            <TuneIcon />
                         </IconButton>
-                    )}
-                    <IconButton
-                        aria-label="hidden"
-                        onClick={() => {
-                            setFocusedPromptTemplate(params.row);
-                            setEditorOpen(true);
-                        }}>
-                        <TuneIcon />
-                    </IconButton>
-                </>
-            ),
+                    </>
+                ) : null;
+            },
             minWidth: 90,
             flex: 1,
         },
     ];
 
-    // todo: https://github.com/allenai/olmo-ui/issues/124
-    const setArchivePromptTemplate = (
-        promptTemplate: PromptTemplate | undefined,
-        value: boolean
-    ) => {
-        if (promptTemplate) {
-            if (value) {
-                deletePromptTemplate(promptTemplate.id);
-            } else {
-                // need to complete #124 to get this functionality
-            }
+    const updatePromptTemplate = (promptTemplateId: string | undefined, value: boolean) => {
+        if (promptTemplateId) {
+            setIsLoading(true);
+            promptTemplateClient
+                .updateDeletedOnPromptTemplate(promptTemplateId, value)
+                .finally(() => {
+                    setIsLoading(false);
+                    setEditorOpen(false);
+                });
         }
+    };
+
+    const newPromptTemplate = (newValue: PromptTemplatePost) => {
+        setIsLoading(true);
+        promptTemplateClient.createPromptTemplate(newValue).finally(() => {
+            setIsLoading(false);
+            setEditorOpen(false);
+        });
     };
 
     return (
         <Box sx={{ width: '100%', background: 'white', p: 2 }}>
             <PromptTemplateEditor
+                isLoading={isLoading}
                 promptTemplate={focusedPromptTemplate}
                 open={editorOpen}
                 onCancel={() => setEditorOpen(false)}
                 onSuccess={(name: string, content: string) => {
-                    setEditorOpen(false);
-                    postPromptTemplates({ name, content });
+                    newPromptTemplate({ name, content });
                 }}
-                onRestore={() => setArchivePromptTemplate(focusedPromptTemplate, false)}
+                onRestore={() => updatePromptTemplate(focusedPromptTemplate?.id, false)}
             />
 
             {!hideTitle ? (
@@ -150,12 +187,8 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             ) : null}
 
             <DataGrid
-                loading={
-                    deletedPromptTemplateInfo.loading ||
-                    postPromptTemplateInfo.loading ||
-                    allPromptTemplateInfo.loading
-                }
-                rows={allPromptTemplateInfo.data || []}
+                loading={promptTemplatesLoading}
+                rows={promptTemplates}
                 columns={promptTemplateColumns}
                 initialState={{
                     pagination: {

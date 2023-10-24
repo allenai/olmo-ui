@@ -80,7 +80,7 @@ export const DataChipEditor = ({
                             />
                         )}
                     </FormControl>
-                    <FormControl>
+                    <FormControl disabled={isLoading}>
                         <FormLabel>Content</FormLabel>
                         {chip ? (
                             <FilledInput

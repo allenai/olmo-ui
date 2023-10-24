@@ -41,7 +41,7 @@ export const ReadonlyEditor = ({ value, onClick, maxRows }: Props) => {
                     }}
                 />
                 <FloatingTextFormatToolbarPlugin />
-                <HtmlPlugin initialHtml={value} isReadOnly={!initialConfig.editable} />
+                <HtmlPlugin initialHtml={value} />
             </LexicalComposer>
         </ViewerWrapper>
     );
