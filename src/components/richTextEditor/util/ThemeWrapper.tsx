@@ -213,6 +213,7 @@ export const ThemeWrapper = styled.div`
         white-space: pre-wrap;
         text-align: right;
         min-width: ${({ theme }) => theme.spacing(3.5)};
+        height: 100%;
     }
     .theme_table {
         border-collapse: collapse;

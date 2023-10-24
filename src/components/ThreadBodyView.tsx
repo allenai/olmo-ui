@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Box,
-    Grid,
-    IconButton,
-    LinearProgress,
-    MenuItem,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Box, Grid, IconButton, LinearProgress, MenuItem, Stack, Typography } from '@mui/material';
 import styled from 'styled-components';
-
 import { KeyboardArrowDown, MoreHoriz, Check, Clear } from '@mui/icons-material';
 
 import { Message, MessagePost } from '../api/Message';
@@ -19,13 +9,12 @@ import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 import { LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
-import { useFeatureToggles } from '../FeatureToggleContext';
 import { Editor } from './richTextEditor/Editor';
-
-import 'highlight.js/styles/github-dark.css';
 import { LabelRating } from '../api/Label';
 import { DataChip } from '../api/DataChip';
 import { useClient } from '../ClientContext';
+
+import 'highlight.js/styles/github-dark.css';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -44,7 +33,6 @@ export const ThreadBodyView = ({
         return null;
     }
     const { postMessage, postLabel } = useAppContext();
-    const toggles = useFeatureToggles();
 
     // datachips
     const { dataChipClient } = useClient();
@@ -173,22 +161,11 @@ export const ThreadBodyView = ({
                             {isEditing ? (
                                 <Grid container spacing={0.5}>
                                     <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
-                                        {toggles.datachips ? (
-                                            <Editor
-                                                chips={dataChips}
-                                                initialHtmlString={curMessage.content}
-                                                onChange={(v) => setEditMessageContent(v)}
-                                            />
-                                        ) : (
-                                            <TextField
-                                                defaultValue={curMessage.content}
-                                                fullWidth
-                                                multiline
-                                                onChange={(v) =>
-                                                    setEditMessageContent(v.target.value)
-                                                }
-                                            />
-                                        )}
+                                        <Editor
+                                            chips={dataChips}
+                                            initialHtmlString={curMessage.content}
+                                            onChange={(v) => setEditMessageContent(v)}
+                                        />
                                     </Grid>
                                     <Grid item>
                                         <MenuWrapperContainer>
@@ -249,37 +226,20 @@ export const ThreadBodyView = ({
                     />
                 ) : showFollowUp ? (
                     <FollowUpContainer>
-                        {toggles.datachips ? (
-                            <Editor
-                                disabled={isLoading || disabledActions}
-                                label="Follow Up"
-                                chips={dataChips}
-                                initialHtmlString=""
-                                onChange={(v) => {
-                                    setFollowUpPrompt(v);
-                                }}
-                                onKeyDown={(event: KeyboardEvent) => {
-                                    if (event.key === 'Enter') {
-                                        postFollowupMessage();
-                                    }
-                                }}
-                            />
-                        ) : (
-                            <TextField
-                                fullWidth
-                                multiline
-                                placeholder="Follow Up"
-                                disabled={isLoading || disabledActions}
-                                maxRows={13}
-                                value={followUpPrompt}
-                                onChange={(v) => setFollowUpPrompt(v.target.value)}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                        postFollowupMessage();
-                                    }
-                                }}
-                            />
-                        )}
+                        <Editor
+                            disabled={isLoading || disabledActions}
+                            label="Follow Up"
+                            chips={dataChips}
+                            initialHtmlString=""
+                            onChange={(v) => {
+                                setFollowUpPrompt(v);
+                            }}
+                            onKeyDown={(event: KeyboardEvent) => {
+                                if (event.key === 'Enter') {
+                                    postFollowupMessage();
+                                }
+                            }}
+                        />
                         {isSubmitting ? <LinearProgress /> : null}
                     </FollowUpContainer>
                 ) : null}

@@ -2,17 +2,12 @@ import React, { createContext, useState, useEffect } from 'react';
 
 type FeatureToggles = Record<FeatureToggle, boolean>;
 
-// todo: https://github.com/allenai/olmo-ui/issues/125
 export enum FeatureToggle {
     logToggles = 'logToggles',
-    contextMenuFixed = 'contextMenuFixed',
-    datachips = 'datachips',
 }
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
-    [FeatureToggle.contextMenuFixed]: false,
-    [FeatureToggle.datachips]: true,
 };
 
 const localStorageKey = 'feature-toggles';
