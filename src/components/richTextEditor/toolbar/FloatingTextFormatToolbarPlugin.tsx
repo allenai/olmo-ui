@@ -239,6 +239,25 @@ const TextFormatFloatingToolbar = ({
     );
 };
 
+// checks if a node is parented by a class.
+// used to determine if a clicked item is inside a mui modal.
+// this fixes a bug when clicking inside a modal, closing the toolbar.
+const hasParentWithClass = (node: Node | null, className: string): boolean => {
+    let currentNode: Node | null = node;
+    while (currentNode !== null) {
+        if (
+            currentNode.nodeType === Node.ELEMENT_NODE &&
+            (currentNode as Element).classList.contains(className)
+        ) {
+            // Found a parent element with the specified class
+            return true;
+        }
+        currentNode = currentNode.parentNode;
+    }
+    // No parent element with the specified class was found
+    return false;
+};
+
 const useFloatingTextFormatToolbar = (
     editor: LexicalEditor,
     anchorElem: HTMLElement
@@ -266,7 +285,10 @@ const useFloatingTextFormatToolbar = (
                 nativeSelection !== null &&
                 (!$isRangeSelection(selection) ||
                     rootElement === null ||
-                    !rootElement.contains(nativeSelection.anchorNode))
+                    // we only close if the anchor node is outside the root AND is not inside a mui modal
+                    // this fixes a bug where clicking inside a modal closes the toolbar
+                    (!hasParentWithClass(nativeSelection.anchorNode, 'MuiDialog-container') &&
+                        !rootElement.contains(nativeSelection.anchorNode)))
             ) {
                 setIsText(false);
                 return;
