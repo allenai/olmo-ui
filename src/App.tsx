@@ -60,7 +60,7 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                     <HeaderButton url="/" label="Query OLMo" />
                 </Grid>
                 <Grid item>
-                    <HeaderButton url="/search" label="Explore Dataset" />
+                    <HeaderButton url="https://dolma.allen.ai" label="Explore Dataset" />
                 </Grid>
                 <Grid item>
                     <HeaderButton openOnNewPage={true} url={feedbackFormUrl} label="Feedback" />

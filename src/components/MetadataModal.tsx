@@ -3,12 +3,11 @@ import { Dialog, DialogTitle } from '@mui/material';
 import styled from 'styled-components';
 
 import { Message } from '../api/Message';
-import { dolma } from '../api/dolma';
 
 interface Props {
     onClose: () => void;
     open: boolean;
-    metadata: dolma.Document | Message;
+    metadata: Message;
 }
 
 export const MetadataModal = ({ onClose, open, metadata }: Props) => {
