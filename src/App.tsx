@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { LinkProps, Link, Outlet, useLocation } from 'react-router-dom';
+import { LinkProps, Link, Outlet } from 'react-router-dom';
 import { Button, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
@@ -27,13 +27,12 @@ interface HeaderButtonProps {
     openOnNewPage?: boolean;
 }
 
-const HeaderButton = ({ url, label, openOnNewPage = false }: HeaderButtonProps) => {
+const HeaderButton = ({ url, label }: HeaderButtonProps) => {
     return (
         <BannerButton
-            current={useLocation().pathname === url ? 'true' : 'false'}
             component={Link}
             rel="noopener noreferrer"
-            target={openOnNewPage ? '_blank' : ''}
+            target="_blank"
             to={url}
             href={url}
             variant="outlined">
@@ -55,9 +54,6 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                             <WhiteTypography>{client}</WhiteTypography>
                         </span>
                     )}
-                </Grid>
-                <Grid item>
-                    <HeaderButton url="/" label="Query OLMo" />
                 </Grid>
                 <Grid item>
                     <HeaderButton url="https://dolma.allen.ai" label="Explore Dataset" />
@@ -198,17 +194,16 @@ const OuterContainer = styled.div`
 `;
 
 interface BannerButtonProps {
-    current: string;
     component: typeof Link;
 }
 
 const BannerButton = styled(Button)<LinkProps & BannerButtonProps>`
     && {
         color: white;
-        border-color: ${(props) => (props.current === 'true' ? props.theme.color2.O7 : 'white')};
+        border-color: white;
         margin: ${({ theme }) => theme.spacing(0.5)};
     }
     &&:hover {
-        border-color: ${(props) => (props.current === 'true' ? props.theme.color2.O7 : 'white')};
+        border-color: white;
     }
 `;
