@@ -12,8 +12,6 @@ import { ErrorPage } from './pages/ErrorPage';
 import { Home } from './pages/Home';
 import { Thread } from './pages/Thread';
 import { Admin } from './pages/Admin';
-import { Search } from './pages/Search';
-import { Document } from './pages/Document';
 import { App } from './App';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
@@ -76,16 +74,6 @@ const router = createBrowserRouter([
             {
                 path: '/admin',
                 element: <Admin />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/search',
-                element: <Search />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/doc/:id',
-                element: <Document />,
                 errorElement: <ErrorPage />,
             },
             {
