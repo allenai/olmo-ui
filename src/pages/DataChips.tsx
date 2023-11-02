@@ -16,36 +16,34 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { DataChip } from '../api/DataChip';
 import { DataChipEditorButtonWrapper } from '../components/ModalEditors/DataChipEditorButtonWrapper';
 import { dateTimeFormat } from '../util';
-import { useClient } from '../ClientContext';
 import { useAppContext } from '../AppContext';
+import { useDataChip } from '../contexts/dataChipContext';
+import { RemoteState } from '../contexts/util';
 
 export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
     const { userInfo } = useAppContext();
-    const { dataChipClient } = useClient();
+    const { remoteState, dataChipList, getDataChipList, updateDeletedOnDataChip } = useDataChip();
 
-    const [dataChips, setDataChips] = useState<DataChip[]>([]);
+    const [filteredDataChips, setFilteredDataChips] = useState<DataChip[]>([]);
     const [dataChipsLoading, setDataChipsLoading] = useState(false);
     const getDataChips = async function () {
         setDataChipsLoading(true);
-        dataChipClient
-            .getDataChips(true)
-            .then((chipData) => {
-                setDataChips(
-                    chipData.dataChips.filter((chip) => {
-                        return userInfo.data?.client === chip.creator || !chip.deleted;
-                    })
-                );
-            })
-            .finally(() => {
-                setDataChipsLoading(false);
-            });
+        getDataChipList(true).finally(() => {
+            setDataChipsLoading(false);
+        });
     };
-    // listen ofr changes
-    dataChipClient.addOnChangeObserver(getDataChips);
 
     useEffect(() => {
         getDataChips();
     }, []);
+
+    useEffect(() => {
+        setFilteredDataChips(
+            dataChipList.dataChips.filter((chip) => {
+                return userInfo.data?.client === chip.creator || !chip.deleted;
+            })
+        );
+    }, [dataChipList]);
 
     const chipColumns: GridColDef<DataChip>[] = [
         {
@@ -103,17 +101,13 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
                         {!params.row.deleted ? (
                             <IconButton
                                 aria-label="visible"
-                                onClick={() =>
-                                    dataChipClient.updateDeletedOnDataChip(params.row.id, true)
-                                }>
+                                onClick={() => updateDeletedOnDataChip(params.row.id, true)}>
                                 <VisibilityIcon />
                             </IconButton>
                         ) : (
                             <IconButton
                                 aria-label="hidden"
-                                onClick={() =>
-                                    dataChipClient.updateDeletedOnDataChip(params.row.id, false)
-                                }>
+                                onClick={() => updateDeletedOnDataChip(params.row.id, false)}>
                                 <VisibilityOffIcon />
                             </IconButton>
                         )}
@@ -142,8 +136,8 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
             ) : null}
 
             <DataGrid
-                loading={dataChipsLoading}
-                rows={dataChips}
+                loading={dataChipsLoading || remoteState === RemoteState.Loading}
+                rows={filteredDataChips}
                 columns={chipColumns}
                 initialState={{
                     pagination: {

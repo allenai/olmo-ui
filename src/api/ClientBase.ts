@@ -12,14 +12,17 @@ export class ClientBase {
         document.location = url;
     }
 
+    // todo: this wil be delete soon
     public addOnChangeObserver(observer: ObservableFunction): void {
         this.onChangeObservers.push(observer);
     }
 
+    // todo: this wil be delete soon
     public removeOnChangeObserver(observer: ObservableFunction): void {
         this.onChangeObservers = this.onChangeObservers.filter((obs) => obs !== observer);
     }
 
+    // todo: this wil be delete soon
     protected notifyOnChangeObservers: ObservableFunction = (
         action: ObservableChangeAction,
         id?: string

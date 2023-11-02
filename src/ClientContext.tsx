@@ -1,10 +1,9 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 
-import { DataChipClient } from './api/DataChipClient';
 import { PromptTemplateClient } from './api/PromptTemplateClient';
 
+// todo: this fill we be deleted soon
 interface ClientContextProps {
-    dataChipClient: DataChipClient;
     promptTemplateClient: PromptTemplateClient;
 }
 
@@ -23,12 +22,9 @@ interface ClientProviderProps {
 }
 
 export const ClientProvider: React.FC<ClientProviderProps> = ({ children }) => {
-    const dataChipClient = new DataChipClient();
     const promptTemplateClient = new PromptTemplateClient();
 
     return (
-        <ClientContext.Provider value={{ dataChipClient, promptTemplateClient }}>
-            {children}
-        </ClientContext.Provider>
+        <ClientContext.Provider value={{ promptTemplateClient }}>{children}</ClientContext.Provider>
     );
 };

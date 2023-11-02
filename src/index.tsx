@@ -18,6 +18,7 @@ import { olmoTheme } from './olmoTheme';
 import { FeatureToggleProvider } from './FeatureToggleContext';
 import { DataChips } from './pages/DataChips';
 import { ClientProvider } from './ClientContext';
+import { DataChipProvider } from './contexts/dataChipContext';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -30,14 +31,18 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+// todo: i will remove ClientProvider soon
+
 const VarnishedApp = ({ children }: PropsWithChildren) => (
     <FeatureToggleProvider>
         <ClientProvider>
-            <ScrollToTopOnPageChange />
-            <VarnishApp layout="left-aligned" theme={olmoTheme}>
-                <GlobalStyle />
-                {children}
-            </VarnishApp>
+            <DataChipProvider>
+                <ScrollToTopOnPageChange />
+                <VarnishApp layout="left-aligned" theme={olmoTheme}>
+                    <GlobalStyle />
+                    {children}
+                </VarnishApp>
+            </DataChipProvider>
         </ClientProvider>
     </FeatureToggleProvider>
 );

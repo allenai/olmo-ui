@@ -11,7 +11,7 @@ import {
 } from './DataChip';
 
 export class DataChipClient extends ClientBase {
-    async getDataChips(includeDeleted?: boolean): Promise<DataChipList> {
+    async getDataChipList(includeDeleted?: boolean): Promise<DataChipList> {
         const url = `${DataChipsApiUrl}${includeDeleted ? '?deleted=true' : ''}`;
         const resp = await fetch(url, { credentials: 'include' });
         const jsonDataChipList = await this.unpack<JSONDataChipList>(resp);

@@ -20,8 +20,9 @@ import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { Editor } from './richTextEditor/Editor';
 import { StandardContainer } from './StandardContainer';
-import { DataChip } from '../api/DataChip';
 import { useClient } from '../ClientContext';
+import { useDataChip } from '../contexts/dataChipContext';
+import { RemoteState } from '../contexts/util';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -46,22 +47,14 @@ export const NewQuery = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // datachips
-    const { dataChipClient } = useClient();
-    const [dataChips, setDataChips] = useState<DataChip[]>([]);
+    const { remoteState, dataChipList, getDataChipList } = useDataChip();
     const [dataChipsLoading, setDataChipsLoading] = useState(false);
     const getDataChips = async function () {
         setDataChipsLoading(true);
-        dataChipClient
-            .getDataChips()
-            .then((chipData) => {
-                setDataChips(chipData.dataChips);
-            })
-            .finally(() => {
-                setDataChipsLoading(false);
-            });
+        getDataChipList().finally(() => {
+            setDataChipsLoading(false);
+        });
     };
-    // listen ofr changes
-    dataChipClient.addOnChangeObserver(getDataChips);
 
     // prompt templates
     const { promptTemplateClient } = useClient();
@@ -94,7 +87,11 @@ export const NewQuery = () => {
     };
 
     // see if any loading state is active
-    const isLoading = isSubmitting || promptTemplatesLoading || dataChipsLoading;
+    const isLoading =
+        isSubmitting ||
+        promptTemplatesLoading ||
+        dataChipsLoading ||
+        remoteState === RemoteState.Loading;
 
     // on load fetch data
     useEffect(() => {
@@ -174,7 +171,7 @@ export const NewQuery = () => {
                             <Editor
                                 disabled={isLoading}
                                 label="Select a Prompt Template above or type a free form prompt"
-                                chips={dataChips}
+                                chips={dataChipList.dataChips}
                                 initialHtmlString={initialPrompt}
                                 onChange={(v) => updatePrompt(v)}
                                 minRows={10}
