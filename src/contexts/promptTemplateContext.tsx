@@ -1,6 +1,6 @@
 // context exposing client actions on PromptTemplates
 
-import React, { ReactNode, createContext, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useState } from 'react';
 import { produce } from 'immer';
 
 import { PromptTemplateClient } from '../api/PromptTemplateClient';
@@ -10,7 +10,7 @@ import {
     PromptTemplatePatch,
     PromptTemplatePost,
 } from '../api/PromptTemplate';
-import { RemoteState, ensureContext } from './util';
+import { RemoteState } from './util';
 
 interface PromptTemplateContextProps {
     remoteState?: RemoteState;
@@ -21,15 +21,33 @@ interface PromptTemplateContextProps {
     patchPromptTemplate(id: string, patchValues: PromptTemplatePatch): Promise<PromptTemplate>;
 }
 
-const PromptTemplateContext = createContext<PromptTemplateContextProps | undefined>(undefined);
+const notImplementedPromise = Promise.reject(
+    new Error('unimplemented (usePromptTemplate must be used within a PromptTemplateProvider)')
+);
 
-export const usePromptTemplate = () => ensureContext(PromptTemplateContext, 'PromptTemplates');
+const defaultPromptTemplateContextProps: PromptTemplateContextProps = {
+    promptTemplateList: [],
+    getPromptTemplateList: () => notImplementedPromise,
+    getPromptTemplate: () => notImplementedPromise,
+    createPromptTemplate: () => notImplementedPromise,
+    patchPromptTemplate: () => notImplementedPromise,
+};
+
+const PromptTemplateContext = createContext<PromptTemplateContextProps>(
+    defaultPromptTemplateContextProps
+);
+
+export const usePromptTemplate = () => useContext(PromptTemplateContext);
 
 export const PromptTemplateProvider = ({ children }: { children: ReactNode }) => {
     const promptTemplateClient = new PromptTemplateClient();
 
-    const [remoteState, setRemoteState] = useState<RemoteState>();
-    const [promptTemplateList, setPromptTemplateList] = useState<PromptTemplateList>([]);
+    const [remoteState, setRemoteState] = useState<RemoteState | undefined>(
+        defaultPromptTemplateContextProps.remoteState
+    );
+    const [promptTemplateList, setPromptTemplateList] = useState<PromptTemplateList>(
+        defaultPromptTemplateContextProps.promptTemplateList
+    );
 
     const getPromptTemplateList = async (includeDeleted?: boolean): Promise<PromptTemplateList> => {
         setRemoteState(RemoteState.Loading);

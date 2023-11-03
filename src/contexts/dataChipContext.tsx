@@ -5,7 +5,7 @@ import { produce } from 'immer';
 
 import { DataChipClient } from '../api/DataChipClient';
 import { DataChip, DataChipList, DataChipPatch, DataChipPost } from '../api/DataChip';
-import { RemoteState, ensureContext } from './util';
+import { RemoteState } from './util';
 
 interface DataChipContextProps {
     remoteState?: RemoteState;
@@ -16,18 +16,34 @@ interface DataChipContextProps {
     patchDataChip(id: string, patchValues: DataChipPatch): Promise<DataChip>;
 }
 
-const DataChipContext = createContext<DataChipContextProps | undefined>(undefined);
+const notImplementedPromise = Promise.reject(
+    new Error('unimplemented (useDataChip must be used within a DataChipProvider)')
+);
 
-export const useDataChip = () => ensureContext(DataChipContext, 'DataChips');
+const defaultDataChipContextProps: DataChipContextProps = {
+    dataChipList: {
+        dataChips: [],
+        meta: { total: 0 },
+    },
+    getDataChipList: () => notImplementedPromise,
+    getDataChip: () => notImplementedPromise,
+    createDataChip: () => notImplementedPromise,
+    patchDataChip: () => notImplementedPromise,
+};
+
+const DataChipContext = createContext<DataChipContextProps>(defaultDataChipContextProps);
+
+export const useDataChip = () => React.useContext(DataChipContext);
 
 export const DataChipProvider = ({ children }: { children: ReactNode }) => {
     const dataChipClient = new DataChipClient();
 
-    const [remoteState, setRemoteState] = useState<RemoteState>();
-    const [dataChipList, setDataChipList] = useState<DataChipList>({
-        dataChips: [],
-        meta: { total: 0 },
-    });
+    const [remoteState, setRemoteState] = useState<RemoteState | undefined>(
+        defaultDataChipContextProps.remoteState
+    );
+    const [dataChipList, setDataChipList] = useState<DataChipList>(
+        defaultDataChipContextProps.dataChipList
+    );
 
     const getDataChipList = async (includeDeleted?: boolean): Promise<DataChipList> => {
         setRemoteState(RemoteState.Loading);
