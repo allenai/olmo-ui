@@ -15,14 +15,14 @@ export interface Props {
 }
 
 export const DataChipEditorButtonWrapper = ({ seedContent, chip, renderButton }: Props) => {
-    const { remoteState, createDataChip, updateDeletedOnDataChip } = useDataChip();
+    const { remoteState, createDataChip, patchDataChip } = useDataChip();
     const [editorOpen, setEditorOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(remoteState === RemoteState.Loading);
 
     const updateChip = (chipId: string | undefined, value: boolean) => {
         if (chipId) {
             setIsLoading(true);
-            updateDeletedOnDataChip(chipId, value).finally(() => {
+            patchDataChip(chipId, { deleted: value }).finally(() => {
                 setIsLoading(false);
                 setEditorOpen(false);
             });

@@ -22,10 +22,10 @@ import { RemoteState } from '../contexts/util';
 
 export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
     const { userInfo } = useAppContext();
-    const { remoteState, dataChipList, getDataChipList, updateDeletedOnDataChip } = useDataChip();
+    const { remoteState, dataChipList, getDataChipList, patchDataChip } = useDataChip();
 
     const [filteredDataChips, setFilteredDataChips] = useState<DataChip[]>([]);
-    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const [dataChipsLoading, setDataChipsLoading] = useState(remoteState === RemoteState.Loading);
     const getDataChips = async function () {
         setDataChipsLoading(true);
         getDataChipList(true).finally(() => {
@@ -101,13 +101,13 @@ export const DataChips = ({ hideTitle }: { hideTitle?: boolean }) => {
                         {!params.row.deleted ? (
                             <IconButton
                                 aria-label="visible"
-                                onClick={() => updateDeletedOnDataChip(params.row.id, true)}>
+                                onClick={() => patchDataChip(params.row.id, { deleted: true })}>
                                 <VisibilityIcon />
                             </IconButton>
                         ) : (
                             <IconButton
                                 aria-label="hidden"
-                                onClick={() => updateDeletedOnDataChip(params.row.id, false)}>
+                                onClick={() => patchDataChip(params.row.id, { deleted: true })}>
                                 <VisibilityOffIcon />
                             </IconButton>
                         )}

@@ -1,10 +1,11 @@
-// context exposing client actions on DatCchips
+// context exposing client actions on DatChips
 
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { ReactNode, createContext, useState } from 'react';
+import { produce } from 'immer';
 
 import { DataChipClient } from '../api/DataChipClient';
-import { DataChip, DataChipList, DataChipPost } from '../api/DataChip';
-import { RemoteState, replaceItemInArray, useContext } from './util';
+import { DataChip, DataChipList, DataChipPatch, DataChipPost } from '../api/DataChip';
+import { RemoteState, ensureContext } from './util';
 
 interface DataChipContextProps {
     remoteState?: RemoteState;
@@ -12,12 +13,12 @@ interface DataChipContextProps {
     getDataChipList: (includeDeleted?: boolean) => Promise<DataChipList>;
     getDataChip(id: string): Promise<DataChip>;
     createDataChip(chipData: DataChipPost): Promise<DataChip>;
-    updateDeletedOnDataChip(id: string, deleteValue?: boolean): Promise<DataChip>;
+    patchDataChip(id: string, patchValues: DataChipPatch): Promise<DataChip>;
 }
 
 const DataChipContext = createContext<DataChipContextProps | undefined>(undefined);
 
-export const useDataChip = () => useContext(DataChipContext, 'DataChip');
+export const useDataChip = () => ensureContext(DataChipContext, 'DataChips');
 
 export const DataChipProvider = ({ children }: { children: ReactNode }) => {
     const dataChipClient = new DataChipClient();
@@ -48,10 +49,13 @@ export const DataChipProvider = ({ children }: { children: ReactNode }) => {
         return dataChipClient
             .getDataChip(id)
             .then((r) => {
-                setDataChipList({
-                    ...dataChipList,
-                    dataChips: replaceItemInArray(dataChipList.dataChips, r),
+                const updated = produce(dataChipList, (draft) => {
+                    const index = draft.dataChips.findIndex((dc) => dc.id === id);
+                    if (index !== -1) {
+                        draft.dataChips[index] = r;
+                    }
                 });
+                setDataChipList(updated);
                 setRemoteState(RemoteState.Loaded);
                 return r;
             })
@@ -66,7 +70,10 @@ export const DataChipProvider = ({ children }: { children: ReactNode }) => {
         return dataChipClient
             .createDataChip(chipData)
             .then((r) => {
-                setDataChipList({ ...dataChipList, dataChips: [...dataChipList.dataChips, r] });
+                const updated = produce(dataChipList, (draft) => {
+                    draft.dataChips.unshift(r);
+                });
+                setDataChipList(updated);
                 setRemoteState(RemoteState.Loaded);
                 return r;
             })
@@ -76,18 +83,18 @@ export const DataChipProvider = ({ children }: { children: ReactNode }) => {
             });
     };
 
-    const updateDeletedOnDataChip = async (
-        id: string,
-        deleteValue: boolean = true
-    ): Promise<DataChip> => {
+    const patchDataChip = async (id: string, patchValues: DataChipPatch): Promise<DataChip> => {
         setRemoteState(RemoteState.Loading);
         return dataChipClient
-            .updateDeletedOnDataChip(id, deleteValue)
+            .patchDataChip(id, patchValues)
             .then((r) => {
-                setDataChipList({
-                    ...dataChipList,
-                    dataChips: replaceItemInArray(dataChipList.dataChips, r),
+                const updated = produce(dataChipList, (draft) => {
+                    const index = draft.dataChips.findIndex((dc) => dc.id === id);
+                    if (index !== -1) {
+                        draft.dataChips[index] = r;
+                    }
                 });
+                setDataChipList(updated);
                 setRemoteState(RemoteState.Loaded);
                 return r;
             })
@@ -105,7 +112,7 @@ export const DataChipProvider = ({ children }: { children: ReactNode }) => {
                 getDataChipList,
                 getDataChip,
                 createDataChip,
-                updateDeletedOnDataChip,
+                patchDataChip,
             }}>
             {children}
         </DataChipContext.Provider>

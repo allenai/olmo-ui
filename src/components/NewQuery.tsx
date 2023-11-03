@@ -48,7 +48,7 @@ export const NewQuery = () => {
 
     // datachips
     const { remoteState, dataChipList, getDataChipList } = useDataChip();
-    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const [dataChipsLoading, setDataChipsLoading] = useState(remoteState === RemoteState.Loading);
     const getDataChips = async function () {
         setDataChipsLoading(true);
         getDataChipList().finally(() => {

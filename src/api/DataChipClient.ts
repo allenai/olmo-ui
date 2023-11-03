@@ -3,6 +3,7 @@ import {
     DataChip,
     DataChipApiUrl,
     DataChipList,
+    DataChipPatch,
     DataChipPost,
     DataChipsApiUrl,
     JSONDataChip,
@@ -41,12 +42,12 @@ export class DataChipClient extends ClientBase {
         return parseDataChip(jsonDataChip);
     }
 
-    async updateDeletedOnDataChip(id: string, deleteValue: boolean = true): Promise<DataChip> {
+    async patchDataChip(id: string, patchValues: DataChipPatch): Promise<DataChip> {
         const url = `${DataChipApiUrl}/${id}`;
         const resp = await fetch(url, {
             credentials: 'include',
             method: 'PATCH',
-            body: JSON.stringify({ deleted: deleteValue }),
+            body: JSON.stringify(patchValues),
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonDataChip = await this.unpack<JSONDataChip>(resp);
