@@ -38,7 +38,9 @@ export const useDataChip = () => React.useContext(DataChipContext);
 export const DataChipProvider = ({ children }: { children: ReactNode }) => {
     const dataChipClient = new DataChipClient();
 
-    const [remoteState, setRemoteState] = useState<RemoteState>();
+    const [remoteState, setRemoteState] = useState<RemoteState | undefined>(
+        defaultDataChipContextProps.remoteState
+    );
     const [dataChipList, setDataChipList] = useState<DataChipList>(
         defaultDataChipContextProps.dataChipList
     );

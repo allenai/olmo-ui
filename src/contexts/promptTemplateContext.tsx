@@ -42,8 +42,12 @@ export const usePromptTemplate = () => useContext(PromptTemplateContext);
 export const PromptTemplateProvider = ({ children }: { children: ReactNode }) => {
     const promptTemplateClient = new PromptTemplateClient();
 
-    const [remoteState, setRemoteState] = useState<RemoteState>();
-    const [promptTemplateList, setPromptTemplateList] = useState<PromptTemplateList>([]);
+    const [remoteState, setRemoteState] = useState<RemoteState | undefined>(
+        defaultPromptTemplateContextProps.remoteState
+    );
+    const [promptTemplateList, setPromptTemplateList] = useState<PromptTemplateList>(
+        defaultPromptTemplateContextProps.promptTemplateList
+    );
 
     const getPromptTemplateList = async (includeDeleted?: boolean): Promise<PromptTemplateList> => {
         setRemoteState(RemoteState.Loading);
