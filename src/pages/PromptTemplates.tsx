@@ -13,43 +13,46 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import TuneIcon from '@mui/icons-material/Tune';
 
-import { useClient } from '../ClientContext';
 import { useAppContext } from '../AppContext';
 import { PromptTemplate, PromptTemplatePost } from '../api/PromptTemplate';
 import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
 import { dateTimeFormat } from '../util';
+import { usePromptTemplate } from '../contexts/promptTemplateContext';
+import { RemoteState } from '../contexts/util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const { userInfo } = useAppContext();
-    const { promptTemplateClient } = useClient();
+    const {
+        remoteState,
+        promptTemplateList,
+        getPromptTemplateList,
+        createPromptTemplate,
+        patchPromptTemplate,
+    } = usePromptTemplate();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([]);
-    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(false);
+    const [filteredPromptTemplates, setFilteredPromptTemplates] = useState<PromptTemplate[]>([]);
+    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
+        remoteState === RemoteState.Loading
+    );
     const getPromptTemplates = async function () {
         setPromptTemplatesLoading(true);
-        promptTemplateClient
-            .getPromptTemplates(true)
-            .then((promptTemplateData) => {
-                setPromptTemplates(
-                    promptTemplateData.filter((promptTemplate) => {
-                        return (
-                            userInfo.data?.client === promptTemplate.creator ||
-                            !promptTemplate.deleted
-                        );
-                    })
-                );
-            })
-            .finally(() => {
-                setPromptTemplatesLoading(false);
-            });
+        getPromptTemplateList(true).finally(() => {
+            setPromptTemplatesLoading(false);
+        });
     };
-    // listen ofr changes
-    promptTemplateClient.addOnChangeObserver(getPromptTemplates);
 
     useEffect(() => {
         getPromptTemplates();
     }, []);
+
+    useEffect(() => {
+        setFilteredPromptTemplates(
+            promptTemplateList.filter((promptTemplate) => {
+                return userInfo.data?.client === promptTemplate.creator || !promptTemplate.deleted;
+            })
+        );
+    }, [promptTemplateList]);
 
     const [editorOpen, setEditorOpen] = useState(false);
     const [focusedPromptTemplate, setFocusedPromptTemplate] = useState<PromptTemplate>();
@@ -112,10 +115,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                             <IconButton
                                 aria-label="visible"
                                 onClick={() =>
-                                    promptTemplateClient.updateDeletedOnPromptTemplate(
-                                        params.row.id,
-                                        true
-                                    )
+                                    patchPromptTemplate(params.row.id, { deleted: true })
                                 }>
                                 <VisibilityIcon />
                             </IconButton>
@@ -123,10 +123,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                             <IconButton
                                 aria-label="hidden"
                                 onClick={() =>
-                                    promptTemplateClient.updateDeletedOnPromptTemplate(
-                                        params.row.id,
-                                        false
-                                    )
+                                    patchPromptTemplate(params.row.id, { deleted: false })
                                 }>
                                 <VisibilityOffIcon />
                             </IconButton>
@@ -150,18 +147,16 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const updatePromptTemplate = (promptTemplateId: string | undefined, value: boolean) => {
         if (promptTemplateId) {
             setIsLoading(true);
-            promptTemplateClient
-                .updateDeletedOnPromptTemplate(promptTemplateId, value)
-                .finally(() => {
-                    setIsLoading(false);
-                    setEditorOpen(false);
-                });
+            patchPromptTemplate(promptTemplateId, { deleted: value }).finally(() => {
+                setIsLoading(false);
+                setEditorOpen(false);
+            });
         }
     };
 
     const newPromptTemplate = (newValue: PromptTemplatePost) => {
         setIsLoading(true);
-        promptTemplateClient.createPromptTemplate(newValue).finally(() => {
+        createPromptTemplate(newValue).finally(() => {
             setIsLoading(false);
             setEditorOpen(false);
         });
@@ -188,7 +183,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
 
             <DataGrid
                 loading={promptTemplatesLoading}
-                rows={promptTemplates}
+                rows={filteredPromptTemplates}
                 columns={promptTemplateColumns}
                 initialState={{
                     pagination: {

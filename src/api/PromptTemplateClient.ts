@@ -1,4 +1,4 @@
-import { ClientBase, ObservableChangeAction } from './ClientBase';
+import { ClientBase } from './ClientBase';
 import {
     PromptTemplate,
     PromptTemplateApiUrl,
@@ -8,10 +8,11 @@ import {
     JSONPromptTemplate,
     JSONPromptTemplateList,
     parsePromptTemplate,
+    PromptTemplatePatch,
 } from './PromptTemplate';
 
 export class PromptTemplateClient extends ClientBase {
-    async getPromptTemplates(includeDeleted?: boolean): Promise<PromptTemplateList> {
+    async getPromptTemplateList(includeDeleted?: boolean): Promise<PromptTemplateList> {
         const url = `${PromptTemplatesApiUrl}${includeDeleted ? '?deleted=true' : ''}`;
         const resp = await fetch(url, { credentials: 'include' });
         const jsonPromptTemplateList = await this.unpack<JSONPromptTemplateList>(resp);
@@ -34,23 +35,21 @@ export class PromptTemplateClient extends ClientBase {
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonPromptTemplate = await this.unpack<JSONPromptTemplate>(resp);
-        this.notifyOnChangeObservers(ObservableChangeAction.Create, jsonPromptTemplate.id);
         return parsePromptTemplate(jsonPromptTemplate);
     }
 
-    async updateDeletedOnPromptTemplate(
+    async patchPromptTemplate(
         id: string,
-        deleteValue: boolean = true
+        patchValues: PromptTemplatePatch
     ): Promise<PromptTemplate> {
         const url = `${PromptTemplateApiUrl}/${id}`;
         const resp = await fetch(url, {
             credentials: 'include',
             method: 'PATCH',
-            body: JSON.stringify({ deleted: deleteValue }),
+            body: JSON.stringify(patchValues),
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonPromptTemplate = await this.unpack<JSONPromptTemplate>(resp);
-        this.notifyOnChangeObservers(ObservableChangeAction.Update, id);
         return parsePromptTemplate(jsonPromptTemplate);
     }
 }

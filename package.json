@@ -34,6 +34,7 @@
     "dayjs": "^1.8.30",
     "file-loader": "^6.2.0",
     "highlight.js": "11.8.0",
+    "immer": "^10.0.3",
     "lexical": "^0.12.2",
     "marked": "^5.1.2",
     "marked-highlight": "^2.0.1",

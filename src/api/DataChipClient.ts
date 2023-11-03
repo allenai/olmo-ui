@@ -1,8 +1,9 @@
-import { ClientBase, ObservableChangeAction } from './ClientBase';
+import { ClientBase } from './ClientBase';
 import {
     DataChip,
     DataChipApiUrl,
     DataChipList,
+    DataChipPatch,
     DataChipPost,
     DataChipsApiUrl,
     JSONDataChip,
@@ -11,7 +12,7 @@ import {
 } from './DataChip';
 
 export class DataChipClient extends ClientBase {
-    async getDataChips(includeDeleted?: boolean): Promise<DataChipList> {
+    async getDataChipList(includeDeleted?: boolean): Promise<DataChipList> {
         const url = `${DataChipsApiUrl}${includeDeleted ? '?deleted=true' : ''}`;
         const resp = await fetch(url, { credentials: 'include' });
         const jsonDataChipList = await this.unpack<JSONDataChipList>(resp);
@@ -37,20 +38,18 @@ export class DataChipClient extends ClientBase {
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonDataChip = await this.unpack<JSONDataChip>(resp);
-        this.notifyOnChangeObservers(ObservableChangeAction.Create, jsonDataChip.id);
         return parseDataChip(jsonDataChip);
     }
 
-    async updateDeletedOnDataChip(id: string, deleteValue: boolean = true): Promise<DataChip> {
+    async patchDataChip(id: string, patchValues: DataChipPatch): Promise<DataChip> {
         const url = `${DataChipApiUrl}/${id}`;
         const resp = await fetch(url, {
             credentials: 'include',
             method: 'PATCH',
-            body: JSON.stringify({ deleted: deleteValue }),
+            body: JSON.stringify(patchValues),
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonDataChip = await this.unpack<JSONDataChip>(resp);
-        this.notifyOnChangeObservers(ObservableChangeAction.Update, id);
         return parseDataChip(jsonDataChip);
     }
 }

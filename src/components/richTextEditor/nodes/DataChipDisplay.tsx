@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Badge, Box, Tooltip, Chip } from '@mui/material';
 
 import { DataChip } from '../../../api/DataChip';
-import { useClient } from '../../../ClientContext';
+import { useDataChip } from '../../../contexts/dataChipContext';
 
 interface Props {
     chipId: string;
@@ -11,10 +11,10 @@ interface Props {
 
 // ui element representing a datachip
 export const DataChipDisplay = ({ chipId }: Props) => {
-    const { dataChipClient } = useClient();
+    const { getDataChip } = useDataChip();
     const [chip, setChip] = useState<DataChip>();
     useEffect(() => {
-        dataChipClient.getDataChip(chipId).then((c) => setChip(c));
+        getDataChip(chipId).then((c) => setChip(c));
     }, [chipId]);
 
     if (!chip) {

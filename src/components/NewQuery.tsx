@@ -20,8 +20,9 @@ import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { Editor } from './richTextEditor/Editor';
 import { StandardContainer } from './StandardContainer';
-import { DataChip } from '../api/DataChip';
-import { useClient } from '../ClientContext';
+import { useDataChip } from '../contexts/dataChipContext';
+import { RemoteState } from '../contexts/util';
+import { usePromptTemplate } from '../contexts/promptTemplateContext';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -46,43 +47,35 @@ export const NewQuery = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // datachips
-    const { dataChipClient } = useClient();
-    const [dataChips, setDataChips] = useState<DataChip[]>([]);
-    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const { remoteState: dataChipRemoteState, dataChipList, getDataChipList } = useDataChip();
+    const [dataChipsLoading, setDataChipsLoading] = useState(
+        dataChipRemoteState === RemoteState.Loading
+    );
     const getDataChips = async function () {
         setDataChipsLoading(true);
-        dataChipClient
-            .getDataChips()
-            .then((chipData) => {
-                setDataChips(chipData.dataChips);
-            })
-            .finally(() => {
-                setDataChipsLoading(false);
-            });
+        getDataChipList().finally(() => {
+            setDataChipsLoading(false);
+        });
     };
-    // listen ofr changes
-    dataChipClient.addOnChangeObserver(getDataChips);
 
     // prompt templates
-    const { promptTemplateClient } = useClient();
+    const {
+        remoteState: promptTemplateRemoteState,
+        promptTemplateList,
+        getPromptTemplateList,
+    } = usePromptTemplate();
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
         DefaultPromptTemplate,
     ]);
-    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(false);
+    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
+        promptTemplateRemoteState === RemoteState.Loading
+    );
     const getPromptTemplates = async function () {
         setPromptTemplatesLoading(true);
-        promptTemplateClient
-            .getPromptTemplates()
-            .then((promptTemplateData) => {
-                promptTemplateData.sort((a, b) => a.name.localeCompare(b.name));
-                setPromptTemplates([DefaultPromptTemplate].concat(promptTemplateData));
-            })
-            .finally(() => {
-                setPromptTemplatesLoading(false);
-            });
+        getPromptTemplateList().finally(() => {
+            setPromptTemplatesLoading(false);
+        });
     };
-    // listen ofr changes
-    promptTemplateClient.addOnChangeObserver(getPromptTemplates);
 
     // force a rerender with default data and load new thread
     const Clear = () => {
@@ -94,13 +87,23 @@ export const NewQuery = () => {
     };
 
     // see if any loading state is active
-    const isLoading = isSubmitting || promptTemplatesLoading || dataChipsLoading;
+    const isLoading =
+        isSubmitting ||
+        promptTemplatesLoading ||
+        promptTemplateRemoteState === RemoteState.Loading ||
+        dataChipsLoading ||
+        dataChipRemoteState === RemoteState.Loading;
 
     // on load fetch data
     useEffect(() => {
         getPromptTemplates();
         getDataChips();
     }, []);
+
+    useEffect(() => {
+        promptTemplateList.sort((a, b) => a.name.localeCompare(b.name));
+        setPromptTemplates([DefaultPromptTemplate].concat(promptTemplateList));
+    }, [promptTemplateList]);
 
     const postNewMessage = async function () {
         setIsSubmitting(true);
@@ -174,7 +177,7 @@ export const NewQuery = () => {
                             <Editor
                                 disabled={isLoading}
                                 label="Select a Prompt Template above or type a free form prompt"
-                                chips={dataChips}
+                                chips={dataChipList.dataChips}
                                 initialHtmlString={initialPrompt}
                                 onChange={(v) => updatePrompt(v)}
                                 minRows={10}

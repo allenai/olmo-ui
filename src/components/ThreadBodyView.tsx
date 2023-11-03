@@ -11,10 +11,10 @@ import { LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { Editor } from './richTextEditor/Editor';
 import { LabelRating } from '../api/Label';
-import { DataChip } from '../api/DataChip';
-import { useClient } from '../ClientContext';
 
 import 'highlight.js/styles/github-dark.css';
+import { useDataChip } from '../contexts/dataChipContext';
+import { RemoteState } from '../contexts/util';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -35,22 +35,14 @@ export const ThreadBodyView = ({
     const { postMessage, postLabel } = useAppContext();
 
     // datachips
-    const { dataChipClient } = useClient();
-    const [dataChips, setDataChips] = useState<DataChip[]>([]);
-    const [dataChipsLoading, setDataChipsLoading] = useState(false);
+    const { remoteState, dataChipList, getDataChipList } = useDataChip();
+    const [dataChipsLoading, setDataChipsLoading] = useState(remoteState === RemoteState.Loading);
     const getDataChips = async function () {
         setDataChipsLoading(true);
-        dataChipClient
-            .getDataChips()
-            .then((chipData) => {
-                setDataChips(chipData.dataChips);
-            })
-            .finally(() => {
-                setDataChipsLoading(false);
-            });
+        getDataChipList().finally(() => {
+            setDataChipsLoading(false);
+        });
     };
-    // listen ofr changes
-    dataChipClient.addOnChangeObserver(getDataChips);
 
     const [isEditing, setIsEditing] = useState(false);
     const [messageLoading, setMessageLoading] = useState(false);
@@ -78,7 +70,8 @@ export const ThreadBodyView = ({
     }, []);
 
     // see if any loading state is active
-    const isLoading = messageLoading || dataChipsLoading || isSubmitting;
+    const isLoading =
+        messageLoading || dataChipsLoading || isSubmitting || remoteState === RemoteState.Loading;
 
     const postFollowupMessage = async function () {
         setIsSubmitting(true);
@@ -162,7 +155,7 @@ export const ThreadBodyView = ({
                                 <Grid container spacing={0.5}>
                                     <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
                                         <Editor
-                                            chips={dataChips}
+                                            chips={dataChipList.dataChips}
                                             initialHtmlString={curMessage.content}
                                             onChange={(v) => setEditMessageContent(v)}
                                         />
@@ -229,7 +222,7 @@ export const ThreadBodyView = ({
                         <Editor
                             disabled={isLoading || disabledActions}
                             label="Follow Up"
-                            chips={dataChips}
+                            chips={dataChipList.dataChips}
                             initialHtmlString=""
                             onChange={(v) => {
                                 setFollowUpPrompt(v);

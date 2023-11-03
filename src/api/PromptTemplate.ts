@@ -6,6 +6,10 @@ export interface PromptTemplatePost {
     content: string;
 }
 
+export interface PromptTemplatePatch {
+    deleted?: boolean;
+}
+
 export interface PromptTemplate {
     id: string;
     name: string;

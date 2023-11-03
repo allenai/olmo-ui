@@ -8,6 +8,10 @@ export interface DataChipPost {
     content: string;
 }
 
+export interface DataChipPatch {
+    deleted?: boolean;
+}
+
 export interface DataChip {
     id: string;
     name: string;

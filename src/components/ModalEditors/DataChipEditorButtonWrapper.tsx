@@ -3,7 +3,8 @@ import { ButtonProps } from '@mui/material';
 
 import { DataChip, DataChipPost } from '../../api/DataChip';
 import { DataChipEditor } from './DataChipEditor';
-import { useClient } from '../../ClientContext';
+import { useDataChip } from '../../contexts/dataChipContext';
+import { RemoteState } from '../../contexts/util';
 
 // pass in a control, and when they user clicks on it, we pop open the modal
 // using the seedContent as default content.
@@ -14,14 +15,14 @@ export interface Props {
 }
 
 export const DataChipEditorButtonWrapper = ({ seedContent, chip, renderButton }: Props) => {
-    const { dataChipClient } = useClient();
+    const { remoteState, createDataChip, patchDataChip } = useDataChip();
     const [editorOpen, setEditorOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(remoteState === RemoteState.Loading);
 
     const updateChip = (chipId: string | undefined, value: boolean) => {
         if (chipId) {
             setIsLoading(true);
-            dataChipClient.updateDeletedOnDataChip(chipId, value).finally(() => {
+            patchDataChip(chipId, { deleted: value }).finally(() => {
                 setIsLoading(false);
                 setEditorOpen(false);
             });
@@ -30,7 +31,7 @@ export const DataChipEditorButtonWrapper = ({ seedContent, chip, renderButton }:
 
     const newChip = (newValue: DataChipPost) => {
         setIsLoading(true);
-        dataChipClient.createDataChip(newValue).finally(() => {
+        createDataChip(newValue).finally(() => {
             setIsLoading(false);
             setEditorOpen(false);
         });
@@ -46,7 +47,7 @@ export const DataChipEditorButtonWrapper = ({ seedContent, chip, renderButton }:
                 },
             })}
             <DataChipEditor
-                isLoading={isLoading}
+                isLoading={isLoading || remoteState === RemoteState.Loading}
                 chip={chip}
                 seedContent={seedContent}
                 open={editorOpen}
