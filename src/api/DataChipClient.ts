@@ -1,4 +1,4 @@
-import { ClientBase, ObservableChangeAction } from './ClientBase';
+import { ClientBase } from './ClientBase';
 import {
     DataChip,
     DataChipApiUrl,
@@ -38,7 +38,6 @@ export class DataChipClient extends ClientBase {
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonDataChip = await this.unpack<JSONDataChip>(resp);
-        this.notifyOnChangeObservers(ObservableChangeAction.Create, jsonDataChip.id);
         return parseDataChip(jsonDataChip);
     }
 
@@ -51,7 +50,6 @@ export class DataChipClient extends ClientBase {
             headers: { 'Content-Type': 'application/json' },
         });
         const jsonDataChip = await this.unpack<JSONDataChip>(resp);
-        this.notifyOnChangeObservers(ObservableChangeAction.Update, id);
         return parseDataChip(jsonDataChip);
     }
 }

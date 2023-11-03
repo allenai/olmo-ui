@@ -1,36 +1,13 @@
 import { error } from './error';
 
 export class ClientBase {
-    constructor(
-        private onChangeObservers: ObservableFunction[] = [],
-        readonly origin = process.env.LLMX_API_URL
-    ) {}
+    constructor(readonly origin = process.env.LLMX_API_URL) {}
 
     public login(dest: string = document.location.toString()) {
         const qs = new URLSearchParams(dest ? { redirect: dest } : undefined);
         const url = `${this.origin}/v3/login/skiff?${qs.toString()}`;
         document.location = url;
     }
-
-    // todo: this wil be delete soon
-    public addOnChangeObserver(observer: ObservableFunction): void {
-        this.onChangeObservers.push(observer);
-    }
-
-    // todo: this wil be delete soon
-    public removeOnChangeObserver(observer: ObservableFunction): void {
-        this.onChangeObservers = this.onChangeObservers.filter((obs) => obs !== observer);
-    }
-
-    // todo: this wil be delete soon
-    protected notifyOnChangeObservers: ObservableFunction = (
-        action: ObservableChangeAction,
-        id?: string
-    ) => {
-        this.onChangeObservers.forEach((observer) => {
-            observer(action, id);
-        });
-    };
 
     protected async unpack<T>(response: Response): Promise<T> {
         switch (response.status) {
@@ -45,11 +22,3 @@ export class ClientBase {
         }
     }
 }
-
-export enum ObservableChangeAction {
-    Create,
-    Update,
-    Delete,
-}
-
-type ObservableFunction = (action: ObservableChangeAction, id?: string) => void;
