@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
+import DOMPurify from 'dompurify';
 
-import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
 import { BranchIcon } from './assets/BranchIcon';
 
 import 'highlight.js/styles/github-dark.css';
+import { TitleTypography } from './ThreadAccordionView';
 
 interface ResponseContainerProps {
     children: JSX.Element;
@@ -61,11 +62,14 @@ export const LLMResponseView = ({
             },
         })
     );
+
     // turning off features as they pop dom warnings
     marked.use({
         mangle: false,
         headerIds: false,
     });
+
+    const html = DOMPurify.sanitize(marked.parse(response));
 
     return (
         <ResponseContainer setHover={setHover}>
@@ -80,7 +84,10 @@ export const LLMResponseView = ({
                 )}
                 <LLMResponseContainer id={msgId}>
                     <Stack direction="row" justifyContent="space-between">
-                        <ReadonlyEditor value={response} />
+                        <div
+                            dangerouslySetInnerHTML={{ __html: html }}
+                            style={{ background: 'transparent' }}
+                        />
                         <HideAndShowContainer
                             direction="row"
                             spacing={1}
@@ -114,7 +121,9 @@ export const UserResponseView = ({
                     <Stack direction="row">
                         <UserAvatar />
                         <UserResponseContainer id={msgId}>
-                            <ReadonlyEditor value={response} />
+                            <TitleTypography sx={{ fontWeight: 'bold' }}>
+                                {response}
+                            </TitleTypography>
                         </UserResponseContainer>
                     </Stack>
                     <HideAndShowContainer

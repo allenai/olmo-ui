@@ -9,6 +9,7 @@ import {
     DialogContent,
     LinearProgress,
     Grid,
+    TextField,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -18,7 +19,6 @@ import { Confirm } from './Confirm';
 import { MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
-import { Editor } from './richTextEditor/Editor';
 import { StandardContainer } from './StandardContainer';
 import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
@@ -30,7 +30,6 @@ export const NewQuery = () => {
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
-    const [initialPrompt, setInitialPrompt] = useState<string>();
     const [prompt, setPrompt] = useState<string>();
     // has user edited the prompy
     const [promptIsDirty, setPromptIsDirty] = useState<boolean>(false);
@@ -47,7 +46,7 @@ export const NewQuery = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // datachips
-    const { remoteState: dataChipRemoteState, dataChipList, getDataChipList } = useDataChip();
+    const { remoteState: dataChipRemoteState, getDataChipList } = useDataChip();
     const [dataChipsLoading, setDataChipsLoading] = useState(
         dataChipRemoteState === RemoteState.Loading
     );
@@ -80,7 +79,6 @@ export const NewQuery = () => {
     // force a rerender with default data and load new thread
     const Clear = () => {
         setPrompt('');
-        setInitialPrompt('');
         setPromptIsDirty(false);
         setIsFullScreen(false);
         setSelectedPromptTemplateId(DefaultPromptTemplate.id);
@@ -120,7 +118,7 @@ export const NewQuery = () => {
     // when a selected prompt changes, update the user prompt
     useEffect(() => {
         const foundPrompt = promptTemplates?.find((p) => p.id === selectedPromptTemplateId);
-        setInitialPrompt(foundPrompt?.content);
+        setPrompt(foundPrompt?.content);
     }, [selectedPromptTemplateId]);
 
     const updatePrompt = (value?: string, setDirty: boolean = true) => {
@@ -174,13 +172,21 @@ export const NewQuery = () => {
                         </Grid>
 
                         <Grid>
-                            <Editor
-                                disabled={isLoading}
-                                label="Select a Prompt Template above or type a free form prompt"
-                                chips={dataChipList.dataChips}
-                                initialHtmlString={initialPrompt}
-                                onChange={(v) => updatePrompt(v)}
+                            <TextField
+                                fullWidth
+                                multiline
                                 minRows={10}
+                                disabled={isLoading}
+                                placeholder="Select a Prompt Template above or type a free form prompt"
+                                value={prompt}
+                                onChange={(v) => updatePrompt(v.target.value)}
+                                style={{ height: '100%' }}
+                                InputProps={{
+                                    sx: {
+                                        height: '100%',
+                                        alignItems: 'flex-start',
+                                    },
+                                }}
                             />
                         </Grid>
                         <Grid>
