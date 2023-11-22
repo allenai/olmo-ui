@@ -18,8 +18,14 @@ export interface Schema {
     Message: MessageSchema;
 }
 
+export interface Sort {
+    field: string;
+    direction: 'ASC' | 'DESC';
+}
+
 export interface PaginationData {
     total: number;
     offset?: number;
     limit?: number;
+    sort?: Sort;
 }

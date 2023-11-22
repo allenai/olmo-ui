@@ -15,7 +15,16 @@ import {
     InferenceOpts,
 } from './api/Message';
 import { Schema, SchemaApiUrl } from './api/Schema';
-import { JSONLabel, Label, LabelApiUrl, LabelPost, LabelsApiUrl, parseLabel } from './api/Label';
+import {
+    JSONLabel,
+    JSONLabelList,
+    Label,
+    LabelList,
+    LabelApiUrl,
+    LabelPost,
+    LabelsApiUrl,
+    parseLabel,
+} from './api/Label';
 
 interface APIError {
     error: { code: number; message: string };
@@ -79,7 +88,7 @@ type State = {
     postMessageInfo: FetchInfo<Message>;
     postLabelInfo: FetchInfo<Label>;
     deleteLabelInfo: FetchInfo<void>;
-    allLabelInfo: FetchInfo<Label[]>;
+    allLabelInfo: FetchInfo<LabelList>;
     schema: FetchInfo<Schema>;
     expandedThreadID?: string;
 };
@@ -95,7 +104,7 @@ type Action = {
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
     postLabel: (newLabel: LabelPost, msg: Message) => Promise<FetchInfo<Label>>;
     deleteLabel: (labelId: string, msg: Message) => Promise<FetchInfo<void>>;
-    getAllLabels: () => Promise<FetchInfo<Label[]>>;
+    getAllLabels: (offset: number, size: number) => Promise<FetchInfo<LabelList>>;
     getSchema: () => Promise<FetchInfo<Schema>>;
     setExpandedThreadID: (id: string | undefined) => void;
 };
@@ -443,15 +452,20 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         return get().postLabelInfo;
     },
 
-    getAllLabels: async () => {
+    getAllLabels: async (offset: number = 0, limit: number = 10) => {
         try {
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
             }));
-            const labels = await fetchAPI<JSONLabel[]>(LabelsApiUrl);
-            const parsedLabels = labels.map((m) => parseLabel(m));
+            const qs = new URLSearchParams({ offset: `${offset}`, limit: `${limit}` });
+            const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
+            const parsedLabels = ll.labels.map((m) => parseLabel(m));
             set((state) => ({
-                allLabelInfo: { ...state.allLabelInfo, data: parsedLabels, loading: false },
+                allLabelInfo: {
+                    ...state.allLabelInfo,
+                    data: { labels: parsedLabels, meta: ll.meta },
+                    loading: false,
+                },
             }));
         } catch (err) {
             get().addAlertMessage(
