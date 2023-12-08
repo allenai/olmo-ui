@@ -21,7 +21,7 @@ export const SearchButton = ({
         }
         params.set('query', selectedText);
         // open in a new window
-        window.open(`https://dolma.allen.ai/?${params}`, '_blank');
+        window.open(`https://dolma.allen.ai/search?${params}`, '_blank');
     };
 
     return (
