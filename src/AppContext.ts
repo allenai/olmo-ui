@@ -338,19 +338,19 @@ export const useAppContext = create<State & Action>()((set, get) => ({
 
         const rdr = resp.body.getReader();
         let preamble = true;
-        let done = false;
-        while (!done) {
+        while (true) {
             const part = await rdr.read();
+            if (part.done) {
+                break;
+            }
+
             const decoder = new TextDecoder('utf-8');
-
-            // TODO: what about newlines in the content?
-            const lines = decoder.decode(part.value).split('\n');
-
+            // Split on non-escaped newlines, as sometimes each chunk includes multiple messages.
+            const lines = decoder
+                .decode(part.value)
+                .trimEnd()
+                .split(/(?<!\\)\n/);
             for (const line of lines) {
-                // TODO: remove trailing newline
-                if (line === '') {
-                    continue;
-                }
                 const payload = JSON.parse(line);
                 if (preamble) {
                     if (!('id' in payload)) {
@@ -361,7 +361,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     rerenderMessages();
                     state.setExpandedThreadID(msg.root);
                     preamble = false;
-                    break;
                 } else {
                     if ('message' in payload) {
                         const chunk: MessageChunk = payload;
@@ -377,8 +376,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     }
                 }
             }
-
-            done = part.done;
         }
 
         const postMessageInfo = { loading: false, data: branch()[0], error: false };
