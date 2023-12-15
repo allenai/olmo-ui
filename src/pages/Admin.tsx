@@ -20,8 +20,12 @@ import { dateTimeFormat } from '../util';
 export const Admin = () => {
     const { getAllLabels, allLabelInfo } = useAppContext();
 
+    const defaultPagination = { page: 0, pageSize: 10 };
     useEffect(() => {
-        getAllLabels();
+        getAllLabels(
+            defaultPagination.page * defaultPagination.pageSize,
+            defaultPagination.pageSize
+        );
     }, []);
 
     const [curTab, setCurTab] = React.useState<string>('labels');
@@ -103,15 +107,14 @@ export const Admin = () => {
                     {!allLabelInfo.error ? (
                         <DataGrid
                             loading={allLabelInfo.loading}
-                            rows={allLabelInfo.data || []}
-                            columns={labelColumns}
-                            initialState={{
-                                pagination: {
-                                    paginationModel: {
-                                        pageSize: 25,
-                                    },
-                                },
+                            rows={allLabelInfo.data?.labels || []}
+                            rowCount={allLabelInfo.data?.meta.total || 0}
+                            initialState={{ pagination: { paginationModel: defaultPagination } }}
+                            paginationMode="server"
+                            onPaginationModelChange={(model) => {
+                                getAllLabels(model.page * model.pageSize, model.pageSize);
                             }}
+                            columns={labelColumns}
                             pageSizeOptions={[10, 25, 50, 100]}
                             disableRowSelectionOnClick
                         />
