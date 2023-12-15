@@ -18,7 +18,6 @@ import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
-import { ReadonlyEditor } from './richTextEditor/ReadonlyEditor';
 
 interface ThreadAccordionProps {
     title: string;
@@ -108,32 +107,17 @@ interface CopyableTitleProps {
 // open/close so they can copy the text.
 const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
     return (
-        <>
-            {!noWrap ? (
-                <ReadonlyEditor
-                    value={title}
-                    onClick={(e) => {
-                        // this title is on a mui accordion header. so when clicked, it opens and closes the panel.
-                        // we want to allow copying text, so if text is selected, we cancel the click event.
-                        if (window.getSelection && window.getSelection()?.toString().length) {
-                            e.stopPropagation();
-                        }
-                    }}
-                />
-            ) : (
-                <TitleTypography
-                    noWrap={noWrap}
-                    onClick={(e) => {
-                        // this title is on a mui accordion header. so when clicked, it opens and closes the panel.
-                        // we want to allow copying text, so if text is selected, we cancel the click event.
-                        if (window.getSelection && window.getSelection()?.toString().length) {
-                            e.stopPropagation();
-                        }
-                    }}>
-                    {title}
-                </TitleTypography>
-            )}
-        </>
+        <TitleTypography
+            noWrap={noWrap}
+            onClick={(e) => {
+                // this title is on a mui accordion header. so when clicked, it opens and closes the panel.
+                // we want to allow copying text, so if text is selected, we cancel the click event.
+                if (window.getSelection && window.getSelection()?.toString().length) {
+                    e.stopPropagation();
+                }
+            }}>
+            {title}
+        </TitleTypography>
     );
 };
 
@@ -149,7 +133,7 @@ const TitleContainer = styled.div`
     margin-left: ${({ theme }) => theme.spacing(1)};
 `;
 
-const TitleTypography = styled(Typography)`
+export const TitleTypography = styled(Typography)`
     &&& {
         color: ${({ theme }) => theme.color2.B5};
         font-weight: bold;

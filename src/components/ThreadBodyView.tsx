@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, IconButton, LinearProgress, MenuItem, Stack, Typography } from '@mui/material';
+import {
+    Box,
+    Grid,
+    IconButton,
+    LinearProgress,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material';
 import styled from 'styled-components';
 import { KeyboardArrowDown, MoreHoriz, Check, Clear } from '@mui/icons-material';
 
@@ -9,7 +18,6 @@ import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
 import { LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
-import { Editor } from './richTextEditor/Editor';
 import { LabelRating } from '../api/Label';
 
 import 'highlight.js/styles/github-dark.css';
@@ -35,7 +43,7 @@ export const ThreadBodyView = ({
     const { postMessage, postLabel } = useAppContext();
 
     // datachips
-    const { remoteState, dataChipList, getDataChipList } = useDataChip();
+    const { remoteState, getDataChipList } = useDataChip();
     const [dataChipsLoading, setDataChipsLoading] = useState(remoteState === RemoteState.Loading);
     const getDataChips = async function () {
         setDataChipsLoading(true);
@@ -154,10 +162,11 @@ export const ThreadBodyView = ({
                             {isEditing ? (
                                 <Grid container spacing={0.5}>
                                     <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
-                                        <Editor
-                                            chips={dataChipList.dataChips}
-                                            initialHtmlString={curMessage.content}
-                                            onChange={(v) => setEditMessageContent(v)}
+                                        <TextField
+                                            defaultValue={curMessage.content}
+                                            fullWidth
+                                            multiline
+                                            onChange={(v) => setEditMessageContent(v.target.value)}
                                         />
                                     </Grid>
                                     <Grid item>
@@ -219,15 +228,15 @@ export const ThreadBodyView = ({
                     />
                 ) : showFollowUp ? (
                     <FollowUpContainer>
-                        <Editor
-                            disabled={isLoading || disabledActions}
-                            label="Follow Up"
-                            chips={dataChipList.dataChips}
-                            initialHtmlString=""
-                            onChange={(v) => {
-                                setFollowUpPrompt(v);
-                            }}
-                            onKeyDown={(event: KeyboardEvent) => {
+                        <TextField
+                            fullWidth
+                            multiline
+                            placeholder="Follow Up"
+                            disabled={isSubmitting || disabledActions}
+                            maxRows={13}
+                            value={followUpPrompt}
+                            onChange={(v) => setFollowUpPrompt(v.target.value)}
+                            onKeyDown={(event) => {
                                 if (event.key === 'Enter') {
                                     postFollowupMessage();
                                 }

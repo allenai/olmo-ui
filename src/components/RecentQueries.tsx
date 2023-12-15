@@ -13,6 +13,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
+import { ContextMenu } from './ContextMenu';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -96,25 +97,27 @@ export const RecentQueries = () => {
                 {allThreadInfo.loading ? <LinearProgress /> : null}
                 {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
                     <Stack direction="column">
-                        {allThreadInfo.data.messages.map((t) => (
-                            <ThreadAccordionView
-                                key={t.id}
-                                title={t.content}
-                                unformattedTitle={t.snippet}
-                                body={
-                                    <ThreadBodyView
-                                        messages={t.children}
-                                        parent={t}
-                                        showFollowUp={userInfo.data?.client === t.creator}
-                                        disabledActions={postMessageInfo.loading}
-                                    />
-                                }
-                                rootMessage={t}
-                                threadID={t.id}
-                                threadCreator={t.creator}
-                                showControls
-                            />
-                        ))}
+                        <ContextMenu>
+                            {allThreadInfo.data.messages.map((t) => (
+                                <ThreadAccordionView
+                                    key={t.id}
+                                    title={t.content}
+                                    unformattedTitle={t.snippet}
+                                    body={
+                                        <ThreadBodyView
+                                            messages={t.children}
+                                            parent={t}
+                                            showFollowUp={userInfo.data?.client === t.creator}
+                                            disabledActions={postMessageInfo.loading}
+                                        />
+                                    }
+                                    rootMessage={t}
+                                    threadID={t.id}
+                                    threadCreator={t.creator}
+                                    showControls
+                                />
+                            ))}
+                        </ContextMenu>
                         {count > 1 ? (
                             <Stack alignItems="center">
                                 <InvertedPagination

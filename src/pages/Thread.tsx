@@ -8,6 +8,7 @@ import { MajorityScreen } from '../components/MajorityScreen';
 import { ThreadBodyView } from '../components/ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { StandardContainer } from '../components/StandardContainer';
+import { ContextMenu } from '../components/ContextMenu';
 
 export const Thread = () => {
     const { id } = useParams();
@@ -23,25 +24,27 @@ export const Thread = () => {
 
     return (
         <MajorityScreen>
-            <Content>
-                <StandardContainer>
-                    {!selectedThreadInfo.error &&
-                    !selectedThreadInfo.loading &&
-                    selectedThreadInfo.data ? (
-                        <>
-                            {selectedThreadInfo.data.deleted ? (
-                                <Alert severity="warning">This message has been deleted.</Alert>
-                            ) : null}
-                            <ThreadBodyView
-                                messages={[selectedThreadInfo.data]}
-                                showFollowUp={false}
-                            />
-                        </>
-                    ) : null}
-                    {selectedThreadInfo.loading ? <LinearProgress /> : null}
-                </StandardContainer>
-                <NewQueryLink to={'/'}>New Query</NewQueryLink>
-            </Content>
+            <ContextMenu>
+                <Content>
+                    <StandardContainer>
+                        {!selectedThreadInfo.error &&
+                        !selectedThreadInfo.loading &&
+                        selectedThreadInfo.data ? (
+                            <>
+                                {selectedThreadInfo.data.deleted ? (
+                                    <Alert severity="warning">This message has been deleted.</Alert>
+                                ) : null}
+                                <ThreadBodyView
+                                    messages={[selectedThreadInfo.data]}
+                                    showFollowUp={false}
+                                />
+                            </>
+                        ) : null}
+                        {selectedThreadInfo.loading ? <LinearProgress /> : null}
+                    </StandardContainer>
+                    <NewQueryLink to={'/'}>New Query</NewQueryLink>
+                </Content>
+            </ContextMenu>
         </MajorityScreen>
     );
 };
