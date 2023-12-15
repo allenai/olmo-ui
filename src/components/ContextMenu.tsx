@@ -20,7 +20,7 @@ export const SearchTrainingDatasetMenuOption: MenuOption = {
             selectedText = `"${selectedText}"`;
         }
         params.set('query', selectedText);
-        window.location.href = `/search?${params}`;
+        window.location.href = `https://dolma.allen.ai/search?${params}`;
     },
 };
 

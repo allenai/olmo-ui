@@ -1,11 +1,10 @@
 // context exposing client actions on DataChips
-
 import React, { ReactNode, createContext, useState } from 'react';
 import { produce } from 'immer';
 
 import { DataChipClient } from '../api/DataChipClient';
 import { DataChip, DataChipList, DataChipPatch, DataChipPost } from '../api/DataChip';
-import { RemoteState } from './util';
+import { RemoteState, ensureContext } from './util';
 
 interface DataChipContextProps {
     remoteState?: RemoteState;
@@ -16,34 +15,18 @@ interface DataChipContextProps {
     patchDataChip(id: string, patchValues: DataChipPatch): Promise<DataChip>;
 }
 
-const notImplementedPromise = Promise.reject(
-    new Error('unimplemented (useDataChip must be used within a DataChipProvider)')
-);
+const DataChipContext = createContext<DataChipContextProps | undefined>(undefined);
 
-const defaultDataChipContextProps: DataChipContextProps = {
-    dataChipList: {
-        dataChips: [],
-        meta: { total: 0 },
-    },
-    getDataChipList: () => notImplementedPromise,
-    getDataChip: () => notImplementedPromise,
-    createDataChip: () => notImplementedPromise,
-    patchDataChip: () => notImplementedPromise,
-};
-
-const DataChipContext = createContext<DataChipContextProps>(defaultDataChipContextProps);
-
-export const useDataChip = () => React.useContext(DataChipContext);
+export const useDataChip = () => ensureContext(DataChipContext, 'DataChips');
 
 export const DataChipProvider = ({ children }: { children: ReactNode }) => {
     const dataChipClient = new DataChipClient();
 
-    const [remoteState, setRemoteState] = useState<RemoteState | undefined>(
-        defaultDataChipContextProps.remoteState
-    );
-    const [dataChipList, setDataChipList] = useState<DataChipList>(
-        defaultDataChipContextProps.dataChipList
-    );
+    const [remoteState, setRemoteState] = useState<RemoteState>();
+    const [dataChipList, setDataChipList] = useState<DataChipList>({
+        dataChips: [],
+        meta: { total: 0 },
+    });
 
     const getDataChipList = async (includeDeleted?: boolean): Promise<DataChipList> => {
         setRemoteState(RemoteState.Loading);
