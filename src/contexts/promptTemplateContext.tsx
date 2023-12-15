@@ -45,7 +45,7 @@ export const PromptTemplateProvider = ({ children }: { children: ReactNode }) =>
                 return e;
             });
     };
-    
+
     const getPromptTemplate = async (id: string): Promise<PromptTemplate> => {
         setRemoteState(RemoteState.Loading);
         return promptTemplateClient
