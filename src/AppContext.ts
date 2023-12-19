@@ -9,6 +9,7 @@ import {
     MessagePost,
     MessagesApiUrl,
     MessageList,
+    MessageStreamError,
     JSONMessageList,
     JSONMessage,
     parseMessage,
@@ -25,6 +26,7 @@ import {
     LabelsApiUrl,
     parseLabel,
 } from './api/Label';
+import { ReadableJSONLStream } from './api/ReadableJSONLStream';
 
 interface APIError {
     error: { code: number; message: string };
@@ -314,73 +316,98 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             return parentMsg?.children || get().allThreadInfo.data?.messages || [];
         };
 
-        const url = `${process.env.LLMX_API_URL}/v3/message/stream`;
-        const resp = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                ...newMsg,
-                parent: parentMsg?.id,
-                opts: state.inferenceOpts,
-            }),
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-        });
+        try {
+            const url = `${process.env.LLMX_API_URL}/v3/message/stream`;
+            const resp = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                    ...newMsg,
+                    parent: parentMsg?.id,
+                    opts: state.inferenceOpts,
+                }),
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+            });
 
-        // This might change the browser location, thereby halting execution
-        loginOn401(resp);
+            // This might change the browser location, thereby halting execution
+            loginOn401(resp);
 
-        if (!resp.ok) {
-            throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
-        }
-        if (!resp.body) {
-            throw new Error(`POST ${url}: missing response body`);
-        }
-
-        const rdr = resp.body.getReader();
-        let preamble = true;
-        while (true) {
-            const part = await rdr.read();
-            if (part.done) {
-                break;
+            if (!resp.ok) {
+                throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
+            }
+            if (!resp.body) {
+                throw new Error(`POST ${url}: missing response body`);
             }
 
-            const decoder = new TextDecoder('utf-8');
-            // Split on non-escaped newlines, as sometimes each chunk includes multiple messages.
-            const lines = decoder
-                .decode(part.value)
-                .trimEnd()
-                .split(/(?<!\\)\n/);
-            for (const line of lines) {
-                const payload = JSON.parse(line);
-                if (preamble) {
-                    if (!('id' in payload)) {
-                        throw new Error(`malformed preamble: ${line}`);
+            // Each API response part is one of these types.
+            type Chunk = JSONMessage | MessageChunk | MessageStreamError;
+            const rdr = resp.body.pipeThrough(new ReadableJSONLStream<Chunk>()).getReader();
+            let firstPart = true;
+            while (true) {
+                const part = await rdr.read();
+                if (part.done) {
+                    break;
+                }
+
+                // A MessageStreamError could be encountered at any point.
+                if ('error' in part.value) {
+                    throw new Error(`streaming response failed: ${part.value.error}`);
+                }
+
+                // The first chunk should always be a Message capturing the details of the user's
+                // message that was just submitted.
+                if (firstPart) {
+                    if (!('id' in part.value)) {
+                        throw new Error(
+                            `malformed response, the first part must be a valid message: ${part.value}`
+                        );
                     }
-                    const msg = parseMessage(payload);
+                    const msg = parseMessage(part.value);
                     branch().unshift(msg);
                     rerenderMessages();
+
+                    // Expand the thread so that the response is visible as it's streamed to the client.
                     state.setExpandedThreadID(msg.root);
-                    preamble = false;
-                } else {
-                    if ('message' in payload) {
-                        const chunk: MessageChunk = payload;
-                        const reply = (branch()[0].children ?? [])[0];
-                        reply.content += chunk.content;
-                        rerenderMessages();
-                    } else if ('id' in payload) {
-                        const msg: Message = parseMessage(payload);
-                        branch()[0] = msg;
-                        rerenderMessages();
-                    } else {
-                        throw new Error(`unexpected chunk: ${line}`);
-                    }
+
+                    firstPart = false;
+                    continue;
+                }
+
+                // After receiving the first part we should expect a series of MessageChunks, each of
+                // which constitutes an individual token that's a part of the model's response.
+                if ('message' in part.value) {
+                    const chunk: MessageChunk = part.value;
+                    const reply = (branch()[0].children ?? [])[0];
+                    reply.content += chunk.content;
+                    rerenderMessages();
+                    continue;
+                }
+
+                // Finally we should receive a Message that represents the fully materialized Message with
+                // with the model's response as a child.
+                if ('id' in part.value) {
+                    const msg = parseMessage(part.value);
+                    branch()[0] = msg;
+                    rerenderMessages();
                 }
             }
-        }
 
-        const postMessageInfo = { loading: false, data: branch()[0], error: false };
-        set({ postMessageInfo });
-        return postMessageInfo;
+            const postMessageInfo = { loading: false, data: branch()[0], error: false };
+            set({ postMessageInfo });
+            return postMessageInfo;
+        } catch (err) {
+            const state = get();
+            state.addAlertMessage(
+                errorToAlert(
+                    `create-message-${new Date().getTime()}`.toLowerCase(),
+                    'Unable to Submit Message',
+                    err
+                )
+            );
+            const postMessageInfo = { ...state.postMessageInfo, loading: false, error: true };
+            set({ postMessageInfo });
+            return postMessageInfo;
+        }
     },
 
     deleteLabel: async (labelId: string, message: Message) => {
