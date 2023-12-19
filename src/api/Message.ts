@@ -49,6 +49,11 @@ export interface MessageChunk {
     content: string;
 }
 
+export interface MessageStreamError {
+    message: string;
+    error: string;
+}
+
 export interface InferenceOpts {
     max_tokens?: number;
     temperature?: number;
