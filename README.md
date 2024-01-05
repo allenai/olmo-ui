@@ -18,6 +18,13 @@ to the production API to get things working.
     gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
     ```
 
+    You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
+    If it happens, install the plugin as it suggests with this command:
+
+   ```
+   gcloud components install gke-gcloud-auth-plugin
+   ```
+
 2. Then port forward `8000` to the API:
 
     ```
