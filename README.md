@@ -6,7 +6,7 @@ https://olmo.allen.ai
 
 ## Github setup
 Olmo-Ui repo requires verify commit so it won't allow you to merge. If you run into the issue, here is the step below that you need to do to set it up
-
+Disclaimer: below is the instruction on how to set up verify commit using gpg please refer to docs for ssh-specific info(https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key#telling-git-about-your-ssh-key)
 1. Install gnupg
     ```
     brew install gnupg           
