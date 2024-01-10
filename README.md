@@ -33,10 +33,6 @@ Olmo-Ui repo requires verify commit so it won't allow you to merge. If you run i
     ```
     gpg --armor --export signingkey 
     ```
-7. When commit to make sure you verify please use the command below
-    ```
-    git commit -S -m "Commit Message"
-    ```
 ### Getting Started
 
 The UI depends on the [API](https://github.com/allenai/olmo-api). You'll need to forward a local port
