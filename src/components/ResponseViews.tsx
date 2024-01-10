@@ -171,4 +171,5 @@ const IconContainer = styled(HideAndShowContainer)`
     right: ${({ theme }) => theme.spacing(1.5)};
     opacity: ${({ show }) => (show === 'true' ? `1` : `0`)};
     transition: 0.25s ease-out;
+    pointer-events: none;
 `;
