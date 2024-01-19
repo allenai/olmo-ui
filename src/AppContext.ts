@@ -89,6 +89,7 @@ type State = {
     selectedThreadInfo: FetchInfo<Message>;
     postMessageInfo: FetchInfo<Message>;
     postLabelInfo: FetchInfo<Label>;
+    postAlertMessages: AlertMessage[];
     deleteLabelInfo: FetchInfo<void>;
     allLabelInfo: FetchInfo<LabelList>;
     schema: FetchInfo<Schema>;
@@ -97,7 +98,7 @@ type State = {
 
 type Action = {
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
-    addAlertMessage: (newAlertMessage: AlertMessage) => void;
+    addAlertMessage: (newAlertMessage: AlertMessage, isPostAlert?: boolean) => void;
     deleteAlertMessage: (alertMessageId: string) => void;
     getUserInfo: () => Promise<FetchInfo<User>>;
     getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
@@ -123,6 +124,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     selectedThreadInfo: {},
     postMessageInfo: {},
     postLabelInfo: {},
+    postAlertMessages: [],
     deleteLabelInfo: {},
     allLabelInfo: {},
     schema: {},
@@ -135,10 +137,16 @@ export const useAppContext = create<State & Action>()((set, get) => ({
 
     // adds a message to the list of messages to show.
     // we show all messages not dismissed by the user until a new page load.
-    addAlertMessage: (newAlertMessage) => {
-        set((state) => ({
-            alertMessages: [...state.alertMessages, newAlertMessage],
-        }));
+    addAlertMessage: (newAlertMessage, isPostAlert) => {
+        if (isPostAlert) {
+            set((state) => ({
+                postAlertMessages: [...state.postAlertMessages, newAlertMessage],
+            }));
+        } else {
+            set((state) => ({
+                alertMessages: [...state.alertMessages, newAlertMessage],
+            }));
+        }
     },
 
     // remove a message from the list.
@@ -146,6 +154,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     deleteAlertMessage: (alertMessageId) => {
         set((state) => ({
             alertMessages: state.alertMessages.filter((m) => m.id !== alertMessageId),
+            postAlertMessages: state.postAlertMessages.filter((m) => m.id !== alertMessageId),
         }));
     },
 
@@ -285,7 +294,10 @@ export const useAppContext = create<State & Action>()((set, get) => ({
 
     postMessage: async (newMsg: MessagePost, parentMsg?: Message) => {
         const state = get();
-        set({ postMessageInfo: { ...state.postMessageInfo, loading: true, error: false } });
+        set({
+            postMessageInfo: { ...state.postMessageInfo, loading: true, error: false },
+            postAlertMessages: [],
+        });
 
         // This is a hack. The UI binds to state.allThreadInfo.data, which is an Array.
         // This means all Threads are re-rendered whenever that property changes (though
@@ -402,7 +414,8 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     `create-message-${new Date().getTime()}`.toLowerCase(),
                     'Unable to Submit Message',
                     err
-                )
+                ),
+                true
             );
             const postMessageInfo = { ...state.postMessageInfo, loading: false, error: true };
             set({ postMessageInfo });
