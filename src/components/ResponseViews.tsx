@@ -157,6 +157,9 @@ const LLMResponseContainer = styled.div`
     padding-bottom: ${({ theme }) => theme.spacing(0.5)};
     margin-left: ${({ theme }) => theme.spacing(1)};
     width: 100%;
+    code {
+        white-space: pre-wrap;
+    }
 `;
 
 const HideAndShowContainer = styled(Stack)<{ show?: string }>`
