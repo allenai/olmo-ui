@@ -157,7 +157,7 @@ export const ThreadBodyView = ({
         <BarOnRightContainer displayBar={branchCount > 1}>
             <>
                 <Box sx={{ width: '100%', p: 2 }}>
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction="row" spacing={1} sx={{ overflow: 'auto' }}>
                         <Grid item sx={{ flexGrow: 1 }}>
                             {isEditing ? (
                                 <Grid container spacing={0.5}>
