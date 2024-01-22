@@ -8,7 +8,6 @@ import {
     Button,
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
-    Stack,
 } from '@mui/material';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
@@ -16,8 +15,8 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { ThreadControls } from './ThreadControls';
 import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
-import { UserAvatar } from './avatars/UserAvatar';
 import { MetadataModal } from './MetadataModal';
+import { UserRepromptView } from './UserRepromptView';
 
 interface ThreadAccordionProps {
     title: string;
@@ -59,14 +58,11 @@ export const ThreadAccordionView = ({
             }}>
             <AccordionSummary aria-controls={`${threadID}-content`} id={`${threadID}-header`}>
                 {isExpanded ? (
-                    <Stack direction="row">
-                        <PaddedHeading>
-                            <UserAvatar />
-                        </PaddedHeading>
-                        <TitleContainer>
-                            <CopyableTitle title={title} />
-                        </TitleContainer>
-                    </Stack>
+                    <UserRepromptView
+                        copyableTitle={<CopyableTitle title={title} />}
+                        rootMessage={rootMessage}
+                        title={title}
+                    />
                 ) : (
                     <CopyableTitle noWrap={true} title={unformattedTitle} />
                 )}
@@ -126,13 +122,6 @@ const ControlsGrid = styled(Grid)`
     padding-right: ${({ theme }) => theme.spacing(2)};
     padding-bottom: ${({ theme }) => theme.spacing(2)};
 `;
-
-const TitleContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(2)};
-    padding-bottom: ${({ theme }) => theme.spacing(2)};
-    margin-left: ${({ theme }) => theme.spacing(1)};
-`;
-
 export const TitleTypography = styled(Typography)`
     &&& {
         color: ${({ theme }) => theme.color2.B5};
@@ -144,11 +133,6 @@ export const TitleTypography = styled(Typography)`
             max-width: 450px;
         }
     }
-`;
-
-const PaddedHeading = styled.span`
-    margin-left: ${({ theme }) => theme.spacing(0.5)};
-    margin-top: ${({ theme }) => theme.spacing(1)};
 `;
 
 const Accordion = styled((props: AccordionProps) => (

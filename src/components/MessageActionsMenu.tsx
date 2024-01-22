@@ -48,7 +48,10 @@ export const MessageActionsMenu = ({
                 startIcon={startIcon}
                 disabled={disabled}
                 variant="outlined"
-                onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuAnchorEl(e.currentTarget);
+                }}>
                 {primaryIcon || null}
                 {label && <Typography noWrap>{label}</Typography>}
             </ResponseMenuButton>
@@ -68,17 +71,19 @@ export const MessageActionsMenu = ({
 interface ContextMenuItem {
     menuItemLabel: string;
     icon: JSX.Element;
-    onClickHandler: () => void | Promise<void>;
+    onClickHandler?: () => void | Promise<void>;
 }
 
 interface MessageContextMenuProps {
-    handleEdit: () => void;
+    handleEdit?: () => void;
+    handleReprompt?: () => void;
     addLabel: (rating: LabelRating, id: string, msg: Message) => Promise<void>;
     curMessage: Message;
 }
 
 export const MessageContextMenu = ({
     handleEdit,
+    handleReprompt,
     addLabel,
     curMessage,
 }: MessageContextMenuProps) => {
@@ -87,6 +92,11 @@ export const MessageContextMenu = ({
             menuItemLabel: 'Edit',
             icon: <Edit fontSize="small" />,
             onClickHandler: handleEdit,
+        },
+        {
+            menuItemLabel: 'Re-prompt',
+            icon: <Edit fontSize="small" />,
+            onClickHandler: handleReprompt,
         },
     ];
 
@@ -110,12 +120,16 @@ export const MessageContextMenu = ({
 
     return (
         <>
-            {permanentMenuItems.map((item) => (
-                <MenuItem key={item.menuItemLabel} onClick={item.onClickHandler}>
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText>{item.menuItemLabel}</ListItemText>
-                </MenuItem>
-            ))}
+            {permanentMenuItems.map(
+                (item) =>
+                    item.onClickHandler &&
+                    typeof item.onClickHandler === 'function' && (
+                        <MenuItem key={item.menuItemLabel} onClick={item.onClickHandler}>
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText>{item.menuItemLabel}</ListItemText>
+                        </MenuItem>
+                    )
+            )}
 
             {curMessage.role !== Role.User ? (
                 <>
@@ -134,6 +148,7 @@ export const MessageContextMenu = ({
 
 export const MenuWrapperContainer = styled.div`
     padding-top: ${({ theme }) => theme.spacing(1)};
+    margin-left: auto;
 `;
 
 const ResponseMenuButton = styled(Button)`
