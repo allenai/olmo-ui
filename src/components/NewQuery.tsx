@@ -133,7 +133,6 @@ export const NewQuery = () => {
 
     useEffect(() => {
         updatePrompt(repromptText);
-        window.scrollTo(0, 0);
     }, [repromptText]);
 
     return (
@@ -190,7 +189,7 @@ export const NewQuery = () => {
                                 placeholder="Select a Prompt Template above or type a free form prompt"
                                 value={prompt}
                                 inputRef={(input) => {
-                                    if (input != null) {
+                                    if (repromptText.length !== 0 && input !== null) {
                                         input.focus();
                                     }
                                 }}
