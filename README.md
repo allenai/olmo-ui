@@ -33,6 +33,14 @@ Disclaimer: below is the instruction on how to set up verify commit using gpg pl
     ```
     gpg --armor --export signingkey 
     ```
+7. After export and save your key in github on terminal following these step:
+    ```
+    echo $SHELL
+    ```
+    Once you use the command above to find out your SHELL type add this export to it
+    ```
+    export GPG_TTY=$(tty)
+    ```
 ### Getting Started
 
 The UI depends on the [API](https://github.com/allenai/olmo-api). You'll need to forward a local port
