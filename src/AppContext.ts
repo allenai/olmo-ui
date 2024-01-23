@@ -123,7 +123,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     selectedThreadInfo: {},
     postMessageInfo: {},
     postLabelInfo: {},
-    postAlertMessages: [],
     deleteLabelInfo: {},
     allLabelInfo: {},
     schema: {},
