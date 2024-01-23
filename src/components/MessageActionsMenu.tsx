@@ -123,8 +123,7 @@ export const MessageContextMenu = ({
         <>
             {permanentMenuItems.map(
                 (item) =>
-                    item.onClickHandler &&
-                    typeof item.onClickHandler === 'function' && (
+                    item.onClickHandler && (
                         <MenuItem key={item.menuItemLabel} onClick={item.onClickHandler}>
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText>{item.menuItemLabel}</ListItemText>
