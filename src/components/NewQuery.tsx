@@ -23,9 +23,12 @@ import { StandardContainer } from './StandardContainer';
 import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
+import { RepromptActionContext } from '../contexts/repromptActionContext';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
+
+    const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
@@ -113,6 +116,9 @@ export const NewQuery = () => {
             Clear();
         }
         setIsSubmitting(false);
+        if (repromptText.length !== 0) {
+            setRepromptText('');
+        }
     };
 
     // when a selected prompt changes, update the user prompt
@@ -123,10 +129,14 @@ export const NewQuery = () => {
 
     const updatePrompt = (value?: string, setDirty: boolean = true) => {
         setPrompt(value);
-        if(value && value.length !== 0) {
+        if (value && value.length !== 0) {
             setPromptIsDirty(setDirty);
         }
     };
+
+    useEffect(() => {
+        updatePrompt(repromptText);
+    }, [repromptText]);
 
     return (
         <StandardContainer>
@@ -181,6 +191,11 @@ export const NewQuery = () => {
                                 disabled={isLoading}
                                 placeholder="Select a Prompt Template above or type a free form prompt"
                                 value={prompt}
+                                inputRef={(input) => {
+                                    if (repromptText.length !== 0 && input !== null) {
+                                        input.focus();
+                                    }
+                                }}
                                 onChange={(v) => updatePrompt(v.target.value)}
                                 style={{ height: '100%' }}
                                 InputProps={{
