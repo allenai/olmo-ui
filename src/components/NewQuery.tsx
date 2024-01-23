@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
-    Alert,
-    AlertTitle,
     Button,
     IconButton,
     MenuItem,
@@ -125,7 +123,7 @@ export const NewQuery = () => {
 
     const updatePrompt = (value?: string, setDirty: boolean = true) => {
         setPrompt(value);
-        if(value && value.length !== 0) {
+        if (value && value.length !== 0) {
             setPromptIsDirty(setDirty);
         }
     };
@@ -193,9 +191,6 @@ export const NewQuery = () => {
                             />
                         </Grid>
                         <Grid>
-                            <QueryAlertList />
-                        </Grid>
-                        <Grid>
                             <ButtonArea>
                                 <Button
                                     variant="contained"
@@ -255,25 +250,6 @@ const FullScreenCapableContainer = ({
         );
     }
     return <>{children}</>;
-};
-
-const QueryAlertList = () => {
-    const { postAlertMessages, deleteAlertMessage } = useAppContext();
-
-    const handleClose = (id: string) => {
-        deleteAlertMessage(id);
-    };
-
-    return (
-        <div>
-            {postAlertMessages.map((msg) => (
-                <Alert key={msg.id} onClose={() => handleClose(msg.id)} severity={msg.severity}>
-                    <AlertTitle>{msg.title}</AlertTitle>
-                    {msg.message}
-                </Alert>
-            ))}
-        </div>
-    );
 };
 
 const PaddedDialog = styled(Dialog)`

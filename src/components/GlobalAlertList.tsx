@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Alert, AlertTitle, Stack } from '@mui/material';
+import { Alert, AlertTitle, Snackbar } from '@mui/material';
 
 import { useAppContext } from '../AppContext';
 
@@ -21,21 +21,34 @@ export interface AlertMessage {
     severity: AlertMessageSeverity;
 }
 
+const ALERT_HIDE_DURATION = 6000;
+
 export const GlobalAlertList = () => {
     const { alertMessages, deleteAlertMessage } = useAppContext();
+    const isOpen = alertMessages.length > 0;
 
     const handleClose = (id: string) => {
-        deleteAlertMessage(id);
+        return () => deleteAlertMessage(id);
     };
 
     return (
-        <Stack spacing={1} paddingBottom={1}>
+        <>
             {alertMessages.map((msg) => (
-                <Alert key={msg.id} onClose={() => handleClose(msg.id)} severity={msg.severity}>
-                    <AlertTitle>{msg.title}</AlertTitle>
-                    {msg.message}
-                </Alert>
+                <Snackbar
+                    open={isOpen}
+                    autoHideDuration={ALERT_HIDE_DURATION}
+                    onClose={handleClose(msg.id)}>
+                    <Alert
+                        key={msg.id}
+                        onClose={handleClose(msg.id)}
+                        severity={msg.severity}
+                        sx={{ width: '100%' }}
+                        variant="filled">
+                        <AlertTitle>{msg.title}</AlertTitle>
+                        {msg.message}
+                    </Alert>
+                </Snackbar>
             ))}
-        </Stack>
+        </>
     );
 };
