@@ -42,7 +42,6 @@ export const GlobalAlertList = () => {
                         key={msg.id}
                         onClose={handleClose(msg.id)}
                         severity={msg.severity}
-                        sx={{ width: '100%' }}
                         variant="filled">
                         <AlertTitle>{msg.title}</AlertTitle>
                         {msg.message}
