@@ -28,7 +28,7 @@ import { RepromptActionContext } from '../contexts/repromptActionContext';
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
 
-    const { repromptText } = React.useContext(RepromptActionContext);
+    const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
@@ -116,6 +116,9 @@ export const NewQuery = () => {
             Clear();
         }
         setIsSubmitting(false);
+        if (repromptText.length !== 0) {
+            setRepromptText('');
+        }
     };
 
     // when a selected prompt changes, update the user prompt
