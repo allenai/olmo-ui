@@ -11,15 +11,17 @@ import { useAppContext } from '../AppContext';
 import { MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { LabelRating } from '../api/Label';
 import { UserAvatar } from './avatars/UserAvatar';
-import { RepromptActionContext } from '../pages/RepromptActionContext';
+import { RepromptActionContext } from '../contexts/repromptActionContext';
 
-interface UserRootResponseViewProps {
+interface ExpandedThreadTitleViewProps {
     copyableTitle: React.ReactNode;
     rootMessage: Message;
-    title: string;
 }
 
-export const UserRepromptView = ({ copyableTitle, rootMessage }: UserRootResponseViewProps) => {
+export const ExpandedThreadTitleView = ({
+    copyableTitle,
+    rootMessage,
+}: ExpandedThreadTitleViewProps) => {
     const { postLabel } = useAppContext();
     const { setRepromptText } = React.useContext(RepromptActionContext);
     const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>(null);

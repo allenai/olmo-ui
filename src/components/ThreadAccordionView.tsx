@@ -16,7 +16,7 @@ import { ThreadControls } from './ThreadControls';
 import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { MetadataModal } from './MetadataModal';
-import { UserRepromptView } from './UserRepromptView';
+import { ExpandedThreadTitleView } from './ExpandedThreadTitleView';
 
 interface ThreadAccordionProps {
     title: string;
@@ -58,10 +58,9 @@ export const ThreadAccordionView = ({
             }}>
             <AccordionSummary aria-controls={`${threadID}-content`} id={`${threadID}-header`}>
                 {isExpanded ? (
-                    <UserRepromptView
+                    <ExpandedThreadTitleView
                         copyableTitle={<CopyableTitle title={title} />}
                         rootMessage={rootMessage}
-                        title={title}
                     />
                 ) : (
                     <CopyableTitle noWrap={true} title={unformattedTitle} />

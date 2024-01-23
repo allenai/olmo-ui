@@ -23,7 +23,7 @@ import { StandardContainer } from './StandardContainer';
 import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
-import { RepromptActionContext } from '../pages/RepromptActionContext';
+import { RepromptActionContext } from '../contexts/repromptActionContext';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -133,6 +133,7 @@ export const NewQuery = () => {
 
     useEffect(() => {
         updatePrompt(repromptText);
+        window.scrollTo(0, 0);
     }, [repromptText]);
 
     return (

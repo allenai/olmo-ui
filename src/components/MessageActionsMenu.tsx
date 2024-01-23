@@ -42,16 +42,17 @@ export const MessageActionsMenu = ({
     label,
     disabled,
 }: ResponseContainerProps) => {
+    const handleResponseMenuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        setMenuAnchorEl(event.currentTarget);
+    };
     return (
         <MenuWrapperContainer>
             <ResponseMenuButton
                 startIcon={startIcon}
                 disabled={disabled}
                 variant="outlined"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setMenuAnchorEl(e.currentTarget);
-                }}>
+                onClick={(e) => handleResponseMenuButtonClick(e)}>
                 {primaryIcon || null}
                 {label && <Typography noWrap>{label}</Typography>}
             </ResponseMenuButton>
