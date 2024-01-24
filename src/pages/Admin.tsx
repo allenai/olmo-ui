@@ -4,7 +4,9 @@ import { Box, Tab, Typography } from '@mui/material';
 import {
     DataGrid,
     GridColDef,
+    GridFilterModel,
     GridRenderCellParams,
+    GridSortModel,
     GridValueGetterParams,
 } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
@@ -18,7 +20,8 @@ import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../util';
 
 export const Admin = () => {
-    const { getAllLabels, allLabelInfo } = useAppContext();
+    const { getAllLabels, getAllLabelsBySorting, getAllLabelsByFiltering, allLabelInfo } =
+        useAppContext();
 
     const defaultPagination = { page: 0, pageSize: 10 };
     useEffect(() => {
@@ -89,6 +92,57 @@ export const Admin = () => {
         },
     ];
 
+    const handleOnSortModelChange = (model: GridSortModel) => {
+        // in case when user click unsort we reset everything back to the original stage
+        if (model.length === 0) {
+            getAllLabels(
+                defaultPagination.page * defaultPagination.pageSize,
+                defaultPagination.pageSize
+            );
+            return;
+        }
+
+        if (model[0].field && model[0].field === 'created' && model[0].sort) {
+            getAllLabelsBySorting(model[0].field, model[0].sort);
+        }
+    };
+
+    const handleOnFilterModelChange = (model: GridFilterModel) => {
+        // when user clear out the filter we want to reset to original stage.
+        if (model.items.length === 0) {
+            getAllLabels(
+                defaultPagination.page * defaultPagination.pageSize,
+                defaultPagination.pageSize
+            );
+            return;
+        }
+
+        // handle rating filtering case
+        if (model.items[0].field && model.items[0].field === 'rating' && model.items[0].value) {
+            switch (model.items[0].value) {
+                case 'Positive':
+                    getAllLabelsByFiltering(undefined, undefined, LabelRating.Positive);
+                    break;
+                case 'Negative':
+                    getAllLabelsByFiltering(undefined, undefined, LabelRating.Negative);
+                    break;
+                default:
+                    getAllLabelsByFiltering(undefined, undefined, LabelRating.Flag);
+                    break;
+            }
+        }
+
+        // handle creator filtering case
+        if (model.items[0].field && model.items[0].field === 'creator' && model.items[0].value) {
+            getAllLabelsByFiltering(model.items[0].value, undefined, undefined);
+        }
+
+        // handle message filtering case
+        if (model.items[0].field && model.items[0].field === 'message' && model.items[0].value) {
+            getAllLabelsByFiltering(undefined, model.items[0].value, undefined);
+        }
+    };
+
     return (
         <Box sx={{ width: '100%', background: 'white', p: 2 }}>
             <Typography variant="h1" sx={{ m: 0 }}>
@@ -114,6 +168,8 @@ export const Admin = () => {
                             onPaginationModelChange={(model) => {
                                 getAllLabels(model.page * model.pageSize, model.pageSize);
                             }}
+                            onSortModelChange={(model) => handleOnSortModelChange(model)}
+                            onFilterModelChange={(model) => handleOnFilterModelChange(model)}
                             columns={labelColumns}
                             pageSizeOptions={[10, 25, 50, 100]}
                             disableRowSelectionOnClick
