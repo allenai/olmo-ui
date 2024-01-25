@@ -226,7 +226,15 @@ export const NewQuery = () => {
                                 <span />
                                 <FormControlLabel
                                     sx={{ marginLeft: 'auto' }}
-                                    control={<Checkbox checked={checked} onChange={handleChange} />}
+                                    control={
+                                        <Checkbox
+                                            checked={checked}
+                                            onChange={handleChange}
+                                            inputProps={{
+                                                'aria-label': 'Mark this Query Private',
+                                            }}
+                                        />
+                                    }
                                     label="Private"
                                 />
                                 <Button
