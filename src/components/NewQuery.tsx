@@ -123,7 +123,7 @@ export const NewQuery = () => {
 
     const updatePrompt = (value?: string, setDirty: boolean = true) => {
         setPrompt(value);
-        if(value && value.length !== 0) {
+        if (value && value.length !== 0) {
             setPromptIsDirty(setDirty);
         }
     };
