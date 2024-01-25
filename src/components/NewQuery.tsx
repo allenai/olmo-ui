@@ -36,7 +36,7 @@ export const NewQuery = () => {
         DefaultPromptTemplate.id
     );
 
-    const [checked, setChecked] = React.useState<boolean>(false);
+    const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
     const [prompt, setPrompt] = useState<string>();
     // has user edited the prompy
     const [promptIsDirty, setPromptIsDirty] = useState<boolean>(false);
@@ -114,7 +114,7 @@ export const NewQuery = () => {
         setIsSubmitting(true);
         const payload: MessagePost = {
             content: prompt || '',
-            private: checked,
+            private: isPrivateChecked,
         };
         const postMessageInfo = await postMessage(payload);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
@@ -139,8 +139,8 @@ export const NewQuery = () => {
         }
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
+    const onPrivateCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsPrivateChecked(event.target.checked);
     };
 
     useEffect(() => {
@@ -228,8 +228,8 @@ export const NewQuery = () => {
                                     sx={{ marginLeft: 'auto' }}
                                     control={
                                         <Checkbox
-                                            checked={checked}
-                                            onChange={handleChange}
+                                            checked={isPrivateChecked}
+                                            onChange={onPrivateCheckboxChange}
                                             inputProps={{
                                                 'aria-label': 'Mark this Query Private',
                                             }}
