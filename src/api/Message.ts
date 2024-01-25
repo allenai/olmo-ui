@@ -29,6 +29,7 @@ export interface Message {
     opts: InferenceOpts;
     original?: string;
     parent?: string;
+    private?: boolean;
     role: Role;
     root: string;
     template: string;
