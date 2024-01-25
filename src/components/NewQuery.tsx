@@ -10,6 +10,8 @@ import {
     LinearProgress,
     Grid,
     TextField,
+    Checkbox,
+    FormControlLabel,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -33,6 +35,8 @@ export const NewQuery = () => {
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
+
+    const [checked, setChecked] = React.useState<boolean>(false);
     const [prompt, setPrompt] = useState<string>();
     // has user edited the prompy
     const [promptIsDirty, setPromptIsDirty] = useState<boolean>(false);
@@ -110,6 +114,7 @@ export const NewQuery = () => {
         setIsSubmitting(true);
         const payload: MessagePost = {
             content: prompt || '',
+            private: checked,
         };
         const postMessageInfo = await postMessage(payload);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
@@ -132,6 +137,10 @@ export const NewQuery = () => {
         if (value && value.length !== 0) {
             setPromptIsDirty(setDirty);
         }
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
     };
 
     useEffect(() => {
@@ -215,6 +224,11 @@ export const NewQuery = () => {
                                     Prompt
                                 </Button>
                                 <span />
+                                <FormControlLabel
+                                    sx={{ marginLeft: 'auto' }}
+                                    control={<Checkbox checked={checked} onChange={handleChange} />}
+                                    label="Private"
+                                />
                                 <Button
                                     variant="outlined"
                                     onClick={() => setShowParams(!showParams)}>
@@ -278,6 +292,6 @@ const TemplateArea = styled.div`
 `;
 
 const ButtonArea = styled.div`
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    justify-content: center;
 `;
