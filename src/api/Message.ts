@@ -10,6 +10,7 @@ export interface MessagePost {
     role?: string; // in the case of edited messages
     original?: string; // in the case of edited messages
     parent?: string;
+    private?: boolean;
     prompt_template_id?: string;
     opts?: InferenceOpts;
 }
