@@ -19,16 +19,22 @@ import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../util';
 
+type Pagination = {
+    page: number;
+    pageSize: number;
+};
+
 export const Admin = () => {
     const { getAllLabels, getAllLabelsBySorting, getAllLabelsByFiltering, allLabelInfo } =
         useAppContext();
 
-    const defaultPagination = { page: 0, pageSize: 10 };
+    const [pagination, setPagination] = React.useState<Pagination>({
+        page: 0,
+        pageSize: 10,
+    });
+
     useEffect(() => {
-        getAllLabels(
-            defaultPagination.page * defaultPagination.pageSize,
-            defaultPagination.pageSize
-        );
+        getAllLabels(pagination.page * pagination.pageSize, pagination.pageSize);
     }, []);
 
     const [curTab, setCurTab] = React.useState<string>('labels');
@@ -94,11 +100,9 @@ export const Admin = () => {
 
     const handleOnSortModelChange = (model: GridSortModel) => {
         // in case when user click unsort we reset everything back to the original stage
+        // which is the current pagination that we are on
         if (model.length === 0) {
-            getAllLabels(
-                defaultPagination.page * defaultPagination.pageSize,
-                defaultPagination.pageSize
-            );
+            getAllLabels(pagination.page * pagination.pageSize, pagination.pageSize);
             return;
         }
 
@@ -110,10 +114,7 @@ export const Admin = () => {
     const handleOnFilterModelChange = (model: GridFilterModel) => {
         // when user clear out the filter we want to reset to original stage.
         if (model.items.length === 0) {
-            getAllLabels(
-                defaultPagination.page * defaultPagination.pageSize,
-                defaultPagination.pageSize
-            );
+            getAllLabels(pagination.page * pagination.pageSize, pagination.pageSize);
             return;
         }
 
@@ -163,9 +164,13 @@ export const Admin = () => {
                             loading={allLabelInfo.loading}
                             rows={allLabelInfo.data?.labels || []}
                             rowCount={allLabelInfo.data?.meta.total || 0}
-                            initialState={{ pagination: { paginationModel: defaultPagination } }}
+                            initialState={{ pagination: { paginationModel: pagination } }}
                             paginationMode="server"
                             onPaginationModelChange={(model) => {
+                                setPagination({
+                                    page: model.page,
+                                    pageSize: model.pageSize,
+                                });
                                 getAllLabels(model.page * model.pageSize, model.pageSize);
                             }}
                             onSortModelChange={(model) => handleOnSortModelChange(model)}
