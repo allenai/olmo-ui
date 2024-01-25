@@ -17,9 +17,11 @@ import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../util';
 
+const EXPORT_LIMIT = 1000000; // The maximum rows that an admin can export is limited to 1,000,000
+
 export const Admin = () => {
     const { getAllLabels, allLabelInfo } = useAppContext();
-    const exportURL = `${LabelsApiUrl}?export&limit=1000000`; // The maximum rows that an admin can export is limited to 1,000,000
+    const exportURL = `${LabelsApiUrl}?export&limit=${EXPORT_LIMIT}`;
     const defaultPagination = { page: 0, pageSize: 10 };
     useEffect(() => {
         getAllLabels(
@@ -105,7 +107,7 @@ export const Admin = () => {
                 </TabList>
                 <TabPanel value={TabKey.Labels}>
                     <ExportButton variant="outlined" href={exportURL}>
-                        Export
+                        Export all Labels
                     </ExportButton>
                     {!allLabelInfo.error ? (
                         <DataGrid
