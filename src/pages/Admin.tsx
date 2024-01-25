@@ -19,13 +19,13 @@ import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../util';
 
-type Pagination = {
+interface Pagination {
     page: number;
     pageSize: number;
-};
+}
 
 export const Admin = () => {
-    const { getAllLabels, getAllLabelsBySorting, getAllLabelsByFiltering, allLabelInfo } =
+    const { getAllLabels, getAllSortedLabels, getAllFilteredLabels, allLabelInfo } =
         useAppContext();
 
     const [pagination, setPagination] = React.useState<Pagination>({
@@ -107,7 +107,7 @@ export const Admin = () => {
         }
 
         if (model[0].field && model[0].field === 'created' && model[0].sort) {
-            getAllLabelsBySorting(model[0].field, model[0].sort);
+            getAllSortedLabels(model[0].field, model[0].sort);
         }
     };
 
@@ -122,25 +122,25 @@ export const Admin = () => {
         if (model.items[0].field && model.items[0].field === 'rating' && model.items[0].value) {
             switch (model.items[0].value) {
                 case 'Positive':
-                    getAllLabelsByFiltering(undefined, undefined, LabelRating.Positive);
+                    getAllFilteredLabels(undefined, undefined, LabelRating.Positive);
                     break;
                 case 'Negative':
-                    getAllLabelsByFiltering(undefined, undefined, LabelRating.Negative);
+                    getAllFilteredLabels(undefined, undefined, LabelRating.Negative);
                     break;
                 default:
-                    getAllLabelsByFiltering(undefined, undefined, LabelRating.Flag);
+                    getAllFilteredLabels(undefined, undefined, LabelRating.Flag);
                     break;
             }
         }
 
         // handle creator filtering case
         if (model.items[0].field && model.items[0].field === 'creator' && model.items[0].value) {
-            getAllLabelsByFiltering(model.items[0].value, undefined, undefined);
+            getAllFilteredLabels(model.items[0].value, undefined, undefined);
         }
 
         // handle message filtering case
         if (model.items[0].field && model.items[0].field === 'message' && model.items[0].value) {
-            getAllLabelsByFiltering(undefined, model.items[0].value, undefined);
+            getAllFilteredLabels(undefined, model.items[0].value, undefined);
         }
     };
 

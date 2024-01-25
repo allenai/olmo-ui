@@ -107,8 +107,8 @@ type Action = {
     postLabel: (newLabel: LabelPost, msg: Message) => Promise<FetchInfo<Label>>;
     deleteLabel: (labelId: string, msg: Message) => Promise<FetchInfo<void>>;
     getAllLabels: (offset: number, size: number) => Promise<FetchInfo<LabelList>>;
-    getAllLabelsBySorting: (field: string, sort: string) => Promise<FetchInfo<LabelList>>;
-    getAllLabelsByFiltering: (
+    getAllSortedLabels: (field: string, sort: string) => Promise<FetchInfo<LabelList>>;
+    getAllFilteredLabels: (
         creator?: string,
         message?: string,
         rating?: number
@@ -512,7 +512,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         return get().allLabelInfo;
     },
 
-    getAllLabelsBySorting: async (field: string, sort: string) => {
+    getAllSortedLabels: async (field: string, sort: string) => {
         try {
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
@@ -542,7 +542,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         return get().allLabelInfo;
     },
 
-    getAllLabelsByFiltering: async (creator?: string, message?: string, rating?: number) => {
+    getAllFilteredLabels: async (creator?: string, message?: string, rating?: number) => {
         try {
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
