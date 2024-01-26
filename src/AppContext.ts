@@ -290,6 +290,10 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     postMessage: async (newMsg: MessagePost, parentMsg?: Message) => {
         const state = get();
         const abortController = new AbortController();
+        set({
+            abortController,
+            postMessageInfo: { ...state.postMessageInfo, loading: true, error: false },
+        });
 
         // This is a hack. The UI binds to state.allThreadInfo.data, which is an Array.
         // This means all Threads are re-rendered whenever that property changes (though
