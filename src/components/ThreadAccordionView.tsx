@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import {Shield} from '@mui/icons-material';
 
 import { ThreadControls } from './ThreadControls';
 import { Message } from '../api/Message';
@@ -63,7 +64,10 @@ export const ThreadAccordionView = ({
                         rootMessage={rootMessage}
                     />
                 ) : (
-                    <CopyableTitle noWrap={true} title={unformattedTitle} />
+                    <>
+                        <CopyableTitle noWrap={true} title={unformattedTitle} />
+                        {rootMessage.private && <Shield />}
+                    </>
                 )}
             </AccordionSummary>
             <AccordionBody>{body}</AccordionBody>
