@@ -33,8 +33,9 @@ export const GlobalAlertList = () => {
 
     return (
         <>
-            {alertMessages.map((msg) => (
+            {alertMessages.map((msg, index) => (
                 <Snackbar
+                    key={index}
                     open={isOpen}
                     autoHideDuration={ALERT_HIDE_DURATION}
                     onClose={handleClose(msg.id)}>

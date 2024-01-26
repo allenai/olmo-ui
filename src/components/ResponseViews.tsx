@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import styled from 'styled-components';
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
@@ -9,9 +9,10 @@ import DOMPurify from 'dompurify';
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
 import { BranchIcon } from './assets/BranchIcon';
+import { TitleTypography } from './ThreadAccordionView';
+import { useAppContext } from '../AppContext';
 
 import 'highlight.js/styles/github-dark.css';
-import { TitleTypography } from './ThreadAccordionView';
 
 interface ResponseContainerProps {
     children: JSX.Element;
@@ -51,7 +52,11 @@ export const LLMResponseView = ({
     displayBranchIcon = false,
     isEditedResponse = false,
 }: ResponseProps) => {
+    const { abortController, onGoingThreadId } = useAppContext();
     const [hover, setHover] = useState(false);
+    const onAbort = React.useCallback(() => {
+        abortController?.abort()
+    }, [abortController]);
 
     const marked = new Marked(
         markedHighlight({
@@ -62,6 +67,20 @@ export const LLMResponseView = ({
             },
         })
     );
+
+    const renderMenu = () => {
+        if (abortController && onGoingThreadId === msgId) {
+            return <Button onClick={onAbort}>Abort</Button>
+        }
+        
+        return <HideAndShowContainer
+            direction="row"
+            spacing={1}
+            show={hover ? 'true' : 'false'}>
+            {contextMenu || null}
+            {branchMenu || null}
+        </HideAndShowContainer>
+    }
 
     // turning off features as they pop dom warnings
     marked.use({
@@ -88,13 +107,7 @@ export const LLMResponseView = ({
                             dangerouslySetInnerHTML={{ __html: html }}
                             style={{ background: 'transparent' }}
                         />
-                        <HideAndShowContainer
-                            direction="row"
-                            spacing={1}
-                            show={hover ? 'true' : 'false'}>
-                            {contextMenu || null}
-                            {branchMenu || null}
-                        </HideAndShowContainer>
+                        { renderMenu() }
                     </Stack>
                     <IconContainer show={displayBranchIcon && !hover ? 'true' : 'false'}>
                         <BranchIcon />
