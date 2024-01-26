@@ -5,6 +5,7 @@ import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
 import DOMPurify from 'dompurify';
+import CropSquareIcon from '@mui/icons-material/CropSquare';
 
 import { RobotAvatar } from './avatars/RobotAvatar';
 import { UserAvatar } from './avatars/UserAvatar';
@@ -70,7 +71,9 @@ export const LLMResponseView = ({
 
     const renderMenu = () => {
         if (abortController && onGoingThreadId === msgId) {
-            return <Button onClick={onAbort}>Abort</Button>
+            return <StopButton variant="outlined" startIcon={<CropSquareIcon />} onClick={onAbort}>
+                Stop
+            </StopButton>
         }
         
         return <HideAndShowContainer
@@ -189,3 +192,12 @@ const IconContainer = styled(HideAndShowContainer)`
     transition: 0.25s ease-out;
     pointer-events: none;
 `;
+
+const StopButton = styled(Button)`
+    top: 5px;
+    align-self: baseline;
+    
+    &&{
+        min-width: unset;
+    }
+`
