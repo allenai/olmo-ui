@@ -290,8 +290,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     postMessage: async (newMsg: MessagePost, parentMsg?: Message) => {
         const state = get();
         const abortController = new AbortController();
-        const abortSignal = 
-        set({ abortController, postMessageInfo: { ...state.postMessageInfo, loading: true, error: false } });
 
         // This is a hack. The UI binds to state.allThreadInfo.data, which is an Array.
         // This means all Threads are re-rendered whenever that property changes (though
@@ -333,7 +331,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                 }),
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                signal: abortController.signal
+                signal: abortController.signal,
             });
 
             // This might change the browser location, thereby halting execution
@@ -364,7 +362,6 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                 // The first chunk should always be a Message capturing the details of the user's
                 // message that was just submitted.
                 if (firstPart) {
-                    
                     if (!('id' in part.value)) {
                         throw new Error(
                             `malformed response, the first part must be a valid message: ${part.value}`
@@ -374,7 +371,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     branch().unshift(msg);
                     rerenderMessages();
 
-                    set({onGoingThreadId: msg.children?.length ? msg.children[0].id : null});
+                    set({ onGoingThreadId: msg.children?.length ? msg.children[0].id : null });
                     // Expand the thread so that the response is visible as it's streamed to the client.
                     state.setExpandedThreadID(msg.root);
                     firstPart = false;
@@ -406,13 +403,13 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         } catch (err) {
             const state = get();
 
-            if (err instanceof Error && err.name === "AbortError") {
+            if (err instanceof Error && err.name === 'AbortError') {
                 state.addAlertMessage({
                     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
                     title: 'Response was aborted',
                     message: `You stopped OLMo from generating answers to your query`,
                     severity: AlertMessageSeverity.Warning,
-                })
+                });
             } else {
                 state.addAlertMessage(
                     errorToAlert(

@@ -56,7 +56,7 @@ export const LLMResponseView = ({
     const { abortController, onGoingThreadId } = useAppContext();
     const [hover, setHover] = useState(false);
     const onAbort = React.useCallback(() => {
-        abortController?.abort()
+        abortController?.abort();
     }, [abortController]);
 
     const marked = new Marked(
@@ -71,19 +71,20 @@ export const LLMResponseView = ({
 
     const renderMenu = () => {
         if (abortController && onGoingThreadId === msgId) {
-            return <StopButton variant="outlined" startIcon={<CropSquareIcon />} onClick={onAbort}>
-                Stop
-            </StopButton>
+            return (
+                <StopButton variant="outlined" startIcon={<CropSquareIcon />} onClick={onAbort}>
+                    Stop
+                </StopButton>
+            );
         }
-        
-        return <HideAndShowContainer
-            direction="row"
-            spacing={1}
-            show={hover ? 'true' : 'false'}>
-            {contextMenu || null}
-            {branchMenu || null}
-        </HideAndShowContainer>
-    }
+
+        return (
+            <HideAndShowContainer direction="row" spacing={1} show={hover ? 'true' : 'false'}>
+                {contextMenu || null}
+                {branchMenu || null}
+            </HideAndShowContainer>
+        );
+    };
 
     // turning off features as they pop dom warnings
     marked.use({
@@ -110,7 +111,7 @@ export const LLMResponseView = ({
                             dangerouslySetInnerHTML={{ __html: html }}
                             style={{ background: 'transparent' }}
                         />
-                        { renderMenu() }
+                        {renderMenu()}
                     </Stack>
                     <IconContainer show={displayBranchIcon && !hover ? 'true' : 'false'}>
                         <BranchIcon />
@@ -196,8 +197,8 @@ const IconContainer = styled(HideAndShowContainer)`
 const StopButton = styled(Button)`
     top: 5px;
     align-self: baseline;
-    
-    &&{
+
+    && {
         min-width: unset;
     }
-`
+`;
