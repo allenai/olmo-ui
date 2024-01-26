@@ -26,9 +26,11 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
+import { useFeatureToggles } from '../FeatureToggleContext';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
+    const toggles = useFeatureToggles();
 
     const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
@@ -143,6 +145,51 @@ export const NewQuery = () => {
         setIsPrivateChecked(event.target.checked);
     };
 
+    const renderButtonArea = () => {
+        if (toggles.privateToggles) {
+            return (
+                <ButtonArea>
+                    <Button
+                        variant="contained"
+                        onClick={() => postNewMessage()}
+                        disabled={isLoading}>
+                        Prompt
+                    </Button>
+                    <span />
+                    {toggles.privateToggles && (
+                        <FormControlLabel
+                            sx={{ marginLeft: 'auto' }}
+                            control={
+                                <Checkbox
+                                    checked={isPrivateChecked}
+                                    onChange={onPrivateCheckboxChange}
+                                    inputProps={{
+                                        'aria-label': 'Mark this Query Private',
+                                    }}
+                                />
+                            }
+                            label="Private"
+                        />
+                    )}
+                    <Button variant="outlined" onClick={() => setShowParams(!showParams)}>
+                        Parameters
+                    </Button>
+                </ButtonArea>
+            );
+        }
+        return (
+            <ButtonAreaWithoutPrivate>
+                <Button variant="contained" onClick={() => postNewMessage()} disabled={isLoading}>
+                    Prompt
+                </Button>
+                <span />
+                <Button variant="outlined" onClick={() => setShowParams(!showParams)}>
+                    Parameters
+                </Button>
+            </ButtonAreaWithoutPrivate>
+        );
+    };
+
     useEffect(() => {
         updatePrompt(repromptText);
     }, [repromptText]);
@@ -215,35 +262,7 @@ export const NewQuery = () => {
                                 }}
                             />
                         </Grid>
-                        <Grid>
-                            <ButtonArea>
-                                <Button
-                                    variant="contained"
-                                    onClick={() => postNewMessage()}
-                                    disabled={isLoading}>
-                                    Prompt
-                                </Button>
-                                <span />
-                                <FormControlLabel
-                                    sx={{ marginLeft: 'auto' }}
-                                    control={
-                                        <Checkbox
-                                            checked={isPrivateChecked}
-                                            onChange={onPrivateCheckboxChange}
-                                            inputProps={{
-                                                'aria-label': 'Mark this Query Private',
-                                            }}
-                                        />
-                                    }
-                                    label="Private"
-                                />
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => setShowParams(!showParams)}>
-                                    Parameters
-                                </Button>
-                            </ButtonArea>
-                        </Grid>
+                        <Grid>{renderButtonArea()}</Grid>
                         {isLoading ? (
                             <Grid>
                                 <LinearProgress />
@@ -302,4 +321,9 @@ const TemplateArea = styled.div`
 const ButtonArea = styled.div`
     display: flex;
     justify-content: center;
+`;
+
+const ButtonAreaWithoutPrivate = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr auto;
 `;

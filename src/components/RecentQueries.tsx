@@ -18,6 +18,7 @@ import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
 import { Message } from '../api/Message';
+import { useFeatureToggles } from '../FeatureToggleContext';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -67,6 +68,7 @@ export const RecentQueries = () => {
     const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
     const loc = useLocation();
     const nav = useNavigate();
+    const toggles = useFeatureToggles();
 
     const qs = new URLSearchParams(loc.search);
     const queriesView = qs.get(QueryStringParam.View) ?? QueryToggleOptions.Mine;
@@ -161,10 +163,9 @@ export const RecentQueries = () => {
         );
     };
 
-    return (
-        <>
-            <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
-            {queriesView === 'mine' && (
+    const renderPrivateToggle = (queriesView: string) => {
+        if (toggles.privateToggles && queriesView === 'mine') {
+            return (
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -178,7 +179,15 @@ export const RecentQueries = () => {
                     }
                     label={<Typography sx={{ color: 'white' }}>Private Queries</Typography>}
                 />
-            )}
+            );
+        }
+        return null;
+    };
+
+    return (
+        <>
+            <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
+            {renderPrivateToggle(queriesView)}
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
                 {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
