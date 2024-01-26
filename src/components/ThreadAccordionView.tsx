@@ -9,6 +9,7 @@ import {
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
 } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
@@ -59,11 +60,17 @@ export const ThreadAccordionView = ({
             <AccordionSummary aria-controls={`${threadID}-content`} id={`${threadID}-header`}>
                 {isExpanded ? (
                     <ExpandedThreadTitleView
-                        copyableTitle={<CopyableTitle title={title} />}
+                        copyableTitle={
+                            <CopyableTitle title={title} isPrivate={rootMessage.private} />
+                        }
                         rootMessage={rootMessage}
                     />
                 ) : (
-                    <CopyableTitle noWrap={true} title={unformattedTitle} />
+                    <CopyableTitle
+                        noWrap={true}
+                        title={unformattedTitle}
+                        isPrivate={rootMessage.private}
+                    />
                 )}
             </AccordionSummary>
             <AccordionBody>{body}</AccordionBody>
@@ -96,11 +103,12 @@ export const ThreadAccordionView = ({
 interface CopyableTitleProps {
     title: string;
     noWrap?: boolean;
+    isPrivate?: boolean;
 }
 
 // title of accordion can be clicked to open/close, but if the user selects text, we prevent
 // open/close so they can copy the text.
-const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
+const CopyableTitle = ({ title, noWrap, isPrivate }: CopyableTitleProps) => {
     return (
         <TitleTypography
             noWrap={noWrap}
@@ -112,6 +120,7 @@ const CopyableTitle = ({ title, noWrap }: CopyableTitleProps) => {
                 }
             }}>
             {title}
+            {!!isPrivate && <PersonIcon />}
         </TitleTypography>
     );
 };
@@ -124,6 +133,7 @@ const ControlsGrid = styled(Grid)`
 export const TitleTypography = styled(Typography)`
     &&& {
         color: ${({ theme }) => theme.color2.B5};
+        display: flex;
         font-weight: bold;
         ${({ theme }) => theme.breakpoints.up('md')} {
             max-width: 900px;
