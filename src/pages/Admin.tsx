@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Box, Tab, Typography } from '@mui/material';
+import { Box, Button, Tab, Typography } from '@mui/material';
 import {
     DataGrid,
     GridColDef,
@@ -14,11 +14,12 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Link } from 'react-router-dom';
 
 import { useAppContext } from '../AppContext';
-import { LabelRating } from '../api/Label';
+import { LabelRating, LabelsApiUrl } from '../api/Label';
 import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../util';
 
+const EXPORT_LIMIT = 1000000; // The maximum rows that an admin can export is limited to 1,000,000
 interface Pagination {
     page: number;
     pageSize: number;
@@ -27,7 +28,8 @@ interface Pagination {
 export const Admin = () => {
     const { getAllLabels, getAllSortedLabels, getAllFilteredLabels, allLabelInfo } =
         useAppContext();
-
+    const exportURL = `${LabelsApiUrl}?export&limit=${EXPORT_LIMIT}`;
+    const [curTab, setCurTab] = React.useState<string>('labels');
     const [pagination, setPagination] = React.useState<Pagination>({
         page: 0,
         pageSize: 10,
@@ -36,8 +38,6 @@ export const Admin = () => {
     useEffect(() => {
         getAllLabels(pagination.page * pagination.pageSize, pagination.pageSize);
     }, []);
-
-    const [curTab, setCurTab] = React.useState<string>('labels');
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
         setCurTab(newValue);
@@ -159,6 +159,9 @@ export const Admin = () => {
                     />
                 </TabList>
                 <TabPanel value={TabKey.Labels}>
+                    <ExportButton variant="outlined" href={exportURL}>
+                        Export all Labels
+                    </ExportButton>
                     {!allLabelInfo.error ? (
                         <DataGrid
                             loading={allLabelInfo.loading}
@@ -195,5 +198,11 @@ export const Admin = () => {
 const TabLabel = styled(Typography).attrs({ variant: 'h4' })`
     &&& {
         margin: 0;
+    }
+`;
+
+const ExportButton = styled(Button)`
+    && {
+        margin-bottom: 10px;
     }
 `;
