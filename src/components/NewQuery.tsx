@@ -148,7 +148,7 @@ export const NewQuery = () => {
     const renderButtonArea = () => {
         if (toggles.privateToggles) {
             return (
-                <ButtonArea>
+                <Grid display="flex" justifyContent="center">
                     <Button
                         variant="contained"
                         onClick={() => postNewMessage()}
@@ -174,11 +174,11 @@ export const NewQuery = () => {
                     <Button variant="outlined" onClick={() => setShowParams(!showParams)}>
                         Parameters
                     </Button>
-                </ButtonArea>
+                </Grid>
             );
         }
         return (
-            <ButtonAreaWithoutPrivate>
+            <Grid display="grid" gridTemplateColumns="auto 1fr auto">
                 <Button variant="contained" onClick={() => postNewMessage()} disabled={isLoading}>
                     Prompt
                 </Button>
@@ -186,7 +186,7 @@ export const NewQuery = () => {
                 <Button variant="outlined" onClick={() => setShowParams(!showParams)}>
                     Parameters
                 </Button>
-            </ButtonAreaWithoutPrivate>
+            </Grid>
         );
     };
 
@@ -316,14 +316,4 @@ const PaddedDialog = styled(Dialog)`
 const TemplateArea = styled.div`
     display: grid;
     grid-template-columns: minmax(300px, 50%) 1fr 56px;
-`;
-
-const ButtonArea = styled.div`
-    display: flex;
-    justify-content: center;
-`;
-
-const ButtonAreaWithoutPrivate = styled.div`
-    display: grid;
-    grid-template-columns: auto 1fr auto;
 `;
