@@ -9,7 +9,7 @@ import {
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
 } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styled from 'styled-components';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
@@ -120,7 +120,7 @@ const CopyableTitle = ({ title, noWrap, isPrivate }: CopyableTitleProps) => {
                 }
             }}>
             {title}
-            {!!isPrivate && <PersonIcon />}
+            {!!isPrivate && <PrivateQueryIcon />}
         </TitleTypography>
     );
 };
@@ -184,3 +184,9 @@ const AccordionBody = styled(AccordionDetails)(({ theme }) => ({
         marginRight: theme.spacing(2),
     },
 }));
+
+const PrivateQueryIcon = styled(VisibilityOffIcon)`
+    && {
+        margin-left: 5px;
+    }
+`;
