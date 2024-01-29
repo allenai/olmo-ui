@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
-    Button,
     IconButton,
     MenuItem,
     Select,
@@ -10,8 +9,6 @@ import {
     LinearProgress,
     Grid,
     TextField,
-    Checkbox,
-    FormControlLabel,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -27,6 +24,7 @@ import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
 import { useFeatureToggles } from '../FeatureToggleContext';
+import { ButtonArea } from './ButtonArea';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -145,51 +143,6 @@ export const NewQuery = () => {
         setIsPrivateChecked(event.target.checked);
     };
 
-    const renderButtonArea = () => {
-        if (toggles.privateToggles) {
-            return (
-                <Grid display="flex" justifyContent="center">
-                    <Button
-                        variant="contained"
-                        onClick={() => postNewMessage()}
-                        disabled={isLoading}>
-                        Prompt
-                    </Button>
-                    <span />
-                    {toggles.privateToggles && (
-                        <FormControlLabel
-                            sx={{ marginLeft: 'auto' }}
-                            control={
-                                <Checkbox
-                                    checked={isPrivateChecked}
-                                    onChange={onPrivateCheckboxChange}
-                                    inputProps={{
-                                        'aria-label': 'Mark this Query Private',
-                                    }}
-                                />
-                            }
-                            label="Private"
-                        />
-                    )}
-                    <Button variant="outlined" onClick={() => setShowParams(!showParams)}>
-                        Parameters
-                    </Button>
-                </Grid>
-            );
-        }
-        return (
-            <Grid display="grid" gridTemplateColumns="auto 1fr auto">
-                <Button variant="contained" onClick={() => postNewMessage()} disabled={isLoading}>
-                    Prompt
-                </Button>
-                <span />
-                <Button variant="outlined" onClick={() => setShowParams(!showParams)}>
-                    Parameters
-                </Button>
-            </Grid>
-        );
-    };
-
     useEffect(() => {
         updatePrompt(repromptText);
     }, [repromptText]);
@@ -262,7 +215,16 @@ export const NewQuery = () => {
                                 }}
                             />
                         </Grid>
-                        <Grid>{renderButtonArea()}</Grid>
+                        <Grid>
+                            <ButtonArea
+                                isLoading={isLoading}
+                                privateToggles={toggles.privateToggles}
+                                showParams={showParams}
+                                postNewMessage={postNewMessage}
+                                setShowParams={setShowParams}
+                                isPrivateChecked={isPrivateChecked}
+                                onPrivateCheckboxChange={onPrivateCheckboxChange}></ButtonArea>
+                        </Grid>
                         {isLoading ? (
                             <Grid>
                                 <LinearProgress />
