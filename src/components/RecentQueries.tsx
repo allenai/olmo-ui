@@ -6,9 +6,6 @@ import {
     ToggleButtonGroup,
     Pagination,
     Stack,
-    FormControlLabel,
-    Checkbox,
-    Typography,
 } from '@mui/material';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -18,6 +15,7 @@ import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
 import { Message } from '../api/Message';
+import { PrivateToggle } from './PrivateToggle';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -67,7 +65,6 @@ export const RecentQueries = () => {
     const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
     const loc = useLocation();
     const nav = useNavigate();
-
     const qs = new URLSearchParams(loc.search);
     const queriesView = qs.get(QueryStringParam.View) ?? QueryToggleOptions.Mine;
 
@@ -164,21 +161,11 @@ export const RecentQueries = () => {
     return (
         <>
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
-            {queriesView === 'mine' && (
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={isPrivateChecked}
-                            onChange={onPrivateCheckboxChange}
-                            inputProps={{
-                                'aria-label': 'Toggle Private Queries',
-                            }}
-                            sx={{ color: 'white' }}
-                        />
-                    }
-                    label={<Typography sx={{ color: 'white' }}>Private Queries</Typography>}
-                />
-            )}
+            <PrivateToggle
+                queriesView={queriesView}
+                isPrivateChecked={isPrivateChecked}
+                onPrivateCheckboxChange={onPrivateCheckboxChange}
+            />
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
                 {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (

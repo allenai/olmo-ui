@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
-    Button,
     IconButton,
     MenuItem,
     Select,
@@ -10,8 +9,6 @@ import {
     LinearProgress,
     Grid,
     TextField,
-    Checkbox,
-    FormControlLabel,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -26,6 +23,7 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
+import { NewQueryButtonArea } from './ButtonArea';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -216,33 +214,13 @@ export const NewQuery = () => {
                             />
                         </Grid>
                         <Grid>
-                            <ButtonArea>
-                                <Button
-                                    variant="contained"
-                                    onClick={() => postNewMessage()}
-                                    disabled={isLoading}>
-                                    Prompt
-                                </Button>
-                                <span />
-                                <FormControlLabel
-                                    sx={{ marginLeft: 'auto' }}
-                                    control={
-                                        <Checkbox
-                                            checked={isPrivateChecked}
-                                            onChange={onPrivateCheckboxChange}
-                                            inputProps={{
-                                                'aria-label': 'Mark this Query Private',
-                                            }}
-                                        />
-                                    }
-                                    label="Private"
-                                />
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => setShowParams(!showParams)}>
-                                    Parameters
-                                </Button>
-                            </ButtonArea>
+                            <NewQueryButtonArea
+                                isLoading={isLoading}
+                                showParams={showParams}
+                                postNewMessage={postNewMessage}
+                                setShowParams={setShowParams}
+                                isPrivateChecked={isPrivateChecked}
+                                onPrivateCheckboxChange={onPrivateCheckboxChange}></NewQueryButtonArea>
                         </Grid>
                         {isLoading ? (
                             <Grid>
@@ -297,9 +275,4 @@ const PaddedDialog = styled(Dialog)`
 const TemplateArea = styled.div`
     display: grid;
     grid-template-columns: minmax(300px, 50%) 1fr 56px;
-`;
-
-const ButtonArea = styled.div`
-    display: flex;
-    justify-content: center;
 `;
