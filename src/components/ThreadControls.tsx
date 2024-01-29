@@ -15,6 +15,7 @@ import {
 import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
 import { Message } from '../api/Message';
+import { useFeatureToggles } from '../FeatureToggleContext';
 
 interface ThreadControlProps {
     rootMessage: Message;
@@ -31,6 +32,7 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
         deleteLabel,
         deleteLabelInfo,
     } = useAppContext();
+    const toggles = useFeatureToggles();
 
     const addLabel = async (rating: LabelRating) => {
         if (rootMessage.labels.length) {
@@ -44,6 +46,8 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
         }
         postLabel({ rating, message: rootMessage.id }, rootMessage);
     };
+
+    const shouldRenderShareButton = rootMessage.private && toggles.privateToggles;
 
     let GoodIcon = ThumbUpOutlined;
     let BadIcon = ThumbDownOutlined;
@@ -85,12 +89,14 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
                 onClick={() => addLabel(LabelRating.Flag)}>
                 <Typography>Inappropriate</Typography>
             </ThreadActionButton>
-            <ThreadActionButton
-                href={`/thread/${rootMessage.id}`}
-                variant="text"
-                startIcon={<Send />}>
-                <Typography>Share</Typography>
-            </ThreadActionButton>
+            {!shouldRenderShareButton && (
+                <ThreadActionButton
+                    href={`/thread/${rootMessage.id}`}
+                    variant="text"
+                    startIcon={<Send />}>
+                    <Typography>Share</Typography>
+                </ThreadActionButton>
+            )}
             {currentClient === threadCreator && (
                 <ThreadActionButton
                     variant="text"
