@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { useFeatureToggles } from '../FeatureToggleContext';
 
-interface ButtonAreaProps {
+interface NewQueryButtonAreaProps {
     isLoading: boolean;
     postNewMessage: () => Promise<void>;
     showParams: boolean;
@@ -11,14 +11,14 @@ interface ButtonAreaProps {
     onPrivateCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const ButtonArea = ({
+export const NewQueryButtonArea = ({
     isLoading,
     postNewMessage,
     showParams,
     setShowParams,
     isPrivateChecked,
     onPrivateCheckboxChange,
-}: ButtonAreaProps) => {
+}: NewQueryButtonAreaProps) => {
     const toggles = useFeatureToggles();
     if (toggles.privateToggles) {
         return (
