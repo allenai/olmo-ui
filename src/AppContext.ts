@@ -82,7 +82,7 @@ type FetchInfo<T> = {
 
 type State = {
     abortController: AbortController | null;
-    onGoingThreadId: string | null;
+    ongoingThreadId: string | null;
     inferenceOpts: InferenceOpts;
     alertMessages: AlertMessage[];
     userInfo: FetchInfo<User>;
@@ -115,7 +115,7 @@ type Action = {
 
 export const useAppContext = create<State & Action>()((set, get) => ({
     abortController: null,
-    onGoingThreadId: null,
+    ongoingThreadId: null,
     inferenceOpts: {},
     alertMessages: [],
     userInfo: {},
@@ -375,7 +375,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     branch().unshift(msg);
                     rerenderMessages();
 
-                    set({ onGoingThreadId: msg.children?.length ? msg.children[0].id : null });
+                    set({ ongoingThreadId: msg.children?.length ? msg.children[0].id : null });
                     // Expand the thread so that the response is visible as it's streamed to the client.
                     state.setExpandedThreadID(msg.root);
                     firstPart = false;
@@ -402,7 +402,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }
 
             const postMessageInfo = { loading: false, data: branch()[0], error: false };
-            set({ abortController: null, onGoingThreadId: null, postMessageInfo });
+            set({ abortController: null, ongoingThreadId: null, postMessageInfo });
             return postMessageInfo;
         } catch (err) {
             const state = get();
@@ -425,7 +425,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }
 
             const postMessageInfo = { ...state.postMessageInfo, loading: false, error: true };
-            set({ abortController: null, onGoingThreadId: null, postMessageInfo });
+            set({ abortController: null, ongoingThreadId: null, postMessageInfo });
             return postMessageInfo;
         }
     },
