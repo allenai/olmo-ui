@@ -23,7 +23,7 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
-import { NewQueryButtonArea } from './ButtonArea';
+import { NewQueryButtonArea } from './NewButtonArea';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -220,7 +220,9 @@ export const NewQuery = () => {
                                 postNewMessage={postNewMessage}
                                 setShowParams={setShowParams}
                                 isPrivateChecked={isPrivateChecked}
-                                onPrivateCheckboxChange={onPrivateCheckboxChange}></NewQueryButtonArea>
+                                onPrivateCheckboxChange={
+                                    onPrivateCheckboxChange
+                                }></NewQueryButtonArea>
                         </Grid>
                         {isLoading ? (
                             <Grid>
