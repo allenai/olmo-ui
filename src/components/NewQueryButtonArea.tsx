@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
+
 import { useFeatureToggles } from '../FeatureToggleContext';
 
 interface NewQueryButtonAreaProps {

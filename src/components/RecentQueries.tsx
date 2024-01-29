@@ -107,7 +107,7 @@ export const RecentQueries = () => {
 
     const renderThread = (messages: Message[]) => {
         // if private queries being toggled we only render private queries only
-        if (isPrivateChecked) {
+        if (isPrivateChecked && queriesView === QueryToggleOptions.Mine) {
             const privateQueries = messages.filter((message) => message.private === true);
             return (
                 <>
