@@ -47,7 +47,7 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
         postLabel({ rating, message: rootMessage.id }, rootMessage);
     };
 
-    const shouldRenderShareButton = rootMessage.private && toggles.privateToggles;
+    const hideShareButton = rootMessage.private && toggles.privateToggles;
 
     let GoodIcon = ThumbUpOutlined;
     let BadIcon = ThumbDownOutlined;
@@ -89,7 +89,7 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
                 onClick={() => addLabel(LabelRating.Flag)}>
                 <Typography>Inappropriate</Typography>
             </ThreadActionButton>
-            {!shouldRenderShareButton && (
+            {!hideShareButton && (
                 <ThreadActionButton
                     href={`/thread/${rootMessage.id}`}
                     variant="text"
