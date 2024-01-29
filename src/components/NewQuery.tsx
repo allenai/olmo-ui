@@ -23,7 +23,7 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
-import { NewQueryButtonArea } from './NewButtonArea';
+import { NewQueryButtonArea } from './NewQueryButtonArea';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
