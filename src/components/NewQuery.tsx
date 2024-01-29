@@ -23,12 +23,10 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
-import { useFeatureToggles } from '../FeatureToggleContext';
 import { ButtonArea } from './ButtonArea';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
-    const toggles = useFeatureToggles();
 
     const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
@@ -218,7 +216,6 @@ export const NewQuery = () => {
                         <Grid>
                             <ButtonArea
                                 isLoading={isLoading}
-                                privateToggles={toggles.privateToggles}
                                 showParams={showParams}
                                 postNewMessage={postNewMessage}
                                 setShowParams={setShowParams}

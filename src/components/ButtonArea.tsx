@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
+import { useFeatureToggles } from '../FeatureToggleContext';
 
 interface ButtonAreaProps {
-    privateToggles: boolean;
     isLoading: boolean;
     postNewMessage: () => Promise<void>;
     showParams: boolean;
@@ -13,14 +13,14 @@ interface ButtonAreaProps {
 
 export const ButtonArea = ({
     isLoading,
-    privateToggles,
     postNewMessage,
     showParams,
     setShowParams,
     isPrivateChecked,
     onPrivateCheckboxChange,
 }: ButtonAreaProps) => {
-    if (privateToggles) {
+    const toggles = useFeatureToggles();
+    if (toggles.privateToggles) {
         return (
             <Grid display="flex" justifyContent="center">
                 <Button variant="contained" onClick={() => postNewMessage()} disabled={isLoading}>
