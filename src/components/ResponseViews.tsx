@@ -53,7 +53,7 @@ export const LLMResponseView = ({
     displayBranchIcon = false,
     isEditedResponse = false,
 }: ResponseProps) => {
-    const { abortController, onGoingThreadId } = useAppContext();
+    const { abortController, ongoingThreadId } = useAppContext();
     const [hover, setHover] = useState(false);
     const onAbort = React.useCallback(() => {
         abortController?.abort();
@@ -70,7 +70,7 @@ export const LLMResponseView = ({
     );
 
     const renderMenu = () => {
-        if (abortController && onGoingThreadId === msgId) {
+        if (abortController && ongoingThreadId === msgId) {
             return (
                 <StopButton variant="outlined" startIcon={<CropSquareIcon />} onClick={onAbort}>
                     Stop
