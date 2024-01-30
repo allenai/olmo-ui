@@ -9,6 +9,9 @@ import {
     LinearProgress,
     Grid,
     TextField,
+    Button,
+    Checkbox,
+    FormControlLabel,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -23,7 +26,6 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
-import { NewQueryButtonArea } from './NewQueryButtonArea';
 
 export const NewQuery = () => {
     const { postMessage } = useAppContext();
@@ -214,15 +216,33 @@ export const NewQuery = () => {
                             />
                         </Grid>
                         <Grid>
-                            <NewQueryButtonArea
-                                isLoading={isLoading}
-                                showParams={showParams}
-                                postNewMessage={postNewMessage}
-                                setShowParams={setShowParams}
-                                isPrivateChecked={isPrivateChecked}
-                                onPrivateCheckboxChange={
-                                    onPrivateCheckboxChange
-                                }></NewQueryButtonArea>
+                            <Grid display="flex" justifyContent="center">
+                                <Button
+                                    variant="contained"
+                                    onClick={() => postNewMessage()}
+                                    disabled={isLoading}>
+                                    Prompt
+                                </Button>
+                                <span />
+                                <FormControlLabel
+                                    sx={{ marginLeft: 'auto' }}
+                                    control={
+                                        <Checkbox
+                                            checked={isPrivateChecked}
+                                            onChange={(e) => onPrivateCheckboxChange(e)}
+                                            inputProps={{
+                                                'aria-label': 'Mark this Query Private',
+                                            }}
+                                        />
+                                    }
+                                    label="Private"
+                                />
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => setShowParams(!showParams)}>
+                                    Parameters
+                                </Button>
+                            </Grid>
                         </Grid>
                         {isLoading ? (
                             <Grid>

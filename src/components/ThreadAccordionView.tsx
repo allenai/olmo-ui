@@ -8,6 +8,7 @@ import {
     Button,
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
+    Tooltip,
 } from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styled from 'styled-components';
@@ -120,7 +121,11 @@ const CopyableTitle = ({ title, noWrap, isPrivate }: CopyableTitleProps) => {
                 }
             }}>
             {title}
-            {!!isPrivate && <PrivateQueryIcon />}
+            {!!isPrivate && (
+                <Tooltip title="Private Query">
+                    <PrivateQueryIcon />
+                </Tooltip>
+            )}
         </TitleTypography>
     );
 };

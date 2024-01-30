@@ -14,8 +14,6 @@ import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
-import { Message } from '../api/Message';
-import { PrivateToggle } from './PrivateToggle';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -62,7 +60,6 @@ enum QueryStringParam {
 export const RecentQueries = () => {
     const { userInfo, getAllThreads, allThreadInfo, setExpandedThreadID, postMessageInfo } =
         useAppContext();
-    const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
     const loc = useLocation();
     const nav = useNavigate();
     const qs = new URLSearchParams(loc.search);
@@ -82,17 +79,7 @@ export const RecentQueries = () => {
     };
 
     const size = 10;
-    const count = (() => {
-        if (isPrivateChecked) {
-            return allThreadInfo.data
-                ? Math.ceil(
-                      allThreadInfo.data?.messages.filter((message) => message.private === true)
-                          .length / size
-                  )
-                : 0;
-        }
-        return allThreadInfo.data ? Math.ceil(allThreadInfo.data?.meta.total / size) : 0;
-    })();
+    const count = allThreadInfo.data ? Math.ceil(allThreadInfo.data?.meta.total / size) : 0;
 
     useEffect(() => {
         const creator =
@@ -101,76 +88,36 @@ export const RecentQueries = () => {
         getAllThreads(offset, creator);
     }, [queriesView, userInfo, page, size]);
 
-    const onPrivateCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsPrivateChecked(event.target.checked);
-    };
-
-    const renderThread = (messages: Message[]) => {
-        // if private queries being toggled we only render private queries only
-        if (isPrivateChecked && queriesView === QueryToggleOptions.Mine) {
-            const privateQueries = messages.filter((message) => message.private === true);
-            return (
-                <>
-                    {privateQueries.map((p) => (
-                        <ThreadAccordionView
-                            key={p.id}
-                            title={p.content}
-                            unformattedTitle={p.snippet}
-                            body={
-                                <ThreadBodyView
-                                    messages={p.children}
-                                    parent={p}
-                                    showFollowUp={userInfo.data?.client === p.creator}
-                                    disabledActions={postMessageInfo.loading}
-                                />
-                            }
-                            rootMessage={p}
-                            threadID={p.id}
-                            threadCreator={p.creator}
-                            showControls
-                        />
-                    ))}
-                </>
-            );
-        }
-        return (
-            <>
-                {messages.map((m) => (
-                    <ThreadAccordionView
-                        key={m.id}
-                        title={m.content}
-                        unformattedTitle={m.snippet}
-                        body={
-                            <ThreadBodyView
-                                messages={m.children}
-                                parent={m}
-                                showFollowUp={userInfo.data?.client === m.creator}
-                                disabledActions={postMessageInfo.loading}
-                            />
-                        }
-                        rootMessage={m}
-                        threadID={m.id}
-                        threadCreator={m.creator}
-                        showControls
-                    />
-                ))}
-            </>
-        );
-    };
-
     return (
         <>
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
-            <PrivateToggle
-                queriesView={queriesView}
-                isPrivateChecked={isPrivateChecked}
-                onPrivateCheckboxChange={onPrivateCheckboxChange}
-            />
             <div>
                 {allThreadInfo.loading ? <LinearProgress /> : null}
                 {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
                     <Stack direction="column">
-                        <ContextMenu>{renderThread(allThreadInfo.data.messages)}</ContextMenu>
+                        <ContextMenu>
+                            <>
+                                {allThreadInfo.data.messages.map((t) => (
+                                    <ThreadAccordionView
+                                        key={t.id}
+                                        title={t.content}
+                                        unformattedTitle={t.snippet}
+                                        body={
+                                            <ThreadBodyView
+                                                messages={t.children}
+                                                parent={t}
+                                                showFollowUp={userInfo.data?.client === t.creator}
+                                                disabledActions={postMessageInfo.loading}
+                                            />
+                                        }
+                                        rootMessage={t}
+                                        threadID={t.id}
+                                        threadCreator={t.creator}
+                                        showControls
+                                    />
+                                ))}
+                            </>
+                        </ContextMenu>
                         {count > 1 ? (
                             <Stack alignItems="center">
                                 <InvertedPagination

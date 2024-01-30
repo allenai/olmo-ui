@@ -15,7 +15,6 @@ import {
 import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
 import { Message } from '../api/Message';
-import { useFeatureToggles } from '../FeatureToggleContext';
 
 interface ThreadControlProps {
     rootMessage: Message;
@@ -32,8 +31,6 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
         deleteLabel,
         deleteLabelInfo,
     } = useAppContext();
-    const toggles = useFeatureToggles();
-
     const addLabel = async (rating: LabelRating) => {
         if (rootMessage.labels.length) {
             // first delete the label rating if we have one
@@ -47,7 +44,7 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
         postLabel({ rating, message: rootMessage.id }, rootMessage);
     };
 
-    const hideShareButton = rootMessage.private && toggles.privateToggles;
+    const hideShareButton = rootMessage.private;
 
     let GoodIcon = ThumbUpOutlined;
     let BadIcon = ThumbDownOutlined;
