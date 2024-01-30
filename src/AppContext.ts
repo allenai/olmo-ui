@@ -81,6 +81,8 @@ type FetchInfo<T> = {
 };
 
 type State = {
+    abortController: AbortController | null;
+    ongoingThreadId: string | null;
     inferenceOpts: InferenceOpts;
     alertMessages: AlertMessage[];
     userInfo: FetchInfo<User>;
@@ -118,6 +120,8 @@ type Action = {
 };
 
 export const useAppContext = create<State & Action>()((set, get) => ({
+    abortController: null,
+    ongoingThreadId: null,
     inferenceOpts: {},
     alertMessages: [],
     userInfo: {},
@@ -291,7 +295,11 @@ export const useAppContext = create<State & Action>()((set, get) => ({
 
     postMessage: async (newMsg: MessagePost, parentMsg?: Message) => {
         const state = get();
-        set({ postMessageInfo: { ...state.postMessageInfo, loading: true, error: false } });
+        const abortController = new AbortController();
+        set({
+            abortController,
+            postMessageInfo: { ...state.postMessageInfo, loading: true, error: false },
+        });
 
         // This is a hack. The UI binds to state.allThreadInfo.data, which is an Array.
         // This means all Threads are re-rendered whenever that property changes (though
@@ -333,6 +341,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                 }),
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
+                signal: abortController.signal,
             });
 
             // This might change the browser location, thereby halting execution
@@ -372,9 +381,9 @@ export const useAppContext = create<State & Action>()((set, get) => ({
                     branch().unshift(msg);
                     rerenderMessages();
 
+                    set({ ongoingThreadId: msg.children?.length ? msg.children[0].id : null });
                     // Expand the thread so that the response is visible as it's streamed to the client.
                     state.setExpandedThreadID(msg.root);
-
                     firstPart = false;
                     continue;
                 }
@@ -399,19 +408,30 @@ export const useAppContext = create<State & Action>()((set, get) => ({
             }
 
             const postMessageInfo = { loading: false, data: branch()[0], error: false };
-            set({ postMessageInfo });
+            set({ abortController: null, ongoingThreadId: null, postMessageInfo });
             return postMessageInfo;
         } catch (err) {
             const state = get();
-            state.addAlertMessage(
-                errorToAlert(
-                    `create-message-${new Date().getTime()}`.toLowerCase(),
-                    'Unable to Submit Message',
-                    err
-                )
-            );
+
+            if (err instanceof Error && err.name === 'AbortError') {
+                state.addAlertMessage({
+                    id: `abort-message-${new Date().getTime()}`.toLowerCase(),
+                    title: 'Response was aborted',
+                    message: `You stopped OLMo from generating answers to your query`,
+                    severity: AlertMessageSeverity.Warning,
+                });
+            } else {
+                state.addAlertMessage(
+                    errorToAlert(
+                        `create-message-${new Date().getTime()}`.toLowerCase(),
+                        'Unable to Submit Message',
+                        err
+                    )
+                );
+            }
+
             const postMessageInfo = { ...state.postMessageInfo, loading: false, error: true };
-            set({ postMessageInfo });
+            set({ abortController: null, ongoingThreadId: null, postMessageInfo });
             return postMessageInfo;
         }
     },
