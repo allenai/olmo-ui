@@ -160,6 +160,7 @@ const Accordion = styled((props: AccordionProps) => (
             display: 'none',
         },
         backgroundColor: 'white',
+        overflow: 'hidden',
     },
 }));
 
