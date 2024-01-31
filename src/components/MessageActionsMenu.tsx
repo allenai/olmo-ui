@@ -149,6 +149,7 @@ export const MessageContextMenu = ({
 export const MenuWrapperContainer = styled.div`
     padding-top: ${({ theme }) => theme.spacing(1)};
     margin-left: auto;
+    width: 20px;
 `;
 
 const ResponseMenuButton = styled(Button)`
