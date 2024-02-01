@@ -27,6 +27,7 @@ import {
     parseLabel,
 } from './api/Label';
 import { ReadableJSONLStream } from './api/ReadableJSONLStream';
+import { ModelApiUrl, ModelList } from './api/Model';
 
 interface APIError {
     error: { code: number; message: string };
@@ -93,6 +94,7 @@ type State = {
     postLabelInfo: FetchInfo<Label>;
     deleteLabelInfo: FetchInfo<void>;
     allLabelInfo: FetchInfo<LabelList>;
+    modelInfo: FetchInfo<ModelList>;
     schema: FetchInfo<Schema>;
     expandedThreadID?: string;
 };
@@ -116,6 +118,7 @@ type Action = {
         rating?: number
     ) => Promise<FetchInfo<LabelList>>;
     getSchema: () => Promise<FetchInfo<Schema>>;
+    getAllModel: () => Promise<FetchInfo<ModelList>>;
     setExpandedThreadID: (id: string | undefined) => void;
 };
 
@@ -135,6 +138,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     postLabelInfo: {},
     deleteLabelInfo: {},
     allLabelInfo: {},
+    modelInfo: {},
     schema: {},
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
@@ -182,6 +186,31 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         }
 
         return get().userInfo;
+    },
+
+    getAllModel: async () => {
+        try {
+            set((state) => ({
+                modelInfo: { ...state.modelInfo, loading: true, error: false },
+            }));
+            const model = await fetchAPI<ModelList>(ModelApiUrl);
+            set((state) => ({
+                modelInfo: { ...state.modelInfo, data: model, loading: false },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error getting user.`,
+                    err
+                )
+            );
+            set((state) => ({
+                modelInfo: { ...state.modelInfo, error: true, loading: false },
+            }));
+        }
+
+        return get().modelInfo;
     },
 
     getAllThreads: async (offset: number = 0, creator?: string) => {

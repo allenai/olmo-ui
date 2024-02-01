@@ -106,11 +106,6 @@ export const App = () => {
                         transparentBackground={true}
                         endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                     />
-                    <Disclaimer>
-                        This site uses the Tulu2 model and allows you to search the{' '}
-                        <a href="https://huggingface.co/datasets/allenai/dolma">Dolma dataset</a>.
-                        We will eventually update this site to use the OLMo model.
-                    </Disclaimer>
                     <Content bgcolor="transparent" main>
                         <GlobalAlertList />
                         <Outlet />
@@ -132,17 +127,6 @@ export const App = () => {
         </OuterContainer>
     );
 };
-
-const Disclaimer = styled.div`
-    background-color: transparent;
-    color: ${({ theme }) => theme.color2.N3};
-    margin-left: ${({ theme }) => theme.spacing(3)};
-    margin-top: 0;
-    a {
-        color: white;
-    }
-`;
-
 const WhiteTypography = styled(Typography)`
     padding-top: ${({ theme }) => theme.spacing(1)};
     color: white;

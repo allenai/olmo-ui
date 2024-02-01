@@ -12,6 +12,7 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
+    Tooltip,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -26,15 +27,18 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
+import { DefaultModel, Model } from '../api/Model';
 
 export const NewQuery = () => {
-    const { postMessage } = useAppContext();
+    const { modelInfo, postMessage, getAllModel } = useAppContext();
 
     const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
+
+    const [selectedModelId, setSelectedModelId] = useState<string>(DefaultModel.id);
 
     const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
     const [prompt, setPrompt] = useState<string>();
@@ -46,6 +50,7 @@ export const NewQuery = () => {
     const [promptTemplateIdSwitchingTo, setPromptTemplateIdSwitchingTo] = useState<string>(
         DefaultPromptTemplate.id
     );
+    const [modelIdSwitchingTo, setModelIdSwitchingTo] = useState<string>(DefaultModel.id);
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = React.useState(false);
 
@@ -73,13 +78,22 @@ export const NewQuery = () => {
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
         DefaultPromptTemplate,
     ]);
+    const [modelList, setModelList] = useState<Model[]>([DefaultModel]);
     const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
         promptTemplateRemoteState === RemoteState.Loading
     );
+    const [modelLoading, setModelLoading] = useState(false);
     const getPromptTemplates = async function () {
         setPromptTemplatesLoading(true);
         getPromptTemplateList().finally(() => {
             setPromptTemplatesLoading(false);
+        });
+    };
+
+    const getModelList = async function () {
+        setModelLoading(true);
+        getAllModel().finally(() => {
+            setModelLoading(false);
         });
     };
 
@@ -95,6 +109,7 @@ export const NewQuery = () => {
     const isLoading =
         isSubmitting ||
         promptTemplatesLoading ||
+        modelLoading ||
         promptTemplateRemoteState === RemoteState.Loading ||
         dataChipsLoading ||
         dataChipRemoteState === RemoteState.Loading;
@@ -103,6 +118,7 @@ export const NewQuery = () => {
     useEffect(() => {
         getPromptTemplates();
         getDataChips();
+        getModelList();
     }, []);
 
     useEffect(() => {
@@ -115,6 +131,7 @@ export const NewQuery = () => {
         const payload: MessagePost = {
             content: prompt || '',
             private: isPrivateChecked,
+            model: selectedModelId,
         };
         const postMessageInfo = await postMessage(payload);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
@@ -147,6 +164,17 @@ export const NewQuery = () => {
         updatePrompt(repromptText);
     }, [repromptText]);
 
+    useEffect(() => {
+        if (modelInfo.data) {
+            const modelList = modelInfo.data;
+            const sortModelList = modelList.sort((a, b) => a.name.localeCompare(b.name));
+            const filterModelList = sortModelList.filter((model) => model.id !== DefaultModel.id);
+            setModelList([DefaultModel].concat(filterModelList));
+        }
+    }, [modelInfo]);
+
+    console.log(modelList);
+
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
@@ -158,6 +186,35 @@ export const NewQuery = () => {
                     <Grid display="grid" gap={1} gridTemplateRows="min-content 1fr min-content">
                         <Grid>
                             <TemplateArea>
+                                <Tooltip
+                                    title={
+                                        modelList.find((model) => model.id === selectedModelId)
+                                            ?.description
+                                    }
+                                    placement="top">
+                                    <Select
+                                        defaultValue={DefaultModel.id}
+                                        value={selectedModelId}
+                                        disabled={isLoading}
+                                        onChange={(evt) => {
+                                            if (promptIsDirty) {
+                                                setModelIdSwitchingTo(evt.target.value);
+                                                setIsPromptAlertOpen(true);
+                                            } else {
+                                                setSelectedModelId(evt.target.value);
+                                            }
+                                        }}>
+                                        {modelList.map((ml) => {
+                                            console.log(ml);
+                                            return (
+                                                <MenuItem key={ml.id} value={ml.id}>
+                                                    {ml.name}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </Tooltip>
+
                                 <Select
                                     defaultValue={DefaultPromptTemplate.id}
                                     value={selectedPromptTemplateId}
@@ -182,7 +239,8 @@ export const NewQuery = () => {
                                 <span />
                                 <IconButton
                                     size="large"
-                                    onClick={() => setIsFullScreen(!isFullScreen)}>
+                                    onClick={() => setIsFullScreen(!isFullScreen)}
+                                    sx={{ marginLeft: 'auto' }}>
                                     {!isFullScreen ? (
                                         <FullscreenIcon fontSize="inherit" />
                                     ) : (
@@ -256,6 +314,7 @@ export const NewQuery = () => {
                             onSuccess={() => {
                                 setIsPromptAlertOpen(false);
                                 setSelectedPromptTemplateId(promptTemplateIdSwitchingTo);
+                                setSelectedModelId(modelIdSwitchingTo);
                             }}
                             onCancel={() => setIsPromptAlertOpen(false)}
                             successText="Continue"
@@ -296,5 +355,6 @@ const PaddedDialog = styled(Dialog)`
 
 const TemplateArea = styled.div`
     display: grid;
-    grid-template-columns: minmax(300px, 50%) 1fr 56px;
+    grid-auto-flow: column;
+    grid-gap: 10px;
 `;
