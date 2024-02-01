@@ -13,6 +13,7 @@ export interface MessagePost {
     private?: boolean;
     prompt_template_id?: string;
     opts?: InferenceOpts;
+    model?: string;
 }
 
 export interface Message {
@@ -34,6 +35,7 @@ export interface Message {
     root: string;
     template: string;
     final: boolean;
+    model?: string;
 }
 
 export interface MessageList {
