@@ -12,6 +12,7 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
+    Tooltip,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
@@ -167,7 +168,8 @@ export const NewQuery = () => {
         if (modelInfo.data) {
             const modelList = modelInfo.data;
             const sortModelList = modelList.sort((a, b) => a.name.localeCompare(b.name));
-            setModelList([DefaultModel].concat(sortModelList));
+            const filterModelList = sortModelList.filter((model) => model.id !== DefaultModel.id);
+            setModelList([DefaultModel].concat(filterModelList));
         }
     }, [modelInfo]);
 
@@ -184,6 +186,35 @@ export const NewQuery = () => {
                     <Grid display="grid" gap={1} gridTemplateRows="min-content 1fr min-content">
                         <Grid>
                             <TemplateArea>
+                                <Tooltip
+                                    title={
+                                        modelList.find((model) => model.id === selectedModelId)
+                                            ?.description
+                                    }
+                                    placement="top">
+                                    <Select
+                                        defaultValue={DefaultModel.id}
+                                        value={selectedModelId}
+                                        disabled={isLoading}
+                                        onChange={(evt) => {
+                                            if (promptIsDirty) {
+                                                setModelIdSwitchingTo(evt.target.value);
+                                                setIsPromptAlertOpen(true);
+                                            } else {
+                                                setSelectedModelId(evt.target.value);
+                                            }
+                                        }}>
+                                        {modelList.map((ml) => {
+                                            console.log(ml);
+                                            return (
+                                                <MenuItem key={ml.id} value={ml.id}>
+                                                    {ml.name}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </Tooltip>
+
                                 <Select
                                     defaultValue={DefaultPromptTemplate.id}
                                     value={selectedPromptTemplateId}
@@ -201,27 +232,6 @@ export const NewQuery = () => {
                                         return (
                                             <MenuItem key={pt.id} value={pt.id}>
                                                 {pt.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <Select
-                                    defaultValue={DefaultModel.id}
-                                    value={selectedModelId}
-                                    disabled={isLoading}
-                                    onChange={(evt) => {
-                                        if (promptIsDirty) {
-                                            setModelIdSwitchingTo(evt.target.value);
-                                            setIsPromptAlertOpen(true);
-                                        } else {
-                                            setSelectedModelId(evt.target.value);
-                                        }
-                                    }}>
-                                    {modelList.map((ml) => {
-                                        console.log(ml);
-                                        return (
-                                            <MenuItem key={ml.id} value={ml.id}>
-                                                {ml.name}
                                             </MenuItem>
                                         );
                                     })}

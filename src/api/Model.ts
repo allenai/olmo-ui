@@ -7,9 +7,9 @@ export interface Model {
 }
 
 export const DefaultModel = {
-    description: '',
-    id: 'defaultModelId',
-    name: 'Free Form Model',
+    description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
+    id: 'tulu2',
+    name: 'Tulu2',
 };
 
 export type ModelList = Model[];
