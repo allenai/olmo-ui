@@ -356,4 +356,5 @@ const PaddedDialog = styled(Dialog)`
 const TemplateArea = styled.div`
     display: grid;
     grid-auto-flow: column;
+    grid-gap: 10px;
 `;
