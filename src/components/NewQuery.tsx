@@ -27,7 +27,7 @@ import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
-import { DefaultModel, Model } from '../api/Model';
+import { Model } from '../api/Model';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
@@ -38,7 +38,7 @@ export const NewQuery = () => {
         DefaultPromptTemplate.id
     );
 
-    const [selectedModelId, setSelectedModelId] = useState<string>(DefaultModel.id);
+    const [selectedModelId, setSelectedModelId] = useState<string>('');
 
     const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
     const [prompt, setPrompt] = useState<string>();
@@ -50,7 +50,7 @@ export const NewQuery = () => {
     const [promptTemplateIdSwitchingTo, setPromptTemplateIdSwitchingTo] = useState<string>(
         DefaultPromptTemplate.id
     );
-    const [modelIdSwitchingTo, setModelIdSwitchingTo] = useState<string>(DefaultModel.id);
+    const [modelIdSwitchingTo, setModelIdSwitchingTo] = useState<string>('');
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = React.useState(false);
 
@@ -78,7 +78,7 @@ export const NewQuery = () => {
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
         DefaultPromptTemplate,
     ]);
-    const [modelList, setModelList] = useState<Model[]>([DefaultModel]);
+    const [modelList, setModelList] = useState<Model[]>([]);
     const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
         promptTemplateRemoteState === RemoteState.Loading
     );
@@ -167,9 +167,8 @@ export const NewQuery = () => {
     useEffect(() => {
         if (modelInfo.data) {
             const modelList = modelInfo.data;
-            const sortModelList = modelList.sort((a, b) => a.name.localeCompare(b.name));
-            const filterModelList = sortModelList.filter((model) => model.id !== DefaultModel.id);
-            setModelList([DefaultModel].concat(filterModelList));
+            setModelList(modelList);
+            setSelectedModelId(modelList[0].id);
         }
     }, [modelInfo]);
 
@@ -191,7 +190,6 @@ export const NewQuery = () => {
                                     }
                                     placement="top">
                                     <Select
-                                        defaultValue={DefaultModel.id}
                                         value={selectedModelId}
                                         disabled={isLoading}
                                         onChange={(evt) => {
@@ -203,7 +201,6 @@ export const NewQuery = () => {
                                             }
                                         }}>
                                         {modelList.map((ml) => {
-                                            console.log(ml);
                                             return (
                                                 <MenuItem key={ml.id} value={ml.id}>
                                                     {ml.name}
