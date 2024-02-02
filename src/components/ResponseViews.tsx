@@ -109,7 +109,7 @@ export const LLMResponseView = ({
                     <Stack direction="row" justifyContent="space-between">
                         <div
                             dangerouslySetInnerHTML={{ __html: html }}
-                            style={{ background: 'transparent' }}
+                            style={{ background: 'transparent', overflowWrap: 'anywhere' }}
                         />
                         {renderMenu()}
                     </Stack>
