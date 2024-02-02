@@ -6,10 +6,4 @@ export interface Model {
     name: string;
 }
 
-export const DefaultModel: Model = {
-    description: '',
-    id: '',
-    name: '',
-};
-
 export type ModelList = Model[];
