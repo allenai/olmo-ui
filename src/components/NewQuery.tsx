@@ -173,8 +173,6 @@ export const NewQuery = () => {
         }
     }, [modelInfo]);
 
-    console.log(modelList);
-
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
@@ -357,4 +355,5 @@ const TemplateArea = styled.div`
     display: grid;
     grid-auto-flow: column;
     grid-gap: 10px;
+    grid-template-columns: minmax(300px, 50%) minmax(300px, 50%) 56px;
 `;
