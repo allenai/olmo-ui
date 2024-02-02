@@ -6,10 +6,10 @@ export interface Model {
     name: string;
 }
 
-export const DefaultModel = {
-    description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
-    id: 'tulu2',
-    name: 'Tulu2',
+export const DefaultModel: Model = {
+    description: '',
+    id: '',
+    name: '',
 };
 
 export type ModelList = Model[];

@@ -167,9 +167,8 @@ export const NewQuery = () => {
     useEffect(() => {
         if (modelInfo.data) {
             const modelList = modelInfo.data;
-            const sortModelList = modelList.sort((a, b) => a.name.localeCompare(b.name));
-            const filterModelList = sortModelList.filter((model) => model.id !== DefaultModel.id);
-            setModelList([DefaultModel].concat(filterModelList));
+            setSelectedModelId(modelList[0].id);
+            setModelList(modelList);
         }
     }, [modelInfo]);
 
@@ -191,7 +190,6 @@ export const NewQuery = () => {
                                     }
                                     placement="top">
                                     <Select
-                                        defaultValue={DefaultModel.id}
                                         value={selectedModelId}
                                         disabled={isLoading}
                                         onChange={(evt) => {
@@ -203,7 +201,6 @@ export const NewQuery = () => {
                                             }
                                         }}>
                                         {modelList.map((ml) => {
-                                            console.log(ml);
                                             return (
                                                 <MenuItem key={ml.id} value={ml.id}>
                                                     {ml.name}
