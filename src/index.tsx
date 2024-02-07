@@ -22,7 +22,7 @@ import { PromptTemplateProvider } from './contexts/promptTemplateContext';
 
 const GlobalStyle = createGlobalStyle`
     html {
-        background: ${({ theme }: { theme: typeof olmoTheme }) => theme.color2.N9.hex};
+        background: ${({ theme }: { theme: typeof olmoTheme }) => olmoTheme.color2.N9.hex};
 
         // force chip selector to be on top
         #typeahead-menu {

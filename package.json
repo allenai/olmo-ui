@@ -11,7 +11,8 @@
     "start": "webpack serve --mode development"
   },
   "dependencies": {
-    "@allenai/varnish2": "^0.1.20",
+    "@allenai/varnish-theme": "^0.0.4",
+    "@allenai/varnish2": "^0.2.7",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.0",

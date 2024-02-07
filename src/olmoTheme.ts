@@ -1,4 +1,4 @@
-import { Color, color2 } from '@allenai/varnish2/theme/colors';
+import { Color, color2 } from '@allenai/varnish2/theme';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {

@@ -21,7 +21,7 @@ const BannerContent = styled(Content)`
 
 const BannerContainer = styled.div<{ transparentBackground?: boolean }>`
     background: ${({ transparentBackground, theme }) =>
-        transparentBackground ? `transparent` : theme.color2.N9};
+        transparentBackground ? `transparent` : theme.color2.color.N9};
     margin: ${({ theme }) => theme.spacing(1)};
     padding: ${({ theme }) => theme.spacing(0.5)};
     border-radius: 10px;

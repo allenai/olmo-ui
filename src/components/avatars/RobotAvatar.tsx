@@ -9,7 +9,7 @@ export const RobotAvatar = () => {
 };
 
 const RobotStyledAvatar = styled(Avatar)`
-    background-color: ${({ theme }) => theme.color2.B6};
+    background-color: ${({ theme }) => theme.color2.color.B6};
     height: 28px;
     width: 28px;
     img {
