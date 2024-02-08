@@ -41,7 +41,7 @@ const VarnishedApp = ({ children }: PropsWithChildren) => (
         <PromptTemplateProvider>
             <DataChipProvider>
                 <ScrollToTopOnPageChange />
-                <VarnishApp layout="left-aligned">
+                <VarnishApp layout="left-aligned" /*theme={mergedTheme}*/ >
                     <GlobalStyle />
                     {children}
                 </VarnishApp>
