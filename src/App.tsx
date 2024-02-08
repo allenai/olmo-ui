@@ -174,7 +174,7 @@ const OuterContainer = styled.div`
     position: relative;
     overflow: hidden;
     background: ${({ theme }) =>
-        `linear-gradient(122deg, ${theme.color2.N7.hex} 0%, transparent 100%), ${theme.color2.N8.hex}`};
+        `linear-gradient(122deg, ${theme.color2.N7} 0%, transparent 100%), ${theme.color2.N8}`};
 `;
 
 interface BannerButtonProps {
