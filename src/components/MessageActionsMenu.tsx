@@ -157,8 +157,8 @@ const ResponseMenuButton = styled(Button)`
         padding: ${({ theme }) => theme.spacing(0.75)};
         min-width: 20px;
         height: 25px;
-        color: ${({ theme }) => theme.color2.color.N5};
-        border-color: ${({ theme }) => theme.color2.color.N5};
+        color: ${({ theme }) => theme.color2.color.N5.attributes.hex};
+        border-color: ${({ theme }) => theme.color2.color.N5.attributes.hex};
         font-size: 12px;
     }
 `;

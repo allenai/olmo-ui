@@ -19,9 +19,10 @@ const BannerContent = styled(Content)`
     padding-bottom: ${({ theme }) => theme.spacing(1)};
 `;
 
+// TODO Change N5 > N9
 const BannerContainer = styled.div<{ transparentBackground?: boolean }>`
     background: ${({ transparentBackground, theme }) =>
-        transparentBackground ? `transparent` : theme.color2.color.N9};
+        transparentBackground ? `transparent` : theme.color2.color.N5.attributes.hex}; 
     margin: ${({ theme }) => theme.spacing(1)};
     padding: ${({ theme }) => theme.spacing(0.5)};
     border-radius: 10px;

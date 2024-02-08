@@ -3,8 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { createGlobalStyle } from 'styled-components';
+import { getRouterOverridenTheme } from '@allenai/varnish2/utils';
 
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, createTheme } from '@mui/material';
 
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
@@ -19,6 +20,8 @@ import { FeatureToggleProvider } from './FeatureToggleContext';
 import { DataChips } from './pages/DataChips';
 import { DataChipProvider } from './contexts/dataChipContext';
 import { PromptTemplateProvider } from './contexts/promptTemplateContext';
+import { Link as RouterLink } from 'react-router-dom';
+import { getTheme } from '@allenai/varnish2/theme';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -31,12 +34,14 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+const mergedTheme = getTheme(createTheme(getRouterOverridenTheme(RouterLink), olmoTheme));
+
 const VarnishedApp = ({ children }: PropsWithChildren) => (
     <FeatureToggleProvider>
         <PromptTemplateProvider>
             <DataChipProvider>
                 <ScrollToTopOnPageChange />
-                <VarnishApp layout="left-aligned" theme={olmoTheme}>
+                <VarnishApp layout="left-aligned">
                     <GlobalStyle />
                     {children}
                 </VarnishApp>

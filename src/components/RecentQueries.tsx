@@ -152,7 +152,7 @@ const QueryToggleButton = styled(ToggleButton)`
         &.Mui-selected:hover {
             color: white;
         }
-        color: ${({ theme }) => theme.color2.color.N3};
+        color: ${({ theme }) => theme.color2.color.N3.attributes.hex};
     }
 `;
 
@@ -162,11 +162,11 @@ const PaddedButtonGroup = styled(ToggleButtonGroup)`
 
 const InvertedPagination = styled(Pagination)`
     & .MuiPaginationItem-root {
-        color: ${({ theme }) => theme.color2.color.N3};
+        color: ${({ theme }) => theme.color2.color.N3.attributes.hex};
     }
 
     && .Mui-selected {
-        background-color: ${({ theme }) => theme.color2.color.N6};
-        color: ${({ theme }) => theme.color2.color.N2};
+        background-color: ${({ theme }) => theme.color2.color.N6.attributes.hex};
+        color: ${({ theme }) => theme.color2.color.N2.attributes.hex};
     }
 `;
