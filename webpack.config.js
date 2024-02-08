@@ -11,7 +11,23 @@ module.exports = (env) => ({
             // This allows for CSS to be included via import statements
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
+                oneOf: [
+                    // This rule allows us to import varnish-theme/varnish.css as a string
+                    // you can import css as a string by adding a CSS assertion to the import
+                    // ex: import varnishStyles from '@allenai/varnish-theme/varnish.css' assert { type: 'css ' };
+                    {
+                        assert: { type: 'css' },
+                        loader: 'css-loader',
+                        options: {
+                            exportType: 'string',
+                            import: false,
+                            sourceMap: false,
+                        },
+                    },
+                    {
+                        use: ['style-loader', 'css-loader'],
+                    },
+                ],
             },
             // This tells webpack to hand TypeScript files to the TypeScript compiler
             // before bundling them.

@@ -8,9 +8,8 @@ export const RobotAvatar = () => {
     return <RobotStyledAvatar src={robotAvatarURL} />;
 };
 
-// TODO Change B5 > B6
 const RobotStyledAvatar = styled(Avatar)`
-    background-color: ${({ theme }) => theme.color2.color.B5.attributes.hex};
+    background-color: ${({ theme }) => theme.color2.B6.hex};
     height: 28px;
     width: 28px;
     img {

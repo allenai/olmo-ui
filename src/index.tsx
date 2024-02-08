@@ -1,11 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, Link } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';
-import { createGlobalStyle } from 'styled-components';
+import { getTheme } from '@allenai/varnish2/theme';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { getRouterOverridenTheme } from '@allenai/varnish2/utils';
-
-import { LinearProgress, createTheme } from '@mui/material';
+import { LinearProgress } from '@mui/material';
 
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
@@ -20,12 +20,10 @@ import { FeatureToggleProvider } from './FeatureToggleContext';
 import { DataChips } from './pages/DataChips';
 import { DataChipProvider } from './contexts/dataChipContext';
 import { PromptTemplateProvider } from './contexts/promptTemplateContext';
-import { Link as RouterLink } from 'react-router-dom';
-import { getTheme } from '@allenai/varnish2/theme';
 
 const GlobalStyle = createGlobalStyle`
     html {
-        background: ${({ theme }: { theme: typeof olmoTheme }) => olmoTheme.color2.N9.hex};
+        background: ${({ theme }: { theme: typeof olmoTheme }) => theme.color2.N9.hex};
 
         // force chip selector to be on top
         #typeahead-menu {
@@ -34,21 +32,24 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-const mergedTheme = getTheme(createTheme(getRouterOverridenTheme(RouterLink), olmoTheme));
-
-const VarnishedApp = ({ children }: PropsWithChildren) => (
-    <FeatureToggleProvider>
-        <PromptTemplateProvider>
-            <DataChipProvider>
-                <ScrollToTopOnPageChange />
-                <VarnishApp layout="left-aligned" /*theme={mergedTheme}*/ >
-                    <GlobalStyle />
-                    {children}
-                </VarnishApp>
-            </DataChipProvider>
-        </PromptTemplateProvider>
-    </FeatureToggleProvider>
-);
+const VarnishedApp = ({ children }: PropsWithChildren) => {
+    const theme = getTheme(getRouterOverridenTheme(Link, olmoTheme));
+    return (
+        <FeatureToggleProvider>
+            <PromptTemplateProvider>
+                <DataChipProvider>
+                    <ScrollToTopOnPageChange />
+                    <ThemeProvider theme={theme}>
+                        <VarnishApp layout="left-aligned" theme={theme}>
+                            <GlobalStyle />
+                            {children}
+                        </VarnishApp>
+                    </ThemeProvider>
+                </DataChipProvider>
+            </PromptTemplateProvider>
+        </FeatureToggleProvider>
+    );
+};
 
 const router = createBrowserRouter([
     {

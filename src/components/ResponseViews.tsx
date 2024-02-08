@@ -166,7 +166,7 @@ const UserResponseContainer = styled.div`
 `;
 
 const LLMResponseContainer = styled.div`
-    background-color: ${({ theme }) => theme.color2.color.N1.attributes.hex};
+    background-color: ${({ theme }) => theme.color2.N1.hex};
     border-radius: ${({ theme }) => theme.spacing(1)};
     padding-left: ${({ theme }) => theme.spacing(1.5)};
     padding-right: ${({ theme }) => theme.spacing(1.5)};

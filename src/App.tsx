@@ -137,12 +137,11 @@ const AbsoluteContainer = styled.div`
     z-index: 5;
 `;
 
-// TODO add 
-//    max-width: ${({ theme }) => theme.breakpoints.values.lg}${({ theme }) => theme.breakpoints.unit};
 const RelativeContainer = styled.div`
     position: relative;
     z-index: 10;
     min-height: 100vh;
+    max-width: ${({ theme }) => `${theme.breakpoints.values.lg}${theme.breakpoints.unit}`};
     margin: auto;
 `;
 
@@ -175,7 +174,7 @@ const OuterContainer = styled.div`
     position: relative;
     overflow: hidden;
     background: ${({ theme }) =>
-        `linear-gradient(122deg, ${olmoTheme.color2.N7} 0%, transparent 100%), ${olmoTheme.color2.N8}`};
+        `linear-gradient(122deg, ${theme.color2.N7.hex} 0%, transparent 100%), ${theme.color2.N8.hex}`};
 `;
 
 interface BannerButtonProps {
