@@ -1,4 +1,5 @@
-import { Color, color2 } from '@allenai/varnish2/theme/colors';
+import { Color } from '@allenai/varnish2/theme';
+import varnishTheme from '@allenai/varnish-theme';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
@@ -15,14 +16,14 @@ export const olmoTheme = {
             styleOverrides: {
                 root: ({ ownerState }: any) => ({
                     ...(ownerState.variant === 'contained' && {
-                        backgroundColor: color2.B4.hex,
+                        backgroundColor: varnishTheme.color.B4.value,
                     }),
                     ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
-                        color: color2.B4.hex,
+                        color: varnishTheme.color.B4.value,
                     }),
                     '&.Mui-disabled': {
                         background: 'transparent',
-                        color: color2.N3.hex,
+                        color: varnishTheme.color.N3.value,
                     },
                 }),
             },
@@ -30,16 +31,16 @@ export const olmoTheme = {
         MuiIconButton: {
             styleOverrides: {
                 root: {
-                    color: color2.B4.hex,
-                    borderColor: color2.B4.hex,
+                    color: varnishTheme.color.B4.value,
+                    borderColor: varnishTheme.color.B4.value,
                 },
             },
         },
         MuiChip: {
             styleOverrides: {
                 root: {
-                    color: color2.B4.hex,
-                    borderColor: color2.B4.hex,
+                    color: varnishTheme.color.B4.value,
+                    borderColor: varnishTheme.color.B4.value,
                 },
             },
         },
@@ -47,7 +48,7 @@ export const olmoTheme = {
             styleOverrides: {
                 tooltip: ({ theme }: any) => ({
                     backgroundColor: theme.palette.common.white,
-                    color: color2.N5.hex,
+                    color: varnishTheme.color.N5.value,
                     boxShadow: theme.shadows[1],
                     fontSize: 12,
                 }),

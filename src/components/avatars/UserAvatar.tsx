@@ -9,7 +9,7 @@ export const UserAvatar = () => {
 };
 
 const UserStyledAvatar = styled(Avatar)`
-    background-color: ${({ theme }) => theme.color2.O6};
+    background-color: ${({ theme }) => theme.color2.O6.hex};
     height: 28px;
     width: 28px;
     img {

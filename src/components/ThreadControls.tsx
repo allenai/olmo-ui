@@ -109,6 +109,6 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
 
 const ThreadActionButton = styled(Button)`
     && {
-        color: ${({ theme }) => theme.color2.B4};
+        color: ${({ theme }) => theme.color2.B4.hex};
     }
 `;

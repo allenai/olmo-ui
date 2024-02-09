@@ -1,9 +1,10 @@
 import React, { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, Link } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';
-import { createGlobalStyle } from 'styled-components';
-
+import { getTheme } from '@allenai/varnish2/theme';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { getRouterOverridenTheme } from '@allenai/varnish2/utils';
 import { LinearProgress } from '@mui/material';
 
 import { NotFound } from './pages/NotFound';
@@ -31,19 +32,24 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-const VarnishedApp = ({ children }: PropsWithChildren) => (
-    <FeatureToggleProvider>
-        <PromptTemplateProvider>
-            <DataChipProvider>
-                <ScrollToTopOnPageChange />
-                <VarnishApp layout="left-aligned" theme={olmoTheme}>
-                    <GlobalStyle />
-                    {children}
-                </VarnishApp>
-            </DataChipProvider>
-        </PromptTemplateProvider>
-    </FeatureToggleProvider>
-);
+const VarnishedApp = ({ children }: PropsWithChildren) => {
+    const theme = getTheme(getRouterOverridenTheme(Link, olmoTheme));
+    return (
+        <FeatureToggleProvider>
+            <PromptTemplateProvider>
+                <DataChipProvider>
+                    <ScrollToTopOnPageChange />
+                    <ThemeProvider theme={theme}>
+                        <VarnishApp layout="left-aligned" theme={theme}>
+                            <GlobalStyle />
+                            {children}
+                        </VarnishApp>
+                    </ThemeProvider>
+                </DataChipProvider>
+            </PromptTemplateProvider>
+        </FeatureToggleProvider>
+    );
+};
 
 const router = createBrowserRouter([
     {

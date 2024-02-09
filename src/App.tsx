@@ -141,7 +141,7 @@ const RelativeContainer = styled.div`
     position: relative;
     z-index: 10;
     min-height: 100vh;
-    max-width: ${({ theme }) => theme.breakpoints.values.lg}${({ theme }) => theme.breakpoints.unit};
+    max-width: ${({ theme }) => `${theme.breakpoints.values.lg}${theme.breakpoints.unit}`};
     margin: auto;
 `;
 

@@ -137,7 +137,7 @@ const ControlsGrid = styled(Grid)`
 `;
 export const TitleTypography = styled(Typography)`
     &&& {
-        color: ${({ theme }) => theme.color2.B5};
+        color: ${({ theme }) => theme.color2.B5.hex};
         display: flex;
         font-weight: bold;
         ${({ theme }) => theme.breakpoints.up('md')} {
