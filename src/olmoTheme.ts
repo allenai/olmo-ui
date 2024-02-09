@@ -16,14 +16,14 @@ export const olmoTheme = {
             styleOverrides: {
                 root: ({ ownerState }: any) => ({
                     ...(ownerState.variant === 'contained' && {
-                        backgroundColor: varnishTheme.color.B4.attributes.hex,
+                        backgroundColor: varnishTheme.color.B4.value,
                     }),
                     ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
-                        color: varnishTheme.color.B4.attributes.hex,
+                        color: varnishTheme.color.B4.value,
                     }),
                     '&.Mui-disabled': {
                         background: 'transparent',
-                        color: varnishTheme.color.N3.attributes.hex,
+                        color: varnishTheme.color.N3.value,
                     },
                 }),
             },
@@ -31,16 +31,16 @@ export const olmoTheme = {
         MuiIconButton: {
             styleOverrides: {
                 root: {
-                    color: varnishTheme.color.B4.attributes.hex,
-                    borderColor: varnishTheme.color.B4.attributes.hex,
+                    color: varnishTheme.color.B4.value,
+                    borderColor: varnishTheme.color.B4.value,
                 },
             },
         },
         MuiChip: {
             styleOverrides: {
                 root: {
-                    color: varnishTheme.color.B4.attributes.hex,
-                    borderColor: varnishTheme.color.B4.attributes.hex,
+                    color: varnishTheme.color.B4.value,
+                    borderColor: varnishTheme.color.B4.value,
                 },
             },
         },
@@ -48,7 +48,7 @@ export const olmoTheme = {
             styleOverrides: {
                 tooltip: ({ theme }: any) => ({
                     backgroundColor: theme.palette.common.white,
-                    color: varnishTheme.color.N5.attributes.hex,
+                    color: varnishTheme.color.N5.value,
                     boxShadow: theme.shadows[1],
                     fontSize: 12,
                 }),
