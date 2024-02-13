@@ -4,10 +4,12 @@ type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
+    baseModel = 'baseModel',
 }
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
+    [FeatureToggle.baseModel]: false,
 };
 
 const localStorageKey = 'feature-toggles';

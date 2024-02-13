@@ -28,9 +28,11 @@ import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
 import { Model } from '../api/Model';
+import { useFeatureToggles } from '../FeatureToggleContext';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
+    const toggles = useFeatureToggles();
 
     const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
@@ -167,7 +169,11 @@ export const NewQuery = () => {
     useEffect(() => {
         if (modelInfo.data) {
             const modelList = modelInfo.data;
-            setModelList(modelList);
+            if (!toggles.baseModel) {
+                setModelList(modelList.filter((item: Model) => item.model_type !== 'base'));
+            } else {
+                setModelList(modelList);
+            }
             setSelectedModelId(modelList[0].id);
         }
     }, [modelInfo]);
