@@ -4,6 +4,7 @@ export interface Model {
     description: string;
     id: string;
     name: string;
+    model_type?: string;
 }
 
 export type ModelList = Model[];
