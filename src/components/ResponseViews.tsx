@@ -15,12 +15,36 @@ import { useAppContext } from '../AppContext';
 
 import 'highlight.js/styles/github-dark.css';
 
-interface ResponseContainerProps {
+interface BaseResponseContainerProps {
     children: JSX.Element;
+}
+
+interface ChatResponseContainerProps extends BaseResponseContainerProps {
     setHover: (value: boolean) => void;
 }
 
-const ResponseContainer = ({ children, setHover }: ResponseContainerProps) => {
+const marked = new Marked(
+    markedHighlight({
+        langPrefix: 'hljs language-',
+        highlight(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        },
+    })
+);
+
+const BaseResponseContainer = ({ children }: BaseResponseContainerProps) => {
+    return (
+        <div
+            style={{ position: 'relative' }}
+            role="presentation" // TODO: need a better a11y keyboard-only story pre-release
+        >
+            {children}
+        </div>
+    );
+};
+
+const ChatResponseContainer = ({ children, setHover }: ChatResponseContainerProps) => {
     return (
         <div
             style={{ position: 'relative' }}
@@ -60,16 +84,6 @@ export const LLMResponseView = ({
         abortController?.abort();
     }, [abortController]);
 
-    const marked = new Marked(
-        markedHighlight({
-            langPrefix: 'hljs language-',
-            highlight(code, lang) {
-                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                return hljs.highlight(code, { language }).value;
-            },
-        })
-    );
-
     const renderMenu = () => {
         if (abortController && ongoingThreadId === msgId) {
             return (
@@ -96,7 +110,7 @@ export const LLMResponseView = ({
     const html = DOMPurify.sanitize(marked.parse(response));
 
     return (
-        <ResponseContainer setHover={setHover}>
+        <ChatResponseContainer setHover={setHover}>
             <Stack direction="row">
                 {isEditedResponse ? (
                     <Stack direction="column" spacing={-1}>
@@ -119,7 +133,7 @@ export const LLMResponseView = ({
                     </IconContainer>
                 </LLMResponseContainer>
             </Stack>
-        </ResponseContainer>
+        </ChatResponseContainer>
     );
 };
 
@@ -133,7 +147,7 @@ export const UserResponseView = ({
     const [hover, setHover] = useState(false);
 
     return (
-        <ResponseContainer setHover={setHover}>
+        <ChatResponseContainer setHover={setHover}>
             <>
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row">
@@ -156,21 +170,15 @@ export const UserResponseView = ({
                     <BranchIcon />
                 </IconContainer>
             </>
-        </ResponseContainer>
+        </ChatResponseContainer>
     );
 };
 
 export const BaseModelResponseView = ({ response, msgId, initialPrompt }: ResponseProps) => {
-    const marked = new Marked(
-        markedHighlight({
-            langPrefix: 'hljs language-',
-            highlight(code, lang) {
-                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                return hljs.highlight(code, { language }).value;
-            },
-        })
-    );
-
+    const { abortController, ongoingThreadId } = useAppContext();
+    const onAbort = React.useCallback(() => {
+        abortController?.abort();
+    }, [abortController]);
     // turning off features as they pop dom warnings
     marked.use({
         mangle: false,
@@ -182,10 +190,7 @@ export const BaseModelResponseView = ({ response, msgId, initialPrompt }: Respon
     );
 
     return (
-        <div
-            style={{ position: 'relative' }}
-            role="presentation" // TODO: need a better a11y keyboard-only story pre-release
-        >
+        <BaseResponseContainer>
             <Stack direction="row">
                 <Stack direction="column" spacing={-1}>
                     <UserAvatar />
@@ -197,10 +202,18 @@ export const BaseModelResponseView = ({ response, msgId, initialPrompt }: Respon
                             dangerouslySetInnerHTML={{ __html: html }}
                             style={{ background: 'transparent', overflowWrap: 'anywhere' }}
                         />
+                        {abortController && ongoingThreadId === msgId && (
+                            <StopButton
+                                variant="outlined"
+                                startIcon={<CropSquareIcon />}
+                                onClick={onAbort}>
+                                Stop
+                            </StopButton>
+                        )}
                     </Stack>
                 </LLMResponseContainer>
             </Stack>
-        </div>
+        </BaseResponseContainer>
     );
 };
 
