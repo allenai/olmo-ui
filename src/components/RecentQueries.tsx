@@ -106,7 +106,14 @@ export const RecentQueries = () => {
                                             <ThreadBodyView
                                                 messages={t.children}
                                                 parent={t}
-                                                showFollowUp={userInfo.data?.client === t.creator}
+                                                showFollowUp={
+                                                    t.model_type !== 'base' &&
+                                                    // TODO: in discussions with API to always surface model_type on the thread itself,
+                                                    // in which case this next line will be deleted
+                                                    t.children &&
+                                                    t.children[0].model_type !== 'base' &&
+                                                    userInfo.data?.client === t.creator
+                                                }
                                                 disabledActions={postMessageInfo.loading}
                                             />
                                         }

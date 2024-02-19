@@ -16,7 +16,7 @@ import { Message, MessagePost } from '../api/Message';
 import { Role } from '../api/Role';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
-import { LLMResponseView, UserResponseView } from './ResponseViews';
+import { BaseModelResponseView, LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { LabelRating } from '../api/Label';
 
@@ -153,6 +153,29 @@ export const ThreadBodyView = ({
         </MessageActionsMenu>
     );
 
+    const isBaseModelThread = curMessage.model_type && curMessage.model_type === 'base';
+    const ChatResponseView =
+        curMessage.role === Role.User ? (
+            <UserResponseView
+                response={curMessage.content}
+                msgId={curMessage.id}
+                contextMenu={!isEditing ? contextMenu : undefined}
+                branchMenu={branchCount > 1 ? branchesMenu : undefined}
+                displayBranchIcon={branchCount > 1}
+            />
+        ) : (
+            <LLMResponseView
+                response={curMessage.content}
+                msgId={curMessage.id}
+                isEditedResponse={
+                    curMessage.original !== undefined && curMessage.original?.length > 0
+                }
+                contextMenu={!isEditing ? contextMenu : undefined}
+                branchMenu={branchCount > 1 ? branchesMenu : undefined}
+                displayBranchIcon={branchCount > 1}
+            />
+        );
+
     return (
         <BarOnRightContainer displayBar={branchCount > 1}>
             <>
@@ -193,26 +216,14 @@ export const ThreadBodyView = ({
                                 </Grid>
                             ) : (
                                 <>
-                                    {curMessage.role === Role.User ? (
-                                        <UserResponseView
+                                    {isBaseModelThread ? (
+                                        <BaseModelResponseView
                                             response={curMessage.content}
                                             msgId={curMessage.id}
-                                            contextMenu={!isEditing ? contextMenu : undefined}
-                                            branchMenu={branchCount > 1 ? branchesMenu : undefined}
-                                            displayBranchIcon={branchCount > 1}
+                                            initialPrompt={parent?.content}
                                         />
                                     ) : (
-                                        <LLMResponseView
-                                            response={curMessage.content}
-                                            msgId={curMessage.id}
-                                            isEditedResponse={
-                                                curMessage.original !== undefined &&
-                                                curMessage.original?.length > 0
-                                            }
-                                            contextMenu={!isEditing ? contextMenu : undefined}
-                                            branchMenu={branchCount > 1 ? branchesMenu : undefined}
-                                            displayBranchIcon={branchCount > 1}
-                                        />
+                                        ChatResponseView
                                     )}
                                 </>
                             )}

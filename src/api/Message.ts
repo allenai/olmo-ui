@@ -27,6 +27,7 @@ export interface Message {
     labels: Label[];
     completion?: string;
     logprobs?: Logprob[];
+    model_type?: string;
     opts: InferenceOpts;
     original?: string;
     parent?: string;

@@ -43,6 +43,7 @@ interface ResponseProps {
     branchMenu?: JSX.Element;
     displayBranchIcon?: boolean;
     isEditedResponse?: boolean;
+    initialPrompt?: string;
 }
 
 export const LLMResponseView = ({
@@ -159,6 +160,50 @@ export const UserResponseView = ({
     );
 };
 
+export const BaseModelResponseView = ({ response, msgId, initialPrompt }: ResponseProps) => {
+    const marked = new Marked(
+        markedHighlight({
+            langPrefix: 'hljs language-',
+            highlight(code, lang) {
+                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                return hljs.highlight(code, { language }).value;
+            },
+        })
+    );
+
+    // turning off features as they pop dom warnings
+    marked.use({
+        mangle: false,
+        headerIds: false,
+    });
+
+    const html = DOMPurify.sanitize(
+        initialPrompt ? initialPrompt + marked.parse(response) : marked.parse(response)
+    );
+
+    return (
+        <div
+            style={{ position: 'relative' }}
+            role="presentation" // TODO: need a better a11y keyboard-only story pre-release
+        >
+            <Stack direction="row">
+                <Stack direction="column" spacing={-1}>
+                    <UserAvatar />
+                    <RobotAvatar />
+                </Stack>
+                <LLMResponseContainer id={msgId}>
+                    <Stack direction="row" justifyContent="space-between">
+                        <div
+                            dangerouslySetInnerHTML={{ __html: html }}
+                            style={{ background: 'transparent', overflowWrap: 'anywhere' }}
+                        />
+                    </Stack>
+                </LLMResponseContainer>
+            </Stack>
+        </div>
+    );
+};
+
 const UserResponseContainer = styled.div`
     padding-top: ${({ theme }) => theme.spacing(1)};
     padding-bottom: ${({ theme }) => theme.spacing(2)};
@@ -199,6 +244,6 @@ const StopButton = styled(Button)`
     align-self: baseline;
 
     && {
-        min-width: unset;
+        min-width: 100px;
     }
 `;
