@@ -15,12 +15,36 @@ import { useAppContext } from '../AppContext';
 
 import 'highlight.js/styles/github-dark.css';
 
-interface ResponseContainerProps {
+interface BaseResponseContainerProps {
     children: JSX.Element;
+}
+
+interface ChatResponseContainerProps extends BaseResponseContainerProps {
     setHover: (value: boolean) => void;
 }
 
-const ResponseContainer = ({ children, setHover }: ResponseContainerProps) => {
+const marked = new Marked(
+    markedHighlight({
+        langPrefix: 'hljs language-',
+        highlight(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        },
+    })
+);
+
+const BaseResponseContainer = ({ children }: BaseResponseContainerProps) => {
+    return (
+        <div
+            style={{ position: 'relative' }}
+            role="presentation" // TODO: need a better a11y keyboard-only story pre-release
+        >
+            {children}
+        </div>
+    );
+};
+
+const ChatResponseContainer = ({ children, setHover }: ChatResponseContainerProps) => {
     return (
         <div
             style={{ position: 'relative' }}
@@ -43,6 +67,7 @@ interface ResponseProps {
     branchMenu?: JSX.Element;
     displayBranchIcon?: boolean;
     isEditedResponse?: boolean;
+    initialPrompt?: string;
 }
 
 export const LLMResponseView = ({
@@ -58,16 +83,6 @@ export const LLMResponseView = ({
     const onAbort = React.useCallback(() => {
         abortController?.abort();
     }, [abortController]);
-
-    const marked = new Marked(
-        markedHighlight({
-            langPrefix: 'hljs language-',
-            highlight(code, lang) {
-                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                return hljs.highlight(code, { language }).value;
-            },
-        })
-    );
 
     const renderMenu = () => {
         if (abortController && ongoingThreadId === msgId) {
@@ -95,7 +110,7 @@ export const LLMResponseView = ({
     const html = DOMPurify.sanitize(marked.parse(response));
 
     return (
-        <ResponseContainer setHover={setHover}>
+        <ChatResponseContainer setHover={setHover}>
             <Stack direction="row">
                 {isEditedResponse ? (
                     <Stack direction="column" spacing={-1}>
@@ -118,7 +133,7 @@ export const LLMResponseView = ({
                     </IconContainer>
                 </LLMResponseContainer>
             </Stack>
-        </ResponseContainer>
+        </ChatResponseContainer>
     );
 };
 
@@ -132,7 +147,7 @@ export const UserResponseView = ({
     const [hover, setHover] = useState(false);
 
     return (
-        <ResponseContainer setHover={setHover}>
+        <ChatResponseContainer setHover={setHover}>
             <>
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row">
@@ -155,7 +170,50 @@ export const UserResponseView = ({
                     <BranchIcon />
                 </IconContainer>
             </>
-        </ResponseContainer>
+        </ChatResponseContainer>
+    );
+};
+
+export const BaseModelResponseView = ({ response, msgId, initialPrompt }: ResponseProps) => {
+    const { abortController, ongoingThreadId } = useAppContext();
+    const onAbort = React.useCallback(() => {
+        abortController?.abort();
+    }, [abortController]);
+    // turning off features as they pop dom warnings
+    marked.use({
+        mangle: false,
+        headerIds: false,
+    });
+
+    const html = DOMPurify.sanitize(
+        initialPrompt ? initialPrompt + marked.parse(response) : marked.parse(response)
+    );
+
+    return (
+        <BaseResponseContainer>
+            <Stack direction="row">
+                <Stack direction="column" spacing={-1}>
+                    <UserAvatar />
+                    <RobotAvatar />
+                </Stack>
+                <LLMResponseContainer id={msgId}>
+                    <Stack direction="row" justifyContent="space-between">
+                        <div
+                            dangerouslySetInnerHTML={{ __html: html }}
+                            style={{ background: 'transparent', overflowWrap: 'anywhere' }}
+                        />
+                        {abortController && ongoingThreadId === msgId && (
+                            <StopButton
+                                variant="outlined"
+                                startIcon={<CropSquareIcon />}
+                                onClick={onAbort}>
+                                Stop
+                            </StopButton>
+                        )}
+                    </Stack>
+                </LLMResponseContainer>
+            </Stack>
+        </BaseResponseContainer>
     );
 };
 
@@ -199,6 +257,6 @@ const StopButton = styled(Button)`
     align-self: baseline;
 
     && {
-        min-width: unset;
+        min-width: 100px;
     }
 `;
