@@ -41,6 +41,7 @@ export const ThreadBodyView = ({
         return null;
     }
     const { postMessage, postLabel } = useAppContext();
+    let followUpControl = showFollowUp;
 
     // datachips
     const { remoteState, getDataChipList } = useDataChip();
@@ -154,6 +155,9 @@ export const ThreadBodyView = ({
     );
 
     const isBaseModelThread = curMessage.model_type && curMessage.model_type === 'base';
+    if (isBaseModelThread) {
+        followUpControl = false;
+    }
     const ChatResponseView =
         curMessage.role === Role.User ? (
             <UserResponseView
@@ -234,10 +238,10 @@ export const ThreadBodyView = ({
                     <ThreadBodyView
                         messages={curMessage.children}
                         parent={curMessage}
-                        showFollowUp={showFollowUp}
+                        showFollowUp={followUpControl}
                         disabledActions={disabledActions}
                     />
-                ) : showFollowUp ? (
+                ) : followUpControl ? (
                     <FollowUpContainer>
                         <TextField
                             fullWidth
