@@ -155,6 +155,7 @@ export const ThreadBodyView = ({
     );
 
     const isBaseModelThread = curMessage.model_type && curMessage.model_type === 'base';
+    // if we have a base model thread, we don't want to allow follow ups, this disables that control.
     if (isBaseModelThread) {
         followUpControl = false;
     }
