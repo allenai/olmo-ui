@@ -50,7 +50,6 @@ export const NewQuery = () => {
     const [promptTemplateIdSwitchingTo, setPromptTemplateIdSwitchingTo] = useState<string>(
         DefaultPromptTemplate.id
     );
-    const [modelIdSwitchingTo, setModelIdSwitchingTo] = useState<string>('');
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = React.useState(false);
 
@@ -193,12 +192,7 @@ export const NewQuery = () => {
                                         value={selectedModelId}
                                         disabled={isLoading}
                                         onChange={(evt) => {
-                                            if (promptIsDirty) {
-                                                setModelIdSwitchingTo(evt.target.value);
-                                                setIsPromptAlertOpen(true);
-                                            } else {
-                                                setSelectedModelId(evt.target.value);
-                                            }
+                                            setSelectedModelId(evt.target.value);
                                         }}>
                                         {modelList.map((ml) => {
                                             return (
@@ -309,7 +303,6 @@ export const NewQuery = () => {
                             onSuccess={() => {
                                 setIsPromptAlertOpen(false);
                                 setSelectedPromptTemplateId(promptTemplateIdSwitchingTo);
-                                setSelectedModelId(modelIdSwitchingTo);
                             }}
                             onCancel={() => setIsPromptAlertOpen(false)}
                             successText="Continue"
