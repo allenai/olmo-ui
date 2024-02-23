@@ -149,9 +149,7 @@ export const MessageContextMenu = ({
 export const MenuWrapperContainer = styled.div`
     position: relative;
     padding-top: ${({ theme }) => theme.spacing(1)};
-    &&& {
-        margin-left: auto;
-    }
+    margin-left: auto;
     min-width: 20px;
 `;
 
