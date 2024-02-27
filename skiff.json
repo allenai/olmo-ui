@@ -1,7 +1,7 @@
 {
     "appName": "olmo-ui",
     "contact": "sams",
-    "team": "olmo",
+    "team": "oe-adoption",
     "replicas": { "prod": 2 },
     "customDomains": [ "olmo.allen.ai" ]
 }
