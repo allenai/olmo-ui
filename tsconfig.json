@@ -2,12 +2,14 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["dom", "dom.iterable", "es2019"],
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
-    "sourceMap": true
+    "sourceMap": true,
+    "allowJs": true
   }
 }
