@@ -73,6 +73,10 @@ to the production API to get things working.
     ```
     docker compose up --build
     ```
+### Running Tests
+To start running E2E tests following the steps below:
+- Navigate `e2e` folder
+- Run the command below `yarn test:e2e` to run all the e2e tests
 
 ### Changing the Local User
 
