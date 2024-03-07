@@ -8,7 +8,8 @@
     "build": "webpack --mode production",
     "lint": "eslint '**/*.{js,ts,tsx,json}' && echo '💫  Lint complete.'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json && echo '🛠  Lint --fix complete'",
-    "start": "webpack serve --mode development"
+    "start": "webpack serve --mode development",
+    "test:e2e": "playwright test"
   },
   "resolutions": {
     "@types/react": "^18.2.55"
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@allenai/eslint-config-varnish": "^1.2.1",
+    "@playwright/test": "^1.42.1",
     "@types/dompurify": "^3.0.5",
     "@types/marked": "^5.0.1",
     "@types/node": "^17.0.10",
