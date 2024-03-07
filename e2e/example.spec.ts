@@ -1,7 +1,7 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test("has title", async ({ page }) => {
-  await page.goto("/");
+test('has title', async ({ page }) => {
+    await page.goto('/');
 
-  await expect(page).toHaveTitle("OLMo - Allen Institute for AI");
+    await expect(page).toHaveTitle('OLMo - Allen Institute for AI');
 });
