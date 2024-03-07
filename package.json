@@ -8,7 +8,7 @@
     "build": "webpack --mode production",
     "lint": "eslint '**/*.{js,ts,tsx,json}' && echo '💫  Lint complete.'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json && echo '🛠  Lint --fix complete'",
-    "test:e2e": "npx playwright test",
+    "test:e2e": "playwright test",
     "start": "webpack serve --mode development"
   },
   "resolutions": {
