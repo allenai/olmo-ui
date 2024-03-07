@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: lts/*
     - name: Install dependencies
-      run: npm install -g yarn && yarn
+      run: yarn install --frozen-lockfile
     - name: Build service
       run: yarn build
     - name: Install Playwright Browsers
