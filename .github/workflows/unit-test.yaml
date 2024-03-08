@@ -14,7 +14,6 @@ jobs:
   unit-test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    defaults:
     steps:
       - uses: actions/checkout@v4
       - name: Test using Node.js
