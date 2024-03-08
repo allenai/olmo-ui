@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
+import * as React from 'react';
 
 type FeatureToggles = Record<FeatureToggle, boolean>;
 

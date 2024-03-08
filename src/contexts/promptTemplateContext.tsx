@@ -1,6 +1,6 @@
 // context exposing client actions on PromptTemplates
 
-import React, { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
 import { produce } from 'immer';
 
 import { PromptTemplateClient } from '../api/PromptTemplateClient';

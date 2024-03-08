@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Link, Outlet } from 'react-router-dom';

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-imports */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
 import { RenderOptions, render } from '@testing-library/react';
-import React, { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { Alert, Button, FormHelperText, AlertTitle } from '@mui/material';
 
 export const ArchivedAlert = ({
@@ -25,9 +25,9 @@ export const Metadata = ({ data }: { data: string[] }) => (
     <FormHelperText>
         {data.map((d, i) => {
             return (
-                <React.Fragment key={d}>
+                <Fragment key={d}>
                     {d} {i < data.length - 1 ? <span>&#183; </span> : null}
-                </React.Fragment>
+                </Fragment>
             );
         })}
     </FormHelperText>

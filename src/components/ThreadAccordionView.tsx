@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import {
     AccordionDetails,
     AccordionProps,
@@ -41,7 +41,7 @@ export const ThreadAccordionView = ({
 }: ThreadAccordionProps) => {
     const { expandedThreadID, setExpandedThreadID } = useAppContext();
 
-    const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
+    const [metadataModalOpen, setMetadataModalOpen] = useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
 

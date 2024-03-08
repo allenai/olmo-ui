@@ -1,6 +1,6 @@
 // util functions to be used by contexts.
 
-import React from 'react';
+import * as React from 'react';
 
 // global state of the store.
 export enum RemoteState {

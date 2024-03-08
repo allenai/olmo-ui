@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog, DialogTitle } from '@mui/material';
 import styled from 'styled-components';
 

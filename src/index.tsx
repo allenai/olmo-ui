@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter, Link } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';

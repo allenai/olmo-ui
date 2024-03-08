@@ -2,7 +2,7 @@
  * Display to alter the options of a message.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Stack, Box, Grid, Typography, Chip, TextField } from '@mui/material';
 
 import { InputSlider } from './InputSlider';

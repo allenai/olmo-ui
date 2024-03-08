@@ -1,5 +1,5 @@
 // context exposing client actions on DataChips
-import React, { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
 import { produce } from 'immer';
 
 import { DataChipClient } from '../api/DataChipClient';
