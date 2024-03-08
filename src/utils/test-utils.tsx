@@ -7,12 +7,12 @@ import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { getRouterOverridenTheme } from '@allenai/varnish2';
+import { getRouterOverriddenTheme } from '@allenai/varnish2';
 
 import { olmoTheme } from '../olmoTheme';
 
 const VarnishAppWrapper = ({ children }: PropsWithChildren) => {
-    const theme = getTheme(getRouterOverridenTheme(Link, olmoTheme));
+    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
 
     return (
         <ThemeProvider theme={theme}>
