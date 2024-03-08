@@ -15,11 +15,12 @@
     "test:coverage": "test --coverage"
   },
   "resolutions": {
-    "@types/react": "^18.2.55"
+    "@types/react": "^18.2.55",
+    "@allenai/varnish-theme": "^1.0.0"
   },
   "dependencies": {
     "@allenai/varnish-theme": "^1.0.0",
-    "@allenai/varnish2": "^1.0.0",
+    "@allenai/varnish2": "^0.2.8",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.12",
