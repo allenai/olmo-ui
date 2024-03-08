@@ -15,8 +15,7 @@
     "test:coverage": "test --coverage"
   },
   "resolutions": {
-    "@types/react": "^18.2.55",
-    "@allenai/varnish-theme": "^1.0.0"
+    "@types/react": "^18.2.55"
   },
   "dependencies": {
     "@allenai/varnish-theme": "^1.0.0",
