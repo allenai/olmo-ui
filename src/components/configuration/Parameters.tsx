@@ -64,7 +64,7 @@ export const Parameters = () => {
             /> */}
             <Box sx={{ width: '100%' }}>
                 <Typography>Stop Words</Typography>
-                <Typography variant="caption">Hit "Tab" to add a new word.</Typography>
+                <Typography variant="caption">Hit &quot;Tab&quot; to add a new word.</Typography>
                 <Grid container spacing={1} paddingY={1}>
                     {inferenceOpts.stop?.map((word, i) => (
                         <Grid item key={`stop-${i}-${word}`}>

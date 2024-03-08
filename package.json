@@ -9,10 +9,10 @@
     "lint": "eslint '**/*.{js,ts,tsx,json}' && echo '💫  Lint complete.'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json && echo '🛠  Lint --fix complete'",
     "start": "webpack serve --mode development",
-    "test:e2e": "playwright test",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "test --coverage"
+    "test:coverage": "test --coverage",
+    "test:e2e": "playwright test",
+    "test:watch": "vitest"
   },
   "resolutions": {
     "@types/react": "^18.2.55"
