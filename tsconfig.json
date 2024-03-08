@@ -16,6 +16,6 @@
       "@test-utils": ["src/utils/test-utils"]
     }
   },
-  "include": ["src/**/*", "@types", "./vitest-setup.ts"],
+  "include": ["src/**/*", "@types", "./vitest-setup.ts", "index.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
