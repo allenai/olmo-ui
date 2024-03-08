@@ -4,12 +4,12 @@ import varnishTheme from '@allenai/varnish-theme';
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
     color2: {
-        N7: new Color('Black7', '#333333', true),
-        N8: new Color('Black8', '#282828', true),
-        N9: new Color('Black9', '#262626', true),
-        B6: new Color('Blue6', '#BBF4FF', true),
-        O6: new Color('Orange6', '#FFF1BD', true),
-        O7: new Color('Orange7', '#F4D35E', true),
+        N7: new Color('Black7', '#333333', undefined, true),
+        N8: new Color('Black8', '#282828', undefined, true),
+        N9: new Color('Black9', '#262626', undefined, true),
+        B6: new Color('Blue6', '#BBF4FF', undefined, true),
+        O6: new Color('Orange6', '#FFF1BD', undefined, true),
+        O7: new Color('Orange7', '#F4D35E', undefined, true),
     },
     components: {
         MuiButton: {

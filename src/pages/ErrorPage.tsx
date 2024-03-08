@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRouteError } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';

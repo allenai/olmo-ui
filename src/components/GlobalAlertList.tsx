@@ -2,7 +2,6 @@
  * Single display for all errors/messages passed to the app context.
  */
 
-import React from 'react';
 import { Alert, AlertTitle, Snackbar } from '@mui/material';
 
 import { useAppContext } from '../AppContext';

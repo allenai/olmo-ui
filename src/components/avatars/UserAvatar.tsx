@@ -1,5 +1,4 @@
 import { Avatar } from '@mui/material';
-import React from 'react';
 import styled from 'styled-components';
 
 import userAvatarURL from '../assets/user.svg';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Stack } from '@mui/material';
 import styled from 'styled-components';
 import { Marked } from 'marked';
@@ -80,7 +80,7 @@ export const LLMResponseView = ({
 }: ResponseProps) => {
     const { abortController, ongoingThreadId } = useAppContext();
     const [hover, setHover] = useState(false);
-    const onAbort = React.useCallback(() => {
+    const onAbort = useCallback(() => {
         abortController?.abort();
     }, [abortController]);
 
@@ -176,7 +176,7 @@ export const UserResponseView = ({
 
 export const BaseModelResponseView = ({ response, msgId, initialPrompt }: ResponseProps) => {
     const { abortController, ongoingThreadId } = useAppContext();
-    const onAbort = React.useCallback(() => {
+    const onAbort = useCallback(() => {
         abortController?.abort();
     }, [abortController]);
     // turning off features as they pop dom warnings

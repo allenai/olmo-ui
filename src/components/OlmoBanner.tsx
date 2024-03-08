@@ -28,8 +28,8 @@ const BannerContainer = styled.div<{ transparentBackground?: boolean }>`
 `;
 
 export const OlmoBanner = React.forwardRef<HTMLDivElement, BannerProps>(
-    ({ bannerLogo, transparentBackground, endSlot }) => (
-        <BannerContainer transparentBackground={transparentBackground}>
+    ({ bannerLogo, transparentBackground, endSlot }, ref) => (
+        <BannerContainer transparentBackground={transparentBackground} ref={ref}>
             <BannerContent>
                 <Grid container justifyContent="space-between" spacing={2}>
                     <Grid item>{bannerLogo}</Grid>
@@ -39,3 +39,4 @@ export const OlmoBanner = React.forwardRef<HTMLDivElement, BannerProps>(
         </BannerContainer>
     )
 );
+OlmoBanner.displayName = 'OlmoBanner';

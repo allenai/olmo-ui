@@ -2,7 +2,9 @@
  * A slider with a number control next to it.
  */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+
+import * as React from 'react';
 import styled from 'styled-components';
 import { Box, Grid, Typography, Slider, Input as MuiInput } from '@mui/material';
 

@@ -1,13 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["dom", "dom.iterable", "es2019"],
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "ESNext"],
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
-    "sourceMap": true
-  }
+    "jsx": "react-jsx",
+    "sourceMap": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@test-utils": ["src/utils/test-utils"]
+    }
+  },
+  "include": ["src/**/*", "@types", "./vitest-setup.ts", "index.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }
