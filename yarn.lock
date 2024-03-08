@@ -12,10 +12,10 @@
   resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.3.3.tgz#90749bde8b89cd41764224f5aac29cd4138f75ff"
   integrity sha512-rE0Pygv0sEZ4vBWHlAgJLGDU7Pm8xoO6p3wsEceb7GYAjScrOHpEo8KK/eVkAcnSM+slAEtXjA2JpdjLp4fJQQ==
 
-"@allenai/eslint-config-varnish@^1.2.1":
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-1.2.9.tgz#7bd46a02f953265b1d4014c878f5009ccbd318fd"
-  integrity sha512-wFWxUEaMKZI0pcT+Ve9hiFiEvIxWDGVqEcZ8zgcISyGE8HYW1nkBWhNZNjtD69T4fZVMV+NTRhZogyu7maCMhA==
+"@allenai/eslint-config-varnish@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-1.2.1.tgz#4ccb62667940b60ebdb602dbc078268583dc3ad7"
+  integrity sha512-Cw/ptTipWezfOz8uJVHroVNbtCXdBa9m4BQmLN9SZEthX8yfWJXaFq2V1p710mGyitBlk3q4v3nHQB4yBc8oIQ==
 
 "@allenai/varnish-theme@^0.0.4", "@allenai/varnish-theme@^1.0.0":
   version "1.0.0"

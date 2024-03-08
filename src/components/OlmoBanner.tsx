@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Grid from '@mui/material/Grid';
-import { Content } from '@allenai/varnish2';
+import { Content } from '@allenai/varnish2/components';
 
 export interface BannerProps {
     bannerLogo: React.ReactNode; // the logo to display on the left side of the banner

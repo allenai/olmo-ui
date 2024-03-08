@@ -3,17 +3,16 @@
 import { RenderOptions, render } from '@testing-library/react';
 import React, { PropsWithChildren, ReactNode } from 'react';
 
-// import { VarnishApp } from '@allenai/varnish2/components';
-// import { getTheme } from '@allenai/varnish2/theme';
+import { VarnishApp } from '@allenai/varnish2/components';
+import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
-// @ts-ignore
-import { getRouterOverriddenTheme, VarnishApp, getTheme } from '@allenai/varnish2';
+import { getRouterOverridenTheme } from '@allenai/varnish2';
 
 import { olmoTheme } from '../olmoTheme';
 
 const VarnishAppWrapper = ({ children }: PropsWithChildren) => {
-    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
+    const theme = getTheme(getRouterOverridenTheme(Link, olmoTheme));
 
     return (
         <ThemeProvider theme={theme}>

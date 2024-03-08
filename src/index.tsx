@@ -4,7 +4,7 @@ import { RouterProvider, createBrowserRouter, Link } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
+import { getRouterOverridenTheme } from '@allenai/varnish2/utils';
 import { LinearProgress } from '@mui/material';
 
 import { NotFound } from './pages/NotFound';
@@ -33,7 +33,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const VarnishedApp = ({ children }: PropsWithChildren) => {
-    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
+    const theme = getTheme(getRouterOverridenTheme(Link, olmoTheme));
     return (
         <FeatureToggleProvider>
             <PromptTemplateProvider>

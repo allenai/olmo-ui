@@ -43,7 +43,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@allenai/eslint-config-varnish": "^1.2.1",
+    "@allenai/eslint-config-varnish": "1.2.1",
     "@playwright/test": "^1.42.1",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
