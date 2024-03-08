@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { test } from 'vitest';
+
+import { render, screen } from '../../utils/test-utils';
 
 import { OlmoBanner } from '../OlmoBanner';
 
-const Logo = () =>  <div>Logo</div>
+const Logo = () => <div>Logo</div>;
 
-describe('OlmoBanner', () => {
-    it('should contains the heading 1', () => {
-        render(<OlmoBanner bannerLogo={<Logo />}/>);
-        screen.getByText("Logo");
-    });
+test('OlmoBanner', () => {
+    render(<OlmoBanner bannerLogo={<Logo />} />);
+    screen.getByText('Logo');
 });
