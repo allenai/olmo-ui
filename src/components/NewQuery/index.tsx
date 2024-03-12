@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import * as React from 'react';
+import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import {
     IconButton,
@@ -18,21 +17,21 @@ import {
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
 
-import { DefaultPromptTemplate, PromptTemplate } from '../api/PromptTemplate';
-import { Confirm } from './Confirm';
-import { MessagePost } from '../api/Message';
-import { useAppContext } from '../AppContext';
-import { Parameters } from './configuration/Parameters';
-import { StandardContainer } from './StandardContainer';
-import { RemoteState } from '../contexts/util';
-import { usePromptTemplate } from '../contexts/promptTemplateContext';
-import { RepromptActionContext } from '../contexts/repromptActionContext';
-import { Model } from '../api/Model';
+import { DefaultPromptTemplate, PromptTemplate } from '../../api/PromptTemplate';
+import { Confirm } from '../Confirm';
+import { MessagePost } from '../../api/Message';
+import { useAppContext } from '../../AppContext';
+import { Parameters } from '../configuration/Parameters';
+import { StandardContainer } from '../StandardContainer';
+import { RemoteState } from '../../contexts/util';
+import { usePromptTemplate } from '../../contexts/promptTemplateContext';
+import { RepromptActionContext } from '../../contexts/repromptActionContext';
+import { Model } from '../../api/Model';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
 
-    const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
+    const { repromptText, setRepromptText } = useContext(RepromptActionContext);
 
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
@@ -40,18 +39,18 @@ export const NewQuery = () => {
 
     const [selectedModelId, setSelectedModelId] = useState<string>('');
 
-    const [isPrivateChecked, setIsPrivateChecked] = React.useState<boolean>(false);
+    const [isPrivateChecked, setIsPrivateChecked] = useState<boolean>(false);
     const [prompt, setPrompt] = useState<string>();
-    // has user edited the prompy
+    // has user edited the prompt
     const [promptIsDirty, setPromptIsDirty] = useState<boolean>(false);
     // should we show the confirm dialog?
-    const [isPromptAlertOpen, setIsPromptAlertOpen] = React.useState(false);
+    const [isPromptAlertOpen, setIsPromptAlertOpen] = useState(false);
     // id of template we should switch to if the user confirms
     const [promptTemplateIdSwitchingTo, setPromptTemplateIdSwitchingTo] = useState<string>(
         DefaultPromptTemplate.id
     );
     // should we show the content inside a fullscreen dialog?
-    const [isFullScreen, setIsFullScreen] = React.useState(false);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     const [showParams, setShowParams] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -140,7 +139,7 @@ export const NewQuery = () => {
         }
     };
 
-    const onPrivateCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onPrivateCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
         setIsPrivateChecked(event.target.checked);
     };
 
