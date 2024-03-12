@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import * as React from 'react';
 import {
     Box,
@@ -22,8 +22,6 @@ import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './
 import { LabelRating } from '../api/Label';
 
 import 'highlight.js/styles/github-dark.css';
-import { useDataChip } from '../contexts/dataChipContext';
-import { RemoteState } from '../contexts/util';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -43,16 +41,6 @@ export const ThreadBodyView = ({
     }
     const { postMessage, postLabel } = useAppContext();
     let followUpControl = showFollowUp;
-
-    // datachips
-    const { remoteState, getDataChipList } = useDataChip();
-    const [dataChipsLoading, setDataChipsLoading] = useState(remoteState === RemoteState.Loading);
-    const getDataChips = async function () {
-        setDataChipsLoading(true);
-        getDataChipList().finally(() => {
-            setDataChipsLoading(false);
-        });
-    };
 
     const [isEditing, setIsEditing] = useState(false);
     const [messageLoading, setMessageLoading] = useState(false);
@@ -74,14 +62,8 @@ export const ThreadBodyView = ({
     const curMessage = messages[curMessageIndex];
     const curMessageRole = curMessage.role;
 
-    // on load fetch data
-    useEffect(() => {
-        getDataChips();
-    }, []);
-
     // see if any loading state is active
-    const isLoading =
-        messageLoading || dataChipsLoading || isSubmitting || remoteState === RemoteState.Loading;
+    const isLoading = messageLoading || isSubmitting;
 
     const postFollowupMessage = async function () {
         setIsSubmitting(true);

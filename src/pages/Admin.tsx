@@ -16,7 +16,6 @@ import { Link } from 'react-router-dom';
 
 import { useAppContext } from '../AppContext';
 import { LabelRating, LabelsApiUrl } from '../api/Label';
-import { DataChips } from './DataChips';
 import { PromptTemplates } from './PromptTemplates';
 import { dateTimeFormat } from '../util';
 
@@ -46,7 +45,6 @@ export const Admin = () => {
 
     enum TabKey {
         Labels = 'labels',
-        DataChips = 'dataChips',
         PromptTemplates = 'promptTemplates',
     }
 
@@ -153,7 +151,6 @@ export const Admin = () => {
             <TabContext value={curTab}>
                 <TabList onChange={handleTabChange}>
                     <Tab label={<TabLabel>Labels</TabLabel>} value={TabKey.Labels} />
-                    <Tab label={<TabLabel>Data Chips</TabLabel>} value={TabKey.DataChips} />
                     <Tab
                         label={<TabLabel>Prompt Templates</TabLabel>}
                         value={TabKey.PromptTemplates}
@@ -184,9 +181,6 @@ export const Admin = () => {
                             disableRowSelectionOnClick
                         />
                     ) : null}
-                </TabPanel>
-                <TabPanel value={TabKey.DataChips}>
-                    <DataChips hideTitle />
                 </TabPanel>
                 <TabPanel value={TabKey.PromptTemplates}>
                     <PromptTemplates hideTitle />
