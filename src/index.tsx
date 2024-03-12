@@ -20,6 +20,7 @@ import { FeatureToggleProvider } from './FeatureToggleContext';
 import { DataChips } from './pages/DataChips';
 import { DataChipProvider } from './contexts/dataChipContext';
 import { PromptTemplateProvider } from './contexts/promptTemplateContext';
+import { DolmaExplorer } from './pages/DolmaExplorer';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -63,6 +64,11 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/dolma',
+                element: <DolmaExplorer />,
                 errorElement: <ErrorPage />,
             },
             {

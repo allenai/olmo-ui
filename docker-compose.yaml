@@ -1,5 +1,16 @@
 version: "3"
 services:
+  api:
+    build: ./api
+    volumes:
+      - ./api:/api
+      - ./api/config.json:/secret/config/config.json
+      - ./api/service_account.json:/secret/config/service_account.json
+    environment:
+      # This ensures that errors are printed as they occur, which
+      # makes debugging easier.
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
   ui:
     build:
       context: .
