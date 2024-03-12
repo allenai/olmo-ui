@@ -24,7 +24,6 @@ import { MessagePost } from '../api/Message';
 import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { StandardContainer } from './StandardContainer';
-import { useDataChip } from '../contexts/dataChipContext';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../contexts/repromptActionContext';
@@ -56,18 +55,6 @@ export const NewQuery = () => {
 
     const [showParams, setShowParams] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // datachips
-    const { remoteState: dataChipRemoteState, getDataChipList } = useDataChip();
-    const [dataChipsLoading, setDataChipsLoading] = useState(
-        dataChipRemoteState === RemoteState.Loading
-    );
-    const getDataChips = async function () {
-        setDataChipsLoading(true);
-        getDataChipList().finally(() => {
-            setDataChipsLoading(false);
-        });
-    };
 
     // prompt templates
     const {
@@ -110,14 +97,11 @@ export const NewQuery = () => {
         isSubmitting ||
         promptTemplatesLoading ||
         modelLoading ||
-        promptTemplateRemoteState === RemoteState.Loading ||
-        dataChipsLoading ||
-        dataChipRemoteState === RemoteState.Loading;
+        promptTemplateRemoteState === RemoteState.Loading;
 
     // on load fetch data
     useEffect(() => {
         getPromptTemplates();
-        getDataChips();
         getModelList();
     }, []);
 

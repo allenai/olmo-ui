@@ -17,8 +17,6 @@ import { App } from './App';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
 import { FeatureToggleProvider } from './FeatureToggleContext';
-import { DataChips } from './pages/DataChips';
-import { DataChipProvider } from './contexts/dataChipContext';
 import { PromptTemplateProvider } from './contexts/promptTemplateContext';
 
 const GlobalStyle = createGlobalStyle`
@@ -37,15 +35,13 @@ const VarnishedApp = ({ children }: PropsWithChildren) => {
     return (
         <FeatureToggleProvider>
             <PromptTemplateProvider>
-                <DataChipProvider>
-                    <ScrollToTopOnPageChange />
-                    <ThemeProvider theme={theme}>
-                        <VarnishApp layout="left-aligned" theme={theme}>
-                            <GlobalStyle />
-                            {children}
-                        </VarnishApp>
-                    </ThemeProvider>
-                </DataChipProvider>
+                <ScrollToTopOnPageChange />
+                <ThemeProvider theme={theme}>
+                    <VarnishApp layout="left-aligned" theme={theme}>
+                        <GlobalStyle />
+                        {children}
+                    </VarnishApp>
+                </ThemeProvider>
             </PromptTemplateProvider>
         </FeatureToggleProvider>
     );
@@ -78,16 +74,6 @@ const router = createBrowserRouter([
             {
                 path: '/prompt-templates',
                 element: <PromptTemplates />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/datachips',
-                element: <DataChips />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/data-chips',
-                element: <DataChips />,
                 errorElement: <ErrorPage />,
             },
             {
