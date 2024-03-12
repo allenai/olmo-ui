@@ -25,8 +25,6 @@ jobs:
       run: yarn build
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
-    - name: Run Docker Build
-      run: docker compose up --build
     - name: Run Playwright tests
       run: yarn test:e2e 
     - uses: actions/upload-artifact@v4
