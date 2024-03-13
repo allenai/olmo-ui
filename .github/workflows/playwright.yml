@@ -19,6 +19,11 @@ jobs:
       with:
         node-version: lts/*
         cache: 'yarn'
+    - uses: isbang/compose-action@v1.5.1
+      with:
+        compose-file: "docker-compose.yaml"
+      env: 
+        LLMX_API_URL: "https://olmo-api.allen.ai"
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     - name: Build service
