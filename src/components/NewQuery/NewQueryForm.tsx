@@ -1,25 +1,18 @@
-import {
-    Button,
-    Checkbox,
-    FormControlLabel,
-    Grid,
-    IconButton,
-    MenuItem,
-    Select,
-    TextField,
-    Tooltip,
-} from '@mui/material';
-import { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactNode } from 'react';
-import { Model } from 'src/api/Model';
-import { DefaultPromptTemplate, PromptTemplate } from 'src/api/PromptTemplate';
+import { Button, Checkbox, FormControlLabel, Grid, Tooltip } from '@mui/material';
+import { MouseEventHandler, ReactNode } from 'react';
 
-import { useForm, FormContainer, SelectElement, TextFieldElement } from 'react-hook-form-mui';
-import { MessagePost } from 'src/api/Message';
+import { FormContainer, SelectElement, TextFieldElement, useForm } from 'react-hook-form-mui';
+
+import { Model } from '../../api/Model';
+import { PromptTemplate } from '../../api/PromptTemplate';
+
+import { MessagePost } from '../../api/Message';
+
+import { TemplateSelect } from './TemplateSelect';
 
 interface NewQueryFormProps {
-    onSubmit: (data: MessagePost) => void;
+    onSubmit: (data: MessagePost) => Promise<void>;
     isFormDisabled?: boolean;
-    onPromptChange: ChangeEventHandler<HTMLInputElement>;
     onParametersButtonClick: MouseEventHandler;
     models: Model[];
     promptTemplates: PromptTemplate[];
@@ -29,7 +22,6 @@ interface NewQueryFormProps {
 export const NewQueryForm = ({
     onSubmit,
     isFormDisabled,
-    onPromptChange,
     onParametersButtonClick,
     models,
     promptTemplates,
@@ -43,66 +35,57 @@ export const NewQueryForm = ({
         },
     });
 
-    return (
-        <FormContainer formContext={formContext} onSuccess={(data) => onSubmit(data)}>
-            <Grid container item gap={2} justifyContent="space-between">
-                <Tooltip
-                    title={
-                        models.find((model) => model.id === formContext.getValues('model'))
-                            ?.description
-                    }
-                    placement="top">
-                    <SelectElement
-                        sx={{
-                            flex: '1 1 min-content',
-                        }}
-                        name="model"
-                        disabled={isFormDisabled}>
-                        {models.map((model) => {
-                            return (
-                                <MenuItem key={model.id} value={model.id}>
-                                    {model.name}
-                                </MenuItem>
-                            );
-                        })}
-                    </SelectElement>
-                </Tooltip>
+    const handlePromptTemplateChange = (templateId: string) => {
+        const template = promptTemplates.find((template) => templateId === template.id);
 
-                <Select
-                    defaultValue={DefaultPromptTemplate.id}
-                    disabled={isFormDisabled}
-                    sx={{
-                        flex: '1 1 min-content',
-                    }}
-                    // onChange={(evt) => {
-                    //     if (formContext.formState.isDirty) {
-                    //         // we have a dirty prompt, prevent the change?
-                    //         setPromptTemplateIdSwitchingTo(evt.target.value);
-                    //         setIsPromptAlertOpen(true);
-                    //     } else {
-                    //         setSelectedPromptTemplateId(evt.target.value);
-                    //     }
-                    // }}
-                >
-                    {promptTemplates.map((pt) => {
-                        return (
-                            <MenuItem key={pt.id} value={pt.id}>
-                                {pt.name}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-                {topRightFormControls}
-            </Grid>
-            <Grid container gap={1}>
+        if (template == null) {
+            // TODO: Handle this edge case
+            return;
+        }
+
+        formContext.setValue('content', template.content);
+    };
+
+    const handleSubmit = async (data: MessagePost) => {
+        await onSubmit(data);
+        formContext.setValue('content', '');
+    };
+
+    const isFormDisabledOrLoading = isFormDisabled || formContext.formState.isSubmitting;
+
+    return (
+        <FormContainer formContext={formContext} onSuccess={(data) => handleSubmit(data)}>
+            <Grid container gap={1} display="grid" gridTemplateRows="min-content 1fr min-content">
+                <Grid container item gap={2} justifyContent="space-between">
+                    <Tooltip
+                        title={
+                            models.find((model) => model.id === formContext.getValues('model'))
+                                ?.description
+                        }
+                        placement="top">
+                        <SelectElement
+                            sx={{
+                                flex: '1 1 min-content',
+                            }}
+                            name="model"
+                            disabled={isFormDisabledOrLoading}
+                            options={models.map((model) => ({ id: model.id, label: model.name }))}
+                        />
+                    </Tooltip>
+
+                    <TemplateSelect
+                        promptTemplates={promptTemplates}
+                        onChange={handlePromptTemplateChange}
+                    />
+                    {topRightFormControls}
+                </Grid>
                 <TextFieldElement
                     fullWidth
                     multiline
                     minRows={10}
-                    disabled={isFormDisabled}
+                    disabled={isFormDisabledOrLoading}
                     placeholder="Select a Prompt Template above or type a free form prompt"
                     value={prompt}
-                    onChange={onPromptChange}
                     name="content"
                     InputProps={{
                         sx: {
@@ -113,7 +96,7 @@ export const NewQueryForm = ({
                 />
 
                 <Grid item container gap={2} height="min-content">
-                    <Button variant="contained" type="submit" disabled={isFormDisabled}>
+                    <Button variant="contained" type="submit" disabled={isFormDisabledOrLoading}>
                         Prompt
                     </Button>
                     <FormControlLabel

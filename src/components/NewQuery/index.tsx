@@ -1,27 +1,16 @@
-import { useState, useEffect, useContext, ChangeEvent } from 'react';
-import {
-    IconButton,
-    MenuItem,
-    Select,
-    Dialog,
-    DialogContent,
-    LinearProgress,
-    Grid,
-    Tooltip,
-} from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
+import { Dialog, DialogContent, Grid, IconButton, LinearProgress } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 
-import { DefaultPromptTemplate, PromptTemplate } from '../../api/PromptTemplate';
-import { Confirm } from '../Confirm';
-import { MessagePost } from '../../api/Message';
 import { useAppContext } from '../../AppContext';
-import { Parameters } from '../configuration/Parameters';
-import { StandardContainer } from '../StandardContainer';
-import { RemoteState } from '../../contexts/util';
+import { MessagePost } from '../../api/Message';
+import { DefaultPromptTemplate, PromptTemplate } from '../../api/PromptTemplate';
 import { usePromptTemplate } from '../../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../../contexts/repromptActionContext';
-import { Model } from '../../api/Model';
+import { RemoteState } from '../../contexts/util';
+import { StandardContainer } from '../StandardContainer';
+import { Parameters } from '../configuration/Parameters';
 import { NewQueryForm } from './NewQueryForm';
 
 export const NewQuery = () => {
@@ -29,27 +18,10 @@ export const NewQuery = () => {
 
     const { repromptText, setRepromptText } = useContext(RepromptActionContext);
 
-    const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
-        DefaultPromptTemplate.id
-    );
-
-    const [selectedModelId, setSelectedModelId] = useState<string>('');
-
-    const [isPrivateChecked, setIsPrivateChecked] = useState<boolean>(false);
-    const [prompt, setPrompt] = useState<string>();
-    // has user edited the prompt
-    const [promptIsDirty, setPromptIsDirty] = useState<boolean>(false);
-    // should we show the confirm dialog?
-    const [isPromptAlertOpen, setIsPromptAlertOpen] = useState(false);
-    // id of template we should switch to if the user confirms
-    const [promptTemplateIdSwitchingTo, setPromptTemplateIdSwitchingTo] = useState<string>(
-        DefaultPromptTemplate.id
-    );
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = useState(false);
 
     const [showParams, setShowParams] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // prompt templates
     const {
@@ -60,44 +32,17 @@ export const NewQuery = () => {
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
         DefaultPromptTemplate,
     ]);
-    const [modelList, setModelList] = useState<Model[]>([]);
-    const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
-        promptTemplateRemoteState === RemoteState.Loading
-    );
-    const [modelLoading, setModelLoading] = useState(false);
-    const getPromptTemplates = async function () {
-        setPromptTemplatesLoading(true);
-        getPromptTemplateList().finally(() => {
-            setPromptTemplatesLoading(false);
-        });
-    };
-
-    const getModelList = async function () {
-        setModelLoading(true);
-        getAllModel().finally(() => {
-            setModelLoading(false);
-        });
-    };
-
-    // force a rerender with default data and load new thread
-    const Clear = () => {
-        setPrompt('');
-        setPromptIsDirty(false);
-        setIsFullScreen(false);
-        setSelectedPromptTemplateId(DefaultPromptTemplate.id);
-    };
 
     // see if any loading state is active
     const isLoading =
-        isSubmitting ||
-        promptTemplatesLoading ||
-        modelLoading ||
+        modelInfo.loading ||
+        !modelInfo.data?.length ||
         promptTemplateRemoteState === RemoteState.Loading;
 
     // on load fetch data
     useEffect(() => {
-        getPromptTemplates();
-        getModelList();
+        getPromptTemplateList();
+        getAllModel();
     }, []);
 
     useEffect(() => {
@@ -106,91 +51,59 @@ export const NewQuery = () => {
     }, [promptTemplateList]);
 
     const postNewMessage = async function (data: MessagePost) {
-        setIsSubmitting(true);
-        const payload: MessagePost = {
-            content: data.prompt,
-            private: data.private,
-            model: data.model,
-        };
-        const postMessageInfo = await postMessage(data);
-        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
-            Clear();
-        }
-        setIsSubmitting(false);
-        if (repromptText.length !== 0) {
-            setRepromptText('');
-        }
+        await postMessage(data);
     };
 
-    // when a selected prompt changes, update the user prompt
-    useEffect(() => {
-        const foundPrompt = promptTemplates?.find((p) => p.id === selectedPromptTemplateId);
-        setPrompt(foundPrompt?.content);
-    }, [selectedPromptTemplateId]);
+    // // when a selected prompt changes, update the user prompt
+    // useEffect(() => {
+    //     const foundPrompt = promptTemplates?.find((p) => p.id === selectedPromptTemplateId);
+    //     setPrompt(foundPrompt?.content);
+    // }, [selectedPromptTemplateId]);
 
-    const updatePrompt = (value?: string, setDirty: boolean = true) => {
-        setPrompt(value);
-        if (value && value.length !== 0) {
-            setPromptIsDirty(setDirty);
-        }
-    };
+    // const updatePrompt = (value?: string, setDirty: boolean = true) => {
+    //     setPrompt(value);
+    //     if (value && value.length !== 0) {
+    //         setPromptIsDirty(setDirty);
+    //     }
+    // };
 
-    const onPrivateCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setIsPrivateChecked(event.target.checked);
-    };
-
-    useEffect(() => {
-        updatePrompt(repromptText);
-    }, [repromptText]);
-
-    useEffect(() => {
-        if (modelInfo.data) {
-            const modelList = modelInfo.data;
-            setModelList(modelList);
-            setSelectedModelId(modelList[0].id);
-        }
-    }, [modelInfo]);
+    // useEffect(() => {
+    //     if (modelInfo.data) {
+    //         const modelList = modelInfo.data;
+    //         setModelList(modelList);
+    //         setSelectedModelId(modelList[0]?.id);
+    //     }
+    // }, [modelInfo]);
 
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
                 <Grid display="grid" gap={2} height={1} gridTemplateRows="min-content 1fr">
-                    <NewQueryForm
-                        isFormDisabled={isLoading}
-                        onPromptChange={(event) => updatePrompt(event.target.value)}
-                        onSubmit={(event) => postNewMessage(event)}
-                        onParametersButtonClick={() => setShowParams(!showParams)}
-                        promptTemplates={promptTemplates}
-                        models={modelList}
-                        topRightFormControls={
-                            <IconButton
-                                size="large"
-                                onClick={() => setIsFullScreen(!isFullScreen)}
-                                sx={{ marginLeft: 'auto' }}>
-                                {!isFullScreen ? (
-                                    <FullscreenIcon fontSize="inherit" />
-                                ) : (
-                                    <FullscreenIconExit fontSize="inherit" />
-                                )}
-                            </IconButton>
-                        }
-                    />
                     {isLoading ? (
                         <Grid>
                             <LinearProgress />
                         </Grid>
-                    ) : null}
-                    <Confirm
-                        title="Lose changes?"
-                        contentText="You have prompt edits that will be lost if you continue."
-                        open={isPromptAlertOpen}
-                        onSuccess={() => {
-                            setIsPromptAlertOpen(false);
-                            setSelectedPromptTemplateId(promptTemplateIdSwitchingTo);
-                        }}
-                        onCancel={() => setIsPromptAlertOpen(false)}
-                        successText="Continue"
-                    />
+                    ) : (
+                        <NewQueryForm
+                            isFormDisabled={isLoading}
+                            onSubmit={(event) => postNewMessage(event)}
+                            onParametersButtonClick={() => setShowParams(!showParams)}
+                            promptTemplates={promptTemplates}
+                            models={modelInfo.data!}
+                            topRightFormControls={
+                                <IconButton
+                                    size="large"
+                                    onClick={() => setIsFullScreen(!isFullScreen)}
+                                    sx={{ marginLeft: 'auto' }}>
+                                    {!isFullScreen ? (
+                                        <FullscreenIcon fontSize="inherit" />
+                                    ) : (
+                                        <FullscreenIconExit fontSize="inherit" />
+                                    )}
+                                </IconButton>
+                            }
+                        />
+                    )}
                     {showParams ? (
                         <Grid minWidth="300px">
                             <Parameters />
