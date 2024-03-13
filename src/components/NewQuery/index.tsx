@@ -8,10 +8,6 @@ import {
     DialogContent,
     LinearProgress,
     Grid,
-    TextField,
-    Button,
-    Checkbox,
-    FormControlLabel,
     Tooltip,
 } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -27,6 +23,7 @@ import { RemoteState } from '../../contexts/util';
 import { usePromptTemplate } from '../../contexts/promptTemplateContext';
 import { RepromptActionContext } from '../../contexts/repromptActionContext';
 import { Model } from '../../api/Model';
+import { NewQueryForm } from './NewQueryForm';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
@@ -161,137 +158,90 @@ export const NewQuery = () => {
                 <Grid
                     display="grid"
                     gap={2}
-                    gridTemplateColumns="1fr min-content"
-                    sx={{ height: '100%' }}>
-                    <Grid display="grid" gap={1} gridTemplateRows="min-content 1fr min-content">
-                        <Grid>
-                            <TemplateArea>
-                                <Tooltip
-                                    title={
-                                        modelList.find((model) => model.id === selectedModelId)
-                                            ?.description
-                                    }
-                                    placement="top">
-                                    <Select
-                                        value={selectedModelId}
-                                        disabled={isLoading}
-                                        onChange={(evt) => {
-                                            setSelectedModelId(evt.target.value);
-                                        }}>
-                                        {modelList.map((ml) => {
-                                            return (
-                                                <MenuItem key={ml.id} value={ml.id}>
-                                                    {ml.name}
-                                                </MenuItem>
-                                            );
-                                        })}
-                                    </Select>
-                                </Tooltip>
-
-                                <Select
-                                    defaultValue={DefaultPromptTemplate.id}
-                                    value={selectedPromptTemplateId}
-                                    disabled={isLoading}
-                                    onChange={(evt) => {
-                                        if (promptIsDirty) {
-                                            // we have a dirty prompt, prevent the change?
-                                            setPromptTemplateIdSwitchingTo(evt.target.value);
-                                            setIsPromptAlertOpen(true);
-                                        } else {
-                                            setSelectedPromptTemplateId(evt.target.value);
-                                        }
-                                    }}>
-                                    {promptTemplates.map((pt) => {
-                                        return (
-                                            <MenuItem key={pt.id} value={pt.id}>
-                                                {pt.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <span />
-                                <IconButton
-                                    size="large"
-                                    onClick={() => setIsFullScreen(!isFullScreen)}
-                                    sx={{ marginLeft: 'auto' }}>
-                                    {!isFullScreen ? (
-                                        <FullscreenIcon fontSize="inherit" />
-                                    ) : (
-                                        <FullscreenIconExit fontSize="inherit" />
-                                    )}
-                                </IconButton>
-                            </TemplateArea>
-                        </Grid>
-
-                        <Grid>
-                            <TextField
-                                fullWidth
-                                multiline
-                                minRows={10}
+                    height={1}
+                    gridTemplateRows="min-content 1fr min-content">
+                    <Grid container item gap={2} justifyContent="space-between">
+                        <Tooltip
+                            title={
+                                modelList.find((model) => model.id === selectedModelId)?.description
+                            }
+                            placement="top">
+                            <Select
+                                sx={{
+                                    flex: '1 1 min-content',
+                                }}
+                                value={selectedModelId}
                                 disabled={isLoading}
-                                placeholder="Select a Prompt Template above or type a free form prompt"
-                                value={prompt}
-                                inputRef={(input) => {
-                                    if (repromptText.length !== 0 && input !== null) {
-                                        input.focus();
-                                    }
-                                }}
-                                onChange={(v) => updatePrompt(v.target.value)}
-                                style={{ height: '100%' }}
-                                InputProps={{
-                                    sx: {
-                                        height: '100%',
-                                        alignItems: 'flex-start',
-                                    },
-                                }}
-                            />
-                        </Grid>
-                        <Grid>
-                            <Grid display="flex" justifyContent="center">
-                                <Button
-                                    variant="contained"
-                                    onClick={() => postNewMessage()}
-                                    disabled={isLoading}>
-                                    Prompt
-                                </Button>
-                                <span />
-                                <FormControlLabel
-                                    sx={{ marginLeft: 'auto' }}
-                                    control={
-                                        <Checkbox
-                                            checked={isPrivateChecked}
-                                            onChange={(e) => onPrivateCheckboxChange(e)}
-                                            inputProps={{
-                                                'aria-label': 'Mark this Query Private',
-                                            }}
-                                        />
-                                    }
-                                    label="Private"
-                                />
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => setShowParams(!showParams)}>
-                                    Parameters
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        {isLoading ? (
-                            <Grid>
-                                <LinearProgress />
-                            </Grid>
-                        ) : null}
-                        <Confirm
-                            title="Lose changes?"
-                            contentText="You have prompt edits that will be lost if you continue."
-                            open={isPromptAlertOpen}
-                            onSuccess={() => {
-                                setIsPromptAlertOpen(false);
-                                setSelectedPromptTemplateId(promptTemplateIdSwitchingTo);
+                                onChange={(evt) => {
+                                    setSelectedModelId(evt.target.value);
+                                }}>
+                                {modelList.map((ml) => {
+                                    return (
+                                        <MenuItem key={ml.id} value={ml.id}>
+                                            {ml.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </Tooltip>
+
+                        <Select
+                            defaultValue={DefaultPromptTemplate.id}
+                            value={selectedPromptTemplateId}
+                            disabled={isLoading}
+                            sx={{
+                                flex: '1 1 min-content',
                             }}
-                            onCancel={() => setIsPromptAlertOpen(false)}
-                            successText="Continue"
-                        />
+                            onChange={(evt) => {
+                                if (promptIsDirty) {
+                                    // we have a dirty prompt, prevent the change?
+                                    setPromptTemplateIdSwitchingTo(evt.target.value);
+                                    setIsPromptAlertOpen(true);
+                                } else {
+                                    setSelectedPromptTemplateId(evt.target.value);
+                                }
+                            }}>
+                            {promptTemplates.map((pt) => {
+                                return (
+                                    <MenuItem key={pt.id} value={pt.id}>
+                                        {pt.name}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                        <IconButton
+                            size="large"
+                            onClick={() => setIsFullScreen(!isFullScreen)}
+                            sx={{ marginLeft: 'auto' }}>
+                            {!isFullScreen ? (
+                                <FullscreenIcon fontSize="inherit" />
+                            ) : (
+                                <FullscreenIconExit fontSize="inherit" />
+                            )}
+                        </IconButton>
                     </Grid>
+                    <NewQueryForm
+                        isFormDisabled={isLoading}
+                        onPromptChange={(event) => updatePrompt(event.target.value)}
+                        onSubmit={(event) => postNewMessage()}
+                        onParametersButtonClick={() => setShowParams(!showParams)}
+                    />
+                    {isLoading ? (
+                        <Grid>
+                            <LinearProgress />
+                        </Grid>
+                    ) : null}
+                    <Confirm
+                        title="Lose changes?"
+                        contentText="You have prompt edits that will be lost if you continue."
+                        open={isPromptAlertOpen}
+                        onSuccess={() => {
+                            setIsPromptAlertOpen(false);
+                            setSelectedPromptTemplateId(promptTemplateIdSwitchingTo);
+                        }}
+                        onCancel={() => setIsPromptAlertOpen(false)}
+                        successText="Continue"
+                    />
                     {showParams ? (
                         <Grid minWidth="300px">
                             <Parameters />
@@ -313,21 +263,10 @@ const FullScreenCapableContainer = ({
 }) => {
     if (isFullScreen) {
         return (
-            <PaddedDialog open fullScreen>
+            <Dialog sx={{ padding: 2 }} open fullScreen>
                 <DialogContent>{children}</DialogContent>
-            </PaddedDialog>
+            </Dialog>
         );
     }
     return <>{children}</>;
 };
-
-const PaddedDialog = styled(Dialog)`
-    padding: ${({ theme }) => theme.spacing(2)};
-`;
-
-const TemplateArea = styled.div`
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: 10px;
-    grid-template-columns: minmax(300px, 50%) minmax(300px, 50%) 56px;
-`;
