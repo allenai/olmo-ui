@@ -15,22 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: isbang/compose-action@v1.5.1
-      with:
-        compose-file: "docker-compose.yaml"
-      env: 
-        LLMX_API_URL: "https://olmo-api.allen.ai"
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
         cache: 'yarn'
-
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
-      run: yarn test:e2e 
+      run: docker compose up --build --wait && yarn test:e2e
     - uses: actions/upload-artifact@v4
       if: always()
       with:
