@@ -14,7 +14,8 @@
     "baseUrl": ".",
     "paths": {
       "@test-utils": ["src/utils/test-utils"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*", "@types", "./vitest-setup.ts", "index.d.ts"],
   "exclude": ["node_modules", "dist"]
