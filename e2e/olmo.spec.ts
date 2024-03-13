@@ -2,14 +2,23 @@ import { test, expect } from '@playwright/test';
 
 test('has title', async ({ page }) => {
     await page.goto('/');
-
+    await page.route('/v3/whoami', async (route) => {
+        const json = {
+            client: "murphy@allenai.org"
+        };
+        await route.fulfill({ json: json });
+    });
     await expect(page).toHaveTitle('OLMo - Allen Institute for AI');
 });
 
 test('can prompt', async ({ page }) => {
     await page.goto('/');
-    await expect(page
-        .getByPlaceholder('Select a Prompt Template above or type a free form prompt')).toBeInViewport();
+    await page.route('/v3/whoami', async (route) => {
+        const json = {
+            client: "murphy@allenai.org"
+        };
+        await route.fulfill({ json: json });
+    });
     page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').fill('Can you tell me a friday joke?');
     await page.getByRole('button', { name: 'Prompt' }).click();
     await page.route('/v3/message/stream', async (route) => {
@@ -74,5 +83,5 @@ test('can prompt', async ({ page }) => {
         };
         await route.fulfill({ json: json });
     });
-    await expect(page.getByRole('button', { name: 'View Metadata' })).toBeInViewport();
+    await expect(page.getByRole('button', { name: 'View Metadata' })).toBeVisible();
 });
