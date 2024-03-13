@@ -8,9 +8,9 @@ test('has title', async ({ page }) => {
 
 test('can prompt', async ({ page }) => {
     await page.goto('/');
-    await page
-        .getByPlaceholder('Select a Prompt Template above or type a free form prompt')
-        .fill('Can you tell me a friday joke?');
+    await expect(page
+        .getByPlaceholder('Select a Prompt Template above or type a free form prompt')).toBeInViewport();
+    page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').fill('Can you tell me a friday joke?');
     await page.getByRole('button', { name: 'Prompt' }).click();
     await page.route('/v3/message/stream', async (route) => {
         const json = {
@@ -74,5 +74,5 @@ test('can prompt', async ({ page }) => {
         };
         await route.fulfill({ json: json });
     });
-    await expect(page.getByRole('button', { name: 'View Metadata' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'View Metadata' })).toBeInViewport();
 });
