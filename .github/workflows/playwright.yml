@@ -9,6 +9,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env:
+  LLMX_API_URL: "https://olmo-api.allen.ai"
 jobs:
   test:
     timeout-minutes: 60
@@ -19,17 +21,12 @@ jobs:
       with:
         node-version: lts/*
         cache: 'yarn'
-    - uses: isbang/compose-action@v1.5.1
-      with:
-        compose-file: "docker-compose.yaml"
-      env: 
-        LLMX_API_URL: "https://olmo-api.allen.ai"
     - name: Install dependencies
       run: yarn install --frozen-lockfile
-    - name: Build service
-      run: yarn build
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
+    - name: Start containers
+      run: docker-compose -f "docker-compose.yml" up -d --build
     - name: Run Playwright tests
       run: yarn test:e2e 
     - uses: actions/upload-artifact@v4
