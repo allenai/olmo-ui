@@ -1,13 +1,11 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
 import { Dialog, DialogContent, Grid, IconButton, LinearProgress } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAppContext } from '../../AppContext';
 import { MessagePost } from '../../api/Message';
-import { DefaultPromptTemplate, PromptTemplate } from '../../api/PromptTemplate';
 import { usePromptTemplate } from '../../contexts/promptTemplateContext';
-import { RepromptActionContext } from '../../contexts/repromptActionContext';
 import { RemoteState } from '../../contexts/util';
 import { StandardContainer } from '../StandardContainer';
 import { Parameters } from '../configuration/Parameters';
@@ -15,8 +13,6 @@ import { NewQueryForm } from './NewQueryForm';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
-
-    const { repromptText, setRepromptText } = useContext(RepromptActionContext);
 
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -29,9 +25,6 @@ export const NewQuery = () => {
         promptTemplateList,
         getPromptTemplateList,
     } = usePromptTemplate();
-    const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
-        DefaultPromptTemplate,
-    ]);
 
     // see if any loading state is active
     const isLoading =
@@ -44,11 +37,6 @@ export const NewQuery = () => {
         getPromptTemplateList();
         getAllModel();
     }, []);
-
-    useEffect(() => {
-        promptTemplateList.sort((a, b) => a.name.localeCompare(b.name));
-        setPromptTemplates([DefaultPromptTemplate].concat(promptTemplateList));
-    }, [promptTemplateList]);
 
     const postNewMessage = async function (data: MessagePost) {
         await postMessage(data);
@@ -88,7 +76,7 @@ export const NewQuery = () => {
                             isFormDisabled={isLoading}
                             onSubmit={(event) => postNewMessage(event)}
                             onParametersButtonClick={() => setShowParams(!showParams)}
-                            promptTemplates={promptTemplates}
+                            promptTemplates={promptTemplateList}
                             models={modelInfo.data!}
                             topRightFormControls={
                                 <IconButton

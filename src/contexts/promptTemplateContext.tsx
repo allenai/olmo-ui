@@ -5,6 +5,7 @@ import { produce } from 'immer';
 
 import { PromptTemplateClient } from '../api/PromptTemplateClient';
 import {
+    DefaultPromptTemplate,
     PromptTemplate,
     PromptTemplateList,
     PromptTemplatePatch,
@@ -35,10 +36,13 @@ export const PromptTemplateProvider = ({ children }: { children: ReactNode }) =>
         setRemoteState(RemoteState.Loading);
         return promptTemplateClient
             .getPromptTemplateList(includeDeleted)
-            .then((r) => {
-                setPromptTemplateList(r);
+            .then((promptTemplates) => {
+                const sortedPromptTemplates = [DefaultPromptTemplate]
+                    .concat(promptTemplates)
+                    .sort((a, b) => a.name.localeCompare(b.name));
+                setPromptTemplateList(sortedPromptTemplates);
                 setRemoteState(RemoteState.Loaded);
-                return r;
+                return sortedPromptTemplates;
             })
             .catch((e) => {
                 setRemoteState(RemoteState.Error);

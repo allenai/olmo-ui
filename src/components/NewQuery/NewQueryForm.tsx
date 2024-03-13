@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, Grid, Tooltip } from '@mui/material';
-import { MouseEventHandler, ReactNode } from 'react';
+import { MouseEventHandler, ReactNode, useContext, useEffect } from 'react';
 
 import { FormContainer, SelectElement, TextFieldElement, useForm } from 'react-hook-form-mui';
 
@@ -8,6 +8,7 @@ import { PromptTemplate } from '../../api/PromptTemplate';
 
 import { MessagePost } from '../../api/Message';
 
+import { RepromptActionContext } from '../../contexts/repromptActionContext';
 import { TemplateSelect } from './TemplateSelect';
 
 interface NewQueryFormProps {
@@ -34,6 +35,12 @@ export const NewQueryForm = ({
             private: false,
         },
     });
+
+    const { repromptText } = useContext(RepromptActionContext);
+
+    useEffect(() => {
+        formContext.setValue('content', repromptText);
+    }, [repromptText]);
 
     const handlePromptTemplateChange = (templateId: string) => {
         const template = promptTemplates.find((template) => templateId === template.id);
