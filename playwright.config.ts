@@ -29,10 +29,6 @@ export default defineConfig({
             'X-Auth-Request-User': 'foo',
             'X-Auth-Request-Email': 'foo@bar.com',
         },
-        bypassCSP: true,
-        launchOptions: {
-          args: ['--disable-web-security']
-        }
     },
 
     /* Configure projects for major browsers */
@@ -77,6 +73,6 @@ export default defineConfig({
     // webServer: {
     //     command: 'yarn start',
     //     url: 'http://localhost:8080',
-    //     reuseExistingServer: true
+    //     reuseExistingServer: !process.env.CI,
     // },
 });
