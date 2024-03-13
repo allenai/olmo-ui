@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext, ChangeEvent } from 'react';
-import styled from 'styled-components';
 import {
     IconButton,
     MenuItem,
@@ -106,14 +105,14 @@ export const NewQuery = () => {
         setPromptTemplates([DefaultPromptTemplate].concat(promptTemplateList));
     }, [promptTemplateList]);
 
-    const postNewMessage = async function () {
+    const postNewMessage = async function (data: MessagePost) {
         setIsSubmitting(true);
         const payload: MessagePost = {
-            content: prompt || '',
-            private: isPrivateChecked,
-            model: selectedModelId,
+            content: data.prompt,
+            private: data.private,
+            model: data.model,
         };
-        const postMessageInfo = await postMessage(payload);
+        const postMessageInfo = await postMessage(data);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
             Clear();
         }
@@ -155,76 +154,26 @@ export const NewQuery = () => {
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
-                <Grid
-                    display="grid"
-                    gap={2}
-                    height={1}
-                    gridTemplateRows="min-content 1fr min-content">
-                    <Grid container item gap={2} justifyContent="space-between">
-                        <Tooltip
-                            title={
-                                modelList.find((model) => model.id === selectedModelId)?.description
-                            }
-                            placement="top">
-                            <Select
-                                sx={{
-                                    flex: '1 1 min-content',
-                                }}
-                                value={selectedModelId}
-                                disabled={isLoading}
-                                onChange={(evt) => {
-                                    setSelectedModelId(evt.target.value);
-                                }}>
-                                {modelList.map((ml) => {
-                                    return (
-                                        <MenuItem key={ml.id} value={ml.id}>
-                                            {ml.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </Tooltip>
-
-                        <Select
-                            defaultValue={DefaultPromptTemplate.id}
-                            value={selectedPromptTemplateId}
-                            disabled={isLoading}
-                            sx={{
-                                flex: '1 1 min-content',
-                            }}
-                            onChange={(evt) => {
-                                if (promptIsDirty) {
-                                    // we have a dirty prompt, prevent the change?
-                                    setPromptTemplateIdSwitchingTo(evt.target.value);
-                                    setIsPromptAlertOpen(true);
-                                } else {
-                                    setSelectedPromptTemplateId(evt.target.value);
-                                }
-                            }}>
-                            {promptTemplates.map((pt) => {
-                                return (
-                                    <MenuItem key={pt.id} value={pt.id}>
-                                        {pt.name}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                        <IconButton
-                            size="large"
-                            onClick={() => setIsFullScreen(!isFullScreen)}
-                            sx={{ marginLeft: 'auto' }}>
-                            {!isFullScreen ? (
-                                <FullscreenIcon fontSize="inherit" />
-                            ) : (
-                                <FullscreenIconExit fontSize="inherit" />
-                            )}
-                        </IconButton>
-                    </Grid>
+                <Grid display="grid" gap={2} height={1} gridTemplateRows="min-content 1fr">
                     <NewQueryForm
                         isFormDisabled={isLoading}
                         onPromptChange={(event) => updatePrompt(event.target.value)}
-                        onSubmit={(event) => postNewMessage()}
+                        onSubmit={(event) => postNewMessage(event)}
                         onParametersButtonClick={() => setShowParams(!showParams)}
+                        promptTemplates={promptTemplates}
+                        models={modelList}
+                        topRightFormControls={
+                            <IconButton
+                                size="large"
+                                onClick={() => setIsFullScreen(!isFullScreen)}
+                                sx={{ marginLeft: 'auto' }}>
+                                {!isFullScreen ? (
+                                    <FullscreenIcon fontSize="inherit" />
+                                ) : (
+                                    <FullscreenIconExit fontSize="inherit" />
+                                )}
+                            </IconButton>
+                        }
                     />
                     {isLoading ? (
                         <Grid>
