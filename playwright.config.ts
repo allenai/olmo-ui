@@ -73,6 +73,6 @@ export default defineConfig({
     webServer: {
         command: 'yarn start',
         url: 'http://localhost:3000',
-        reuseExistingServer: true
+        reuseExistingServer: !process.env.CI,
     },
 });
