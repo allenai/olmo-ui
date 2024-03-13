@@ -19,6 +19,7 @@ export default defineConfig({
         : [['html', { open: 'never' }]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
+        headless: false,
         /* Base URL to use in actions like `await page.goto('/')`. */
         baseURL: 'http://localhost:8080',
 
@@ -29,6 +30,10 @@ export default defineConfig({
             'X-Auth-Request-User': 'foo',
             'X-Auth-Request-Email': 'foo@bar.com',
         },
+        bypassCSP: true,
+        launchOptions: {
+          args: ['--disable-web-security']
+        }
     },
 
     /* Configure projects for major browsers */
@@ -73,6 +78,6 @@ export default defineConfig({
     // webServer: {
     //     command: 'yarn start',
     //     url: 'http://localhost:8080',
-    //     reuseExistingServer: !process.env.CI,
+    //     reuseExistingServer: true
     // },
 });
