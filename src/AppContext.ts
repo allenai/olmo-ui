@@ -51,8 +51,6 @@ export async function unpackError(r: Response): Promise<Response> {
     return r;
 }
 
-// Similarly, eslint doesn't know about RequestInfo
-// eslint-disable-next-line no-undef
 async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): Promise<T> {
     // Set defaults
     // TODO: factor this into an API client, as this is a little rough right now
