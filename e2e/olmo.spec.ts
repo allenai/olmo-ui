@@ -171,6 +171,5 @@ test('can prompt', async ({ page }) => {
         };
         await route.fulfill({ json });
     });
-    page.getByRole('button', { name: 'View Metadata' }).waitFor({ state: 'visible' });
-    await expect(page.getByRole('button', { name: 'View Metadata' })).toBeVisible();
+    await expect(page.getByPlaceholder('Follow Up')).toBeVisible();
 });
