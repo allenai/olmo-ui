@@ -23,10 +23,6 @@ jobs:
       run: yarn install --frozen-lockfile
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
-    - name: Docker Compose
-      run: docker compose up -d --build
-    - name: Docker Ps to check port
-      run: docker ps
     - name: Run Playwright tests
       run: yarn test:e2e
     - uses: actions/upload-artifact@v4
