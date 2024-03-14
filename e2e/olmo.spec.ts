@@ -11,7 +11,7 @@ test('has title', async ({ page }) => {
     await expect(page).toHaveTitle('OLMo - Allen Institute for AI');
 });
 
-test.only('can prompt', async ({ page }) => {
+test('can prompt', async ({ page }) => {
     await page.goto('/');
     await page.route('/v3/whoami', async (route) => {
         const json = {
