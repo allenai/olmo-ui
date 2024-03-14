@@ -9,7 +9,7 @@ server {
     location / {
         proxy_pass http://ui:3000;
     }
-
+    
     # This allows a websocket connection between the client and the webpack development server,
     # so that webpack can reload the developer's browser after they make changes.
     location /ws {
@@ -37,12 +37,7 @@ server {
         proxy_pass http://host.docker.internal:8000;
     }
 
-    location https://dolma.allen.ai/* {
-        proxy_set_header    X-Forwarded-Host    $http_host;
-        proxy_set_header    X-Forwarded-Proto   $scheme;
-        proxy_set_header    X-Forwarded-Port    $server_port;
-        proxy_set_header    X-Forwarded-For     $remote_addr;
-
-        proxy_pass http://host.docker.internal:8001;
+    location /dolma-api/ {
+        proxy_pass http://api:8000/;
     }
 }

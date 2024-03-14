@@ -11,6 +11,8 @@ services:
       # makes debugging easier.
       - PYTHONUNBUFFERED=1
       - LOG_LEVEL=DEBUG
+    ports: 
+      - 8001:8000
   ui:
     build:
       context: .
@@ -21,6 +23,7 @@ services:
     environment:
       - NODE_ENV=development
       - LLMX_API_URL=${LLMX_API_URL}
+      - DOLMA_API_URL=/dolma-api
   nginx:
     image: nginx:1.25.1-alpine
     volumes:
