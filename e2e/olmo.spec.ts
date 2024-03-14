@@ -101,6 +101,10 @@ test('can prompt', async ({ page }) => {
         };
         await route.fulfill({ json });
     });
+
+    page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').waitFor({
+        state: 'visible',
+    });
     page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').fill(
         'Can you tell me a friday joke?'
     );
@@ -167,5 +171,6 @@ test('can prompt', async ({ page }) => {
         };
         await route.fulfill({ json });
     });
+    page.getByRole('button', { name: 'View Metadata' }).waitFor({ state: 'visible' });
     await expect(page.getByRole('button', { name: 'View Metadata' })).toBeVisible();
 });
