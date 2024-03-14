@@ -4,22 +4,106 @@ test('has title', async ({ page }) => {
     await page.goto('/');
     await page.route('/v3/whoami', async (route) => {
         const json = {
-            client: "murphy@allenai.org"
+            client: 'murphy@allenai.org',
         };
-        await route.fulfill({ json: json });
+        await route.fulfill({ json });
     });
     await expect(page).toHaveTitle('OLMo - Allen Institute for AI');
 });
 
-test('can prompt', async ({ page }) => {
+test.only('can prompt', async ({ page }) => {
     await page.goto('/');
     await page.route('/v3/whoami', async (route) => {
         const json = {
-            client: "murphy@allenai.org"
+            client: 'murphy@allenai.org',
         };
-        await route.fulfill({ json: json });
+        await route.fulfill({ json });
     });
-    page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').fill('Can you tell me a friday joke?');
+    await page.route('/v3/schema', async (route) => {
+        const json = {
+            InferenceOpts: {
+                logprobs: {
+                    default: null,
+                    max: 10,
+                    min: 0,
+                    name: 'logprobs',
+                    step: 1,
+                },
+                max_tokens: {
+                    default: 2048,
+                    max: 4096,
+                    min: 1,
+                    name: 'max_tokens',
+                    step: 1,
+                },
+                n: {
+                    default: 1,
+                    max: 50,
+                    min: 1,
+                    name: 'n',
+                    step: 1,
+                },
+                stop: {
+                    default: null,
+                    max: null,
+                    min: null,
+                    name: 'stop',
+                    step: null,
+                },
+                temperature: {
+                    default: 1.0,
+                    max: 2.0,
+                    min: 0.0,
+                    name: 'temperature',
+                    step: 0.01,
+                },
+                top_p: {
+                    default: 1.0,
+                    max: 1.0,
+                    min: 0.0,
+                    name: 'top_p',
+                    step: 0.01,
+                },
+            },
+        };
+        await route.fulfill({ json });
+    });
+    await page.route('/v3/templates/prompts', async (route) => {
+        const json = [];
+        await route.fulfill({ json });
+    });
+    await page.route('/v3/models', async (route) => {
+        const json = [
+            {
+                description: "AI2's 7B model trained on the Dolma dataset and fine-tuned for chat.",
+                id: 'olmo-7b-chat',
+                model_type: 'chat',
+                name: 'OLMo 7B - Chat',
+            },
+            {
+                description: "AI2's 7B model trained on the Dolma dataset.",
+                id: 'olmo-7b-base',
+                model_type: 'base',
+                name: 'OLMo 7B - Base',
+            },
+        ];
+        await route.fulfill({ json });
+    });
+    await page.route('/v3/messages?offset=0&creator=murphy%40allenai.org', async (route) => {
+        const json = {
+            messages: [],
+            meta: {
+                limit: 10,
+                offset: 0,
+                sort: null,
+                total: 204,
+            },
+        };
+        await route.fulfill({ json });
+    });
+    page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').fill(
+        'Can you tell me a friday joke?'
+    );
     await page.getByRole('button', { name: 'Prompt' }).click();
     await page.route('/v3/message/stream', async (route) => {
         const json = {
@@ -81,7 +165,7 @@ test('can prompt', async ({ page }) => {
             model_type: null,
             labels: [],
         };
-        await route.fulfill({ json: json });
+        await route.fulfill({ json });
     });
     await expect(page.getByRole('button', { name: 'View Metadata' })).toBeVisible();
 });
