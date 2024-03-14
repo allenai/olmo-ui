@@ -3,7 +3,7 @@ import { staticData } from './staticData';
 
 export class StaticDataClient extends ClientBase {
     async getSources(): Promise<staticData.Sources> {
-        const url = '/api/static/sources.json';
+        const url = 'https://dolma.allen.ai/api/static/sources.json';
         const resp = await fetch(url);
         return await this.unpack<staticData.Sources>(resp);
     }

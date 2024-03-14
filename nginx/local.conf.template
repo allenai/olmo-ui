@@ -36,4 +36,13 @@ server {
 
         proxy_pass http://host.docker.internal:8000;
     }
+
+    location https://dolma.allen.ai/* {
+        proxy_set_header    X-Forwarded-Host    $http_host;
+        proxy_set_header    X-Forwarded-Proto   $scheme;
+        proxy_set_header    X-Forwarded-Port    $server_port;
+        proxy_set_header    X-Forwarded-For     $remote_addr;
+
+        proxy_pass http://host.docker.internal:8001;
+    }
 }
