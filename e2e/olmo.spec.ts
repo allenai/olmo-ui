@@ -102,9 +102,6 @@ test('can prompt', async ({ page }) => {
         await route.fulfill({ json });
     });
 
-    page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').waitFor({
-        state: 'visible',
-    });
     page.getByPlaceholder('Select a Prompt Template above or type a free form prompt').fill(
         'Can you tell me a friday joke?'
     );
@@ -171,5 +168,5 @@ test('can prompt', async ({ page }) => {
         };
         await route.fulfill({ json });
     });
-    await expect(page.getByPlaceholder('Follow Up')).toBeVisible();
+    await expect(page.getByPlaceholder('Follow Up')).toBeInViewport();
 });
