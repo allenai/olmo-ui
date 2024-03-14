@@ -106,7 +106,8 @@ test('can prompt', async ({ page }) => {
         'Can you tell me a friday joke?'
     );
     await page.getByRole('button', { name: 'Prompt' }).click();
-    await page.route('/v3/message/stream', async (route) => {
+    await page.route('/v3/message/stream', async (route, request) => {
+        const method = "POST";
         const json = {
             id: 'msg_Y3U0D2Y3R3',
             content: 'Can you tell me a friday joke?',
@@ -166,7 +167,7 @@ test('can prompt', async ({ page }) => {
             model_type: null,
             labels: [],
         };
-        await route.fulfill({ json });
+        await route.fulfill({ json: json });
     });
     await expect(page.getByPlaceholder('Follow Up')).toBeInViewport();
 });
