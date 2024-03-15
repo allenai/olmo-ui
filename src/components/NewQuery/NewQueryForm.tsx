@@ -61,8 +61,17 @@ export const NewQueryForm = ({
     const isFormDisabledOrLoading = isFormDisabled || formContext.formState.isSubmitting;
 
     return (
-        <FormContainer formContext={formContext} onSuccess={(data) => handleSubmit(data)}>
-            <Grid container gap={1} display="grid" gridTemplateRows="min-content 1fr min-content">
+        <FormContainer
+            formContext={formContext}
+            onSuccess={(data) => handleSubmit(data)}
+            // Using style instead of styled or sx because rhf-mui doesn't support it well
+            FormProps={{ style: { height: '100%' } }}>
+            <Grid
+                container
+                gap={1}
+                display="grid"
+                gridTemplateRows="min-content 1fr min-content"
+                sx={{ height: 1 }}>
                 <Grid container item gap={2} justifyContent="space-between">
                     <Tooltip
                         title={

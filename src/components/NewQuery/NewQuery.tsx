@@ -66,7 +66,7 @@ export const NewQuery = () => {
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
-                <Grid display="grid" gap={2} height={1} gridTemplateRows="min-content 1fr">
+                <Grid gap={2} height={1}>
                     {isLoading ? (
                         <Grid>
                             <LinearProgress />
