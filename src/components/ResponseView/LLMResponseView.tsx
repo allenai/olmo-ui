@@ -1,17 +1,17 @@
 import { useCallback, useState } from 'react';
 
-import CropSquareIcon from '@mui/icons-material/CropSquare';
 import DOMPurify from 'dompurify';
 import styled from 'styled-components';
 import { Stack } from '@mui/material';
 
-import { useAppContext } from '../..//AppContext';
+import { useAppContext } from '../../AppContext';
 
-import { HideAndShowContainer, IconContainer, ResponseProps, StopButton, marked } from './Response';
+import { IconContainer, ResponseProps, marked } from './Response';
 import { RobotAvatar } from '../avatars/RobotAvatar';
 import { UserAvatar } from '../avatars/UserAvatar';
 import { BranchIcon } from '../assets/BranchIcon';
 import { ChatResponseContainer } from './ChatResponseContainer';
+import { LLMMenu } from './LLMMenu';
 
 export const LLMResponseView = ({
     response,
@@ -21,28 +21,11 @@ export const LLMResponseView = ({
     displayBranchIcon = false,
     isEditedResponse = false,
 }: ResponseProps) => {
-    const { abortController, ongoingThreadId } = useAppContext();
+    const { abortController } = useAppContext();
     const [hover, setHover] = useState(false);
     const onAbort = useCallback(() => {
         abortController?.abort();
     }, [abortController]);
-
-    const renderMenu = () => {
-        if (abortController && ongoingThreadId === msgId) {
-            return (
-                <StopButton variant="outlined" startIcon={<CropSquareIcon />} onClick={onAbort}>
-                    Stop
-                </StopButton>
-            );
-        }
-
-        return (
-            <HideAndShowContainer direction="row" spacing={1} show={hover ? 'true' : 'false'}>
-                {contextMenu || null}
-                {branchMenu || null}
-            </HideAndShowContainer>
-        );
-    };
 
     // turning off features as they pop dom warnings
     marked.use({
@@ -69,7 +52,13 @@ export const LLMResponseView = ({
                             dangerouslySetInnerHTML={{ __html: html }}
                             style={{ background: 'transparent', overflowWrap: 'anywhere' }}
                         />
-                        {renderMenu()}
+                        <LLMMenu
+                            msgId={msgId}
+                            contextMenu={contextMenu}
+                            branchMenu={branchMenu}
+                            hover={hover}
+                            onAbort={onAbort}
+                        />
                     </Stack>
                     <IconContainer show={displayBranchIcon && !hover ? 'true' : 'false'}>
                         <BranchIcon />

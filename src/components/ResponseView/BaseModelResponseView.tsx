@@ -15,7 +15,7 @@ import { RobotAvatar } from '../avatars/RobotAvatar';
 import { LLMResponseContainer } from './LLMResponseView';
 
 interface BaseResponseContainerProps {
-    children: JSX.Element;
+    children: React.ReactNode,
 }
 
 const BaseResponseContainer = ({ children }: BaseResponseContainerProps) => {
