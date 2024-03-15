@@ -7,5 +7,5 @@ const Logo = () => <div>Logo</div>;
 
 test('LLMResponseView', () => {
     render(<ChatResponseContainer children={<Logo />} setHover={setHover} />);
-    expect(screen.getByText('This is a response')).toBeVisible();
+    expect(screen.getByText('Logo')).toBeVisible();
 });
