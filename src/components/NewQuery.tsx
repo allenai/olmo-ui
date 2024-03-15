@@ -18,8 +18,6 @@ import {
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
 
-import useRepromptStore from '../store/RepromptStore';
-
 import { DefaultPromptTemplate, PromptTemplate } from '../api/PromptTemplate';
 import { Confirm } from './Confirm';
 import { MessagePost } from '../api/Message';
@@ -33,7 +31,8 @@ import { Model } from '../api/Model';
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
 
-    const { repromptText, setRepromptText } = useRepromptStore();
+    const setRepromptText = useAppContext((state) => state.setRepromptText);
+    const repromptText = useAppContext((state) => state.repromptText);
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );

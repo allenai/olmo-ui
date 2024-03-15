@@ -28,6 +28,7 @@ import {
 } from './api/Label';
 import { ReadableJSONLStream } from './api/ReadableJSONLStream';
 import { ModelApiUrl, ModelList } from './api/Model';
+import { RepromptState, createRepromptSlice } from './slice/repromptSlice';
 
 interface APIError {
     error: { code: number; message: string };
@@ -97,7 +98,7 @@ type State = {
     modelInfo: FetchInfo<ModelList>;
     schema: FetchInfo<Schema>;
     expandedThreadID?: string;
-};
+} & RepromptState;
 
 type Action = {
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
@@ -122,7 +123,7 @@ type Action = {
     setExpandedThreadID: (id: string | undefined) => void;
 };
 
-export const useAppContext = create<State & Action>()((set, get) => ({
+export const useAppContext = create<State & Action>()((set, get, store) => ({
     abortController: null,
     ongoingThreadId: null,
     inferenceOpts: {},
@@ -137,6 +138,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
     allLabelInfo: {},
     modelInfo: {},
     schema: {},
+    ...createRepromptSlice(set, get, store),
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
