@@ -18,6 +18,8 @@ import {
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
 
+import useRepromptStore from '../store/RepromptStore';
+
 import { DefaultPromptTemplate, PromptTemplate } from '../api/PromptTemplate';
 import { Confirm } from './Confirm';
 import { MessagePost } from '../api/Message';
@@ -26,14 +28,12 @@ import { Parameters } from './configuration/Parameters';
 import { StandardContainer } from './StandardContainer';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
-import { RepromptActionContext } from '../contexts/repromptActionContext';
 import { Model } from '../api/Model';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
 
-    const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
-
+    const { repromptText, setRepromptText } = useRepromptStore();
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
