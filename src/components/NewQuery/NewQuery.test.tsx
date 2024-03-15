@@ -28,7 +28,7 @@ const fakePromptsResponse: JSONPromptTemplateList = [
 
 describe('NewQuery', () => {
     beforeEach(() => {
-        fetchMock.mockImplementation(async (url, options) => {
+        fetchMock.mockImplementation(async (url) => {
             if (url.toString().includes(ModelApiUrl)) {
                 return new Response(JSON.stringify(fakeModelsResponse));
             }
@@ -68,4 +68,26 @@ describe('NewQuery', () => {
             })
         );
     });
+
+    test('should populate the models list and change title description when selecting a new model', async () => {
+        const user = userEvent.setup();
+
+        render(<NewQuery />);
+
+        const modelSelect = await screen.findByRole('combobox', { name: 'Model' });
+
+        // Make sure the tooltip is showing the description for the first option
+        await user.hover(modelSelect);
+        expect(await screen.findByText(fakeModelsResponse[0].description)).toBeVisible();
+
+        // Select the second option
+        await user.click(modelSelect);
+        await user.click(screen.getByRole('option', { name: fakeModelsResponse[1].name }));
+
+        // Check the tooltip has the second option's description now
+        await user.hover(modelSelect);
+        expect(await screen.findByText(fakeModelsResponse[1].description)).toBeVisible();
+    });
+
+    // test('should populate the templates list and set a template when selecting one', async () => {});
 });

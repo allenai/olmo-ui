@@ -1,7 +1,7 @@
-import { Button, Checkbox, FormControlLabel, Grid, Tooltip } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { MouseEventHandler, ReactNode, useContext, useEffect } from 'react';
 
-import { FormContainer, SelectElement, TextFieldElement, useForm } from 'react-hook-form-mui';
+import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import { Model } from '../../api/Model';
 import { PromptTemplate } from '../../api/PromptTemplate';
@@ -10,6 +10,7 @@ import { MessagePost } from '../../api/Message';
 
 import { RepromptActionContext } from '../../contexts/repromptActionContext';
 import { TemplateSelect } from './TemplateSelect';
+import { ModelSelect } from './ModelSelect';
 
 interface NewQueryFormProps {
     onSubmit: (data: MessagePost) => Promise<void>;
@@ -73,22 +74,7 @@ export const NewQueryForm = ({
                 gridTemplateRows="min-content 1fr min-content"
                 sx={{ height: 1 }}>
                 <Grid container item gap={2} justifyContent="space-between">
-                    <Tooltip
-                        title={
-                            models.find((model) => model.id === formContext.getValues('model'))
-                                ?.description
-                        }
-                        placement="top">
-                        <SelectElement
-                            sx={{
-                                flex: '1 1 min-content',
-                            }}
-                            name="model"
-                            disabled={isFormDisabledOrLoading}
-                            options={models.map((model) => ({ id: model.id, label: model.name }))}
-                        />
-                    </Tooltip>
-
+                    <ModelSelect disabled={isFormDisabledOrLoading} />
                     <TemplateSelect
                         promptTemplates={promptTemplates}
                         onChange={handlePromptTemplateChange}

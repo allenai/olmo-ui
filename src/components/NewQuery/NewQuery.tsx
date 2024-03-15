@@ -55,14 +55,6 @@ export const NewQuery = () => {
     //     }
     // };
 
-    // useEffect(() => {
-    //     if (modelInfo.data) {
-    //         const modelList = modelInfo.data;
-    //         setModelList(modelList);
-    //         setSelectedModelId(modelList[0]?.id);
-    //     }
-    // }, [modelInfo]);
-
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
