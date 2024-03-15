@@ -1,6 +1,4 @@
-interface BaseResponseContainerProps {
-    children: JSX.Element;
-}
+import { BaseResponseContainerProps } from './BaseModelResponseView';
 
 interface ChatResponseContainerProps extends BaseResponseContainerProps {
     setHover: (value: boolean) => void;

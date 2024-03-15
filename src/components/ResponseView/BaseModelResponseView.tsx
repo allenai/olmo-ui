@@ -14,8 +14,8 @@ import { RobotAvatar } from '../avatars/RobotAvatar';
 
 import { LLMResponseContainer } from './LLMResponseView';
 
-interface BaseResponseContainerProps {
-    children: React.ReactNode,
+export interface BaseResponseContainerProps {
+    children: React.ReactNode;
 }
 
 const BaseResponseContainer = ({ children }: BaseResponseContainerProps) => {
