@@ -34,6 +34,7 @@ export const TemplateSelect = ({
                 defaultValue={defaultTemplate}
                 disabled={disabled}
                 labelId={promptTemplateLabelId}
+                label="Prompt template"
                 sx={{
                     flex: '1 1 min-content',
                 }}

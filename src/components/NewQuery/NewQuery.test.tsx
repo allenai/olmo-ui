@@ -1,12 +1,8 @@
-import { getQueriesForElement, render, screen } from '@test-utils';
+import { render, screen } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 import { ModelApiUrl, ModelList } from 'src/api/Model';
 import { JSONPromptTemplateList, PromptTemplateApiUrl } from 'src/api/PromptTemplate';
-
-import { debug } from 'jest-preview';
-
-import { renderIntoDocument } from 'react-dom/test-utils';
 
 import { NewQuery } from './NewQuery';
 
@@ -98,10 +94,6 @@ describe('NewQuery', () => {
         await user.hover(modelSelect);
         expect(await screen.findByText(fakeModelsResponse[1].description)).toBeVisible();
     });
-
-    test.skip(
-        'should populate the templates list, show a "are you sure prompt" then set the template text'
-    );
 
     test('should update the prompt with the selected prompt template', async () => {
         const user = userEvent.setup();
