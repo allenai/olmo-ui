@@ -1,8 +1,12 @@
-import { render, screen } from '@test-utils';
+import { getQueriesForElement, render, screen } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 import { ModelApiUrl, ModelList } from 'src/api/Model';
 import { JSONPromptTemplateList, PromptTemplateApiUrl } from 'src/api/PromptTemplate';
+
+import { debug } from 'jest-preview';
+
+import { renderIntoDocument } from 'react-dom/test-utils';
 
 import { NewQuery } from './NewQuery';
 
@@ -23,7 +27,13 @@ const fakeModelsResponse: ModelList = [
     },
 ];
 const fakePromptsResponse: JSONPromptTemplateList = [
-    { id: 'id', name: 'name', content: 'content', creator: 'creator', created: '1710371316729' },
+    {
+        id: 'id',
+        name: 'name',
+        content: 'This is a prompt template',
+        creator: 'creator',
+        created: '1710371316729',
+    },
 ];
 
 describe('NewQuery', () => {
@@ -89,5 +99,19 @@ describe('NewQuery', () => {
         expect(await screen.findByText(fakeModelsResponse[1].description)).toBeVisible();
     });
 
-    // test('should populate the templates list and set a template when selecting one', async () => {});
+    test.skip(
+        'should populate the templates list, show a "are you sure prompt" then set the template text'
+    );
+
+    test('should update the prompt with the selected prompt template', async () => {
+        const user = userEvent.setup();
+
+        render(<NewQuery />);
+
+        const templateSelect = await screen.findByRole('combobox', { name: 'Prompt template' });
+        user.click(templateSelect);
+        user.click(await screen.findByRole('option', { name: fakePromptsResponse[0].name }));
+
+        expect(await screen.findByRole('textbox')).toHaveValue(fakePromptsResponse[0].content);
+    });
 });
