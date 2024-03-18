@@ -6,6 +6,10 @@ const setHover = (_value: boolean): void => {};
 const Logo = () => <div>Logo</div>;
 
 test('LLMResponseView', () => {
-    render(<ChatResponseContainer children={<Logo />} setHover={setHover} />);
+    render(
+        <ChatResponseContainer setHover={setHover}>
+            <Logo />
+        </ChatResponseContainer>
+    );
     expect(screen.getByText('Logo')).toBeVisible();
 });
