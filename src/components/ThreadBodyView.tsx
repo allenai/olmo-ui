@@ -17,11 +17,13 @@ import { Message, MessagePost } from '../api/Message';
 import { Role } from '../api/Role';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
-import { BaseModelResponseView, LLMResponseView, UserResponseView } from './ResponseViews';
 import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { LabelRating } from '../api/Label';
 
 import 'highlight.js/styles/github-dark.css';
+import { UserResponseView } from './ResponseView/UserResponseView';
+import { LLMResponseView } from './ResponseView/LLMResponseView';
+import { BaseModelResponseView } from './ResponseView/BaseModelResponseView';
 
 interface ThreadBodyProps {
     parent?: Message;
