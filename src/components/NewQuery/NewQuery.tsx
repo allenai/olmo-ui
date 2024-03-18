@@ -1,6 +1,6 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
-import { Dialog, DialogContent, Grid, IconButton, LinearProgress } from '@mui/material';
+import { Dialog, DialogContent, Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import { useAppContext } from '../../AppContext';
@@ -12,7 +12,9 @@ import { Parameters } from '../configuration/Parameters';
 import { NewQueryForm } from './NewQueryForm';
 
 export const NewQuery = () => {
-    const { modelInfo, postMessage, getAllModel } = useAppContext();
+    const modelInfo = useAppContext((state) => state.modelInfo);
+    const postMessage = useAppContext((state) => state.postMessage);
+    const getAllModel = useAppContext((state) => state.getAllModel);
 
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -20,11 +22,7 @@ export const NewQuery = () => {
     const [showParams, setShowParams] = useState(false);
 
     // prompt templates
-    const {
-        remoteState: promptTemplateRemoteState,
-        promptTemplateList,
-        getPromptTemplateList,
-    } = usePromptTemplate();
+    const { remoteState: promptTemplateRemoteState, getPromptTemplateList } = usePromptTemplate();
 
     // see if any loading state is active
     const isLoading =
@@ -42,48 +40,33 @@ export const NewQuery = () => {
         await postMessage(data);
     };
 
-    // // when a selected prompt changes, update the user prompt
-    // useEffect(() => {
-    //     const foundPrompt = promptTemplates?.find((p) => p.id === selectedPromptTemplateId);
-    //     setPrompt(foundPrompt?.content);
-    // }, [selectedPromptTemplateId]);
-
-    // const updatePrompt = (value?: string, setDirty: boolean = true) => {
-    //     setPrompt(value);
-    //     if (value && value.length !== 0) {
-    //         setPromptIsDirty(setDirty);
-    //     }
-    // };
-
     return (
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
                 <Grid gap={2} height={1}>
-                    {isLoading ? (
+                    {/* {isLoading ? (
                         <Grid>
                             <LinearProgress />
                         </Grid>
-                    ) : (
-                        <NewQueryForm
-                            isFormDisabled={isLoading}
-                            onSubmit={(event) => postNewMessage(event)}
-                            onParametersButtonClick={() => setShowParams(!showParams)}
-                            promptTemplates={promptTemplateList}
-                            models={modelInfo.data!}
-                            topRightFormControls={
-                                <IconButton
-                                    size="large"
-                                    onClick={() => setIsFullScreen(!isFullScreen)}
-                                    sx={{ marginLeft: 'auto' }}>
-                                    {!isFullScreen ? (
-                                        <FullscreenIcon fontSize="inherit" />
-                                    ) : (
-                                        <FullscreenIconExit fontSize="inherit" />
-                                    )}
-                                </IconButton>
-                            }
-                        />
-                    )}
+                    ) : ( */}
+                    <NewQueryForm
+                        isFormDisabled={isLoading}
+                        onSubmit={(formData) => postNewMessage(formData)}
+                        onParametersButtonClick={() => setShowParams(!showParams)}
+                        topRightFormControls={
+                            <IconButton
+                                size="large"
+                                onClick={() => setIsFullScreen(!isFullScreen)}
+                                sx={{ marginLeft: 'auto' }}>
+                                {!isFullScreen ? (
+                                    <FullscreenIcon fontSize="inherit" />
+                                ) : (
+                                    <FullscreenIconExit fontSize="inherit" />
+                                )}
+                            </IconButton>
+                        }
+                    />
+                    {/* )} */}
                     {showParams ? (
                         <Grid minWidth="300px">
                             <Parameters />

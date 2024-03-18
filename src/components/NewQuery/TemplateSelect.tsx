@@ -1,42 +1,40 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form-mui';
 
-import { DefaultPromptTemplate, PromptTemplate } from '../../api/PromptTemplate';
+import { usePromptTemplate } from '../../contexts/promptTemplateContext';
+
+import { DefaultPromptTemplate } from '../../api/PromptTemplate';
 
 import { Confirm } from '../Confirm';
 
 interface TemplateSelectProps {
-    defaultTemplate?: string;
-    promptTemplates: PromptTemplate[];
     disabled?: boolean;
     onChange: (templateId: string) => void;
 }
 
 const promptTemplateLabelId = 'prompt-template-label';
 
-export const TemplateSelect = ({
-    promptTemplates,
-    disabled,
-    defaultTemplate = DefaultPromptTemplate.id,
-    onChange,
-}: TemplateSelectProps): JSX.Element => {
+export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX.Element => {
+    const { promptTemplateList } = usePromptTemplate();
     const { formState, getFieldState } = useFormContext();
 
     const [isPromptAlertOpen, setIsPromptAlertOpen] = useState(false);
-    const [selectedPromptTemplateId, setSelectedPromptTemplateId] =
-        useState<string>(defaultTemplate);
+    const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
+        DefaultPromptTemplate.id
+    );
 
     return (
-        <FormControl>
-            <InputLabel id={promptTemplateLabelId}>Prompt template</InputLabel>
-            <Select
-                defaultValue={defaultTemplate}
-                disabled={disabled}
-                labelId={promptTemplateLabelId}
+        <>
+            <TextField
+                select
                 label="Prompt template"
+                defaultValue={DefaultPromptTemplate.id}
+                disabled={disabled}
+                // this keeps the label at the top. it makes it look nicer since the models and templates can arrive at separate times
+                InputLabelProps={{ shrink: true }}
                 sx={{
-                    flex: '1 1 min-content',
+                    flex: '1 1 auto',
                 }}
                 onChange={(event) => {
                     if (formState.isDirty && getFieldState('content').isDirty) {
@@ -44,18 +42,27 @@ export const TemplateSelect = ({
                         setSelectedPromptTemplateId(event.target.value);
                         setIsPromptAlertOpen(true);
                     } else {
-                        onChange(event.target.value);
+                        const templateContent = promptTemplateList.find(
+                            (template) => template.id === event.target.value
+                        )?.content;
+
+                        if (templateContent == null) {
+                            // TODO: Handle this edge case. What do we want to do if a template disappears?
+                            return;
+                        }
+
+                        onChange(templateContent);
                         setSelectedPromptTemplateId(event.target.value);
                     }
                 }}>
-                {promptTemplates.map((pt) => {
+                {promptTemplateList.map((pt) => {
                     return (
                         <MenuItem key={pt.id} value={pt.id}>
                             {pt.name}
                         </MenuItem>
                     );
                 })}
-            </Select>
+            </TextField>
 
             <Confirm
                 title="Lose changes?"
@@ -68,6 +75,6 @@ export const TemplateSelect = ({
                 onCancel={() => setIsPromptAlertOpen(false)}
                 successText="Continue"
             />
-        </FormControl>
+        </>
     );
 };

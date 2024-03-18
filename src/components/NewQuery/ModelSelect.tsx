@@ -8,23 +8,25 @@ interface ModelSelectProps {
 }
 
 export const ModelSelect = ({ disabled }: ModelSelectProps) => {
-    const models = useAppContext((state) => state.modelInfo.data!);
+    const models = useAppContext((state) => state.modelInfo.data);
 
     const selectedModel = useWatch({ name: 'model' });
 
     return (
         <Tooltip
-            title={models.find((model) => model.id === selectedModel)?.description}
+            title={models?.find((model) => model.id === selectedModel)?.description}
             describeChild
             placement="top">
             <SelectElement
-                sx={{
-                    flex: '1 1 min-content',
-                }}
                 name="model"
                 disabled={disabled}
-                options={models.map((model) => ({ id: model.id, label: model.name }))}
+                options={models?.map((model) => ({ id: model.id, label: model.name }))}
                 label="Model"
+                // this keeps the label at the top. it makes it look nicer since the models and templates can arrive at separate times
+                InputLabelProps={{ shrink: true }}
+                sx={{
+                    flex: '1 1 auto',
+                }}
             />
         </Tooltip>
     );

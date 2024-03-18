@@ -1,41 +1,49 @@
 import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { MouseEventHandler, ReactNode, useContext, useEffect } from 'react';
 
-import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import {
+    FieldValues,
+    FormContainer,
+    TextFieldElement,
+    UseFormReturn,
+    useForm,
+} from 'react-hook-form-mui';
 
-import { Model } from '../../api/Model';
-import { PromptTemplate } from '../../api/PromptTemplate';
+import { ModelList } from 'src/api/Model';
+
+import { useAppContext } from '../../AppContext';
+
+import { usePromptTemplate } from '../../contexts/promptTemplateContext';
 
 import { MessagePost } from '../../api/Message';
 
 import { RepromptActionContext } from '../../contexts/repromptActionContext';
-import { TemplateSelect } from './TemplateSelect';
 import { ModelSelect } from './ModelSelect';
+import { TemplateSelect } from './TemplateSelect';
 
 interface NewQueryFormProps {
     onSubmit: (data: MessagePost) => Promise<void>;
     isFormDisabled?: boolean;
     onParametersButtonClick: MouseEventHandler;
-    models: Model[];
-    promptTemplates: PromptTemplate[];
     topRightFormControls?: ReactNode;
 }
 
-export const NewQueryForm = ({
-    onSubmit,
-    isFormDisabled,
-    onParametersButtonClick,
-    models,
-    promptTemplates,
-    topRightFormControls = null,
-}: NewQueryFormProps): JSX.Element => {
+const useNewQueryFormHandling = () => {
+    const models = useAppContext((state) => state.modelInfo.data);
+
     const formContext = useForm({
         defaultValues: {
-            model: models[0].id,
+            model: models?.[0].id,
             content: '',
             private: false,
         },
     });
+
+    useEffect(() => {
+        if (models != null) {
+            formContext.reset({ model: models[0].id });
+        }
+    }, models);
 
     const { repromptText } = useContext(RepromptActionContext);
 
@@ -43,15 +51,19 @@ export const NewQueryForm = ({
         formContext.setValue('content', repromptText);
     }, [repromptText]);
 
-    const handlePromptTemplateChange = (templateId: string) => {
-        const template = promptTemplates.find((template) => templateId === template.id);
+    return formContext;
+};
 
-        if (template == null) {
-            // TODO: Handle this edge case
-            return;
-        }
+export const NewQueryForm = ({
+    onSubmit,
+    isFormDisabled,
+    onParametersButtonClick,
+    topRightFormControls = null,
+}: NewQueryFormProps): JSX.Element => {
+    const formContext = useNewQueryFormHandling();
 
-        formContext.setValue('content', template.content);
+    const handlePromptTemplateChange = (templateContent: string) => {
+        formContext.setValue('content', templateContent);
     };
 
     const handleSubmit = async (data: MessagePost) => {
@@ -75,10 +87,7 @@ export const NewQueryForm = ({
                 sx={{ height: 1 }}>
                 <Grid container item gap={2} justifyContent="space-between">
                     <ModelSelect disabled={isFormDisabledOrLoading} />
-                    <TemplateSelect
-                        promptTemplates={promptTemplates}
-                        onChange={handlePromptTemplateChange}
-                    />
+                    <TemplateSelect onChange={handlePromptTemplateChange} />
                     {topRightFormControls}
                 </Grid>
                 <TextFieldElement
