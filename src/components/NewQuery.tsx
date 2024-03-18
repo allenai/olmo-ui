@@ -60,7 +60,7 @@ export const NewQuery = () => {
         remoteState: promptTemplateRemoteState,
         promptTemplateList,
         getPromptTemplateList,
-    } = usePromptTemplate();
+    } = useAppContext();
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
         DefaultPromptTemplate,
     ]);

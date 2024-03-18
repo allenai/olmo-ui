@@ -29,6 +29,7 @@ import {
 import { ReadableJSONLStream } from './api/ReadableJSONLStream';
 import { ModelApiUrl, ModelList } from './api/Model';
 import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
+import { PromptTemplateState, createPromptTemplateSlice } from './slice/PromptTemplateSlice';
 
 interface APIError {
     error: { code: number; message: string };
@@ -98,7 +99,7 @@ type State = {
     modelInfo: FetchInfo<ModelList>;
     schema: FetchInfo<Schema>;
     expandedThreadID?: string;
-} & RepromptSlice;
+} & RepromptSlice & PromptTemplateState;
 
 type Action = {
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
@@ -139,6 +140,7 @@ export const useAppContext = create<State & Action>()((set, get, store) => ({
     modelInfo: {},
     schema: {},
     ...createRepromptSlice(set, get, store),
+    ...createPromptTemplateSlice(set, get, store),
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({

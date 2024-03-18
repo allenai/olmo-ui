@@ -17,7 +17,6 @@ import { useAppContext } from '../AppContext';
 import { PromptTemplate, PromptTemplatePost } from '../api/PromptTemplate';
 import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
 import { dateTimeFormat } from '../util';
-import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { RemoteState } from '../contexts/util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
@@ -28,7 +27,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
         getPromptTemplateList,
         createPromptTemplate,
         patchPromptTemplate,
-    } = usePromptTemplate();
+    } = useAppContext();
 
     const [isLoading, setIsLoading] = useState(false);
     const [filteredPromptTemplates, setFilteredPromptTemplates] = useState<PromptTemplate[]>([]);
