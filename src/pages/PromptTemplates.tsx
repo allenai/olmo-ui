@@ -21,13 +21,12 @@ import { RemoteState } from '../contexts/util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const { userInfo } = useAppContext();
-    const {
-        remoteState,
-        promptTemplateList,
-        getPromptTemplateList,
-        createPromptTemplate,
-        patchPromptTemplate,
-    } = useAppContext();
+
+    const remoteState = useAppContext((state) => state.promptTemplateRemoteState);
+    const promptTemplateList = useAppContext((state) => state.promptTemplateList);
+    const getPromptTemplateList = useAppContext((state) => state.getPromptTemplateList);
+    const createPromptTemplate = useAppContext((state) => state.createPromptTemplate);
+    const patchPromptTemplate = useAppContext((state) => state.patchPromptTemplate);
 
     const [isLoading, setIsLoading] = useState(false);
     const [filteredPromptTemplates, setFilteredPromptTemplates] = useState<PromptTemplate[]>([]);
