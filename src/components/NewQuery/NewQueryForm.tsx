@@ -68,7 +68,7 @@ export const NewQueryForm = ({
             formContext={formContext}
             onSuccess={(data) => handleSubmit(data)}
             // Using style instead of styled or sx because rhf-mui doesn't support it well
-            FormProps={{ style: { height: '100%' } }}>
+            FormProps={{ style: { height: '100%' }, 'aria-label': 'Prompt input and options' }}>
             <Grid
                 container
                 gap={1}
