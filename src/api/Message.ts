@@ -135,6 +135,8 @@ export class MessageClient extends ClientBase {
             opts: inferenceOptions,
         };
 
+        // This opts out of the default fetch handling in this.fetch
+        // Since this is a stream we can't unpack it the same way we do in this.fetch
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify(request),
