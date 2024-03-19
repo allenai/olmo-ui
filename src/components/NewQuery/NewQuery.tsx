@@ -44,11 +44,6 @@ export const NewQuery = () => {
         <StandardContainer>
             <FullScreenCapableContainer isFullScreen={isFullScreen}>
                 <Grid gap={2} height={1}>
-                    {/* {isLoading ? (
-                        <Grid>
-                            <LinearProgress />
-                        </Grid>
-                    ) : ( */}
                     <NewQueryForm
                         isFormDisabled={isLoading}
                         onSubmit={(formData) => postNewMessage(formData)}
@@ -66,7 +61,6 @@ export const NewQuery = () => {
                             </IconButton>
                         }
                     />
-                    {/* )} */}
                     {showParams ? (
                         <Grid minWidth="300px">
                             <Parameters />
