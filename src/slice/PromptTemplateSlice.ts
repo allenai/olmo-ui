@@ -26,9 +26,13 @@ export interface PromptTemplateAction {
 
 const promptTemplateClient = new PromptTemplateClient();
 
-export const createPromptTemplateSlice: StateCreator<PromptTemplateState & PromptTemplateAction> = (set, get) => ({
+export const createPromptTemplateSlice: StateCreator<PromptTemplateState & PromptTemplateAction> = (
+    set,
+    get
+) => ({
     promptTemplateList: [],
-    remoteState: undefined,
+    promptTemplateRemoteState: undefined,
+    promptTemplateListRemoteState: undefined,
     setPromptTemplateList: (list: PromptTemplateList) => set({ promptTemplateList: list }),
     getPromptTemplateList: async (includeDeleted?: boolean): Promise<PromptTemplateList> => {
         set({ promptTemplateListRemoteState: RemoteState.Loading });
