@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const enableMocking = async () => {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV !== 'development' || process.env.ENABLE_MOCKING !== 'true') {
         return;
     }
 
