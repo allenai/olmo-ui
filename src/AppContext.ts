@@ -28,7 +28,7 @@ import {
 } from './api/Label';
 import { ReadableJSONLStream } from './api/ReadableJSONLStream';
 import { ModelApiUrl, ModelList } from './api/Model';
-import { RepromptState, createRepromptSlice } from './slice/repromptSlice';
+import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
 
 interface APIError {
     error: { code: number; message: string };
@@ -98,7 +98,7 @@ type State = {
     modelInfo: FetchInfo<ModelList>;
     schema: FetchInfo<Schema>;
     expandedThreadID?: string;
-} & RepromptState;
+} & RepromptSlice;
 
 type Action = {
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
