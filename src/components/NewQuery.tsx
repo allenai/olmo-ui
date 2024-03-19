@@ -30,7 +30,7 @@ import { RepromptActionContext } from '../contexts/repromptActionContext';
 import { Model } from '../api/Model';
 
 export const NewQuery = () => {
-    const { modelInfo, postMessage, getAllModel } = useAppContext();
+    const { modelInfo, postMessage, getAllModels } = useAppContext();
 
     const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
 
@@ -79,7 +79,7 @@ export const NewQuery = () => {
 
     const getModelList = async function () {
         setModelLoading(true);
-        getAllModel().finally(() => {
+        getAllModels().finally(() => {
             setModelLoading(false);
         });
     };

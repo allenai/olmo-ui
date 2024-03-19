@@ -9,7 +9,7 @@ services:
       - ./public:/ui/public
     environment:
       - NODE_ENV=development
-      - LLMX_API_URL=${LLMX_API_URL}
+      - LLMX_API_URL
   nginx:
     image: nginx:1.25.1-alpine
     volumes:

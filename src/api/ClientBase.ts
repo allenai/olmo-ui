@@ -1,15 +1,18 @@
 import { error } from './error';
 
-export class ClientBase {
+export abstract class ClientBase {
     constructor(readonly origin = process.env.LLMX_API_URL) {}
 
-    public login(dest: string = document.location.toString()) {
-        const qs = new URLSearchParams(dest ? { redirect: dest } : undefined);
-        const url = `${this.origin}/v3/login/skiff?${qs.toString()}`;
-        document.location = url;
+    protected login(dest: string = document.location.toString()) {
+        const url = this.createURL('/v3/login/skiff');
+        if (dest) {
+            url.searchParams.set('dest', dest);
+        }
+
+        document.location = url.toString();
     }
 
-    protected async unpack<T>(response: Response): Promise<T> {
+    protected unpack = async <T>(response: Response): Promise<T> => {
         switch (response.status) {
             case 200:
                 return await response.json();
@@ -20,5 +23,34 @@ export class ClientBase {
             default:
                 throw await error.unpack(response);
         }
-    }
+    };
+
+    protected fetch = async <T>(
+        url: Parameters<typeof fetch>[0],
+        opts: Parameters<typeof fetch>[1] = {}
+    ): Promise<T> => {
+        const clonedOpts = { ...opts };
+
+        const headers = new Headers(opts.headers);
+        headers.set('Content-Type', 'application/json');
+        clonedOpts.headers = headers;
+
+        if (!('credentials' in opts)) {
+            clonedOpts.credentials = 'include';
+        }
+
+        const response = await fetch(url, clonedOpts);
+        return this.unpack<T>(response);
+    };
+
+    /**
+     * @description A utility like `path.join` that'll accept path parts and append them to the base URL of the client
+     * @param paths The path parts for your URL as strings
+     * @returns URL of the origin + the path parts
+     */
+    protected createURL = (...paths: string[]) => {
+        const joinedPaths = paths.join('/');
+
+        return new URL(joinedPaths, this.origin);
+    };
 }
