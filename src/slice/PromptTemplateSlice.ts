@@ -11,13 +11,10 @@ import { StateCreator } from 'zustand';
 import { PromptTemplateClient } from '../api/PromptTemplateClient';
 import { RemoteState } from '../contexts/util';
 
-export interface PromptTemplateState {
+export interface PromptTemplateSlice {
     promptTemplateRemoteState?: RemoteState;
     promptTemplateListRemoteState?: RemoteState;
     promptTemplateList: PromptTemplateList;
-}
-
-export interface PromptTemplateAction {
     getPromptTemplateList: (includeDeleted?: boolean) => Promise<PromptTemplateList>;
     getPromptTemplate(id: string): Promise<PromptTemplate>;
     createPromptTemplate(promptTemplateData: PromptTemplatePost): Promise<PromptTemplate>;
@@ -26,10 +23,7 @@ export interface PromptTemplateAction {
 
 const promptTemplateClient = new PromptTemplateClient();
 
-export const createPromptTemplateSlice: StateCreator<PromptTemplateState & PromptTemplateAction> = (
-    set,
-    get
-) => ({
+export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set, get) => ({
     promptTemplateList: [],
     promptTemplateRemoteState: undefined,
     promptTemplateListRemoteState: undefined,
