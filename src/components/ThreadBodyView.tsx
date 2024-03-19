@@ -41,7 +41,8 @@ export const ThreadBodyView = ({
     if (!messages) {
         return null;
     }
-    const { postMessage, postLabel } = useAppContext();
+    const { postLabel } = useAppContext();
+    const postMessage = useAppContext((state) => state.postMessage);
     let followUpControl = showFollowUp;
 
     const [isEditing, setIsEditing] = useState(false);

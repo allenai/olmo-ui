@@ -59,8 +59,12 @@ enum QueryStringParam {
 }
 
 export const RecentQueries = () => {
-    const { userInfo, getAllThreads, allThreadInfo, setExpandedThreadID, postMessageInfo } =
-        useAppContext();
+    const userInfo = useAppContext((state) => state.userInfo);
+    const getAllThreads = useAppContext((state) => state.getAllThreads);
+    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
+    const setExpandedThreadID = useAppContext((state) => state.setExpandedThreadID);
+    const postMessageInfo = useAppContext((state) => state.postMessageInfo);
+
     const loc = useLocation();
     const nav = useNavigate();
     const qs = new URLSearchParams(loc.search);

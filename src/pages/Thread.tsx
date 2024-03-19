@@ -16,8 +16,8 @@ export const Thread = () => {
         return <h3>Please specify a message id.</h3>;
     }
 
-    const { getSelectedThread, selectedThreadInfo } = useAppContext();
-
+    const getSelectedThread = useAppContext((state) => state.getSelectedThread);
+    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
     useEffect(() => {
         getSelectedThread(id);
     }, []);

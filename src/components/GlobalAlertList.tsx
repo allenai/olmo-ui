@@ -23,7 +23,9 @@ export interface AlertMessage {
 const ALERT_HIDE_DURATION = 6000;
 
 export const GlobalAlertList = () => {
-    const { alertMessages, deleteAlertMessage } = useAppContext();
+    const alertMessages = useAppContext((state) => state.alertMessages);
+    const deleteAlertMessage = useAppContext((state) => state.deleteAlertMessage);
+
     const isOpen = alertMessages.length > 0;
 
     const handleClose = (id: string) => {
