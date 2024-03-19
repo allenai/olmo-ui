@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { MenuItem, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form-mui';
 
@@ -13,8 +13,6 @@ interface TemplateSelectProps {
     onChange: (templateId: string) => void;
 }
 
-const promptTemplateLabelId = 'prompt-template-label';
-
 export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX.Element => {
     const { promptTemplateList } = usePromptTemplate();
     const { formState, getFieldState } = useFormContext();
@@ -23,6 +21,20 @@ export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
+
+    const handleChange = (selectedPromptTemplateId: string) => {
+        const templateContent = promptTemplateList.find(
+            (template) => template.id === selectedPromptTemplateId
+        )?.content;
+
+        if (templateContent == null) {
+            // TODO: Handle this edge case. What do we want to do if a template disappears?
+            return;
+        }
+
+        onChange(templateContent);
+        setSelectedPromptTemplateId(selectedPromptTemplateId);
+    };
 
     return (
         <>
@@ -42,17 +54,7 @@ export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX
                         setSelectedPromptTemplateId(event.target.value);
                         setIsPromptAlertOpen(true);
                     } else {
-                        const templateContent = promptTemplateList.find(
-                            (template) => template.id === event.target.value
-                        )?.content;
-
-                        if (templateContent == null) {
-                            // TODO: Handle this edge case. What do we want to do if a template disappears?
-                            return;
-                        }
-
-                        onChange(templateContent);
-                        setSelectedPromptTemplateId(event.target.value);
+                        handleChange(event.target.value);
                     }
                 }}>
                 {promptTemplateList.map((pt) => {
@@ -70,7 +72,7 @@ export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX
                 open={isPromptAlertOpen}
                 onSuccess={() => {
                     setIsPromptAlertOpen(false);
-                    onChange(selectedPromptTemplateId);
+                    handleChange(selectedPromptTemplateId);
                 }}
                 onCancel={() => setIsPromptAlertOpen(false)}
                 successText="Continue"
