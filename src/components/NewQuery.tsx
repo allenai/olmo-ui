@@ -55,7 +55,7 @@ export const NewQuery = () => {
     const [showParams, setShowParams] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const remoteState = useAppContext((state) => state.promptTemplateRemoteState);
+    const remoteState = useAppContext((state) => state.promptTemplateListRemoteState);
     const promptTemplateList = useAppContext((state) => state.promptTemplateList);
     const getPromptTemplateList = useAppContext((state) => state.getPromptTemplateList);
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
