@@ -511,7 +511,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         return get().allLabelInfo;
     },
 
-    getAllSortedLabels: async (fieldName: string, sort?: SortDirection) => {
+    getAllSortedLabels: async (fieldName: string, sort?: GridSortDirection) => {
         try {
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
