@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
-import { MouseEventHandler, ReactNode, useContext, useEffect } from 'react';
+import { MouseEventHandler, ReactNode, useEffect } from 'react';
 
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
@@ -7,7 +7,6 @@ import { useAppContext } from '../../AppContext';
 
 import { MessagePost } from '../../api/Message';
 
-import { RepromptActionContext } from '../../contexts/repromptActionContext';
 import { ModelSelect } from './ModelSelect';
 import { TemplateSelect } from './TemplateSelect';
 
@@ -35,7 +34,7 @@ const useNewQueryFormHandling = () => {
         }
     }, [models]);
 
-    const { repromptText } = useContext(RepromptActionContext);
+    const repromptText = useAppContext((state) => state.repromptText);
 
     useEffect(() => {
         formContext.setValue('content', repromptText);

@@ -2,7 +2,7 @@ import { MenuItem, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form-mui';
 
-import { usePromptTemplate } from '../../contexts/promptTemplateContext';
+import { useAppContext } from '../../AppContext';
 
 import { DefaultPromptTemplate } from '../../api/PromptTemplate';
 
@@ -14,7 +14,7 @@ interface TemplateSelectProps {
 }
 
 export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX.Element => {
-    const { promptTemplateList } = usePromptTemplate();
+    const promptTemplateList = useAppContext((state) => state.promptTemplateList);
     const { formState, getFieldState } = useFormContext();
 
     const [isPromptAlertOpen, setIsPromptAlertOpen] = useState(false);

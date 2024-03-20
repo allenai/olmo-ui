@@ -9,15 +9,6 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import { App } from './App';
 import { FeatureToggleProvider } from './FeatureToggleContext';
-import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
-import { PromptTemplateProvider } from './contexts/promptTemplateContext';
-import { olmoTheme } from './olmoTheme';
-import { Admin } from './pages/Admin';
-import { ErrorPage } from './pages/ErrorPage';
-import { Home } from './pages/Home';
-import { NotFound } from './pages/NotFound';
-import { PromptTemplates } from './pages/PromptTemplates';
-import { Thread } from './pages/Thread';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -44,15 +35,13 @@ const VarnishedApp = ({ children }: PropsWithChildren) => {
     const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
     return (
         <FeatureToggleProvider>
-            <PromptTemplateProvider>
-                <ScrollToTopOnPageChange />
-                <ThemeProvider theme={theme}>
-                    <VarnishApp layout="left-aligned" theme={theme}>
-                        <GlobalStyle />
-                        {children}
-                    </VarnishApp>
-                </ThemeProvider>
-            </PromptTemplateProvider>
+            <ScrollToTopOnPageChange />
+            <ThemeProvider theme={theme}>
+                <VarnishApp layout="left-aligned" theme={theme}>
+                    <GlobalStyle />
+                    {children}
+                </VarnishApp>
+            </ThemeProvider>
         </FeatureToggleProvider>
     );
 };

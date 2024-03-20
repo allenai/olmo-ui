@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import { useState } from 'react';
 import { MoreHoriz } from '@mui/icons-material';
 
 import { Stack } from '@mui/material';
@@ -11,7 +10,6 @@ import { useAppContext } from '../AppContext';
 import { MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 import { LabelRating } from '../api/Label';
 import { UserAvatar } from './avatars/UserAvatar';
-import { RepromptActionContext } from '../contexts/repromptActionContext';
 
 interface ExpandedThreadTitleViewProps {
     copyableTitle: React.ReactNode;
@@ -23,8 +21,8 @@ export const ExpandedThreadTitleView = ({
     rootMessage,
 }: ExpandedThreadTitleViewProps) => {
     const { postLabel } = useAppContext();
-    const { setRepromptText } = React.useContext(RepromptActionContext);
-    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const setRepromptText = useAppContext((state) => state.setRepromptText);
+    const [contextMenuAnchorEl, setContextMenuAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleReprompt = (event?: React.SyntheticEvent<HTMLButtonElement>) => {
         event?.stopPropagation();

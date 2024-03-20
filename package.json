@@ -42,7 +42,7 @@
     "react-is": "^18.2.0",
     "react-router-dom": "^6.20.0",
     "styled-components": "^5.3.5",
-    "zustand": "^4.3.8"
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@allenai/eslint-config-varnish": "^1.2.9",
