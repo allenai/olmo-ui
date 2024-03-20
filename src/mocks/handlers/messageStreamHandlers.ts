@@ -2,7 +2,7 @@ import { HttpResponse, http } from 'msw';
 
 import {
     JSONMessage,
-    JSONMessageList,
+    MessagesResponse,
     MessageChunk,
     MessageStreamError,
     MessagesApiUrl,
@@ -127,7 +127,7 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
     },
 ];
 
-const fakeGetallThreadsResponse: JSONMessageList = {
+const fakeGetallThreadsResponse: MessagesResponse = {
     messages: [
         {
             children: [
