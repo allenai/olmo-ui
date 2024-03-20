@@ -12,7 +12,7 @@ export abstract class ClientBase {
         document.location = url.toString();
     }
 
-    protected unpack = async <T>(response: Response): Promise<T> => {
+    private unpack = async <T>(response: Response): Promise<T> => {
         switch (response.status) {
             case 200:
                 return await response.json();
@@ -25,6 +25,10 @@ export abstract class ClientBase {
         }
     };
 
+    /**
+     * Your standard JS fetch but with OLMO UI error, auth, and type handling. Accepts the same parameters as normal fetch
+     * @returns The JSON response body of the response typed as the type you passed in
+     */
     protected fetch = async <T>(
         url: Parameters<typeof fetch>[0],
         opts: Parameters<typeof fetch>[1] = {}

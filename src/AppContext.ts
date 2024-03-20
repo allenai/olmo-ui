@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { GridSortDirection } from '@mui/x-data-grid';
+
 import {
     CreateLabelRequest,
     Label,
@@ -76,7 +78,7 @@ type Action = {
     postLabel: (newLabel: CreateLabelRequest, msg: Message) => Promise<FetchInfo<Label>>;
     deleteLabel: (labelId: string, msg: Message) => Promise<FetchInfo<void>>;
     getAllLabels: (offset: number, size: number) => Promise<FetchInfo<LabelList>>;
-    getAllSortedLabels: (field: string, sort: 'asc' | 'desc') => Promise<FetchInfo<LabelList>>;
+    getAllSortedLabels: (field: string, sort: GridSortDirection) => Promise<FetchInfo<LabelList>>;
     getAllFilteredLabels: (
         creator?: string,
         message?: string,
@@ -509,7 +511,7 @@ export const useAppContext = create<State & Action>()((set, get) => ({
         return get().allLabelInfo;
     },
 
-    getAllSortedLabels: async (fieldName: string, sort?: 'asc' | 'desc') => {
+    getAllSortedLabels: async (fieldName: string, sort?: SortDirection) => {
         try {
             set((state) => ({
                 allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },

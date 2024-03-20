@@ -1,3 +1,5 @@
+import { GridSortDirection } from '@mui/x-data-grid';
+
 import { ClientBase } from './ClientBase';
 import { PaginationData } from './Schema';
 
@@ -69,7 +71,7 @@ interface GetAllLabelsRequest {
     };
     sort?: {
         field: string;
-        order?: 'asc' | 'desc';
+        order?: GridSortDirection;
     };
     filter?: {
         creator?: string;
