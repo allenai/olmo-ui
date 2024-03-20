@@ -25,7 +25,6 @@ import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { StandardContainer } from './StandardContainer';
 import { RemoteState } from '../contexts/util';
-import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { Model } from '../api/Model';
 
 export const NewQuery = () => {
