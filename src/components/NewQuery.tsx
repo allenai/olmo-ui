@@ -25,7 +25,6 @@ import { useAppContext } from '../AppContext';
 import { Parameters } from './configuration/Parameters';
 import { StandardContainer } from './StandardContainer';
 import { RemoteState } from '../contexts/util';
-import { usePromptTemplate } from '../contexts/promptTemplateContext';
 import { Model } from '../api/Model';
 
 export const NewQuery = () => {
@@ -55,18 +54,15 @@ export const NewQuery = () => {
     const [showParams, setShowParams] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // prompt templates
-    const {
-        remoteState: promptTemplateRemoteState,
-        promptTemplateList,
-        getPromptTemplateList,
-    } = usePromptTemplate();
+    const remoteState = useAppContext((state) => state.promptTemplateListRemoteState);
+    const promptTemplateList = useAppContext((state) => state.promptTemplateList);
+    const getPromptTemplateList = useAppContext((state) => state.getPromptTemplateList);
     const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>([
         DefaultPromptTemplate,
     ]);
     const [modelList, setModelList] = useState<Model[]>([]);
     const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
-        promptTemplateRemoteState === RemoteState.Loading
+        remoteState === RemoteState.Loading
     );
     const [modelLoading, setModelLoading] = useState(false);
     const getPromptTemplates = async function () {
@@ -96,7 +92,7 @@ export const NewQuery = () => {
         isSubmitting ||
         promptTemplatesLoading ||
         modelLoading ||
-        promptTemplateRemoteState === RemoteState.Loading;
+        remoteState === RemoteState.Loading;
 
     // on load fetch data
     useEffect(() => {
