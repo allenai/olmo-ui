@@ -17,7 +17,6 @@ import { App } from './App';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
 import { FeatureToggleProvider } from './FeatureToggleContext';
-import { PromptTemplateProvider } from './contexts/promptTemplateContext';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -34,15 +33,13 @@ const VarnishedApp = ({ children }: PropsWithChildren) => {
     const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
     return (
         <FeatureToggleProvider>
-            <PromptTemplateProvider>
-                <ScrollToTopOnPageChange />
-                <ThemeProvider theme={theme}>
-                    <VarnishApp layout="left-aligned" theme={theme}>
-                        <GlobalStyle />
-                        {children}
-                    </VarnishApp>
-                </ThemeProvider>
-            </PromptTemplateProvider>
+            <ScrollToTopOnPageChange />
+            <ThemeProvider theme={theme}>
+                <VarnishApp layout="left-aligned" theme={theme}>
+                    <GlobalStyle />
+                    {children}
+                </VarnishApp>
+            </ThemeProvider>
         </FeatureToggleProvider>
     );
 };
