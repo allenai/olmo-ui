@@ -29,6 +29,8 @@ import {
 } from './api/Label';
 import { ReadableJSONLStream } from './api/ReadableJSONLStream';
 import { ModelApiUrl, ModelList } from './api/Model';
+import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
+import { PromptTemplateSlice, createPromptTemplateSlice } from './slice/PromptTemplateSlice';
 
 interface APIError {
     error: { code: number; message: string };
@@ -122,7 +124,7 @@ type Action = {
 };
 
 export const useAppContext = create<State & Action>()(
-    devtools((set, get) => ({
+    devtools((set, get, store) => ({
         abortController: null,
         ongoingThreadId: null,
         inferenceOpts: {},
@@ -137,6 +139,8 @@ export const useAppContext = create<State & Action>()(
         allLabelInfo: {},
         modelInfo: {},
         schema: {},
+        ...createRepromptSlice(set, get, store),
+        ...createPromptTemplateSlice(set, get, store),
 
         updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
             set((state) => ({
