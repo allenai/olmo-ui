@@ -26,14 +26,13 @@ import { Parameters } from './configuration/Parameters';
 import { StandardContainer } from './StandardContainer';
 import { RemoteState } from '../contexts/util';
 import { usePromptTemplate } from '../contexts/promptTemplateContext';
-import { RepromptActionContext } from '../contexts/repromptActionContext';
 import { Model } from '../api/Model';
 
 export const NewQuery = () => {
     const { modelInfo, postMessage, getAllModel } = useAppContext();
 
-    const { repromptText, setRepromptText } = React.useContext(RepromptActionContext);
-
+    const setRepromptText = useAppContext((state) => state.setRepromptText);
+    const repromptText = useAppContext((state) => state.repromptText);
     const [selectedPromptTemplateId, setSelectedPromptTemplateId] = useState<string>(
         DefaultPromptTemplate.id
     );
