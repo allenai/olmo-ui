@@ -32,34 +32,34 @@ export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set
         set({ promptTemplateListRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .getPromptTemplateList(includeDeleted)
-            .then((r) => {
-                set({ promptTemplateList: r });
+            .then((result) => {
+                set({ promptTemplateList: result });
                 set({ promptTemplateListRemoteState: RemoteState.Loaded });
-                return r;
+                return result;
             })
-            .catch((e) => {
+            .catch((error) => {
                 set({ promptTemplateListRemoteState: RemoteState.Error });
-                return e;
+                return error;
             });
     },
     getPromptTemplate: async (id: string): Promise<PromptTemplate> => {
         set({ promptTemplateRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .getPromptTemplate(id)
-            .then((r) => {
+            .then((result) => {
                 const updated = produce(get().promptTemplateList, (draft) => {
                     const index = draft.findIndex((dc) => dc.id === id);
                     if (index !== -1) {
-                        draft[index] = r;
+                        draft[index] = result;
                     }
                 });
                 set({ promptTemplateList: updated });
                 set({ promptTemplateRemoteState: RemoteState.Loaded });
-                return r;
+                return result;
             })
-            .catch((e) => {
+            .catch((error) => {
                 set({ promptTemplateRemoteState: RemoteState.Error });
-                return e;
+                return error;
             });
     },
     createPromptTemplate: async (
@@ -68,17 +68,17 @@ export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set
         set({ promptTemplateRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .createPromptTemplate(promptTemplateData)
-            .then((r) => {
+            .then((result) => {
                 const updated = produce(get().promptTemplateList, (draft) => {
-                    draft.unshift(r);
+                    draft.unshift(result);
                 });
                 set({ promptTemplateList: updated });
                 set({ promptTemplateRemoteState: RemoteState.Loaded });
-                return r;
+                return result;
             })
-            .catch((e) => {
+            .catch((error) => {
                 set({ promptTemplateRemoteState: RemoteState.Error });
-                return e;
+                return error;
             });
     },
     patchPromptTemplate: async (
@@ -88,20 +88,20 @@ export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set
         set({ promptTemplateRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .patchPromptTemplate(id, patchValues)
-            .then((r) => {
+            .then((result) => {
                 const updated = produce(get().promptTemplateList, (draft) => {
                     const index = draft.findIndex((dc) => dc.id === id);
                     if (index !== -1) {
-                        draft[index] = r;
+                        draft[index] = result;
                     }
                 });
                 set({ promptTemplateList: updated });
                 set({ promptTemplateRemoteState: RemoteState.Loaded });
-                return r;
+                return result;
             })
-            .catch((e) => {
+            .catch((error) => {
                 set({ promptTemplateRemoteState: RemoteState.Error });
-                return e;
+                return error;
             });
     },
 });
