@@ -2,9 +2,9 @@ import '@testing-library/jest-dom/vitest';
 import { server } from 'src/mocks/node';
 
 vi.mock('zustand');
+vi.stubEnv('LLMX_API_URL', 'http://localhost:8080');
 
 beforeAll(() => {
-    vi.stubEnv('LLMX_API_URL', '');
     server.listen();
 });
 
