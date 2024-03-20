@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 import { getRouterOverriddenTheme } from '@allenai/varnish2';
 
 import { FeatureToggleProvider } from 'src/FeatureToggleContext';
-import { PromptTemplateProvider } from 'src/contexts/promptTemplateContext';
 
 import { olmoTheme } from '../olmoTheme';
 
@@ -19,11 +18,9 @@ const VarnishAppWrapper = ({ children }: PropsWithChildren) => {
 
     return (
         <FeatureToggleProvider>
-            <PromptTemplateProvider>
-                <ThemeProvider theme={theme}>
-                    <VarnishApp>{children}</VarnishApp>
-                </ThemeProvider>
-            </PromptTemplateProvider>
+            <ThemeProvider theme={theme}>
+                <VarnishApp>{children}</VarnishApp>
+            </ThemeProvider>
         </FeatureToggleProvider>
     );
 };

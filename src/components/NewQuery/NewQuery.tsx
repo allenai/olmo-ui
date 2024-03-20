@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 
 import { useAppContext } from '../../AppContext';
 import { MessagePost } from '../../api/Message';
-import { usePromptTemplate } from '../../contexts/promptTemplateContext';
 import { RemoteState } from '../../contexts/util';
 import { StandardContainer } from '../StandardContainer';
 import { Parameters } from '../configuration/Parameters';
@@ -21,8 +20,8 @@ export const NewQuery = () => {
 
     const [showParams, setShowParams] = useState(false);
 
-    // prompt templates
-    const { remoteState: promptTemplateRemoteState, getPromptTemplateList } = usePromptTemplate();
+    const promptTemplateRemoteState = useAppContext((state) => state.promptTemplateListRemoteState);
+    const getPromptTemplateList = useAppContext((state) => state.getPromptTemplateList);
 
     // see if any loading state is active
     const isLoading =

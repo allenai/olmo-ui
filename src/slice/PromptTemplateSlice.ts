@@ -1,12 +1,14 @@
 import { produce } from 'immer';
+
+import { StateCreator } from 'zustand';
+
 import {
+    DefaultPromptTemplate,
     PromptTemplate,
     PromptTemplateList,
     PromptTemplatePatch,
     PromptTemplatePost,
-} from 'src/api/PromptTemplate';
-
-import { StateCreator } from 'zustand';
+} from '../api/PromptTemplate';
 
 import { PromptTemplateClient } from '../api/PromptTemplateClient';
 import { RemoteState } from '../contexts/util';
@@ -32,10 +34,14 @@ export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set
         set({ promptTemplateListRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .getPromptTemplateList(includeDeleted)
-            .then((result) => {
-                set({ promptTemplateList: result });
+            .then((promptTemplates) => {
+                const sortedPromptTemplates = [DefaultPromptTemplate]
+                    .concat(promptTemplates)
+                    .sort((a, b) => a.name.localeCompare(b.name));
+                set({ promptTemplateList: sortedPromptTemplates });
                 set({ promptTemplateListRemoteState: RemoteState.Loaded });
-                return result;
+
+                return sortedPromptTemplates;
             })
             .catch((error) => {
                 set({ promptTemplateListRemoteState: RemoteState.Error });

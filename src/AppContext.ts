@@ -123,7 +123,9 @@ type Action = {
     setExpandedThreadID: (id: string | undefined) => void;
 };
 
-export const useAppContext = create<State & Action>()(
+type AppContextState = State & Action & PromptTemplateSlice & RepromptSlice;
+
+export const useAppContext = create<AppContextState>()(
     devtools((set, get, store) => ({
         abortController: null,
         ongoingThreadId: null,

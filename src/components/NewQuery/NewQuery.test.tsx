@@ -1,8 +1,9 @@
 import { render, screen } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
-import { ModelApiUrl, ModelList } from 'src/api/Model';
-import { JSONPromptTemplateList, PromptTemplateApiUrl } from 'src/api/PromptTemplate';
+
+import { ModelApiUrl, ModelList } from '../../api/Model';
+import { JSONPromptTemplateList, PromptTemplateApiUrl } from '../../api/PromptTemplate';
 
 import { NewQuery } from './NewQuery';
 
