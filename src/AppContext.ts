@@ -112,28 +112,6 @@ export const useAppContext = create<AppContextState>()(
         ...createAlertMessageSlice(set, get, store),
         ...createThreadSlice(set, get, store),
 
-        updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
-            set((state) => ({
-                inferenceOpts: { ...state.inferenceOpts, ...newOptions },
-            }));
-        },
-
-        // adds a message to the list of messages to show.
-        // we show all messages not dismissed by the user until a new page load.
-        addAlertMessage: (newAlertMessage) => {
-            set((state) => ({
-                alertMessages: [...state.alertMessages, newAlertMessage],
-            }));
-        },
-
-        // remove a message from the list.
-        // this is usually accomplished by the user dismissing a message, but we can add logic to remove in other ways.
-        deleteAlertMessage: (alertMessageId) => {
-            set((state) => ({
-                alertMessages: state.alertMessages.filter((m) => m.id !== alertMessageId),
-            }));
-        },
-
         getUserInfo: async () => {
             try {
                 set((state) => ({
@@ -193,160 +171,160 @@ export const useAppContext = create<AppContextState>()(
                     method: 'DELETE',
                 });
 
-                // EFFECT: add the label to the correct message
-                message.labels = [];
-                set((state) => ({
-                    deleteLabelInfo: {
-                        ...state.deleteLabelInfo,
-                        loading: false,
-                    },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `delete-${LabelApiUrl}-${labelId}-${new Date().getTime()}`.toLowerCase(),
-                        `Error deleting label. ${labelId}`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    deleteLabelInfo: { ...state.deleteLabelInfo, error: true, loading: false },
-                }));
-            }
-            return get().deleteLabelInfo;
-        },
+            // EFFECT: add the label to the correct message
+            message.labels = [];
+            set((state) => ({
+                deleteLabelInfo: {
+                    ...state.deleteLabelInfo,
+                    loading: false,
+                },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `delete-${LabelApiUrl}-${labelId}-${new Date().getTime()}`.toLowerCase(),
+                    `Error deleting label. ${labelId}`,
+                    err
+                )
+            );
+            set((state) => ({
+                deleteLabelInfo: { ...state.deleteLabelInfo, error: true, loading: false },
+            }));
+        }
+        return get().deleteLabelInfo;
+    },
 
-        postLabel: async (newLabel: LabelPost, message: Message) => {
-            try {
-                set((state) => ({
-                    postLabelInfo: { ...state.postLabelInfo, loading: true, error: false },
-                }));
-                const label = await fetchAPI<JSONLabel>(LabelApiUrl, {
-                    body: JSON.stringify(newLabel),
-                    method: 'POST',
-                });
-                const parsedLabel = parseLabel(label);
-                // EFFECT: add the new label to the message
-                message.labels = [parsedLabel];
-                set((state) => ({
-                    postLabelInfo: {
-                        ...state.postLabelInfo,
-                        data: parsedLabel,
-                        loading: false,
-                    },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `post-${LabelApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error making new label.`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    postLabelInfo: { ...state.postLabelInfo, error: true, loading: false },
-                }));
-            }
-            return get().postLabelInfo;
-        },
+    postLabel: async (newLabel: LabelPost, message: Message) => {
+        try {
+            set((state) => ({
+                postLabelInfo: { ...state.postLabelInfo, loading: true, error: false },
+            }));
+            const label = await fetchAPI<JSONLabel>(LabelApiUrl, {
+                body: JSON.stringify(newLabel),
+                method: 'POST',
+            });
+            const parsedLabel = parseLabel(label);
+            // EFFECT: add the new label to the message
+            message.labels = [parsedLabel];
+            set((state) => ({
+                postLabelInfo: {
+                    ...state.postLabelInfo,
+                    data: parsedLabel,
+                    loading: false,
+                },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `post-${LabelApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error making new label.`,
+                    err
+                )
+            );
+            set((state) => ({
+                postLabelInfo: { ...state.postLabelInfo, error: true, loading: false },
+            }));
+        }
+        return get().postLabelInfo;
+    },
 
-        getAllLabels: async (offset: number = 0, limit: number = 10) => {
-            try {
-                set((state) => ({
-                    allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
-                }));
-                const qs = new URLSearchParams({ offset: `${offset}`, limit: `${limit}` });
-                const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
-                const parsedLabels = ll.labels.map((m) => parseLabel(m));
-                set((state) => ({
-                    allLabelInfo: {
-                        ...state.allLabelInfo,
-                        data: { labels: parsedLabels, meta: ll.meta },
-                        loading: false,
-                    },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting labels.`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
-                }));
-            }
-            return get().allLabelInfo;
-        },
+    getAllLabels: async (offset: number = 0, limit: number = 10) => {
+        try {
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
+            }));
+            const qs = new URLSearchParams({ offset: `${offset}`, limit: `${limit}` });
+            const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
+            const parsedLabels = ll.labels.map((m) => parseLabel(m));
+            set((state) => ({
+                allLabelInfo: {
+                    ...state.allLabelInfo,
+                    data: { labels: parsedLabels, meta: ll.meta },
+                    loading: false,
+                },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error getting labels.`,
+                    err
+                )
+            );
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
+            }));
+        }
+        return get().allLabelInfo;
+    },
 
-        getAllSortedLabels: async (field: string, sort: string) => {
-            try {
-                set((state) => ({
-                    allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
-                }));
-                const qs = new URLSearchParams({ sort: `${field}`, order: `${sort}` });
-                const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
-                const parsedLabels = ll.labels.map((m) => parseLabel(m));
-                set((state) => ({
-                    allLabelInfo: {
-                        ...state.allLabelInfo,
-                        data: { labels: parsedLabels, meta: ll.meta },
-                        loading: false,
-                    },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting labels.`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
-                }));
-            }
-            return get().allLabelInfo;
-        },
+    getAllSortedLabels: async (field: string, sort: string) => {
+        try {
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
+            }));
+            const qs = new URLSearchParams({ sort: `${field}`, order: `${sort}` });
+            const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
+            const parsedLabels = ll.labels.map((m) => parseLabel(m));
+            set((state) => ({
+                allLabelInfo: {
+                    ...state.allLabelInfo,
+                    data: { labels: parsedLabels, meta: ll.meta },
+                    loading: false,
+                },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error getting labels.`,
+                    err
+                )
+            );
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
+            }));
+        }
+        return get().allLabelInfo;
+    },
 
-        getAllFilteredLabels: async (creator?: string, message?: string, rating?: number) => {
-            try {
-                set((state) => ({
-                    allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
-                }));
-                const qs = (() => {
-                    if (creator) {
-                        return new URLSearchParams({ creator: `${creator}` });
-                    }
-                    if (message) {
-                        return new URLSearchParams({ message: `${message}` });
-                    }
-                    return new URLSearchParams({ rating: `${rating}` });
-                })();
-                const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
-                const parsedLabels = ll.labels.map((m) => parseLabel(m));
-                set((state) => ({
-                    allLabelInfo: {
-                        ...state.allLabelInfo,
-                        data: { labels: parsedLabels, meta: ll.meta },
-                        loading: false,
-                    },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting labels.`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
-                }));
-            }
-            return get().allLabelInfo;
-        },
+    getAllFilteredLabels: async (creator?: string, message?: string, rating?: number) => {
+        try {
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
+            }));
+            const qs = (() => {
+                if (creator) {
+                    return new URLSearchParams({ creator: `${creator}` });
+                }
+                if (message) {
+                    return new URLSearchParams({ message: `${message}` });
+                }
+                return new URLSearchParams({ rating: `${rating}` });
+            })();
+            const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
+            const parsedLabels = ll.labels.map((m) => parseLabel(m));
+            set((state) => ({
+                allLabelInfo: {
+                    ...state.allLabelInfo,
+                    data: { labels: parsedLabels, meta: ll.meta },
+                    loading: false,
+                },
+            }));
+        } catch (err) {
+            get().addAlertMessage(
+                errorToAlert(
+                    `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error getting labels.`,
+                    err
+                )
+            );
+            set((state) => ({
+                allLabelInfo: { ...state.allLabelInfo, error: true, loading: false },
+            }));
+        }
+        return get().allLabelInfo;
+    },
 
         getSchema: async () => {
             try {
