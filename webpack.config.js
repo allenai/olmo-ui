@@ -52,7 +52,10 @@ module.exports = (env) => ({
                 },
             ],
         }),
-        new webpack.EnvironmentPlugin({ LLMX_API_URL: process.env.LLMX_API_URL || '' }),
+        new webpack.EnvironmentPlugin({
+            LLMX_API_URL: process.env.LLMX_API_URL || '',
+            ENABLE_MOCKING: false,
+        }),
     ],
     output: {
         filename: 'main.[contenthash:6].js',

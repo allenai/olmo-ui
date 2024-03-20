@@ -26,7 +26,7 @@ export interface PromptTemplateSlice {
 const promptTemplateClient = new PromptTemplateClient();
 
 export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set, get) => ({
-    promptTemplateList: [],
+    promptTemplateList: [DefaultPromptTemplate],
     promptTemplateRemoteState: undefined,
     promptTemplateListRemoteState: undefined,
     setPromptTemplateList: (list: PromptTemplateList) => set({ promptTemplateList: list }),

@@ -34,7 +34,7 @@ export interface Message {
     private?: boolean;
     role: Role;
     root: string;
-    template: string;
+    template?: string;
     final: boolean;
     model?: string;
 }
