@@ -6,8 +6,6 @@ import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '../../api/PromptT
 
 import { messageStreamHandlers } from './messageStreamHandlers';
 
-const apiUrl = process.env.LLMX_API_URL || 'http://localhost:8080';
-
 export const handlers = [
     ...messageStreamHandlers,
 
