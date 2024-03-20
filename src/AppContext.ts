@@ -332,6 +332,7 @@ export const useAppContext = create<AppContextState>()(
                 }
                 // TODO: by this point allThreadInfo.data should always be set, so silly stuff
                 // like this shouldn't be required
+                // Note: Ran into issues in tests with sending a message without getting all threads first. It's not a safe assumption that allThreadInfo is defined.
                 return parentMsg?.children || get().allThreadInfo.data?.messages || [];
             };
 
@@ -380,7 +381,7 @@ export const useAppContext = create<AppContextState>()(
                     // which constitutes an individual token that's a part of the model's response.
                     if ('message' in part.value) {
                         const chunk: MessageChunk = part.value;
-                        const reply = (branch()[0].children ?? [])[0];
+                        const reply = (branch()[0]?.children ?? [])[0];
                         reply.content += chunk.content;
                         rerenderMessages();
                         continue;
