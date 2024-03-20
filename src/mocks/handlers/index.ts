@@ -9,11 +9,11 @@ import { messageStreamHandlers } from './messageStreamHandlers';
 export const handlers = [
     ...messageStreamHandlers,
 
-    http.get(ModelApiUrl, () => {
+    http.get(`*${ModelApiUrl}`, () => {
         return HttpResponse.json(fakeModelsResponse);
     }),
 
-    http.get(PromptTemplatesApiUrl, () => {
+    http.get(`*${PromptTemplatesApiUrl}`, () => {
         return HttpResponse.json(fakePromptsResponse);
     }),
 ];

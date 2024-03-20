@@ -1,28 +1,16 @@
-import { render, screen, waitFor } from '@test-utils';
+import { render, renderHook, screen, waitFor } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 
-import { server } from 'src/mocks/node';
+import { useAppContext } from 'src/AppContext';
 
 import { NewQuery } from './NewQuery';
 
 describe('NewQuery', () => {
-    beforeEach(() => {
-        server.listen();
-    });
-
-    afterEach(() => {
-        server.resetHandlers();
-    });
-
-    afterAll(() => {
-        server.close();
-    });
-
     test('should send a prompt', async () => {
-        server.listen();
-
         const user = userEvent.setup();
+        const { result } = renderHook(() => useAppContext());
+        result.current.getAllThreads(0);
 
         render(<NewQuery />);
 
@@ -39,6 +27,9 @@ describe('NewQuery', () => {
                 content: '',
             });
         });
+
+        expect(result.current.postMessageInfo.error).toBeFalsy();
+        expect(result.current.postMessageInfo.data?.id).toEqual('msg_L1Q1W8A3U0');
     });
 
     test('should populate the models list and change title description when selecting a new model', async () => {
