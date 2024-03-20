@@ -14,12 +14,14 @@ import {
 } from './api/Label';
 import {
     InferenceOpts,
+    JSONMessage,
     Message,
     MessageApiUrl,
     MessageChunk,
     MessageClient,
     MessageList,
     MessagePost,
+    MessageStreamError,
     MessagesApiUrl,
     parseMessage,
 } from './api/Message';
@@ -341,6 +343,7 @@ export const useAppContext = create<AppContextState>()(
                     parentMsg?.id
                 );
 
+                type Chunk = JSONMessage | MessageChunk | MessageStreamError;
                 const rdr = resp.pipeThrough(new ReadableJSONLStream<Chunk>()).getReader();
                 let firstPart = true;
                 while (true) {
