@@ -9,6 +9,14 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import { App } from './App';
 import { FeatureToggleProvider } from './FeatureToggleContext';
+import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
+import { olmoTheme } from './olmoTheme';
+import { Home } from './pages/Home';
+import { Admin } from './pages/Admin';
+import { ErrorPage } from './pages/ErrorPage';
+import { NotFound } from './pages/NotFound';
+import { PromptTemplates } from './pages/PromptTemplates';
+import { Thread } from './pages/Thread';
 
 const GlobalStyle = createGlobalStyle`
     html {
