@@ -1,29 +1,18 @@
 import { useState } from 'react';
-import * as React from 'react';
-import {
-    Box,
-    Grid,
-    IconButton,
-    LinearProgress,
-    MenuItem,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Box, Grid, IconButton, LinearProgress, Stack, TextField } from '@mui/material';
 import styled from 'styled-components';
-import { KeyboardArrowDown, MoreHoriz, Check, Clear } from '@mui/icons-material';
+import { Check, Clear } from '@mui/icons-material';
 
 import { Message, MessagePost } from '../api/Message';
-import { Role } from '../api/Role';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
-import { MenuWrapperContainer, MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
+import { MenuWrapperContainer } from './MessageActionsMenu';
 import { LabelRating } from '../api/Label';
 
 import 'highlight.js/styles/github-dark.css';
-import { UserResponseView } from './ResponseView/UserResponseView';
-import { LLMResponseView } from './ResponseView/LLMResponseView';
 import { BaseModelResponseView } from './ResponseView/BaseModelResponseView';
+import { ChatResponseView } from './ChatResponseView';
+import { ThreadContextMenu } from './ThreadContextMenu';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -47,10 +36,10 @@ export const ThreadBodyView = ({
     const [isEditing, setIsEditing] = useState(false);
     const [messageLoading, setMessageLoading] = useState(false);
     const [editMessageContent, setEditMessageContent] = useState('');
-    const [curMessageIndex, setCurMessageIndex] = React.useState(0);
+    const [curMessageIndex, setCurMessageIndex] = useState(0);
     // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
-    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [contextMenuAnchorEl, setContextMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [branchMenuAnchorEl, setBranchMenuAnchorEl] = useState<null | HTMLElement>(null);
+    const [contextMenuAnchorEl, setContextMenuAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleBranchMenuSelect = (index: number) => {
         setCurMessageIndex(index);
@@ -105,66 +94,23 @@ export const ThreadBodyView = ({
         setContextMenuAnchorEl(null);
     };
 
-    const contextMenu = (
-        <MessageActionsMenu
-            setMenuAnchorEl={setContextMenuAnchorEl}
-            menuAnchorEl={contextMenuAnchorEl}
-            primaryIcon={<MoreHoriz />}
-            disabled={isLoading || disabledActions}>
-            <MessageContextMenu
-                handleEdit={handleEdit}
-                addLabel={addLabel}
-                curMessage={curMessage}
-            />
-        </MessageActionsMenu>
-    );
-
-    const branchesMenu = (
-        <MessageActionsMenu
-            setMenuAnchorEl={setBranchMenuAnchorEl}
-            menuAnchorEl={branchMenuAnchorEl}
-            startIcon={<KeyboardArrowDown />}
-            label={`View ${branchCount} branches`}>
-            {messages.map((msg, i) => (
-                <MenuItem
-                    key={i}
-                    onClick={() => handleBranchMenuSelect(i)}
-                    selected={i === curMessageIndex}
-                    title={msg.snippet}>
-                    <Typography variant="inherit" noWrap>
-                        {msg.snippet}
-                    </Typography>
-                </MenuItem>
-            ))}
-        </MessageActionsMenu>
-    );
-
     const isBaseModelThread = curMessage.model_type && curMessage.model_type === 'base';
     // if we have a base model thread, we don't want to allow follow ups, this disables that control.
     if (isBaseModelThread) {
         followUpControl = false;
     }
-    const ChatResponseView =
-        curMessage.role === Role.User ? (
-            <UserResponseView
-                response={curMessage.content}
-                msgId={curMessage.id}
-                contextMenu={!isEditing ? contextMenu : undefined}
-                branchMenu={branchCount > 1 ? branchesMenu : undefined}
-                displayBranchIcon={branchCount > 1}
-            />
-        ) : (
-            <LLMResponseView
-                response={curMessage.content}
-                msgId={curMessage.id}
-                isEditedResponse={
-                    curMessage.original !== undefined && curMessage.original?.length > 0
-                }
-                contextMenu={!isEditing ? contextMenu : undefined}
-                branchMenu={branchCount > 1 ? branchesMenu : undefined}
-                displayBranchIcon={branchCount > 1}
-            />
-        );
+
+    const contextMenu = (
+        <ThreadContextMenu
+            setContextMenuAnchorEl={setContextMenuAnchorEl}
+            contextMenuAnchorEl={contextMenuAnchorEl}
+            isLoading={isLoading}
+            disabledActions={disabledActions}
+            handleEdit={handleEdit}
+            addLabel={addLabel}
+            curMessage={curMessage}
+        />
+    );
 
     return (
         <BarOnRightContainer displayBar={branchCount > 1}>
@@ -213,7 +159,15 @@ export const ThreadBodyView = ({
                                             initialPrompt={parent?.content}
                                         />
                                     ) : (
-                                        ChatResponseView
+                                        <ChatResponseView
+                                            messages={messages}
+                                            setBranchMenuAnchorEl={setBranchMenuAnchorEl}
+                                            handleBranchMenuSelect={handleBranchMenuSelect}
+                                            curMessageIndex={curMessageIndex}
+                                            branchMenuAnchorEl={branchMenuAnchorEl}
+                                            isEditing={isEditing}
+                                            contextMenu={contextMenu}
+                                        />
                                     )}
                                 </>
                             )}

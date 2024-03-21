@@ -1,12 +1,14 @@
 import CropSquareIcon from '@mui/icons-material/CropSquare';
 
+import { ReactNode } from 'react';
+
 import { useAppContext } from '../../AppContext';
 
 import { HideAndShowContainer, StopButton } from './Response';
 
 interface MenuProps {
-    branchMenu?: JSX.Element;
-    contextMenu?: JSX.Element;
+    branchMenu?: ReactNode;
+    contextMenu?: ReactNode;
     hover: boolean;
     onAbort: () => void;
     msgId: string;
