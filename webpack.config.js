@@ -52,7 +52,10 @@ module.exports = (env) => ({
                 },
             ],
         }),
-        new webpack.EnvironmentPlugin({ LLMX_API_URL: process.env.LLMX_API_URL || '' }),
+        new webpack.EnvironmentPlugin({
+            LLMX_API_URL: process.env.LLMX_API_URL || '',
+            DOLMA_API_URL: process.env.DOLMA_API_URL,
+        }),
     ],
     output: {
         filename: 'main.[contenthash:6].js',

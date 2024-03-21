@@ -2,33 +2,31 @@ import { ClientBase } from '../ClientBase';
 import { staticData } from './staticData';
 
 export class StaticDataClient extends ClientBase {
-    async getSources(): Promise<staticData.Sources> {
-        const url = 'https://dolma.allen.ai/api/static/sources.json';
-        const resp = await fetch(url);
-        return await this.unpack<staticData.Sources>(resp);
-    }
+    staticFilePath = `${process.env.DOLMA_API_URL}/api/static`;
 
-    async getWords(): Promise<staticData.BinnedBySource> {
-        const url = '/api/static/words/data.json';
-        const resp = await fetch(url);
-        return await this.unpack<staticData.BinnedBySource>(resp);
-    }
+    #getData = async <TResponse>(filePath: string): Promise<TResponse> => {
+        const url = `${this.staticFilePath}/${filePath}`;
+        const response = await fetch(url);
+        return this.unpack<TResponse>(response);
+    };
 
-    async getCreated(): Promise<staticData.BinnedBySource> {
-        const url = '/api/static/created/data.json';
-        const resp = await fetch(url);
-        return await this.unpack<staticData.BinnedBySource>(resp);
-    }
+    getSources = async (): Promise<staticData.Sources> => {
+        return this.#getData('/sources.json');
+    };
 
-    async getDomains(): Promise<staticData.DomainsBySource> {
-        const url = '/api/static/domains/data.json';
-        const resp = await fetch(url);
-        return await this.unpack<staticData.DomainsBySource>(resp);
-    }
+    getWords = async (): Promise<staticData.BinnedBySource> => {
+        return this.#getData('/words/data.json');
+    };
 
-    async getSourceCounts(): Promise<staticData.SourceCounts> {
-        const url = '/api/static/source_counts/data.json';
-        const resp = await fetch(url);
-        return await this.unpack<staticData.SourceCounts>(resp);
-    }
+    getCreated = async (): Promise<staticData.BinnedBySource> => {
+        return this.#getData('/created/data.json');
+    };
+
+    getDomains = async (): Promise<staticData.DomainsBySource> => {
+        return this.#getData('/domains/data.json');
+    };
+
+    getSourceCounts = async (): Promise<staticData.SourceCounts> => {
+        return this.#getData('/source_counts/data.json');
+    };
 }
