@@ -71,7 +71,7 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'yarn start',
+        command: 'docker compose up --build',
         url: 'http://localhost:8080',
         reuseExistingServer: !process.env.CI,
     },
