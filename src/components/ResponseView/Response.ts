@@ -5,12 +5,13 @@ import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
 
 import 'highlight.js/styles/github-dark.css';
+import { ReactNode } from 'react';
 
 export interface ResponseProps {
     msgId: string;
     response: string;
-    contextMenu?: JSX.Element;
-    branchMenu?: JSX.Element;
+    contextMenu?: ReactNode;
+    branchMenu?: ReactNode;
     displayBranchIcon?: boolean;
     isEditedResponse?: boolean;
     initialPrompt?: string;

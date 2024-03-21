@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Role } from '../api/Role';
 import { Message } from '../api/Message';
 import { BranchMenu } from './BranchMenu';
@@ -11,7 +13,7 @@ interface ChatResponseViewProps {
     branchMenuAnchorEl: HTMLElement | null;
     curMessageIndex: number;
     isEditing: boolean;
-    contextMenu: JSX.Element;
+    contextMenu: ReactNode;
 }
 
 export const ChatResponseView = ({
