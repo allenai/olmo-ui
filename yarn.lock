@@ -5758,14 +5758,6 @@ playwright-core@1.42.1:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.42.1.tgz#13c150b93c940a3280ab1d3fbc945bc855c9459e"
   integrity sha512-mxz6zclokgrke9p1vtdy/COWBH+eOZgYUVVU34C73M+4j4HLlQJHtfcqiqqxpP0o8HhMkflvfbquLX5dg6wlfA==
 
-playwright-msw@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/playwright-msw/-/playwright-msw-3.0.1.tgz#9b135e218ac7294af63b0ce7a82880f61c6bda73"
-  integrity sha512-w2bVjt7kPIThOQF9OS/1vDDs0HsQfV9inxMVSUv74x/zhCcrgzVN47xpPk84okf3OcCRHHBJKq8sNeBfCDyhMg==
-  dependencies:
-    "@mswjs/cookies" "^1.1.0"
-    strict-event-emitter "^0.5.1"
-
 playwright@1.42.1:
   version "1.42.1"
   resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.42.1.tgz#79c828b51fe3830211137550542426111dc8239f"
