@@ -11,7 +11,7 @@
     "start": "webpack serve --mode development",
     "test": "vitest run",
     "test:coverage": "test --coverage",
-    "test:e2e": "cross-env ENABLE_MOCKING=true playwright test",
+    "test:e2e": "playwright test",
     "test:watch": "vitest"
   },
   "resolutions": {
@@ -60,8 +60,8 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "copy-webpack-plugin": "^10.2.1",
-    "cross-env": "^7.0.3",
     "css-loader": "^6.10.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.1.0",
