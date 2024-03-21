@@ -53,7 +53,7 @@ module.exports = (env) => ({
             ],
         }),
         new webpack.EnvironmentPlugin({
-            LLMX_API_URL: process.env.LLMX_API_URL || '',
+            LLMX_API_URL: 'http://localhost:8080',
             ENABLE_MOCKING: false,
         }),
     ],

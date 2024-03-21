@@ -13,7 +13,7 @@ import { NewQueryForm } from './NewQueryForm';
 export const NewQuery = () => {
     const modelInfo = useAppContext((state) => state.modelInfo);
     const postMessage = useAppContext((state) => state.postMessage);
-    const getAllModel = useAppContext((state) => state.getAllModel);
+    const getAllModels = useAppContext((state) => state.getAllModels);
 
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -32,7 +32,7 @@ export const NewQuery = () => {
     // on load fetch data
     useEffect(() => {
         getPromptTemplateList();
-        getAllModel();
+        getAllModels();
     }, []);
 
     const postNewMessage = async function (data: MessagePost) {

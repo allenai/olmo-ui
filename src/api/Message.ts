@@ -1,9 +1,10 @@
+import { ClientBase } from './ClientBase';
 import { Label } from './Label';
 import { Role } from './Role';
 import { PaginationData } from './Schema';
 
-export const MessageApiUrl = `${process.env.LLMX_API_URL}/v3/message`;
-export const MessagesApiUrl = `${process.env.LLMX_API_URL}/v3/messages`;
+export const MessageApiUrl = `/v3/message`;
+export const MessagesApiUrl = `/v3/messages`;
 
 export interface MessagePost {
     content: string;
@@ -44,7 +45,7 @@ export interface MessageList {
     meta: PaginationData;
 }
 
-export interface JSONMessageList {
+export interface MessagesResponse {
     messages: JSONMessage[];
     meta: PaginationData;
 }
@@ -89,3 +90,72 @@ export const parseMessage = (message: JSONMessage): Message => {
         children: message.children ? message.children.map((c) => parseMessage(c)) : undefined,
     };
 };
+
+export class MessageClient extends ClientBase {
+    getMessage = async (threadId: string): Promise<Message> => {
+        const url = this.createURL(MessageApiUrl, threadId);
+
+        const messageResponse = await this.fetch<JSONMessage>(url);
+
+        return parseMessage(messageResponse);
+    };
+
+    deleteThread = async (threadId: string): Promise<void> => {
+        const url = this.createURL(MessageApiUrl, threadId);
+
+        return this.fetch(url, { method: 'DELETE' });
+    };
+
+    getAllThreads = async (offset: number = 0, creator?: string): Promise<MessageList> => {
+        const url = this.createURL(MessagesApiUrl);
+        url.searchParams.set('offset', offset.toString());
+
+        if (creator != null) {
+            url.searchParams.set('creator', creator);
+        }
+
+        const messagesResponse = await this.fetch<MessagesResponse>(url);
+
+        const parsedMessages = messagesResponse.messages.map(parseMessage);
+
+        return { messages: parsedMessages, meta: messagesResponse.meta };
+    };
+
+    sendMessage = async (
+        newMessage: MessagePost,
+        inferenceOptions: InferenceOpts,
+        abortController: AbortController,
+        parentMessageId?: string
+    ) => {
+        const url = this.createURL(MessageApiUrl, 'stream');
+
+        const request = {
+            ...newMessage,
+            parent: parentMessageId,
+            opts: inferenceOptions,
+        };
+
+        // This opts out of the default fetch handling in this.fetch
+        // Since this is a stream we can't unpack it the same way we do in this.fetch
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(request),
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            signal: abortController.signal,
+        });
+
+        if (response.status === 401) {
+            this.login();
+        }
+
+        if (!response.ok) {
+            throw new Error(`POST ${url}: ${response.status} ${response.statusText}`);
+        }
+        if (!response.body) {
+            throw new Error(`POST ${url}: missing response body`);
+        }
+
+        return response.body;
+    };
+}

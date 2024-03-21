@@ -1,80 +1,49 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { User, WhoamiApiUrl, loginOn401 } from './api/User';
-import { AlertMessage, AlertMessageSeverity } from './components/GlobalAlertList';
+import { GridSortDirection } from '@mui/x-data-grid';
+
 import {
-    Message,
-    MessageChunk,
-    MessageApiUrl,
-    MessagePost,
-    MessagesApiUrl,
-    MessageList,
-    MessageStreamError,
-    JSONMessageList,
-    JSONMessage,
-    parseMessage,
-    InferenceOpts,
-} from './api/Message';
-import { Schema, SchemaApiUrl } from './api/Schema';
-import {
-    JSONLabel,
-    JSONLabelList,
+    CreateLabelRequest,
     Label,
-    LabelList,
     LabelApiUrl,
-    LabelPost,
+    LabelClient,
+    LabelList,
     LabelsApiUrl,
-    parseLabel,
+    LabelsClient,
 } from './api/Label';
+import {
+    InferenceOpts,
+    JSONMessage,
+    Message,
+    MessageApiUrl,
+    MessageChunk,
+    MessageClient,
+    MessageList,
+    MessagePost,
+    MessageStreamError,
+    MessagesApiUrl,
+    parseMessage,
+} from './api/Message';
+import { ModelClient, ModelList } from './api/Model';
 import { ReadableJSONLStream } from './api/ReadableJSONLStream';
-import { ModelApiUrl, ModelList } from './api/Model';
-import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
+import { Schema, SchemaClient } from './api/Schema';
+import { User, UserClient, WhoamiApiUrl } from './api/User';
+import { AlertMessage, AlertMessageSeverity } from './components/GlobalAlertList';
 import { PromptTemplateSlice, createPromptTemplateSlice } from './slice/PromptTemplateSlice';
-
-interface APIError {
-    error: { code: number; message: string };
-}
-
-export async function unpackError(r: Response): Promise<Response> {
-    if (!r.ok) {
-        switch (r.headers.get('content-type')) {
-            // This captures errors returned by the API.
-            case 'application/json': {
-                const err: APIError = await r.json();
-                throw new Error(err.error.message);
-            }
-            // This is probably an error returned by the NGINX proxy. In this case don't attempt
-            // to parse the response. Use the HTTP status instead.
-            default:
-                throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-        }
-    }
-    return r;
-}
-
-async function fetchAPI<T>(url: RequestInfo | string, opts: RequestInit = {}): Promise<T> {
-    // Set defaults
-    // TODO: factor this into an API client, as this is a little rough right now
-    if (!('headers' in opts)) {
-        opts.headers = {};
-    }
-    opts.headers = { ...opts.headers, 'Content-Type': 'application/json' };
-
-    if (!('credentials' in opts)) {
-        opts.credentials = 'include';
-    }
-
-    // TODO: clean this up; throw an Error instead of changing browser inline
-    // This might change the browser location, thereby halting execution
-    const r = await unpackError(loginOn401(await fetch(url, opts)));
-    return r.json();
-}
+import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
 
 function errorToAlert(id: string, title: string, error: any): AlertMessage {
     const message = error instanceof Error ? `${error.message} (${error.name})` : `${error}`;
     return { id, title, message, severity: AlertMessageSeverity.Error };
 }
+
+const labelClient = new LabelClient();
+const userClient = new UserClient();
+const modelClient = new ModelClient();
+const messageClient = new MessageClient();
+const labelsClient = new LabelsClient();
+const schemaClient = new SchemaClient();
 
 type FetchInfo<T> = {
     data?: T;
@@ -109,17 +78,17 @@ type Action = {
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
     getSelectedThread: (threadId: string) => Promise<FetchInfo<Message>>;
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
-    postLabel: (newLabel: LabelPost, msg: Message) => Promise<FetchInfo<Label>>;
+    postLabel: (newLabel: CreateLabelRequest, msg: Message) => Promise<FetchInfo<Label>>;
     deleteLabel: (labelId: string, msg: Message) => Promise<FetchInfo<void>>;
     getAllLabels: (offset: number, size: number) => Promise<FetchInfo<LabelList>>;
-    getAllSortedLabels: (field: string, sort: string) => Promise<FetchInfo<LabelList>>;
+    getAllSortedLabels: (field: string, sort: GridSortDirection) => Promise<FetchInfo<LabelList>>;
     getAllFilteredLabels: (
         creator?: string,
         message?: string,
         rating?: number
     ) => Promise<FetchInfo<LabelList>>;
     getSchema: () => Promise<FetchInfo<Schema>>;
-    getAllModel: () => Promise<FetchInfo<ModelList>>;
+    getAllModels: () => Promise<FetchInfo<ModelList>>;
     setExpandedThreadID: (id: string | undefined) => void;
 };
 
@@ -171,7 +140,9 @@ export const useAppContext = create<AppContextState>()(
                 set((state) => ({
                     userInfo: { ...state.userInfo, loading: true, error: false },
                 }));
-                const user = await fetchAPI<User>(WhoamiApiUrl);
+
+                const user = await userClient.whoAmI();
+
                 set((state) => ({
                     userInfo: { ...state.userInfo, data: user, loading: false },
                 }));
@@ -191,20 +162,22 @@ export const useAppContext = create<AppContextState>()(
             return get().userInfo;
         },
 
-        getAllModel: async () => {
+        getAllModels: async () => {
             try {
                 set((state) => ({
                     modelInfo: { ...state.modelInfo, loading: true, error: false },
                 }));
-                const model = await fetchAPI<ModelList>(ModelApiUrl);
+
+                const models = await modelClient.getAllModels();
+
                 set((state) => ({
-                    modelInfo: { ...state.modelInfo, data: model, loading: false },
+                    modelInfo: { ...state.modelInfo, data: models, loading: false },
                 }));
             } catch (err) {
                 get().addAlertMessage(
                     errorToAlert(
                         `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting user.`,
+                        `Error getting models.`,
                         err
                     )
                 );
@@ -221,16 +194,13 @@ export const useAppContext = create<AppContextState>()(
                 set((state) => ({
                     allThreadInfo: { ...state.allThreadInfo, loading: true, error: false },
                 }));
-                const qs = new URLSearchParams({ offset: `${offset}` });
-                if (creator) {
-                    qs.set('creator', creator);
-                }
-                const ml = await fetchAPI<JSONMessageList>(`${MessagesApiUrl}?${qs}`);
-                const messages = ml.messages.map((m) => parseMessage(m));
+
+                const { messages, meta } = await messageClient.getAllThreads(offset, creator);
+
                 set((state) => ({
                     allThreadInfo: {
                         ...state.allThreadInfo,
-                        data: { messages, meta: ml.meta },
+                        data: { messages, meta },
                         loading: false,
                     },
                 }));
@@ -254,9 +224,9 @@ export const useAppContext = create<AppContextState>()(
                 set((state) => ({
                     deletedThreadInfo: { ...state.deletedThreadInfo, loading: true, error: false },
                 }));
-                await fetchAPI(`${MessageApiUrl}/${threadId}`, {
-                    method: 'DELETE',
-                });
+
+                await messageClient.deleteThread(threadId);
+
                 set((state) => {
                     const deletedThreadInfo = { ...state.deletedThreadInfo, loading: false };
 
@@ -299,12 +269,13 @@ export const useAppContext = create<AppContextState>()(
                         error: false,
                     },
                 }));
-                const message = await fetchAPI<JSONMessage>(`${MessageApiUrl}/${threadId}`);
-                const parsedMessage = parseMessage(message);
+
+                const selectedThread = await messageClient.getMessage(threadId);
+
                 set((state) => ({
                     selectedThreadInfo: {
                         ...state.selectedThreadInfo,
-                        data: parsedMessage,
+                        data: selectedThread,
                         loading: false,
                     },
                 }));
@@ -366,32 +337,15 @@ export const useAppContext = create<AppContextState>()(
             };
 
             try {
-                const url = `${process.env.LLMX_API_URL}/v3/message/stream`;
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        ...newMsg,
-                        parent: parentMsg?.id,
-                        opts: state.inferenceOpts,
-                    }),
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    signal: abortController.signal,
-                });
+                const resp = await messageClient.sendMessage(
+                    newMsg,
+                    state.inferenceOpts,
+                    abortController,
+                    parentMsg?.id
+                );
 
-                // This might change the browser location, thereby halting execution
-                loginOn401(resp);
-
-                if (!resp.ok) {
-                    throw new Error(`POST ${url}: ${resp.status} ${resp.statusText}`);
-                }
-                if (!resp.body) {
-                    throw new Error(`POST ${url}: missing response body`);
-                }
-
-                // Each API response part is one of these types.
                 type Chunk = JSONMessage | MessageChunk | MessageStreamError;
-                const rdr = resp.body.pipeThrough(new ReadableJSONLStream<Chunk>()).getReader();
+                const rdr = resp.pipeThrough(new ReadableJSONLStream<Chunk>()).getReader();
                 let firstPart = true;
                 while (true) {
                     const part = await rdr.read();
@@ -476,9 +430,8 @@ export const useAppContext = create<AppContextState>()(
                 set((state) => ({
                     deleteLabelInfo: { ...state.deleteLabelInfo, loading: true, error: false },
                 }));
-                await fetchAPI<void>(`${LabelApiUrl}/${labelId}`, {
-                    method: 'DELETE',
-                });
+
+                await labelClient.deleteLabel(labelId);
 
                 // EFFECT: add the label to the correct message
                 message.labels = [];
@@ -503,22 +456,20 @@ export const useAppContext = create<AppContextState>()(
             return get().deleteLabelInfo;
         },
 
-        postLabel: async (newLabel: LabelPost, message: Message) => {
+        postLabel: async (newLabel: CreateLabelRequest, message: Message) => {
             try {
                 set((state) => ({
                     postLabelInfo: { ...state.postLabelInfo, loading: true, error: false },
                 }));
-                const label = await fetchAPI<JSONLabel>(LabelApiUrl, {
-                    body: JSON.stringify(newLabel),
-                    method: 'POST',
-                });
-                const parsedLabel = parseLabel(label);
+
+                const label = await labelClient.createLabel(newLabel);
+
                 // EFFECT: add the new label to the message
-                message.labels = [parsedLabel];
+                message.labels = [label];
                 set((state) => ({
                     postLabelInfo: {
                         ...state.postLabelInfo,
-                        data: parsedLabel,
+                        data: label,
                         loading: false,
                     },
                 }));
@@ -542,13 +493,15 @@ export const useAppContext = create<AppContextState>()(
                 set((state) => ({
                     allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
                 }));
-                const qs = new URLSearchParams({ offset: `${offset}`, limit: `${limit}` });
-                const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
-                const parsedLabels = ll.labels.map((m) => parseLabel(m));
+
+                const { labels, meta } = await labelsClient.getAllLabels({
+                    pagination: { offset, limit },
+                });
+
                 set((state) => ({
                     allLabelInfo: {
                         ...state.allLabelInfo,
-                        data: { labels: parsedLabels, meta: ll.meta },
+                        data: { labels, meta },
                         loading: false,
                     },
                 }));
@@ -567,18 +520,20 @@ export const useAppContext = create<AppContextState>()(
             return get().allLabelInfo;
         },
 
-        getAllSortedLabels: async (field: string, sort: string) => {
+        getAllSortedLabels: async (fieldName: string, sort: GridSortDirection) => {
             try {
                 set((state) => ({
                     allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
                 }));
-                const qs = new URLSearchParams({ sort: `${field}`, order: `${sort}` });
-                const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
-                const parsedLabels = ll.labels.map((m) => parseLabel(m));
+
+                const { labels, meta } = await labelsClient.getAllLabels({
+                    sort: { field: fieldName, order: sort },
+                });
+
                 set((state) => ({
                     allLabelInfo: {
                         ...state.allLabelInfo,
-                        data: { labels: parsedLabels, meta: ll.meta },
+                        data: { labels, meta },
                         loading: false,
                     },
                 }));
@@ -602,21 +557,19 @@ export const useAppContext = create<AppContextState>()(
                 set((state) => ({
                     allLabelInfo: { ...state.allLabelInfo, loading: true, error: false },
                 }));
-                const qs = (() => {
-                    if (creator) {
-                        return new URLSearchParams({ creator: `${creator}` });
-                    }
-                    if (message) {
-                        return new URLSearchParams({ message: `${message}` });
-                    }
-                    return new URLSearchParams({ rating: `${rating}` });
-                })();
-                const ll = await fetchAPI<JSONLabelList>(`${LabelsApiUrl}?${qs}`);
-                const parsedLabels = ll.labels.map((m) => parseLabel(m));
+
+                const { labels, meta } = await labelsClient.getAllLabels({
+                    filter: {
+                        creator,
+                        message,
+                        rating,
+                    },
+                });
+
                 set((state) => ({
                     allLabelInfo: {
                         ...state.allLabelInfo,
-                        data: { labels: parsedLabels, meta: ll.meta },
+                        data: { labels, meta },
                         loading: false,
                     },
                 }));
@@ -638,7 +591,9 @@ export const useAppContext = create<AppContextState>()(
         getSchema: async () => {
             try {
                 set({ schema: { loading: true, error: false } });
-                const schema = await fetchAPI<Schema>(SchemaApiUrl);
+
+                const schema = await schemaClient.getSchema();
+
                 set({ schema: { data: schema, loading: false } });
             } catch (err) {
                 set({ schema: { loading: false, error: true } });

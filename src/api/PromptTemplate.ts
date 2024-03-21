@@ -1,5 +1,5 @@
-export const PromptTemplatesApiUrl = `${process.env.LLMX_API_URL}/v3/templates/prompts`;
-export const PromptTemplateApiUrl = `${process.env.LLMX_API_URL}/v3/templates/prompt`;
+export const PromptTemplatesApiUrl = `/v3/templates/prompts`;
+export const PromptTemplateApiUrl = `/v3/templates/prompt`;
 
 export interface PromptTemplatePost {
     name: string;
