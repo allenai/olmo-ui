@@ -1,6 +1,6 @@
 import { ClientBase } from './ClientBase';
 
-export const ModelApiUrl = 'v3/models';
+export const ModelApiUrl = '/v3/models';
 
 export interface Model {
     description: string;

@@ -1,6 +1,6 @@
 import { ClientBase } from './ClientBase';
 
-export const WhoamiApiUrl = `v3/whoami`;
+export const WhoamiApiUrl = `/v3/whoami`;
 
 export interface User {
     client: string;

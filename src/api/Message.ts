@@ -3,8 +3,8 @@ import { Label } from './Label';
 import { Role } from './Role';
 import { PaginationData } from './Schema';
 
-export const MessageApiUrl = `v3/message`;
-export const MessagesApiUrl = `v3/messages`;
+export const MessageApiUrl = `/v3/message`;
+export const MessagesApiUrl = `/v3/messages`;
 
 export interface MessagePost {
     content: string;
