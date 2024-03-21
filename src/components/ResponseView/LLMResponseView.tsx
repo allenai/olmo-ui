@@ -21,7 +21,7 @@ export const LLMResponseView = ({
     displayBranchIcon = false,
     isEditedResponse = false,
 }: ResponseProps) => {
-    const { abortController } = useAppContext();
+    const abortController = useAppContext((state) => state.abortController);
     const [hover, setHover] = useState(false);
     const onAbort = useCallback(() => {
         abortController?.abort();

@@ -20,7 +20,7 @@ import { dateTimeFormat } from '../util';
 import { RemoteState } from '../contexts/util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
-    const { userInfo } = useAppContext();
+    const userInfo = useAppContext((state) => state.userInfo);
 
     const remoteState = useAppContext((state) => state.promptTemplateRemoteState);
     const promptTemplateList = useAppContext((state) => state.promptTemplateList);

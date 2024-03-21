@@ -26,8 +26,11 @@ interface Pagination {
 }
 
 export const Admin = () => {
-    const { getAllLabels, getAllSortedLabels, getAllFilteredLabels, allLabelInfo } =
-        useAppContext();
+    const getAllLabels = useAppContext((state) => state.getAllLabels);
+    const getAllSortedLabels = useAppContext((state) => state.getAllSortedLabels);
+    const getAllFilteredLabels = useAppContext((state) => state.getAllFilteredLabels);
+    const allLabelInfo = useAppContext((state) => state.allLabelInfo);
+
     const exportURL = `${LabelsApiUrl}?export&limit=${EXPORT_LIMIT}`;
     const [curTab, setCurTab] = React.useState<string>('labels');
     const [pagination, setPagination] = React.useState<Pagination>({

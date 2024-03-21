@@ -67,7 +67,11 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
 };
 
 export const App = () => {
-    const { userInfo, getUserInfo, schema, getSchema } = useAppContext();
+    const userInfo = useAppContext((state) => state.userInfo);
+    const getUserInfo = useAppContext((state) => state.getUserInfo);
+    const schema = useAppContext((state) => state.schema);
+    const getSchema = useAppContext((state) => state.getSchema);
+
     const toggles = useFeatureToggles();
 
     const [isLoading, setLoading] = useState(true);
