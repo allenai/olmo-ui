@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { SchemaApiUrl } from '../../api/Schema';
+import { Schema, SchemaApiUrl } from '../../api/Schema';
 
 import { WhoamiApiUrl } from '../../api/User';
 
@@ -56,7 +56,7 @@ const fakePromptsResponse: JSONPromptTemplateList = [
     },
 ];
 
-const fakeSchemaResponse = {
+const fakeSchemaResponse: Schema = {
     Message: {
         InferenceOpts: {
             logprobs: {
@@ -85,7 +85,7 @@ const fakeSchemaResponse = {
                 max: null,
                 min: null,
                 name: 'stop',
-                step: null,
+                step: undefined,
             },
             temperature: {
                 default: 1,
