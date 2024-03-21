@@ -74,7 +74,6 @@ export default defineConfig({
     webServer: {
         command: 'docker compose up --build',
         url: 'http://localhost:8080',
-        timeout: 300000,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: true,
     },
 });
