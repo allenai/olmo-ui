@@ -5,9 +5,14 @@ import { ModelApiUrl, ModelList } from '../../api/Model';
 import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '../../api/PromptTemplate';
 
 import { messageStreamHandlers } from './messageStreamHandlers';
+import { User, WhoamiApiUrl } from '../../api/User';
 
 export const handlers = [
     ...messageStreamHandlers,
+
+    http.get(`*${WhoamiApiUrl}`, () => {
+        return HttpResponse.json(fakeWhoAmIResponse);
+    }),
 
     http.get(`*${ModelApiUrl}`, () => {
         return HttpResponse.json(fakeModelsResponse);
@@ -17,6 +22,10 @@ export const handlers = [
         return HttpResponse.json(fakePromptsResponse);
     }),
 ];
+
+const fakeWhoAmIResponse: User = {
+    client: 'murphy@allenai.org',
+}
 
 const fakeModelsResponse: ModelList = [
     {
