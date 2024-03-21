@@ -19,9 +19,6 @@ jobs:
       with:
         node-version: lts/*
         cache: 'yarn'
-    - uses: hoverkraft-tech/compose-action@v1.5.1
-      with:
-        compose-file: "./docker-compose.yaml"
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     - name: Install Playwright Browsers
