@@ -9,6 +9,7 @@ test('has title', async ({ page }) => {
 test('can prompt', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
+    expect(await page.getByPlaceholder('Follow Up').count()).toEqual(0);
 
     await page
         .getByPlaceholder('Select a Prompt Template above or type a free form prompt')
@@ -17,7 +18,6 @@ test('can prompt', async ({ page }) => {
     await page.getByRole('button', { name: 'Prompt' }).click();
     await page.waitForLoadState('networkidle');
 
-    const followUp = page.getByPlaceholder('Follow Up');
-    expect(await followUp.count()).toEqual(1);
-    await expect(followUp).toBeVisible();
+    // This will ensure there's only one visible as long as strict mode is enabled
+    await expect(page.getByPlaceholder('Follow Up')).toBeVisible();
 });
