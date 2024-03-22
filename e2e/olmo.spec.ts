@@ -12,7 +12,7 @@ test('can prompt', async ({ page }) => {
     expect(await page.getByPlaceholder('Follow Up').count()).toEqual(0);
 
     await page
-        .getByPlaceholder('Select a Prompt Template above or type a free form prompt')
+        .getByTestId('Prompt')
         .fill('Can you tell me a friday joke?');
 
     await page.getByRole('button', { name: 'Prompt' }).click();
