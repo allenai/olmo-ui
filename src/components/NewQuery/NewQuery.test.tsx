@@ -6,7 +6,7 @@ import { useAppContext } from 'src/AppContext';
 
 import { NewQuery } from './NewQuery';
 
-const message_id = 'msg_A8E5H1X2O3';
+const messageId = 'msg_A8E5H1X2O3';
 
 describe('NewQuery', () => {
     test('should send a prompt', async () => {
@@ -31,7 +31,7 @@ describe('NewQuery', () => {
         });
 
         expect(result.current.postMessageInfo.error).toBeFalsy();
-        expect(result.current.postMessageInfo.data?.id).toEqual(message_id);
+        expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
     });
 
     test('should populate the models list and change title description when selecting a new model', async () => {

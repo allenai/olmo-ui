@@ -94,7 +94,7 @@ export const NewQueryForm = ({
                         },
                     }}
                     inputProps={{
-                        "data-testid": "Prompt",
+                        'data-testid': 'Prompt',
                     }}
                 />
 

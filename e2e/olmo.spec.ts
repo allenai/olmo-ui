@@ -11,9 +11,7 @@ test('can prompt', async ({ page }) => {
     await page.waitForLoadState('networkidle');
     expect(await page.getByPlaceholder('Follow Up').count()).toEqual(0);
 
-    await page
-        .getByTestId('Prompt')
-        .fill('Can you tell me a friday joke?');
+    await page.getByTestId('Prompt').fill('Can you tell me a friday joke?');
 
     await page.getByRole('button', { name: 'Prompt' }).click();
     await page.waitForLoadState('networkidle');
