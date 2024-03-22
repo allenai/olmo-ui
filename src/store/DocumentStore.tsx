@@ -75,9 +75,11 @@ export const DocumentStore = ({ children }: { children: React.ReactNode }) => {
         dispatch({ type: ActionType.GetDocument, request });
         try {
             const api = new SearchClient();
+            console.log("hit 1");
             // If the associated search query is set, use the search API so that
             // the response includes highlights.
             if (request.query) {
+                console.log("hit 2: inside request.query");
                 const response = await api.search({
                     query: request.query,
                     offset: 0,
@@ -94,6 +96,7 @@ export const DocumentStore = ({ children }: { children: React.ReactNode }) => {
                 dispatch({ type: ActionType.GetDocumentOk, request, document });
                 return document;
             } else {
+                console.log("hit 3");
                 const document = await api.getDocument(request.id);
                 dispatch({ type: ActionType.GetDocumentOk, request, document });
                 return document;

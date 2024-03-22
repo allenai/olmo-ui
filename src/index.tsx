@@ -21,6 +21,7 @@ import { DataChips } from './pages/DataChips';
 import { DataChipProvider } from './contexts/dataChipContext';
 import { PromptTemplateProvider } from './contexts/promptTemplateContext';
 import { DolmaExplorer } from './pages/DolmaExplorer';
+import { Search } from './pages/Search';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -69,6 +70,11 @@ const router = createBrowserRouter([
             {
                 path: '/dolma',
                 element: <DolmaExplorer />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/search',
+                element: <Search />,
                 errorElement: <ErrorPage />,
             },
             {

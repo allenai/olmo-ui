@@ -3,6 +3,7 @@ import { search } from './search';
 
 export class SearchClient extends ClientBase {
     async search(q: search.Request): Promise<search.Response> {
+        console.log('hitting search method');
         const url = `/api/v1/search?${search.toQueryString(q)}`;
         const resp = await fetch(url);
         return await this.unpack<search.Response>(resp);
