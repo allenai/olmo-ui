@@ -16,16 +16,10 @@ import { Message, MessageList } from './api/Message';
 import { ModelClient, ModelList } from './api/Model';
 import { Schema, SchemaClient } from './api/Schema';
 import { User, UserClient, WhoamiApiUrl } from './api/User';
-import { AlertMessage, AlertMessageSeverity } from './components/GlobalAlertList';
 import { PromptTemplateSlice, createPromptTemplateSlice } from './slice/PromptTemplateSlice';
 import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
 import { ThreadSlice, createThreadSlice } from './slice/ThreadSlice';
-import { AlertMessageSlice, createAlertMessageSlice } from './slice/AlertMessageSlice';
-
-function errorToAlert(id: string, title: string, error: any): AlertMessage {
-    const message = error instanceof Error ? `${error.message} (${error.name})` : `${error}`;
-    return { id, title, message, severity: AlertMessageSeverity.Error };
-}
+import { AlertMessageSlice, createAlertMessageSlice, errorToAlert } from './slice/AlertMessageSlice';
 
 const labelClient = new LabelClient();
 const userClient = new UserClient();
