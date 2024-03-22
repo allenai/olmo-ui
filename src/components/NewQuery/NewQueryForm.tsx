@@ -85,7 +85,6 @@ export const NewQueryForm = ({
                     minRows={10}
                     disabled={isFormDisabledOrLoading}
                     placeholder="Select a Prompt Template above or type a free form prompt"
-                    value={prompt}
                     name="content"
                     InputProps={{
                         sx: {
