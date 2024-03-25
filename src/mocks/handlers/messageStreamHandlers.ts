@@ -11,7 +11,7 @@ import { Role } from '../../api/Role';
 
 const encoder = new TextEncoder();
 
-const messageId = 'msg_A8E5H1X2O3';
+export const messageId = 'msg_A8E5H1X2O3';
 
 export const messageStreamHandlers = [
     http.post(`*/v3/message/stream`, () => {
