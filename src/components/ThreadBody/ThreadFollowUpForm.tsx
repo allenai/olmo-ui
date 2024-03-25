@@ -3,10 +3,11 @@ import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import styled from 'styled-components';
 
+import React from 'react';
+
 import { Message, MessagePost } from '../../api/Message';
 
 import { useAppContext } from '../../AppContext';
-import React from 'react';
 
 interface ThreadFollowUpFormProps {
     curMessage: Message;
@@ -38,11 +39,13 @@ export const ThreadFollowUpForm = ({ curMessage, disabledActions }: ThreadFollow
         if (event.key === 'Enter') {
             formContext.handleSubmit(postFollowupMessage)();
         }
-    }
+    };
 
     return (
         <FollowUpContainer>
-            <FormContainer formContext={formContext}>
+            <FormContainer
+                formContext={formContext}
+                FormProps={{ style: { height: '100%' }, 'aria-label': 'Follow Up Prompt' }}>
                 <TextFieldElement
                     fullWidth
                     multiline

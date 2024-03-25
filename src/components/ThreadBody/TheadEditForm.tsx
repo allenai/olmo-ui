@@ -50,12 +50,18 @@ export const ThreadEditForm = ({
     return (
         <FormContainer
             formContext={formContext}
-            onSuccess={editMessage}
             // Using style instead of styled or sx because rhf-mui doesn't support it well
             FormProps={{ style: { height: '100%' }, 'aria-label': 'Handle Edit Message' }}>
             <Grid container spacing={0.5}>
                 <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
-                    <TextFieldElement fullWidth multiline name="editMessage" />
+                    <TextFieldElement
+                        fullWidth
+                        multiline
+                        name="editMessage"
+                        inputProps={{
+                            'data-testid': 'Edit Prompt',
+                        }}
+                    />
                 </Grid>
                 <Grid item>
                     <MenuWrapperContainer>
@@ -63,7 +69,8 @@ export const ThreadEditForm = ({
                             sx={{ border: 1, borderRadius: 0, p: 0 }}
                             size="small"
                             disabled={!formContext.formState.isDirty}
-                            onClick={editMessage}>
+                            onClick={editMessage}
+                            aria-label="Check">
                             <Check />
                         </OutlinedIconButton>
                     </MenuWrapperContainer>

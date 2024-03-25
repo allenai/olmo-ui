@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Box, Grid, Stack } from '@mui/material';
-import styled from 'styled-components';
 
 import { Message } from '../api/Message';
 import { BarOnRightContainer } from './BarOnRightContainer';
@@ -79,9 +78,6 @@ export const ThreadBodyView = ({
         />
     );
 
-    console.log("hello");
-    console.log(curMessage);
-
     return (
         <BarOnRightContainer displayBar={branchCount > 1}>
             <>
@@ -128,15 +124,9 @@ export const ThreadBodyView = ({
                         disabledActions={disabledActions}
                     />
                 ) : followUpControl ? (
-                    <ThreadFollowUpForm curMessage={curMessage} disabledActions={disabledActions}/>
+                    <ThreadFollowUpForm curMessage={curMessage} disabledActions={disabledActions} />
                 ) : null}
             </>
         </BarOnRightContainer>
     );
 };
-
-const FollowUpContainer = styled.div`
-    padding-left: ${({ theme }) => theme.spacing(2)};
-    padding-right: ${({ theme }) => theme.spacing(1)};
-    margin: ${({ theme }) => theme.spacing(2)};
-`;
