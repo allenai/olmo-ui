@@ -3,7 +3,7 @@ import { Message } from 'src/api/Message';
 
 import { MoreHoriz } from '@mui/icons-material';
 
-import { MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
+import { MessageActionsMenu, MessageContextMenu } from '../MessageActionsMenu';
 
 interface ThreadContextMenuProps {
     setContextMenuAnchorEl: (anchor: null | HTMLElement) => void;

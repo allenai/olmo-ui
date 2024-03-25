@@ -2,7 +2,7 @@ import { Message } from 'src/api/Message';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { MenuItem, Typography } from '@mui/material';
 
-import { MessageActionsMenu } from './MessageActionsMenu';
+import { MessageActionsMenu } from '../MessageActionsMenu';
 
 interface BranchMenuProps {
     setBranchMenuAnchorEl: (anchor: null | HTMLElement) => void;
