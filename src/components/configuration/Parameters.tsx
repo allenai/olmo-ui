@@ -9,7 +9,10 @@ import { InputSlider } from './InputSlider';
 import { useAppContext } from '../../AppContext';
 
 export const Parameters = () => {
-    const { inferenceOpts, updateInferenceOpts, schema } = useAppContext();
+    const inferenceOpts = useAppContext((state) => state.inferenceOpts);
+    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
+    const schema = useAppContext((state) => state.schema);
+
     if (!schema.data) {
         throw new Error('schema not loaded');
     }

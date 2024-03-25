@@ -21,15 +21,14 @@ interface ThreadControlProps {
 }
 
 export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProps) => {
-    const {
-        userInfo,
-        deleteThread,
-        deletedThreadInfo,
-        postLabel,
-        postLabelInfo,
-        deleteLabel,
-        deleteLabelInfo,
-    } = useAppContext();
+    const userInfo = useAppContext((state) => state.userInfo);
+    const deleteThread = useAppContext((state) => state.deleteThread);
+    const deletedThreadInfo = useAppContext((state) => state.deletedThreadInfo);
+    const postLabel = useAppContext((state) => state.postLabel);
+    const postLabelInfo = useAppContext((state) => state.postLabelInfo);
+    const deleteLabel = useAppContext((state) => state.deleteLabel);
+    const deleteLabelInfo = useAppContext((state) => state.deleteLabelInfo);
+
     const addLabel = async (rating: LabelRating) => {
         if (rootMessage.labels.length) {
             // first delete the label rating if we have one

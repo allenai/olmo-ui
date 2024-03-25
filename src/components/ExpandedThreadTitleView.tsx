@@ -20,7 +20,7 @@ export const ExpandedThreadTitleView = ({
     copyableTitle,
     rootMessage,
 }: ExpandedThreadTitleViewProps) => {
-    const { postLabel } = useAppContext();
+    const postLabel = useAppContext((state) => state.postLabel);
     const setRepromptText = useAppContext((state) => state.setRepromptText);
     const [contextMenuAnchorEl, setContextMenuAnchorEl] = useState<null | HTMLElement>(null);
 

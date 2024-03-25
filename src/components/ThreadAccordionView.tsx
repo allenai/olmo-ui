@@ -39,7 +39,8 @@ export const ThreadAccordionView = ({
     showControls = false,
     rootMessage,
 }: ThreadAccordionProps) => {
-    const { expandedThreadID, setExpandedThreadID } = useAppContext();
+    const expandedThreadID = useAppContext((state) => state.expandedThreadID);
+    const setExpandedThreadID = useAppContext((state) => state.setExpandedThreadID);
 
     const [metadataModalOpen, setMetadataModalOpen] = useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
