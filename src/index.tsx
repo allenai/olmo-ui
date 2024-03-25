@@ -64,11 +64,11 @@ const routes = [
                 <App />
             </VarnishedApp>
         ),
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/',
                 element: <Home />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/dolma',
@@ -83,22 +83,18 @@ const routes = [
             {
                 path: '/thread/:id',
                 element: <Thread />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/prompttemplates',
                 element: <PromptTemplates />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/prompt-templates',
                 element: <PromptTemplates />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/admin',
                 element: <Admin />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/*',
