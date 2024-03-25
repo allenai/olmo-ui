@@ -21,12 +21,12 @@ jobs:
         cache: 'yarn'
     - name: Install dependencies
       run: yarn install --frozen-lockfile
-    - name: Build service
-      run: yarn build
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
-      run: yarn test:e2e 
+      run: yarn test:e2e
+      env:
+        NODE_ENV: test 
     - uses: actions/upload-artifact@v4
       if: always()
       with:

@@ -53,8 +53,9 @@ module.exports = (env) => ({
             ],
         }),
         new webpack.EnvironmentPlugin({
-            LLMX_API_URL: process.env.LLMX_API_URL || '',
+            LLMX_API_URL: 'http://localhost:8080',
             DOLMA_API_URL: process.env.DOLMA_API_URL,
+            ENABLE_MOCKING: false,
         }),
     ],
     output: {

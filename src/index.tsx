@@ -1,27 +1,24 @@
-import { PropsWithChildren } from 'react';
-import { createRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter, Link } from 'react-router-dom';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
 import { LinearProgress } from '@mui/material';
+import { PropsWithChildren } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Link, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
-import { NotFound } from './pages/NotFound';
-import { PromptTemplates } from './pages/PromptTemplates';
-import { ErrorPage } from './pages/ErrorPage';
-import { Home } from './pages/Home';
-import { Thread } from './pages/Thread';
-import { Admin } from './pages/Admin';
 import { App } from './App';
+import { FeatureToggleProvider } from './FeatureToggleContext';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
-import { FeatureToggleProvider } from './FeatureToggleContext';
-import { DataChips } from './pages/DataChips';
-import { DataChipProvider } from './contexts/dataChipContext';
-import { PromptTemplateProvider } from './contexts/promptTemplateContext';
+import { Home } from './pages/Home';
+import { Admin } from './pages/Admin';
 import { DolmaExplorer } from './pages/DolmaExplorer';
+import { ErrorPage } from './pages/ErrorPage';
+import { NotFound } from './pages/NotFound';
+import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
+import { Thread } from './pages/Thread';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -34,21 +31,27 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+const enableMocking = async () => {
+    if (process.env.NODE_ENV !== 'development' || process.env.ENABLE_MOCKING !== 'true') {
+        return;
+    }
+
+    const { worker } = await import('./mocks/browser');
+
+    return worker.start();
+};
+
 const VarnishedApp = ({ children }: PropsWithChildren) => {
     const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
     return (
         <FeatureToggleProvider>
-            <PromptTemplateProvider>
-                <DataChipProvider>
-                    <ScrollToTopOnPageChange />
-                    <ThemeProvider theme={theme}>
-                        <VarnishApp layout="left-aligned" theme={theme}>
-                            <GlobalStyle />
-                            {children}
-                        </VarnishApp>
-                    </ThemeProvider>
-                </DataChipProvider>
-            </PromptTemplateProvider>
+            <ScrollToTopOnPageChange />
+            <ThemeProvider theme={theme}>
+                <VarnishApp layout="left-aligned" theme={theme}>
+                    <GlobalStyle />
+                    {children}
+                </VarnishApp>
+            </ThemeProvider>
         </FeatureToggleProvider>
     );
 };
@@ -93,16 +96,6 @@ const router = createBrowserRouter([
                 errorElement: <ErrorPage />,
             },
             {
-                path: '/datachips',
-                element: <DataChips />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/data-chips',
-                element: <DataChips />,
-                errorElement: <ErrorPage />,
-            },
-            {
                 path: '/admin',
                 element: <Admin />,
                 errorElement: <ErrorPage />,
@@ -124,13 +117,15 @@ if (!container) {
     throw new Error("No element with an id of 'root' was found.");
 }
 const root = createRoot(container);
-root.render(
-    <RouterProvider
-        router={router}
-        fallbackElement={
-            <VarnishedApp>
-                <LinearProgress />
-            </VarnishedApp>
-        }
-    />
+enableMocking().then(() =>
+    root.render(
+        <RouterProvider
+            router={router}
+            fallbackElement={
+                <VarnishedApp>
+                    <LinearProgress />
+                </VarnishedApp>
+            }
+        />
+    )
 );

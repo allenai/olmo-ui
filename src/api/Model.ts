@@ -1,4 +1,6 @@
-export const ModelApiUrl = `${process.env.LLMX_API_URL}/v3/models`;
+import { ClientBase } from './ClientBase';
+
+export const ModelApiUrl = '/v3/models';
 
 export interface Model {
     description: string;
@@ -8,3 +10,11 @@ export interface Model {
 }
 
 export type ModelList = Model[];
+
+export class ModelClient extends ClientBase {
+    getAllModels = async (): Promise<ModelList> => {
+        const url = this.createURL(ModelApiUrl);
+
+        return await this.fetch(url);
+    };
+}

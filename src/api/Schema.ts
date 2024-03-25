@@ -1,6 +1,7 @@
+import { ClientBase } from './ClientBase';
 import { InferenceOpts } from './Message';
 
-export const SchemaApiUrl = `${process.env.LLMX_API_URL}/v3/schema`;
+export const SchemaApiUrl = `/v3/schema`;
 
 export interface Field {
     name: string;
@@ -28,4 +29,12 @@ export interface PaginationData {
     offset?: number;
     limit?: number;
     sort?: Sort;
+}
+
+export class SchemaClient extends ClientBase {
+    getSchema = () => {
+        const url = this.createURL(SchemaApiUrl);
+
+        return this.fetch<Schema>(url);
+    };
 }

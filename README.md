@@ -77,6 +77,12 @@ to the production API to get things working.
 To start running E2E tests following the steps below:
 - Navigate `e2e` folder
 - Run the command below `yarn test:e2e` to run all the e2e tests
+- More commands: https://playwright.dev/docs/test-cli
+
+To start running unit tests use the command belows:  
+- Run the command `yarn test` will perform a single run without watch node
+- Run the command `yarn test:watch` will enter the watch mode in development environment and run mode in CI automatically
+- More commands: https://vitest.dev/guide/cli
 
 ### Changing the Local User
 
@@ -86,3 +92,6 @@ set the `USER_EMAIL` environment variable when starting the application:
 ```
 USER_EMAIL=grasshopper@allenai.org docker compose up --build
 ```
+
+## Mocking network requests
+We use MSW to mock network requests. To enable it, add `ENABLE_MOCKING: true` to the `env` for `ui` in `docker-compose.yaml`. Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
