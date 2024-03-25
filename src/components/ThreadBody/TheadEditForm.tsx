@@ -8,7 +8,7 @@ import { useAppContext } from '../../AppContext';
 
 import { MenuWrapperContainer } from '../MessageActionsMenu';
 
-interface ThreadBodyFormProps {
+interface ThreadEditFormProps {
     curMessage: Message;
     handleBranchMenuSelect: (index: number) => void;
     parent?: Message;
@@ -16,13 +16,13 @@ interface ThreadBodyFormProps {
     setMessageLoading: (messageLoading: boolean) => void;
 }
 
-export const ThreadBodyForm = ({
+export const ThreadEditForm = ({
     curMessage,
     handleBranchMenuSelect,
     parent,
     setIsEditing,
     setMessageLoading,
-}: ThreadBodyFormProps) => {
+}: ThreadEditFormProps) => {
     const curMessageRole = curMessage.role;
     const postMessage = useAppContext((state) => state.postMessage);
     const formContext = useForm({
