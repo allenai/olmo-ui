@@ -11,6 +11,8 @@ import { Role } from '../../api/Role';
 
 const encoder = new TextEncoder();
 
+export const messageId = 'msg_A8E5H1X2O3';
+
 export const messageStreamHandlers = [
     http.post(`*/v3/message/stream`, () => {
         const stream = new ReadableStream({
@@ -26,13 +28,13 @@ export const messageStreamHandlers = [
     }),
 
     http.get(`*${MessagesApiUrl}`, () => {
-        return HttpResponse.json(fakeGetallThreadsResponse);
+        return HttpResponse.json(fakeGetAllThreadsResponse);
     }),
 ];
 
 const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> = [
     {
-        id: 'msg_L1Q1W8A3U0',
+        id: messageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -43,7 +45,7 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
             n: 1,
             top_p: 1,
         },
-        root: 'msg_L1Q1W8A3U0',
+        root: messageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
@@ -58,9 +60,9 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
                     n: 1,
                     top_p: 1,
                 },
-                root: 'msg_L1Q1W8A3U0',
+                root: messageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: 'msg_L1Q1W8A3U0',
+                parent: messageId,
                 final: false,
                 private: false,
                 model_type: 'chat',
@@ -84,7 +86,7 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
         content: 'Okay',
     },
     {
-        id: 'msg_L1Q1W8A3U0',
+        id: messageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -95,7 +97,7 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
             n: 1,
             top_p: 1,
         },
-        root: 'msg_L1Q1W8A3U0',
+        root: messageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
@@ -110,9 +112,9 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
                     n: 1,
                     top_p: 1,
                 },
-                root: 'msg_L1Q1W8A3U0',
+                root: messageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: 'msg_L1Q1W8A3U0',
+                parent: messageId,
                 logprobs: [],
                 completion: 'cpl_R5T5K6B4C9',
                 final: true,
@@ -127,7 +129,7 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
     },
 ];
 
-const fakeGetallThreadsResponse: MessagesResponse = {
+const fakeGetAllThreadsResponse: MessagesResponse = {
     messages: [
         {
             children: [
@@ -168,7 +170,7 @@ const fakeGetallThreadsResponse: MessagesResponse = {
             },
             role: Role.User,
             private: false,
-            root: 'msg_L1Q1W8A3U0',
+            root: messageId,
             snippet: 'say one word',
         },
         {

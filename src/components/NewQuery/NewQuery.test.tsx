@@ -2,9 +2,10 @@ import { render, renderHook, screen, waitFor } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 
-import { useAppContext } from 'src/AppContext';
+import { useAppContext } from '../../AppContext';
 
 import { NewQuery } from './NewQuery';
+import { messageId } from '../../mocks/handlers/messageStreamHandlers';
 
 describe('NewQuery', () => {
     test('should send a prompt', async () => {
@@ -29,7 +30,7 @@ describe('NewQuery', () => {
         });
 
         expect(result.current.postMessageInfo.error).toBeFalsy();
-        expect(result.current.postMessageInfo.data?.id).toEqual('msg_L1Q1W8A3U0');
+        expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
     });
 
     test('should populate the models list and change title description when selecting a new model', async () => {

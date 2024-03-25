@@ -93,6 +93,9 @@ export const NewQueryForm = ({
                             alignItems: 'flex-start',
                         },
                     }}
+                    inputProps={{
+                        'data-testid': 'Prompt',
+                    }}
                 />
 
                 <Grid item container gap={2} height="min-content">

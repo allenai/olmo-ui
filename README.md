@@ -92,3 +92,6 @@ set the `USER_EMAIL` environment variable when starting the application:
 ```
 USER_EMAIL=grasshopper@allenai.org docker compose up --build
 ```
+
+## Mocking network requests
+We use MSW to mock network requests. To enable it, add `ENABLE_MOCKING: true` to the `env` for `ui` in `docker-compose.yaml`. Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses

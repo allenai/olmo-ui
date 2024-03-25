@@ -3,3 +3,7 @@ build/
 package.json
 tsconfig.json
 skiff.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
