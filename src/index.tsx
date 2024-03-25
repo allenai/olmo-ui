@@ -22,7 +22,7 @@ import { Thread } from './pages/Thread';
 
 const GlobalStyle = createGlobalStyle`
     html {
-        background: ${({ theme }: { theme: typeof olmoTheme }) => theme.color2.N9.hex};
+        background: transparent;
 
         // force chip selector to be on top
         #typeahead-menu {

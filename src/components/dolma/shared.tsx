@@ -21,7 +21,7 @@ export const SearchContainer = styled(Box)`
 `;
 
 export const PartialWidthTextField = styled(TextField)`
-    width: 95%;
+    width: 85%;
     background-color: white;
 `;
 
