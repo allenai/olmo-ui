@@ -2,21 +2,21 @@ import { ClientBase } from '../ClientBase';
 import { search } from './search';
 
 export class SearchClient extends ClientBase {
+    private dolmaApiUrl = '/dolma-api/api/v1';
     async search(q: search.Request): Promise<search.Response> {
-        console.log('hitting search method');
-        const url = `/dolma-api/api/v1/search?${search.toQueryString(q)}`;
+        const url = `${this.dolmaApiUrl}/search?${search.toQueryString(q)}`;
         const resp = await fetch(url);
         return await this.unpack<search.Response>(resp);
     }
 
     async getMeta(): Promise<search.IndexMeta> {
-        const url = '/dolma-api/api/v1/meta';
+        const url = `${this.dolmaApiUrl}/meta`;
         const resp = await fetch(url);
         return await this.unpack<search.IndexMeta>(resp);
     }
 
     async getDocument(id: string): Promise<search.Document> {
-        const url = `/dolma-api/api/v1/document/${id}`;
+        const url = `${this.dolmaApiUrl}/document/${id}`;
         const resp = await fetch(url);
         return await this.unpack<search.Document>(resp);
     }
