@@ -16,10 +16,10 @@ import { Message, MessageList } from './api/Message';
 import { ModelClient, ModelList } from './api/Model';
 import { Schema, SchemaClient } from './api/Schema';
 import { User, UserClient, WhoamiApiUrl } from './api/User';
-import { PromptTemplateSlice, createPromptTemplateSlice } from './slice/PromptTemplateSlice';
-import { RepromptSlice, createRepromptSlice } from './slice/repromptSlice';
-import { ThreadSlice, createThreadSlice } from './slice/ThreadSlice';
-import { AlertMessageSlice, createAlertMessageSlice, errorToAlert } from './slice/AlertMessageSlice';
+import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptTemplateSlice';
+import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
+import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
+import { AlertMessageSlice, createAlertMessageSlice, errorToAlert } from './slices/AlertMessageSlice';
 
 const labelClient = new LabelClient();
 const userClient = new UserClient();
