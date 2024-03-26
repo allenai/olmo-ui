@@ -10,7 +10,7 @@ import { GlobalAlertList } from './components/GlobalAlertList';
 import { WallpaperCircle } from './components/WallpaperCircle';
 import { olmoTheme } from './olmoTheme';
 import { useFeatureToggles } from './FeatureToggleContext';
-import { OlmoAppBar } from './components/OlmoAppBar';
+import { OlmoAppBar } from './components/OlmoAppBar/OlmoAppBar';
 
 export interface AppRoute {
     path: string;
