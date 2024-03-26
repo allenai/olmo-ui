@@ -112,7 +112,7 @@ const routes = [
     },
 ];
 
-const v0Routes = [
+const uiRefreshRoutes = [
     {
         path: '/',
         element: (
@@ -154,9 +154,9 @@ const v0Routes = [
     },
 ];
 
-const isV0Enabled = process.env.IS_V0_ENABLED === 'true';
-console.log(process.env.IS_V0_ENABLED);
-const router = createBrowserRouter(isV0Enabled ? v0Routes : routes);
+const isUIRefreshEnabled = process.env.IS_UI_REFRESH_ENABLED === 'true';
+console.log(process.env.IS_UI_REFRESH_ENABLED);
+const router = createBrowserRouter(isUIRefreshEnabled ? uiRefreshRoutes : routes);
 
 const container = document.getElementById('root');
 if (!container) {

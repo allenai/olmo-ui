@@ -5,12 +5,12 @@ type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
-    isV0Enabled = 'isV0Enabled',
+    isUIRefreshEnabled = 'isUIRefreshEnabled',
 }
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
-    [FeatureToggle.isV0Enabled]: false,
+    [FeatureToggle.isUIRefreshEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -69,7 +69,7 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         const query = new URL(window.location.href).searchParams;
         const queryToggles = parseToggles(Object.fromEntries(new URLSearchParams(query)));
 
-        const envToggles = parseToggles({ isV0Enabled: process.env.IS_V0_ENABLED });
+        const envToggles = parseToggles({ isUIRefreshEnabled: process.env.IS_UI_REFRESH_ENABLED });
 
         const toggles = {
             ...initialToggles,
