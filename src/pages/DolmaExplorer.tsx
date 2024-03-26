@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { Container, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import { MetaStore } from '../store/MetaStore';
 import { NewSearchPlaceholder } from '../components/dolma/NewSearchPlaceholder';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchContainer, SectionHeading } from '../components/dolma/shared';
@@ -18,17 +17,17 @@ import { Sources } from '../components/dolma/Sources';
 import { Domains } from '../components/dolma/Domains';
 
 export const DolmaExplorer = () => (
-    <MetaStore>
+    <>
         <MetaTags title="Dolma - AI2's Open Pretraining Dataset for AI Language Models" />
-        <InfoSection>
-            <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} justifyContent="center">
-                <ResponsiveImage
-                    src={aiOpennessSrc}
-                    alt="Illustration of colored rectangles unfurling around a central point, representing openness"
-                    width="464"
-                    height="309"
-                />
-                <InfoPanel>
+            <InfoSection>
+                <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} justifyContent="center">
+                    <ResponsiveImage
+                        src={aiOpennessSrc}
+                        alt="Illustration of colored rectangles unfurling around a central point, representing openness"
+                        width="464"
+                        height="309"
+                    />
+                    <InfoPanel>
                     <SectionHeading>Openness in AI is mission critical.</SectionHeading>
                     <InfoParagraph>
                         Generative language models have revolutionized the field of AI and are
@@ -123,7 +122,7 @@ export const DolmaExplorer = () => (
                 </NewsStack>
             </CenterAlignedContainer>
         </GreySection>
-    </MetaStore>
+    </>
 );
 
 const CenterAlignedContainer = styled(Container)`

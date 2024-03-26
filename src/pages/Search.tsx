@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { LinearProgress } from '@mui/material';
 
 import { SearchStore, useSearchStore } from '../store/SearchStore'
-import { MetaStore } from '../store/MetaStore';
 import { RemoteState } from '../api/dolma/RemoteState';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
@@ -59,12 +58,10 @@ const SearchResults = () => {
 
 export const Search = () => {
     return (
-        <MetaStore>
-            <SearchStore>
-                <SearchContainer>
-                    <SearchResults />
-                </SearchContainer>
-            </SearchStore>
-        </MetaStore>
+        <SearchStore>
+            <SearchContainer>
+                <SearchResults />
+            </SearchContainer>
+        </SearchStore>
     );
 };
