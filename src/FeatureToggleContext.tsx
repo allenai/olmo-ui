@@ -73,8 +73,8 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
 
         const toggles = {
             ...initialToggles,
-            ...envToggles,
             ...localStorageToggles,
+            ...envToggles,
             ...queryToggles,
         };
 
