@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { LinearProgress } from '@mui/material';
 
-import { SearchStore, useSearchStore } from '../store/SearchStore'
+import { SearchStore, useSearchStore } from '../store/SearchStore';
 import { RemoteState } from '../api/dolma/RemoteState';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';

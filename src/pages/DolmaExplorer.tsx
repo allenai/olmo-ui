@@ -19,15 +19,15 @@ import { Domains } from '../components/dolma/Domains';
 export const DolmaExplorer = () => (
     <>
         <MetaTags title="Dolma - AI2's Open Pretraining Dataset for AI Language Models" />
-            <InfoSection>
-                <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} justifyContent="center">
-                    <ResponsiveImage
-                        src={aiOpennessSrc}
-                        alt="Illustration of colored rectangles unfurling around a central point, representing openness"
-                        width="464"
-                        height="309"
-                    />
-                    <InfoPanel>
+        <InfoSection>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} justifyContent="center">
+                <ResponsiveImage
+                    src={aiOpennessSrc}
+                    alt="Illustration of colored rectangles unfurling around a central point, representing openness"
+                    width="464"
+                    height="309"
+                />
+                <InfoPanel>
                     <SectionHeading>Openness in AI is mission critical.</SectionHeading>
                     <InfoParagraph>
                         Generative language models have revolutionized the field of AI and are
