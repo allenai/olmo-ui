@@ -37,7 +37,7 @@ server {
         proxy_pass http://host.docker.internal:8000;
     }
 
-    location /dolma-api/ {
-        proxy_pass http://api:8000/;
+    location /api {
+        proxy_pass http://api:8000/api;
     }
 }

@@ -2,6 +2,19 @@
 # It can be attached to a variety of triggers, the default being whenever
 # someone merges changes to the `main` branch.
 steps:
+- id: 'api.build'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME-api:latest',
+    '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME-api:$COMMIT_SHA',
+    '--cache-from', 'gcr.io/$PROJECT_ID/$REPO_NAME-api:latest',
+    '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
+    '.',
+  ]
+  dir: 'api'
+  waitFor: [ '-' ]
+
 - id: 'ui.build.js'
   name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -13,6 +26,7 @@ steps:
     '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
     '.',
   ]
+
 - id: 'ui.build.nginx'
   name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -25,6 +39,7 @@ steps:
     '.',
   ]
   waitFor: [ 'ui.build.js' ]
+
 - id: 'ui.push'
   name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -32,6 +47,7 @@ steps:
     'gcr.io/$PROJECT_ID/$REPO_NAME-ui:$COMMIT_SHA'
   ]
   waitFor: [ 'ui.build.nginx' ]
+
 # Generate our Kubernetes configuration
 - id: 'config'
   name: 'gcr.io/ai2-reviz/jsonnet'
@@ -50,6 +66,15 @@ steps:
   ]
   dir: '.skiff'
   waitFor: [ '-' ]
+
+- id: 'api.push'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    'gcr.io/$PROJECT_ID/$REPO_NAME-api:$COMMIT_SHA',
+  ]
+  waitFor: [ 'api.build' ]
+
 # Deploy the image to Kubernetes
 - id: 'deploy'
   name: 'gcr.io/ai2-reviz/rudder'
@@ -59,10 +84,12 @@ steps:
     'webapp.yaml'
   ]
   dir: '.skiff'
-  waitFor: [ 'ui.push', 'config' ]
+  waitFor: [ 'api.push', 'ui.push', 'config' ]
 substitutions:
   _ENV: prod
 images: [
+  'gcr.io/$PROJECT_ID/$REPO_NAME-api:$COMMIT_SHA',
+  'gcr.io/$PROJECT_ID/$REPO_NAME-api:latest',
   'gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:$COMMIT_SHA',
   'gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:latest',
   'gcr.io/$PROJECT_ID/$REPO_NAME-ui:$COMMIT_SHA',

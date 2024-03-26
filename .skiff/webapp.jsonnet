@@ -163,6 +163,80 @@ function(image, cause, sha, env='prod', branch='', repo='', buildId='')
             ]
         }
     };
+    
+    // The port the Dolma API (Python Flask application) is bound to.
+    local dolmaApiPort = 8000;
+
+    local meta = {
+        name: fullyQualifiedName,
+        namespace: namespaceName,
+        labels: labels,
+        annotations: annotations + {
+            'kubernetes.io/change-cause': cause
+        }
+    };
+
+    local dolmaApiSelectorLabels = selectorLabels + {
+        'app.kubernetes.io/component': 'api'
+    };
+
+    local dolmaApiSvc = {
+        apiVersion: 'v1',
+        kind: 'Service',
+        metadata: meta + {
+            name: fullyQualifiedName + '-api',
+        },
+        spec: {
+            selector: dolmaApiSelectorLabels,
+            ports: [
+                {
+                    port: dolmaApiPort,
+                    name: 'http'
+                }
+            ]
+        }
+    };
+
+    // Rate limit clients to 30 requests per minute. Up to 5 requests beyond that rate are queued,
+    // and any that surplus are rejected w/ a 429. See:
+    // https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md#rate-limiting
+    // https://www.nginx.com/blog/rate-limiting-nginx/#bursts
+    local apiAnnotations = {
+      'nginx.ingress.kubernetes.io/limit-rpm': '30',
+      'nginx.ingress.kubernetes.io/limit-req-status-code': '429'
+    };
+
+    local apiPaths = [
+        {
+            path: '/api',
+            pathType: 'Prefix',
+            backend: {
+                service: {
+                    name: dolmaApiSvc.metadata.name,
+                    port: {
+                        number: dolmaApiSvc.spec.ports[0].port
+                    }
+                }
+            }
+        }
+    ];
+
+    local allenAIAPIIngress = {
+        apiVersion: 'networking.k8s.io/v1',
+        kind: 'Ingress',
+        metadata: {
+            name: fullyQualifiedName + '-allen-dot-ai-api',
+            namespace: namespaceName,
+            labels: labels,
+            annotations: annotations + apiAnnotations + allenAITLS.ingressAnnotations + util.getAuthAnnotations(config, '.allen.ai') + {
+                'nginx.ingress.kubernetes.io/ssl-redirect': 'true'
+            }
+        },
+        spec: {
+            tls: [ allenAITLS.spec + { hosts: allenAIHosts } ],
+            rules: [ { host: host, http: { paths: apiPaths } } for host in allenAIHosts ]
+        }
+    };
 
     local deployment = {
         apiVersion: 'apps/v1',

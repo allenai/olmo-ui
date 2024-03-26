@@ -2,10 +2,10 @@ import { ClientBase } from '../ClientBase';
 import { staticData } from './staticData';
 
 export class StaticDataClient extends ClientBase {
-    staticFilePath = `${process.env.DOLMA_API_URL}/api/static`;
+    staticFilePath = `${process.env.DOLMA_API_URL}/static`;
 
     #getData = async <TResponse>(filePath: string): Promise<TResponse> => {
-        const url = `${this.staticFilePath}/${filePath}`;
+        const url = `${this.staticFilePath}${filePath}`;
         const response = await fetch(url);
         return this.unpack<TResponse>(response);
     };
