@@ -70,7 +70,6 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         const queryToggles = parseToggles(Object.fromEntries(new URLSearchParams(query)));
 
         const envToggles = parseToggles({ isV0Enabled: process.env.IS_V0_ENABLED });
-        console.log(envToggles);
 
         const toggles = {
             ...initialToggles,
