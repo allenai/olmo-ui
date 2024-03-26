@@ -8,12 +8,9 @@ import { User, UserClient, WhoamiApiUrl } from './api/User';
 import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
-import {
-    AlertMessageSlice,
-    createAlertMessageSlice,
-    errorToAlert,
-} from './slices/AlertMessageSlice';
 import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
+import { AlertMessageSlice, createAlertMessageSlice, errorToAlert } from './slices/AlertMessageSlice';
+import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
 
 const userClient = new UserClient();
 const modelClient = new ModelClient();
@@ -44,7 +41,8 @@ type AppContextState = State &
     PromptTemplateSlice &
     RepromptSlice &
     ThreadSlice &
-    AlertMessageSlice;
+    AlertMessageSlice &
+    MetaSlice;
 
 export const useAppContext = create<AppContextState>()(
     devtools((set, get, store) => ({
@@ -56,6 +54,7 @@ export const useAppContext = create<AppContextState>()(
         ...createAlertMessageSlice(set, get, store),
         ...createThreadSlice(set, get, store),
         ...createLabelSlice(set, get, store),
+        ...createMetaSlice(set, get, store),
 
         getUserInfo: async () => {
             try {
