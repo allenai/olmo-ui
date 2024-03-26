@@ -19,6 +19,7 @@ import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
+import { NewApp } from './components/NewApp';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -113,7 +114,7 @@ const uiRefreshRoutes = [
         path: '/',
         element: (
             <VarnishedApp>
-                <App />
+                <NewApp />
             </VarnishedApp>
         ),
         errorElement: <ErrorPage />,

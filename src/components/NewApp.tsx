@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Link, Outlet } from 'react-router-dom';
-import { Button, Grid, CircularProgress, Typography } from '@mui/material';
+import { Button, Grid, CircularProgress, Typography, styled } from '@mui/material';
 
-import { useAppContext } from './AppContext';
-import { OlmoBanner } from './components/OlmoBanner';
-import { GlobalAlertList } from './components/GlobalAlertList';
-import { WallpaperCircle } from './components/WallpaperCircle';
-import { olmoTheme } from './olmoTheme';
-import { useFeatureToggles } from './FeatureToggleContext';
-import { OlmoAppBar } from './components/OlmoAppBar/OlmoAppBar';
-import { OlmoLogo } from './components/logos/OlmoLogo';
+import { useAppContext } from '../AppContext';
+import { OlmoBanner } from './OlmoBanner';
+import { GlobalAlertList } from './GlobalAlertList';
+import { WallpaperCircle } from './WallpaperCircle';
+import { olmoTheme } from '../olmoTheme';
+import { useFeatureToggles } from '../FeatureToggleContext';
+import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
+import { OlmoLogo } from './logos/OlmoLogo';
 
 export interface AppRoute {
     path: string;
@@ -67,15 +66,13 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
     );
 };
 
-interface AppProps {
-    useV0Navigation?: boolean;
-}
-
-export const App = ({ useV0Navigation }: AppProps) => {
+export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);
     const getSchema = useAppContext((state) => state.getSchema);
+
+    const toggles = useFeatureToggles();
 
     const [isLoading, setLoading] = useState(true);
 
@@ -87,38 +84,29 @@ export const App = ({ useV0Navigation }: AppProps) => {
         getUserInfo()
             .then(getSchema)
             .finally(() => setLoading(false));
+        if (toggles.logToggles) {
+            console.table(toggles);
+        }
     }, []);
 
     return (
         <OuterContainer>
-            <AbsoluteContainer>
+            {/* <AbsoluteContainer>
                 <WallpaperCircle color={olmoTheme.color2.N8.hex} />
             </AbsoluteContainer>
             {isLoading ? (
                 <LoadingContainer>
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
-            ) : null}
+            ) : null} */}
             {!isLoading && userInfo.data && schema.data ? (
-                <RelativeContainer>
-                    {useV0Navigation ? (
-                        <OlmoAppBar />
-                    ) : (
-                        <OlmoBanner
-                            bannerLogo={
-                                <BannerLink href="https://olmo.allen.ai">
-                                    <OlmoLogo />
-                                </BannerLink>
-                            }
-                            transparentBackground={true}
-                            endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
-                        />
-                    )}
-                    <Content main>
+                <>
+                    <OlmoAppBar />
+                    <main style={{ gridArea: 'content' }}>
                         <GlobalAlertList />
                         <Outlet />
-                    </Content>
-                    <BottomBanner>
+                    </main>
+                    {/* <BottomBanner>
                         <OlmoBanner
                             bannerLogo={
                                 <BannerLink href="https://allenai.org">
@@ -128,9 +116,9 @@ export const App = ({ useV0Navigation }: AppProps) => {
                             transparentBackground={false}
                             endSlot={<HeaderButton url={feedbackFormUrl} label="Feedback" />}
                         />
-                    </BottomBanner>
-                    <OlmoFooter />
-                </RelativeContainer>
+                    </BottomBanner> */}
+                    {/* <OlmoFooter /> */}
+                </>
             ) : null}
         </OuterContainer>
     );
@@ -140,12 +128,12 @@ const WhiteTypography = styled(Typography)`
     color: white;
 `;
 
-const AbsoluteContainer = styled.div`
+const AbsoluteContainer = styled('div')`
     position: absolute;
     z-index: 5;
 `;
 
-const RelativeContainer = styled.div`
+const RelativeContainer = styled('div')`
     position: relative;
     z-index: 10;
     min-height: 100vh;
@@ -153,7 +141,7 @@ const RelativeContainer = styled.div`
     margin: auto;
 `;
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled('div')`
     position: relative;
     width: 100vw;
     height: 100vh;
@@ -164,25 +152,30 @@ const LoadingContainer = styled.div`
 `;
 
 const OlmoFooter = styled(Footer)`
-    &&&&& {
-        color: white;
-        background-color: transparent;
-        padding-top: 0px;
-    }
+    color: white;
+    background-color: transparent;
+    padding-top: 0px;
+    grid-area: footer;
+
     a {
         color: white;
     }
 `;
 
-const BottomBanner = styled.div`
+const BottomBanner = styled('div')`
     margin: ${({ theme }) => theme.spacing(2)};
 `;
 
-const OuterContainer = styled.div`
-    position: relative;
-    overflow: hidden;
+const OuterContainer = styled('div')`
+    display: grid;
+    grid-template-areas:
+        'nav app-bar'
+        'nav content'
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+
     background: ${({ theme }) =>
-        `linear-gradient(122deg, ${theme.color2.N7} 0%, transparent 100%), ${theme.color2.N8}`};
+        `linear-gradient(122deg, ${theme.color.N7} 0%, transparent 100%), ${theme.color.N8}`};
 `;
 
 interface BannerButtonProps {
