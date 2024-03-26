@@ -60,7 +60,6 @@ describe('ThreadBodyView', () => {
     test('should send a follow up message', async () => {
         const user = userEvent.setup();
         const { result } = renderHook(() => useAppContext());
-        result.current.getAllThreads(0);
 
         render(
             <ThreadBodyView
@@ -84,7 +83,6 @@ describe('ThreadBodyView', () => {
     test('should be able to edit message', async () => {
         const user = userEvent.setup();
         const { result } = renderHook(() => useAppContext());
-        result.current.getAllThreads(0);
 
         render(
             <ThreadBodyView
@@ -97,9 +95,9 @@ describe('ThreadBodyView', () => {
         fireEvent.mouseEnter(screen.getAllByLabelText('LLM Response')[0]);
         await user.click(screen.getAllByLabelText('More Options')[0]);
         await user.click(screen.getByText('Edit'));
-        const editInput = await screen.getByTestId('Edit Prompt');
+        const editInput = await screen.getByLabelText('Edit Prompt');
         await user.type(editInput, 'Hello');
-        await user.click(screen.getByLabelText('Check'));
+        await user.click(screen.getByLabelText('Finish editing LLM response'));
         expect(result.current.postMessageInfo.error).toBeFalsy();
         expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
     });
