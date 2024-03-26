@@ -9,3 +9,5 @@ build
 
 # unit test coverage
 coverage/
+
+**/__pycache__/

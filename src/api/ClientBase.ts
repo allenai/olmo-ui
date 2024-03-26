@@ -12,7 +12,7 @@ export abstract class ClientBase {
         document.location = url.toString();
     }
 
-    private unpack = async <T>(response: Response): Promise<T> => {
+    protected unpack = async <T>(response: Response): Promise<T> => {
         switch (response.status) {
             case 200:
                 return await response.json();

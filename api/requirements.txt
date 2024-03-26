@@ -1,0 +1,7 @@
+Flask==2.3.2
+gunicorn==21.2.0
+python-json-logger==2.0.2
+elasticsearch8==8.9.0
+google-cloud-bigquery==3.13.0
+uniseg==0.7.2
+beautifulsoup4==4.12.2

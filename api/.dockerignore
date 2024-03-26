@@ -1,0 +1,10 @@
+# Python cache files
+**.pyc
+**/__pycache__
+.dockerignore
+config.json
+service_account.json
+
+# Docker artifacts
+Dockerfile
+
