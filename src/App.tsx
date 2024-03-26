@@ -85,7 +85,7 @@ export const App = () => {
             .then(getSchema)
             .finally(() => setLoading(false));
         if (toggles.logToggles) {
-            console.log(toggles);
+            console.table(toggles);
         }
     }, []);
 

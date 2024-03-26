@@ -54,7 +54,7 @@ const VarnishedApp = ({ children }: PropsWithChildren) => {
     );
 };
 
-const router = createBrowserRouter([
+const routes = [
     {
         path: '/',
         element: (
@@ -98,7 +98,53 @@ const router = createBrowserRouter([
             },
         ],
     },
-]);
+];
+
+const v0Routes = [
+    {
+        path: '/',
+        element: (
+            <VarnishedApp>
+                <App />
+            </VarnishedApp>
+        ),
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: '/',
+                element: <Home />,
+            },
+            {
+                path: '/thread/:id',
+                element: <Thread />,
+            },
+            {
+                path: '/prompttemplates',
+                element: <PromptTemplates />,
+            },
+            {
+                path: '/prompt-templates',
+                element: <PromptTemplates />,
+            },
+            {
+                path: '/admin',
+                element: <Admin />,
+            },
+            {
+                path: '/*',
+                element: (
+                    <VarnishedApp>
+                        <NotFound />
+                    </VarnishedApp>
+                ),
+            },
+        ],
+    },
+];
+
+const isV0Enabled = process.env.IS_V0_ENABLED === 'true';
+console.log(process.env.IS_V0_ENABLED);
+const router = createBrowserRouter(isV0Enabled ? v0Routes : routes);
 
 const container = document.getElementById('root');
 if (!container) {

@@ -5,19 +5,21 @@ type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
+    isV0Enabled = 'isV0Enabled',
 }
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
+    [FeatureToggle.isV0Enabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
 
-type FTValue = string | boolean | number;
+type FTValue = string | boolean | number | undefined;
 
 // allows easier use of toggles
 const parseToggleValue = (toggleValue: FTValue): boolean => {
-    switch (toggleValue.toString().toLowerCase()) {
+    switch (toggleValue?.toString().toLowerCase()) {
         case 'true':
         case '1':
         case 'on':
@@ -27,6 +29,8 @@ const parseToggleValue = (toggleValue: FTValue): boolean => {
         case '0':
         case 'off':
         case 'no':
+        case undefined:
+        case null:
         default:
             return false;
     }
@@ -65,10 +69,14 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         const query = new URL(window.location.href).searchParams;
         const queryToggles = parseToggles(Object.fromEntries(new URLSearchParams(query)));
 
+        const envToggles = parseToggles({ isV0Enabled: process.env.IS_V0_ENABLED });
+        console.log(envToggles);
+
         const toggles = {
             ...initialToggles,
             ...localStorageToggles,
             ...queryToggles,
+            ...envToggles,
         };
 
         // save back to local storage
