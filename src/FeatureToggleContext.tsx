@@ -67,7 +67,7 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
 
         // grab from url if we have any
         const query = new URL(window.location.href).searchParams;
-        const queryToggles = parseToggles(Object.fromEntries(new URLSearchParams(query)));
+        const queryToggles = parseToggles(Object.fromEntries(query));
 
         const envToggles = parseToggles({ isUIRefreshEnabled: process.env.IS_UI_REFRESH_ENABLED });
 
@@ -82,6 +82,10 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         localStorage.setItem(localStorageKey, JSON.stringify(toggles));
 
         setFeatureToggles(toggles);
+
+        if (toggles.logToggles) {
+            console.table(toggles);
+        }
     }, []);
 
     return <Ctx.Provider value={featureToggles}>{children}</Ctx.Provider>;

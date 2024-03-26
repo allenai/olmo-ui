@@ -154,7 +154,10 @@ const uiRefreshRoutes = [
     },
 ];
 
-const isUIRefreshEnabled = process.env.IS_UI_REFRESH_ENABLED === 'true';
+const searchParams = new URL(window.location.href).searchParams;
+const isUIRefreshEnabled =
+    searchParams.get('isUIRefreshEnabled') === 'true' ||
+    process.env.IS_UI_REFRESH_ENABLED === 'true';
 console.log(process.env.IS_UI_REFRESH_ENABLED);
 const router = createBrowserRouter(isUIRefreshEnabled ? uiRefreshRoutes : routes);
 
