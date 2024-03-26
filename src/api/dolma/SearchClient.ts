@@ -2,7 +2,8 @@ import { ClientBase } from '../ClientBase';
 import { search } from './search';
 
 export class SearchClient extends ClientBase {
-    private dolmaApiUrl = '/dolma-api/api/v1';
+    private dolmaApiUrl = `${process.env.DOLMA_API_URL}/v1`;
+
     async search(q: search.Request): Promise<search.Response> {
         const url = `${this.dolmaApiUrl}/search?${search.toQueryString(q)}`;
         const resp = await fetch(url);
