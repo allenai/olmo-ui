@@ -13,14 +13,16 @@ import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
 import { olmoTheme } from './olmoTheme';
 import { Home } from './pages/Home';
 import { Admin } from './pages/Admin';
+import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
+import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
 
 const GlobalStyle = createGlobalStyle`
     html {
-        background: ${({ theme }: { theme: typeof olmoTheme }) => theme.color2.N9.hex};
+        background: transparent;
 
         // force chip selector to be on top
         #typeahead-menu {
@@ -66,6 +68,16 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/dolma',
+                element: <DolmaExplorer />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/search',
+                element: <Search />,
                 errorElement: <ErrorPage />,
             },
             {

@@ -1,0 +1,22 @@
+[
+    {
+        "name": "type",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "url",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "occurred",
+        "type": "TIMESTAMP",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "details",
+        "type": "JSON",
+        "mode": "NULLABLE"
+    }
+]

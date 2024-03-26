@@ -110,7 +110,7 @@ export const App = () => {
                         transparentBackground={true}
                         endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
                     />
-                    <Content bgcolor="transparent" main>
+                    <Content main>
                         <GlobalAlertList />
                         <Outlet />
                     </Content>
