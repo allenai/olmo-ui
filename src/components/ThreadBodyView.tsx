@@ -1,18 +1,17 @@
 import { useState } from 'react';
-import { Box, Grid, IconButton, LinearProgress, Stack, TextField } from '@mui/material';
-import styled from 'styled-components';
-import { Check, Clear } from '@mui/icons-material';
+import { Box, Grid, Stack } from '@mui/material';
 
-import { Message, MessagePost } from '../api/Message';
+import { Message } from '../api/Message';
 import { BarOnRightContainer } from './BarOnRightContainer';
 import { useAppContext } from '../AppContext';
-import { MenuWrapperContainer } from './MessageActionsMenu';
 import { LabelRating } from '../api/Label';
 
 import 'highlight.js/styles/github-dark.css';
 import { BaseModelResponseView } from './ResponseView/BaseModelResponseView';
-import { ChatResponseView } from './ChatResponseView';
-import { ThreadContextMenu } from './ThreadContextMenu';
+import { ChatResponseView } from './ThreadBody/ChatResponseView';
+import { ThreadContextMenu } from './ThreadBody/ThreadContextMenu';
+import { ThreadEditForm } from './ThreadBody/TheadEditForm';
+import { ThreadFollowUpForm } from './ThreadBody/ThreadFollowUpForm';
 
 interface ThreadBodyProps {
     parent?: Message;
@@ -31,12 +30,10 @@ export const ThreadBodyView = ({
         return null;
     }
     const postLabel = useAppContext((state) => state.postLabel);
-    const postMessage = useAppContext((state) => state.postMessage);
     let followUpControl = showFollowUp;
 
     const [isEditing, setIsEditing] = useState(false);
     const [messageLoading, setMessageLoading] = useState(false);
-    const [editMessageContent, setEditMessageContent] = useState('');
     const [curMessageIndex, setCurMessageIndex] = useState(0);
     // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
     const [branchMenuAnchorEl, setBranchMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -47,43 +44,11 @@ export const ThreadBodyView = ({
         setBranchMenuAnchorEl(null);
     };
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [followUpPrompt, setFollowUpPrompt] = useState<string>();
-
     const branchCount = messages.length;
     const curMessage = messages[curMessageIndex];
-    const curMessageRole = curMessage.role;
 
     // see if any loading state is active
-    const isLoading = messageLoading || isSubmitting;
-
-    const postFollowupMessage = async function () {
-        setIsSubmitting(true);
-        const parent = curMessage;
-        const payload: MessagePost = {
-            content: followUpPrompt || '',
-        };
-        const postMessageInfo = await postMessage(payload, parent);
-        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
-            setFollowUpPrompt('');
-        }
-        setIsSubmitting(false);
-    };
-
-    const editMessage = async function () {
-        setIsEditing(false);
-        setMessageLoading(true);
-        const payload: MessagePost = {
-            content: editMessageContent,
-            role: curMessageRole,
-            original: curMessage.id,
-        };
-        handleBranchMenuSelect(0); // 0 because the new message is unshifted
-        const postMessageInfo = await postMessage(payload, parent);
-        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
-            setMessageLoading(false);
-        }
-    };
+    const isLoading = messageLoading;
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -120,37 +85,13 @@ export const ThreadBodyView = ({
                     <Stack direction="row" spacing={1}>
                         <Grid item sx={{ flexGrow: 1 }}>
                             {isEditing ? (
-                                <Grid container spacing={0.5}>
-                                    <Grid item sx={{ flexGrow: 1, marginRight: 2 }}>
-                                        <TextField
-                                            defaultValue={curMessage.content}
-                                            fullWidth
-                                            multiline
-                                            onChange={(v) => setEditMessageContent(v.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item>
-                                        <MenuWrapperContainer>
-                                            <OutlinedIconButton
-                                                sx={{ border: 1, borderRadius: 0, p: 0 }}
-                                                size="small"
-                                                disabled={!editMessageContent?.length}
-                                                onClick={editMessage}>
-                                                <Check />
-                                            </OutlinedIconButton>
-                                        </MenuWrapperContainer>
-                                    </Grid>
-                                    <Grid item>
-                                        <MenuWrapperContainer>
-                                            <OutlinedIconButton
-                                                sx={{ border: 1, borderRadius: 0, p: 0 }}
-                                                size="small"
-                                                onClick={() => setIsEditing(false)}>
-                                                <Clear />
-                                            </OutlinedIconButton>
-                                        </MenuWrapperContainer>
-                                    </Grid>
-                                </Grid>
+                                <ThreadEditForm
+                                    curMessage={curMessage}
+                                    handleBranchMenuSelect={handleBranchMenuSelect}
+                                    parent={parent}
+                                    setIsEditing={setIsEditing}
+                                    setMessageLoading={setMessageLoading}
+                                />
                             ) : (
                                 <>
                                     {isBaseModelThread ? (
@@ -183,39 +124,9 @@ export const ThreadBodyView = ({
                         disabledActions={disabledActions}
                     />
                 ) : followUpControl ? (
-                    <FollowUpContainer>
-                        <TextField
-                            fullWidth
-                            multiline
-                            placeholder="Follow Up"
-                            disabled={isSubmitting || disabledActions}
-                            maxRows={13}
-                            value={followUpPrompt}
-                            onChange={(v) => setFollowUpPrompt(v.target.value)}
-                            onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                    postFollowupMessage();
-                                }
-                            }}
-                        />
-                        {isSubmitting ? <LinearProgress /> : null}
-                    </FollowUpContainer>
+                    <ThreadFollowUpForm curMessage={curMessage} disabledActions={disabledActions} />
                 ) : null}
             </>
         </BarOnRightContainer>
     );
 };
-
-const FollowUpContainer = styled.div`
-    padding-left: ${({ theme }) => theme.spacing(2)};
-    padding-right: ${({ theme }) => theme.spacing(1)};
-    margin: ${({ theme }) => theme.spacing(2)};
-`;
-
-const OutlinedIconButton = styled(IconButton)`
-    &&& {
-        border: 1px solid;
-        border-radius: 0;
-        padding: 0;
-    }
-`;

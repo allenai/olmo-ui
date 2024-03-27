@@ -46,7 +46,7 @@ export const LLMResponseView = ({
                 ) : (
                     <RobotAvatar />
                 )}
-                <LLMResponseContainer id={msgId}>
+                <LLMResponseContainer id={msgId} aria-label="LLM Response">
                     <Stack direction="row" justifyContent="space-between">
                         <div
                             dangerouslySetInnerHTML={{ __html: html }}

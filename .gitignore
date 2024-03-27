@@ -11,3 +11,5 @@ build
 coverage/
 
 **/__pycache__/
+# Vitest Preview
+.vitest-preview

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { useAppContext } from '../../AppContext';
 
-import { NewQuery } from './NewQuery';
+import { NewQuery } from '../NewQuery/NewQuery';
 import { messageId } from '../../mocks/handlers/messageStreamHandlers';
 
 describe('NewQuery', () => {
@@ -14,7 +14,6 @@ describe('NewQuery', () => {
         result.current.getAllThreads(0);
 
         render(<NewQuery />);
-
         const promptInput = await screen.findByPlaceholderText(
             'Select a Prompt Template above or type a free form prompt'
         );

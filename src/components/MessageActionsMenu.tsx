@@ -52,7 +52,8 @@ export const MessageActionsMenu = ({
                 startIcon={startIcon}
                 disabled={disabled}
                 variant="outlined"
-                onClick={(e) => handleResponseMenuButtonClick(e)}>
+                onClick={(e) => handleResponseMenuButtonClick(e)}
+                aria-label="More Options">
                 {primaryIcon || null}
                 {label && <Typography noWrap>{label}</Typography>}
             </ResponseMenuButton>
