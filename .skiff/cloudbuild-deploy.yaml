@@ -26,6 +26,7 @@ steps:
     '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
     '.',
   ]
+  waitFor: [ '-' ]
 
 - id: 'ui.build.nginx'
   name: 'gcr.io/cloud-builders/docker'
@@ -48,6 +49,15 @@ steps:
   ]
   waitFor: [ 'ui.build.nginx' ]
 
+- id: 'api.push'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    'gcr.io/$PROJECT_ID/$REPO_NAME-api:$COMMIT_SHA',
+  ]
+  waitFor: [ 'api.build' ]
+
+
 # Generate our Kubernetes configuration
 - id: 'config'
   name: 'gcr.io/ai2-reviz/jsonnet'
@@ -66,14 +76,6 @@ steps:
   ]
   dir: '.skiff'
   waitFor: [ '-' ]
-
-- id: 'api.push'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'push',
-    'gcr.io/$PROJECT_ID/$REPO_NAME-api:$COMMIT_SHA',
-  ]
-  waitFor: [ 'api.build' ]
 
 # Deploy the image to Kubernetes
 - id: 'deploy'
