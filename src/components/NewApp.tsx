@@ -2,6 +2,8 @@ import { Container, Paper, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { DesktopLayoutBreakpoint } from '../constants';
+
 import { useAppContext } from '../AppContext';
 import { GlobalAlertList } from './GlobalAlertList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
@@ -31,7 +33,10 @@ export const NewApp = () => {
                     <OlmoAppBar />
                     <Container
                         component="main"
-                        sx={{ gridArea: 'content', paddingInline: { xs: 2, sm: 0 } }}
+                        sx={{
+                            gridArea: 'content',
+                            paddingInline: { xs: 2, [DesktopLayoutBreakpoint]: 0 },
+                        }}
                         maxWidth={false}>
                         <GlobalAlertList />
                         <Outlet />
@@ -43,7 +48,7 @@ export const NewApp = () => {
 };
 
 const OuterContainer = styled(Paper)`
-    ${({ theme }) => theme.breakpoints.up('sm')} {
+    ${({ theme }) => theme.breakpoints.up(DesktopLayoutBreakpoint)} {
         padding-inline: 0;
         display: grid;
 

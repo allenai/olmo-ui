@@ -7,6 +7,8 @@ import { useState } from 'react';
 
 import { useMatches } from 'react-router-dom';
 
+import { DesktopLayoutBreakpoint } from '../../constants';
+
 import { NavDrawer } from './NavDrawer';
 import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
@@ -61,12 +63,19 @@ export const OlmoAppBar = () => {
                     <Typography
                         variant="h3"
                         component="h1"
-                        sx={{ color: (theme) => theme.palette.primary.main, margin: 0 }}>
+                        sx={{
+                            color: (theme) => theme.palette.primary.main,
+                            margin: 0,
+                            display: { xs: 'none', [DesktopLayoutBreakpoint]: 'block' },
+                        }}>
                         {title}
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
-                        sx={{ display: { sm: 'none' }, marginInlineStart: 'auto' }}>
+                        sx={{
+                            display: { [DesktopLayoutBreakpoint]: 'none' },
+                            marginInlineStart: 'auto',
+                        }}>
                         <MenuIcon />
                     </IconButton>
                 </Toolbar>
