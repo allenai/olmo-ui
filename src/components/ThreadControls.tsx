@@ -14,6 +14,7 @@ import {
 import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
 import { Message } from '../api/Message';
+import { RemoteState } from '../contexts/util';
 
 interface ThreadControlProps {
     rootMessage: Message;
@@ -25,9 +26,8 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
     const deleteThread = useAppContext((state) => state.deleteThread);
     const deletedThreadInfo = useAppContext((state) => state.deletedThreadInfo);
     const postLabel = useAppContext((state) => state.postLabel);
-    const postLabelInfo = useAppContext((state) => state.postLabelInfo);
     const deleteLabel = useAppContext((state) => state.deleteLabel);
-    const deleteLabelInfo = useAppContext((state) => state.deleteLabelInfo);
+    const labelRemoteState = useAppContext((state) => state.labelRemoteState);
 
     const addLabel = async (rating: LabelRating) => {
         if (rootMessage.labels.length) {
@@ -66,21 +66,21 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
             <ThreadActionButton
                 variant="text"
                 startIcon={<GoodIcon />}
-                disabled={postLabelInfo.loading || deleteLabelInfo.loading}
+                disabled={labelRemoteState === RemoteState.Loading}
                 onClick={() => addLabel(LabelRating.Positive)}>
                 <Typography>Good</Typography>
             </ThreadActionButton>
             <ThreadActionButton
                 variant="text"
                 startIcon={<BadIcon />}
-                disabled={postLabelInfo.loading || deleteLabelInfo.loading}
+                disabled={labelRemoteState === RemoteState.Loading}
                 onClick={() => addLabel(LabelRating.Negative)}>
                 <Typography>Bad</Typography>
             </ThreadActionButton>
             <ThreadActionButton
                 variant="text"
                 startIcon={<FlagIcon />}
-                disabled={postLabelInfo.loading || deleteLabelInfo.loading}
+                disabled={labelRemoteState === RemoteState.Loading}
                 onClick={() => addLabel(LabelRating.Flag)}>
                 <Typography>Inappropriate</Typography>
             </ThreadActionButton>

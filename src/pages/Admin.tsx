@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Link } from 'react-router-dom';
 
+import { RemoteState } from '../contexts/util';
 import { useAppContext } from '../AppContext';
 import { LabelRating, LabelsApiUrl } from '../api/Label';
 import { PromptTemplates } from './PromptTemplates';
@@ -29,7 +30,8 @@ export const Admin = () => {
     const getAllLabels = useAppContext((state) => state.getAllLabels);
     const getAllSortedLabels = useAppContext((state) => state.getAllSortedLabels);
     const getAllFilteredLabels = useAppContext((state) => state.getAllFilteredLabels);
-    const allLabelInfo = useAppContext((state) => state.allLabelInfo);
+    const allLabels = useAppContext((state) => state.allLabels);
+    const allLabelsRemoteState = useAppContext((state) => state.allLabelsRemoteState);
 
     const exportURL = `${LabelsApiUrl}?export&limit=${EXPORT_LIMIT}`;
     const [curTab, setCurTab] = React.useState<string>('labels');
@@ -163,11 +165,11 @@ export const Admin = () => {
                     <ExportButton variant="outlined" href={exportURL}>
                         Export all Labels
                     </ExportButton>
-                    {!allLabelInfo.error ? (
+                    {allLabelsRemoteState === RemoteState.Error ? null : (
                         <DataGrid
-                            loading={allLabelInfo.loading}
-                            rows={allLabelInfo.data?.labels || []}
-                            rowCount={allLabelInfo.data?.meta.total || 0}
+                            loading={allLabelsRemoteState === RemoteState.Loading}
+                            rows={allLabels?.labels || []}
+                            rowCount={allLabels?.meta.total || 0}
                             initialState={{ pagination: { paginationModel: pagination } }}
                             paginationMode="server"
                             onPaginationModelChange={(model) => {
@@ -183,7 +185,7 @@ export const Admin = () => {
                             pageSizeOptions={[10, 25, 50, 100]}
                             disableRowSelectionOnClick
                         />
-                    ) : null}
+                    )}
                 </TabPanel>
                 <TabPanel value={TabKey.PromptTemplates}>
                     <PromptTemplates hideTitle />
