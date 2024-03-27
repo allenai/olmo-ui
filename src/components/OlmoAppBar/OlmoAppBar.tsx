@@ -3,9 +3,9 @@ import InfoIcon from '@mui/icons-material/InfoOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MagnifyingGlassIcon from '@mui/icons-material/Search';
 import { AppBar, Divider, IconButton, List, Stack, Toolbar, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { useMatch, useMatches } from 'react-router-dom';
+import { useMatches } from 'react-router-dom';
 
 import { NavDrawer } from './NavDrawer';
 import { NavigationFooter } from './NavigationFooter';
@@ -29,7 +29,7 @@ const useRouteTitle = () => {
 
 export const OlmoAppBar = () => {
     const title = useRouteTitle();
-    const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);

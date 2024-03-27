@@ -1,4 +1,4 @@
-import { Paper, styled } from '@mui/material';
+import { Container, Paper, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -29,10 +29,13 @@ export const NewApp = () => {
             {!isLoading && userInfo.data && schema.data ? (
                 <>
                     <OlmoAppBar />
-                    <main style={{ gridArea: 'content' }}>
+                    <Container
+                        component="main"
+                        sx={{ gridArea: 'content', paddingInline: { xs: 2, sm: 0 } }}
+                        maxWidth={false}>
                         <GlobalAlertList />
                         <Outlet />
-                    </main>
+                    </Container>
                 </>
             ) : null}
         </OuterContainer>
@@ -41,6 +44,7 @@ export const NewApp = () => {
 
 const OuterContainer = styled(Paper)`
     ${({ theme }) => theme.breakpoints.up('sm')} {
+        padding-inline: 0;
         display: grid;
 
         grid-template-areas:
