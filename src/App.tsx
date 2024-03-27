@@ -72,8 +72,6 @@ export const App = () => {
     const schema = useAppContext((state) => state.schema);
     const getSchema = useAppContext((state) => state.getSchema);
 
-    const toggles = useFeatureToggles();
-
     const [isLoading, setLoading] = useState(true);
 
     // TODO: There's an edge case where these XHR requests fail that we're not handling now.
@@ -84,9 +82,6 @@ export const App = () => {
         getUserInfo()
             .then(getSchema)
             .finally(() => setLoading(false));
-        if (toggles.logToggles) {
-            console.log(toggles);
-        }
     }, []);
 
     return (

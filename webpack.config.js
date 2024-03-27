@@ -56,6 +56,7 @@ module.exports = (env) => ({
             LLMX_API_URL: 'http://localhost:8080',
             DOLMA_API_URL: process.env.DOLMA_API_URL,
             ENABLE_MOCKING: false,
+            IS_UI_REFRESH_ENABLED: false,
         }),
     ],
     output: {
