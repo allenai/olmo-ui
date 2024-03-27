@@ -50,9 +50,12 @@ export const ResponsiveDrawer = ({
                     gridArea: 'nav',
                 }}
                 PaperProps={{
+                    elevation: 2,
                     sx: {
                         maxWidth: (theme) => theme.spacing(50),
                         position: 'unset',
+                        backgroundColor: (theme) => theme.palette.background.default,
+                        borderRight: 'none',
                     },
                 }}>
                 {desktopHeading}

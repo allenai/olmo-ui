@@ -25,7 +25,7 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             desktopHeading={<DesktopHeading />}>
-            <Stack component="nav" direction="column" justifyContent="space-between" height="1">
+            <Stack component="nav" direction="column" justifyContent="space-between" height={1}>
                 <List>
                     <NavigationHeading>Models</NavigationHeading>
                     <NavigationLink href="/" icon={<ChatBubbleIcon />}>
