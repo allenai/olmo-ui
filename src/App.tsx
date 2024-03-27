@@ -67,11 +67,8 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
     );
 };
 
-interface AppProps {
-    useV0Navigation?: boolean;
-}
 
-export const App = ({ useV0Navigation }: AppProps) => {
+export const App = () => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);
