@@ -67,6 +67,7 @@ steps:
     '--output-file', './webapp.yaml',
     '--tla-str', 'env=$_ENV',
     '--tla-str', 'image=gcr.io/$PROJECT_ID/$REPO_NAME-ui:$COMMIT_SHA',
+    '--tla-str', 'apiImage=gcr.io/$PROJECT_ID/$REPO_NAME-api:$COMMIT_SHA',
     '--tla-str', 'sha=$COMMIT_SHA',
     '--tla-str', 'cause=Automated Skiff Deploy SHA:$COMMIT_SHA BUILD:$BUILD_ID',
     '--tla-str', 'branch=$BRANCH_NAME',
