@@ -11,7 +11,7 @@
 local config = import '../skiff.json';
 local util = import './util.libsonnet';
 
-function(image, cause, sha, env='prod', branch='', repo='', buildId='')
+function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId='')
     // Produce a list of hostnames served by your application.
     // See: https://skiff.allenai.org/domains.html.
     local hasCustomDomains = (
@@ -238,6 +238,123 @@ function(image, cause, sha, env='prod', branch='', repo='', buildId='')
         }
     };
 
+
+    local affinity = {
+        podAntiAffinity: {
+            requiredDuringSchedulingIgnoredDuringExecution: [
+                {
+                   labelSelector: {
+                        matchExpressions: [
+                            {
+                                    key: labelName,
+                                    operator: 'In',
+                                    values: [ antiAffinityLabels[labelName], ],
+                            } for labelName in std.objectFields(antiAffinityLabels)
+                       ],
+                    },
+                    topologyKey: 'kubernetes.io/hostname'
+                },
+            ]
+        },
+    };
+
+    local apiPodLabels = labels + antiAffinityLabels + {
+        'app.kubernetes.io/component': 'api'
+    };
+
+    local apiSelectorLabels = selectorLabels + {
+        'app.kubernetes.io/component': 'api'
+    };
+
+        // This is used to verify that the API is funtional.
+    local apiHealthCheck = {
+        port: dolmaApiPort,
+        scheme: 'HTTP'
+    };
+
+
+    local dolmaApiDeployment = {
+        apiVersion: 'apps/v1',
+        kind: 'Deployment',
+        metadata: meta + { name: fullyQualifiedName + '-api' },
+        spec: {
+            strategy: {
+                type: 'RollingUpdate',
+                rollingUpdate: {
+                    maxSurge: numReplicas // This makes deployments faster.
+                }
+            },
+            revisionHistoryLimit: 3,
+            replicas: numReplicas,
+            selector: { matchLabels: apiSelectorLabels },
+            template: {
+                metadata: meta + { labels: apiPodLabels },
+                spec: {
+                    affinity: affinity,
+                    nodeSelector: nodeSelector,
+                    volumes: [
+                        {
+                            name: 'config',
+                            secret: {
+                                secretName: 'config'
+                            }
+                        },
+                    ],
+                    containers: [
+                        {
+                            name: fullyQualifiedName + '-api',
+                            image: apiImage,
+                            readinessProbe: {
+                                httpGet: apiHealthCheck + {
+                                    path: '/api/health?check=rdy'
+                                },
+                                periodSeconds: 10,
+                                failureThreshold: 3
+                            },
+                            resources: {
+                                requests: {
+                                    cpu: 0.1,
+                                    memory: '500M'
+                                },
+                                limits: { } + gpuLimits
+                            },
+                            env: [
+                                {
+                                    name: 'LOG_FORMAT',
+                                    value: 'google:json'
+                                }
+                            ],
+                            volumeMounts: [
+                                {
+                                    name: 'config',
+                                    mountPath: '/secret/config',
+                                    readOnly: true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    };
+
+    local dolmaApiPdb = {
+        apiVersion: 'policy/v1',
+        kind: 'PodDisruptionBudget',
+        metadata: {
+            name: fullyQualifiedName + '-api',
+            namespace: namespaceName,
+            labels: labels,
+        },
+        spec: {
+            minAvailable: if numReplicas > 1 then 1 else 0,
+            selector: {
+                matchLabels: apiSelectorLabels,
+            },
+        },
+    };
+
+
     local deployment = {
         apiVersion: 'apps/v1',
         kind: 'Deployment',
@@ -353,7 +470,14 @@ function(image, cause, sha, env='prod', branch='', repo='', buildId='')
 
     [
         namespace,
+        
         allenAIIngress,
+        allenAIAPIIngress,
+
+        dolmaApiSvc,
+        dolmaApiDeployment,
+        dolmaApiPdb,
+        
         deployment,
         service,
         pdb
