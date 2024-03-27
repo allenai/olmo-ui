@@ -28,7 +28,7 @@ services:
   nginx:
     image: nginx:1.25.1-alpine
     volumes:
-      - ./nginx/local.conf.template:/etc/nginx/templates/default.conf.template
+      - ./nginx/local.conf.template:/etc/nginx/templates/prod.conf.template
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8080:8080
