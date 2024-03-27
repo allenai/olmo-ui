@@ -34,7 +34,7 @@ export const ResponsiveDrawer = ({
                 onClose={onClose}
                 PaperProps={{
                     sx: {
-                        width: '100vw',
+                        width: { xs: '100vw', sm: 'auto' },
                     },
                 }}
                 sx={{ display: { xs: 'flex', [drawerBreakpoint]: 'none' } }}>

@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, Link, Stack, Typography } from '@mui/material';
 
 import { ResponsiveDrawerProps, ResponsiveDrawer } from './ResponsiveDrawer';
 
@@ -31,9 +31,9 @@ export const NavDrawer = ({ children, onClose, ...props }: NavDrawerProps) => {
                 </Stack>
             }
             desktopHeading={
-                <Stack paddingInline={2} paddingBlock={4}>
-                    <img src="/ai2-logo.png" alt="" height={33} width={292} />
-                </Stack>
+                <Link paddingInline={2} paddingBlock={4} href="https://allenai.org">
+                    <img src="/ai2-logo.png" alt="Go to the AI2 homepage" height={33} width={292} />
+                </Link>
             }>
             {children}
         </ResponsiveDrawer>

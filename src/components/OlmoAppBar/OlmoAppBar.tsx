@@ -2,7 +2,7 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MagnifyingGlassIcon from '@mui/icons-material/Search';
-import { AppBar, Divider, IconButton, List, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Divider, IconButton, Link, List, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { useMatches } from 'react-router-dom';
@@ -59,7 +59,14 @@ export const OlmoAppBar = () => {
                     disableGutters
                     gap={4}
                     alignItems="center">
-                    <img src="/olmo-logo-light.svg" alt="" height={46} width={91} />
+                    <Link href="/">
+                        <img
+                            src="/olmo-logo-light.svg"
+                            alt="Return to Olmo home"
+                            height={46}
+                            width={91}
+                        />
+                    </Link>
                     <Typography
                         variant="h3"
                         component="h1"

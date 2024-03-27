@@ -36,6 +36,9 @@ export const NewApp = () => {
                         sx={{
                             gridArea: 'content',
                             paddingInline: { xs: 2, [DesktopLayoutBreakpoint]: 0 },
+                            paddingBlockStart: { [DesktopLayoutBreakpoint]: 4 },
+                            overflow: 'auto',
+                            height: 1,
                         }}
                         maxWidth={false}>
                         <GlobalAlertList />
@@ -60,7 +63,6 @@ const OuterContainer = styled(Paper)`
         grid-template-columns: auto 1fr;
 
         grid-column-gap: ${({ theme }) => theme.spacing(8)};
-        grid-row-gap: ${({ theme }) => theme.spacing(4)};
     }
 
     height: 100vh;
