@@ -40,17 +40,19 @@ export const NewApp = () => {
 };
 
 const OuterContainer = styled(Paper)`
-    display: grid;
+    ${({ theme }) => theme.breakpoints.up('sm')} {
+        display: grid;
 
-    grid-template-areas:
-        'nav app-bar'
-        'nav content';
+        grid-template-areas:
+            'nav app-bar'
+            'nav content';
 
-    grid-template-rows: auto 1fr;
-    grid-template-columns: auto 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-columns: auto 1fr;
 
-    grid-column-gap: ${({ theme }) => theme.spacing(8)};
-    grid-row-gap: ${({ theme }) => theme.spacing(4)};
+        grid-column-gap: ${({ theme }) => theme.spacing(8)};
+        grid-row-gap: ${({ theme }) => theme.spacing(4)};
+    }
 
     height: 100vh;
     width: 100vw;
