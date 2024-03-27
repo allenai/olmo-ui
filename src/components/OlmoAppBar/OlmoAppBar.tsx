@@ -1,8 +1,5 @@
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import InfoIcon from '@mui/icons-material/InfoOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
-import MagnifyingGlassIcon from '@mui/icons-material/Search';
-import { AppBar, Divider, IconButton, Link, List, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { useMatches } from 'react-router-dom';
@@ -10,9 +7,6 @@ import { useMatches } from 'react-router-dom';
 import { DesktopLayoutBreakpoint } from '../../constants';
 
 import { NavDrawer } from './NavDrawer';
-import { NavigationFooter } from './NavigationFooter';
-import { NavigationHeading } from './NavigationHeading';
-import { NavigationLink } from './NavigationLink';
 
 interface HandleWithTitle {
     title: string;
@@ -87,28 +81,7 @@ export const OlmoAppBar = () => {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <NavDrawer open={isDrawerOpen} onClose={handleDrawerClose}>
-                <Stack component="nav" direction="column" justifyContent="space-between" height="1">
-                    <List>
-                        <NavigationHeading headingText="Models" />
-                        <NavigationLink href="/" icon={<ChatBubbleIcon />} name="Playground" />
-                        <NavigationLink href="/models" icon={<InfoIcon />} name="Our Models" />
-                        <Divider />
-                        <NavigationHeading headingText="Datasets" />
-                        <NavigationLink
-                            href="/dolma"
-                            icon={<MagnifyingGlassIcon />}
-                            name="Dataset Explorer"
-                        />
-                        <NavigationLink
-                            href="/dolma/datasets"
-                            icon={<InfoIcon />}
-                            name="Our Datasets"
-                        />
-                    </List>
-                    <NavigationFooter />
-                </Stack>
-            </NavDrawer>
+            <NavDrawer open={isDrawerOpen} onClose={handleDrawerClose}></NavDrawer>
         </>
     );
 };

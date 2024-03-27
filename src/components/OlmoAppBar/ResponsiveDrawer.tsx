@@ -3,8 +3,6 @@ import { ReactNode } from 'react';
 
 import { DesktopLayoutBreakpoint } from '../../constants';
 
-import { NavDrawerProps } from './NavDrawer';
-
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
     mobileHeading?: ReactNode;
@@ -24,7 +22,7 @@ export const ResponsiveDrawer = ({
     drawerBreakpoint = DesktopLayoutBreakpoint,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
-}: NavDrawerProps) => {
+}: ResponsiveDrawerProps): JSX.Element => {
     return (
         <>
             <Drawer
