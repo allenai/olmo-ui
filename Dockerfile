@@ -15,7 +15,7 @@ FROM nginx:1.17.0-alpine
 
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
-ARG CONF_FILE=prod.conf
+ARG CONF_FILE=nginx/prod.conf
 COPY $CONF_FILE /etc/nginx/conf.d/default.conf
 
 COPY --from=build /ui/build /var/www/ui/
