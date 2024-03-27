@@ -24,17 +24,16 @@ export const OlmoAppBar = () => {
     return (
         <>
             <AppBar
-                position="static"
+                position="sticky"
+                color="transparent"
+                enableColorOnDark
+                elevation={0}
                 sx={{
-                    backgroundColor: (theme) => theme.palette.background.paper,
-                    zIndex: {
-                        sm: (theme) => theme.zIndex.drawer + 1,
-                    },
                     gridArea: 'app-bar',
                 }}>
                 <Toolbar component={Stack} direction="row" justifyContent="space-between">
                     <img src="/olmo-logo-light.svg" alt="" height={46} width={91} />
-                    <IconButton onClick={handleDrawerToggle}>
+                    <IconButton onClick={handleDrawerToggle} sx={{ display: { sm: 'none' } }}>
                         <MenuIcon />
                     </IconButton>
                 </Toolbar>

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import { useAppContext } from './AppContext';
 import { GlobalAlertList } from './components/GlobalAlertList';
-import { OlmoAppBar } from './components/OlmoAppBar/OlmoAppBar';
 import { OlmoBanner } from './components/OlmoBanner';
 import { WallpaperCircle } from './components/WallpaperCircle';
 import { OlmoLogo } from './components/logos/OlmoLogo';

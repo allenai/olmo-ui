@@ -41,11 +41,15 @@ export const NewApp = () => {
 
 const OuterContainer = styled(Paper)`
     display: grid;
+
     grid-template-areas:
         'nav app-bar'
         'nav content';
+
     grid-template-rows: auto 1fr;
     grid-template-columns: auto 1fr;
+
+    gap: ${({ theme }) => theme.spacing(2.5)};
 
     height: 100vh;
     width: 100vw;
