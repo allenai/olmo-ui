@@ -2,15 +2,33 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MagnifyingGlassIcon from '@mui/icons-material/Search';
-import { AppBar, Divider, IconButton, List, Stack, Toolbar } from '@mui/material';
-import { useState } from 'react';
+import { AppBar, Divider, IconButton, List, Stack, Toolbar, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+
+import { useMatch, useMatches } from 'react-router-dom';
 
 import { NavDrawer } from './NavDrawer';
 import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
 
+interface HandleWithTitle {
+    title: string;
+}
+
+const useRouteTitle = () => {
+    const matches = useMatches();
+    const titles = matches
+        .filter((match) => Boolean(match.handle) && (match.handle as HandleWithTitle).title != null)
+        .map((match) => (match.handle as HandleWithTitle).title);
+
+    const lowestTitle = titles[titles.length - 1];
+
+    return lowestTitle;
+};
+
 export const OlmoAppBar = () => {
+    const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
     const handleDrawerToggle = () => {
@@ -30,10 +48,25 @@ export const OlmoAppBar = () => {
                 elevation={0}
                 sx={{
                     gridArea: 'app-bar',
+                    paddingInline: 2,
+                    paddingBlock: 3,
                 }}>
-                <Toolbar component={Stack} direction="row" justifyContent="space-between">
+                <Toolbar
+                    component={Stack}
+                    direction="row"
+                    disableGutters
+                    gap={4}
+                    alignItems="center">
                     <img src="/olmo-logo-light.svg" alt="" height={46} width={91} />
-                    <IconButton onClick={handleDrawerToggle} sx={{ display: { sm: 'none' } }}>
+                    <Typography
+                        variant="h3"
+                        component="h1"
+                        sx={{ color: (theme) => theme.palette.primary.main, margin: 0 }}>
+                        {title}
+                    </Typography>
+                    <IconButton
+                        onClick={handleDrawerToggle}
+                        sx={{ display: { sm: 'none' }, marginInlineStart: 'auto' }}>
                         <MenuIcon />
                     </IconButton>
                 </Toolbar>

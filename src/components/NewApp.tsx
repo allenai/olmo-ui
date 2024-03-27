@@ -49,7 +49,8 @@ const OuterContainer = styled(Paper)`
     grid-template-rows: auto 1fr;
     grid-template-columns: auto 1fr;
 
-    gap: ${({ theme }) => theme.spacing(2.5)};
+    grid-column-gap: ${({ theme }) => theme.spacing(8)};
+    grid-row-gap: ${({ theme }) => theme.spacing(4)};
 
     height: 100vh;
     width: 100vw;

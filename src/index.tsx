@@ -4,7 +4,7 @@ import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
 import { LinearProgress } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Link, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Link, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import { App } from './App';
@@ -109,7 +109,7 @@ const routes = [
     },
 ];
 
-const uiRefreshRoutes = [
+const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
@@ -122,23 +122,38 @@ const uiRefreshRoutes = [
             {
                 path: '/',
                 element: <div>hello world</div>,
+                handle: {
+                    title: 'Playground',
+                },
                 // element: <Home />,
             },
             {
                 path: '/thread/:id',
                 element: <Thread />,
+                handle: {
+                    title: 'Playground',
+                },
             },
             {
                 path: '/prompttemplates',
                 element: <PromptTemplates />,
+                handle: {
+                    title: 'Prompt Templates',
+                },
             },
             {
                 path: '/prompt-templates',
                 element: <PromptTemplates />,
+                handle: {
+                    title: 'Prompt Templates',
+                },
             },
             {
                 path: '/admin',
                 element: <Admin />,
+                handle: {
+                    title: 'Admin',
+                },
             },
             {
                 path: '/*',
@@ -147,6 +162,9 @@ const uiRefreshRoutes = [
                         <NotFound />
                     </VarnishedApp>
                 ),
+                handle: {
+                    title: '',
+                },
             },
         ],
     },
