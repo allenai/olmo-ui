@@ -12,7 +12,7 @@ import MagnifyingGlassIcon from '@mui/icons-material/Search';
 import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
-import { ResponsiveDrawer, ResponsiveDrawerProps } from './ResponsiveDrawer';
+import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
 
 interface NavDrawerProps extends Omit<ResponsiveDrawerProps, 'children'> {
     onClose?: () => void;

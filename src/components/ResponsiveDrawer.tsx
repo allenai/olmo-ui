@@ -1,7 +1,7 @@
 import { Breakpoint, Drawer, DrawerProps } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { DesktopLayoutBreakpoint } from '../../constants';
+import { DesktopLayoutBreakpoint } from '../constants';
 
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
