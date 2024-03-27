@@ -52,7 +52,6 @@ export const NewApp = () => {
 
 const OuterContainer = styled(Paper)`
     ${({ theme }) => theme.breakpoints.up(DesktopLayoutBreakpoint)} {
-        padding-inline: 0;
         display: grid;
 
         grid-template-areas:
