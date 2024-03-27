@@ -14,11 +14,11 @@ import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
 import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
 
-interface NavDrawerProps extends Omit<ResponsiveDrawerProps, 'children'> {
+interface NavigationDrawerProps extends Omit<ResponsiveDrawerProps, 'children'> {
     onClose?: () => void;
 }
 
-export const NavDrawer = ({ onClose, ...props }: NavDrawerProps): JSX.Element => {
+export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): JSX.Element => {
     return (
         <ResponsiveDrawer
             {...props}
@@ -27,21 +27,21 @@ export const NavDrawer = ({ onClose, ...props }: NavDrawerProps): JSX.Element =>
             desktopHeading={<DesktopHeading />}>
             <Stack component="nav" direction="column" justifyContent="space-between" height="1">
                 <List>
-                    <NavigationHeading headingText="Models" />
-                    <NavigationLink href="/" icon={<ChatBubbleIcon />} name="Playground" />
-                    <NavigationLink href="/models" icon={<ModelTrainingIcon />} name="Our Models" />
+                    <NavigationHeading>Models</NavigationHeading>
+                    <NavigationLink href="/" icon={<ChatBubbleIcon />}>
+                        Playground
+                    </NavigationLink>
+                    <NavigationLink href="/models" icon={<ModelTrainingIcon />}>
+                        Our Models
+                    </NavigationLink>
                     <Divider />
-                    <NavigationHeading headingText="Datasets" />
-                    <NavigationLink
-                        href="/dolma"
-                        icon={<MagnifyingGlassIcon />}
-                        name="Dataset Explorer"
-                    />
-                    <NavigationLink
-                        href="/dolma/datasets"
-                        icon={<DatasetIcon />}
-                        name="Our Datasets"
-                    />
+                    <NavigationHeading>Datasets</NavigationHeading>
+                    <NavigationLink href="/dolma" icon={<MagnifyingGlassIcon />}>
+                        Dataset Explorer
+                    </NavigationLink>
+                    <NavigationLink href="/dolma/datasets" icon={<DatasetIcon />}>
+                        Our Datasets
+                    </NavigationLink>
                 </List>
                 <NavigationFooter />
             </Stack>

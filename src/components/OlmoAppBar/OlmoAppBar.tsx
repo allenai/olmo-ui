@@ -6,24 +6,9 @@ import { useMatches } from 'react-router-dom';
 
 import { DesktopLayoutBreakpoint } from '../../constants';
 
-import { NavDrawer } from './NavDrawer';
+import { NavigationDrawer } from './NavigationDrawer';
 
-interface HandleWithTitle {
-    title: string;
-}
-
-const useRouteTitle = () => {
-    const matches = useMatches();
-    const titles = matches
-        .filter((match) => Boolean(match.handle) && (match.handle as HandleWithTitle).title != null)
-        .map((match) => (match.handle as HandleWithTitle).title);
-
-    const lowestTitle = titles[titles.length - 1];
-
-    return lowestTitle;
-};
-
-export const OlmoAppBar = () => {
+export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -81,7 +66,24 @@ export const OlmoAppBar = () => {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <NavDrawer open={isDrawerOpen} onClose={handleDrawerClose}></NavDrawer>
+            <NavigationDrawer open={isDrawerOpen} onClose={handleDrawerClose}></NavigationDrawer>
         </>
     );
+};
+
+interface HandleWithTitle {
+    title: string;
+}
+
+const useRouteTitle = () => {
+    const matches = useMatches();
+    const titles = matches
+        // This is unfortunately the recommended way to handle this typing.
+        // I don't think there's a way to properly type this
+        .filter((match) => Boolean(match.handle) && (match.handle as HandleWithTitle).title != null)
+        .map((match) => (match.handle as HandleWithTitle).title);
+
+    const lowestTitle = titles[titles.length - 1];
+
+    return lowestTitle;
 };

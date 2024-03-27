@@ -1,15 +1,14 @@
-import { List, ListItem, ListItemText, Stack } from '@mui/material';
+import { Link, List, ListItem, ListItemText, Stack } from '@mui/material';
 import { PropsWithChildren } from 'react';
-import { Link } from 'react-router-dom';
 
 interface NavigationFooterItemProps extends PropsWithChildren {
-    to: string;
+    href: string;
 }
 
-const NavigationFooterItem = ({ to, children }: NavigationFooterItemProps): JSX.Element => {
+const NavigationFooterItem = ({ href, children }: NavigationFooterItemProps): JSX.Element => {
     return (
         <ListItem sx={{ width: 'auto' }}>
-            <ListItemText primaryTypographyProps={{ component: Link, to, variant: 'button' }}>
+            <ListItemText primaryTypographyProps={{ component: Link, href, variant: 'button' }}>
                 {children}
             </ListItemText>
         </ListItem>
@@ -19,7 +18,7 @@ const NavigationFooterItem = ({ to, children }: NavigationFooterItemProps): JSX.
 const FeedbackFormUrl =
     'https://docs.google.com/forms/d/e/1FAIpQLSfmPUnxBss08X8aq7Aiy17YSPhH-OqHzHMIzXg4zsIhAbvqxg/viewform?usp=sf_link' as const;
 
-export const NavigationFooter = () => {
+export const NavigationFooter = (): JSX.Element => {
     return (
         <Stack
             component={List}
@@ -27,10 +26,10 @@ export const NavigationFooter = () => {
             flexWrap="wrap"
             gap={2}
             sx={{ marginBlockStart: 'auto', paddingInline: 2 }}>
-            <NavigationFooterItem to={FeedbackFormUrl}>Give Feedback</NavigationFooterItem>
-            <NavigationFooterItem to="/faqs">FAQs</NavigationFooterItem>
-            <NavigationFooterItem to="/data-policy">Data Policy</NavigationFooterItem>
-            <NavigationFooterItem to="/log-out">Log Out</NavigationFooterItem>
+            <NavigationFooterItem href={FeedbackFormUrl}>Give Feedback</NavigationFooterItem>
+            <NavigationFooterItem href="/faqs">FAQs</NavigationFooterItem>
+            <NavigationFooterItem href="/data-policy">Data Policy</NavigationFooterItem>
+            <NavigationFooterItem href="/log-out">Log Out</NavigationFooterItem>
         </Stack>
     );
 };

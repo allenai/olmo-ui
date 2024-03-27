@@ -1,14 +1,14 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
-interface NavigationLinkProps {
+interface NavigationLinkProps extends PropsWithChildren {
     icon: ReactNode;
-    name: string;
     href: string;
 }
-export const NavigationLink = ({ icon, name, href }: NavigationLinkProps) => {
+
+export const NavigationLink = ({ icon, children, href }: NavigationLinkProps) => {
     const location = useLocation();
 
     const isCurrentLocation = location.pathname.startsWith(href);
@@ -20,6 +20,7 @@ export const NavigationLink = ({ icon, name, href }: NavigationLinkProps) => {
                 selected={isCurrentLocation}
                 sx={{
                     gap: (theme) => theme.spacing(1),
+
                     '&.Mui-selected': {
                         backgroundColor: (theme) => theme.palette.primary.main,
                         color: (theme) => theme.palette.primary.contrastText,
@@ -34,7 +35,7 @@ export const NavigationLink = ({ icon, name, href }: NavigationLinkProps) => {
                 <Icon>{icon}</Icon>
                 <ListItemText
                     primaryTypographyProps={{ variant: 'h6', color: 'inherit', sx: { margin: 0 } }}>
-                    {name}
+                    {children}
                 </ListItemText>
                 <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
             </ListItemButton>
