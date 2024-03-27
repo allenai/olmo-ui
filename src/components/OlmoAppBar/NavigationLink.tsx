@@ -1,9 +1,5 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {
-    Icon, Link, ListItem,
-    ListItemButton,
-    ListItemText
-} from '@mui/material';
+import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 

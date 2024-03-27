@@ -121,7 +121,8 @@ const uiRefreshRoutes = [
         children: [
             {
                 path: '/',
-                element: <Home />,
+                element: <div>hello world</div>,
+                // element: <Home />,
             },
             {
                 path: '/thread/:id',

@@ -2,14 +2,13 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MagnifyingGlassIcon from '@mui/icons-material/Search';
-import { AppBar, Divider, IconButton, List, ListItem, Stack, Toolbar } from '@mui/material';
+import { AppBar, Divider, IconButton, List, Stack, Toolbar } from '@mui/material';
 import { useState } from 'react';
 
-import { Link } from 'react-router-dom';
-
+import { NavDrawer } from './NavDrawer';
+import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
-import { ResponsiveDrawer } from './ResponsiveDrawer';
 
 export const OlmoAppBar = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(true);
@@ -40,7 +39,7 @@ export const OlmoAppBar = () => {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <ResponsiveDrawer isDrawerOpen={isDrawerOpen} handleDrawerClose={handleDrawerClose}>
+            <NavDrawer open={isDrawerOpen} onClose={handleDrawerClose}>
                 <Stack component="nav" direction="column" justifyContent="space-between" height="1">
                     <List>
                         <NavigationHeading headingText="Models" />
@@ -59,22 +58,9 @@ export const OlmoAppBar = () => {
                             name="Our Datasets"
                         />
                     </List>
-                    <List sx={{ marginBlockStart: 'auto' }}>
-                        <ListItem>
-                            <Link to="/feedback">Give Feedback</Link>
-                        </ListItem>
-                        <ListItem>
-                            <Link to="/faqs">FAQs</Link>
-                        </ListItem>
-                        <ListItem>
-                            <Link to="/data-policy">Data Policy</Link>
-                        </ListItem>
-                        <ListItem>
-                            <Link to="/log-out">Log Out</Link>
-                        </ListItem>
-                    </List>
+                    <NavigationFooter />
                 </Stack>
-            </ResponsiveDrawer>
+            </NavDrawer>
         </>
     );
 };

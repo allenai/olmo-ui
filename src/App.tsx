@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { LinkProps, Link, Outlet } from 'react-router-dom';
-import { Button, Grid, CircularProgress, Typography } from '@mui/material';
+import { Button, CircularProgress, Grid, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link, LinkProps, Outlet } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { useAppContext } from './AppContext';
-import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
-import { WallpaperCircle } from './components/WallpaperCircle';
-import { olmoTheme } from './olmoTheme';
-import { useFeatureToggles } from './FeatureToggleContext';
 import { OlmoAppBar } from './components/OlmoAppBar/OlmoAppBar';
+import { OlmoBanner } from './components/OlmoBanner';
+import { WallpaperCircle } from './components/WallpaperCircle';
 import { OlmoLogo } from './components/logos/OlmoLogo';
+import { olmoTheme } from './olmoTheme';
 
 export interface AppRoute {
     path: string;
@@ -67,7 +66,6 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
     );
 };
 
-
 export const App = () => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getUserInfo = useAppContext((state) => state.getUserInfo);
@@ -98,19 +96,15 @@ export const App = () => {
             ) : null}
             {!isLoading && userInfo.data && schema.data ? (
                 <RelativeContainer>
-                    {useV0Navigation ? (
-                        <OlmoAppBar />
-                    ) : (
-                        <OlmoBanner
-                            bannerLogo={
-                                <BannerLink href="https://olmo.allen.ai">
-                                    <OlmoLogo />
-                                </BannerLink>
-                            }
-                            transparentBackground={true}
-                            endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
-                        />
-                    )}
+                    <OlmoBanner
+                        bannerLogo={
+                            <BannerLink href="https://olmo.allen.ai">
+                                <OlmoLogo />
+                            </BannerLink>
+                        }
+                        transparentBackground={true}
+                        endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
+                    />
                     <Content main>
                         <GlobalAlertList />
                         <Outlet />
