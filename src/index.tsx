@@ -121,11 +121,10 @@ const uiRefreshRoutes: RouteObject[] = [
         children: [
             {
                 path: '/',
-                element: <div>hello world</div>,
+                element: <Home />,
                 handle: {
                     title: 'Playground',
                 },
-                // element: <Home />,
             },
             {
                 path: '/thread/:id',
