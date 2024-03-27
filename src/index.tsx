@@ -56,7 +56,7 @@ const VarnishedApp = ({ children }: PropsWithChildren) => {
     );
 };
 
-const router = createBrowserRouter([
+const routes = [
     {
         path: '/',
         element: (
@@ -110,7 +110,56 @@ const router = createBrowserRouter([
             },
         ],
     },
-]);
+];
+
+const uiRefreshRoutes = [
+    {
+        path: '/',
+        element: (
+            <VarnishedApp>
+                <App />
+            </VarnishedApp>
+        ),
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: '/',
+                element: <Home />,
+            },
+            {
+                path: '/thread/:id',
+                element: <Thread />,
+            },
+            {
+                path: '/prompttemplates',
+                element: <PromptTemplates />,
+            },
+            {
+                path: '/prompt-templates',
+                element: <PromptTemplates />,
+            },
+            {
+                path: '/admin',
+                element: <Admin />,
+            },
+            {
+                path: '/*',
+                element: (
+                    <VarnishedApp>
+                        <NotFound />
+                    </VarnishedApp>
+                ),
+            },
+        ],
+    },
+];
+
+const searchParams = new URL(window.location.href).searchParams;
+const isUIRefreshEnabled =
+    searchParams.get('isUIRefreshEnabled') === 'true' ||
+    process.env.IS_UI_REFRESH_ENABLED === 'true';
+console.log(process.env.IS_UI_REFRESH_ENABLED);
+const router = createBrowserRouter(isUIRefreshEnabled ? uiRefreshRoutes : routes);
 
 const container = document.getElementById('root');
 if (!container) {

@@ -8,11 +8,14 @@ COPY . .
 
 ENV NODE_ENV=production
 ENV LLMX_API_URL=https://olmo-api.allen.ai
-ENV DOLMA_API_URL=https://olmo.allen.ai/dolma-api
+ENV DOLMA_API_URL=/api
 RUN yarn build
 
 FROM nginx:1.17.0-alpine
 
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+ARG CONF_FILE=prod.conf
+COPY $CONF_FILE /etc/nginx/conf.d/default.conf
+
 COPY --from=build /ui/build /var/www/ui/

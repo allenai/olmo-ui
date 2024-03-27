@@ -5,19 +5,21 @@ type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
+    isUIRefreshEnabled = 'isUIRefreshEnabled',
 }
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
+    [FeatureToggle.isUIRefreshEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
 
-type FTValue = string | boolean | number;
+type FTValue = string | boolean | number | undefined;
 
 // allows easier use of toggles
 const parseToggleValue = (toggleValue: FTValue): boolean => {
-    switch (toggleValue.toString().toLowerCase()) {
+    switch (toggleValue?.toString().toLowerCase()) {
         case 'true':
         case '1':
         case 'on':
@@ -27,6 +29,8 @@ const parseToggleValue = (toggleValue: FTValue): boolean => {
         case '0':
         case 'off':
         case 'no':
+        case undefined:
+        case null:
         default:
             return false;
     }
@@ -63,11 +67,14 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
 
         // grab from url if we have any
         const query = new URL(window.location.href).searchParams;
-        const queryToggles = parseToggles(Object.fromEntries(new URLSearchParams(query)));
+        const queryToggles = parseToggles(Object.fromEntries(query));
+
+        const envToggles = parseToggles({ isUIRefreshEnabled: process.env.IS_UI_REFRESH_ENABLED });
 
         const toggles = {
             ...initialToggles,
             ...localStorageToggles,
+            ...envToggles,
             ...queryToggles,
         };
 
@@ -75,6 +82,10 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         localStorage.setItem(localStorageKey, JSON.stringify(toggles));
 
         setFeatureToggles(toggles);
+
+        if (toggles.logToggles) {
+            console.table(toggles);
+        }
     }, []);
 
     return <Ctx.Provider value={featureToggles}>{children}</Ctx.Provider>;
