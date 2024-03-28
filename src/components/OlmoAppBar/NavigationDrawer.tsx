@@ -11,7 +11,7 @@ import MagnifyingGlassIcon from '@mui/icons-material/Search';
 
 import { logos } from '@allenai/varnish2/components';
 
-import { links } from 'src/Links';
+import { links } from '../../Links';
 
 import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
