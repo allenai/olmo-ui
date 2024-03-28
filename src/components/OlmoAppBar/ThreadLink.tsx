@@ -18,14 +18,15 @@ export const ThreadLink = ({ content, timeStamp, href }: ThreadLinkProps) => {
     const isCurrentLocation = location.pathname.startsWith(href);
 
     const displayTime = (): string => {
-        const test = timeStamp.toDateString();
-        const value = dayjs(test).fromNow();
-        if (value === 'Today') {
-            return dayjs(test).format('HH:mm');
-        } else if (value.includes('ago')) {
+        if (timeStamp.toDateString() === new Date().toDateString()) {
+            return dayjs(timeStamp).format('H:mm');
+        } else if (
+            new Date().getDate() - timeStamp.getDate() > 7 &&
+            new Date().getDate() - timeStamp.getDate() <= 30
+        ) {
             return timeStamp.toLocaleString('en-us', { weekday: 'long' });
         }
-        return dayjs(test).format('MM/DD/YY');
+        return dayjs(timeStamp).format('MM/DD/YY');
     };
 
     return (

@@ -20,7 +20,6 @@ import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
 import { NewApp } from './components/NewApp';
-import { Playground } from './pages/Playground';
 
 const GlobalStyle = createGlobalStyle`
     html {

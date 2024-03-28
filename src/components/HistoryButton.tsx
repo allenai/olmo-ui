@@ -1,16 +1,17 @@
-import { Button, Divider, List, ListSubheader, Stack, Typography } from '@mui/material';
+import { Button, Divider, IconButton, List, Stack } from '@mui/material';
 import HistoryIcon from '@mui/icons-material/History';
+import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 
 import { useLocation } from 'react-router-dom';
 
-import { ResponsiveDrawer } from '../components/OlmoAppBar/ResponsiveDrawer';
+import { ResponsiveDrawer } from './ResponsiveDrawer';
 import { useAppContext } from '../AppContext';
-import { NavigationHeading } from '../components/OlmoAppBar/NavigationHeading';
-import { ThreadLink } from '../components/OlmoAppBar/ThreadLink';
+import { NavigationHeading } from './OlmoAppBar/NavigationHeading';
+import { ThreadLink } from './OlmoAppBar/ThreadLink';
 import { Message } from '../api/Message';
 
-export const Playground = () => {
+export const HistoryButton = () => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getAllThreads = useAppContext((state) => state.getAllThreads);
     const allThreadInfo = useAppContext((state) => state.allThreadInfo);
@@ -46,7 +47,10 @@ export const Playground = () => {
                 const createdDay = m.created;
                 if (createdDay.toDateString() === new Date().toDateString()) {
                     tempToday.push(m);
-                } else if (new Date().getDate() - createdDay.getDate()  > 7 && new Date().getDate() - createdDay.getDate() <= 30) {
+                } else if (
+                    new Date().getDate() - createdDay.getDate() > 7 &&
+                    new Date().getDate() - createdDay.getDate() <= 30
+                ) {
                     tempPastSevenDays.push(m);
                 } else {
                     tempPastThirtyDays.push(m);
@@ -66,7 +70,6 @@ export const Playground = () => {
         <>
             <Button
                 component="label"
-                role={undefined}
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<HistoryIcon />}
@@ -79,22 +82,26 @@ export const Playground = () => {
                     onClose={handleDrawerClose}
                     open={isDrawerOpen}
                     anchor="right"
-                    isPersistent={true}>
+                    desktopDrawerVariant="persistent"
+                    desktopHeading={
+                        <Stack justifyContent="space-between" direction="row" gap={2}>
+                            <NavigationHeading>History</NavigationHeading>
+                            <IconButton
+                                onClick={handleDrawerClose}
+                                sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Stack>
+                    }>
                     <Stack
                         component="nav"
                         direction="column"
                         justifyContent="space-between"
                         height="1">
-                        <ListSubheader sx={{ paddingBlock: 2 }}>
-                            <Typography variant="h4" margin={0} color="primary">
-                                History
-                            </Typography>
-                        </ListSubheader>
-                        <Divider />
                         <List>
-                            <NavigationHeading headingText="Today" />
-                            {todayThread.map((t, index)  => (
-                                <ThreadLink 
+                            <NavigationHeading>Today</NavigationHeading>
+                            {todayThread.map((t, index) => (
+                                <ThreadLink
                                     href={`/thread/${t.id}`}
                                     content={t.content}
                                     timeStamp={t.created}
@@ -104,9 +111,9 @@ export const Playground = () => {
                         </List>
                         <Divider />
                         <List>
-                            <NavigationHeading headingText="Previous 7 Days" />
-                            {pastSevenDaysThread.map((pS, index)  => (
-                                <ThreadLink 
+                            <NavigationHeading>Previous 7 Days</NavigationHeading>
+                            {pastSevenDaysThread.map((pS, index) => (
+                                <ThreadLink
                                     href={`/thread/${pS.id}`}
                                     content={pS.content}
                                     timeStamp={pS.created}
@@ -116,9 +123,9 @@ export const Playground = () => {
                         </List>
                         <Divider />
                         <List>
-                            <NavigationHeading headingText="Previous 30 Days" />
-                            {pastThirtyDaysThread.map((pT, index)  => (
-                                <ThreadLink 
+                            <NavigationHeading>Previous 30 Days</NavigationHeading>
+                            {pastThirtyDaysThread.map((pT, index) => (
+                                <ThreadLink
                                     href={`/thread/${pT.id}`}
                                     content={pT.content}
                                     timeStamp={pT.created}
