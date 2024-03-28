@@ -42,6 +42,7 @@ export const ResponsiveDrawer = ({
             <Drawer
                 variant={desktopDrawerVariant}
                 open={open}
+                anchor={anchor}
                 onClose={onClose}
                 sx={{
                     width: 'auto',
