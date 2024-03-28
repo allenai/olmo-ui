@@ -31,17 +31,24 @@ export const NewApp = () => {
             {!isLoading && userInfo.data && schema.data ? (
                 <>
                     <OlmoAppBar />
+                    <GlobalAlertList />
                     <Container
                         component="main"
                         sx={{
-                            gridArea: 'content',
+                            overflow: 'auto',
+
                             paddingInline: { xs: 2, [DesktopLayoutBreakpoint]: 0 },
                             paddingBlockStart: { [DesktopLayoutBreakpoint]: 4 },
-                            overflow: 'auto',
+
                             height: 1,
+
+                            gridArea: 'content',
+
+                            display: 'grid',
+                            gridTemplateColumns: 'subgrid',
+                            gridTemplateRows: 'subgrid',
                         }}
                         maxWidth={false}>
-                        <GlobalAlertList />
                         <Outlet />
                     </Container>
                 </>
@@ -55,11 +62,11 @@ const OuterContainer = styled(Paper)`
         display: grid;
 
         grid-template-areas:
-            'nav app-bar'
-            'nav content';
+            'nav app-bar side-drawer'
+            'nav content side-drawer';
 
         grid-template-rows: auto 1fr;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto 1fr auto;
 
         grid-column-gap: ${({ theme }) => theme.spacing(8)};
     }
