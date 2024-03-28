@@ -63,7 +63,7 @@ export const HistoryButton = () => {
     }, [allThreadInfo]);
 
     const toggleDrawer = () => {
-        setIsDrawerOpen(true);
+        setIsDrawerOpen(!isDrawerOpen);
     };
 
     return (
@@ -92,7 +92,8 @@ export const HistoryButton = () => {
                                 <CloseIcon />
                             </IconButton>
                         </Stack>
-                    }>
+                    }
+                    desktopDrawerSx={{ gridArea: 'side-drawer' }}>
                     <Stack
                         component="nav"
                         direction="column"
@@ -106,6 +107,7 @@ export const HistoryButton = () => {
                                     content={t.content}
                                     timeStamp={t.created}
                                     key={index}
+                                    threadId={t.id}
                                 />
                             ))}
                         </List>
@@ -118,6 +120,7 @@ export const HistoryButton = () => {
                                     content={pS.content}
                                     timeStamp={pS.created}
                                     key={index}
+                                    threadId={pS.id}
                                 />
                             ))}
                         </List>
@@ -130,6 +133,7 @@ export const HistoryButton = () => {
                                     content={pT.content}
                                     timeStamp={pT.created}
                                     key={index}
+                                    threadId={pT.id}
                                 />
                             ))}
                         </List>

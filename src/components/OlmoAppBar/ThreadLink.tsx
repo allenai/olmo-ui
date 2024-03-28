@@ -1,39 +1,52 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Link, ListItem, ListItemButton, ListItemText, Stack } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import { useLocation, useParams } from 'react-router-dom';
 
-// extend dayjs with relativeTime plugin
-dayjs.extend(relativeTime);
+const todayDateFormatter = new Intl.DateTimeFormat(undefined, {
+    hour: 'numeric',
+    minute: 'numeric',
+});
+const pastWeekDateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
+const pastMonthDateFormatter = new Intl.DateTimeFormat(undefined, {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+});
 
+const isCurrentDay = (date: Date): boolean => {
+    const dateClone = new Date(date);
+
+    return dateClone.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
+};
+
+const isPastWeek = (date: Date): boolean => {
+    return new Date().getDate() - date.getDate() > 7 && new Date().getDate() - date.getDate() <= 30;
+};
 interface ThreadLinkProps {
     content: string;
     timeStamp: Date;
     href: string;
+    threadId: string;
 }
-export const ThreadLink = ({ content, timeStamp, href }: ThreadLinkProps) => {
-    const location = useLocation();
+export const ThreadLink = ({ content, timeStamp, href, threadId }: ThreadLinkProps) => {
+    const { id } = useParams();
 
-    const isCurrentLocation = location.pathname.startsWith(href);
+    const isSelected = id === threadId;
 
     const displayTime = (): string => {
-        if (timeStamp.toDateString() === new Date().toDateString()) {
-            return dayjs(timeStamp).format('H:mm');
-        } else if (
-            new Date().getDate() - timeStamp.getDate() > 7 &&
-            new Date().getDate() - timeStamp.getDate() <= 30
-        ) {
-            return timeStamp.toLocaleString('en-us', { weekday: 'long' });
+        if (isCurrentDay(timeStamp)) {
+            return todayDateFormatter.format(timeStamp);
+        } else if (isPastWeek(timeStamp)) {
+            return pastWeekDateFormatter.format(timeStamp);
         }
-        return dayjs(timeStamp).format('MM/DD/YY');
+        return pastMonthDateFormatter.format(timeStamp);
     };
 
     return (
         <ListItem disableGutters>
             <ListItemButton
                 alignItems="center"
-                selected={isCurrentLocation}
+                selected={isSelected}
                 sx={{
                     gap: (theme) => theme.spacing(1),
                     '&.Mui-selected': {
