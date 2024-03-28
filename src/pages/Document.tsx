@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { SearchContainer, NoPaddingContainer } from '../components/dolma/shared';
 import { useDocumentStore, DocumentStore } from '../store/DocumentStore';
-import { RemoteState } from '../api/dolma/RemoteState';
+import { RemoteState } from '../contexts/util';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
 import { search } from '../api/dolma/search';
@@ -59,7 +59,7 @@ const DocumentDetails = () => {
                         <p>{store.error?.message ?? 'Unexpected Error'}</p>
                     </div>
                 ) : null}
-                {store.state === RemoteState.Ok && store.document ? (
+                {store.state === RemoteState.Loaded && store.document ? (
                     <>
                         <MetaTags
                             title={

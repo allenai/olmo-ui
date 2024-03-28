@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { LinearProgress } from '@mui/material';
 
 import { SearchStore, useSearchStore } from '../store/SearchStore';
-import { RemoteState } from '../api/dolma/RemoteState';
+import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
@@ -47,7 +47,7 @@ const SearchResults = () => {
                 </NoPaddingContainer>
             );
         }
-        case RemoteState.Ok: {
+        case RemoteState.Loaded: {
             if (!store.response) {
                 throw new Error('No response');
             }
