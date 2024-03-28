@@ -1,4 +1,4 @@
-import { Breakpoint, Drawer, DrawerProps } from '@mui/material';
+import { Breakpoint, Drawer, DrawerProps, SxProps, Theme } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { DesktopLayoutBreakpoint } from '../constants';
@@ -11,6 +11,9 @@ export interface ResponsiveDrawerProps
     drawerBreakpoint?: Breakpoint;
 
     desktopDrawerVariant?: DrawerProps['variant'];
+
+    mobileDrawerSx?: SxProps<Theme>;
+    desktopDrawerSx?: SxProps<Theme>;
 }
 
 export const ResponsiveDrawer = ({
@@ -19,6 +22,8 @@ export const ResponsiveDrawer = ({
     onClose,
     mobileHeading,
     desktopHeading,
+    mobileDrawerSx,
+    desktopDrawerSx,
     drawerBreakpoint = DesktopLayoutBreakpoint,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
@@ -35,7 +40,7 @@ export const ResponsiveDrawer = ({
                         width: { xs: '100vw', sm: 'auto' },
                     },
                 }}
-                sx={{ display: { xs: 'flex', [drawerBreakpoint]: 'none' } }}>
+                sx={{ display: { xs: 'flex', [drawerBreakpoint]: 'none' }, ...mobileDrawerSx }}>
                 {mobileHeading}
                 {children}
             </Drawer>
@@ -48,7 +53,7 @@ export const ResponsiveDrawer = ({
                     width: 'auto',
                     display: { xs: 'none', [drawerBreakpoint]: 'flex' },
 
-                    gridArea: 'nav',
+                    ...desktopDrawerSx,
                 }}
                 PaperProps={{
                     elevation: 2,
