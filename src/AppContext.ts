@@ -9,7 +9,11 @@ import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptT
 import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
 import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
-import { AlertMessageSlice, createAlertMessageSlice, errorToAlert } from './slices/AlertMessageSlice';
+import {
+    AlertMessageSlice,
+    createAlertMessageSlice,
+    errorToAlert,
+} from './slices/AlertMessageSlice';
 import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
 
 const userClient = new UserClient();
