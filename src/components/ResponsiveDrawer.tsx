@@ -7,9 +7,8 @@ export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
     mobileHeading?: ReactNode;
     desktopHeading?: ReactNode;
-
+    isPersistent?: boolean;
     drawerBreakpoint?: Breakpoint;
-
     desktopDrawerVariant?: DrawerProps['variant'];
 
     mobileDrawerSx?: SxProps<Theme>;
