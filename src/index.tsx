@@ -20,6 +20,7 @@ import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
 import { NewApp } from './components/NewApp';
+import { NewThreadPage } from './pages/NewThread';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -121,7 +122,7 @@ const uiRefreshRoutes: RouteObject[] = [
         children: [
             {
                 path: '/',
-                element: <Home />,
+                element: <NewThreadPage />,
                 handle: {
                     title: 'Playground',
                 },

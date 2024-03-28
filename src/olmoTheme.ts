@@ -1,9 +1,11 @@
-import { Color } from '@allenai/varnish2/theme';
 import varnishTheme from '@allenai/varnish-theme';
+import { Color } from '@allenai/varnish2/theme';
+import { ThemeOptions } from '@mui/material';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
     color2: {
+        // @ts-expect-error
         N7: new Color('Black7', '#333333', undefined, true),
         N8: new Color('Black8', '#282828', undefined, true),
         N9: new Color('Black9', '#262626', undefined, true),
@@ -12,9 +14,17 @@ export const olmoTheme = {
         O7: new Color('Orange7', '#F4D35E', undefined, true),
     },
     components: {
+        MuiCard: {
+            styleOverrides: {
+                root: ({ theme }) =>
+                    theme.unstable_sx({
+                        borderRadius: 3,
+                    }),
+            },
+        },
         MuiButton: {
             styleOverrides: {
-                root: ({ ownerState }: any) => ({
+                root: ({ ownerState }) => ({
                     ...(ownerState.variant === 'contained' && {
                         backgroundColor: varnishTheme.color.B4.value,
                     }),
@@ -46,7 +56,7 @@ export const olmoTheme = {
         },
         MuiTooltip: {
             styleOverrides: {
-                tooltip: ({ theme }: any) => ({
+                tooltip: ({ theme }) => ({
                     backgroundColor: theme.palette.common.white,
                     color: varnishTheme.color.N5.value,
                     boxShadow: theme.shadows[1],
@@ -55,4 +65,4 @@ export const olmoTheme = {
             },
         },
     },
-};
+} satisfies ThemeOptions;

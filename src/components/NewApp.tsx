@@ -37,7 +37,7 @@ export const NewApp = () => {
                         sx={{
                             overflow: 'auto',
 
-                            paddingInline: { xs: 2, [DesktopLayoutBreakpoint]: 0 },
+                            paddingInline: 2,
                             paddingBlockStart: { [DesktopLayoutBreakpoint]: 4 },
 
                             height: 1,
