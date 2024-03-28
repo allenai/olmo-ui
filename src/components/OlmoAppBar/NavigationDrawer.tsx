@@ -9,6 +9,10 @@ import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 
 import MagnifyingGlassIcon from '@mui/icons-material/Search';
 
+import { logos } from '@allenai/varnish2/components';
+
+import { links } from 'src/Links';
+
 import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
@@ -29,18 +33,18 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             <Stack component="nav" direction="column" justifyContent="space-between" height={1}>
                 <List>
                     <NavigationHeading>Models</NavigationHeading>
-                    <NavigationLink href="/" icon={<ChatBubbleIcon />}>
+                    <NavigationLink href={links.playground} icon={<ChatBubbleIcon />}>
                         Playground
                     </NavigationLink>
-                    <NavigationLink href="/models" icon={<ModelTrainingIcon />}>
+                    <NavigationLink href={links.ourModels} icon={<ModelTrainingIcon />}>
                         Our Models
                     </NavigationLink>
                     <Divider />
                     <NavigationHeading>Datasets</NavigationHeading>
-                    <NavigationLink href="/dolma" icon={<MagnifyingGlassIcon />}>
+                    <NavigationLink href={links.datasetExplorer} icon={<MagnifyingGlassIcon />}>
                         Dataset Explorer
                     </NavigationLink>
-                    <NavigationLink href="/dolma/datasets" icon={<DatasetIcon />}>
+                    <NavigationLink href={links.ourDatasets} icon={<DatasetIcon />}>
                         Our Datasets
                     </NavigationLink>
                 </List>
@@ -74,7 +78,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 const DesktopHeading = (): JSX.Element => {
     return (
         <Link paddingInline={2} paddingBlock={4} href="https://allenai.org">
-            <img src="/ai2-logo.png" alt="Go to the AI2 homepage" height={33} width={292} />
+            <logos.AI2Logo />
         </Link>
     );
 };
