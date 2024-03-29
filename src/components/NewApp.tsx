@@ -27,7 +27,7 @@ export const NewApp = () => {
     }, []);
 
     return (
-        <OuterContainer elevation={1} square variant="outlined">
+        <OuterContainer square variant="outlined">
             {!isLoading && userInfo.data && schema.data ? (
                 <>
                     <OlmoAppBar />

@@ -1,7 +1,7 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Icon, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink, useMatches } from 'react-router-dom';
 
 interface NavigationLinkProps extends PropsWithChildren {
     icon: ReactNode;
@@ -9,9 +9,9 @@ interface NavigationLinkProps extends PropsWithChildren {
 }
 
 export const NavigationLink = ({ icon, children, href }: NavigationLinkProps) => {
-    const location = useLocation();
+    const matches = useMatches();
 
-    const isCurrentLocation = location.pathname.startsWith(href);
+    const isCurrentLocation = matches[matches.length - 1].pathname === href;
 
     return (
         <ListItem disableGutters>
@@ -30,8 +30,8 @@ export const NavigationLink = ({ icon, children, href }: NavigationLinkProps) =>
                         },
                     },
                 }}
-                component={Link}
-                href={href}>
+                component={ReactRouterLink}
+                to={href}>
                 <Icon>{icon}</Icon>
                 <ListItemText
                     primaryTypographyProps={{ variant: 'h6', color: 'inherit', sx: { margin: 0 } }}>
