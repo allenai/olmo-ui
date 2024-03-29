@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from 'react';
 
-import { RemoteState } from '../api/dolma/RemoteState';
+import { RemoteState } from '../contexts/util';
 import { SearchClient } from '../api/dolma/SearchClient';
 import { search } from '../api/dolma/search';
 import { UnimplementedError } from './UnimplementedError';
@@ -54,7 +54,7 @@ function reducer(state: State, action: NewSearch | SearchOk | SearchError): Stat
             if (action.request !== state.request) {
                 return state;
             }
-            return { ...state, state: RemoteState.Ok, response: action.response };
+            return { ...state, state: RemoteState.Loaded, response: action.response };
         }
         case ActionType.SearchError: {
             // Discard out of order errors

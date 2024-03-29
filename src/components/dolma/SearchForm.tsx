@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Stack } from '@mui/material';
 
-import { useMetaStore } from '../../store/MetaStore';
 import { search } from '../../api/dolma/search';
 import { PartialWidthTextField, Section } from '../../components/dolma/shared';
+import { useAppContext } from '../../AppContext';
 
 export const SearchForm = ({
     defaultValue,
@@ -15,12 +15,13 @@ export const SearchForm = ({
 }) => {
     const [queryText, setQueryText] = useState<string>(defaultValue ?? '');
 
-    const store = useMetaStore();
+    const getMeta = useAppContext((state) => state.getMeta);
+    const meta = useAppContext((state) => state.meta);
     useEffect(() => {
-        store.getMeta();
+        getMeta();
     }, []);
-    const placeholder = store.meta?.count
-        ? `Search ${store.meta.count.toLocaleString()} pretraining documents…`
+    const placeholder = meta?.count
+        ? `Search ${meta.count.toLocaleString()} pretraining documents…`
         : 'Search pretraining documents…';
 
     const nav = useNavigate();
