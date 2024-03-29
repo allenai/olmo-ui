@@ -19,6 +19,7 @@ import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
+import { Document } from './pages/Document';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -68,6 +69,11 @@ const routes = [
             {
                 path: '/',
                 element: <Home />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/document/:id',
+                element: <Document />,
                 errorElement: <ErrorPage />,
             },
             {
@@ -125,6 +131,21 @@ const uiRefreshRoutes = [
             {
                 path: '/',
                 element: <Home />,
+            },
+            {
+                path: '/document/:id',
+                element: <Document />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/dolma',
+                element: <DolmaExplorer />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/search',
+                element: <Search />,
+                errorElement: <ErrorPage />,
             },
             {
                 path: '/thread/:id',
