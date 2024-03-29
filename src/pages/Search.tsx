@@ -4,12 +4,13 @@ import { LinearProgress } from '@mui/material';
 
 import { SearchStore, useSearchStore } from '../store/SearchStore'
 import { MetaStore } from '../store/MetaStore';
-import { RemoteState } from '../api/dolma/RemoteState';
+import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, NoPaddingGrid, SearchContainer } from '../components/dolma/shared';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
+import { useAppContext } from 'src/AppContext';
 
 const SearchError = ({ message }: { message: string }) => {
     return (
@@ -23,15 +24,21 @@ const SearchError = ({ message }: { message: string }) => {
 const SearchResults = () => {
     const loc = useLocation();
     const request = search.fromQueryString(loc.search);
-    const store = useSearchStore();
+    // const store = useSearchStore();
+
+    const doSearch = useAppContext((state) => state.doSearch);
+    const searchState = useAppContext((state) => state.searchState);
+    const response = useAppContext((state) => state.response);
+    const error = useAppContext((state) => state.error);
+
     useEffect(() => {
-        store.search(request).then((r) => {
+        doSearch(request).then((r) => {
             const analytics = new AnalyticsClient();
-            analytics.trackSearchQuery({ request, response: { meta: r.meta } });
+            // analytics.trackSearchQuery({ request, response: { meta: r.meta } });
         });
     }, [search.toQueryString(request)]);
 
-    switch (store.state) {
+    switch (searchState) {
         case RemoteState.Loading: {
             return (
                 <NoPaddingContainer>
@@ -43,16 +50,16 @@ const SearchResults = () => {
         case RemoteState.Error: {
             return (
                 <NoPaddingContainer>
-                    <SearchForm defaultValue={store.request.query} />
-                    <SearchError message={store.error?.message ?? 'Unexpected Error'} />
+                    <SearchForm defaultValue={request.query} />
+                    <SearchError message={error?.message ?? 'Unexpected Error'} />
                 </NoPaddingContainer>
             );
         }
-        case RemoteState.Ok: {
-            if (!store.response) {
+        case RemoteState.Loaded: {
+            if (!response) {
                 throw new Error('No response');
             }
-            return <SearchResultList response={store.response} />;
+            return <SearchResultList response={response} />;
         }
     }
 };

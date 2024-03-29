@@ -14,6 +14,7 @@ import {
     errorToAlert,
 } from './slices/AlertMessageSlice';
 import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
+import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
 
 const userClient = new UserClient();
 const modelClient = new ModelClient();
@@ -44,7 +45,8 @@ type AppContextState = State &
     PromptTemplateSlice &
     RepromptSlice &
     ThreadSlice &
-    AlertMessageSlice;
+    AlertMessageSlice &
+    SearchSlice;
 
 export const useAppContext = create<AppContextState>()(
     devtools((set, get, store) => ({
@@ -56,6 +58,7 @@ export const useAppContext = create<AppContextState>()(
         ...createAlertMessageSlice(set, get, store),
         ...createThreadSlice(set, get, store),
         ...createLabelSlice(set, get, store),
+        ...createSearchSlice(set, get, store),
 
         getUserInfo: async () => {
             try {
