@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { LinearProgress } from '@mui/material';
 
-import { SearchStore, useSearchStore } from '../store/SearchStore'
 import { MetaStore } from '../store/MetaStore';
 import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
@@ -10,7 +9,7 @@ import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, NoPaddingGrid, SearchContainer } from '../components/dolma/shared';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
-import { useAppContext } from 'src/AppContext';
+import { useAppContext } from '../AppContext';
 
 const SearchError = ({ message }: { message: string }) => {
     return (
@@ -67,11 +66,9 @@ const SearchResults = () => {
 export const Search = () => {
     return (
         <MetaStore>
-            <SearchStore>
-                <SearchContainer>
-                    <SearchResults />
-                </SearchContainer>
-            </SearchStore>
+            <SearchContainer>
+                <SearchResults />
+            </SearchContainer>
         </MetaStore>
     );
 };
