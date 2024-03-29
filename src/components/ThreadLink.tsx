@@ -2,45 +2,18 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Link, ListItem, ListItemButton, ListItemText, Stack } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-const todayDateFormatter = new Intl.DateTimeFormat(undefined, {
-    hour: 'numeric',
-    minute: 'numeric',
-});
-const pastWeekDateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
-const pastMonthDateFormatter = new Intl.DateTimeFormat(undefined, {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-});
+import { links } from '../Links';
 
-const isCurrentDay = (date: Date): boolean => {
-    const dateClone = new Date(date);
-
-    return dateClone.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
-};
-
-const isPastWeek = (date: Date): boolean => {
-    return new Date().getDate() - date.getDate() > 7 && new Date().getDate() - date.getDate() <= 30;
-};
+import { TimeDisplay } from './TimeDisplay';
 interface ThreadLinkProps {
     content: string;
-    timeStamp: Date;
-    href: string;
-    threadId: string;
+    created: Date;
+    id: string;
 }
-export const ThreadLink = ({ content, timeStamp, href, threadId }: ThreadLinkProps) => {
-    const { id } = useParams();
+export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
+    const { id: idParameter } = useParams();
 
-    const isSelected = id === threadId;
-
-    const displayTime = (): string => {
-        if (isCurrentDay(timeStamp)) {
-            return todayDateFormatter.format(timeStamp);
-        } else if (isPastWeek(timeStamp)) {
-            return pastWeekDateFormatter.format(timeStamp);
-        }
-        return pastMonthDateFormatter.format(timeStamp);
-    };
+    const isSelected = idParameter === id;
 
     return (
         <ListItem disableGutters>
@@ -59,7 +32,7 @@ export const ThreadLink = ({ content, timeStamp, href, threadId }: ThreadLinkPro
                     },
                 }}
                 component={Link}
-                href={href}>
+                href={links.thread(id)}>
                 <ListItemText
                     primaryTypographyProps={{
                         variant: 'caption',
@@ -81,7 +54,7 @@ export const ThreadLink = ({ content, timeStamp, href, threadId }: ThreadLinkPro
                             color: 'inherit',
                             sx: { margin: 0 },
                         }}>
-                        {displayTime()}
+                        <TimeDisplay timeStamp={created} />
                     </ListItemText>
                     <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
                 </Stack>
