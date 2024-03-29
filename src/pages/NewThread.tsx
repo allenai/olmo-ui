@@ -4,6 +4,7 @@ import {
     ButtonProps,
     Card,
     CardContent,
+    IconButton,
     Stack,
     Typography,
     alpha,
@@ -17,38 +18,52 @@ import GearIcon from '@mui/icons-material/Settings';
 
 import { DesktopLayoutBreakpoint } from '../constants';
 
-const ResponsiveButton = (props: Omit<ButtonProps, 'sx'>): JSX.Element => {
+interface ResponsiveButtonProps extends Omit<ButtonProps, 'sx' | 'children'> {
+    title: string;
+}
+
+const ResponsiveButton = ({ title, startIcon, ...props }: Omit<ButtonProps, 'sx'>): JSX.Element => {
     return (
-        <Button
-            {...props}
-            sx={{
-                overflow: 'hidden',
-                flexWrap: 'wrap',
-                flexGrow: 0,
-                flexDirection: 'row',
-                height: '1lh',
-            }}
-        />
+        <>
+            <Button
+                {...props}
+                startIcon={startIcon}
+                sx={{
+                    display: { xs: 'none', [DesktopLayoutBreakpoint]: 'inline-flex' },
+                }}>
+                {title}
+            </Button>
+            <Button
+                {...props}
+                aria-label={title}
+                sx={{ display: { xs: 'inline-flex', [DesktopLayoutBreakpoint]: 'none' } }}>
+                {startIcon}
+            </Button>
+        </>
     );
 };
 
 export const NewThreadPage = () => {
     return (
-        <Stack gap={4} sx={{ containerType: 'inline-size' }}>
+        <Stack gap={4} sx={{ containerName: 'thread-page', containerType: 'inline-size' }}>
             <Card
                 variant="outlined"
                 component={Stack}
                 direction="row"
                 gap={2}
                 padding={2}
-                sx={{
-                    borderColor: (theme) => alpha(theme.palette.primary.main, 0.5),
-                    display: { xs: 'none', [DesktopLayoutBreakpoint]: 'block' },
-                }}>
+                sx={(theme) => ({
+                    borderColor: alpha(theme.palette.primary.main, 0.5),
+
+                    // display: 'none',
+                    [`@container (min-width: ${theme.breakpoints.values.md}px)`]: {
+                        display: 'inline-flex',
+                    },
+                })}>
                 <Typography
                     variant="h5"
                     component="h2"
-                    m={0}
+                    margin={0}
                     marginInlineEnd="auto"
                     color={(theme) => theme.palette.primary.main}>
                     Thread
@@ -64,17 +79,11 @@ export const NewThreadPage = () => {
                 </Button>
             </Card>
 
-            <ButtonGroup variant="outlined">
-                <ResponsiveButton variant="outlined" startIcon={<PlusIcon />}>
-                    New Thread
-                </ResponsiveButton>
-                <ResponsiveButton variant="outlined" startIcon={<GearIcon />}>
-                    Parameters
-                </ResponsiveButton>
-                <ResponsiveButton variant="outlined" startIcon={<HistoryIcon />}>
-                    History
-                </ResponsiveButton>
-            </ButtonGroup>
+            {/* <ButtonGroup variant="outlined">
+                <ResponsiveButton startIcon={<PlusIcon />}>New Thread</ResponsiveButton>
+                <ResponsiveButton startIcon={<GearIcon />}>Parameters</ResponsiveButton>
+                <ResponsiveButton startIcon={<HistoryIcon />}>History</ResponsiveButton>
+            </ButtonGroup> */}
 
             <Card raised elevation={1}>
                 <CardContent>
