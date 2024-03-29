@@ -9,7 +9,6 @@ import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
 import { WallpaperCircle } from './components/WallpaperCircle';
 import { olmoTheme } from './olmoTheme';
-import { useFeatureToggles } from './FeatureToggleContext';
 import { OlmoLogo } from './components/logos/OlmoLogo';
 
 export interface AppRoute {
