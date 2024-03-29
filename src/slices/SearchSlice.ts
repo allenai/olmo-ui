@@ -12,23 +12,6 @@ enum ActionType {
     SearchError,
 }
 
-// interface NewSearch {
-//     type: ActionType.NewSearch;
-//     request: search.Request;
-// }
-
-// interface SearchOk {
-//     type: ActionType.SearchResponse;
-//     request: search.Request;
-//     response: search.Response;
-// }
-
-// interface SearchError {
-//     type: ActionType.SearchError;
-//     request: search.Request;
-//     error: Error;
-// }
-
 export interface SearchSlice {
     searchState: RemoteState;
     doSearch(request: search.Request): Promise<search.Response | Error>
@@ -38,46 +21,6 @@ export interface SearchSlice {
     response?: search.Response;
 
 }
-
-// function reducer(state: State, action: NewSearch | SearchOk | SearchError): State {
-//     switch (action.type) {
-//         case ActionType.NewSearch: {
-//             return { state: RemoteState.Loading, request: action.request, error: undefined };
-//         }
-//         case ActionType.SearchResponse: {
-//             // Discard out of order responses
-//             if (action.request !== state.request) {
-//                 return state;
-//             }
-//             return { ...state, state: RemoteState.Loaded, response: action.response };
-//         }
-//         case ActionType.SearchError: {
-//             // Discard out of order errors
-//             if (action.request !== state.request) {
-//                 return state;
-//             }
-//             return { ...state, state: RemoteState.Error, error: action.error };
-//         }
-//     }
-// }
-
-// export const SearchStore = ({ children }: { children: React.ReactNode }) => {
-//     const [state, dispatch] = useReducer(reducer, defaultState);
-
-//     const doSearch = async (request: search.Request) => {
-//         dispatch({ type: ActionType.NewSearch, request });
-//         try {
-//             const api = new SearchClient();
-//             const response = await api.search(request);
-//             dispatch({ type: ActionType.SearchResponse, request, response });
-//             return response;
-//         } catch (e) {
-//             const error = !(e instanceof Error) ? new Error(`Unknown Error: ${e}`) : e;
-//             dispatch({ type: ActionType.SearchError, request, error });
-//             throw error;
-//         }
-//     };
-// }
 
 export const createSearchSlice: StateCreator<SearchSlice> = (set) => ({
     searchState: RemoteState.Loading,
