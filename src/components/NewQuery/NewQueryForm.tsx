@@ -9,7 +9,6 @@ import { MessagePost } from '../../api/Message';
 
 import { ModelSelect } from './ModelSelect';
 import { TemplateSelect } from './TemplateSelect';
-import { ParameterButton } from '../ParameterButton';
 
 interface NewQueryFormProps {
     onSubmit: (data: MessagePost) => Promise<void>;
