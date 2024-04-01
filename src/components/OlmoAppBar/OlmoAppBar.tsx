@@ -24,7 +24,7 @@ export const OlmoAppBar = (): JSX.Element => {
         <>
             <AppBar
                 position="sticky"
-                color="transparent"
+                color="inherit"
                 enableColorOnDark
                 elevation={0}
                 sx={{

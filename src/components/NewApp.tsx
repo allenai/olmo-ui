@@ -47,6 +47,11 @@ export const NewApp = () => {
                             display: 'grid',
                             gridTemplateColumns: 'subgrid',
                             gridTemplateRows: 'subgrid',
+
+                            backgroundColor: (theme) => ({
+                                xs: theme.palette.background.default,
+                                [DesktopLayoutBreakpoint]: 'transparent',
+                            }),
                         }}
                         maxWidth={false}>
                         <Outlet />
@@ -70,7 +75,6 @@ const OuterContainer = styled(Paper)`
 
         grid-column-gap: ${({ theme }) => theme.spacing(8)};
     }
-
     height: 100vh;
     width: 100%;
 `;

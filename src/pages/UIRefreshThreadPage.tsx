@@ -23,7 +23,12 @@ export const UIRefreshThreadPage = () => {
     };
 
     return (
-        <Stack gap={4} sx={{ containerName: 'thread-page', containerType: 'inline-size' }}>
+        <Stack
+            gap={4}
+            sx={{
+                containerName: 'thread-page',
+                containerType: 'inline-size',
+            }}>
             <Card
                 variant="outlined"
                 component={Stack}
