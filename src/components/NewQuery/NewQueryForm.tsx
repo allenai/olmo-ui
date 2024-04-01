@@ -9,6 +9,7 @@ import { MessagePost } from '../../api/Message';
 
 import { ModelSelect } from './ModelSelect';
 import { TemplateSelect } from './TemplateSelect';
+import { ParameterButton } from '../ParameterButton';
 
 interface NewQueryFormProps {
     onSubmit: (data: MessagePost) => Promise<void>;
@@ -113,9 +114,10 @@ export const NewQueryForm = ({
                         }
                         label="Private"
                     />
-                    <Button variant="outlined" onClick={onParametersButtonClick}>
+                    {/* <Button variant="outlined" onClick={onParametersButtonClick}>
                         Parameters
-                    </Button>
+                    </Button> */}
+                    <ParameterButton />
                 </Grid>
             </Grid>
         </FormContainer>
