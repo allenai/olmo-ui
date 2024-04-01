@@ -27,11 +27,11 @@ module.exports = (env) => ({
                         options: {
                             getCustomTransformers: () => ({
                                 // @ts-ignore
-                                before: [!env.production && ReactRefreshTypeScript()].filter(
+                                before: [env.development && ReactRefreshTypeScript()].filter(
                                     Boolean
                                 ),
                             }),
-                            transpileOnly: !env.production,
+                            transpileOnly: env.development,
                         },
                     },
                 ],
@@ -74,7 +74,7 @@ module.exports = (env) => ({
             ENABLE_MOCKING: false,
             IS_UI_REFRESH_ENABLED: false,
         }),
-        ...[isDevelopment && new ReactRefreshWebpackPlugin()].filter(Boolean),
+        ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],
     output: {
         filename: 'main.[contenthash:6].js',
