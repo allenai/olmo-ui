@@ -46,19 +46,21 @@ const ChatMessage = ({ variant, children }: ChatMessageProps): JSX.Element => {
 };
 
 interface MessageViewProps {
-    message: Message;
+    message?: Message;
 }
 
 const MessageView = ({ message }: MessageViewProps) => {
+    if (message == null) {
+        return null;
+    }
+
     const { content, children, role } = message;
 
     return (
         <>
             <ChatMessage variant={role === Role.User ? 'user' : 'llm'}>{content}</ChatMessage>
-            <MessageView message={children?.[0]}
-            {/* {children?.map((childMessage) => (
-                <MessageView message={childMessage} key={childMessage.id} />
-            ))} */}
+            {/* TODO: add thread handling */}
+            <MessageView message={children?.[0]} />
         </>
     );
 };
@@ -77,7 +79,7 @@ export const ThreadView = (): JSX.Element => {
 
     return (
         <Stack gap={2} direction="column">
-            {selectedThreadInfo?.data != null && <MessageView message={selectedThreadInfo.data} />}
+            <MessageView message={selectedThreadInfo.data} />
         </Stack>
     );
 };
