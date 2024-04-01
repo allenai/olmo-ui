@@ -1,13 +1,12 @@
-import { Box, Card, CardContent, Paper, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Message } from '../../api/Message';
-
 import { useAppContext } from '../../AppContext';
 
-import { ChatResponseView } from '../ThreadBody/ChatResponseView';
 import { RobotAvatar } from '../avatars/RobotAvatar';
+import { Message } from '@/api/Message';
+import { Role } from '@/api/Role';
 
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return <Typography fontWeight="bold">{children}</Typography>;
@@ -46,6 +45,24 @@ const ChatMessage = ({ variant, children }: ChatMessageProps): JSX.Element => {
     );
 };
 
+interface MessageViewProps {
+    message: Message;
+}
+
+const MessageView = ({ message }: MessageViewProps) => {
+    const { content, children, role } = message;
+
+    return (
+        <>
+            <ChatMessage variant={role === Role.User ? 'user' : 'llm'}>{content}</ChatMessage>
+            <MessageView message={children?.[0]}
+            {/* {children?.map((childMessage) => (
+                <MessageView message={childMessage} key={childMessage.id} />
+            ))} */}
+        </>
+    );
+};
+
 export const ThreadView = (): JSX.Element => {
     const { id } = useParams();
 
@@ -60,9 +77,7 @@ export const ThreadView = (): JSX.Element => {
 
     return (
         <Stack gap={2} direction="column">
-            <ChatMessage variant="user"></ChatMessage>
-            <ChatMessage variant="llm">llm response</ChatMessage>
-            {/* <ChatResponseView messages={[selectedThreadInfo.data!]} /> */}
+            {selectedThreadInfo?.data != null && <MessageView message={selectedThreadInfo.data} />}
         </Stack>
     );
 };
