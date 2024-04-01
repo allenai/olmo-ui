@@ -14,13 +14,14 @@ import { QueryForm } from '../components/thread/QueryForm';
 
 import { links } from '../Links';
 
-export const NewThreadPage = () => {
+export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
 
     const handlePromptSubmission = (data: { content: string }) => {
         console.log('data', data);
         navigate(links.thread('new'));
     };
+
     return (
         <Stack gap={4} sx={{ containerName: 'thread-page', containerType: 'inline-size' }}>
             <Card

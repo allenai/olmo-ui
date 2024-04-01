@@ -21,7 +21,7 @@ import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
 import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
-import { NewThreadPage } from './pages/UIRefreshThreadPage';
+import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
 import { ThreadDisplay } from './components/thread/ThreadDisplay';
 import { links } from './Links';
 
@@ -130,7 +130,7 @@ const uiRefreshRoutes: RouteObject[] = [
         children: [
             {
                 path: links.playground,
-                element: <NewThreadPage />,
+                element: <UIRefreshThreadPage />,
                 children: [
                     {
                         path: '/thread',
