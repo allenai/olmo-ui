@@ -7,6 +7,7 @@ import { DesktopLayoutBreakpoint } from '../constants';
 import { useAppContext } from '../AppContext';
 import { GlobalAlertList } from './GlobalAlertList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
+import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 
 export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -44,16 +45,13 @@ export const NewApp = () => {
 
                             gridArea: 'content',
 
-                            display: 'grid',
-                            gridTemplateColumns: 'subgrid',
-                            gridTemplateRows: 'subgrid',
-
                             backgroundColor: (theme) => ({
                                 xs: theme.palette.background.default,
                                 [DesktopLayoutBreakpoint]: 'transparent',
                             }),
                         }}
                         maxWidth={false}>
+                        <MobilePageTitle />
                         <Outlet />
                     </Container>
                 </>
