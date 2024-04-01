@@ -1,9 +1,7 @@
 import { StateCreator } from 'zustand';
 
 import { search } from '../api/dolma/search';
-
 import { SearchClient } from '../api/dolma/SearchClient';
-
 import { RemoteState } from '../contexts/util';
 
 enum ActionType {
@@ -43,7 +41,7 @@ export const createSearchSlice: StateCreator<SearchSlice> = (set) => ({
                 searchRequest,
                 searchError,
             });
-            return searchError;
+            throw searchError;
         }
     },
 });
