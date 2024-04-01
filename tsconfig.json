@@ -13,7 +13,8 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@test-utils": ["src/utils/test-utils"]
+      "@test-utils": ["src/utils/test-utils"],
+      "@/*": ["src/*"],
     },
     "types": ["vitest/globals"]
   },

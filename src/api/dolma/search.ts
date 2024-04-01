@@ -124,7 +124,7 @@ export namespace search {
         const size = !isNaN(sz) ? sz : undefined;
         const sources = params.getAll(QueryStringParam.Source).map(toSource);
         const ids = params.getAll(QueryStringParam.ID);
-        const filters = { sources: sources, ids };
+        const filters = { sources, ids };
         // The cast here is fine. Bad values will result in a 400 when sent to the API
         const match = (params.get(QueryStringParam.Match) as MatchType | null) ?? undefined;
         const no_aggs = params.has(QueryStringParam.NoAggs); /* eslint-disable-line camelcase */
