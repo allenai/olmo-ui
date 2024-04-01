@@ -4,7 +4,7 @@ import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
 import { LinearProgress } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Link, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Link, Navigate, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import { App } from './App';
@@ -21,8 +21,9 @@ import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
 import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
-import { NewThreadPage } from './pages/NewThread';
-import { ExistingThreadPage } from './pages/ExistingThread';
+import { NewThreadPage } from './pages/UIRefreshThreadPage';
+import { ThreadDisplay } from './components/thread/ThreadDisplay';
+import { links } from './Links';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -128,50 +129,58 @@ const uiRefreshRoutes: RouteObject[] = [
         errorElement: <ErrorPage />,
         children: [
             {
-                path: '/',
+                path: links.playground,
                 element: <NewThreadPage />,
+                children: [
+                    {
+                        path: '/thread',
+                        element: <Navigate to={links.playground} />,
+                    },
+                    {
+                        path: links.thread(':id'),
+                        element: <ThreadDisplay />,
+                        handle: {
+                            title: 'Playground',
+                        },
+                    },
+                ],
                 handle: {
                     title: 'Playground',
                 },
             },
             {
-                path: '/document/:id',
+                path: links.document(':id'),
                 element: <Document />,
                 errorElement: <ErrorPage />,
+                handle: {
+                    title: 'Document',
+                },
             },
             {
-                path: '/dolma',
+                path: links.datasetExplorer,
                 element: <DolmaExplorer />,
                 errorElement: <ErrorPage />,
+                handle: {
+                    title: 'Dataset Explorer',
+                },
             },
             {
-                path: '/search',
+                path: links.search,
                 element: <Search />,
                 errorElement: <ErrorPage />,
-            },
-            {
-                path: '/thread/:id',
-                element: <ExistingThreadPage />,
                 handle: {
-                    title: 'Playground',
+                    title: 'Search Datasets',
                 },
             },
             {
-                path: '/prompttemplates',
+                path: links.promptTemplates,
                 element: <PromptTemplates />,
                 handle: {
                     title: 'Prompt Templates',
                 },
             },
             {
-                path: '/prompt-templates',
-                element: <PromptTemplates />,
-                handle: {
-                    title: 'Prompt Templates',
-                },
-            },
-            {
-                path: '/admin',
+                path: links.admin,
                 element: <Admin />,
                 handle: {
                     title: 'Admin',

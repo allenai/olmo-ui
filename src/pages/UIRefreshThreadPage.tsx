@@ -1,10 +1,12 @@
-import { Button, Card, CardContent, Stack, Typography, alpha } from '@mui/material';
+import { Button, Card, Stack, Typography, alpha } from '@mui/material';
 
 import PlusIcon from '@mui/icons-material/Add';
 import HistoryIcon from '@mui/icons-material/History';
 import GearIcon from '@mui/icons-material/Settings';
 
 import { useNavigate } from 'react-router';
+
+import { Outlet } from 'react-router-dom';
 
 import { ThreadPageCard } from '../components/thread/ThreadPageCard';
 
@@ -61,6 +63,7 @@ export const NewThreadPage = () => {
             </ButtonGroup> */}
 
             <ThreadPageCard>
+                <Outlet />
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
             </ThreadPageCard>
         </Stack>

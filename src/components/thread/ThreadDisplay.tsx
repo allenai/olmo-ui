@@ -27,7 +27,7 @@ const MessageView = ({ message }: MessageViewProps) => {
     );
 };
 
-export const ThreadView = (): JSX.Element => {
+export const ThreadDisplay = (): JSX.Element => {
     const { id } = useParams();
 
     const getSelectedThread = useAppContext((state) => state.getSelectedThread);
