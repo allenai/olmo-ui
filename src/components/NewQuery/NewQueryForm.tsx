@@ -114,10 +114,9 @@ export const NewQueryForm = ({
                         }
                         label="Private"
                     />
-                    {/* <Button variant="outlined" onClick={onParametersButtonClick}>
+                    <Button variant="outlined" onClick={onParametersButtonClick}>
                         Parameters
-                    </Button> */}
-                    <ParameterButton />
+                    </Button>
                 </Grid>
             </Grid>
         </FormContainer>
