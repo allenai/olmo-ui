@@ -1,49 +1,22 @@
-import {
-    Button,
-    ButtonGroup,
-    ButtonProps,
-    Card,
-    CardContent,
-    IconButton,
-    Stack,
-    Typography,
-    alpha,
-} from '@mui/material';
-
-import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+import { Button, Card, CardContent, Stack, Typography, alpha } from '@mui/material';
 
 import PlusIcon from '@mui/icons-material/Add';
 import HistoryIcon from '@mui/icons-material/History';
 import GearIcon from '@mui/icons-material/Settings';
 
-import { DesktopLayoutBreakpoint } from '../constants';
+import { useNavigate } from 'react-router';
 
-interface ResponsiveButtonProps extends Omit<ButtonProps, 'sx' | 'children'> {
-    title: string;
-}
+import { QueryForm } from '../components/thread/QueryForm';
 
-const ResponsiveButton = ({ title, startIcon, ...props }: Omit<ButtonProps, 'sx'>): JSX.Element => {
-    return (
-        <>
-            <Button
-                {...props}
-                startIcon={startIcon}
-                sx={{
-                    display: { xs: 'none', [DesktopLayoutBreakpoint]: 'inline-flex' },
-                }}>
-                {title}
-            </Button>
-            <Button
-                {...props}
-                aria-label={title}
-                sx={{ display: { xs: 'inline-flex', [DesktopLayoutBreakpoint]: 'none' } }}>
-                {startIcon}
-            </Button>
-        </>
-    );
-};
+import { links } from '../Links';
 
 export const NewThreadPage = () => {
+    const navigate = useNavigate();
+
+    const handlePromptSubmission = (data: { content: string }) => {
+        console.log('data', data);
+        navigate(links.thread('new'));
+    };
     return (
         <Stack gap={4} sx={{ containerName: 'thread-page', containerType: 'inline-size' }}>
             <Card
@@ -87,23 +60,7 @@ export const NewThreadPage = () => {
 
             <Card raised elevation={1}>
                 <CardContent>
-                    <FormContainer>
-                        <Stack gap={1} alignItems="flex-start">
-                            <TextFieldElement
-                                name="content"
-                                label="Prompt"
-                                placeholder="Enter your prompt here"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                fullWidth
-                                multiline
-                            />
-                            <Button type="submit" variant="contained">
-                                Submit
-                            </Button>
-                        </Stack>
-                    </FormContainer>
+                    <QueryForm onSubmit={handlePromptSubmission} />
                 </CardContent>
             </Card>
         </Stack>

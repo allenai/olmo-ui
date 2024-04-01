@@ -17,7 +17,7 @@ interface NewQueryFormProps {
     topRightFormControls?: ReactNode;
 }
 
-const useNewQueryFormHandling = () => {
+export const useNewQueryFormHandling = () => {
     const models = useAppContext((state) => state.modelInfo.data);
 
     const formContext = useForm({
