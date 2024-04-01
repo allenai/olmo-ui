@@ -22,17 +22,19 @@ const SearchError = ({ message }: { message: string }) => {
 const SearchResults = () => {
     const loc = useLocation();
     const request = search.fromQueryString(loc.search);
-    // const store = useSearchStore();
 
     const doSearch = useAppContext((state) => state.doSearch);
     const searchState = useAppContext((state) => state.searchState);
-    const response = useAppContext((state) => state.response);
-    const error = useAppContext((state) => state.error);
+    const response = useAppContext((state) => state.searchResponse);
+    const error = useAppContext((state) => state.searchError);
 
     useEffect(() => {
         doSearch(request).then((r) => {
-            const analytics = new AnalyticsClient();
-            // analytics.trackSearchQuery({ request, response: { meta: r.meta } });
+            if ('meta' in r) {
+                // in the case that we did not error, track the query
+                const analytics = new AnalyticsClient();
+                analytics.trackSearchQuery({ request, response: { meta: r.meta } });
+            }
         });
     }, [search.toQueryString(request)]);
 
