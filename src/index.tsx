@@ -22,6 +22,7 @@ import { Thread } from './pages/Thread';
 import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
 import { NewThreadPage } from './pages/NewThread';
+import { ExistingThreadPage } from './pages/ExistingThread';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -150,7 +151,7 @@ const uiRefreshRoutes: RouteObject[] = [
             },
             {
                 path: '/thread/:id',
-                element: <Thread />,
+                element: <ExistingThreadPage />,
                 handle: {
                     title: 'Playground',
                 },

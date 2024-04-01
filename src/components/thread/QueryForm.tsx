@@ -5,9 +5,10 @@ import { useNewQueryFormHandling } from '../NewQuery/NewQueryForm';
 
 interface QueryFormProps {
     onSubmit: (data: { content: string }) => Promise<void> | void;
+    variant: 'new' | 'response';
 }
 
-export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
+export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
 
@@ -18,7 +19,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
 
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-            <Stack gap={3} alignItems="flex-start">
+            <Stack gap={1.5} alignItems="flex-start">
                 <TextFieldElement
                     name="content"
                     label="Prompt"
@@ -28,7 +29,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                     }}
                     fullWidth
                     multiline
-                    minRows={10}
+                    minRows={variant === 'new' ? 10 : 4}
                 />
                 <Button type="submit" variant="contained">
                     Submit

@@ -6,6 +6,8 @@ import GearIcon from '@mui/icons-material/Settings';
 
 import { useNavigate } from 'react-router';
 
+import { ThreadPageCard } from '../components/thread/ThreadPageCard';
+
 import { QueryForm } from '../components/thread/QueryForm';
 
 import { links } from '../Links';
@@ -58,11 +60,9 @@ export const NewThreadPage = () => {
                 <ResponsiveButton startIcon={<HistoryIcon />}>History</ResponsiveButton>
             </ButtonGroup> */}
 
-            <Card raised elevation={1}>
-                <CardContent>
-                    <QueryForm onSubmit={handlePromptSubmission} />
-                </CardContent>
-            </Card>
+            <ThreadPageCard>
+                <QueryForm onSubmit={handlePromptSubmission} variant="new" />
+            </ThreadPageCard>
         </Stack>
     );
 };

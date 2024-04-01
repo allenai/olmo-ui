@@ -5,7 +5,12 @@ import { DesktopLayoutBreakpoint } from '../../constants';
 interface ResponsiveButtonProps extends Omit<ButtonProps, 'sx' | 'children'> {
     title: string;
 }
-const ResponsiveButton = ({ title, startIcon, ...props }: ResponsiveButtonProps): JSX.Element => {
+
+export const ResponsiveButton = ({
+    title,
+    startIcon,
+    ...props
+}: ResponsiveButtonProps): JSX.Element => {
     return (
         <>
             <Button
