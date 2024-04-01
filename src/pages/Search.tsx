@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { LinearProgress } from '@mui/material';
 
-import { MetaStore } from '../store/MetaStore';
 import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
@@ -65,10 +64,8 @@ const SearchResults = () => {
 
 export const Search = () => {
     return (
-        <MetaStore>
-            <SearchContainer>
-                <SearchResults />
-            </SearchContainer>
-        </MetaStore>
+        <SearchContainer>
+            <SearchResults />
+        </SearchContainer>
     );
 };
