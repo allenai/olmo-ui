@@ -48,7 +48,6 @@ const QueriesHeader = (props: QueriesHeaderProps) => {
                         All Queries
                     </QueryToggleButton>
                 </PaddedButtonGroup>
-                <HistoryButton />
             </Grid>
         </Grid>
     );
