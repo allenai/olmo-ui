@@ -19,6 +19,7 @@ import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
+import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
 import { NewThreadPage } from './pages/NewThread';
 
@@ -71,6 +72,11 @@ const routes = [
             {
                 path: '/',
                 element: <Home />,
+            },
+            {
+                path: '/document/:id',
+                element: <Document />,
+                errorElement: <ErrorPage />,
             },
             {
                 path: '/dolma',
@@ -126,6 +132,21 @@ const uiRefreshRoutes: RouteObject[] = [
                 handle: {
                     title: 'Playground',
                 },
+            },
+            {
+                path: '/document/:id',
+                element: <Document />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/dolma',
+                element: <DolmaExplorer />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/search',
+                element: <Search />,
+                errorElement: <ErrorPage />,
             },
             {
                 path: '/thread/:id',

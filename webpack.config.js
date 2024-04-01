@@ -2,6 +2,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshTypeScript = require('react-refresh-typescript');
+
 const path = require('path');
 
 module.exports = (env) => ({
@@ -17,8 +20,21 @@ module.exports = (env) => ({
             // before bundling them.
             {
                 test: /\.tsx?$/,
-                loader: 'ts-loader',
                 exclude: /node_modules/,
+                use: [
+                    {
+                        loader: require.resolve('ts-loader'),
+                        options: {
+                            getCustomTransformers: () => ({
+                                // @ts-ignore
+                                before: [env.development && ReactRefreshTypeScript()].filter(
+                                    Boolean
+                                ),
+                            }),
+                            transpileOnly: env.development,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(jpg|svg|png|gif)/,
@@ -58,6 +74,7 @@ module.exports = (env) => ({
             ENABLE_MOCKING: false,
             IS_UI_REFRESH_ENABLED: false,
         }),
+        ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],
     output: {
         filename: 'main.[contenthash:6].js',
