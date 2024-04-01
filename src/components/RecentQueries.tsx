@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import * as React from 'react';
 import {
     Grid,
     LinearProgress,
@@ -15,6 +14,7 @@ import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
+import { HistoryButton } from './HistoryButton';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -48,6 +48,7 @@ const QueriesHeader = (props: QueriesHeaderProps) => {
                         All Queries
                     </QueryToggleButton>
                 </PaddedButtonGroup>
+                <HistoryButton />
             </Grid>
         </Grid>
     );
