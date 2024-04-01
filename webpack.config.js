@@ -4,8 +4,11 @@ const webpack = require('webpack');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
+const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 
 const path = require('path');
+
+const Extensions = ['.tsx', '.ts', '.js', '.jsx'];
 
 module.exports = (env) => ({
     entry: './src/index.tsx',
@@ -43,7 +46,12 @@ module.exports = (env) => ({
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.jsx'],
+        extensions: Extensions,
+        plugins: [
+            new TsconfigPathsPlugin({
+                extensions: Extensions,
+            }),
+        ],
     },
     plugins: [
         // This copies `public/index.html` into the build output directory.
