@@ -7,8 +7,6 @@ const ReactRefreshTypeScript = require('react-refresh-typescript');
 
 const path = require('path');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
 module.exports = (env) => ({
     entry: './src/index.tsx',
     module: {
@@ -29,11 +27,11 @@ module.exports = (env) => ({
                         options: {
                             getCustomTransformers: () => ({
                                 // @ts-ignore
-                                before: [env === 'development' && ReactRefreshTypeScript()].filter(
+                                before: [!env.production && ReactRefreshTypeScript()].filter(
                                     Boolean
                                 ),
                             }),
-                            transpileOnly: isDevelopment,
+                            transpileOnly: !env.production,
                         },
                     },
                 ],
