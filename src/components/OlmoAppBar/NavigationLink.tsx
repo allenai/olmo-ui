@@ -17,15 +17,6 @@ export const NavigationLink = ({ icon, children, href, selected }: NavigationLin
                 selected={selected}
                 sx={{
                     gap: (theme) => theme.spacing(1),
-
-                    '&.Mui-selected': {
-                        backgroundColor: (theme) => theme.palette.primary.main,
-                        color: (theme) => theme.palette.primary.contrastText,
-
-                        '&:focus-visible,&:hover': {
-                            backgroundColor: (theme) => theme.palette.primary.dark,
-                        },
-                    },
                 }}
                 component={ReactRouterLink}
                 to={href}>

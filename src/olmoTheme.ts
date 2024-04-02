@@ -1,6 +1,7 @@
 import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
-import { ThemeOptions, createTheme } from '@mui/material';
+import { ThemeOptions } from '@mui/material';
+import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
@@ -14,14 +15,6 @@ export const olmoTheme = {
         O7: new Color('Orange7', '#F4D35E', undefined, true),
     },
     components: {
-        MuiCard: {
-            styleOverrides: {
-                root: ({ theme }) =>
-                    theme.unstable_sx({
-                        borderRadius: 3,
-                    }),
-            },
-        },
         MuiButton: {
             styleOverrides: {
                 root: ({ ownerState }) => ({
@@ -67,20 +60,44 @@ export const olmoTheme = {
     },
 } satisfies ThemeOptions;
 
-// @ts-expect-error The theme options type isn't quite correct
-export const uiRefreshOlmoTheme = createTheme(olmoTheme, {
+export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
     components: {
-        MuiListItemButton: {
+        MuiButton: {
             styleOverrides: {
                 root: ({ theme, ownerState }) => ({
-                    ...(ownerState.selected === true && {
+                    // We may be able to get rid of these overrides when we remove old olmo
+                    ...(ownerState.variant === 'contained' && {
+                        backgroundColor: theme.palette.primary.main,
+                    }),
+                    ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
+                        color: theme.palette.primary.main,
+                    }),
+                    '&.Mui-disabled': {
+                        background: 'transparent',
+                        color: varnishTheme.color.N3.value,
+                    },
+                }),
+            },
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: ({ theme }) =>
+                    theme.unstable_sx({
+                        borderRadius: 3,
+                    }),
+            },
+        },
+        MuiListItemButton: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    '&.Mui-selected': {
                         backgroundColor: theme.palette.primary.main,
                         color: theme.palette.primary.contrastText,
 
                         '&:focus-visible,&:hover': {
                             backgroundColor: theme.palette.primary.dark,
                         },
-                    }),
+                    },
                 }),
             },
         },

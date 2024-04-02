@@ -22,14 +22,6 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                 selected={isSelected}
                 sx={{
                     gap: (theme) => theme.spacing(1),
-                    '&.Mui-selected': {
-                        backgroundColor: (theme) => theme.palette.primary.main,
-                        color: (theme) => theme.palette.primary.contrastText,
-
-                        '&:focus-visible,&:hover': {
-                            backgroundColor: (theme) => theme.palette.primary.dark,
-                        },
-                    },
                 }}
                 component={Link}
                 href={links.thread(id)}>
