@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 
 import { useNavigate } from 'react-router';
 
@@ -32,6 +32,10 @@ export const UIRefreshThreadPage = () => {
                 <Outlet />
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
             </ThreadCard>
+
+            <Typography variant="caption">
+                OLMo is experimental and can make mistakes. Consider fact-checking your results.
+            </Typography>
         </Stack>
     );
 };

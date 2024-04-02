@@ -2,7 +2,7 @@ import { Card, CardContent, Stack, useMediaQuery, useTheme } from '@mui/material
 import { PropsWithChildren } from 'react';
 
 import { DesktopLayoutBreakpoint } from '@/constants';
-import { biggerContainerQuery } from '@/utils/container-query-utils';
+import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 
 interface ThreadPageCardProps extends PropsWithChildren {}
 
@@ -20,18 +20,20 @@ export const ThreadCard = ({ children }: ThreadPageCardProps): JSX.Element => {
                 },
 
                 backgroundColor: (theme) => theme.palette.background.default,
-                height: 'fit-content',
 
                 border: 0,
+                [smallerContainerQuery(theme)]: {
+                    borderRadius: 0,
+                },
             })}>
-            <CardContent
+            <Stack
                 component={Stack}
                 gap={2}
                 sx={{
                     padding: 0,
                 }}>
                 {children}
-            </CardContent>
+            </Stack>
         </Card>
     );
 };
