@@ -13,11 +13,11 @@ export const Parameters = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const schema = useAppContext((state) => state.schema);
 
-    if (!schema.data) {
+    if (!schema) {
         throw new Error('schema not loaded');
     }
 
-    const opts = schema.data.Message.InferenceOpts;
+    const opts = schema.Message.InferenceOpts;
     const [stopWordsInput, setStopWordsInput] = useState('');
 
     // TODO: The sliders for N and LogProbs have been commented out because they do not work
