@@ -14,7 +14,7 @@ import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
-import { HistoryButton } from './HistoryButton';
+import { HistoryButton } from './thread/history/HistoryButton';
 
 enum QueryToggleOptions {
     All = 'all',

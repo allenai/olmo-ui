@@ -4,7 +4,7 @@ import PlusIcon from '@mui/icons-material/Add';
 import GearIcon from '@mui/icons-material/SettingsOutlined';
 
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
-import { HistoryButton } from '../HistoryButton';
+import { HistoryButton } from './history/HistoryButton';
 import { ResponsiveButton } from './ResponsiveButton';
 
 const ThreadButtons = (): JSX.Element => {

@@ -1,35 +1,15 @@
 import CloseIcon from '@mui/icons-material/Close';
-import HistoryIcon from '@mui/icons-material/History';
-import { Divider, IconButton, List, Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import { useEffect } from 'react';
 
 import { useSearchParams } from 'react-router-dom';
 
 import { DrawerId } from '@/slices/DrawerSlice';
-import { useAppContext } from '../AppContext';
-import { Message } from '../api/Message';
-import { ThreadLink } from '../components/ThreadLink';
-import { NavigationHeading } from './OlmoAppBar/NavigationHeading';
-import { ResponsiveDrawer } from './ResponsiveDrawer';
-import { ResponsiveButton } from './thread/ResponsiveButton';
-
-export const HistoryButton = () => {
-    const isButtonDisabled = useAppContext(
-        (state) => state.allThreadInfo.loading || state.allThreadInfo.error
-    );
-    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-    const toggleHistoryDrawer = () => toggleDrawer(HistoryDrawerId);
-
-    return (
-        <ResponsiveButton
-            variant="outlined"
-            startIcon={<HistoryIcon />}
-            title="History"
-            onClick={toggleHistoryDrawer}
-            disabled={isButtonDisabled}
-        />
-    );
-};
+import { useAppContext } from '../../../AppContext';
+import { Message } from '../../../api/Message';
+import { NavigationHeading } from '../../OlmoAppBar/NavigationHeading';
+import { ResponsiveDrawer } from '../../ResponsiveDrawer';
+import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 const DefaultPageSize = 10 as const;
 
@@ -73,31 +53,7 @@ const useGroupedThreadHistory = (): {
     return { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth };
 };
 
-interface HistorySectionProps {
-    heading: string;
-    threads: Message[];
-    hasDivider?: boolean;
-}
-
-const HistorySection = ({ heading, threads, hasDivider }: HistorySectionProps): JSX.Element => {
-    if (threads.length === 0) {
-        return <></>;
-    }
-
-    return (
-        <>
-            {hasDivider && <Divider />}
-            <List>
-                <NavigationHeading>{heading}</NavigationHeading>
-                {threads.map((thread) => (
-                    <ThreadLink {...thread} key={thread.id} />
-                ))}
-            </List>
-        </>
-    );
-};
-
-const HistoryDrawerId: DrawerId = 'history' as const;
+export const HistoryDrawerId: DrawerId = 'history' as const;
 
 export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
@@ -126,13 +82,13 @@ export const HistoryDrawer = (): JSX.Element => {
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack component="nav" direction="column">
-                <HistorySection heading="Today" threads={threadsFromToday} />
-                <HistorySection
+                <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
+                <HistoryDrawerSection
                     heading="Previous 7 Days"
                     threads={threadsFromThisWeek}
                     hasDivider
                 />
-                <HistorySection
+                <HistoryDrawerSection
                     heading="Previous 30 Days"
                     threads={threadsFromThisMonth}
                     hasDivider
