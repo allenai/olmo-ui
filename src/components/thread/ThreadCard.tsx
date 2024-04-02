@@ -1,4 +1,4 @@
-import { Card, CardContent, Stack, useMediaQuery, useTheme } from '@mui/material';
+import { Card, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { DesktopLayoutBreakpoint } from '@/constants';

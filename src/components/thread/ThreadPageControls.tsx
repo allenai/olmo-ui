@@ -66,6 +66,7 @@ export const ThreadPageControls = (): JSX.Element => {
             </Stack>
 
             <ButtonGroup
+                size="large"
                 variant="outlined"
                 sx={(theme) => ({
                     [biggerContainerQuery(theme)]: {
