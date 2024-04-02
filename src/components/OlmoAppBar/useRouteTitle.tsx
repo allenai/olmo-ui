@@ -1,5 +1,8 @@
 import { useMatches } from 'react-router-dom';
-import { HandleWithTitle } from './OlmoAppBar';
+
+interface HandleWithTitle {
+    title: string;
+}
 
 export const useRouteTitle = () => {
     const matches = useMatches();

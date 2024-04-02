@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from '@mui/material';
 
 import { DesktopLayoutBreakpoint } from '../../constants';
+import { mdAndUpContainerQuery } from '@/pages/UIRefreshThreadPage';
 
 interface ResponsiveButtonProps extends Omit<ButtonProps, 'sx' | 'children'> {
     title: string;
@@ -16,15 +17,23 @@ export const ResponsiveButton = ({
             <Button
                 {...props}
                 startIcon={startIcon}
-                sx={{
-                    display: { xs: 'none', [DesktopLayoutBreakpoint]: 'inline-flex' },
-                }}>
+                sx={(theme) => ({
+                    display: 'none',
+                    [mdAndUpContainerQuery(theme)]: {
+                        display: 'inline-flex',
+                    },
+                })}>
                 {title}
             </Button>
             <Button
                 {...props}
                 aria-label={title}
-                sx={{ display: { xs: 'inline-flex', [DesktopLayoutBreakpoint]: 'none' } }}>
+                sx={(theme) => ({
+                    display: 'inline-flex',
+                    [mdAndUpContainerQuery(theme)]: {
+                        display: 'none',
+                    },
+                })}>
                 {startIcon}
             </Button>
         </>

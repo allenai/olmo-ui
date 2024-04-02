@@ -69,7 +69,3 @@ export const OlmoAppBar = (): JSX.Element => {
         </>
     );
 };
-
-export interface HandleWithTitle {
-    title: string;
-}
