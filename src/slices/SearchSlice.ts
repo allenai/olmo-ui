@@ -12,7 +12,7 @@ enum ActionType {
 
 export interface SearchSlice {
     searchState: RemoteState;
-    doSearch(request: search.Request): Promise<search.Response | Error>;
+    doSearch(request: search.Request): Promise<search.Response>;
     type?: ActionType;
     searchRequest?: search.Request;
     searchError?: Error;

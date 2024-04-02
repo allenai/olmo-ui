@@ -30,11 +30,8 @@ const SearchResults = () => {
 
     useEffect(() => {
         doSearch(request).then((r) => {
-            if ('meta' in r) {
-                // in the case that we did not error, track the query
-                const analytics = new AnalyticsClient();
-                analytics.trackSearchQuery({ request, response: { meta: r.meta } });
-            }
+            const analytics = new AnalyticsClient();
+            analytics.trackSearchQuery({ request, response: { meta: r.meta } });
         });
     }, [search.toQueryString(request)]);
 
