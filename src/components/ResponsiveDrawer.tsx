@@ -39,6 +39,7 @@ export const ResponsiveDrawer = ({
                     sx: {
                         // This is intentionally not following the breakpoint. It looks nicer this way
                         width: { xs: '100vw', sm: 'auto' },
+                        overflow: 'visible',
                     },
                 }}
                 sx={{
@@ -66,6 +67,7 @@ export const ResponsiveDrawer = ({
                         position: 'unset',
                         backgroundColor: (theme) => theme.palette.background.default,
                         borderRight: 'none',
+                        overflow: 'visible',
                     },
                 }}>
                 {heading}

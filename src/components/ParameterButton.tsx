@@ -1,18 +1,19 @@
 import {
+    Autocomplete,
     Box,
     Button,
     Chip,
     Divider,
-    Grid,
     IconButton,
+    InputLabel,
     List,
     ListItem,
     Stack,
+    TextField,
     Typography,
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
-import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useState } from 'react';
 
 import { ResponsiveDrawer } from './ResponsiveDrawer';
@@ -41,13 +42,7 @@ export const ParameterButton = () => {
         throw new Error('schema not loaded');
     }
 
-    const formContext = useForm({
-        defaultValues: {
-            stopWordInput: '',
-        },
-    });
-
-    const watchStopWordInput = formContext.watch('stopWordInput');
+    const [stopWordsInput, setStopWordsInput] = useState<string[]>([]);
 
     const opts = schema.data.Message.InferenceOpts;
 
@@ -62,21 +57,33 @@ export const ParameterButton = () => {
     const handleClearAll = () => {
         const stop: string[] = [];
         updateInferenceOpts({ stop });
+        setStopWordsInput([]);
     };
 
-    const handleUserKeyPress = (event: React.KeyboardEvent) => {
-        if (event.key === 'Tab') {
-            formContext.handleSubmit(handleStopWordSubmit)();
-        }
-    };
-
-    const handleStopWordSubmit = () => {
+    const handleOnChange = (_event: React.SyntheticEvent, value: string[]) => {
         const current = inferenceOpts.stop ?? [];
         const unique = new Set(current);
-        const stop = unique.has(watchStopWordInput) ? current : [...current, watchStopWordInput];
+        const stop = unique.has(value[value.length - 1])
+            ? current
+            : [...current, value[value.length - 1]];
         updateInferenceOpts({ stop });
-        formContext.setValue('stopWordInput', '');
+        setStopWordsInput(stop);
     };
+
+    const ParameterHeader = (
+        <>
+            <Stack justifyContent="space-between" direction="row" gap={2}>
+                <NavigationHeading>Parameter</NavigationHeading>
+                <IconButton
+                    onClick={handleDrawerClose}
+                    sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
+                    <CloseIcon />
+                </IconButton>
+            </Stack>
+            <Divider />
+        </>
+    );
+
     return (
         <>
             <Button
@@ -92,29 +99,18 @@ export const ParameterButton = () => {
                 open={isDrawerOpen}
                 anchor="right"
                 desktopDrawerVariant="persistent"
-                desktopHeading={
-                    <>
-                        <Stack justifyContent="space-between" direction="row" gap={2}>
-                            <NavigationHeading>Parameter</NavigationHeading>
-                            <IconButton
-                                onClick={handleDrawerClose}
-                                sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
-                                <CloseIcon />
-                            </IconButton>
-                        </Stack>
-                        <Divider />
-                    </>
-                }
-                desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+                mobileHeading={ParameterHeader}
+                desktopHeading={ParameterHeader}
+                desktopDrawerSx={{ gridArea: 'side-drawer' }}
+                mobileDrawerSx={{ gridArea: 'side-drawer' }}>
                 <Stack component="nav" direction="column" justifyContent="space-between" height="1">
                     <List>
-                        <NavigationHeading>Model</NavigationHeading>
+                        <ListItem>
+                            <InputLabel>Model</InputLabel>
+                        </ListItem>
                         <ListItem>
                             <ModelSelect />
                         </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
                         <ListItem>
                             <InputSlider
                                 label="Max New Tokens"
@@ -141,7 +137,6 @@ export const ParameterButton = () => {
                             />
                         </ListItem>
                         <Divider />
-
                         <ListItem>
                             <InputSlider
                                 label="Top P"
@@ -154,48 +149,46 @@ export const ParameterButton = () => {
                                 dialogTitle="Top P"
                             />
                         </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
+                        <Divider />
                         <ListItem>
                             <Box sx={{ width: '100%' }}>
-                                <FormContainer
-                                    formContext={formContext}
-                                    FormProps={{
-                                        style: { height: '100%' },
-                                        'aria-label': 'Stop Word Prompt',
-                                    }}>
-                                    <TextFieldElement
-                                        size="small"
-                                        placeholder="Enter Stop Word"
-                                        onKeyDown={handleUserKeyPress}
-                                        maxRows={13}
-                                        name="stopWordInput"
-                                    />
-                                </FormContainer>
-                                <Typography variant="caption">
-                                    Hit &quot;Tab&quot; to add a new word.
-                                </Typography>
-                                <Grid container spacing={1} paddingY={1}>
-                                    {inferenceOpts.stop?.map((word, i) => (
-                                        <Grid item key={`stop-${i}-${word}`}>
+                                <Autocomplete
+                                    multiple
+                                    options={inferenceOpts.stop ?? []}
+                                    value={stopWordsInput}
+                                    freeSolo
+                                    onChange={(event, value) => handleOnChange(event, value)}
+                                    renderTags={(stopWords: readonly string[], getTagProps) =>
+                                        stopWords.map((option: string, index: number) => (
                                             <Chip
-                                                label={word}
-                                                title={word}
+                                                label={option}
+                                                {...getTagProps({ index })}
                                                 onDelete={() => {
                                                     const current = inferenceOpts.stop ?? [];
                                                     const stop = current
-                                                        .slice(0, i)
-                                                        .concat(current.slice(i + 1));
+                                                        .slice(0, index)
+                                                        .concat(current.slice(index + 1));
                                                     updateInferenceOpts({ stop });
                                                 }}
                                             />
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <Button variant="outlined" onClick={handleClearAll}>
-                                    Clear All
-                                </Button>
+                                        ))
+                                    }
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Stop Words"
+                                            placeholder="Enter Stop Word"
+                                        />
+                                    )}
+                                />
+                                <Stack>
+                                    <Typography variant="caption">
+                                        Hit &quot;Enter&quot; to add a new word.
+                                    </Typography>
+                                    <Button variant="outlined" onClick={handleClearAll}>
+                                        Clear All
+                                    </Button>
+                                </Stack>
                             </Box>
                         </ListItem>
                     </List>

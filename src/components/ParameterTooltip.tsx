@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Tooltip, Typography, tooltipClasses } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { useState } from 'react';
 
@@ -27,7 +27,19 @@ export const ParameterTooltip = ({ title, content }: ParameterTooltipProps) => {
                 disableFocusListener
                 disableHoverListener
                 disableTouchListener
-                placement="top-end"
+                placement="left-start"
+                slotProps={{
+                    popper: {
+                        sx: {
+                            [`&.${tooltipClasses.popper}[data-popper-placement*="left"] .${tooltipClasses.tooltip}`]:
+                                {
+                                    marginRight: '160px',
+                                    marginLeft: '-160px',
+                                    marginTop: '-160px',
+                                },
+                        },
+                    },
+                }}
                 title={
                     <Grid
                         container
