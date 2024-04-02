@@ -19,10 +19,3 @@ test('can prompt', async ({ page }) => {
     // This will ensure there's only one visible as long as strict mode is enabled
     await expect(page.getByPlaceholder('Follow Up')).toBeVisible();
 });
-
-test('matches olmo before rework', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-
-    await expect(page).toHaveScreenshot('pre-rework-olmo.png', { fullPage: true });
-});
