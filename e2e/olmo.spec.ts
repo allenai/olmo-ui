@@ -24,5 +24,5 @@ test('matches olmo before rework', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    await expect(page).toHaveScreenshot();
+    await expect(page).toHaveScreenshot('pre-rework-olmo.png', { fullPage: true });
 });
