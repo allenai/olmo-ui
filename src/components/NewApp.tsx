@@ -8,6 +8,7 @@ import { useAppContext } from '../AppContext';
 import { GlobalAlertList } from './GlobalAlertList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
+import { HistoryDrawer } from './HistoryButton';
 
 export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -58,6 +59,7 @@ export const NewApp = () => {
                     </Container>
                 </>
             ) : null}
+            <HistoryDrawer />
         </OuterContainer>
     );
 };

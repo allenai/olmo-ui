@@ -1,17 +1,43 @@
-import { Button, Divider, IconButton, List, Stack } from '@mui/material';
-import HistoryIcon from '@mui/icons-material/History';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import HistoryIcon from '@mui/icons-material/History';
+import { Divider, IconButton, List, Stack } from '@mui/material';
+import { useEffect } from 'react';
 
 import { useSearchParams } from 'react-router-dom';
 
-import { ResponsiveDrawer } from './ResponsiveDrawer';
+import { DrawerId } from '@/slices/DrawerSlice';
 import { useAppContext } from '../AppContext';
-import { NavigationHeading } from './OlmoAppBar/NavigationHeading';
-import { ThreadLink } from '../components/ThreadLink';
 import { Message } from '../api/Message';
+import { ThreadLink } from '../components/ThreadLink';
+import { NavigationHeading } from './OlmoAppBar/NavigationHeading';
+import { ResponsiveDrawer } from './ResponsiveDrawer';
+import { ResponsiveButton } from './thread/ResponsiveButton';
 
 export const HistoryButton = () => {
+    const isButtonDisabled = useAppContext(
+        (state) => state.allThreadInfo.loading || state.allThreadInfo.error
+    );
+    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
+    const toggleHistoryDrawer = () => toggleDrawer(HistoryDrawerId);
+
+    return (
+        <ResponsiveButton
+            variant="outlined"
+            startIcon={<HistoryIcon />}
+            title="History"
+            onClick={toggleHistoryDrawer}
+            disabled={isButtonDisabled}
+        />
+    );
+};
+
+const DefaultPageSize = 10 as const;
+
+const useGroupedThreadHistory = (): {
+    threadsFromToday: Message[];
+    threadsFromThisWeek: Message[];
+    threadsFromThisMonth: Message[];
+} => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getAllThreads = useAppContext((state) => state.getAllThreads);
     const allThreadInfo = useAppContext((state) => state.allThreadInfo);
@@ -19,19 +45,11 @@ export const HistoryButton = () => {
     const [pageParams] = useSearchParams();
     const page = Number(pageParams.get('page') ?? '1');
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    const handleDrawerClose = () => {
-        setIsDrawerOpen(false);
-    };
-
-    const size = 10;
-
     useEffect(() => {
         const creator = userInfo?.data?.client;
-        const offset = (page - 1) * size;
+        const offset = (page - 1) * DefaultPageSize;
         getAllThreads(offset, creator);
-    }, [userInfo, page, size]);
+    }, [userInfo, page]);
 
     const threadsFromToday: Message[] = [];
     const threadsFromThisWeek: Message[] = [];
@@ -52,63 +70,74 @@ export const HistoryButton = () => {
         }
     });
 
-    const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
-    };
+    return { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth };
+};
+
+interface HistorySectionProps {
+    heading: string;
+    threads: Message[];
+    hasDivider?: boolean;
+}
+
+const HistorySection = ({ heading, threads, hasDivider }: HistorySectionProps): JSX.Element => {
+    if (threads.length === 0) {
+        return <></>;
+    }
 
     return (
         <>
-            <Button
-                component="label"
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<HistoryIcon />}
-                onClick={toggleDrawer}
-                disabled={allThreadInfo.loading || allThreadInfo.error}>
-                History
-            </Button>
-            <ResponsiveDrawer
-                onClose={handleDrawerClose}
-                open={isDrawerOpen}
-                anchor="right"
-                desktopDrawerVariant="persistent"
-                desktopHeading={
-                    <Stack justifyContent="space-between" direction="row" gap={2}>
-                        <NavigationHeading>History</NavigationHeading>
-                        <IconButton
-                            onClick={handleDrawerClose}
-                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Stack>
-                }
-                desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-                <Stack component="nav" direction="column" justifyContent="space-between" height="1">
-                    <List>
-                        <NavigationHeading>Today</NavigationHeading>
-                        {threadsFromToday &&
-                            threadsFromToday.map((thread) => (
-                                <ThreadLink {...thread} key={thread.id} />
-                            ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        <NavigationHeading>Previous 7 Days</NavigationHeading>
-                        {threadsFromThisWeek &&
-                            threadsFromThisWeek.map((thread) => (
-                                <ThreadLink {...thread} key={thread.id} />
-                            ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        <NavigationHeading>Previous 30 Days</NavigationHeading>
-                        {threadsFromThisMonth &&
-                            threadsFromThisMonth.map((thread) => (
-                                <ThreadLink {...thread} key={thread.id} />
-                            ))}
-                    </List>
-                </Stack>
-            </ResponsiveDrawer>
+            {hasDivider && <Divider />}
+            <List>
+                <NavigationHeading>{heading}</NavigationHeading>
+                {threads.map((thread) => (
+                    <ThreadLink {...thread} key={thread.id} />
+                ))}
+            </List>
         </>
+    );
+};
+
+const HistoryDrawerId: DrawerId = 'history' as const;
+
+export const HistoryDrawer = (): JSX.Element => {
+    const closeDrawer = useAppContext((state) => state.closeDrawer);
+    const handleDrawerClose = () => closeDrawer(HistoryDrawerId);
+
+    const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HistoryDrawerId);
+
+    const { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth } =
+        useGroupedThreadHistory();
+
+    return (
+        <ResponsiveDrawer
+            onClose={handleDrawerClose}
+            open={isDrawerOpen}
+            anchor="right"
+            desktopDrawerVariant="persistent"
+            desktopHeading={
+                <Stack justifyContent="space-between" direction="row" gap={2}>
+                    <NavigationHeading>History</NavigationHeading>
+                    <IconButton
+                        onClick={handleDrawerClose}
+                        sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
+                        <CloseIcon />
+                    </IconButton>
+                </Stack>
+            }
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            <Stack component="nav" direction="column">
+                <HistorySection heading="Today" threads={threadsFromToday} />
+                <HistorySection
+                    heading="Previous 7 Days"
+                    threads={threadsFromThisWeek}
+                    hasDivider
+                />
+                <HistorySection
+                    heading="Previous 30 Days"
+                    threads={threadsFromThisMonth}
+                    hasDivider
+                />
+            </Stack>
+        </ResponsiveDrawer>
     );
 };

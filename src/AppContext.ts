@@ -15,6 +15,7 @@ import {
     errorToAlert,
 } from './slices/AlertMessageSlice';
 import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
+import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
 
 const userClient = new UserClient();
 const modelClient = new ModelClient();
@@ -46,7 +47,8 @@ type AppContextState = State &
     RepromptSlice &
     ThreadSlice &
     AlertMessageSlice &
-    MetaSlice;
+    MetaSlice &
+    DrawerSlice;
 
 export const useAppContext = create<AppContextState>()(
     devtools((set, get, store) => ({
@@ -59,6 +61,7 @@ export const useAppContext = create<AppContextState>()(
         ...createThreadSlice(set, get, store),
         ...createLabelSlice(set, get, store),
         ...createMetaSlice(set, get, store),
+        ...createDrawerSlice(set, get, store),
 
         getUserInfo: async () => {
             try {

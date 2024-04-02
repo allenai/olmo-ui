@@ -1,6 +1,6 @@
 import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
-import { ThemeOptions } from '@mui/material';
+import { ThemeOptions, createTheme } from '@mui/material';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
@@ -66,3 +66,23 @@ export const olmoTheme = {
         },
     },
 } satisfies ThemeOptions;
+
+// @ts-expect-error The theme options type isn't quite correct
+export const uiRefreshOlmoTheme = createTheme(olmoTheme, {
+    components: {
+        MuiListItemButton: {
+            styleOverrides: {
+                root: ({ theme, ownerState }) => ({
+                    ...(ownerState.selected === true && {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+
+                        '&:focus-visible,&:hover': {
+                            backgroundColor: theme.palette.primary.dark,
+                        },
+                    }),
+                }),
+            },
+        },
+    },
+} satisfies Partial<ThemeOptions>);

@@ -1,5 +1,5 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Link, ListItem, ListItemButton, ListItemText, Stack } from '@mui/material';
+import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
@@ -47,17 +47,17 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     {content}
                 </ListItemText>
 
-                <Stack direction="row" alignItems="center" gap={1}>
-                    <ListItemText
-                        primaryTypographyProps={{
-                            variant: 'caption',
-                            color: 'inherit',
-                            sx: { margin: 0 },
-                        }}>
-                        <TimeDisplay timeStamp={created} />
-                    </ListItemText>
-                    <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
-                </Stack>
+                <ListItemText
+                    sx={{ marginInlineStart: 'auto', flex: '0 0 auto' }}
+                    primaryTypographyProps={{
+                        variant: 'caption',
+                        color: 'inherit',
+                        fontWeight: 'bold',
+                        sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
+                    }}>
+                    <TimeDisplay timeStamp={created} />
+                </ListItemText>
+                <ChevronRightIcon />
             </ListItemButton>
         </ListItem>
     );
