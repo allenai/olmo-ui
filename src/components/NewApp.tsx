@@ -43,6 +43,8 @@ export const NewApp = () => {
                             // This is to give a little more height to the layout so it's a little easier to see at the end. If we add a footer we can remove this!
                             paddingBlockEnd: 4,
 
+                            height: 1,
+
                             gridArea: 'content',
 
                             backgroundColor: (theme) => ({
