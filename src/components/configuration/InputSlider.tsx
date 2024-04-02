@@ -2,12 +2,11 @@
  * A slider with a number control next to it.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
+import * as React from 'react';
 import styled from 'styled-components';
-import { Box, Grid, Typography, Slider, Input as MuiInput, Stack } from '@mui/material';
-
-import { ParameterTooltip } from '../ParameterTooltip';
+import { Box, Grid, Typography, Slider, Input as MuiInput } from '@mui/material';
 
 interface Props {
     label: string;
@@ -15,8 +14,6 @@ interface Props {
     min?: number;
     max?: number;
     initialValue?: number;
-    dialogContent?: string;
-    dialogTitle?: string;
     onChange?: (value: number) => void;
 }
 
@@ -26,15 +23,13 @@ export const InputSlider = ({
     step = 1,
     initialValue = 0,
     label,
-    dialogContent,
-    dialogTitle,
     onChange,
 }: Props) => {
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
     };
 
-    const [value, setValue] = useState<number>(clipToMinMax(initialValue));
+    const [value, setValue] = React.useState<number>(clipToMinMax(initialValue));
 
     const firstUpdate = useRef(true);
     useEffect(() => {
@@ -65,14 +60,9 @@ export const InputSlider = ({
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Stack direction="row" alignItems="center" gap={1}>
-                <Typography id="input-slider" gutterBottom>
-                    {label}
-                </Typography>
-                {dialogContent && dialogTitle && (
-                    <ParameterTooltip title={dialogTitle} content={dialogContent} />
-                )}
-            </Stack>
+            <Typography id="input-slider" gutterBottom>
+                {label}
+            </Typography>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs>
                     <Slider

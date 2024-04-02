@@ -14,13 +14,13 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ResponsiveDrawer } from './ResponsiveDrawer';
 import { NavigationHeading } from './OlmoAppBar/NavigationHeading';
 import { ModelSelect } from './NewQuery/ModelSelect';
-import { InputSlider } from './configuration/InputSlider';
 import { useAppContext } from '../AppContext';
+import { NewInputSlider } from './configuration/NewInputSlider';
 
 const MAX_NEW_TOKEN_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
@@ -34,6 +34,7 @@ const TOP_P_INFO =
 export const ParameterButton = () => {
     const inferenceOpts = useAppContext((state) => state.inferenceOpts);
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
+    const removeStopWord = useAppContext((state) => state.removeStopWord);
     const schema = useAppContext((state) => state.schema);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -54,20 +55,28 @@ export const ParameterButton = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
 
-    const handleClearAll = () => {
-        const stop: string[] = [];
-        updateInferenceOpts({ stop });
-        setStopWordsInput([]);
-    };
+    useEffect(() => {
+        if (inferenceOpts.stop) {
+            setStopWordsInput(inferenceOpts.stop);
+        }
+    }, [inferenceOpts]);
 
     const handleOnChange = (_event: React.SyntheticEvent, value: string[]) => {
+        // case when user press x at the corner of the auto complete.
+        // this is to wipe value user typed.
+        if (value.length === 0) {
+            const stop: string[] = [];
+            setStopWordsInput(stop);
+            updateInferenceOpts({ stop });
+            return;
+        }
         const current = inferenceOpts.stop ?? [];
         const unique = new Set(current);
         const stop = unique.has(value[value.length - 1])
             ? current
             : [...current, value[value.length - 1]];
-        updateInferenceOpts({ stop });
         setStopWordsInput(stop);
+        updateInferenceOpts({ stop });
     };
 
     const ParameterHeader = (
@@ -112,7 +121,7 @@ export const ParameterButton = () => {
                             <ModelSelect />
                         </ListItem>
                         <ListItem>
-                            <InputSlider
+                            <NewInputSlider
                                 label="Max New Tokens"
                                 min={opts.max_tokens.min}
                                 max={opts.max_tokens.max}
@@ -125,7 +134,7 @@ export const ParameterButton = () => {
                         </ListItem>
                         <Divider />
                         <ListItem>
-                            <InputSlider
+                            <NewInputSlider
                                 label="Temperature"
                                 min={opts.temperature.min}
                                 max={opts.temperature.max}
@@ -138,7 +147,7 @@ export const ParameterButton = () => {
                         </ListItem>
                         <Divider />
                         <ListItem>
-                            <InputSlider
+                            <NewInputSlider
                                 label="Top P"
                                 min={opts.top_p.min}
                                 max={opts.top_p.max}
@@ -160,15 +169,13 @@ export const ParameterButton = () => {
                                     onChange={(event, value) => handleOnChange(event, value)}
                                     renderTags={(stopWords: readonly string[], getTagProps) =>
                                         stopWords.map((option: string, index: number) => (
+                                            // getTagProps already included a key but eslint doesnt know about it.
+                                            // eslint-disable-next-line react/jsx-key
                                             <Chip
                                                 label={option}
                                                 {...getTagProps({ index })}
                                                 onDelete={() => {
-                                                    const current = inferenceOpts.stop ?? [];
-                                                    const stop = current
-                                                        .slice(0, index)
-                                                        .concat(current.slice(index + 1));
-                                                    updateInferenceOpts({ stop });
+                                                    removeStopWord(index);
                                                 }}
                                             />
                                         ))
@@ -181,14 +188,9 @@ export const ParameterButton = () => {
                                         />
                                     )}
                                 />
-                                <Stack>
-                                    <Typography variant="caption">
-                                        Hit &quot;Enter&quot; to add a new word.
-                                    </Typography>
-                                    <Button variant="outlined" onClick={handleClearAll}>
-                                        Clear All
-                                    </Button>
-                                </Stack>
+                                <Typography variant="caption">
+                                    Hit &quot;Enter&quot; to add a new word.
+                                </Typography>
                             </Box>
                         </ListItem>
                     </List>
