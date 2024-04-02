@@ -18,18 +18,18 @@ interface NewQueryFormProps {
 }
 
 const useNewQueryFormHandling = () => {
-    const models = useAppContext((state) => state.modelInfo.data);
+    const models = useAppContext((state) => state.models);
 
     const formContext = useForm({
         defaultValues: {
-            model: models?.[0].id,
+            model: models.length ? models[0].id : '',
             content: '',
             private: false,
         },
     });
 
     useEffect(() => {
-        if (models != null) {
+        if (models.length) {
             formContext.reset({ model: models[0].id });
         }
     }, [models]);
