@@ -9,7 +9,6 @@ import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
 import { WallpaperCircle } from './components/WallpaperCircle';
 import { olmoTheme } from './olmoTheme';
-import { useFeatureToggles } from './FeatureToggleContext';
 import { OlmoLogo } from './components/logos/OlmoLogo';
 
 export interface AppRoute {
@@ -94,7 +93,7 @@ export const App = () => {
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
             ) : null}
-            {!isLoading && userInfo.data && schema.data ? (
+            {!isLoading && userInfo && schema ? (
                 <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={
@@ -103,7 +102,7 @@ export const App = () => {
                             </BannerLink>
                         }
                         transparentBackground={true}
-                        endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
+                        endSlot={<HeaderEndSlot client={userInfo.client} />}
                     />
                     <Content main>
                         <GlobalAlertList />
