@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 
 import { useRouteTitle } from './useRouteTitle';
-import { DesktopLayoutBreakpoint } from '@/constants';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const MobilePageTitle = (): JSX.Element => {
     const title = useRouteTitle();
@@ -15,7 +15,7 @@ export const MobilePageTitle = (): JSX.Element => {
             sx={{
                 color: (theme) => theme.palette.primary.main,
                 margin: 0,
-                display: { xs: 'block', [DesktopLayoutBreakpoint]: 'none' },
+                display: { xs: 'block', [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
             }}>
             {title}
         </Typography>

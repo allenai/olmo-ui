@@ -1,7 +1,7 @@
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, ThemeOptions } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Link, Navigate, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { App } from './App';
 import { FeatureToggleProvider } from './FeatureToggleContext';
 import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
-import { olmoTheme } from './olmoTheme';
+import { olmoTheme, uiRefreshOlmoTheme } from './olmoTheme';
 import { Home } from './pages/Home';
 import { Admin } from './pages/Admin';
 import { DolmaExplorer } from './pages/DolmaExplorer';
@@ -46,13 +46,19 @@ const enableMocking = async () => {
     return worker.start();
 };
 
-const VarnishedApp = ({ children }: PropsWithChildren) => {
-    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
+interface VarnishedAppProps extends PropsWithChildren {
+    theme?: ThemeOptions;
+}
+
+// @ts-expect-error the theme type isn't quite right
+const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps) => {
+    const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
+
     return (
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
-            <ThemeProvider theme={theme}>
-                <VarnishApp layout="left-aligned" theme={theme}>
+            <ThemeProvider theme={combinedTheme}>
+                <VarnishApp layout="left-aligned" theme={combinedTheme}>
                     <GlobalStyle />
                     {children}
                 </VarnishApp>
@@ -122,7 +128,8 @@ const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
-            <VarnishedApp>
+            // @ts-expect-error the theme type isn't quite right
+            <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <NewApp />
             </VarnishedApp>
         ),

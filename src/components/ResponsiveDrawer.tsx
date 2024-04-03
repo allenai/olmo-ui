@@ -1,12 +1,12 @@
 import { Breakpoint, Drawer, DrawerProps, SxProps, Theme } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { DesktopLayoutBreakpoint } from '../constants';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
     mobileHeading?: ReactNode;
-    desktopHeading?: ReactNode;
+    heading?: ReactNode;
 
     drawerBreakpoint?: Breakpoint;
 
@@ -21,10 +21,10 @@ export const ResponsiveDrawer = ({
     open,
     onClose,
     mobileHeading,
-    desktopHeading,
+    heading,
     mobileDrawerSx,
     desktopDrawerSx,
-    drawerBreakpoint = DesktopLayoutBreakpoint,
+    drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
 }: ResponsiveDrawerProps): JSX.Element => {
@@ -45,7 +45,7 @@ export const ResponsiveDrawer = ({
                     display: { xs: 'flex', [drawerBreakpoint]: 'none' },
                     ...mobileDrawerSx,
                 }}>
-                {mobileHeading}
+                {mobileHeading ?? heading}
                 {children}
             </Drawer>
             <Drawer
@@ -68,7 +68,7 @@ export const ResponsiveDrawer = ({
                         borderRight: 'none',
                     },
                 }}>
-                {desktopHeading}
+                {heading}
                 {children}
             </Drawer>
         </>
