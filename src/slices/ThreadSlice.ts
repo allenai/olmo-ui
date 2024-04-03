@@ -284,12 +284,11 @@ export const createThreadSlice: StateCreator<
                     // the chunks contain one token of the model's response
                     set(
                         (state) => {
-                            getChildToModify(state)?.content.concat(message.content);
+                            getChildToModify(state)!.content += message.content;
 
                             if (shouldSetSelectedThread) {
-                                state.selectedThreadInfo.data?.children?.[0].content.concat(
-                                    message.content
-                                );
+                                state.selectedThreadInfo.data!.children![0].content +=
+                                    message.content;
                             }
                         },
                         false,

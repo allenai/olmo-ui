@@ -1,4 +1,4 @@
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, delay, http } from 'msw';
 
 import {
     JSONMessage,
@@ -14,10 +14,11 @@ const encoder = new TextEncoder();
 export const messageId = 'msg_A8E5H1X2O3';
 
 export const messageStreamHandlers = [
-    http.post(`*/v3/message/stream`, () => {
+    http.post(`*/v3/message/stream`, async () => {
         const stream = new ReadableStream({
-            start(controller) {
+            async start(controller) {
                 for (const message of fakeModelMessages) {
+                    await delay();
                     controller.enqueue(encoder.encode(JSON.stringify(message) + '\n'));
                 }
                 controller.close();
@@ -86,6 +87,38 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
         content: 'Okay',
     },
     {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
         id: messageId,
         content: 'say one word',
         snippet: 'say one word',
@@ -102,8 +135,8 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
         children: [
             {
                 id: 'msg_V6Y0U4H4O9',
-                content: 'Okay',
-                snippet: 'Okay',
+                content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
                 creator: 'murphy@allenai.org',
                 role: Role.LLM,
                 opts: {
