@@ -93,7 +93,7 @@ export const App = () => {
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
             ) : null}
-            {!isLoading && userInfo && schema ? (
+            {!isLoading && userInfo !== null && schema !== null ? (
                 <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={

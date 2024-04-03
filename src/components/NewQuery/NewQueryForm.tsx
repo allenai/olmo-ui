@@ -22,14 +22,14 @@ const useNewQueryFormHandling = () => {
 
     const formContext = useForm({
         defaultValues: {
-            model: models.length ? models[0].id : '',
+            model: models.length > 0 ? models[0].id : '',
             content: '',
             private: false,
         },
     });
 
     useEffect(() => {
-        if (models.length) {
+        if (models.length > 0) {
             formContext.reset({ model: models[0].id });
         }
     }, [models]);
