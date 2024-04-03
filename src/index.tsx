@@ -57,7 +57,7 @@ const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps) => {
     return (
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={combinedTheme}>
                 <VarnishApp layout="left-aligned" theme={combinedTheme}>
                     <GlobalStyle />
                     {children}
