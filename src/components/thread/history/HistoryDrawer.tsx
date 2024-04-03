@@ -4,11 +4,10 @@ import { useEffect } from 'react';
 
 import { useSearchParams } from 'react-router-dom';
 
+import { useAppContext } from '@/AppContext';
+import { Message } from '@/api/Message';
+import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
-import { useAppContext } from '../../../AppContext';
-import { Message } from '../../../api/Message';
-import { NavigationHeading } from '../../OlmoAppBar/NavigationHeading';
-import { ResponsiveDrawer } from '../../ResponsiveDrawer';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 const DefaultPageSize = 10 as const;
@@ -53,13 +52,13 @@ const useGroupedThreadHistory = (): {
     return { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth };
 };
 
-export const HistoryDrawerId: DrawerId = 'history' as const;
+export const HISTORY_DRAWER_ID: DrawerId = 'history' as const;
 
 export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
-    const handleDrawerClose = () => closeDrawer(HistoryDrawerId);
+    const handleDrawerClose = () => closeDrawer(HISTORY_DRAWER_ID);
 
-    const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HistoryDrawerId);
+    const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
 
     const { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth } =
         useGroupedThreadHistory();
