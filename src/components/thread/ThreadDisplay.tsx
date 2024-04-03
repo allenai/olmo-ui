@@ -8,21 +8,29 @@ import { Message } from '@/api/Message';
 import { ChatMessage } from './ChatMessage';
 
 interface MessageViewProps {
-    message?: Message;
+    content?: Message['content'];
+    childMessages?: Message['children'];
+    role?: Message['role'];
 }
 
-const MessageView = ({ message }: MessageViewProps) => {
-    if (message == null) {
+const MessageView = ({ content, childMessages, role }: MessageViewProps) => {
+    if (content == null || role == null) {
         return null;
     }
 
-    const { content, children, role } = message;
+    const firstChild = childMessages?.[0];
 
     return (
         <>
             <ChatMessage role={role}>{content}</ChatMessage>
             {/* TODO: add thread handling */}
-            <MessageView message={children?.[0]} />
+            {firstChild != null && (
+                <MessageView
+                    content={firstChild.content}
+                    role={firstChild.role}
+                    childMessages={firstChild.children}
+                />
+            )}
         </>
     );
 };
@@ -31,17 +39,23 @@ export const ThreadDisplay = (): JSX.Element => {
     const { id } = useParams();
 
     const getSelectedThread = useAppContext((state) => state.getSelectedThread);
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const selectedThread = useAppContext((state) =>
+        state.allThreadInfo.data.messages.find((thread) => thread.id === id)
+    );
 
     useEffect(() => {
         if (id != null) {
-            getSelectedThread(id);
+            getSelectedThread(id, true);
         }
     }, [id]);
 
     return (
         <Stack gap={2} direction="column">
-            <MessageView message={selectedThreadInfo.data} />
+            <MessageView
+                content={selectedThread?.content}
+                role={selectedThread?.role}
+                childMessages={selectedThread?.children}
+            />
         </Stack>
     );
 };

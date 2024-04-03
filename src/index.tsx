@@ -141,6 +141,8 @@ const uiRefreshRoutes: RouteObject[] = [
                 children: [
                     {
                         path: '/thread',
+                        // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
+                        // We just redirect to the playground to make sure people going to /thread get what they want
                         element: <Navigate to={links.playground} />,
                     },
                     {

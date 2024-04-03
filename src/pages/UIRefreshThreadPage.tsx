@@ -1,28 +1,31 @@
 import { Stack, Typography } from '@mui/material';
 
-// import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { Outlet } from 'react-router-dom';
 
-import { ThreadCard } from '@/components/thread/ThreadCard';
+import { useEffect } from 'react';
 
-import { QueryForm } from '@/components/thread/QueryForm';
-
-// import { links } from '@/Links';
-import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { useAppContext } from '@/AppContext';
+import { links } from '@/Links';
+import { QueryForm } from '@/components/thread/QueryForm';
+import { ThreadCard } from '@/components/thread/ThreadCard';
+import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 
 export const UIRefreshThreadPage = () => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const postMessage = useAppContext((state) => state.newPostMessage);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
 
     const handlePromptSubmission = (data: { content: string }) => {
-        console.log('data', data);
-        postMessage({
-            content: 'say 4 words',
-        });
-        // navigate(links.thread('new'));
+        postMessage(data, undefined, true);
     };
+
+    useEffect(() => {
+        if (selectedThreadId) {
+            navigate(links.thread(selectedThreadId));
+        }
+    }, [selectedThreadId, navigate]);
 
     return (
         <Stack

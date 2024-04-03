@@ -32,7 +32,6 @@ export const postMessageGenerator = async function* (
     let firstPart = true;
     while (true) {
         const part = await rdr.read();
-        console.debug(part);
 
         if (part.done) {
             break;

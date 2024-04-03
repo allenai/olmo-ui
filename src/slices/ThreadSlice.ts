@@ -33,11 +33,15 @@ export interface ThreadSlice {
     expandedThreadID?: string;
     getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
-    getSelectedThread: (threadId: string) => Promise<FetchInfo<Message>>;
+    getSelectedThread: (
+        threadId: string,
+        checkExistingThreads?: boolean
+    ) => Promise<FetchInfo<Message>>;
     stopMessageStream: () => void;
     newPostMessage: (
         newMessage: MessagePost,
-        parentMessage?: Message
+        parentMessage?: Message,
+        shouldSetSelectedThread?: boolean
     ) => Promise<FetchInfo<Message>>;
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
     setExpandedThreadID: (id: string | undefined) => void;
@@ -135,7 +139,21 @@ export const createThreadSlice: StateCreator<
         return get().deletedThreadInfo;
     },
 
-    getSelectedThread: async (threadId: string) => {
+    getSelectedThread: async (threadId: string, useAllThreadInfo: boolean = false) => {
+        if (useAllThreadInfo) {
+            const existingThread = get().allThreadInfo.data.messages.find(
+                (message) => message.id === threadId
+            );
+
+            if (existingThread != null) {
+                set((state) => {
+                    state.selectedThreadInfo.data = existingThread;
+                });
+
+                return existingThread;
+            }
+        }
+
         try {
             set((state) => ({
                 selectedThreadInfo: {
@@ -146,6 +164,15 @@ export const createThreadSlice: StateCreator<
             }));
 
             const selectedThread = await messageClient.getMessage(threadId);
+
+            set((state) => {
+                state.selectedThreadInfo.data = selectedThread;
+                state.selectedThreadInfo.loading = false;
+
+                if (useAllThreadInfo) {
+                    state.allThreadInfo.data.messages.push(selectedThread);
+                }
+            });
 
             set((state) => ({
                 selectedThreadInfo: {
@@ -177,7 +204,11 @@ export const createThreadSlice: StateCreator<
         get().abortController?.abort();
     },
 
-    newPostMessage: async (newMessage: MessagePost, parentMessage?: Message) => {
+    newPostMessage: async (
+        newMessage: MessagePost,
+        parentMessage?: Message,
+        shouldSetSelectedThread: boolean = false
+    ) => {
         const abortController = new AbortController();
         set({
             abortController,
@@ -220,6 +251,10 @@ export const createThreadSlice: StateCreator<
                                 state.ongoingThreadId = parsedMessage.children?.[0]?.id ?? null;
                                 state.expandedThreadID = parsedMessage.root;
                                 state.allThreadInfo.data?.messages.unshift(parsedMessage);
+
+                                if (shouldSetSelectedThread) {
+                                    state.selectedThreadInfo.data = parsedMessage;
+                                }
                             },
                             false,
                             'thread/firstMessage'
@@ -235,6 +270,10 @@ export const createThreadSlice: StateCreator<
                                 );
 
                                 state.allThreadInfo.data.messages[messageIndex] = parsedMessage;
+
+                                if (shouldSetSelectedThread) {
+                                    state.selectedThreadInfo.data = parsedMessage;
+                                }
                             },
                             false,
                             'thread/fullMessage'
@@ -246,6 +285,12 @@ export const createThreadSlice: StateCreator<
                     set(
                         (state) => {
                             getChildToModify(state)?.content.concat(message.content);
+
+                            if (shouldSetSelectedThread) {
+                                state.selectedThreadInfo.data?.children?.[0].content.concat(
+                                    message.content
+                                );
+                            }
                         },
                         false,
                         'thread/messageChunk'
