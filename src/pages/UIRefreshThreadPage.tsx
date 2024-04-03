@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 
 import { Outlet } from 'react-router-dom';
 
@@ -8,15 +8,20 @@ import { ThreadCard } from '@/components/thread/ThreadCard';
 
 import { QueryForm } from '@/components/thread/QueryForm';
 
-import { links } from '@/Links';
+// import { links } from '@/Links';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
+import { useAppContext } from '@/AppContext';
 
 export const UIRefreshThreadPage = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
+    const postMessage = useAppContext((state) => state.newPostMessage);
 
     const handlePromptSubmission = (data: { content: string }) => {
         console.log('data', data);
-        navigate(links.thread('new'));
+        postMessage({
+            content: 'say 4 words',
+        });
+        // navigate(links.thread('new'));
     };
 
     return (

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 
 import { MessageList } from './api/Message';
 import { ModelClient, ModelList } from './api/Model';
@@ -52,85 +53,89 @@ type AppContextState = State &
     MetaSlice &
     DrawerSlice;
 
+export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
+
 export const useAppContext = create<AppContextState>()(
-    devtools((set, get, store) => ({
-        userInfo: {},
-        modelInfo: {},
-        schema: {},
-        ...createRepromptSlice(set, get, store),
-        ...createPromptTemplateSlice(set, get, store),
-        ...createAlertMessageSlice(set, get, store),
-        ...createThreadSlice(set, get, store),
-        ...createLabelSlice(set, get, store),
-        ...createSearchSlice(set, get, store),
-        ...createMetaSlice(set, get, store),
-        ...createDrawerSlice(set, get, store),
+    immer(
+        devtools((set, get, store) => ({
+            userInfo: {},
+            modelInfo: {},
+            schema: {},
+            ...createRepromptSlice(set, get, store),
+            ...createPromptTemplateSlice(set, get, store),
+            ...createAlertMessageSlice(set, get, store),
+            ...createThreadSlice(set, get, store),
+            ...createLabelSlice(set, get, store),
+            ...createSearchSlice(set, get, store),
+            ...createMetaSlice(set, get, store),
+            ...createDrawerSlice(set, get, store),
 
-        getUserInfo: async () => {
-            try {
-                set((state) => ({
-                    userInfo: { ...state.userInfo, loading: true, error: false },
-                }));
+            getUserInfo: async () => {
+                try {
+                    set((state) => ({
+                        userInfo: { ...state.userInfo, loading: true, error: false },
+                    }));
 
-                const user = await userClient.whoAmI();
+                    const user = await userClient.whoAmI();
 
-                set((state) => ({
-                    userInfo: { ...state.userInfo, data: user, loading: false },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting user.`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    userInfo: { ...state.userInfo, error: true, loading: false },
-                }));
-            }
+                    set((state) => ({
+                        userInfo: { ...state.userInfo, data: user, loading: false },
+                    }));
+                } catch (err) {
+                    get().addAlertMessage(
+                        errorToAlert(
+                            `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                            `Error getting user.`,
+                            err
+                        )
+                    );
+                    set((state) => ({
+                        userInfo: { ...state.userInfo, error: true, loading: false },
+                    }));
+                }
 
-            return get().userInfo;
-        },
+                return get().userInfo;
+            },
 
-        getAllModels: async () => {
-            try {
-                set((state) => ({
-                    modelInfo: { ...state.modelInfo, loading: true, error: false },
-                }));
+            getAllModels: async () => {
+                try {
+                    set((state) => ({
+                        modelInfo: { ...state.modelInfo, loading: true, error: false },
+                    }));
 
-                const models = await modelClient.getAllModels();
+                    const models = await modelClient.getAllModels();
 
-                set((state) => ({
-                    modelInfo: { ...state.modelInfo, data: models, loading: false },
-                }));
-            } catch (err) {
-                get().addAlertMessage(
-                    errorToAlert(
-                        `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting models.`,
-                        err
-                    )
-                );
-                set((state) => ({
-                    modelInfo: { ...state.modelInfo, error: true, loading: false },
-                }));
-            }
+                    set((state) => ({
+                        modelInfo: { ...state.modelInfo, data: models, loading: false },
+                    }));
+                } catch (err) {
+                    get().addAlertMessage(
+                        errorToAlert(
+                            `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                            `Error getting models.`,
+                            err
+                        )
+                    );
+                    set((state) => ({
+                        modelInfo: { ...state.modelInfo, error: true, loading: false },
+                    }));
+                }
 
-            return get().modelInfo;
-        },
+                return get().modelInfo;
+            },
 
-        getSchema: async () => {
-            try {
-                set({ schema: { loading: true, error: false } });
+            getSchema: async () => {
+                try {
+                    set({ schema: { loading: true, error: false } });
 
-                const schema = await schemaClient.getSchema();
+                    const schema = await schemaClient.getSchema();
 
-                set({ schema: { data: schema, loading: false } });
-            } catch (err) {
-                set({ schema: { loading: false, error: true } });
-            }
-            return get().schema;
-        },
-    }))
+                    set({ schema: { data: schema, loading: false } });
+                } catch (err) {
+                    set({ schema: { loading: false, error: true } });
+                }
+                return get().schema;
+            },
+        }))
+    )
 );

@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 
-import { FetchInfo } from 'src/AppContext';
+import { FetchInfo, ZustandDevtools } from 'src/AppContext';
 
 import {
     InferenceOpts,
@@ -13,17 +13,20 @@ import {
     MessagePost,
     MessageStreamError,
     MessagesApiUrl,
+    isFirstOrFullMessage,
+    isMessageChunk,
     parseMessage,
 } from '../api/Message';
 import { ReadableJSONLStream } from '../api/ReadableJSONLStream';
-import { AlertMessageSeverity } from '../components/GlobalAlertList';
+import { AlertMessage, AlertMessageSeverity } from '../components/GlobalAlertList';
 import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
+import { postMessageGenerator } from '@/api/postMessageGenerator';
 
 export interface ThreadSlice {
     abortController: AbortController | null;
     ongoingThreadId: string | null;
     inferenceOpts: InferenceOpts;
-    allThreadInfo: FetchInfo<MessageList>;
+    allThreadInfo: Required<FetchInfo<MessageList>>;
     deletedThreadInfo: FetchInfo<void>;
     selectedThreadInfo: FetchInfo<Message>;
     postMessageInfo: FetchInfo<Message>;
@@ -31,6 +34,11 @@ export interface ThreadSlice {
     getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
     getSelectedThread: (threadId: string) => Promise<FetchInfo<Message>>;
+    stopMessageStream: () => void;
+    newPostMessage: (
+        newMessage: MessagePost,
+        parentMessage?: Message
+    ) => Promise<FetchInfo<Message>>;
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
     setExpandedThreadID: (id: string | undefined) => void;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
@@ -38,16 +46,23 @@ export interface ThreadSlice {
 
 const messageClient = new MessageClient();
 
+const ABORT_ERROR_MESSAGE: AlertMessage = {
+    id: `abort-message-${new Date().getTime()}`.toLowerCase(),
+    title: 'Response was aborted',
+    message: `You stopped OLMo from generating answers to your query`,
+    severity: AlertMessageSeverity.Warning,
+} as const;
+
 export const createThreadSlice: StateCreator<
     ThreadSlice & AlertMessageSlice,
-    [],
+    ZustandDevtools,
     [],
     ThreadSlice
 > = (set, get) => ({
     abortController: null,
     ongoingThreadId: null,
     inferenceOpts: {},
-    allThreadInfo: {},
+    allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
     deletedThreadInfo: {},
     selectedThreadInfo: {},
     postMessageInfo: {},
@@ -158,9 +173,134 @@ export const createThreadSlice: StateCreator<
         return get().selectedThreadInfo;
     },
 
+    stopMessageStream: () => {
+        get().abortController?.abort();
+    },
+
+    newPostMessage: async (newMessage: MessagePost, parentMessage?: Message) => {
+        const abortController = new AbortController();
+        set({
+            abortController,
+            postMessageInfo: { loading: true, error: false },
+        });
+
+        const inferenceOptions = get().inferenceOpts;
+
+        try {
+            const chunks = postMessageGenerator(
+                newMessage,
+                inferenceOptions,
+                abortController,
+                parentMessage?.id
+            );
+
+            let currentMessageId: Message['id'] | null = null;
+
+            const getMessageToModify = (state: ReturnType<typeof get>) =>
+                state.allThreadInfo.data.messages.find((message) => {
+                    return parentMessage?.id != null
+                        ? message.id === parentMessage.id
+                        : message.id === currentMessageId;
+                });
+
+            const getChildToModify = (state: ReturnType<typeof get>) =>
+                getMessageToModify(state)?.children?.[0];
+
+            for await (const message of chunks) {
+                if (isFirstOrFullMessage(message)) {
+                    const parsedMessage = parseMessage(message);
+
+                    // If current message is null we're on our first entry
+                    // The first entry will always be a Message with the details of the user's message we submitted
+                    if (currentMessageId == null) {
+                        currentMessageId = parsedMessage.id;
+
+                        set(
+                            (state) => {
+                                state.ongoingThreadId = parsedMessage.children?.[0]?.id ?? null;
+                                state.expandedThreadID = parsedMessage.root;
+                                state.allThreadInfo.data?.messages.unshift(parsedMessage);
+                            },
+                            false,
+                            'thread/firstMessage'
+                        );
+                    } else {
+                        set(
+                            (state) => {
+                                const messageIndex = state.allThreadInfo.data.messages.findIndex(
+                                    (message) =>
+                                        parentMessage?.id != null
+                                            ? message.id === parentMessage.id
+                                            : message.id === currentMessageId
+                                );
+
+                                state.allThreadInfo.data.messages[messageIndex] = parsedMessage;
+                            },
+                            false,
+                            'thread/fullMessage'
+                        );
+                    }
+                } else if (isMessageChunk(message)) {
+                    // Entries other than the first and last are message chunks
+                    // the chunks contain one token of the model's response
+                    set(
+                        (state) => {
+                            getChildToModify(state)?.content.concat(message.content);
+                        },
+                        false,
+                        'thread/messageChunk'
+                    );
+                }
+            }
+
+            set(
+                (state) => {
+                    state.postMessageInfo.error = false;
+                    state.postMessageInfo.loading = false;
+                },
+                false,
+                'thread/postMessageSuccess'
+            );
+
+            return get().postMessageInfo;
+        } catch (err) {
+            const state = get();
+
+            if (err instanceof Error && err.name === 'AbortError') {
+                state.addAlertMessage(ABORT_ERROR_MESSAGE);
+            } else {
+                state.addAlertMessage(
+                    errorToAlert(
+                        `create-message-${new Date().getTime()}`.toLowerCase(),
+                        'Unable to Submit Message',
+                        err
+                    )
+                );
+            }
+
+            const postMessageInfo = { ...state.postMessageInfo, loading: false, error: true };
+            set(
+                { abortController: null, ongoingThreadId: null, postMessageInfo },
+                false,
+                'thread/postMessageError'
+            );
+            return postMessageInfo;
+        } finally {
+            set(
+                (state) => {
+                    state.abortController = null;
+                    state.ongoingThreadId = null;
+                },
+                false,
+                'thread/postMessageFinally'
+            );
+        }
+    },
+
     postMessage: async (newMsg: MessagePost, parentMsg?: Message) => {
         const state = get();
         const abortController = new AbortController();
+
         set({
             abortController,
             postMessageInfo: { ...state.postMessageInfo, loading: true, error: false },
@@ -263,12 +403,7 @@ export const createThreadSlice: StateCreator<
             const state = get();
 
             if (err instanceof Error && err.name === 'AbortError') {
-                state.addAlertMessage({
-                    id: `abort-message-${new Date().getTime()}`.toLowerCase(),
-                    title: 'Response was aborted',
-                    message: `You stopped OLMo from generating answers to your query`,
-                    severity: AlertMessageSeverity.Warning,
-                });
+                state.addAlertMessage(ABORT_ERROR_MESSAGE);
             } else {
                 state.addAlertMessage(
                     errorToAlert(

@@ -82,6 +82,16 @@ export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'chil
     children?: JSONMessage[];
 }
 
+export const isFirstOrFullMessage = (
+    message: JSONMessage | MessageChunk
+): message is JSONMessage => {
+    return 'id' in message;
+};
+
+export const isMessageChunk = (message: JSONMessage | MessageChunk): message is MessageChunk => {
+    return 'content' in message;
+};
+
 export const parseMessage = (message: JSONMessage): Message => {
     return {
         ...message,
