@@ -37,7 +37,7 @@ export const DocumentMeta = ({ doc }: Props) => {
 const ResultMetadataContainer = styled(Grid)`
     font-size: ${({ theme }) => theme.typography.body1.fontSize};
     word-break: break-word;
-    color: ${({ theme }) => theme.color2.N4.hex};
+    color: ${({ theme }) => theme.color2.N1.hex};
     &&& svg {
         color: ${({ theme }) => theme.color2.N4.hex};
     }

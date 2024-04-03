@@ -7,3 +7,4 @@ skiff.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/api

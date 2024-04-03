@@ -9,6 +9,8 @@ import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
 import { UserSlice, createUserSlice } from './slices/UserSlice';
 import { ModelSlice, createModelSlice } from './slices/ModelSlice';
 import { SchemaSlice, createSchemaSlice } from './slices/SchemaSlice';
+import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
+import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
 
 export type FetchInfo<T> = {
     data?: T;
@@ -23,7 +25,9 @@ type AppContextState = LabelSlice &
     AlertMessageSlice &
     UserSlice &
     ModelSlice &
-    SchemaSlice;
+    SchemaSlice &
+    SearchSlice &
+    MetaSlice;
 
 export const useAppContext = create<AppContextState>()(
     devtools((set, get, store) => ({
@@ -35,5 +39,7 @@ export const useAppContext = create<AppContextState>()(
         ...createUserSlice(set, get, store),
         ...createModelSlice(set, get, store),
         ...createSchemaSlice(set, get, store),
+        ...createSearchSlice(set, get, store),
+        ...createMetaSlice(set, get, store),
     }))
 );

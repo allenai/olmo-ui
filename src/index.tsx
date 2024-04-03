@@ -4,7 +4,7 @@ import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
 import { LinearProgress } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Link, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Link, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import { App } from './App';
@@ -19,6 +19,8 @@ import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
+import { Document } from './pages/Document';
+import { NewApp } from './components/NewApp';
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -64,10 +66,15 @@ const routes = [
                 <App />
             </VarnishedApp>
         ),
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/',
                 element: <Home />,
+            },
+            {
+                path: '/document/:id',
+                element: <Document />,
                 errorElement: <ErrorPage />,
             },
             {
@@ -83,22 +90,18 @@ const routes = [
             {
                 path: '/thread/:id',
                 element: <Thread />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/prompttemplates',
                 element: <PromptTemplates />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/prompt-templates',
                 element: <PromptTemplates />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/admin',
                 element: <Admin />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: '/*',
@@ -112,12 +115,12 @@ const routes = [
     },
 ];
 
-const uiRefreshRoutes = [
+const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
             <VarnishedApp>
-                <App />
+                <NewApp />
             </VarnishedApp>
         ),
         errorElement: <ErrorPage />,
@@ -125,22 +128,52 @@ const uiRefreshRoutes = [
             {
                 path: '/',
                 element: <Home />,
+                handle: {
+                    title: 'Playground',
+                },
+            },
+            {
+                path: '/document/:id',
+                element: <Document />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/dolma',
+                element: <DolmaExplorer />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/search',
+                element: <Search />,
+                errorElement: <ErrorPage />,
             },
             {
                 path: '/thread/:id',
                 element: <Thread />,
+                handle: {
+                    title: 'Playground',
+                },
             },
             {
                 path: '/prompttemplates',
                 element: <PromptTemplates />,
+                handle: {
+                    title: 'Prompt Templates',
+                },
             },
             {
                 path: '/prompt-templates',
                 element: <PromptTemplates />,
+                handle: {
+                    title: 'Prompt Templates',
+                },
             },
             {
                 path: '/admin',
                 element: <Admin />,
+                handle: {
+                    title: 'Admin',
+                },
             },
             {
                 path: '/*',
@@ -149,6 +182,9 @@ const uiRefreshRoutes = [
                         <NotFound />
                     </VarnishedApp>
                 ),
+                handle: {
+                    title: '',
+                },
             },
         ],
     },
