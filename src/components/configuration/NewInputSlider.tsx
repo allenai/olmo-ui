@@ -101,10 +101,14 @@ export const NewInputSlider = ({
             }}
             title={
                 <>
-                    <TooltipContainer>
+                    <Box
+                        sx={{
+                            py: 1,
+                            px: 1.5,
+                        }}>
                         <Typography variant="subtitle2">{dialogTitle}</Typography>
                         <Typography variant="caption">{dialogContent}</Typography>
-                    </TooltipContainer>
+                    </Box>
                     <CloseButton onClick={handleTooltipClose}>Close</CloseButton>
                 </>
             }>
@@ -157,10 +161,6 @@ export const NewInputSlider = ({
 
 const Input = styled(MuiInput)`
     width: 6ch;
-`;
-
-const TooltipContainer = styled(Box)`
-    padding: 10px 12px 10px 12px;
 `;
 
 const CloseButton = styled(Button)`
