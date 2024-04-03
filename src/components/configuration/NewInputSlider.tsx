@@ -105,7 +105,7 @@ export const NewInputSlider = ({
                         <Typography variant="subtitle2">{dialogTitle}</Typography>
                         <Typography variant="caption">{dialogContent}</Typography>
                     </TooltipContainer>
-                    <Button onClick={handleTooltipClose}>Close</Button>
+                    <CloseButton onClick={handleTooltipClose}>Close</CloseButton>
                 </>
             }>
             <Box sx={{ width: '100%' }}>
@@ -161,4 +161,8 @@ const Input = styled(MuiInput)`
 
 const TooltipContainer = styled(Box)`
     padding: 10px 12px 10px 12px;
+`;
+
+const CloseButton = styled(Button)`
+    padding-bottom: 8px;
 `;
