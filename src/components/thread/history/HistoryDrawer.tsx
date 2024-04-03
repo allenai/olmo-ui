@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Divider, IconButton, Stack } from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 
 import { useSearchParams } from 'react-router-dom';
@@ -65,16 +65,19 @@ export const HistoryDrawer = (): JSX.Element => {
         useGroupedThreadHistory();
 
     return (
-        // TODO: Have ResponsiveDrawer change its width when opening/closing
         <ResponsiveDrawer
             onClose={handleDrawerClose}
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
-            desktopHeading={
-                <>
+            heading={
+                <Box sx={{ position: 'sticky', top: 0 }}>
                     <Stack justifyContent="space-between" direction="row" gap={2}>
-                        <NavigationHeading>History</NavigationHeading>
+                        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
+                            <Typography variant="h5" margin={0} color="primary">
+                                History
+                            </Typography>
+                        </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
                             sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
@@ -82,7 +85,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </>
+                </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column">

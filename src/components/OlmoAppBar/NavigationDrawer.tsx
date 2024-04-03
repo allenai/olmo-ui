@@ -45,7 +45,7 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             {...props}
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
-            desktopHeading={<DesktopHeading />}
+            heading={<DesktopHeading />}
             desktopDrawerSx={{ gridArea: 'nav' }}>
             <Stack component="nav" direction="column" justifyContent="space-between" height={1}>
                 <List>

@@ -6,7 +6,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
     mobileHeading?: ReactNode;
-    desktopHeading?: ReactNode;
+    heading?: ReactNode;
 
     drawerBreakpoint?: Breakpoint;
 
@@ -21,7 +21,7 @@ export const ResponsiveDrawer = ({
     open,
     onClose,
     mobileHeading,
-    desktopHeading,
+    heading,
     mobileDrawerSx,
     desktopDrawerSx,
     drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
@@ -45,7 +45,7 @@ export const ResponsiveDrawer = ({
                     display: { xs: 'flex', [drawerBreakpoint]: 'none' },
                     ...mobileDrawerSx,
                 }}>
-                {mobileHeading}
+                {mobileHeading ?? heading}
                 {children}
             </Drawer>
             <Drawer
@@ -68,7 +68,7 @@ export const ResponsiveDrawer = ({
                         borderRight: 'none',
                     },
                 }}>
-                {desktopHeading}
+                {heading}
                 {children}
             </Drawer>
         </>
