@@ -75,7 +75,7 @@ export const NewQueryForm = ({
                 gridTemplateRows="min-content 1fr min-content"
                 sx={{ height: 1 }}>
                 <Grid container item gap={2} justifyContent="space-between">
-                    <ModelSelect disabled={isFormDisabledOrLoading} />
+                    <ModelSelect disabled={isFormDisabledOrLoading} label='Model'/>
                     <TemplateSelect onChange={handlePromptTemplateChange} />
                     {topRightFormControls}
                 </Grid>
