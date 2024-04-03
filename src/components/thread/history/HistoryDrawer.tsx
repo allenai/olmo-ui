@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, Stack } from '@mui/material';
+import { Divider, IconButton, Stack } from '@mui/material';
 import { useEffect } from 'react';
 
 import { useSearchParams } from 'react-router-dom';
@@ -65,23 +65,27 @@ export const HistoryDrawer = (): JSX.Element => {
         useGroupedThreadHistory();
 
     return (
+        // TODO: Have ResponsiveDrawer change its width when opening/closing
         <ResponsiveDrawer
             onClose={handleDrawerClose}
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
             desktopHeading={
-                <Stack justifyContent="space-between" direction="row" gap={2}>
-                    <NavigationHeading>History</NavigationHeading>
-                    <IconButton
-                        onClick={handleDrawerClose}
-                        sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
-                        <CloseIcon />
-                    </IconButton>
-                </Stack>
+                <>
+                    <Stack justifyContent="space-between" direction="row" gap={2}>
+                        <NavigationHeading>History</NavigationHeading>
+                        <IconButton
+                            onClick={handleDrawerClose}
+                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Stack>
+                    <Divider />
+                </>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack component="nav" direction="column">
+            <Stack direction="column">
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
