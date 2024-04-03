@@ -100,15 +100,13 @@ export const NewInputSlider = ({
                 },
             }}
             title={
-                <Grid
-                    container
-                    direction="column"
-                    justifyContent="flex-start"
-                    alignItems="flex-start">
-                    <Typography variant="h6">{dialogTitle}</Typography>
-                    <Typography variant="caption">{dialogContent}</Typography>
+                <>
+                    <TooltipContainer>
+                        <Typography variant="subtitle2">{dialogTitle}</Typography>
+                        <Typography variant="caption">{dialogContent}</Typography>
+                    </TooltipContainer>
                     <Button onClick={handleTooltipClose}>Close</Button>
-                </Grid>
+                </>
             }>
             <Box sx={{ width: '100%' }}>
                 <Stack direction="row" alignItems="center" gap={1}>
@@ -159,4 +157,8 @@ export const NewInputSlider = ({
 
 const Input = styled(MuiInput)`
     width: 6ch;
+`;
+
+const TooltipContainer = styled(Box)`
+    padding: 10px 12px 10px 12px;
 `;

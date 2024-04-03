@@ -120,6 +120,7 @@ export const ParameterButton = () => {
                         <ListItem>
                             <ModelSelect />
                         </ListItem>
+                        <Divider />
                         <ListItem>
                             <NewInputSlider
                                 label="Max New Tokens"
@@ -189,7 +190,7 @@ export const ParameterButton = () => {
                                     )}
                                 />
                                 <Typography variant="caption">
-                                    Hit &quot;Enter&quot; to add a new word.
+                                    Press &quot;Enter&quot; to add a new word.
                                 </Typography>
                             </Box>
                         </ListItem>
