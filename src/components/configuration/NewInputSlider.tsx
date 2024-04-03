@@ -10,7 +10,7 @@ import {
     Grid,
     Typography,
     Slider,
-    Input as MuiInput,
+    Input,
     Stack,
     Tooltip,
     Button,
@@ -158,10 +158,6 @@ export const NewInputSlider = ({
         </Tooltip>
     );
 };
-
-const Input = styled(MuiInput)`
-    width: 6ch;
-`;
 
 const CloseButton = styled(Button)`
     padding-bottom: 8px;
