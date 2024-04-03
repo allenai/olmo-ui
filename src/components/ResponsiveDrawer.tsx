@@ -37,10 +37,14 @@ export const ResponsiveDrawer = ({
                 onClose={onClose}
                 PaperProps={{
                     sx: {
+                        // This is intentionally not following the breakpoint. It looks nicer this way
                         width: { xs: '100vw', sm: 'auto' },
                     },
                 }}
-                sx={{ display: { xs: 'flex', [drawerBreakpoint]: 'none' }, ...mobileDrawerSx }}>
+                sx={{
+                    display: { xs: 'flex', [drawerBreakpoint]: 'none' },
+                    ...mobileDrawerSx,
+                }}>
                 {mobileHeading}
                 {children}
             </Drawer>

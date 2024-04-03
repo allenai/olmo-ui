@@ -11,6 +11,8 @@ import MagnifyingGlassIcon from '@mui/icons-material/Search';
 
 import { logos } from '@allenai/varnish2/components';
 
+import { UIMatch, useMatches } from 'react-router-dom';
+
 import { links } from '../../Links';
 
 import { NavigationFooter } from './NavigationFooter';
@@ -18,11 +20,26 @@ import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
 import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
 
+const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
+    return paths.some((path) => {
+        if (path.length === 1) {
+            return match.pathname === path;
+        }
+
+        return match.pathname.startsWith(path);
+    });
+};
+
 interface NavigationDrawerProps extends Omit<ResponsiveDrawerProps, 'children'> {
     onClose?: () => void;
 }
 
 export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): JSX.Element => {
+    const matches = useMatches();
+    const deepestMatch = matches[matches.length - 1];
+
+    const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
+
     return (
         <ResponsiveDrawer
             {...props}
@@ -33,18 +50,30 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             <Stack component="nav" direction="column" justifyContent="space-between" height={1}>
                 <List>
                     <NavigationHeading>Models</NavigationHeading>
-                    <NavigationLink href={links.playground} icon={<ChatBubbleIcon />}>
+                    <NavigationLink
+                        href={links.playground}
+                        icon={<ChatBubbleIcon />}
+                        selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
                         Playground
                     </NavigationLink>
-                    <NavigationLink href={links.ourModels} icon={<ModelTrainingIcon />}>
+                    <NavigationLink
+                        href={links.ourModels}
+                        icon={<ModelTrainingIcon />}
+                        selected={curriedDoesMatchPath(links.ourModels)}>
                         Our Models
                     </NavigationLink>
                     <Divider />
                     <NavigationHeading>Datasets</NavigationHeading>
-                    <NavigationLink href={links.datasetExplorer} icon={<MagnifyingGlassIcon />}>
+                    <NavigationLink
+                        href={links.datasetExplorer}
+                        icon={<MagnifyingGlassIcon />}
+                        selected={curriedDoesMatchPath(links.datasetExplorer)}>
                         Dataset Explorer
                     </NavigationLink>
-                    <NavigationLink href={links.ourDatasets} icon={<DatasetIcon />}>
+                    <NavigationLink
+                        href={links.ourDatasets}
+                        icon={<DatasetIcon />}
+                        selected={curriedDoesMatchPath(links.ourDatasets)}>
                         Our Datasets
                     </NavigationLink>
                 </List>
