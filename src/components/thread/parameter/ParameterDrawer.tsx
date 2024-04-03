@@ -184,12 +184,14 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                         {...params}
                                         label="Stop Words"
                                         placeholder="Enter Stop Word"
+                                        helperText={
+                                            <Typography variant="caption">
+                                                Press &quot;Enter&quot; to add a new word.
+                                            </Typography>
+                                        }
                                     />
                                 )}
                             />
-                            <Typography variant="caption">
-                                Press &quot;Enter&quot; to add a new word.
-                            </Typography>
                         </Box>
                     </ListItem>
                 </List>
