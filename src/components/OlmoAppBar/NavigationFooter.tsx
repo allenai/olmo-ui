@@ -1,6 +1,8 @@
 import { Link, List, ListItem, ListItemText, Stack } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
+import { links } from '../../Links';
+
 interface NavigationFooterItemProps extends PropsWithChildren {
     href: string;
 }
@@ -15,9 +17,6 @@ const NavigationFooterItem = ({ href, children }: NavigationFooterItemProps): JS
     );
 };
 
-const FeedbackFormUrl =
-    'https://docs.google.com/forms/d/e/1FAIpQLSfmPUnxBss08X8aq7Aiy17YSPhH-OqHzHMIzXg4zsIhAbvqxg/viewform?usp=sf_link' as const;
-
 export const NavigationFooter = (): JSX.Element => {
     return (
         <Stack
@@ -25,11 +24,12 @@ export const NavigationFooter = (): JSX.Element => {
             direction="row"
             flexWrap="wrap"
             gap={2}
-            sx={{ marginBlockStart: 'auto', paddingInline: 2 }}>
-            <NavigationFooterItem href={FeedbackFormUrl}>Give Feedback</NavigationFooterItem>
-            <NavigationFooterItem href="/faqs">FAQs</NavigationFooterItem>
-            <NavigationFooterItem href="/data-policy">Data Policy</NavigationFooterItem>
-            <NavigationFooterItem href="/log-out">Log Out</NavigationFooterItem>
+            paddingInline={2}
+            marginBlockStart="auto">
+            <NavigationFooterItem href={links.feedbackForm}>Give Feedback</NavigationFooterItem>
+            <NavigationFooterItem href={links.faqs}>FAQs</NavigationFooterItem>
+            <NavigationFooterItem href={links.dataPolicy}>Data Policy</NavigationFooterItem>
+            <NavigationFooterItem href={links.logOut}>Log Out</NavigationFooterItem>
         </Stack>
     );
 };

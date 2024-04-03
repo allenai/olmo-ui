@@ -7,6 +7,7 @@ import { DesktopLayoutBreakpoint } from '../constants';
 import { useAppContext } from '../AppContext';
 import { GlobalAlertList } from './GlobalAlertList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
+import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 
 export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -27,7 +28,7 @@ export const NewApp = () => {
     }, []);
 
     return (
-        <OuterContainer elevation={1} square variant="outlined">
+        <OuterContainer square variant="outlined">
             {!isLoading && userInfo.data && schema.data ? (
                 <>
                     <OlmoAppBar />
@@ -37,18 +38,22 @@ export const NewApp = () => {
                         sx={{
                             overflow: 'auto',
 
-                            paddingInline: { xs: 2, [DesktopLayoutBreakpoint]: 0 },
+                            paddingInline: 2,
                             paddingBlockStart: { [DesktopLayoutBreakpoint]: 4 },
+                            // This is to give a little more height to the layout so it's a little easier to see at the end. If we add a footer we can remove this!
+                            paddingBlockEnd: 4,
 
                             height: 1,
 
                             gridArea: 'content',
 
-                            display: 'grid',
-                            gridTemplateColumns: 'subgrid',
-                            gridTemplateRows: 'subgrid',
+                            backgroundColor: (theme) => ({
+                                xs: theme.palette.background.default,
+                                [DesktopLayoutBreakpoint]: 'transparent',
+                            }),
                         }}
                         maxWidth={false}>
+                        <MobilePageTitle />
                         <Outlet />
                     </Container>
                 </>
@@ -70,7 +75,6 @@ const OuterContainer = styled(Paper)`
 
         grid-column-gap: ${({ theme }) => theme.spacing(8)};
     }
-
     height: 100vh;
-    width: 100vw;
+    width: 100%;
 `;

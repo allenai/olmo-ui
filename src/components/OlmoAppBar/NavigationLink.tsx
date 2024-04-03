@@ -1,23 +1,20 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Icon, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 interface NavigationLinkProps extends PropsWithChildren {
     icon: ReactNode;
     href: string;
+    selected?: boolean;
 }
 
-export const NavigationLink = ({ icon, children, href }: NavigationLinkProps) => {
-    const location = useLocation();
-
-    const isCurrentLocation = location.pathname.startsWith(href);
-
+export const NavigationLink = ({ icon, children, href, selected }: NavigationLinkProps) => {
     return (
         <ListItem disableGutters>
             <ListItemButton
                 alignItems="center"
-                selected={isCurrentLocation}
+                selected={selected}
                 sx={{
                     gap: (theme) => theme.spacing(1),
 
@@ -30,8 +27,8 @@ export const NavigationLink = ({ icon, children, href }: NavigationLinkProps) =>
                         },
                     },
                 }}
-                component={Link}
-                href={href}>
+                component={ReactRouterLink}
+                to={href}>
                 <Icon>{icon}</Icon>
                 <ListItemText
                     primaryTypographyProps={{ variant: 'h6', color: 'inherit', sx: { margin: 0 } }}>
