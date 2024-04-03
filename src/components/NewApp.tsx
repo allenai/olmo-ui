@@ -9,6 +9,7 @@ import { GlobalAlertList } from './GlobalAlertList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
+import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 
 export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -60,6 +61,7 @@ export const NewApp = () => {
                 </>
             ) : null}
             <HistoryDrawer />
+            {schema.data && <ParameterDrawer schemaData={schema.data} />}
         </OuterContainer>
     );
 };
