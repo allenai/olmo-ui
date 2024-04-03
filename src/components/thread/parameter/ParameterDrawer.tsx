@@ -45,24 +45,23 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const removeStopWord = useAppContext((state) => state.removeStopWord);
     const getAllModels = useAppContext((state) => state.getAllModels);
-    const handleDrawerClose = () => closeDrawer(PARAMETERS_DRAWER_ID);
-
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
+    const handleDrawerClose = () => closeDrawer(PARAMETERS_DRAWER_ID);
 
     useEffect(() => {
         // on load fetch data
         getAllModels();
     }, []);
 
-    const [stopWordsInput, setStopWordsInput] = useState<string[]>([]);
-
-    const opts = schemaData.Message.InferenceOpts;
-
     useEffect(() => {
         if (inferenceOpts.stop) {
             setStopWordsInput(inferenceOpts.stop);
         }
     }, [inferenceOpts]);
+
+    const [stopWordsInput, setStopWordsInput] = useState<string[]>([]);
+
+    const opts = schemaData.Message.InferenceOpts;
 
     const handleOnChange = (_event: React.SyntheticEvent, value: string[]) => {
         // case when user press x at the corner of the auto complete.
