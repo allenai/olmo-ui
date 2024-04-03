@@ -12,15 +12,15 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CloseIcon from '@mui/icons-material/Close';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useEffect, useState } from 'react';
 
 import { ResponsiveDrawer } from './ResponsiveDrawer';
 import { NavigationHeading } from './OlmoAppBar/NavigationHeading';
-import { ModelSelect } from './NewQuery/ModelSelect';
 import { useAppContext } from '../AppContext';
 import { NewInputSlider } from './configuration/NewInputSlider';
+import { NewModelSelect } from './NewModelSelect';
 
 const MAX_NEW_TOKEN_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
@@ -36,6 +36,7 @@ export const ParameterButton = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const removeStopWord = useAppContext((state) => state.removeStopWord);
     const schema = useAppContext((state) => state.schema);
+    const getAllModels = useAppContext((state) => state.getAllModels);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -54,6 +55,11 @@ export const ParameterButton = () => {
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
+
+    useEffect(() => {
+        // on load fetch data
+        getAllModels();
+    }, []);
 
     useEffect(() => {
         if (inferenceOpts.stop) {
@@ -85,8 +91,8 @@ export const ParameterButton = () => {
                 <NavigationHeading>Parameter</NavigationHeading>
                 <IconButton
                     onClick={handleDrawerClose}
-                    sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
-                    <CloseIcon />
+                    sx={{ verticalAlign: 'middle', display: 'inline-flex', color: 'inherit' }}>
+                    <CloseOutlinedIcon />
                 </IconButton>
             </Stack>
             <Divider />
@@ -97,9 +103,9 @@ export const ParameterButton = () => {
         <>
             <Button
                 component="label"
-                variant="contained"
+                variant="outlined"
                 tabIndex={-1}
-                startIcon={<SettingsIcon />}
+                startIcon={<SettingsOutlinedIcon />}
                 onClick={toggleDrawer}>
                 Parameter
             </Button>
@@ -118,7 +124,7 @@ export const ParameterButton = () => {
                             <InputLabel>Model</InputLabel>
                         </ListItem>
                         <ListItem>
-                            <ModelSelect />
+                            <NewModelSelect />
                         </ListItem>
                         <Divider />
                         <ListItem>
