@@ -97,11 +97,12 @@ const EqualPaddingGrid = styled(Grid)`
         padding-top: ${({ theme }) => theme.spacing(2)};
         padding-bottom: ${({ theme }) => theme.spacing(2)};
         padding-left: 0;
+        color: ${({ theme }) => theme.color2.N1.hex};
     }
 `;
 
 const ResultsContainer = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.color2.N2.hex};
+    border-top: 1px solid ${({ theme }) => theme.color2.N1.hex};
     padding-top: ${({ theme }) => theme.spacing(3.5)};
     padding-bottom: ${({ theme }) => theme.spacing(3.5)};
     word-break: break-word;

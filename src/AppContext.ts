@@ -14,6 +14,7 @@ import {
     createAlertMessageSlice,
     errorToAlert,
 } from './slices/AlertMessageSlice';
+import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
 import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
 import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
 
@@ -47,6 +48,7 @@ type AppContextState = State &
     RepromptSlice &
     ThreadSlice &
     AlertMessageSlice &
+    SearchSlice &
     MetaSlice &
     DrawerSlice;
 
@@ -60,6 +62,7 @@ export const useAppContext = create<AppContextState>()(
         ...createAlertMessageSlice(set, get, store),
         ...createThreadSlice(set, get, store),
         ...createLabelSlice(set, get, store),
+        ...createSearchSlice(set, get, store),
         ...createMetaSlice(set, get, store),
         ...createDrawerSlice(set, get, store),
 

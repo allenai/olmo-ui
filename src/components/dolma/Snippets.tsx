@@ -54,7 +54,7 @@ const PreformattedText = styled.p<{ whiteSpace?: string }>`
     }
     white-space: ${({ whiteSpace }) => whiteSpace || 'initial'};
     font-size: ${({ theme }) => theme.typography.body1.fontSize};
-    color: ${({ theme }) => theme.color2.N5.hex};
+    color: ${({ theme }) => theme.color2.N1.hex};
     margin-top: 0;
 
     &:last-child {
@@ -64,7 +64,7 @@ const PreformattedText = styled.p<{ whiteSpace?: string }>`
 
 const CodeContainer = styled.div`
     border: 1px solid ${({ theme }) => theme.color2.N2.hex};
-    background: ${({ theme }) => theme.color2.N1.hex};
+    background: ${({ theme }) => theme.color2.N4.hex};
     padding: ${({ theme }) => theme.spacing(1)};
 
     &,
