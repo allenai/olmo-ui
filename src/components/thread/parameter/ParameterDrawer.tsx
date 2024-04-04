@@ -17,7 +17,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
@@ -54,14 +54,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
         getAllModels();
     }, []);
 
-    useEffect(() => {
-        if (inferenceOpts.stop) {
-            setStopWordsInput(inferenceOpts.stop);
-        }
-    }, [inferenceOpts]);
-
-    const [stopWordsInput, setStopWordsInput] = useState<string[]>([]);
-
     const opts = schemaData.Message.InferenceOpts;
 
     const handleOnChange = (
@@ -72,23 +64,20 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     ) => {
         switch (reason) {
             case 'removeOption': {
-                const newRemoveStopWord = stopWordsInput.filter(
+                const newRemoveStopWord = inferenceOpts.stop?.filter(
                     (stopWord) => stopWord === details?.option
                 );
-                setStopWordsInput(newRemoveStopWord);
                 updateInferenceOpts({ stop: newRemoveStopWord });
                 break;
             }
 
             case 'clear': {
                 const stop: string[] = [];
-                setStopWordsInput(stop);
                 updateInferenceOpts({ stop });
                 break;
             }
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
-                setStopWordsInput(uniqueStopWords);
                 updateInferenceOpts({ stop: uniqueStopWords });
                 break;
             }
@@ -176,7 +165,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             <Autocomplete
                                 multiple
                                 options={inferenceOpts.stop ?? []}
-                                value={stopWordsInput}
+                                value={inferenceOpts.stop}
                                 freeSolo
                                 onChange={(event, value, reason, details) =>
                                     handleOnChange(event, value, reason, details)
