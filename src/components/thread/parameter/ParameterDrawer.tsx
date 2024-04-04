@@ -25,7 +25,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { NewModelSelect } from '@/components/NewModelSelect';
 import { NewInputSlider } from '@/components/configuration/NewInputSlider';
 import { Schema } from '@/api/Schema';
-import { ParameterSnackBar } from '@/components/ParameterSnackbar';
+import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters' as const;
 
@@ -69,6 +69,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
                 updateInferenceOpts({ stop: uniqueStopWords });
+                setIsParameterChanged(true);
                 break;
             }
         }
@@ -118,7 +119,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             max={opts.max_tokens.max}
                             step={opts.max_tokens.step}
                             initialValue={opts.max_tokens.default}
-                            onChange={(v) => updateInferenceOpts({ max_tokens: v })}
+                            onChange={(v) => {
+                                updateInferenceOpts({ max_tokens: v });
+                                setIsParameterChanged(true);
+                            }}
                             dialogContent={MAX_NEW_TOKEN_INFO}
                             dialogTitle="Max New Tokens"
                         />
@@ -131,7 +135,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             max={opts.temperature.max}
                             step={opts.temperature.step}
                             initialValue={opts.temperature.default}
-                            onChange={(v) => updateInferenceOpts({ temperature: v })}
+                            onChange={(v) => {
+                                updateInferenceOpts({ temperature: v });
+                                setIsParameterChanged(true);
+                            }}
                             dialogContent={TEMPERATURE_INFO}
                             dialogTitle="Temperature"
                         />
@@ -144,7 +151,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             max={opts.top_p.max}
                             step={opts.top_p.step}
                             initialValue={opts.top_p.default}
-                            onChange={(v) => updateInferenceOpts({ top_p: v })}
+                            onChange={(v) => {
+                                updateInferenceOpts({ top_p: v });
+                                setIsParameterChanged(true);
+                            }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
                         />

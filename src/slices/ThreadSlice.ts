@@ -300,7 +300,6 @@ export const createThreadSlice: StateCreator<
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
-            isParameterChanged: true,
         }));
     },
 
