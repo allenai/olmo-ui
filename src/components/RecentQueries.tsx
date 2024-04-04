@@ -85,8 +85,7 @@ export const RecentQueries = () => {
     const count = allThreadInfo.data ? Math.ceil(allThreadInfo.data?.meta.total / size) : 0;
 
     useEffect(() => {
-        const creator =
-            queriesView === QueryToggleOptions.Mine ? userInfo?.data?.client : undefined;
+        const creator = queriesView === QueryToggleOptions.Mine ? userInfo?.client : undefined;
         const offset = (page - 1) * size;
         getAllThreads(offset, creator);
     }, [queriesView, userInfo, page, size]);
@@ -109,7 +108,7 @@ export const RecentQueries = () => {
                                             <ThreadBodyView
                                                 messages={t.children}
                                                 parent={t}
-                                                showFollowUp={userInfo.data?.client === t.creator}
+                                                showFollowUp={userInfo?.client === t.creator}
                                                 disabledActions={postMessageInfo.loading}
                                             />
                                         }

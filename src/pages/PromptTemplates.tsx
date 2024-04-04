@@ -47,7 +47,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     useEffect(() => {
         setFilteredPromptTemplates(
             promptTemplateList.filter((promptTemplate) => {
-                return userInfo.data?.client === promptTemplate.creator || !promptTemplate.deleted;
+                return userInfo?.client === promptTemplate.creator || !promptTemplate.deleted;
             })
         );
     }, [promptTemplateList]);
@@ -107,7 +107,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             sortable: false,
             disableColumnMenu: true,
             renderCell: (params: GridRenderCellParams<PromptTemplate>) => {
-                return userInfo.data?.client === params.row.creator ? (
+                return userInfo?.client === params.row.creator ? (
                     <>
                         {!params.row.deleted ? (
                             <IconButton

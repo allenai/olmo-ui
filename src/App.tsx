@@ -93,7 +93,7 @@ export const App = () => {
                     <CircularProgress sx={{ color: '#fff' }} />
                 </LoadingContainer>
             ) : null}
-            {!isLoading && userInfo.data && schema.data ? (
+            {!isLoading && userInfo !== null && schema !== null ? (
                 <RelativeContainer>
                     <OlmoBanner
                         bannerLogo={
@@ -102,7 +102,7 @@ export const App = () => {
                             </BannerLink>
                         }
                         transparentBackground={true}
-                        endSlot={<HeaderEndSlot client={userInfo.data?.client} />}
+                        endSlot={<HeaderEndSlot client={userInfo.client} />}
                     />
                     <Content main>
                         <GlobalAlertList />
