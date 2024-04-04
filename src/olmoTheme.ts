@@ -1,9 +1,12 @@
-import { Color } from '@allenai/varnish2/theme';
 import varnishTheme from '@allenai/varnish-theme';
+import { Color } from '@allenai/varnish2/theme';
+import { ThemeOptions } from '@mui/material';
+import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
     color2: {
+        // @ts-expect-error
         N7: new Color('Black7', '#333333', undefined, true),
         N8: new Color('Black8', '#282828', undefined, true),
         N9: new Color('Black9', '#262626', undefined, true),
@@ -14,7 +17,7 @@ export const olmoTheme = {
     components: {
         MuiButton: {
             styleOverrides: {
-                root: ({ ownerState }: any) => ({
+                root: ({ ownerState }) => ({
                     ...(ownerState.variant === 'contained' && {
                         backgroundColor: varnishTheme.color.B4.value,
                     }),
@@ -46,7 +49,7 @@ export const olmoTheme = {
         },
         MuiTooltip: {
             styleOverrides: {
-                tooltip: ({ theme }: any) => ({
+                tooltip: ({ theme }) => ({
                     backgroundColor: theme.palette.common.white,
                     color: varnishTheme.color.N5.value,
                     boxShadow: theme.shadows[1],
@@ -55,4 +58,48 @@ export const olmoTheme = {
             },
         },
     },
-};
+} satisfies ThemeOptions;
+
+export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: ({ theme, ownerState }) => ({
+                    // We may be able to get rid of these overrides when we remove old olmo
+                    ...(ownerState.variant === 'contained' && {
+                        backgroundColor: theme.palette.primary.main,
+                    }),
+                    ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
+                        color: theme.palette.primary.main,
+                    }),
+                    '&.Mui-disabled': {
+                        background: 'transparent',
+                        color: varnishTheme.color.N3.value,
+                    },
+                }),
+            },
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: ({ theme }) =>
+                    theme.unstable_sx({
+                        borderRadius: 3,
+                    }),
+            },
+        },
+        MuiListItemButton: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    '&.Mui-selected': {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+
+                        '&:focus-visible,&:hover': {
+                            backgroundColor: theme.palette.primary.dark,
+                        },
+                    },
+                }),
+            },
+        },
+    },
+} satisfies Partial<ThemeOptions>);

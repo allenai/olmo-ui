@@ -2,11 +2,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import { useMatches } from 'react-router-dom';
-
-import { DesktopLayoutBreakpoint } from '../../constants';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 
 import { NavigationDrawer } from './NavigationDrawer';
+import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
@@ -24,7 +23,7 @@ export const OlmoAppBar = (): JSX.Element => {
         <>
             <AppBar
                 position="sticky"
-                color="transparent"
+                color="inherit"
                 enableColorOnDark
                 elevation={0}
                 sx={{
@@ -52,14 +51,14 @@ export const OlmoAppBar = (): JSX.Element => {
                         sx={{
                             color: (theme) => theme.palette.primary.main,
                             margin: 0,
-                            display: { xs: 'none', [DesktopLayoutBreakpoint]: 'block' },
+                            display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
                         }}>
                         {title}
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
                         sx={{
-                            display: { [DesktopLayoutBreakpoint]: 'none' },
+                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                             marginInlineStart: 'auto',
                         }}>
                         <MenuIcon />
@@ -69,21 +68,4 @@ export const OlmoAppBar = (): JSX.Element => {
             <NavigationDrawer open={isDrawerOpen} onClose={handleDrawerClose}></NavigationDrawer>
         </>
     );
-};
-
-interface HandleWithTitle {
-    title: string;
-}
-
-const useRouteTitle = () => {
-    const matches = useMatches();
-    const titles = matches
-        // This is unfortunately the recommended way to handle this typing.
-        // I don't think there's a way to properly type this
-        .filter((match) => Boolean(match.handle) && (match.handle as HandleWithTitle).title != null)
-        .map((match) => (match.handle as HandleWithTitle).title);
-
-    const lowestTitle = titles[titles.length - 1];
-
-    return lowestTitle;
 };

@@ -13,7 +13,7 @@ export const Parameters = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const schema = useAppContext((state) => state.schema);
 
-    if (!schema) {
+    if (schema === null) {
         throw new Error('schema not loaded');
     }
 
