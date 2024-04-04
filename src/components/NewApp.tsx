@@ -31,7 +31,7 @@ export const NewApp = () => {
 
     return (
         <OuterContainer square variant="outlined">
-            {!isLoading && userInfo.data && schema.data ? (
+            {!isLoading && userInfo && schema ? (
                 <>
                     <OlmoAppBar />
                     <GlobalAlertList />
@@ -61,7 +61,7 @@ export const NewApp = () => {
                 </>
             ) : null}
             <HistoryDrawer />
-            {schema.data && <ParameterDrawer schemaData={schema.data} />}
+            {schema && <ParameterDrawer schemaData={schema} />}
         </OuterContainer>
     );
 };
