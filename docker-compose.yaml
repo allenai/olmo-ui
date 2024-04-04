@@ -25,7 +25,7 @@ services:
       - LLMX_API_URL
       - DOLMA_API_URL=/api
       # - ENABLE_MOCKING=true
-      - IS_UI_REFRESH_ENABLED=true
+      # - IS_UI_REFRESH_ENABLED=true
   nginx:
     image: nginx:1.25.1-alpine
     volumes:

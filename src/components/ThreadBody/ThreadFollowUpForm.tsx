@@ -12,9 +12,14 @@ import { useAppContext } from '../../AppContext';
 interface ThreadFollowUpFormProps {
     curMessage: Message;
     disabledActions: boolean;
+    messagePath?: string[];
 }
 
-export const ThreadFollowUpForm = ({ curMessage, disabledActions }: ThreadFollowUpFormProps) => {
+export const ThreadFollowUpForm = ({
+    curMessage,
+    disabledActions,
+    messagePath,
+}: ThreadFollowUpFormProps) => {
     const postMessage = useAppContext((state) => state.postMessage);
     const formContext = useForm({
         defaultValues: {
@@ -29,7 +34,7 @@ export const ThreadFollowUpForm = ({ curMessage, disabledActions }: ThreadFollow
         const payload: MessagePost = {
             content: watchFollowUpMessage || '',
         };
-        const postMessageInfo = await postMessage(payload, parent);
+        const postMessageInfo = await postMessage(payload, parent, false, messagePath);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
             formContext.setValue('followUpMessage', '');
         }

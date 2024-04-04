@@ -18,6 +18,7 @@ interface ThreadBodyProps {
     messages?: Message[];
     showFollowUp?: boolean;
     disabledActions?: boolean;
+    messagePath?: string[];
 }
 
 export const ThreadBodyView = ({
@@ -25,6 +26,7 @@ export const ThreadBodyView = ({
     messages,
     showFollowUp,
     disabledActions = false,
+    messagePath = [],
 }: ThreadBodyProps) => {
     if (!messages) {
         return null;
@@ -46,6 +48,9 @@ export const ThreadBodyView = ({
 
     const branchCount = messages.length;
     const curMessage = messages[curMessageIndex];
+    if (curMessage == null) {
+        return null;
+    }
 
     // see if any loading state is active
     const isLoading = messageLoading;
@@ -122,9 +127,14 @@ export const ThreadBodyView = ({
                         parent={curMessage}
                         showFollowUp={followUpControl}
                         disabledActions={disabledActions}
+                        messagePath={messagePath.concat(curMessage.id)}
                     />
                 ) : followUpControl ? (
-                    <ThreadFollowUpForm curMessage={curMessage} disabledActions={disabledActions} />
+                    <ThreadFollowUpForm
+                        curMessage={curMessage}
+                        disabledActions={disabledActions}
+                        messagePath={messagePath.concat(curMessage.id)}
+                    />
                 ) : null}
             </>
         </BarOnRightContainer>
