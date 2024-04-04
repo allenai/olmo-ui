@@ -173,14 +173,6 @@ export const createThreadSlice: StateCreator<
                     state.allThreadInfo.data.messages.push(selectedThread);
                 }
             });
-
-            set((state) => ({
-                selectedThreadInfo: {
-                    ...state.selectedThreadInfo,
-                    data: selectedThread,
-                    loading: false,
-                },
-            }));
         } catch (err) {
             get().addAlertMessage(
                 errorToAlert(

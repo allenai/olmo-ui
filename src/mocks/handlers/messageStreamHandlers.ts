@@ -14,7 +14,7 @@ const encoder = new TextEncoder();
 export const messageId = 'msg_A8E5H1X2O3';
 
 export const messageStreamHandlers = [
-    http.post(`*/v3/message/stream`, async () => {
+    http.post(`*/v3/message/stream`, () => {
         const stream = new ReadableStream({
             async start(controller) {
                 for (const message of fakeModelMessages) {
