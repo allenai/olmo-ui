@@ -60,22 +60,26 @@ describe('ThreadBodyView', () => {
     test('should send a follow up message', async () => {
         const user = userEvent.setup();
         const { result } = renderHook(() => useAppContext());
+        await result.current.getAllThreads(0);
+        const firstThread = result.current.allThreadInfo.data.messages[0];
 
         render(
             <ThreadBodyView
                 showFollowUp={true}
-                messages={mockThread.messages}
-                parent={mockThread.messages[0]}
+                messages={firstThread.children}
+                parent={firstThread}
             />
         );
         const followUpInput = await screen.findByPlaceholderText('Follow Up');
         await user.type(followUpInput, 'Hello');
         await user.keyboard('{enter}');
+
         await waitFor(() => {
             expect(screen.getByRole('form')).toHaveFormValues({
                 followUpMessage: '',
             });
         });
+
         expect(result.current.postMessageInfo.error).toBeFalsy();
         expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
     });
@@ -83,12 +87,14 @@ describe('ThreadBodyView', () => {
     test('should be able to edit message', async () => {
         const user = userEvent.setup();
         const { result } = renderHook(() => useAppContext());
+        await result.current.getAllThreads(0);
+        const firstThread = result.current.allThreadInfo.data.messages[0];
 
         render(
             <ThreadBodyView
                 showFollowUp={true}
-                messages={mockThread.messages}
-                parent={mockThread.messages[0]}
+                messages={firstThread.children}
+                parent={firstThread}
             />
         );
 

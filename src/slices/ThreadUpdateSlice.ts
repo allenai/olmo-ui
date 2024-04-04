@@ -3,16 +3,13 @@ import {
     InferenceOpts,
     Message,
     MessagePost,
-    isMessageWithMetadata,
     isMessageChunk,
+    isMessageWithMetadata,
     parseMessage,
-    MessageClient,
-    MessageStreamPart,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
 import { errorToAlert } from './AlertMessageSlice';
-import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 
 const ABORT_ERROR_MESSAGE: AlertMessage = {
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
@@ -34,7 +31,6 @@ export interface ThreadUpdateSlice {
         messagePath?: string[]
     ) => Promise<FetchInfo<Message>>;
 }
-const messageClient = new MessageClient();
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
@@ -69,12 +65,17 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         // We pass `state` in here to get the immer-wrapped state
         const branch = (state: ReturnType<typeof get>) => {
             if (messagePath.length > 0) {
-                let message = state.allThreadInfo.data.messages.find(
-                    (message) => message.id === parentMsg?.root
-                );
+                let message: Message | undefined;
 
+                // Traverse the tree using the ids provided until we get to where messagePath pointed us
                 for (const id of messagePath) {
-                    message = message?.children?.find((message) => message.id === id);
+                    if (message == null) {
+                        message = state.allThreadInfo.data.messages.find(
+                            (message) => message.id === id
+                        );
+                    } else {
+                        message = message?.children?.find((message) => message.id === id);
+                    }
                 }
 
                 if (message == null) {
@@ -98,35 +99,24 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         };
 
         try {
-            const resp = await messageClient.sendMessage(
+            const messageChunks = postMessageGenerator(
                 newMsg,
                 state.inferenceOpts,
                 abortController,
                 parentMsg?.id
             );
 
-            const rdr = resp.pipeThrough(new ReadableJSONLStream<MessageStreamPart>()).getReader();
             let firstPart = true;
-            while (true) {
-                const part = await rdr.read();
-                if (part.done) {
-                    break;
-                }
-
-                // A MessageStreamError could be encountered at any point.
-                if ('error' in part.value) {
-                    throw new Error(`streaming response failed: ${part.value.error}`);
-                }
-
+            for await (const message of messageChunks) {
                 // The first chunk should always be a Message capturing the details of the user's
                 // message that was just submitted.
                 if (firstPart) {
-                    if (!isMessageWithMetadata(part.value)) {
+                    if (!isMessageWithMetadata(message)) {
                         throw new Error(
-                            `malformed response, the first part must be a valid message: ${part.value}`
+                            `malformed response, the first part must be a valid message: ${message}`
                         );
                     }
-                    const msg = parseMessage(part.value);
+                    const msg = parseMessage(message);
                     set(
                         (state) => {
                             branch(state).unshift(msg);
@@ -151,10 +141,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 // After receiving the first part we should expect a series of MessageChunks, each of
                 // which constitutes an individual token that's a part of the model's response.
-                if (isMessageChunk(part.value)) {
-                    const chunk = part.value;
+                if (isMessageChunk(message)) {
+                    const chunk = message;
                     set(
                         (state) => {
+                            // We're able to grab the first child of children here because we assume it's being set from the first message processing
                             const reply = (branch(state)[0]?.children ?? [])[0];
                             reply.content += chunk.content;
 
@@ -171,8 +162,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 // Finally we should receive a Message that represents the fully materialized Message with
                 // with the model's response as a child.
-                if (isMessageWithMetadata(part.value)) {
-                    const msg = parseMessage(part.value);
+                if (isMessageWithMetadata(message)) {
+                    const msg = parseMessage(message);
                     set(
                         (state) => {
                             branch(state)[0] = msg;
@@ -200,6 +191,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 false,
                 'threadUpdate/finishPostMessage'
             );
+
             return get().postMessageInfo;
         } catch (err) {
             const state = get();
@@ -225,160 +217,5 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             );
             return postMessageInfo;
         }
-    },
-
-    newPostMessage: async (
-        newMessage: MessagePost,
-        parentMessage?: Message,
-        shouldSetSelectedThread: boolean = false
-    ) => {
-        const abortController = new AbortController();
-        set({
-            abortController,
-            postMessageInfo: { loading: true, error: false },
-        });
-
-        const inferenceOptions = get().inferenceOpts;
-
-        try {
-            const chunks = postMessageGenerator(
-                newMessage,
-                inferenceOptions,
-                abortController,
-                parentMessage?.id
-            );
-
-            if (parentMessage != null && parentMessage?.children == null) {
-                parentMessage.children = [];
-            }
-
-            let currentMessageId: Message['id'] | null = null;
-
-            const getMessageToModify = (state: ReturnType<typeof get>) =>
-                parentMessage != null
-                    ? parentMessage
-                    : state.allThreadInfo.data.messages.find((message) => {
-                          //   return parentMessage?.id != null
-                          //   ? message.id === parentMessage.id
-                          return message.id === currentMessageId;
-                      });
-
-            const getChildToModify = (state: ReturnType<typeof get>) =>
-                // This is a naive implementation that assumes we're always working on the first child of a message
-                // It should be good enough for now but may run into trouble if the API response changes
-                // If we run into problems with this we should consider flattening and normalizing all the messages
-                getMessageToModify(state)?.children?.[0];
-
-            for await (const message of chunks) {
-                if (isMessageWithMetadata(message)) {
-                    const parsedMessage = parseMessage(message);
-
-                    // If current message is null we're on our first entry
-                    // The first entry will always be a Message with the details of the user's message we submitted
-                    if (currentMessageId == null) {
-                        currentMessageId = parsedMessage.id;
-
-                        set(
-                            (state) => {
-                                state.ongoingThreadId = parsedMessage.children?.[0]?.id ?? null;
-                                state.expandedThreadID = parsedMessage.root;
-                                state.allThreadInfo.data?.messages.unshift(parsedMessage);
-
-                                if (shouldSetSelectedThread) {
-                                    state.selectedThreadInfo.data = parsedMessage;
-                                }
-                            },
-                            false,
-                            'threadUpdate/firstMessage'
-                        );
-                    } else {
-                        set(
-                            (state) => {
-                                const messageIndex = state.allThreadInfo.data.messages.findIndex(
-                                    (message) =>
-                                        parentMessage?.id != null
-                                            ? message.id === parentMessage.id
-                                            : message.id === currentMessageId
-                                );
-
-                                // We have to go this roundabout way to change the message because we're assigning to it directly
-                                // If we were editing individual fields on it we could use getMessageToModify
-                                state.allThreadInfo.data.messages[messageIndex] = parsedMessage;
-
-                                if (shouldSetSelectedThread) {
-                                    state.selectedThreadInfo.data = parsedMessage;
-                                }
-                            },
-                            false,
-                            'threadUpdate/fullMessage'
-                        );
-                    }
-                } else if (isMessageChunk(message)) {
-                    // Entries other than the first and last are message chunks
-                    // the chunks contain one token of the model's response
-                    set(
-                        (state) => {
-                            // We're doing null assertions here to make TS happy.
-                            // If the child doesn't exist for some reason we'll throw an error
-                            getChildToModify(state)!.content += message.content;
-
-                            if (shouldSetSelectedThread) {
-                                state.selectedThreadInfo.data!.children![0].content +=
-                                    message.content;
-                            }
-                        },
-                        false,
-                        'threadUpdate/messageChunk'
-                    );
-                }
-            }
-
-            set(
-                (state) => {
-                    state.postMessageInfo.error = false;
-                    state.postMessageInfo.loading = false;
-                    state.postMessageInfo.data = getMessageToModify(state);
-                },
-                false,
-                'threadUpdate/postMessageSuccess'
-            );
-        } catch (err) {
-            const addAlertMessage = get().addAlertMessage;
-
-            if (err instanceof Error && err.name === 'AbortError') {
-                addAlertMessage(ABORT_ERROR_MESSAGE);
-            } else {
-                addAlertMessage(
-                    errorToAlert(
-                        `create-message-${new Date().getTime()}`.toLowerCase(),
-                        'Unable to Submit Message',
-                        err
-                    )
-                );
-            }
-
-            set(
-                (state) => {
-                    state.abortController = null;
-                    state.ongoingThreadId = null;
-
-                    state.postMessageInfo.loading = false;
-                    state.postMessageInfo.error = true;
-                },
-                false,
-                'threadUpdate/postMessageError'
-            );
-        } finally {
-            set(
-                (state) => {
-                    state.abortController = null;
-                    state.ongoingThreadId = null;
-                },
-                false,
-                'threadUpdate/postMessageFinally'
-            );
-        }
-
-        return get().postMessageInfo;
     },
 });

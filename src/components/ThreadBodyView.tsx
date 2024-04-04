@@ -26,11 +26,8 @@ export const ThreadBodyView = ({
     messages,
     showFollowUp,
     disabledActions = false,
-    messagePath = [],
+    messagePath = parent?.id != null ? [parent.id] : [],
 }: ThreadBodyProps) => {
-    if (!messages) {
-        return null;
-    }
     const postLabel = useAppContext((state) => state.postLabel);
     let followUpControl = showFollowUp;
 
@@ -41,6 +38,10 @@ export const ThreadBodyView = ({
     const [branchMenuAnchorEl, setBranchMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [contextMenuAnchorEl, setContextMenuAnchorEl] = useState<null | HTMLElement>(null);
 
+    if (messages == null || messages.length === 0) {
+        return null;
+    }
+
     const handleBranchMenuSelect = (index: number) => {
         setCurMessageIndex(index);
         setBranchMenuAnchorEl(null);
@@ -48,9 +49,6 @@ export const ThreadBodyView = ({
 
     const branchCount = messages.length;
     const curMessage = messages[curMessageIndex];
-    if (curMessage == null) {
-        return null;
-    }
 
     // see if any loading state is active
     const isLoading = messageLoading;
