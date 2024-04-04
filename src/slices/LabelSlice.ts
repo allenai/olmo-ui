@@ -13,6 +13,7 @@ import {
 } from '../api/Label';
 import { Message } from '../api/Message';
 import { RemoteState } from '../contexts/util';
+import { OlmoStateCreator } from '@/AppContext';
 
 export interface LabelSlice {
     labelRemoteState?: RemoteState;
@@ -29,10 +30,7 @@ export interface LabelSlice {
 const labelClient = new LabelClient();
 const labelsClient = new LabelsClient();
 
-export const createLabelSlice: StateCreator<LabelSlice & AlertMessageSlice, [], [], LabelSlice> = (
-    set,
-    get
-) => ({
+export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     labelRemoteState: undefined,
     allLabelsRemoteState: undefined,
     label: null,

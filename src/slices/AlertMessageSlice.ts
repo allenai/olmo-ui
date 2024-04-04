@@ -1,5 +1,4 @@
-import { StateCreator } from 'zustand';
-
+import { OlmoStateCreator } from '@/AppContext';
 import { AlertMessage, AlertMessageSeverity } from '../components/GlobalAlertList';
 
 export interface AlertMessageSlice {
@@ -13,7 +12,7 @@ export function errorToAlert(id: string, title: string, error: any): AlertMessag
     return { id, title, message, severity: AlertMessageSeverity.Error };
 }
 
-export const createAlertMessageSlice: StateCreator<AlertMessageSlice> = (set) => ({
+export const createAlertMessageSlice: OlmoStateCreator<AlertMessageSlice> = (set) => ({
     alertMessages: [],
     // adds a message to the list of messages to show.
     // we show all messages not dismissed by the user until a new page load.
