@@ -1,19 +1,15 @@
 import {
     InferenceOpts,
-    JSONMessage,
     Message,
-    MessageChunk,
     MessageClient,
     MessagePost,
-    MessageStreamError,
+    MessageStreamPart,
     isFirstOrFullMessage,
-    parseMessage,
+    isMessageStreamError,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
 
 const messageClient = new MessageClient();
-
-type Chunk = JSONMessage | MessageChunk | MessageStreamError;
 
 export const postMessageGenerator = async function* (
     newMessage: MessagePost,
@@ -28,7 +24,7 @@ export const postMessageGenerator = async function* (
         parentMessageId
     );
 
-    const rdr = resp.pipeThrough(new ReadableJSONLStream<Chunk>()).getReader();
+    const rdr = resp.pipeThrough(new ReadableJSONLStream<MessageStreamPart>()).getReader();
     let firstPart = true;
     while (true) {
         const part = await rdr.read();
@@ -38,10 +34,12 @@ export const postMessageGenerator = async function* (
         }
 
         // A MessageStreamError could be encountered at any point.
-        if ('error' in part.value) {
+        if (isMessageStreamError(part.value)) {
             throw new Error(`streaming response failed: ${part.value.error}`);
         }
 
+        // The first part should always be a full response
+        // If it's not, something has gone wrong and we want to exit quickly
         if (firstPart && !isFirstOrFullMessage(part.value)) {
             throw new Error(
                 `malformed response, the first part must be a valid message: ${part.value}`
