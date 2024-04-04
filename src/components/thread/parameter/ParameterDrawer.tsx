@@ -25,6 +25,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { NewModelSelect } from '@/components/NewModelSelect';
 import { NewInputSlider } from '@/components/configuration/NewInputSlider';
 import { Schema } from '@/api/Schema';
+import { ParameterSnackBar } from '@/components/ParameterSnackbar';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters' as const;
 
@@ -46,7 +47,11 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const handleDrawerClose = () => closeDrawer(PARAMETERS_DRAWER_ID);
+    const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
+    const handleDrawerClose = () => {
+        setIsParameterChanged(false);
+        closeDrawer(PARAMETERS_DRAWER_ID);
+    };
 
     useEffect(() => {
         // on load fetch data
@@ -179,6 +184,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                 </List>
             </Stack>
+            <ParameterSnackBar />
         </ResponsiveDrawer>
     );
 };

@@ -29,6 +29,7 @@ export interface ThreadSlice {
     postMessageInfo: FetchInfo<Message>;
     expandedThreadID?: string;
     selectedModel: string;
+    isParameterChanged: boolean;
     getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
     getSelectedThread: (threadId: string) => Promise<FetchInfo<Message>>;
@@ -36,6 +37,7 @@ export interface ThreadSlice {
     setExpandedThreadID: (id: string | undefined) => void;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     setSelectedModel: (selectedModel: string) => void;
+    setIsParameterChanged: (isParameterChange: boolean) => void;
 }
 
 const messageClient = new MessageClient();
@@ -54,6 +56,7 @@ export const createThreadSlice: StateCreator<
     selectedThreadInfo: {},
     postMessageInfo: {},
     selectedModel: '',
+    isParameterChanged: false,
     getAllThreads: async (offset: number = 0, creator?: string) => {
         try {
             set((state) => ({
@@ -297,8 +300,12 @@ export const createThreadSlice: StateCreator<
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
+            isParameterChanged: true,
         }));
     },
 
     setSelectedModel: (model: string) => set({ selectedModel: model }),
+
+    setIsParameterChanged: (parameterChanged: boolean) =>
+        set({ isParameterChanged: parameterChanged }),
 });

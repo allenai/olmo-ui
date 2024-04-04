@@ -12,6 +12,7 @@ export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
     const models = useAppContext((state) => state.models);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
+    const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
 
     useEffect(() => {
         if (models.length !== 0) {
@@ -21,6 +22,7 @@ export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
 
     const handleOnChange = (event: SelectChangeEvent) => {
         setSelectedModel(event.target.value as string);
+        setIsParameterChanged(true);
     };
 
     return (
