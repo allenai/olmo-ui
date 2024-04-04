@@ -1,6 +1,6 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAppContext } from '../AppContext';
 
@@ -10,14 +10,16 @@ interface ModelSelectProps {
 
 export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
     const models = useAppContext((state) => state.modelInfo.data);
+    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const [selectedModelId, setSelectedModelId] = useState('');
-    useMemo(() => {
+    useEffect(() => {
         if (models) {
             setSelectedModelId(models[0].id);
         }
     }, [models]);
 
     const handleOnChange = (event: SelectChangeEvent) => {
+        updateInferenceOpts({ model: event.target.value as string });
         setSelectedModelId(event.target.value as string);
     };
 

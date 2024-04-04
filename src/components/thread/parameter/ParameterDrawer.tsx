@@ -2,6 +2,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import {
     Autocomplete,
+    AutocompleteChangeDetails,
+    AutocompleteChangeReason,
     Box,
     Chip,
     Divider,
@@ -43,7 +45,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const inferenceOpts = useAppContext((state) => state.inferenceOpts);
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-    const removeStopWord = useAppContext((state) => state.removeStopWord);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const handleDrawerClose = () => closeDrawer(PARAMETERS_DRAWER_ID);
@@ -63,22 +64,35 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
 
     const opts = schemaData.Message.InferenceOpts;
 
-    const handleOnChange = (_event: React.SyntheticEvent, value: string[]) => {
-        // case when user press x at the corner of the auto complete.
-        // this is to wipe value user typed.
-        if (value.length === 0) {
-            const stop: string[] = [];
-            setStopWordsInput(stop);
-            updateInferenceOpts({ stop });
-            return;
+    const handleOnChange = (
+        _event: React.SyntheticEvent,
+        value: string[],
+        reason: AutocompleteChangeReason,
+        details: AutocompleteChangeDetails | undefined
+    ) => {
+        switch (reason) {
+            case 'removeOption': {
+                const newRemoveStopWord = stopWordsInput.filter(
+                    (stopWord) => stopWord === details?.option
+                );
+                setStopWordsInput(newRemoveStopWord);
+                updateInferenceOpts({ stop: newRemoveStopWord });
+                break;
+            }
+
+            case 'clear': {
+                const stop: string[] = [];
+                setStopWordsInput(stop);
+                updateInferenceOpts({ stop });
+                break;
+            }
+            default: {
+                const uniqueStopWords = Array.from(new Set(value).values());
+                setStopWordsInput(uniqueStopWords);
+                updateInferenceOpts({ stop: uniqueStopWords });
+                break;
+            }
         }
-        const current = inferenceOpts.stop ?? [];
-        const unique = new Set(current);
-        const stop = unique.has(value[value.length - 1])
-            ? current
-            : [...current, value[value.length - 1]];
-        setStopWordsInput(stop);
-        updateInferenceOpts({ stop });
     };
 
     return (
@@ -164,7 +178,9 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                 options={inferenceOpts.stop ?? []}
                                 value={stopWordsInput}
                                 freeSolo
-                                onChange={(event, value) => handleOnChange(event, value)}
+                                onChange={(event, value, reason, details) =>
+                                    handleOnChange(event, value, reason, details)
+                                }
                                 renderTags={(stopWords: readonly string[], getTagProps) =>
                                     stopWords.map((option: string, index: number) => (
                                         // getTagProps already included a key but eslint doesnt know about it.
@@ -172,9 +188,9 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                         <Chip
                                             label={option}
                                             {...getTagProps({ index })}
-                                            onDelete={() => {
-                                                removeStopWord(index);
-                                            }}
+                                            // onDelete={() => {
+                                            //     removeStopWord(index);
+                                            // }}
                                         />
                                     ))
                                 }

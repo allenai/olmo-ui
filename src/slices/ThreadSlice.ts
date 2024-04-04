@@ -34,7 +34,6 @@ export interface ThreadSlice {
     postMessage: (newMsg: MessagePost, parentMsg?: Message) => Promise<FetchInfo<Message>>;
     setExpandedThreadID: (id: string | undefined) => void;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
-    removeStopWord: (index: number) => void;
 }
 
 const messageClient = new MessageClient();
@@ -295,10 +294,5 @@ export const createThreadSlice: StateCreator<
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
         }));
-    },
-    removeStopWord: (index: number) => {
-        const current = get().inferenceOpts.stop ?? [];
-        const stop = current.slice(0, index).concat(current.slice(index + 1));
-        get().updateInferenceOpts({ stop });
     },
 });
