@@ -84,7 +84,7 @@ export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'chil
 
 export type MessageStreamPart = JSONMessage | MessageChunk | MessageStreamError;
 
-export const isFirstOrFullMessage = (message: MessageStreamPart): message is JSONMessage => {
+export const isMessageWithMetadata = (message: MessageStreamPart): message is JSONMessage => {
     return 'id' in message;
 };
 

@@ -3,7 +3,7 @@ import {
     InferenceOpts,
     Message,
     MessagePost,
-    isFirstOrFullMessage,
+    isMessageWithMetadata,
     isMessageChunk,
     parseMessage,
 } from '@/api/Message';
@@ -22,13 +22,13 @@ export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     ongoingThreadId: string | null;
     inferenceOpts: InferenceOpts;
+    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     postMessageInfo: FetchInfo<Message>;
     postMessage: (
         newMessage: MessagePost,
         parentMessage?: Message,
         shouldSetSelectedThread?: boolean
     ) => Promise<FetchInfo<Message>>;
-    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
@@ -36,6 +36,12 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     ongoingThreadId: null,
     inferenceOpts: {},
     postMessageInfo: {},
+
+    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
+        set((state) => ({
+            inferenceOpts: { ...state.inferenceOpts, ...newOptions },
+        }));
+    },
 
     postMessage: async (
         newMessage: MessagePost,
@@ -68,10 +74,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 });
 
             const getChildToModify = (state: ReturnType<typeof get>) =>
+                // This is a naive implementation that assumes we're always working on the first child of a message
+                // It should be good enough for now but may run into trouble if the API response changes
+                // If we run into problems with this we should consider flattening and normalizing all the messages
                 getMessageToModify(state)?.children?.[0];
 
             for await (const message of chunks) {
-                if (isFirstOrFullMessage(message)) {
+                if (isMessageWithMetadata(message)) {
                     const parsedMessage = parseMessage(message);
 
                     // If current message is null we're on our first entry
@@ -102,6 +111,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                                             : message.id === currentMessageId
                                 );
 
+                                // We have to go this roundabout way to change the message because we're assigning to it directly
+                                // If we were editing individual fields on it we could use getMessageToModify
                                 state.allThreadInfo.data.messages[messageIndex] = parsedMessage;
 
                                 if (shouldSetSelectedThread) {
@@ -117,6 +128,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     // the chunks contain one token of the model's response
                     set(
                         (state) => {
+                            // We're doing null assertions here to make TS happy.
+                            // If the child doesn't exist for some reason we'll throw an error
                             getChildToModify(state)!.content += message.content;
 
                             if (shouldSetSelectedThread) {
@@ -177,11 +190,5 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         }
 
         return get().postMessageInfo;
-    },
-
-    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
-        set((state) => ({
-            inferenceOpts: { ...state.inferenceOpts, ...newOptions },
-        }));
     },
 });

@@ -4,7 +4,7 @@ import {
     MessageClient,
     MessagePost,
     MessageStreamPart,
-    isFirstOrFullMessage,
+    isMessageWithMetadata,
     isMessageStreamError,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
@@ -40,7 +40,7 @@ export const postMessageGenerator = async function* (
 
         // The first part should always be a full response
         // If it's not, something has gone wrong and we want to exit quickly
-        if (firstPart && !isFirstOrFullMessage(part.value)) {
+        if (firstPart && !isMessageWithMetadata(part.value)) {
             throw new Error(
                 `malformed response, the first part must be a valid message: ${part.value}`
             );
