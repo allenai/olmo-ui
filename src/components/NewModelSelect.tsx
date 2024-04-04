@@ -1,6 +1,6 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useAppContext } from '../AppContext';
 
@@ -9,25 +9,25 @@ interface ModelSelectProps {
 }
 
 export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
-    const models = useAppContext((state) => state.modelInfo.data);
-    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-    const [selectedModelId, setSelectedModelId] = useState('');
+    const models = useAppContext((state) => state.models);
+    const selectedModel = useAppContext((state) => state.selectedModel);
+    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
+
     useEffect(() => {
         if (models) {
-            setSelectedModelId(models[0].id);
+            setSelectedModel(models[0].id);
         }
     }, [models]);
 
     const handleOnChange = (event: SelectChangeEvent) => {
-        updateInferenceOpts({ model: event.target.value as string });
-        setSelectedModelId(event.target.value as string);
+        setSelectedModel(event.target.value as string);
     };
 
     return (
         <Select
             name="model"
             disabled={disabled}
-            value={selectedModelId}
+            value={selectedModel}
             // this keeps the label a the top. it makes it look nicer since the models and templates can arrive at separate times
             sx={{
                 flex: '1 1 auto',

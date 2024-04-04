@@ -25,7 +25,7 @@ const useGroupedThreadHistory = (): {
     const page = Number(pageParams.get('page') ?? '1');
 
     useEffect(() => {
-        const creator = userInfo?.data?.client;
+        const creator = userInfo?.client;
         const offset = (page - 1) * DefaultPageSize;
         getAllThreads(offset, creator);
     }, [userInfo, page]);

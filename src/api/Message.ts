@@ -67,7 +67,6 @@ export interface InferenceOpts {
     top_p?: number;
     logprobs?: number;
     stop?: string[];
-    model?: string;
 }
 
 export interface Logprob {
