@@ -113,22 +113,25 @@ export const NewInputSlider = ({
                 </>
             }>
             <Box sx={{ width: '100%' }}>
-                <Stack direction="row" alignItems="center" gap={1}>
-                    <Typography id="input-slider" gutterBottom>
-                        {label}
-                    </Typography>
-                    {dialogContent && dialogTitle && (
-                        <IconButton
-                            sx={{ color: 'inherit' }}
-                            onClick={() => {
-                                handleTooltipOpen();
-                            }}>
-                            <InfoOutlinedIcon />
-                        </IconButton>
-                    )}
-                </Stack>
+                <Stack direction="row" alignItems="center" gap={1}></Stack>
                 <Grid container spacing={2} alignItems="center">
-                    <Grid item xs>
+                    <Grid item>
+                        <Typography id="input-slider" gutterBottom>
+                            {label}
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        {dialogContent && dialogTitle && (
+                            <IconButton
+                                sx={{ color: 'inherit' }}
+                                onClick={() => {
+                                    handleTooltipOpen();
+                                }}>
+                                <InfoOutlinedIcon />
+                            </IconButton>
+                        )}
+                    </Grid>
+                    <Grid item xs={8}>
                         <Slider
                             value={value}
                             onChange={handleSliderChange}
@@ -138,7 +141,7 @@ export const NewInputSlider = ({
                             max={max}
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={4}>
                         <Input
                             value={value}
                             size="small"
