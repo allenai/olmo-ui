@@ -185,13 +185,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                     stopWords.map((option: string, index: number) => (
                                         // getTagProps already included a key but eslint doesnt know about it.
                                         // eslint-disable-next-line react/jsx-key
-                                        <Chip
-                                            label={option}
-                                            {...getTagProps({ index })}
-                                            // onDelete={() => {
-                                            //     removeStopWord(index);
-                                            // }}
-                                        />
+                                        <Chip label={option} {...getTagProps({ index })} />
                                     ))
                                 }
                                 renderInput={(params) => (
