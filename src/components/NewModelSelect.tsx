@@ -14,7 +14,7 @@ export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
 
     useEffect(() => {
-        if (models) {
+        if (models.length !== 0) {
             setSelectedModel(models[0].id);
         }
     }, [models]);

@@ -2,7 +2,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import {
     Autocomplete,
-    AutocompleteChangeDetails,
     AutocompleteChangeReason,
     Box,
     Chip,
@@ -59,23 +58,9 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const handleOnChange = (
         _event: React.SyntheticEvent,
         value: string[],
-        reason: AutocompleteChangeReason,
-        details: AutocompleteChangeDetails | undefined
+        reason: AutocompleteChangeReason
     ) => {
         switch (reason) {
-            case 'removeOption': {
-                const newRemoveStopWord = inferenceOpts.stop?.filter(
-                    (stopWord) => stopWord === details?.option
-                );
-                updateInferenceOpts({ stop: newRemoveStopWord });
-                break;
-            }
-
-            case 'clear': {
-                const stop: string[] = [];
-                updateInferenceOpts({ stop });
-                break;
-            }
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
                 updateInferenceOpts({ stop: uniqueStopWords });
@@ -167,8 +152,8 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                 options={inferenceOpts.stop ?? []}
                                 value={inferenceOpts.stop}
                                 freeSolo
-                                onChange={(event, value, reason, details) =>
-                                    handleOnChange(event, value, reason, details)
+                                onChange={(event, value, reason) =>
+                                    handleOnChange(event, value, reason)
                                 }
                                 renderTags={(stopWords: readonly string[], getTagProps) =>
                                     stopWords.map((option: string, index: number) => (
