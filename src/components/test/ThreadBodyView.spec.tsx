@@ -95,10 +95,16 @@ describe('ThreadBodyView', () => {
         fireEvent.mouseEnter(screen.getAllByLabelText('LLM Response')[0]);
         await user.click(screen.getAllByLabelText('More Options')[0]);
         await user.click(screen.getByText('Edit'));
-        const editInput = await screen.getByLabelText('Edit Prompt');
+
+        const editInput = screen.getByLabelText('Edit Prompt');
         await user.type(editInput, 'Hello');
         await user.click(screen.getByLabelText('Finish editing LLM response'));
-        expect(result.current.postMessageInfo.error).toBeFalsy();
+
+        await waitFor(() => {
+            expect(result.current.postMessageInfo.loading).toEqual(false);
+        });
+
         expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
+        expect(result.current.postMessageInfo.error).toBeFalsy();
     });
 });
