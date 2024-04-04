@@ -59,7 +59,7 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
         }
     });
 
-    const currentClient = userInfo.data?.client;
+    const currentClient = userInfo?.client;
 
     return (
         <div>
