@@ -14,7 +14,7 @@ import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 
 export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
-    const postMessage = useAppContext((state) => state.newPostMessage);
+    const postMessage = useAppContext((state) => state.postMessage);
     const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
 
     const handlePromptSubmission = (data: { content: string }) => {

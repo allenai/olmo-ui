@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { StateCreator, create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
@@ -18,6 +18,7 @@ import {
 import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
 import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
 import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
+import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 
 const userClient = new UserClient();
 const modelClient = new ModelClient();
@@ -51,9 +52,16 @@ type AppContextState = State &
     AlertMessageSlice &
     SearchSlice &
     MetaSlice &
-    DrawerSlice;
+    DrawerSlice &
+    ThreadUpdateSlice;
 
 export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
+export type OlmoStateCreator<TOwnSlice> = StateCreator<
+    AppContextState,
+    ZustandDevtools,
+    [],
+    TOwnSlice
+>;
 
 export const useAppContext = create<AppContextState>()(
     immer(
@@ -69,6 +77,7 @@ export const useAppContext = create<AppContextState>()(
             ...createSearchSlice(set, get, store),
             ...createMetaSlice(set, get, store),
             ...createDrawerSlice(set, get, store),
+            ...createThreadUpdateSlice(set, get, store),
 
             getUserInfo: async () => {
                 try {
