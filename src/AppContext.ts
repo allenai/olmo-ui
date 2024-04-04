@@ -11,6 +11,7 @@ import { ModelSlice, createModelSlice } from './slices/ModelSlice';
 import { SchemaSlice, createSchemaSlice } from './slices/SchemaSlice';
 import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
 import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
+import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
 
 export type FetchInfo<T> = {
     data?: T;
@@ -27,7 +28,8 @@ type AppContextState = LabelSlice &
     ModelSlice &
     SchemaSlice &
     SearchSlice &
-    MetaSlice;
+    MetaSlice &
+    DrawerSlice;
 
 export const useAppContext = create<AppContextState>()(
     devtools((set, get, store) => ({
@@ -41,5 +43,6 @@ export const useAppContext = create<AppContextState>()(
         ...createSchemaSlice(set, get, store),
         ...createSearchSlice(set, get, store),
         ...createMetaSlice(set, get, store),
+        ...createDrawerSlice(set, get, store),
     }))
 );

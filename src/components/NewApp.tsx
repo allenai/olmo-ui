@@ -2,12 +2,13 @@ import { Container, Paper, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { DesktopLayoutBreakpoint } from '../constants';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 
 import { useAppContext } from '../AppContext';
 import { GlobalAlertList } from './GlobalAlertList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
+import { HistoryDrawer } from './thread/history/HistoryDrawer';
 
 export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -39,7 +40,7 @@ export const NewApp = () => {
                             overflow: 'auto',
 
                             paddingInline: 2,
-                            paddingBlockStart: { [DesktopLayoutBreakpoint]: 4 },
+                            paddingBlockStart: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
                             // This is to give a little more height to the layout so it's a little easier to see at the end. If we add a footer we can remove this!
                             paddingBlockEnd: 4,
 
@@ -49,7 +50,7 @@ export const NewApp = () => {
 
                             backgroundColor: (theme) => ({
                                 xs: theme.palette.background.default,
-                                [DesktopLayoutBreakpoint]: 'transparent',
+                                [DESKTOP_LAYOUT_BREAKPOINT]: 'transparent',
                             }),
                         }}
                         maxWidth={false}>
@@ -58,12 +59,13 @@ export const NewApp = () => {
                     </Container>
                 </>
             ) : null}
+            <HistoryDrawer />
         </OuterContainer>
     );
 };
 
 const OuterContainer = styled(Paper)`
-    ${({ theme }) => theme.breakpoints.up(DesktopLayoutBreakpoint)} {
+    ${({ theme }) => theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)} {
         display: grid;
 
         grid-template-areas:

@@ -1,14 +1,14 @@
 import { Card, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { DesktopLayoutBreakpoint } from '@/constants';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 
 interface ThreadPageCardProps extends PropsWithChildren {}
 
 export const ThreadCard = ({ children }: ThreadPageCardProps): JSX.Element => {
     const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DesktopLayoutBreakpoint));
+    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 
     return (
         <Card
