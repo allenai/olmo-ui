@@ -50,7 +50,7 @@ export const NewApp = () => {
                             gridArea: 'content',
 
                             backgroundColor: (theme) => ({
-                                xs: theme.palette.background.default,
+                                xs: theme.palette.background.paper,
                                 [DESKTOP_LAYOUT_BREAKPOINT]: 'transparent',
                             }),
                         }}

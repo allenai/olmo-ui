@@ -20,11 +20,6 @@ export const SearchContainer = styled(Box)`
     }
 `;
 
-export const PartialWidthTextField = styled(TextField)`
-    width: 85%;
-    background-color: white;
-`;
-
 export const NoPaddingContainer = styled(Container)`
     &&& {
         padding: 0;

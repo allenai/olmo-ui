@@ -51,7 +51,7 @@ export const olmoTheme = {
             styleOverrides: {
                 tooltip: ({ theme }) => ({
                     backgroundColor: theme.palette.common.white,
-                    color: varnishTheme.color.N5.value,
+                    color: theme.palette.text.primary,
                     boxShadow: theme.shadows[1],
                     fontSize: 12,
                 }),
@@ -72,10 +72,6 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                     ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
                         color: theme.palette.primary.main,
                     }),
-                    '&.Mui-disabled': {
-                        background: 'transparent',
-                        color: varnishTheme.color.N3.value,
-                    },
                 }),
             },
         },
