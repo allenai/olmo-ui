@@ -9,7 +9,9 @@ export const ParameterSnackBar = () => {
     const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
 
     const handleClose = (_event: React.SyntheticEvent | Event) => {
-        setIsParameterChanged(false);
+        setTimeout(() => {
+            setIsParameterChanged(false);
+        }, 60000)
     };
 
     return (
