@@ -22,7 +22,7 @@ import { Thread } from './pages/Thread';
 import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
 import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
-import { ThreadDisplay } from './components/thread/ThreadDisplay';
+import { ThreadDisplay, selectedThreadLoader } from './components/thread/ThreadDisplay';
 import { links } from './Links';
 
 const GlobalStyle = createGlobalStyle`
@@ -151,6 +151,7 @@ const uiRefreshRoutes: RouteObject[] = [
                         handle: {
                             title: 'Playground',
                         },
+                        loader: selectedThreadLoader,
                     },
                 ],
                 handle: {
@@ -160,7 +161,6 @@ const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.document(':id'),
                 element: <Document />,
-                errorElement: <ErrorPage />,
                 handle: {
                     title: 'Document',
                 },
@@ -168,7 +168,6 @@ const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.datasetExplorer,
                 element: <DolmaExplorer />,
-                errorElement: <ErrorPage />,
                 handle: {
                     title: 'Dataset Explorer',
                 },
@@ -176,7 +175,6 @@ const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.search,
                 element: <Search />,
-                errorElement: <ErrorPage />,
                 handle: {
                     title: 'Search Datasets',
                 },

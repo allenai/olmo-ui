@@ -26,7 +26,7 @@ export interface ThreadUpdateSlice {
     postMessageInfo: FetchInfo<Message>;
     postMessage: (
         newMessage: MessagePost,
-        parentMessage?: Message,
+        parentMessage?: Pick<Message, 'id' | 'children'>,
         shouldSetSelectedThread?: boolean,
         messagePath?: string[]
     ) => Promise<FetchInfo<Message>>;
@@ -46,7 +46,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
     postMessage: async (
         newMsg: MessagePost,
-        parentMsg?: Message,
+        parentMsg?: Pick<Message, 'id' | 'children'>,
         shouldSetSelectedThread: boolean = false,
         messagePath: string[] = []
     ) => {
@@ -67,6 +67,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             if (messagePath.length > 0) {
                 let message: Message | undefined;
 
+                // TODO: This CAN get perf-heavy. If perf becomes an issue, look into normalizing the threads and updating through an object access instead of traversing every level of messages
+                // For reference about how a normalized store looks/functions, see this redux doc: https://redux.js.org/usage/structuring-reducers/normalizing-state-shape
                 // Traverse the tree using the ids provided until we get to where messagePath pointed us
                 for (const id of messagePath) {
                     if (message == null) {

@@ -1,4 +1,5 @@
-import { StateCreator, create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
+import { StateCreator, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
@@ -9,6 +10,7 @@ import { User, UserClient, WhoamiApiUrl } from './api/User';
 import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
+import { SelectedThreadSlice, createSelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
 import {
     AlertMessageSlice,
@@ -53,7 +55,8 @@ type AppContextState = State &
     SearchSlice &
     MetaSlice &
     DrawerSlice &
-    ThreadUpdateSlice;
+    ThreadUpdateSlice &
+    SelectedThreadSlice;
 
 export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
 export type OlmoStateCreator<TOwnSlice> = StateCreator<
@@ -63,7 +66,7 @@ export type OlmoStateCreator<TOwnSlice> = StateCreator<
     TOwnSlice
 >;
 
-export const useAppContext = create<AppContextState>()(
+export const appContext = createStore<AppContextState>()(
     immer(
         devtools((set, get, store) => ({
             userInfo: {},
@@ -78,6 +81,7 @@ export const useAppContext = create<AppContextState>()(
             ...createMetaSlice(set, get, store),
             ...createDrawerSlice(set, get, store),
             ...createThreadUpdateSlice(set, get, store),
+            ...createSelectedThreadSlice(set, get, store),
 
             getUserInfo: async () => {
                 try {
@@ -148,3 +152,7 @@ export const useAppContext = create<AppContextState>()(
         }))
     )
 );
+
+export const useAppContext = <U>(
+    selector: Parameters<typeof useStore<typeof appContext, U>>[1]
+): U => useStore(appContext, selector);

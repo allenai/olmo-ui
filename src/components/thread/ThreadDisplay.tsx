@@ -1,8 +1,7 @@
 import { Stack } from '@mui/material';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { LoaderFunction, useParams } from 'react-router-dom';
 
-import { useAppContext } from '../../AppContext';
+import { appContext, useAppContext } from '../../AppContext';
 
 import { Message } from '@/api/Message';
 import { ChatMessage } from './ChatMessage';
@@ -11,9 +10,10 @@ interface MessageViewProps {
     content?: Message['content'];
     childMessages?: Message['children'];
     role?: Message['role'];
+    messagePath?: string[];
 }
 
-const MessageView = ({ content, childMessages, role }: MessageViewProps) => {
+const MessageView = ({ content, childMessages, role, messagePath = [] }: MessageViewProps) => {
     if (content == null || role == null) {
         return null;
     }
@@ -29,6 +29,7 @@ const MessageView = ({ content, childMessages, role }: MessageViewProps) => {
                     content={firstChild.content}
                     role={firstChild.role}
                     childMessages={firstChild.children}
+                    messagePath={messagePath.concat(firstChild.id)}
                 />
             )}
         </>
@@ -38,24 +39,24 @@ const MessageView = ({ content, childMessages, role }: MessageViewProps) => {
 export const ThreadDisplay = (): JSX.Element => {
     const { id } = useParams();
 
-    const getSelectedThread = useAppContext((state) => state.getSelectedThread);
-    const selectedThread = useAppContext((state) =>
-        state.allThreadInfo.data.messages.find((thread) => thread.id === id)
+    const selectedThread = useAppContext(
+        (state) => state.allThreadInfo.data.messages.find((thread) => thread.id === id)!
     );
-
-    useEffect(() => {
-        if (id != null) {
-            getSelectedThread(id, true);
-        }
-    }, [id]);
 
     return (
         <Stack gap={2} direction="column">
             <MessageView
-                content={selectedThread?.content}
-                role={selectedThread?.role}
-                childMessages={selectedThread?.children}
+                content={selectedThread.content}
+                role={selectedThread.role}
+                childMessages={selectedThread.children}
+                messagePath={[selectedThread.id]}
             />
         </Stack>
     );
+};
+
+export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
+    const getSelectedThread = appContext.getState().getSelectedThread;
+    await getSelectedThread(params.id!, true);
+    return null;
 };

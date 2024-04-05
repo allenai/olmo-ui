@@ -1,35 +1,21 @@
-import { StateCreator } from 'zustand';
+import { FetchInfo, OlmoStateCreator } from 'src/AppContext';
 
-import { FetchInfo, ZustandDevtools } from 'src/AppContext';
-
-import { Message, MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
-import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
+import { MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
+import { errorToAlert } from './AlertMessageSlice';
 
 export interface ThreadSlice {
     allThreadInfo: Required<FetchInfo<MessageList>>;
     deletedThreadInfo: FetchInfo<void>;
-    selectedThreadInfo: FetchInfo<Message>;
     expandedThreadID?: string;
     getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
-    getSelectedThread: (
-        threadId: string,
-        checkExistingThreads?: boolean
-    ) => Promise<FetchInfo<Message>>;
-    setExpandedThreadID: (id: string | undefined) => void;
 }
 
-const messageClient = new MessageClient();
+export const messageClient = new MessageClient();
 
-export const createThreadSlice: StateCreator<
-    ThreadSlice & AlertMessageSlice,
-    ZustandDevtools,
-    [],
-    ThreadSlice
-> = (set, get) => ({
+export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
     deletedThreadInfo: {},
-    selectedThreadInfo: {},
     getAllThreads: async (offset: number = 0, creator?: string) => {
         try {
             set((state) => ({
@@ -97,64 +83,5 @@ export const createThreadSlice: StateCreator<
             }));
         }
         return get().deletedThreadInfo;
-    },
-
-    getSelectedThread: async (threadId: string, useAllThreadInfo: boolean = false) => {
-        if (useAllThreadInfo) {
-            const existingThread = get().allThreadInfo.data.messages.find(
-                (message) => message.id === threadId
-            );
-
-            if (existingThread != null) {
-                set((state) => {
-                    state.selectedThreadInfo.data = existingThread;
-                });
-
-                return existingThread;
-            }
-        }
-
-        try {
-            set((state) => ({
-                selectedThreadInfo: {
-                    ...state.selectedThreadInfo,
-                    loading: true,
-                    error: false,
-                },
-            }));
-
-            const selectedThread = await messageClient.getMessage(threadId);
-
-            set((state) => {
-                state.selectedThreadInfo.data = selectedThread;
-                state.selectedThreadInfo.loading = false;
-
-                if (useAllThreadInfo) {
-                    state.allThreadInfo.data.messages.push(selectedThread);
-                }
-            });
-        } catch (err) {
-            get().addAlertMessage(
-                errorToAlert(
-                    `fetch-${MessageApiUrl}-${threadId}-${new Date().getTime()}`.toLowerCase(),
-                    `Error getting message ${threadId}.`,
-                    err
-                )
-            );
-            set((state) => ({
-                selectedThreadInfo: {
-                    ...state.selectedThreadInfo,
-                    error: true,
-                    loading: false,
-                },
-            }));
-        }
-        return get().selectedThreadInfo;
-    },
-
-    setExpandedThreadID: (id: string | undefined) => {
-        set((state) => {
-            return { ...state, expandedThreadID: id };
-        });
     },
 });

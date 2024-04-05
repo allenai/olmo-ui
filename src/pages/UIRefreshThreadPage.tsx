@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material';
 
 import { useNavigate } from 'react-router';
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 
 import { useEffect } from 'react';
 
@@ -15,10 +15,18 @@ import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
     const postMessage = useAppContext((state) => state.postMessage);
+    const postToExistingThread = useAppContext((state) => state.postToExistingThread);
     const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
 
+    // if we're on the selected thread page, handle submission differently
+    const isNewThreadPage = useMatch(links.playground);
+
     const handlePromptSubmission = (data: { content: string }) => {
-        postMessage(data, undefined, true);
+        if (isNewThreadPage) {
+            postMessage(data, undefined, true);
+        } else {
+            postToExistingThread(data);
+        }
     };
 
     useEffect(() => {
