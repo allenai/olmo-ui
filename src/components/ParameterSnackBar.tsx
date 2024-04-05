@@ -8,11 +8,7 @@ export const ParameterSnackBar = () => {
     const isParameterChanged = useAppContext((state) => state.isParameterChanged);
     const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
 
-    const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
+    const handleClose = (_event: React.SyntheticEvent | Event) => {
         setIsParameterChanged(false);
     };
 
