@@ -47,9 +47,9 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const [isParameterChanged, setIsParameterChanged] = useState(false);
+    const [parametersChanged, setParametersChanged] = useState(false);
     const handleDrawerClose = () => {
-        setIsParameterChanged(false);
+        setParametersChanged(false);
         closeDrawer(PARAMETERS_DRAWER_ID);
     };
 
@@ -69,7 +69,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
                 updateInferenceOpts({ stop: uniqueStopWords });
-                setIsParameterChanged(true);
+                setParametersChanged(true);
                 break;
             }
         }
@@ -109,7 +109,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                         <InputLabel>Model</InputLabel>
                     </ListItem>
                     <ListItem>
-                        <NewModelSelect setIsParameterChanged={setIsParameterChanged} />
+                        <NewModelSelect setParametersChanged={setParametersChanged} />
                     </ListItem>
                     <Divider />
                     <ListItem>
@@ -121,7 +121,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             initialValue={opts.max_tokens.default}
                             onChange={(v) => {
                                 updateInferenceOpts({ max_tokens: v });
-                                setIsParameterChanged(true);
+                                setParametersChanged(true);
                             }}
                             dialogContent={MAX_NEW_TOKEN_INFO}
                             dialogTitle="Max New Tokens"
@@ -137,7 +137,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             initialValue={opts.temperature.default}
                             onChange={(v) => {
                                 updateInferenceOpts({ temperature: v });
-                                setIsParameterChanged(true);
+                                setParametersChanged(true);
                             }}
                             dialogContent={TEMPERATURE_INFO}
                             dialogTitle="Temperature"
@@ -153,7 +153,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             initialValue={opts.top_p.default}
                             onChange={(v) => {
                                 updateInferenceOpts({ top_p: v });
-                                setIsParameterChanged(true);
+                                setParametersChanged(true);
                             }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
@@ -195,8 +195,8 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                 </List>
             </Stack>
             <ParameterSnackBar
-                isParameterChanged={isParameterChanged}
-                setIsParameterChanged={setIsParameterChanged}
+                parametersChanged={parametersChanged}
+                setParametersChanged={setParametersChanged}
             />
         </ResponsiveDrawer>
     );
