@@ -13,7 +13,7 @@ export const ParameterSnackBar = ({
     const handleClose = (_event: React.SyntheticEvent | Event) => {
         setTimeout(() => {
             setParametersChanged(false);
-        }, 60000);
+        }, 5000);
     };
 
     return (
