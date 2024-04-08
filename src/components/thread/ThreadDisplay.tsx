@@ -2,11 +2,10 @@ import { Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useAppContext } from '../../AppContext';
-
-import { Message } from '@/api/Message';
 import { ChatMessage } from './ChatMessage';
+import { Message } from '@/api/Message';
 import { MessageInteraction } from './MessageInteraction';
+import { useAppContext } from '@/AppContext';
 
 interface MessageViewProps {
     message?: Message;

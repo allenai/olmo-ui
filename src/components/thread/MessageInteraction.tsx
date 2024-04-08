@@ -14,8 +14,8 @@ import { useCallback } from 'react';
 import { LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
 import { RemoteState } from '@/contexts/util';
-import { useAppContext } from '@/AppContext';
 import { Role } from '@/api/Role';
+import { useAppContext } from '@/AppContext';
 
 interface MessageInteractionProps {
     message: Message;
@@ -51,7 +51,9 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
         }
     };
 
-    const copyMessage = useCallback(() => {}, []);
+    const copyMessage = useCallback(() => {
+        navigator.clipboard.writeText(message.content);
+    }, [message]);
 
     return (
         <Stack direction="row" gap={2} alignItems="start">
