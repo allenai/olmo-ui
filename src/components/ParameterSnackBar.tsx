@@ -2,16 +2,18 @@ import Snackbar from '@mui/material/Snackbar';
 
 import { Box } from '@mui/material';
 
-import { useAppContext } from '@/AppContext';
-
-export const ParameterSnackBar = () => {
-    const isParameterChanged = useAppContext((state) => state.isParameterChanged);
-    const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
-
+interface ParameterSnackBarProps {
+    isParameterChanged: boolean;
+    setIsParameterChanged: (isParameterChanged: boolean) => void;
+}
+export const ParameterSnackBar = ({
+    isParameterChanged,
+    setIsParameterChanged,
+}: ParameterSnackBarProps) => {
     const handleClose = (_event: React.SyntheticEvent | Event) => {
         setTimeout(() => {
             setIsParameterChanged(false);
-        }, 60000)
+        }, 60000);
     };
 
     return (

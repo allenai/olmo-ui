@@ -16,7 +16,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
@@ -47,7 +47,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
+    const [isParameterChanged, setIsParameterChanged] = useState(false);
     const handleDrawerClose = () => {
         setIsParameterChanged(false);
         closeDrawer(PARAMETERS_DRAWER_ID);
@@ -109,7 +109,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                         <InputLabel>Model</InputLabel>
                     </ListItem>
                     <ListItem>
-                        <NewModelSelect />
+                        <NewModelSelect setIsParameterChanged={setIsParameterChanged} />
                     </ListItem>
                     <Divider />
                     <ListItem>
@@ -194,7 +194,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                 </List>
             </Stack>
-            <ParameterSnackBar />
+            <ParameterSnackBar
+                isParameterChanged={isParameterChanged}
+                setIsParameterChanged={setIsParameterChanged}
+            />
         </ResponsiveDrawer>
     );
 };

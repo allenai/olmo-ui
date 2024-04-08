@@ -6,13 +6,13 @@ import { useAppContext } from '../AppContext';
 
 interface ModelSelectProps {
     disabled?: boolean;
+    setIsParameterChanged: (isParameterChanged: boolean) => void;
 }
 
-export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
+export const NewModelSelect = ({ disabled, setIsParameterChanged }: ModelSelectProps) => {
     const models = useAppContext((state) => state.models);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
-    const setIsParameterChanged = useAppContext((state) => state.setIsParameterChanged);
 
     useEffect(() => {
         if (models.length !== 0) {
