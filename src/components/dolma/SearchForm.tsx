@@ -5,7 +5,6 @@ import { Button, Card, IconButton, Stack, TextField, Tooltip, styled, Theme } fr
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import { search } from '../../api/dolma/search';
-import { Section } from '../../components/dolma/shared';
 import { useAppContext } from '../../AppContext';
 import { links } from '../../Links';
 
@@ -45,44 +44,42 @@ export const SearchForm = ({
         nav(`/search?${search.toQueryString({ query: queryText })}`);
     };
     return (
-        <Section>
-            <Card
-                sx={{
-                    padding: (theme) => theme.spacing(2.25),
-                    backgroundColor: (theme) => theme.palette.background.default,
-                    boxShadow: `4px 4px 15px -1px ${(theme: Theme) => theme.color.B6.hex}`,
-                }}>
-                <Stack gap={1.5} alignItems="flex-start">
-                    <SearchTextField
-                        fullWidth
-                        value={queryText}
-                        placeholder={placeholder}
-                        onChange={(e) => setQueryText(e.currentTarget.value)}
-                        onKeyDown={(e) => submitSearch(e)}
-                        disabled={disabled}
-                    />
-                    <Stack direction="row" justifyContent="space-between" width="100%">
-                        <Button
-                            variant="contained"
-                            onClick={() => submitSearch()}
-                            sx={{ height: 'fit-content', padding: '6px 16px' }}
-                            disabled={disabled}>
-                            Submit
-                        </Button>
-                        <Tooltip
-                            title="FAQs: How does the Dataset Explorer work?"
-                            sx={{ color: (theme) => theme.palette.text.primary }}>
-                            <IconButton
-                                aria-label="FAQs: How does the Dataset Explorer work?"
-                                size="large"
-                                href={links.faqs}
-                                sx={{ color: (theme) => theme.color.N9.hex, padding: 0 }}>
-                                <InfoOutlinedIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </Stack>
+        <Card
+            sx={{
+                padding: (theme) => theme.spacing(2.25),
+                backgroundColor: (theme) => theme.palette.background.default,
+                boxShadow: `4px 4px 15px -1px ${(theme: Theme) => theme.color.B6.hex}`,
+            }}>
+            <Stack gap={1.5} alignItems="flex-start">
+                <SearchTextField
+                    fullWidth
+                    value={queryText}
+                    placeholder={placeholder}
+                    onChange={(e) => setQueryText(e.currentTarget.value)}
+                    onKeyDown={(e) => submitSearch(e)}
+                    disabled={disabled}
+                />
+                <Stack direction="row" justifyContent="space-between" width="100%">
+                    <Button
+                        variant="contained"
+                        onClick={() => submitSearch()}
+                        sx={{ height: 'fit-content', padding: '6px 16px' }}
+                        disabled={disabled}>
+                        Submit
+                    </Button>
+                    <Tooltip
+                        title="FAQs: How does the Dataset Explorer work?"
+                        sx={{ color: (theme) => theme.palette.text.primary }}>
+                        <IconButton
+                            aria-label="FAQs: How does the Dataset Explorer work?"
+                            size="large"
+                            href={links.faqs}
+                            sx={{ color: (theme) => theme.color.N9.hex, padding: 0 }}>
+                            <InfoOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Stack>
-            </Card>
-        </Section>
+            </Stack>
+        </Card>
     );
 };

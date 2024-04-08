@@ -6,7 +6,7 @@ import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
-import { NoPaddingContainer, NoPaddingGrid, SearchContainer } from '../components/dolma/shared';
+import { NoPaddingContainer, NoPaddingGrid } from '../components/dolma/shared';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
 import { useAppContext } from '../AppContext';
 
@@ -62,9 +62,5 @@ const SearchResults = () => {
 };
 
 export const Search = () => {
-    return (
-        <SearchContainer>
-            <SearchResults />
-        </SearchContainer>
-    );
+    return <SearchResults />;
 };
