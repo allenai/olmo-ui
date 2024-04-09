@@ -1,23 +1,23 @@
-import { createStore } from 'zustand/vanilla';
 import { StateCreator, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { createStore } from 'zustand/vanilla';
 
-import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptTemplateSlice';
-import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
-import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
 import { AlertMessageSlice, createAlertMessageSlice } from './slices/AlertMessageSlice';
-import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
-import { UserSlice, createUserSlice } from './slices/UserSlice';
-import { ModelSlice, createModelSlice } from './slices/ModelSlice';
-import { SchemaSlice, createSchemaSlice } from './slices/SchemaSlice';
-import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
-import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
-import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
 import { DocumentSlice, createDocumentSlice } from './slices/DocumentSlice';
+import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
+import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
+import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
+import { ModelSlice, createModelSlice } from './slices/ModelSlice';
+import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptTemplateSlice';
+import { SchemaSlice, createSchemaSlice } from './slices/SchemaSlice';
+import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
+import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
+import { UserSlice, createUserSlice } from './slices/UserSlice';
+import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 
-import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { SelectedThreadSlice, createSelectedThreadSlice } from './slices/SelectedThreadSlice';
+import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 
 export type FetchInfo<T> = {
     data?: T;
