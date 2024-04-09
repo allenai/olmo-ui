@@ -7,7 +7,8 @@ export interface ThreadSlice {
     allThreadInfo: Required<FetchInfo<MessageList>>;
     deletedThreadInfo: FetchInfo<void>;
     expandedThreadID?: string;
-    getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
+    selectedModel: string;
+    getAllThreads: (offset: number, creator?: string, limit?: number) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
 }
 
@@ -17,14 +18,13 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
     deletedThreadInfo: {},
     selectedModel: '',
-
-    getAllThreads: async (offset: number = 0, creator?: string) => {
+    getAllThreads: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
             set((state) => ({
                 allThreadInfo: { ...state.allThreadInfo, loading: true, error: false },
             }));
 
-            const { messages, meta } = await messageClient.getAllThreads(offset, creator);
+            const { messages, meta } = await messageClient.getAllThreads(offset, creator, limit);
 
             set((state) => ({
                 allThreadInfo: {
