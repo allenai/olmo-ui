@@ -1,4 +1,4 @@
-import { Breakpoint, Drawer, DrawerProps, SxProps, Theme } from '@mui/material';
+import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
@@ -16,6 +16,16 @@ export interface ResponsiveDrawerProps
     desktopDrawerSx?: SxProps<Theme>;
 }
 
+const GlobalStyle = () => (
+    <GlobalStyles
+        styles={{
+            body: {
+                overflow: 'hidden', // prevent overflow when drawer slides into view
+            },
+        }}
+    />
+);
+
 export const ResponsiveDrawer = ({
     children,
     open,
@@ -28,6 +38,8 @@ export const ResponsiveDrawer = ({
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
 }: ResponsiveDrawerProps): JSX.Element => {
+    const isPersistantDrawerClosed = !open && desktopDrawerVariant === 'persistent';
+
     return (
         <>
             <Drawer
@@ -35,6 +47,7 @@ export const ResponsiveDrawer = ({
                 anchor={anchor}
                 open={open}
                 onClose={onClose}
+                disableScrollLock={false}
                 PaperProps={{
                     sx: {
                         // This is intentionally not following the breakpoint. It looks nicer this way
@@ -56,7 +69,7 @@ export const ResponsiveDrawer = ({
                 sx={{
                     width: 'auto',
                     display: { xs: 'none', [drawerBreakpoint]: 'flex' },
-                    overflow: !open && desktopDrawerVariant === 'persistent' ? 'hidden' : 'visible',
+                    overflow: isPersistantDrawerClosed ? 'hidden' : 'visible',
 
                     ...desktopDrawerSx,
                 }}
@@ -72,6 +85,7 @@ export const ResponsiveDrawer = ({
                 {heading}
                 {children}
             </Drawer>
+            {isPersistantDrawerClosed && <GlobalStyle />}
         </>
     );
 };
