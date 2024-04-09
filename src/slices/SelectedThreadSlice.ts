@@ -93,7 +93,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
             // This is only getting the first message's ID
             while (message != null) {
-                console.log('id', message.id);
                 pathToLastMessageInThread.push(message.id);
 
                 message = message?.children?.[0];

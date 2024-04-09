@@ -56,7 +56,6 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    console.log('loading');
     const getSelectedThread = appContext.getState().getSelectedThread;
     await getSelectedThread(params.id!, true);
     return null;
