@@ -45,10 +45,11 @@ export const SearchForm = ({
     };
     return (
         <Card
+            variant="elevation"
+            elevation={1}
             sx={{
                 padding: (theme) => theme.spacing(2.25),
                 backgroundColor: (theme) => theme.palette.background.default,
-                boxShadow: `4px 4px 15px -1px ${(theme: Theme) => theme.color.B6.hex}`,
             }}>
             <Stack gap={1.5} alignItems="flex-start">
                 <SearchTextField
