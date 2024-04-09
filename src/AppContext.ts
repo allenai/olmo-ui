@@ -25,6 +25,8 @@ export type FetchInfo<T> = {
     error?: boolean;
 };
 
+type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
+
 type AppContextState = LabelSlice &
     PromptTemplateSlice &
     RepromptSlice &
@@ -34,11 +36,9 @@ type AppContextState = LabelSlice &
     ModelSlice &
     SchemaSlice &
     DrawerSlice &
-    SearchSlice &
-    MetaSlice &
     ThreadUpdateSlice &
     SelectedThreadSlice &
-    DocumentSlice;
+    DatasetExplorerSliceStates;
 
 export const appContext = createStore<AppContextState>()(
     devtools(
