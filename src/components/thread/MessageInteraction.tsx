@@ -9,9 +9,9 @@ import {
     FlagOutlined,
 } from '@mui/icons-material';
 import styled from 'styled-components';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import { LabelRating } from '@/api/Label';
+import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
 import { RemoteState } from '@/contexts/util';
 import { Role } from '@/api/Role';
@@ -27,12 +27,14 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     }
 
     const userInfo = useAppContext((state) => state.userInfo);
-    const postLabel = useAppContext((state) => state.postLabel);
-    const deleteLabel = useAppContext((state) => state.deleteLabel);
+    const changeLabel = useAppContext((state) => state.changeLabel);
     const labelRemoteState = useAppContext((state) => state.labelRemoteState);
-    // Filter out the labels that was rated by the current login user then pop the first one
+
+    // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
-    const currentMessageLabel = message.labels.filter((_) => _.creator === userInfo?.client).pop();
+    const [currentMessageLabel, setCurrentMessageLabel] = useState<Label | undefined>(
+        message.labels.filter((label) => label.creator === userInfo?.client).pop()
+    );
 
     const GoodIcon =
         currentMessageLabel?.rating === LabelRating.Positive ? ThumbUp : ThumbUpOutlined;
@@ -41,14 +43,11 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     const FlagIcon = currentMessageLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
 
     const rateMessage = async (newRating: LabelRating) => {
-        const continueAfterDelete = currentMessageLabel?.rating !== newRating;
-        if (currentMessageLabel !== undefined) {
-            await deleteLabel(currentMessageLabel.id, message);
-        }
-
-        if (continueAfterDelete) {
-            postLabel({ rating: newRating, message: message.id }, message);
-        }
+        changeLabel({ rating: newRating, message: message.id }, currentMessageLabel).then(
+            (newLabel) => {
+                setCurrentMessageLabel(newLabel);
+            }
+        );
     };
 
     const copyMessage = useCallback(() => {
