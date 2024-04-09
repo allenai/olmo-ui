@@ -4,13 +4,14 @@ import {
     MessageClient,
     MessagePost,
     MessageStreamPart,
-    isMessageWithMetadata,
+    isFirstMessage,
     isMessageStreamError,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
 
 const messageClient = new MessageClient();
 
+// This is a generator function. for more info, see MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 export const postMessageGenerator = async function* (
     newMessage: MessagePost,
     inferenceOptions: InferenceOpts,
@@ -40,7 +41,7 @@ export const postMessageGenerator = async function* (
 
         // The first part should always be a full response
         // If it's not, something has gone wrong and we want to exit quickly
-        if (firstPart && !isMessageWithMetadata(part.value)) {
+        if (firstPart && !isFirstMessage(part.value)) {
             throw new Error(
                 `malformed response, the first part must be a valid message: ${part.value}`
             );

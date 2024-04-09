@@ -32,6 +32,8 @@ export interface ThreadUpdateSlice {
         shouldSetSelectedThread?: boolean,
         messagePath?: string[]
     ) => Promise<FetchInfo<Message>>;
+    selectedModel: string;
+    setSelectedModel: (selectedModel: string) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
@@ -39,6 +41,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     ongoingThreadId: null,
     inferenceOpts: {},
     postMessageInfo: {},
+
+    selectedModel: '',
+    setSelectedModel: (model: string) => set({ selectedModel: model }),
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
@@ -56,9 +61,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         const abortController = new AbortController();
 
         set(
-            {
-                abortController,
-                postMessageInfo: { ...state.postMessageInfo, loading: true, error: false },
+            (state) => {
+                state.abortController = abortController;
+                state.postMessageInfo.loading = true;
+                state.postMessageInfo.error = false;
             },
             false,
             'threadUpdate/startPostMessage'
@@ -110,6 +116,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 parentMsg?.id
             );
 
+            // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.
+            // See MDN for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
             for await (const message of messageChunks) {
                 // The first chunk should always be a Message capturing the details of the user's
                 // message that was just submitted.
@@ -126,6 +134,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             // Expand the thread so that the response is visible as it's streamed to the client.(only applied to the pre-refresh UI)
                             state.expandedThreadID = msg.root;
 
+                            // since ThreadDisplay redirects when the id in selectedThreadInfo.data changes we only want to redirect if it's a new thread and not a followup
                             if (shouldSetSelectedThread && messagePath?.length === 0) {
                                 state.selectedThreadInfo.data = msg;
                             }
@@ -187,16 +196,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 false,
                 'threadUpdate/finishPostMessage'
             );
-
-            return get().postMessageInfo;
         } catch (err) {
-            const state = get();
+            const addAlertMessage = get().addAlertMessage;
 
             if (err instanceof Error && err.name === 'AbortError') {
-                state.addAlertMessage(ABORT_ERROR_MESSAGE);
+                addAlertMessage(ABORT_ERROR_MESSAGE);
             } else {
                 console.error(err);
-                state.addAlertMessage(
+                addAlertMessage(
                     errorToAlert(
                         `create-message-${new Date().getTime()}`.toLowerCase(),
                         'Unable to Submit Message',
@@ -205,13 +212,18 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 );
             }
 
-            const postMessageInfo = { ...state.postMessageInfo, loading: false, error: true };
             set(
-                { abortController: null, ongoingThreadId: null, postMessageInfo },
+                (state) => {
+                    state.abortController = null;
+                    state.ongoingThreadId = null;
+                    state.postMessageInfo.loading = false;
+                    state.postMessageInfo.error = true;
+                },
                 false,
                 'threadUpdate/errorPostMessage'
             );
-            return postMessageInfo;
         }
+
+        return get().postMessageInfo;
     },
 });
