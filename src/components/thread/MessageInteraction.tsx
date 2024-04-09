@@ -13,7 +13,6 @@ import { useCallback, useState } from 'react';
 
 import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
-import { RemoteState } from '@/contexts/util';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
@@ -28,7 +27,6 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
 
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
-    const labelRemoteState = useAppContext((state) => state.labelRemoteState);
 
     // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
@@ -56,10 +54,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
 
     return (
         <Stack direction="row" gap={2} alignItems="start">
-            <FeedbackButtonGroup
-                variant="outlined"
-                aria-label="Thread feedback buttons"
-                disabled={labelRemoteState === RemoteState.Loading}>
+            <FeedbackButtonGroup variant="outlined" aria-label="Thread feedback buttons">
                 <ActionButton
                     startIcon={<GoodIcon />}
                     onClick={() => rateMessage(LabelRating.Positive)}>
