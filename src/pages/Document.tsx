@@ -3,7 +3,7 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { LinearProgress, Button, Typography, DialogTitle, Dialog, Stack } from '@mui/material';
 import styled from 'styled-components';
 
-import { SearchContainer, NoPaddingContainer } from '../components/dolma/shared';
+import { NoPaddingContainer } from '../components/dolma/shared';
 import { RemoteState } from '../contexts/util';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
@@ -16,7 +16,7 @@ export const Document = () => {
     const getDocument = useAppContext((state) => state.getDocument);
     const documentDetails = useAppContext((state) => state.document);
     const documentState = useAppContext((state) => state.documentState);
-    const ducmentError = useAppContext((state) => state.documentError);
+    const documentError = useAppContext((state) => state.documentError);
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
@@ -51,59 +51,57 @@ export const Document = () => {
     };
 
     return (
-        <SearchContainer>
-            <DocumentContainer sx={{ padding: 0 }}>
-                {documentState === RemoteState.Loading ? <LinearProgress /> : null}
-                {documentState === RemoteState.Error ? (
-                    <div>
-                        <h4>Something went wrong.</h4>
-                        <p>{ducmentError?.message ?? 'Unexpected Error'}</p>
-                    </div>
-                ) : null}
-                {documentState === RemoteState.Loaded && documentDetails ? (
-                    <>
-                        <MetaTags
-                            title={
-                                documentDetails.title
-                                    ? `Dolma Document - ${documentDetails.title}`
-                                    : undefined
-                            }
-                        />
-                        <DocumentMeta doc={documentDetails} />
-                        <Typography variant="h4" sx={{ mt: 1 }}>
-                            {documentDetails.title}
-                        </Typography>
-                        <Snippets document={documentDetails} whiteSpace />
-                        <ButtonsContainer direction="row" spacing={2} flexWrap="wrap">
-                            <Button variant="outlined" onClick={handleShareClick}>
-                                <Typography>Copy Link to Share</Typography>
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                component={Link}
-                                rel="noopener noreferrer"
-                                target="_blank"
-                                to={takeDownFormUrl}
-                                href={takeDownFormUrl}>
-                                <Typography>Request Removal</Typography>
-                            </Button>
-                            <Button variant="outlined" onClick={handleModalOpen}>
-                                <Typography>View Metadata</Typography>
-                                <Dialog
-                                    fullWidth
-                                    maxWidth="md"
-                                    onClose={handleModalClose}
-                                    open={metadataModalOpen}>
-                                    <MetadataDetails>
-                                        {JSON.stringify(documentDetails, null, 2)}
-                                    </MetadataDetails>
-                                </Dialog>
-                            </Button>
-                        </ButtonsContainer>
-                    </>
-                ) : null}
-            </DocumentContainer>
-        </SearchContainer>
+        <DocumentContainer sx={{ padding: 0 }}>
+            {documentState === RemoteState.Loading ? <LinearProgress /> : null}
+            {documentState === RemoteState.Error ? (
+                <div>
+                    <h4>Something went wrong.</h4>
+                    <p>{documentError?.message ?? 'Unexpected Error'}</p>
+                </div>
+            ) : null}
+            {documentState === RemoteState.Loaded && documentDetails ? (
+                <>
+                    <MetaTags
+                        title={
+                            documentDetails.title
+                                ? `Dolma Document - ${documentDetails.title}`
+                                : undefined
+                        }
+                    />
+                    <DocumentMeta doc={documentDetails} />
+                    <Typography variant="h4" sx={{ mt: 1 }}>
+                        {documentDetails.title}
+                    </Typography>
+                    <Snippets document={documentDetails} whiteSpace />
+                    <ButtonsContainer direction="row" spacing={2} flexWrap="wrap">
+                        <Button variant="outlined" onClick={handleShareClick}>
+                            <Typography>Copy Link to Share</Typography>
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            component={Link}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            to={takeDownFormUrl}
+                            href={takeDownFormUrl}>
+                            <Typography>Request Removal</Typography>
+                        </Button>
+                        <Button variant="outlined" onClick={handleModalOpen}>
+                            <Typography>View Metadata</Typography>
+                            <Dialog
+                                fullWidth
+                                maxWidth="md"
+                                onClose={handleModalClose}
+                                open={metadataModalOpen}>
+                                <MetadataDetails>
+                                    {JSON.stringify(documentDetails, null, 2)}
+                                </MetadataDetails>
+                            </Dialog>
+                        </Button>
+                    </ButtonsContainer>
+                </>
+            ) : null}
+        </DocumentContainer>
     );
 };
 
