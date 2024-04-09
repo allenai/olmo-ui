@@ -16,7 +16,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
@@ -25,6 +25,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { NewModelSelect } from '@/components/NewModelSelect';
 import { NewInputSlider } from '@/components/configuration/NewInputSlider';
 import { Schema } from '@/api/Schema';
+import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters' as const;
 
@@ -46,7 +47,11 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const handleDrawerClose = () => closeDrawer(PARAMETERS_DRAWER_ID);
+    const [parametersChanged, setParametersChanged] = useState(false);
+    const handleDrawerClose = () => {
+        setParametersChanged(false);
+        closeDrawer(PARAMETERS_DRAWER_ID);
+    };
 
     useEffect(() => {
         // on load fetch data
@@ -64,6 +69,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
                 updateInferenceOpts({ stop: uniqueStopWords });
+                setParametersChanged(true);
                 break;
             }
         }
@@ -103,7 +109,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                         <InputLabel>Model</InputLabel>
                     </ListItem>
                     <ListItem>
-                        <NewModelSelect />
+                        <NewModelSelect setParametersChanged={setParametersChanged} />
                     </ListItem>
                     <Divider />
                     <ListItem>
@@ -113,7 +119,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             max={opts.max_tokens.max}
                             step={opts.max_tokens.step}
                             initialValue={opts.max_tokens.default}
-                            onChange={(v) => updateInferenceOpts({ max_tokens: v })}
+                            onChange={(v) => {
+                                updateInferenceOpts({ max_tokens: v });
+                                setParametersChanged(true);
+                            }}
                             dialogContent={MAX_NEW_TOKEN_INFO}
                             dialogTitle="Max New Tokens"
                         />
@@ -126,7 +135,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             max={opts.temperature.max}
                             step={opts.temperature.step}
                             initialValue={opts.temperature.default}
-                            onChange={(v) => updateInferenceOpts({ temperature: v })}
+                            onChange={(v) => {
+                                updateInferenceOpts({ temperature: v });
+                                setParametersChanged(true);
+                            }}
                             dialogContent={TEMPERATURE_INFO}
                             dialogTitle="Temperature"
                         />
@@ -139,7 +151,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             max={opts.top_p.max}
                             step={opts.top_p.step}
                             initialValue={opts.top_p.default}
-                            onChange={(v) => updateInferenceOpts({ top_p: v })}
+                            onChange={(v) => {
+                                updateInferenceOpts({ top_p: v });
+                                setParametersChanged(true);
+                            }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
                         />
@@ -179,6 +194,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                 </List>
             </Stack>
+            <ParameterSnackBar
+                parametersChanged={parametersChanged}
+                setParametersChanged={setParametersChanged}
+            />
         </ResponsiveDrawer>
     );
 };

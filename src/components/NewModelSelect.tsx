@@ -6,9 +6,10 @@ import { useAppContext } from '../AppContext';
 
 interface ModelSelectProps {
     disabled?: boolean;
+    setParametersChanged: (parametersChanged: boolean) => void;
 }
 
-export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
+export const NewModelSelect = ({ disabled, setParametersChanged }: ModelSelectProps) => {
     const models = useAppContext((state) => state.models);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
@@ -21,6 +22,7 @@ export const NewModelSelect = ({ disabled }: ModelSelectProps) => {
 
     const handleOnChange = (event: SelectChangeEvent) => {
         setSelectedModel(event.target.value as string);
+        setParametersChanged(true);
     };
 
     return (
