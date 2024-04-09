@@ -50,7 +50,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
             n: 1,
             top_p: 1,
         },
-        root: messageId,
+        root: newMessageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
