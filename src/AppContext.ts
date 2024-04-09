@@ -42,21 +42,21 @@ type AppContextState = LabelSlice &
 
 export const appContext = createStore<AppContextState>()(
     devtools(
-        immer((set, get, store) => ({
-            ...createRepromptSlice(set, get, store),
-            ...createPromptTemplateSlice(set, get, store),
-            ...createAlertMessageSlice(set, get, store),
-            ...createThreadSlice(set, get, store),
-            ...createLabelSlice(set, get, store),
-            ...createUserSlice(set, get, store),
-            ...createModelSlice(set, get, store),
-            ...createSchemaSlice(set, get, store),
-            ...createDrawerSlice(set, get, store),
-            ...createSearchSlice(set, get, store),
-            ...createMetaSlice(set, get, store),
-            ...createDocumentSlice(set, get, store),
-            ...createThreadUpdateSlice(set, get, store),
-            ...createSelectedThreadSlice(set, get, store),
+        immer((...store) => ({
+            ...createRepromptSlice(...store),
+            ...createPromptTemplateSlice(...store),
+            ...createAlertMessageSlice(...store),
+            ...createThreadSlice(...store),
+            ...createLabelSlice(...store),
+            ...createUserSlice(...store),
+            ...createModelSlice(...store),
+            ...createSchemaSlice(...store),
+            ...createDrawerSlice(...store),
+            ...createSearchSlice(...store),
+            ...createMetaSlice(...store),
+            ...createDocumentSlice(...store),
+            ...createThreadUpdateSlice(...store),
+            ...createSelectedThreadSlice(...store),
         }))
     )
 );
