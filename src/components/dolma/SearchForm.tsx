@@ -9,7 +9,6 @@ import { search } from '../../api/dolma/search';
 import { useAppContext } from '../../AppContext';
 import { links } from '../../Links';
 
-// test
 const SearchTextField = styled(TextField)`
     background-color: ${({ theme }) => theme.palette.background.default};
     fieldset {
