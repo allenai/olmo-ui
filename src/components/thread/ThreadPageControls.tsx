@@ -1,12 +1,12 @@
 import { ButtonGroup, Card, Stack, Typography, alpha } from '@mui/material';
 
 import PlusIcon from '@mui/icons-material/Add';
-import GearIcon from '@mui/icons-material/SettingsOutlined';
 
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 import { ResponsiveButton } from './ResponsiveButton';
 import { HistoryButton } from './history/HistoryButton';
+import { ParameterButton } from './parameter/ParameterButton';
 
 const ThreadButtons = (): JSX.Element => {
     return (
@@ -18,7 +18,7 @@ const ThreadButtons = (): JSX.Element => {
                 biggerVariant="contained"
                 href={links.playground}
             />
-            <ResponsiveButton startIcon={<GearIcon />} title="Parameters" variant="outlined" />
+            <ParameterButton />
             <HistoryButton />
         </>
     );

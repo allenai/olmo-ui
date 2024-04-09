@@ -3,28 +3,21 @@ import { StateCreator, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-import { MessageList } from './api/Message';
-import { ModelClient, ModelList } from './api/Model';
-import { Schema, SchemaClient } from './api/Schema';
-import { User, UserClient, WhoamiApiUrl } from './api/User';
 import { PromptTemplateSlice, createPromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 import { ThreadSlice, createThreadSlice } from './slices/ThreadSlice';
-import { SelectedThreadSlice, createSelectedThreadSlice } from './slices/SelectedThreadSlice';
+import { AlertMessageSlice, createAlertMessageSlice } from './slices/AlertMessageSlice';
 import { LabelSlice, createLabelSlice } from './slices/LabelSlice';
-import {
-    AlertMessageSlice,
-    createAlertMessageSlice,
-    errorToAlert,
-} from './slices/AlertMessageSlice';
+import { UserSlice, createUserSlice } from './slices/UserSlice';
+import { ModelSlice, createModelSlice } from './slices/ModelSlice';
+import { SchemaSlice, createSchemaSlice } from './slices/SchemaSlice';
+import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
 import { SearchSlice, createSearchSlice } from './slices/SearchSlice';
 import { MetaSlice, createMetaSlice } from './slices/MetaSlice';
-import { DrawerSlice, createDrawerSlice } from './slices/DrawerSlice';
-import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
+import { DocumentSlice, createDocumentSlice } from './slices/DocumentSlice';
 
-const userClient = new UserClient();
-const modelClient = new ModelClient();
-const schemaClient = new SchemaClient();
+import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
+import { SelectedThreadSlice, createSelectedThreadSlice } from './slices/SelectedThreadSlice';
 
 export type FetchInfo<T> = {
     data?: T;
@@ -32,31 +25,45 @@ export type FetchInfo<T> = {
     error?: boolean;
 };
 
-type State = {
-    userInfo: FetchInfo<User>;
-    allThreadInfo: FetchInfo<MessageList>;
-    modelInfo: FetchInfo<ModelList>;
-    schema: FetchInfo<Schema>;
-};
-
-type Action = {
-    getUserInfo: () => Promise<FetchInfo<User>>;
-    getSchema: () => Promise<FetchInfo<Schema>>;
-    getAllModels: () => Promise<FetchInfo<ModelList>>;
-};
-
-type AppContextState = State &
-    Action &
-    LabelSlice &
+type AppContextState = LabelSlice &
     PromptTemplateSlice &
     RepromptSlice &
     ThreadSlice &
     AlertMessageSlice &
+    UserSlice &
+    ModelSlice &
+    SchemaSlice &
+    DrawerSlice &
     SearchSlice &
     MetaSlice &
-    DrawerSlice &
     ThreadUpdateSlice &
-    SelectedThreadSlice;
+    SelectedThreadSlice &
+    DocumentSlice;
+
+export const appContext = createStore<AppContextState>()(
+    devtools(
+        immer((set, get, store) => ({
+            ...createRepromptSlice(set, get, store),
+            ...createPromptTemplateSlice(set, get, store),
+            ...createAlertMessageSlice(set, get, store),
+            ...createThreadSlice(set, get, store),
+            ...createLabelSlice(set, get, store),
+            ...createUserSlice(set, get, store),
+            ...createModelSlice(set, get, store),
+            ...createSchemaSlice(set, get, store),
+            ...createDrawerSlice(set, get, store),
+            ...createSearchSlice(set, get, store),
+            ...createMetaSlice(set, get, store),
+            ...createDocumentSlice(set, get, store),
+            ...createThreadUpdateSlice(set, get, store),
+            ...createSelectedThreadSlice(set, get, store),
+        }))
+    )
+);
+
+export const useAppContext = <U>(
+    selector: Parameters<typeof useStore<typeof appContext, U>>[1]
+): U => useStore(appContext, selector);
 
 export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
 export type OlmoStateCreator<TOwnSlice> = StateCreator<
@@ -65,94 +72,3 @@ export type OlmoStateCreator<TOwnSlice> = StateCreator<
     [],
     TOwnSlice
 >;
-
-export const appContext = createStore<AppContextState>()(
-    immer(
-        devtools((set, get, store) => ({
-            userInfo: {},
-            modelInfo: {},
-            schema: {},
-            ...createRepromptSlice(set, get, store),
-            ...createPromptTemplateSlice(set, get, store),
-            ...createAlertMessageSlice(set, get, store),
-            ...createThreadSlice(set, get, store),
-            ...createLabelSlice(set, get, store),
-            ...createSearchSlice(set, get, store),
-            ...createMetaSlice(set, get, store),
-            ...createDrawerSlice(set, get, store),
-            ...createThreadUpdateSlice(set, get, store),
-            ...createSelectedThreadSlice(set, get, store),
-
-            getUserInfo: async () => {
-                try {
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, loading: true, error: false },
-                    }));
-
-                    const user = await userClient.whoAmI();
-
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, data: user, loading: false },
-                    }));
-                } catch (err) {
-                    get().addAlertMessage(
-                        errorToAlert(
-                            `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                            `Error getting user.`,
-                            err
-                        )
-                    );
-                    set((state) => ({
-                        userInfo: { ...state.userInfo, error: true, loading: false },
-                    }));
-                }
-
-                return get().userInfo;
-            },
-
-            getAllModels: async () => {
-                try {
-                    set((state) => ({
-                        modelInfo: { ...state.modelInfo, loading: true, error: false },
-                    }));
-
-                    const models = await modelClient.getAllModels();
-
-                    set((state) => ({
-                        modelInfo: { ...state.modelInfo, data: models, loading: false },
-                    }));
-                } catch (err) {
-                    get().addAlertMessage(
-                        errorToAlert(
-                            `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
-                            `Error getting models.`,
-                            err
-                        )
-                    );
-                    set((state) => ({
-                        modelInfo: { ...state.modelInfo, error: true, loading: false },
-                    }));
-                }
-
-                return get().modelInfo;
-            },
-
-            getSchema: async () => {
-                try {
-                    set({ schema: { loading: true, error: false } });
-
-                    const schema = await schemaClient.getSchema();
-
-                    set({ schema: { data: schema, loading: false } });
-                } catch (err) {
-                    set({ schema: { loading: false, error: true } });
-                }
-                return get().schema;
-            },
-        }))
-    )
-);
-
-export const useAppContext = <U>(
-    selector: Parameters<typeof useStore<typeof appContext, U>>[1]
-): U => useStore(appContext, selector);

@@ -4,20 +4,23 @@ import { LinearProgress, Button, Typography, DialogTitle, Dialog, Stack } from '
 import styled from 'styled-components';
 
 import { SearchContainer, NoPaddingContainer } from '../components/dolma/shared';
-import { useDocumentStore, DocumentStore } from '../store/DocumentStore';
 import { RemoteState } from '../contexts/util';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
 import { search } from '../api/dolma/search';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
 import { MetaTags } from '../components/dolma/MetaTags';
+import { useAppContext } from '@/AppContext';
 
-const DocumentDetails = () => {
+export const Document = () => {
+    const getDocument = useAppContext((state) => state.getDocument);
+    const documentDetails = useAppContext((state) => state.document);
+    const documentState = useAppContext((state) => state.documentState);
+    const ducmentError = useAppContext((state) => state.documentError);
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
 
-    const store = useDocumentStore();
     const params = useParams<{ id: string; query?: string }>();
     if (!params.id) {
         throw new Error('No document ID');
@@ -27,12 +30,10 @@ const DocumentDetails = () => {
     const loc = useLocation();
     const { query } = search.fromQueryString(loc.search);
     useEffect(() => {
-        store
-            .getDocument({ id, query: query.trim() !== '' ? query.trim() : undefined })
-            .then((d) => {
-                const analytics = new AnalyticsClient();
-                analytics.trackDocumentView({ id, query, source: d.source });
-            });
+        getDocument({ id, query: query.trim() !== '' ? query.trim() : undefined }).then((d) => {
+            const analytics = new AnalyticsClient();
+            analytics.trackDocumentView({ id, query, source: d.source });
+        });
     }, [id]);
 
     const takeDownFormUrl = 'https://forms.gle/hGoEs8PJszcmxmh56';
@@ -40,11 +41,11 @@ const DocumentDetails = () => {
     const handleShareClick = () => {
         navigator.clipboard.writeText(window.location.toString());
         const analytics = new AnalyticsClient();
-        if (store.document) {
+        if (documentDetails) {
             analytics.trackDocumentShare({
-                id: store.document.id,
+                id: documentDetails.id,
                 query,
-                source: store.document.source,
+                source: documentDetails.source,
             });
         }
     };
@@ -52,27 +53,27 @@ const DocumentDetails = () => {
     return (
         <SearchContainer>
             <DocumentContainer sx={{ padding: 0 }}>
-                {store.state === RemoteState.Loading ? <LinearProgress /> : null}
-                {store.state === RemoteState.Error ? (
+                {documentState === RemoteState.Loading ? <LinearProgress /> : null}
+                {documentState === RemoteState.Error ? (
                     <div>
                         <h4>Something went wrong.</h4>
-                        <p>{store.error?.message ?? 'Unexpected Error'}</p>
+                        <p>{ducmentError?.message ?? 'Unexpected Error'}</p>
                     </div>
                 ) : null}
-                {store.state === RemoteState.Loaded && store.document ? (
+                {documentState === RemoteState.Loaded && documentDetails ? (
                     <>
                         <MetaTags
                             title={
-                                store.document?.title
-                                    ? `Dolma Document - ${store.document?.title}`
+                                documentDetails.title
+                                    ? `Dolma Document - ${documentDetails.title}`
                                     : undefined
                             }
                         />
-                        <DocumentMeta doc={store.document} />
+                        <DocumentMeta doc={documentDetails} />
                         <Typography variant="h4" sx={{ mt: 1 }}>
-                            {store.document.title}
+                            {documentDetails.title}
                         </Typography>
-                        <Snippets document={store.document} whiteSpace />
+                        <Snippets document={documentDetails} whiteSpace />
                         <ButtonsContainer direction="row" spacing={2} flexWrap="wrap">
                             <Button variant="outlined" onClick={handleShareClick}>
                                 <Typography>Copy Link to Share</Typography>
@@ -94,7 +95,7 @@ const DocumentDetails = () => {
                                     onClose={handleModalClose}
                                     open={metadataModalOpen}>
                                     <MetadataDetails>
-                                        {JSON.stringify(store.document, null, 2)}
+                                        {JSON.stringify(documentDetails, null, 2)}
                                     </MetadataDetails>
                                 </Dialog>
                             </Button>
@@ -105,12 +106,6 @@ const DocumentDetails = () => {
         </SearchContainer>
     );
 };
-
-export const Document = () => (
-    <DocumentStore>
-        <DocumentDetails />
-    </DocumentStore>
-);
 
 const DocumentContainer = styled(NoPaddingContainer)`
     word-break: break-word;

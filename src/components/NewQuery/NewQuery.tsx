@@ -11,7 +11,7 @@ import { Parameters } from '../configuration/Parameters';
 import { NewQueryForm } from './NewQueryForm';
 
 export const NewQuery = () => {
-    const modelInfo = useAppContext((state) => state.modelInfo);
+    const modelRemoteState = useAppContext((state) => state.modelRemoteState);
     const postMessage = useAppContext((state) => state.postMessage);
     const getAllModels = useAppContext((state) => state.getAllModels);
 
@@ -25,8 +25,7 @@ export const NewQuery = () => {
 
     // see if any loading state is active
     const isLoading =
-        modelInfo.loading ||
-        !modelInfo.data?.length ||
+        modelRemoteState === RemoteState.Loading ||
         promptTemplateRemoteState === RemoteState.Loading;
 
     // on load fetch data
