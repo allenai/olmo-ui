@@ -3,6 +3,8 @@ import {
     InferenceOpts,
     Message,
     MessagePost,
+    isFinalMessage,
+    isFirstMessage,
     isMessageChunk,
     isMessageWithMetadata,
     parseMessage,
@@ -108,17 +110,12 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 parentMsg?.id
             );
 
-            let firstPart = true;
             for await (const message of messageChunks) {
                 // The first chunk should always be a Message capturing the details of the user's
                 // message that was just submitted.
-                if (firstPart) {
-                    if (!isMessageWithMetadata(message)) {
-                        throw new Error(
-                            `malformed response, the first part must be a valid message: ${message}`
-                        );
-                    }
+                if (isFirstMessage(message)) {
                     const msg = parseMessage(message);
+
                     set(
                         (state) => {
                             branch(state).unshift(msg);
@@ -129,16 +126,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             // Expand the thread so that the response is visible as it's streamed to the client.(only applied to the pre-refresh UI)
                             state.expandedThreadID = msg.root;
 
-                            if (shouldSetSelectedThread) {
+                            if (shouldSetSelectedThread && messagePath?.length === 0) {
                                 state.selectedThreadInfo.data = msg;
                             }
                         },
                         false,
                         'threadUpdate/firstMessage'
                     );
-
-                    firstPart = false;
-                    continue;
                 }
 
                 // After receiving the first part we should expect a series of MessageChunks, each of
@@ -159,23 +153,23 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                         false,
                         'threadUpdate/messageChunk'
                     );
-                    continue;
                 }
 
-                // Finally we should receive a Message that represents the fully materialized Message with
-                // with the model's response as a child.
-                if (isMessageWithMetadata(message)) {
+                if (isFinalMessage(message)) {
+                    // Finally we should receive a Message that represents the fully materialized Message with
+                    // with the model's response as a child.
                     const msg = parseMessage(message);
+
                     set(
                         (state) => {
                             branch(state)[0] = msg;
 
                             if (shouldSetSelectedThread) {
-                                state.selectedThreadInfo.data = msg;
+                                state.pathToLastMessageInThread.push(msg.id, msg.children![0].id);
                             }
                         },
                         false,
-                        'threadUpdate/fullMessage'
+                        'threadUpdate/finalMessage'
                     );
                 }
             }

@@ -17,6 +17,7 @@ export interface SelectedThreadSlice {
 export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
     selectedThreadInfo: {},
     pathToLastMessageInThread: [],
+
     postToExistingThread: async (newMessage: MessagePost) => {
         const pathToLastMessageInThread = get().pathToLastMessageInThread;
         const parentMessageId = pathToLastMessageInThread[pathToLastMessageInThread.length - 1];
@@ -24,59 +25,46 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         return get().postMessage(
             newMessage,
             { id: parentMessageId },
-            false,
+            true,
             pathToLastMessageInThread
         );
     },
 
     getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {
+        let selectedThread: Message | undefined;
+
         if (checkExistingThreads) {
-            const existingThread = get().allThreadInfo.data.messages.find(
+            selectedThread = get().allThreadInfo.data.messages.find(
                 (message) => message.id === threadId
             );
+        }
 
-            if (existingThread != null) {
-                const pathToLastMessageInThread: string[] = [];
-                let message: Message | undefined = existingThread;
+        if (selectedThread == null) {
+            try {
+                set(
+                    (state) => ({
+                        selectedThreadInfo: {
+                            ...state.selectedThreadInfo,
+                            loading: true,
+                            error: false,
+                        },
+                    }),
+                    false,
+                    'selectedThread/getSelectedThreadStart'
+                );
 
-                // This is only getting the first message's ID
-                while (message != null) {
-                    pathToLastMessageInThread.push(message.id);
-
-                    message = message?.children?.[0];
-                }
+                const localSelectedThread = await messageClient.getMessage(threadId);
+                selectedThread = localSelectedThread;
 
                 set(
                     (state) => {
-                        state.selectedThreadInfo.data = existingThread;
-                        state.pathToLastMessageInThread = pathToLastMessageInThread;
+                        if (checkExistingThreads) {
+                            state.allThreadInfo.data.messages.push(localSelectedThread);
+                        }
                     },
                     false,
-                    'selectedThread/setSelectedThread'
+                    'selectedThread/getSelectedThreadFinish'
                 );
-
-                return existingThread;
-            }
-        } else {
-            try {
-                set((state) => ({
-                    selectedThreadInfo: {
-                        ...state.selectedThreadInfo,
-                        loading: true,
-                        error: false,
-                    },
-                }));
-
-                const selectedThread = await messageClient.getMessage(threadId);
-
-                set((state) => {
-                    state.selectedThreadInfo.data = selectedThread;
-                    state.selectedThreadInfo.loading = false;
-
-                    if (checkExistingThreads) {
-                        state.allThreadInfo.data.messages.push(selectedThread);
-                    }
-                });
             } catch (err) {
                 get().addAlertMessage(
                     errorToAlert(
@@ -85,17 +73,45 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                         err
                     )
                 );
-                set((state) => ({
-                    selectedThreadInfo: {
-                        ...state.selectedThreadInfo,
-                        error: true,
-                        loading: false,
-                    },
-                }));
+                set(
+                    (state) => ({
+                        selectedThreadInfo: {
+                            ...state.selectedThreadInfo,
+                            error: true,
+                            loading: false,
+                        },
+                    }),
+                    false,
+                    'selectedThread/getSelectedThreadError'
+                );
+            }
+        }
+
+        if (selectedThread != null) {
+            const pathToLastMessageInThread: string[] = [];
+            let message: Message | undefined = selectedThread;
+
+            // This is only getting the first message's ID
+            while (message != null) {
+                console.log('id', message.id);
+                pathToLastMessageInThread.push(message.id);
+
+                message = message?.children?.[0];
             }
 
-            return get().selectedThreadInfo;
+            set(
+                (state) => {
+                    state.selectedThreadInfo.data = selectedThread;
+                    state.pathToLastMessageInThread = pathToLastMessageInThread;
+                    state.selectedThreadInfo.error = false;
+                    state.selectedThreadInfo.loading = false;
+                },
+                false,
+                'selectedThread/setSelectedThread'
+            );
         }
+
+        return get().selectedThreadInfo;
     },
 
     setExpandedThreadID: (id: string | undefined) => {
