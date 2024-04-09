@@ -1,6 +1,7 @@
 import Snackbar from '@mui/material/Snackbar';
 
 import { Box } from '@mui/material';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface ParameterSnackBarProps {
     parametersChanged: boolean;
@@ -10,11 +11,9 @@ export const ParameterSnackBar = ({
     parametersChanged,
     setParametersChanged,
 }: ParameterSnackBarProps) => {
-    const handleClose = (_event: React.SyntheticEvent | Event) => {
-        setTimeout(() => {
-            setParametersChanged(false);
-        }, 5000);
-    };
+    const handleClose = useDebouncedCallback((_event: React.SyntheticEvent | Event) => {
+        setParametersChanged(false);
+    }, 5000);
 
     return (
         <Box>
