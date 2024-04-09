@@ -185,13 +185,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
             set(
                 (state) => {
-                    const postMessageInfo = {
-                        loading: false,
-                        data: branch(state)[0],
-                        error: false,
-                    };
-
-                    return { abortController: null, ongoingThreadId: null, postMessageInfo };
+                    state.abortController = null;
+                    state.ongoingThreadId = null;
+                    state.postMessageInfo.loading = false;
+                    state.postMessageInfo.data = branch(state)[0];
+                    state.postMessageInfo.error = false;
                 },
                 false,
                 'threadUpdate/finishPostMessage'

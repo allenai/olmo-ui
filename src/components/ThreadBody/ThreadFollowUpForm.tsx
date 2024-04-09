@@ -12,7 +12,7 @@ import { useAppContext } from '../../AppContext';
 interface ThreadFollowUpFormProps {
     curMessage: Message;
     disabledActions: boolean;
-    messagePath?: string[];
+    messagePath?: Message['id'][];
 }
 
 export const ThreadFollowUpForm = ({

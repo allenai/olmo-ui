@@ -10,7 +10,7 @@ import 'highlight.js/styles/github-dark.css';
 import { BaseModelResponseView } from './ResponseView/BaseModelResponseView';
 import { ChatResponseView } from './ThreadBody/ChatResponseView';
 import { ThreadContextMenu } from './ThreadBody/ThreadContextMenu';
-import { ThreadEditForm } from './ThreadBody/TheadEditForm';
+import { ThreadEditForm } from './ThreadBody/ThreadEditForm';
 import { ThreadFollowUpForm } from './ThreadBody/ThreadFollowUpForm';
 
 interface ThreadBodyProps {
@@ -94,6 +94,7 @@ export const ThreadBodyView = ({
                                     parent={parent}
                                     setIsEditing={setIsEditing}
                                     setMessageLoading={setMessageLoading}
+                                    messagePath={messagePath.concat(curMessage.id)}
                                 />
                             ) : (
                                 <>

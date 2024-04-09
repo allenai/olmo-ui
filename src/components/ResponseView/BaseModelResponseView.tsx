@@ -32,9 +32,11 @@ const BaseResponseContainer = ({ children }: BaseResponseContainerProps) => {
 export const BaseModelResponseView = ({ response, msgId, initialPrompt }: ResponseProps) => {
     const abortController = useAppContext((state) => state.abortController);
     const ongoingThreadId = useAppContext((state) => state.ongoingThreadId);
+
     const onAbort = useCallback(() => {
         abortController?.abort();
     }, [abortController]);
+
     // turning off features as they pop dom warnings
     marked.use({
         mangle: false,

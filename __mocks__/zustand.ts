@@ -1,8 +1,13 @@
 import * as zustand from 'zustand';
 import { act } from '@testing-library/react';
 
-const { create: actualCreate, createStore: actualCreateStore } =
-    await vi.importActual<typeof zustand>('zustand');
+const {
+    create: actualCreate,
+    createStore: actualCreateStore,
+    useStore: actualUseStore,
+} = await vi.importActual<typeof zustand>('zustand');
+
+export const useStore = actualUseStore;
 
 // a variable to hold reset functions for all stores declared in the app
 export const storeResetFns = new Set<() => void>();

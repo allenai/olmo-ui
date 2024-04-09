@@ -61,9 +61,24 @@ export const appContext = createStore<AppContextState>()(
     )
 );
 
-export const useAppContext = <U>(
-    selector: Parameters<typeof useStore<typeof appContext, U>>[1]
-): U => useStore(appContext, selector);
+type SelectorType<TSelectorReturnValue> = Parameters<
+    typeof useStore<typeof appContext, TSelectorReturnValue>
+>[1];
+
+/* eslint-disable no-redeclare */
+export function useAppContext(): AppContextState;
+export function useAppContext<TSelectorReturnValue>(
+    selector: SelectorType<TSelectorReturnValue>
+): TSelectorReturnValue;
+
+export function useAppContext<TSelectorReturnValue>(selector?: SelectorType<TSelectorReturnValue>) {
+    if (selector == null) {
+        return useStore(appContext);
+    }
+
+    return useStore(appContext, selector);
+}
+/* eslint-enable no-redeclare */
 
 export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
 export type OlmoStateCreator<TOwnSlice> = StateCreator<
