@@ -63,7 +63,7 @@ export const SearchForm = ({
                     <Button
                         variant="contained"
                         onClick={() => submitSearch()}
-                        sx={{ height: 'fit-content', padding: '6px 16px' }}
+                        sx={{ height: 'fit-content', paddingBlock: 1, paddingInline: 2 }}
                         disabled={disabled}>
                         Submit
                     </Button>
