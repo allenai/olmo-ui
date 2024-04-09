@@ -35,9 +35,11 @@ export const messageStreamHandlers = [
     }),
 ];
 
+export const newMessageId = 'msg_A8E5H1X2O4';
+
 const fakeNewThreadMessages: Array<MessageStreamPart> = [
     {
-        id: messageId,
+        id: newMessageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -63,9 +65,9 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
                     n: 1,
                     top_p: 1,
                 },
-                root: messageId,
+                root: newMessageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: messageId,
+                parent: newMessageId,
                 final: false,
                 private: false,
                 model_type: 'chat',
@@ -121,7 +123,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
         content: 'Okay',
     },
     {
-        id: messageId,
+        id: newMessageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -132,7 +134,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
             n: 1,
             top_p: 1,
         },
-        root: messageId,
+        root: newMessageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
@@ -147,9 +149,9 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
                     n: 1,
                     top_p: 1,
                 },
-                root: messageId,
+                root: newMessageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: messageId,
+                parent: newMessageId,
                 logprobs: [],
                 completion: 'cpl_R5T5K6B4C9',
                 final: true,
