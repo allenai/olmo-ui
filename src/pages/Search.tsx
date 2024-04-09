@@ -19,7 +19,7 @@ const SearchError = ({ message }: { message: string }) => {
     );
 };
 
-const SearchResults = () => {
+export const Search = () => {
     const loc = useLocation();
     const request = search.fromQueryString(loc.search);
 
@@ -59,8 +59,4 @@ const SearchResults = () => {
             return <SearchResultList response={response} />;
         }
     }
-};
-
-export const Search = () => {
-    return <SearchResults />;
 };
