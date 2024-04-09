@@ -16,7 +16,7 @@ export const Document = () => {
     const getDocument = useAppContext((state) => state.getDocument);
     const documentDetails = useAppContext((state) => state.document);
     const documentState = useAppContext((state) => state.documentState);
-    const ducmentError = useAppContext((state) => state.documentError);
+    const documentError = useAppContext((state) => state.documentError);
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
@@ -56,7 +56,7 @@ export const Document = () => {
             {documentState === RemoteState.Error ? (
                 <div>
                     <h4>Something went wrong.</h4>
-                    <p>{ducmentError?.message ?? 'Unexpected Error'}</p>
+                    <p>{documentError?.message ?? 'Unexpected Error'}</p>
                 </div>
             ) : null}
             {documentState === RemoteState.Loaded && documentDetails ? (
