@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, IconButton, Stack, TextField, Tooltip, styled, Theme } from '@mui/material';
+import { Button, Card, IconButton, Stack, TextField, Tooltip, styled } from '@mui/material';
 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { search } from '../../api/dolma/search';
 import { useAppContext } from '../../AppContext';
 import { links } from '../../Links';
@@ -54,6 +55,7 @@ export const SearchForm = ({
             <Stack gap={1.5} alignItems="flex-start">
                 <SearchTextField
                     fullWidth
+                    multiline
                     value={queryText}
                     placeholder={placeholder}
                     onChange={(e) => setQueryText(e.currentTarget.value)}
@@ -69,13 +71,17 @@ export const SearchForm = ({
                         Submit
                     </Button>
                     <Tooltip
-                        title="FAQs: How does the Dataset Explorer work?"
+                        title="About Dataset Explorer"
                         sx={{ color: (theme) => theme.palette.text.primary }}>
                         <IconButton
-                            aria-label="FAQs: How does the Dataset Explorer work?"
+                            aria-label="About Dataset Explorer"
                             size="large"
                             href={links.faqs}
-                            sx={{ color: (theme) => theme.color.N9.hex, padding: 0 }}>
+                            sx={{
+                                color: (theme) => theme.color.N9.hex,
+                                padding: 0,
+                                display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
+                            }}>
                             <InfoOutlinedIcon />
                         </IconButton>
                     </Tooltip>
