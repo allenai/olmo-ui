@@ -27,7 +27,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     }
 
     const userInfo = useAppContext((state) => state.userInfo);
-    const changeLabel = useAppContext((state) => state.changeLabel);
+    const updateLabel = useAppContext((state) => state.updateLabel);
     const labelRemoteState = useAppContext((state) => state.labelRemoteState);
 
     // Filter out the label that was rated by the current login user then pop the first one
@@ -43,7 +43,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     const FlagIcon = currentMessageLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
 
     const rateMessage = async (newRating: LabelRating) => {
-        changeLabel({ rating: newRating, message: message.id }, currentMessageLabel).then(
+        updateLabel({ rating: newRating, message: message.id }, currentMessageLabel).then(
             (newLabel) => {
                 setCurrentMessageLabel(newLabel);
             }

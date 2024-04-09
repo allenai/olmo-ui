@@ -20,7 +20,7 @@ export interface LabelSlice {
     label: Label | null;
     deleteLabel: (labelId: string, msg: Message) => Promise<void>;
     postLabel: (newLabel: CreateLabelRequest, msg: Message) => Promise<void>;
-    changeLabel: (
+    updateLabel: (
         newLabelRequest: CreateLabelRequest,
         currentLabel?: Label
     ) => Promise<Label | undefined>;
@@ -90,9 +90,9 @@ export const createLabelSlice: StateCreator<LabelSlice & AlertMessageSlice, [], 
     },
 
     /**
-     * Change the status of current label
+     * Update the status of current label
      */
-    changeLabel: async (
+    updateLabel: async (
         newLabelRequest: CreateLabelRequest,
         currentLabel?: Label
     ): Promise<Label | undefined> => {
