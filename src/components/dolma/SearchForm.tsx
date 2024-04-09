@@ -19,8 +19,6 @@ const SearchTextField = styled(TextField)`
     }
 `;
 
-// test
-
 export const SearchForm = ({
     defaultValue,
     disabled,
