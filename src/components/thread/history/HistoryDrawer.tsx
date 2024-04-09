@@ -8,7 +8,6 @@ import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
-const DefaultPageSize = 10 as const;
 const Limit = 20 as const;
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history' as const;
@@ -23,7 +22,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const stackRef = useRef<HTMLDivElement>(null);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
-    const [ offset, setOffSet ] = useState(10);
+    const [offset, setOffSet] = useState(10);
     const creator = userInfo?.client;
 
     useEffect(() => {
@@ -32,44 +31,36 @@ export const HistoryDrawer = (): JSX.Element => {
 
     const threadsFromToday: Message[] = [];
     const threadsFromThisWeek: Message[] = [];
-    const threadsFromThisMonth: Message[] = [];
+    const threadsOlderThanAWeek: Message[] = [];
 
-    if(threadsFromThisMonth.length === 0) {
-        allThreadInfo.data?.messages.forEach((m) => {
-            const createdDay = m.created;
-    
-            if (createdDay.toDateString() === new Date().toDateString()) {
-                threadsFromToday.push(m);
-            } else if (
-                new Date().getDate() - createdDay.getDate() > 7 &&
-                new Date().getDate() - createdDay.getDate() <= 30
-            ) {
-                threadsFromThisWeek.push(m);
-            } else {
-                threadsFromThisMonth.push(m);
-            }
-        });
-    } else {
-        allThreadInfo.data?.messages.forEach((m) => {
-            threadsFromThisMonth.push(m);
-        });
-    }
+    allThreadInfo.data?.messages.forEach((m) => {
+        const createdDay = m.created;
+
+        if (createdDay.toDateString() === new Date().toDateString()) {
+            threadsFromToday.push(m);
+        } else if (
+            new Date().getDate() - createdDay.getDate() > 7 &&
+            new Date().getDate() - createdDay.getDate() <= 30
+        ) {
+            threadsFromThisWeek.push(m);
+        } else {
+            threadsOlderThanAWeek.push(m);
+        }
+    });
 
     const handleScroll = () => {
-        if (Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) {
-            getAllThreads(offset + 10, creator, Limit);
-            setOffSet(offset + 10);
-        }
-    }
+        getAllThreads(offset + 10, creator, Limit);
+        setOffSet(offset + 10);
+    };
 
     useEffect(() => {
-        if(stackRef.current) {
+        if (stackRef.current) {
             stackRef.current.addEventListener('scroll', handleScroll);
             return () => {
                 stackRef.current?.removeEventListener('scroll', handleScroll);
-            }
+            };
         }
-    }, [stackRef])
+    }, [stackRef]);
 
     return (
         <ResponsiveDrawer
@@ -94,7 +85,8 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}
+            handleScroll={handleScroll}>
             <Stack direction="column" ref={stackRef}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
@@ -103,8 +95,8 @@ export const HistoryDrawer = (): JSX.Element => {
                     hasDivider
                 />
                 <HistoryDrawerSection
-                    heading="Previous 30 Days"
-                    threads={threadsFromThisMonth}
+                    heading="Older Than A Week"
+                    threads={threadsOlderThanAWeek}
                     hasDivider
                 />
             </Stack>

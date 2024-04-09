@@ -8,7 +8,11 @@ export interface ThreadSlice {
     deletedThreadInfo: FetchInfo<void>;
     expandedThreadID?: string;
     selectedModel: string;
-    getAllThreads: (offset: number, creator?: string, limit?: number) => Promise<FetchInfo<MessageList>>;
+    getAllThreads: (
+        offset: number,
+        creator?: string,
+        limit?: number
+    ) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
 }
 

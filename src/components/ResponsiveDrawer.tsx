@@ -14,6 +14,7 @@ export interface ResponsiveDrawerProps
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
+    handleScroll?: () => void;
 }
 
 const GlobalStyle = () => (
@@ -37,6 +38,7 @@ export const ResponsiveDrawer = ({
     drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
+    handleScroll,
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistantDrawerClosed = !open && desktopDrawerVariant === 'persistent';
 
@@ -53,6 +55,7 @@ export const ResponsiveDrawer = ({
                         // This is intentionally not following the breakpoint. It looks nicer this way
                         width: { xs: '100vw', sm: 'auto' },
                     },
+                    onScroll: handleScroll || null,
                 }}
                 sx={{
                     display: { xs: 'flex', [drawerBreakpoint]: 'none' },
@@ -81,6 +84,7 @@ export const ResponsiveDrawer = ({
                         backgroundColor: (theme) => theme.palette.background.default,
                         borderRight: 'none',
                     },
+                    onScroll: handleScroll || null,
                 }}>
                 {heading}
                 {children}
