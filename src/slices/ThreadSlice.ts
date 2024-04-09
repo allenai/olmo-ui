@@ -8,6 +8,7 @@ export interface ThreadSlice {
     deletedThreadInfo: FetchInfo<void>;
     expandedThreadID?: string;
     selectedModel: string;
+    threads: Message[];
     getAllThreads: (
         offset: number,
         creator?: string,
@@ -22,6 +23,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
     deletedThreadInfo: {},
     selectedModel: '',
+    threads: [],
     getAllThreads: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
             set((state) => ({
@@ -36,6 +38,13 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     data: { messages, meta },
                     loading: false,
                 },
+                threads: state.threads
+                    .concat(messages)
+                    .filter(
+                        (message, index, threadList) =>
+                            threadList.findIndex((threadList) => threadList.id === message.id) ===
+                            index
+                    ),
             }));
         } catch (err) {
             get().addAlertMessage(

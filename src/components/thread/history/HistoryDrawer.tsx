@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import { useAppContext } from '@/AppContext';
 import { Message } from '@/api/Message';
@@ -17,9 +18,8 @@ export const HistoryDrawer = (): JSX.Element => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getAllThreads = useAppContext((state) => state.getAllThreads);
     const allThreadInfo = useAppContext((state) => state.allThreadInfo);
+    const threads = useAppContext((state) => state.threads);
     const handleDrawerClose = () => closeDrawer(HISTORY_DRAWER_ID);
-
-    const stackRef = useRef<HTMLDivElement>(null);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
     const [offset, setOffSet] = useState(10);
@@ -33,9 +33,8 @@ export const HistoryDrawer = (): JSX.Element => {
     const threadsFromThisWeek: Message[] = [];
     const threadsOlderThanAWeek: Message[] = [];
 
-    allThreadInfo.data?.messages.forEach((m) => {
+    threads.forEach((m) => {
         const createdDay = m.created;
-
         if (createdDay.toDateString() === new Date().toDateString()) {
             threadsFromToday.push(m);
         } else if (
@@ -49,18 +48,25 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     const handleScroll = () => {
-        getAllThreads(offset + 10, creator, Limit);
-        setOffSet(offset + 10);
+        if (!allThreadInfo.loading) {
+            getAllThreads(offset + 10, creator, Limit);
+            setOffSet(offset + 20);
+        }
     };
 
-    useEffect(() => {
-        if (stackRef.current) {
-            stackRef.current.addEventListener('scroll', handleScroll);
-            return () => {
-                stackRef.current?.removeEventListener('scroll', handleScroll);
-            };
-        }
-    }, [stackRef]);
+    const [sentryRef] = useInfiniteScroll({
+        loading: allThreadInfo.loading ? allThreadInfo.loading : false,
+        hasNextPage: threads.length > 0,
+        onLoadMore: handleScroll,
+        // When there is an error, we stop infinite loading.
+        // It can be reactivated by setting "error" state as undefined.
+        disabled: !!allThreadInfo.error,
+        // `rootMargin` is passed to `IntersectionObserver`.
+        // We can use it to trigger 'onLoadMore' when the sentry comes near to become
+        // visible, instead of becoming fully visible on the screen.
+        rootMargin: '0px 0px 400px 0px',
+        delayInMs: 5000,
+    });
 
     return (
         <ResponsiveDrawer
@@ -69,7 +75,7 @@ export const HistoryDrawer = (): JSX.Element => {
             anchor="right"
             desktopDrawerVariant="persistent"
             heading={
-                <Box sx={{ position: 'sticky', top: 0 }}>
+                <Box sx={{ position: 'static', top: 0 }}>
                     <Stack justifyContent="space-between" direction="row" gap={2}>
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography variant="h5" margin={0} color="primary">
@@ -85,9 +91,8 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}
-            handleScroll={handleScroll}>
-            <Stack direction="column" ref={stackRef}>
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            <Stack direction="column" ref={sentryRef}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
