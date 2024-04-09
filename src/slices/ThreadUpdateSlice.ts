@@ -174,7 +174,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             branch(state)[0] = msg;
 
                             if (shouldSetSelectedThread) {
-                                state.pathToLastMessageInThread.push(msg.id, msg.children![0].id);
+                                if (messagePath.length === 0) {
+                                    state.pathToLastMessageInThread = [msg.id, msg.children![0].id];
+                                } else {
+                                    state.pathToLastMessageInThread.push(
+                                        msg.id,
+                                        msg.children![0].id
+                                    );
+                                }
                             }
                         },
                         false,
