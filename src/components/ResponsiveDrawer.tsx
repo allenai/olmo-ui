@@ -56,7 +56,7 @@ export const ResponsiveDrawer = ({
                 sx={{
                     width: 'auto',
                     display: { xs: 'none', [drawerBreakpoint]: 'flex' },
-                    overflow: 'hidden',
+                    overflow: !open && desktopDrawerVariant === 'persistent' ? 'hidden' : 'visible',
 
                     ...desktopDrawerSx,
                 }}
