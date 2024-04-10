@@ -64,7 +64,7 @@ export const HistoryDrawer = (): JSX.Element => {
 
     const [sentryRef] = useInfiniteScroll({
         loading: allThreadInfo.loading ? allThreadInfo.loading : false,
-        hasNextPage: threads.length > 0,
+        hasNextPage: allThreadInfo.data.meta.total > 0,
         onLoadMore: handleScroll,
         // When there is an error, we stop infinite loading.
         // It can be reactivated by setting "error" state as undefined.
