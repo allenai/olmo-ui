@@ -1,29 +1,54 @@
 import { Stack } from '@mui/material';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { LoaderFunction, useParams } from 'react-router-dom';
 
 import { ChatMessage } from './ChatMessage';
 import { Message } from '@/api/Message';
 import { MessageInteraction } from './MessageInteraction';
-import { useAppContext } from '@/AppContext';
+import { appContext, useAppContext } from '@/AppContext';
 
 interface MessageViewProps {
-    message?: Message;
+    content?: Message['content'];
+    childMessages?: Message['children'];
+    role?: Message['role'];
+    messagePath?: string[];
+    messageLabels?: Message['labels'];
+    messageId: Message['id'];
 }
 
-const MessageView = ({ message }: MessageViewProps) => {
-    if (message == null) {
+const MessageView = ({
+    content,
+    childMessages,
+    role,
+    messagePath = [],
+    messageLabels = [],
+    messageId,
+}: MessageViewProps) => {
+    if (content == null || role == null) {
         return null;
     }
 
-    const { content, children, role } = message;
+    const firstChild = childMessages?.[0];
 
     return (
         <>
             <ChatMessage role={role}>{content}</ChatMessage>
-            <MessageInteraction message={message} />
-            {/* TODO: add thread handling */}
-            <MessageView message={children?.[0]} />
+            <MessageInteraction
+                role={role}
+                content={content}
+                messageLabels={messageLabels}
+                messageId={messageId}
+            />
+            {/* TODO: add branch and edit handling */}
+            {firstChild != null && (
+                <MessageView
+                    content={firstChild.content}
+                    role={firstChild.role}
+                    childMessages={firstChild.children}
+                    messagePath={messagePath.concat(firstChild.id)}
+                    messageId={firstChild.id}
+                    messageLabels={firstChild.labels}
+                />
+            )}
         </>
     );
 };
@@ -31,18 +56,26 @@ const MessageView = ({ message }: MessageViewProps) => {
 export const ThreadDisplay = (): JSX.Element => {
     const { id } = useParams();
 
-    const getSelectedThread = useAppContext((state) => state.getSelectedThread);
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
-
-    useEffect(() => {
-        if (id != null) {
-            getSelectedThread(id);
-        }
-    }, [id]);
+    const selectedThread = useAppContext(
+        (state) => state.allThreadInfo.data.messages.find((thread) => thread.id === id)!
+    );
 
     return (
         <Stack gap={2} direction="column">
-            <MessageView message={selectedThreadInfo.data} />
+            <MessageView
+                content={selectedThread.content}
+                role={selectedThread.role}
+                childMessages={selectedThread.children}
+                messagePath={[selectedThread.id]}
+                messageId={selectedThread.id}
+                messageLabels={selectedThread.labels}
+            />
         </Stack>
     );
+};
+
+export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
+    const getSelectedThread = appContext.getState().getSelectedThread;
+    await getSelectedThread(params.id!, true);
+    return null;
 };

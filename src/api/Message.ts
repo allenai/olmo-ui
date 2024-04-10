@@ -82,6 +82,37 @@ export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'chil
     children?: JSONMessage[];
 }
 
+export interface FirstMessage extends JSONMessage {
+    final: false;
+}
+
+export interface FinalMessage extends JSONMessage {
+    final: true;
+    children: JSONMessage[];
+}
+
+export type MessageStreamPart = JSONMessage | MessageChunk | MessageStreamError;
+
+export const isMessageWithMetadata = (message: MessageStreamPart): message is JSONMessage => {
+    return 'id' in message;
+};
+
+export const isFirstMessage = (message: MessageStreamPart): message is FirstMessage => {
+    return isMessageWithMetadata(message) && message.final === false;
+};
+
+export const isFinalMessage = (message: MessageStreamPart): message is FinalMessage => {
+    return isMessageWithMetadata(message) && message.final === true;
+};
+
+export const isMessageChunk = (message: MessageStreamPart): message is MessageChunk => {
+    return 'content' in message && !isMessageWithMetadata(message);
+};
+
+export const isMessageStreamError = (message: MessageStreamPart): message is MessageStreamError => {
+    return 'error' in message;
+};
+
 export const parseMessage = (message: JSONMessage): Message => {
     return {
         ...message,

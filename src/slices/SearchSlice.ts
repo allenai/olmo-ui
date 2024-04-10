@@ -1,5 +1,4 @@
-import { StateCreator } from 'zustand';
-
+import { OlmoStateCreator } from '@/AppContext';
 import { search } from '../api/dolma/search';
 import { SearchClient } from '../api/dolma/SearchClient';
 import { RemoteState } from '../contexts/util';
@@ -19,7 +18,7 @@ export interface SearchSlice {
     searchResponse?: search.Response;
 }
 
-export const createSearchSlice: StateCreator<SearchSlice> = (set) => ({
+export const createSearchSlice: OlmoStateCreator<SearchSlice> = (set) => ({
     searchState: RemoteState.Loading,
     doSearch: async (searchRequest: search.Request) => {
         set({ searchState: RemoteState.Loading, type: ActionType.NewSearch, searchRequest });

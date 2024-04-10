@@ -1,9 +1,8 @@
-import { StateCreator } from 'zustand';
-
-import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
-import { RemoteState } from '../contexts/util';
-import { WhoamiApiUrl } from '../api/User';
+import { OlmoStateCreator } from '@/AppContext';
 import { Schema, SchemaClient } from '../api/Schema';
+import { WhoamiApiUrl } from '../api/User';
+import { RemoteState } from '../contexts/util';
+import { errorToAlert } from './AlertMessageSlice';
 
 export interface SchemaSlice {
     schemaRemoteState?: RemoteState;
@@ -13,12 +12,7 @@ export interface SchemaSlice {
 
 const schemaClient = new SchemaClient();
 
-export const createSchemaSlice: StateCreator<
-    SchemaSlice & AlertMessageSlice,
-    [],
-    [],
-    SchemaSlice
-> = (set, get) => ({
+export const createSchemaSlice: OlmoStateCreator<SchemaSlice> = (set, get) => ({
     schemaRemoteState: undefined,
     schema: null,
     getSchema: async () => {

@@ -1,23 +1,26 @@
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, delay, http } from 'msw';
 
-import {
-    JSONMessage,
-    MessagesResponse,
-    MessageChunk,
-    MessageStreamError,
-    MessagesApiUrl,
-} from '../../api/Message';
-import { Role } from '../../api/Role';
+import { MessageStreamPart, MessagesApiUrl, MessagesResponse } from '@/api/Message';
+import { Role } from '@/api/Role';
 
 const encoder = new TextEncoder();
 
 export const messageId = 'msg_A8E5H1X2O3';
 
 export const messageStreamHandlers = [
-    http.post(`*/v3/message/stream`, () => {
+    http.post(`*/v3/message/stream`, async ({ request }) => {
+        const requestBody = (await request.json()) as Record<string, unknown>;
+
+        // if this is a follow up to a thread use the thread response
+        const response =
+            requestBody.parent != null
+                ? fakeFollowupResponse(requestBody.parent as string)
+                : fakeNewThreadMessages;
+
         const stream = new ReadableStream({
-            start(controller) {
-                for (const message of fakeModelMessages) {
+            async start(controller) {
+                for (const message of response) {
+                    await delay();
                     controller.enqueue(encoder.encode(JSON.stringify(message) + '\n'));
                 }
                 controller.close();
@@ -32,9 +35,11 @@ export const messageStreamHandlers = [
     }),
 ];
 
-const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> = [
+export const newMessageId = 'msg_A8E5H1X2O4';
+
+const fakeNewThreadMessages: Array<MessageStreamPart> = [
     {
-        id: messageId,
+        id: newMessageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -45,7 +50,7 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
             n: 1,
             top_p: 1,
         },
-        root: messageId,
+        root: newMessageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
@@ -60,9 +65,9 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
                     n: 1,
                     top_p: 1,
                 },
-                root: messageId,
+                root: newMessageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: messageId,
+                parent: newMessageId,
                 final: false,
                 private: false,
                 model_type: 'chat',
@@ -86,7 +91,39 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
         content: 'Okay',
     },
     {
-        id: messageId,
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        id: newMessageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -97,13 +134,13 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
             n: 1,
             top_p: 1,
         },
-        root: messageId,
+        root: newMessageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
                 id: 'msg_V6Y0U4H4O9',
-                content: 'Okay',
-                snippet: 'Okay',
+                content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
                 creator: 'murphy@allenai.org',
                 role: Role.LLM,
                 opts: {
@@ -112,9 +149,9 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
                     n: 1,
                     top_p: 1,
                 },
-                root: messageId,
+                root: newMessageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: messageId,
+                parent: newMessageId,
                 logprobs: [],
                 completion: 'cpl_R5T5K6B4C9',
                 final: true,
@@ -132,46 +169,46 @@ const fakeModelMessages: Array<JSONMessage | MessageChunk | MessageStreamError> 
 const fakeGetAllThreadsResponse: MessagesResponse = {
     messages: [
         {
-            children: [
-                {
-                    completion: 'cpl_R5T5K6B4C9',
-                    content: 'Okay',
-                    created: '2024-03-20T22:34:03.342086+00:00',
-                    creator: 'murphy@allenai.org',
-                    final: true,
-                    id: 'msg_V6Y0U4H4O9',
-                    labels: [],
-                    logprobs: [],
-                    model_type: 'chat',
-                    opts: {
-                        max_tokens: 2048,
-                        n: 1,
-                        temperature: 1.0,
-                        top_p: 1.0,
-                    },
-                    parent: 'msg_L1Q1W8A3U0',
-                    private: false,
-                    role: Role.LLM,
-                    root: 'msg_L1Q1W8A3U0',
-                    snippet: 'Okay',
-                },
-            ],
+            id: messageId,
             content: 'say one word',
-            created: '2024-03-20T22:34:03.329111+00:00',
+            snippet: 'say one word',
             creator: 'murphy@allenai.org',
-            final: true,
-            id: 'msg_L1Q1W8A3U0',
-            labels: [],
+            role: Role.User,
             opts: {
                 max_tokens: 2048,
+                temperature: 1,
                 n: 1,
-                temperature: 1.0,
-                top_p: 1.0,
+                top_p: 1,
             },
-            role: Role.User,
-            private: false,
             root: messageId,
-            snippet: 'say one word',
+            created: '2024-03-20T22:34:03.329111+00:00',
+            children: [
+                {
+                    id: 'msg_V6Y0U4H4O9',
+                    content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                    snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                    creator: 'murphy@allenai.org',
+                    role: Role.LLM,
+                    opts: {
+                        max_tokens: 2048,
+                        temperature: 1,
+                        n: 1,
+                        top_p: 1,
+                    },
+                    root: messageId,
+                    created: '2024-03-20T22:34:03.342086+00:00',
+                    parent: messageId,
+                    logprobs: [],
+                    completion: 'cpl_R5T5K6B4C9',
+                    final: true,
+                    private: false,
+                    model_type: 'chat',
+                    labels: [],
+                },
+            ],
+            final: true,
+            private: false,
+            labels: [],
         },
         {
             children: [
@@ -218,3 +255,132 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
     ],
     meta: { limit: 10, offset: 0, total: 229 },
 };
+
+const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
+    {
+        id: messageId,
+        content: 'say one word',
+        snippet: 'say one word',
+        creator: 'murphy@allenai.org',
+        role: Role.User,
+        opts: {
+            max_tokens: 2048,
+            temperature: 1,
+            n: 1,
+            top_p: 1,
+        },
+        root: parentId,
+        created: '2024-03-20T22:34:03.329111+00:00',
+        children: [
+            {
+                id: 'msg_V6Y0U4H4O9',
+                content: '',
+                snippet: '',
+                creator: 'murphy@allenai.org',
+                role: Role.LLM,
+                opts: {
+                    max_tokens: 2048,
+                    temperature: 1,
+                    n: 1,
+                    top_p: 1,
+                },
+                root: parentId,
+                created: '2024-03-20T22:34:03.342086+00:00',
+                parent: parentId,
+                final: false,
+                private: false,
+                model_type: 'chat',
+                labels: [],
+            },
+        ],
+        final: false,
+        private: false,
+        labels: [],
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: '',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: '',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: 'Okay',
+    },
+    {
+        id: messageId,
+        content: 'say one word',
+        snippet: 'say one word',
+        creator: 'murphy@allenai.org',
+        role: Role.User,
+        opts: {
+            max_tokens: 2048,
+            temperature: 1,
+            n: 1,
+            top_p: 1,
+        },
+        root: messageId,
+        created: '2024-03-20T22:34:03.329111+00:00',
+        children: [
+            {
+                id: 'msg_V6Y0U4H4O9',
+                content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                creator: 'murphy@allenai.org',
+                role: Role.LLM,
+                opts: {
+                    max_tokens: 2048,
+                    temperature: 1,
+                    n: 1,
+                    top_p: 1,
+                },
+                root: messageId,
+                created: '2024-03-20T22:34:03.342086+00:00',
+                parent: messageId,
+                logprobs: [],
+                completion: 'cpl_R5T5K6B4C9',
+                final: true,
+                private: false,
+                model_type: 'chat',
+                labels: [],
+            },
+        ],
+        final: true,
+        private: false,
+        labels: [],
+    },
+];
