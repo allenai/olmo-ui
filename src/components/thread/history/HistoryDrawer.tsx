@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, styled, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
@@ -75,7 +75,7 @@ export const HistoryDrawer = (): JSX.Element => {
             anchor="right"
             desktopDrawerVariant="persistent"
             heading={
-                <Box sx={{ position: 'static', top: 0 }}>
+                <HistoryBoxHeader>
                     <Stack justifyContent="space-between" direction="row" gap={2}>
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography variant="h5" margin={0} color="primary">
@@ -89,7 +89,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </Box>
+                </HistoryBoxHeader>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column" ref={sentryRef}>
@@ -108,3 +108,12 @@ export const HistoryDrawer = (): JSX.Element => {
         </ResponsiveDrawer>
     );
 };
+
+const HistoryBoxHeader = styled(Box)`
+    && {
+        background-color: ${({ theme }) => theme.color2.N1.hex};
+        z-index: 99;
+        position: sticky;
+        top: 0;
+    }
+`;
