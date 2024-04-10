@@ -14,6 +14,7 @@ export const Search = () => {
     const loc = useLocation();
     const request = search.fromQueryString(loc.search);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const doSearch = useAppContext((state) => state.doSearch);
     const searchState = useAppContext((state) => state.searchState);
     const response = useAppContext((state) => state.searchResponse);
@@ -24,7 +25,7 @@ export const Search = () => {
             const analytics = new AnalyticsClient();
             analytics.trackSearchQuery({ request, response: { meta: r.meta } });
         });
-    }, [search.toQueryString(request)]);
+    }, [doSearch, request]);
 
     return (
         <>

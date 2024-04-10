@@ -33,7 +33,7 @@ export const Document = () => {
             const analytics = new AnalyticsClient();
             analytics.trackDocumentView({ id, query, source: d.source });
         });
-    }, [id]);
+    }, [getDocument, id, query]);
 
     const handleShareClick = () => {
         const analytics = new AnalyticsClient();

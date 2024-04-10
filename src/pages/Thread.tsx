@@ -12,16 +12,19 @@ import { ContextMenu } from '../components/ContextMenu';
 
 export const Thread = () => {
     const { id } = useParams();
-    if (!id) {
-        return <h3>Please specify a message id.</h3>;
-    }
 
     const getSelectedThread = useAppContext((state) => state.getSelectedThread);
     const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
 
     useEffect(() => {
-        getSelectedThread(id);
-    }, []);
+        if (id) {
+            getSelectedThread(id);
+        }
+    }, [getSelectedThread, id]);
+
+    if (!id) {
+        return <h3>Please specify a message id.</h3>;
+    }
 
     return (
         <MajorityScreen>

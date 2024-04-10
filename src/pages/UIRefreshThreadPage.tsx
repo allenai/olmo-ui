@@ -22,11 +22,11 @@ export const UIRefreshThreadPage = () => {
     // if we're on the selected thread page, handle submission differently
     const isNewThreadPage = useMatch(links.playground);
 
-    const handlePromptSubmission = (data: { content: string }) => {
+    const handlePromptSubmission = async (data: { content: string }) => {
         if (isNewThreadPage) {
-            postMessage(data, undefined, true);
+            await postMessage(data, undefined, true);
         } else {
-            postToExistingThread(data);
+            await postToExistingThread(data);
         }
     };
 

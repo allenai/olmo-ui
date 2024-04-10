@@ -10,7 +10,7 @@ interface GetDocumentRequest {
 
 export interface DocumentSlice {
     documentState: RemoteState;
-    getDocument(request: GetDocumentRequest): Promise<search.Document>;
+    getDocument: (request: GetDocumentRequest) => Promise<search.Document>;
     documentRequest?: GetDocumentRequest;
     documentError?: Error;
     document?: search.Document;

@@ -16,10 +16,15 @@ export interface PromptTemplateSlice {
     promptTemplateRemoteState?: RemoteState;
     promptTemplateListRemoteState?: RemoteState;
     promptTemplateList: PromptTemplateList;
-    getPromptTemplateList: (includeDeleted?: boolean) => Promise<PromptTemplateList>;
-    getPromptTemplate(id: string): Promise<PromptTemplate>;
-    createPromptTemplate(promptTemplateData: PromptTemplatePost): Promise<PromptTemplate>;
-    patchPromptTemplate(id: string, patchValues: PromptTemplatePatch): Promise<PromptTemplate>;
+    getPromptTemplateList: (includeDeleted?: boolean) => Promise<PromptTemplateList | Error>;
+    getPromptTemplate: (id: string) => Promise<PromptTemplate | Error>;
+    createPromptTemplate: (
+        promptTemplateData: PromptTemplatePost
+    ) => Promise<PromptTemplate | Error>;
+    patchPromptTemplate: (
+        id: string,
+        patchValues: PromptTemplatePatch
+    ) => Promise<PromptTemplate | Error>;
 }
 
 const promptTemplateClient = new PromptTemplateClient();
@@ -31,7 +36,9 @@ export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = 
     setPromptTemplateList: (list: PromptTemplateList) => {
         set({ promptTemplateList: list });
     },
-    getPromptTemplateList: async (includeDeleted?: boolean): Promise<PromptTemplateList> => {
+    getPromptTemplateList: async (
+        includeDeleted?: boolean
+    ): Promise<PromptTemplateList | Error> => {
         set({ promptTemplateListRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .getPromptTemplateList(includeDeleted)
@@ -44,12 +51,12 @@ export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = 
 
                 return sortedPromptTemplates;
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 set({ promptTemplateListRemoteState: RemoteState.Error });
-                return error;
+                return error as Error;
             });
     },
-    getPromptTemplate: async (id: string): Promise<PromptTemplate> => {
+    getPromptTemplate: async (id: string): Promise<PromptTemplate | Error> => {
         set({ promptTemplateRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .getPromptTemplate(id)
@@ -64,14 +71,14 @@ export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = 
                 set({ promptTemplateRemoteState: RemoteState.Loaded });
                 return result;
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 set({ promptTemplateRemoteState: RemoteState.Error });
-                return error;
+                return error as Error;
             });
     },
     createPromptTemplate: async (
         promptTemplateData: PromptTemplatePost
-    ): Promise<PromptTemplate> => {
+    ): Promise<PromptTemplate | Error> => {
         set({ promptTemplateRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .createPromptTemplate(promptTemplateData)
@@ -83,15 +90,15 @@ export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = 
                 set({ promptTemplateRemoteState: RemoteState.Loaded });
                 return result;
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 set({ promptTemplateRemoteState: RemoteState.Error });
-                return error;
+                return error as Error;
             });
     },
     patchPromptTemplate: async (
         id: string,
         patchValues: PromptTemplatePatch
-    ): Promise<PromptTemplate> => {
+    ): Promise<PromptTemplate | Error> => {
         set({ promptTemplateRemoteState: RemoteState.Loading });
         return promptTemplateClient
             .patchPromptTemplate(id, patchValues)
@@ -106,9 +113,9 @@ export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = 
                 set({ promptTemplateRemoteState: RemoteState.Loaded });
                 return result;
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 set({ promptTemplateRemoteState: RemoteState.Error });
-                return error;
+                return error as Error;
             });
     },
 });
