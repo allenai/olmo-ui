@@ -1,7 +1,6 @@
 import { Stack } from '@mui/material';
 import { LoaderFunction, useParams } from 'react-router-dom';
 
-
 import { ChatMessage } from './ChatMessage';
 import { Message } from '@/api/Message';
 import { MessageInteraction } from './MessageInteraction';
@@ -12,9 +11,18 @@ interface MessageViewProps {
     childMessages?: Message['children'];
     role?: Message['role'];
     messagePath?: string[];
+    messageLabels?: Message['labels'];
+    messageId: Message['id'];
 }
 
-const MessageView = ({ content, childMessages, role, messagePath = [] }: MessageViewProps) => {
+const MessageView = ({
+    content,
+    childMessages,
+    role,
+    messagePath = [],
+    messageLabels = [],
+    messageId,
+}: MessageViewProps) => {
     if (content == null || role == null) {
         return null;
     }
@@ -24,14 +32,21 @@ const MessageView = ({ content, childMessages, role, messagePath = [] }: Message
     return (
         <>
             <ChatMessage role={role}>{content}</ChatMessage>
-            <MessageInteraction message={message} />
-            {/* TODO: add thread handling */}
+            <MessageInteraction
+                role={role}
+                content={content}
+                messageLabels={messageLabels}
+                messageId={messageId}
+            />
+            {/* TODO: add branch and edit handling */}
             {firstChild != null && (
                 <MessageView
                     content={firstChild.content}
                     role={firstChild.role}
                     childMessages={firstChild.children}
                     messagePath={messagePath.concat(firstChild.id)}
+                    messageId={firstChild.id}
+                    messageLabels={firstChild.labels}
                 />
             )}
         </>
@@ -52,6 +67,8 @@ export const ThreadDisplay = (): JSX.Element => {
                 role={selectedThread.role}
                 childMessages={selectedThread.children}
                 messagePath={[selectedThread.id]}
+                messageId={selectedThread.id}
+                messageLabels={selectedThread.labels}
             />
         </Stack>
     );
