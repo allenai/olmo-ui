@@ -20,6 +20,10 @@ export interface LabelSlice {
     label: Label | null;
     deleteLabel: (labelId: string, msg: Message) => Promise<void>;
     postLabel: (newLabel: CreateLabelRequest, msg: Message) => Promise<void>;
+    updateLabel: (
+        newLabelRequest: CreateLabelRequest,
+        currentLabel?: Label
+    ) => Promise<Label | undefined>;
     allLabels: LabelList | null;
     getAllLabels: (offset: number, size: number) => Promise<void>;
     getAllSortedLabels: (field: string, sort: GridSortDirection) => Promise<void>;
@@ -83,6 +87,43 @@ export const createLabelSlice: StateCreator<LabelSlice & AlertMessageSlice, [], 
             );
             set({ labelRemoteState: RemoteState.Error });
         }
+    },
+
+    /**
+     * Update the status of current label
+     */
+    updateLabel: async (
+        newLabelRequest: CreateLabelRequest,
+        currentLabel?: Label
+    ): Promise<Label | undefined> => {
+        const { addAlertMessage } = get();
+        const continueAfterDelete = currentLabel?.rating !== newLabelRequest.rating;
+        let returnLabel = currentLabel;
+        set({ labelRemoteState: RemoteState.Loading });
+
+        try {
+            if (currentLabel !== undefined) {
+                await labelClient.deleteLabel(currentLabel.id);
+                returnLabel = undefined;
+            }
+
+            if (continueAfterDelete) {
+                const newLabel = await labelClient.createLabel(newLabelRequest);
+                returnLabel = newLabel;
+            }
+
+            set({ labelRemoteState: RemoteState.Loaded });
+        } catch (error) {
+            addAlertMessage(
+                errorToAlert(
+                    `change-${LabelApiUrl}-${new Date().getTime()}`.toLowerCase(),
+                    `Error changing new label.`,
+                    error
+                )
+            );
+            set({ labelRemoteState: RemoteState.Error });
+        }
+        return Promise.resolve(returnLabel);
     },
 
     getAllLabels: async (offset: number = 0, limit: number = 10) => {
