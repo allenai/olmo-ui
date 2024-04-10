@@ -3,6 +3,9 @@ module.exports = {
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
     },
+    parserOptions: {
+        project: true
+    },
     overrides: [
         {
             files: ['*.ts', '*.tsx'],
