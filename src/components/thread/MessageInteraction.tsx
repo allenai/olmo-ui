@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Stack, Typography } from '@mui/material';
+import { ButtonGroup, Stack } from '@mui/material';
 import {
     ContentCopy,
     ThumbUp,
@@ -13,6 +13,7 @@ import { useCallback, useState } from 'react';
 
 import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
+import { ResponsiveButton } from './ResponsiveButton';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
@@ -56,32 +57,35 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
         <Stack direction="row" gap={2} alignItems="start">
             <FeedbackButtonGroup variant="outlined" aria-label="Thread feedback buttons">
                 <ActionButton
+                    variant="outlined"
                     startIcon={<GoodIcon />}
-                    onClick={() => rateMessage(LabelRating.Positive)}>
-                    <Typography>Good</Typography>
-                </ActionButton>
+                    title="Good"
+                    onClick={() => rateMessage(LabelRating.Positive)}
+                />
                 <ActionButton
+                    variant="outlined"
                     startIcon={<BadIcon />}
-                    onClick={() => rateMessage(LabelRating.Negative)}>
-                    <Typography>Bad</Typography>
-                </ActionButton>
+                    title="Bad"
+                    onClick={() => rateMessage(LabelRating.Negative)}></ActionButton>
                 <ActionButton
+                    variant="outlined"
                     startIcon={<FlagIcon />}
-                    onClick={() => rateMessage(LabelRating.Flag)}>
-                    <Typography>Inappropriate</Typography>
-                </ActionButton>
+                    title="Inappropriate"
+                    onClick={() => rateMessage(LabelRating.Flag)}></ActionButton>
             </FeedbackButtonGroup>
-            <ActionButton variant="outlined" startIcon={<ContentCopy />} onClick={copyMessage}>
-                <Typography>Copy</Typography>
-            </ActionButton>
+            <ActionButton
+                variant="outlined"
+                startIcon={<ContentCopy />}
+                title="Copy"
+                onClick={copyMessage}
+            />
         </Stack>
     );
 };
 
-const ActionButton = styled(Button)`
+const ActionButton = styled(ResponsiveButton)`
     && {
         border-color: ${({ theme }) => theme.color.B6.hex};
-        color: ${({ theme }) => theme.color.B6.hex};
     }
 `;
 
