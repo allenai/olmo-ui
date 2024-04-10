@@ -1,5 +1,13 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import {
+    Box,
+    Divider,
+    IconButton,
+    ListItem,
+    ListSubheader,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
@@ -76,7 +84,6 @@ export const HistoryDrawer = (): JSX.Element => {
                         position: 'sticky',
                         top: 0,
                         backgroundColor: (theme) => theme.palette.background.paper,
-                        zIndex: (theme) => theme.zIndex.drawer,
                     }}>
                     <Stack justifyContent="space-between" direction="row" gap={2}>
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
@@ -94,7 +101,7 @@ export const HistoryDrawer = (): JSX.Element => {
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack direction="column" ref={sentryRef}>
+            <Stack direction="column" ref={sentryRef} sx={{ overflow: 'scroll' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
@@ -106,6 +113,11 @@ export const HistoryDrawer = (): JSX.Element => {
                     threads={threadsOlderThanAWeek}
                     hasDivider
                 />
+                {/* {(loading || hasNextPage) && (
+                    <ListItem ref={sentryRef}>
+                        <Typography>Loading... </Typography>
+                    </ListItem>
+                )} */}
             </Stack>
         </ResponsiveDrawer>
     );
