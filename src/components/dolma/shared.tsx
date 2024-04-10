@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import { Box, Container, Grid, TextField } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 
 export const ScrollToTopOnPageChange = () => {
     const location = useLocation();
@@ -10,20 +10,6 @@ export const ScrollToTopOnPageChange = () => {
     }, [location]);
     return null;
 };
-
-export const SearchContainer = styled(Box)`
-    ${({ theme }) => theme.breakpoints.up('md')} {
-        padding: ${({ theme }) => `${theme.spacing(5)} ${theme.spacing(6)}`};
-    }
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        padding: ${({ theme }) => `${theme.spacing(2)} ${theme.spacing(3)}`};
-    }
-`;
-
-export const PartialWidthTextField = styled(TextField)`
-    width: 85%;
-    background-color: white;
-`;
 
 export const NoPaddingContainer = styled(Container)`
     &&& {

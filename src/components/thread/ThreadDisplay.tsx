@@ -1,10 +1,11 @@
 import { Stack } from '@mui/material';
 import { LoaderFunction, useParams } from 'react-router-dom';
 
-import { appContext, useAppContext } from '../../AppContext';
 
-import { Message } from '@/api/Message';
 import { ChatMessage } from './ChatMessage';
+import { Message } from '@/api/Message';
+import { MessageInteraction } from './MessageInteraction';
+import { appContext, useAppContext } from '@/AppContext';
 
 interface MessageViewProps {
     content?: Message['content'];
@@ -23,6 +24,7 @@ const MessageView = ({ content, childMessages, role, messagePath = [] }: Message
     return (
         <>
             <ChatMessage role={role}>{content}</ChatMessage>
+            <MessageInteraction message={message} />
             {/* TODO: add thread handling */}
             {firstChild != null && (
                 <MessageView
