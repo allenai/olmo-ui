@@ -1,15 +1,30 @@
-import { Card, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Card, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
-import { SearchTextField } from '../dolma/SearchForm';
-import { SearchBar } from '../dolma/SearchBar';
-
-// interface SearchDatasetCardProp extends PropsWithChildren {}
+import { SearchBar } from '@/components/dolma/SearchBar';
+import { search } from '@/api/dolma/search';
 
 export const SearchDatasetCard = (): JSX.Element => {
     const theme = useTheme();
+    const nav = useNavigate();
     const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
+    const [searchText, setSearchText] = useState<string>('');
+    
+    const onSearchBarChange = useCallback((value: string) => {
+        setSearchText(value);
+    }, []);
+
+    const onSubmit = () => {
+        if (!searchText) {
+            return;
+        }
+
+        nav(`/search?${search.toQueryString({ query: searchText })}`);
+    }
 
     return (
         <Card
@@ -17,10 +32,10 @@ export const SearchDatasetCard = (): JSX.Element => {
             sx={(theme) => ({
                 padding: 0,
                 [biggerContainerQuery(theme)]: {
-                    padding: 2,
+                    padding: 4,
                 },
 
-                backgroundColor: (theme) => theme.palette.background.default,
+                backgroundColor: (theme) => theme.color.B10.hex,
 
                 border: 0,
                 [smallerContainerQuery(theme)]: {
@@ -28,17 +43,21 @@ export const SearchDatasetCard = (): JSX.Element => {
                 },
             })}>
             <Stack gap={1.5} alignItems="flex-start">
-                <Typography variant="h3" color="primary">Search Training Data</Typography>
-                <SearchBar />
-                <Stack direction="row" justifyContent="space-between" width="100%">
-                    {/* <Button
-                        variant="contained"
-                        onClick={() => submitSearch()}
-                        sx={{ height: 'fit-content', paddingBlock: 1, paddingInline: 2 }}
-                        disabled={disabled}>
-                        Submit
-                    </Button> */}
-                </Stack>
+                <Typography
+                    variant="h5"
+                    component="h2"
+                    margin={0}
+                    color={(theme) => theme.palette.primary.contrastText}>
+                    Search Training Data
+                </Typography>
+                <SearchBar onChange={onSearchBarChange}/>
+                <Button
+                    variant="contained"
+                    onClick={onSubmit}
+                    sx={{ height: 'fit-content', paddingBlock: 1, paddingInline: 2 }}
+                    endIcon={<OpenInNewIcon />}>
+                    Submit
+                </Button>
             </Stack>
         </Card>
     );
