@@ -66,12 +66,14 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
                     variant="outlined"
                     startIcon={<BadIcon />}
                     title="Bad"
-                    onClick={() => rateMessage(LabelRating.Negative)}></ActionButton>
+                    onClick={() => rateMessage(LabelRating.Negative)}
+                />
                 <ActionButton
                     variant="outlined"
                     startIcon={<FlagIcon />}
                     title="Inappropriate"
-                    onClick={() => rateMessage(LabelRating.Flag)}></ActionButton>
+                    onClick={() => rateMessage(LabelRating.Flag)}
+                />
             </FeedbackButtonGroup>
             <ActionButton
                 variant="outlined"
