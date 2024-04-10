@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, styled, Typography } from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
@@ -49,7 +49,7 @@ export const HistoryDrawer = (): JSX.Element => {
 
     const handleScroll = () => {
         if (!allThreadInfo.loading) {
-            getAllThreads(offset + 10, creator, Limit);
+            getAllThreads(offset + 20, creator, Limit);
             setOffSet(offset + 20);
         }
     };
@@ -61,11 +61,7 @@ export const HistoryDrawer = (): JSX.Element => {
         // When there is an error, we stop infinite loading.
         // It can be reactivated by setting "error" state as undefined.
         disabled: !!allThreadInfo.error,
-        // `rootMargin` is passed to `IntersectionObserver`.
-        // We can use it to trigger 'onLoadMore' when the sentry comes near to become
-        // visible, instead of becoming fully visible on the screen.
-        rootMargin: '0px 0px 400px 0px',
-        delayInMs: 5000,
+        delayInMs: 100,
     });
 
     return (
@@ -75,7 +71,13 @@ export const HistoryDrawer = (): JSX.Element => {
             anchor="right"
             desktopDrawerVariant="persistent"
             heading={
-                <HistoryBoxHeader>
+                <Box
+                    sx={{
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: (theme) => theme.palette.background.paper,
+                        zIndex: (theme) => theme.zIndex.drawer,
+                    }}>
                     <Stack justifyContent="space-between" direction="row" gap={2}>
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography variant="h5" margin={0} color="primary">
@@ -89,7 +91,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </HistoryBoxHeader>
+                </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column" ref={sentryRef}>
@@ -108,12 +110,3 @@ export const HistoryDrawer = (): JSX.Element => {
         </ResponsiveDrawer>
     );
 };
-
-const HistoryBoxHeader = styled(Box)`
-    && {
-        background-color: ${({ theme }) => theme.color2.N1.hex};
-        z-index: 99;
-        position: sticky;
-        top: 0;
-    }
-`;
