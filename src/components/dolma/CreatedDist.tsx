@@ -45,7 +45,7 @@ export const CreatedDist = () => {
             categoryLabel="Created"
             data={distData}
             mapData={mapDistData}
-            sourceMap={sources!}
+            sourceMap={sources}
         />
     );
 };

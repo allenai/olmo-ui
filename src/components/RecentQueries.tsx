@@ -82,7 +82,7 @@ export const RecentQueries = () => {
     };
 
     const size = 10;
-    const count = allThreadInfo.data ? Math.ceil(allThreadInfo.data?.meta.total / size) : 0;
+    const count = allThreadInfo.data ? Math.ceil(allThreadInfo.data.meta.total / size) : 0;
 
     useEffect(() => {
         const creator = queriesView === QueryToggleOptions.Mine ? userInfo?.client : undefined;

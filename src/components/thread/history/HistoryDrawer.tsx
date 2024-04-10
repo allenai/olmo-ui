@@ -21,10 +21,10 @@ import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 
-const LIMIT = 20 as const;
-const PAGE_SIZE = 20 as const;
+const LIMIT = 20;
+const PAGE_SIZE = 20;
 
-export const HISTORY_DRAWER_ID: DrawerId = 'history' as const;
+export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
 export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
@@ -32,7 +32,9 @@ export const HistoryDrawer = (): JSX.Element => {
     const getAllThreads = useAppContext((state) => state.getAllThreads);
     const allThreadInfo = useAppContext((state) => state.allThreadInfo);
     const threads = useAppContext((state) => state.threads);
-    const handleDrawerClose = () => closeDrawer(HISTORY_DRAWER_ID);
+    const handleDrawerClose = () => {
+        closeDrawer(HISTORY_DRAWER_ID);
+    };
     const hasMoreThreadsToFetch = useAppContext((state) => {
         const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
         const loadedThreadCount = state.threads.length;

@@ -28,7 +28,9 @@ export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = 
     promptTemplateList: [DefaultPromptTemplate],
     promptTemplateRemoteState: undefined,
     promptTemplateListRemoteState: undefined,
-    setPromptTemplateList: (list: PromptTemplateList) => set({ promptTemplateList: list }),
+    setPromptTemplateList: (list: PromptTemplateList) => {
+        set({ promptTemplateList: list });
+    },
     getPromptTemplateList: async (includeDeleted?: boolean): Promise<PromptTemplateList> => {
         set({ promptTemplateListRemoteState: RemoteState.Loading });
         return promptTemplateClient

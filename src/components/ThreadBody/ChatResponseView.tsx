@@ -54,7 +54,7 @@ export const ChatResponseView = ({
         <LLMResponseView
             response={curMessage.content}
             msgId={curMessage.id}
-            isEditedResponse={curMessage.original !== undefined && curMessage.original?.length > 0}
+            isEditedResponse={curMessage.original !== undefined && curMessage.original.length > 0}
             contextMenu={!isEditing ? contextMenu : undefined}
             branchMenu={
                 branchCount > 1 ? (

@@ -26,7 +26,9 @@ export const NewApp = () => {
         setLoading(true);
         getUserInfo()
             .then(getSchema)
-            .finally(() => setLoading(false));
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     return (

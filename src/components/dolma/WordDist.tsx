@@ -45,7 +45,7 @@ export const WordDist = () => {
             categoryLabel="Words per Document"
             data={distData}
             mapData={mapDistData}
-            sourceMap={sources!}
+            sourceMap={sources}
         />
     );
 };

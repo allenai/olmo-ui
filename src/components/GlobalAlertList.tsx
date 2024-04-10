@@ -28,7 +28,9 @@ export const GlobalAlertList = () => {
     const isOpen = alertMessages.length > 0;
 
     const handleClose = (id: string) => {
-        return () => deleteAlertMessage(id);
+        return () => {
+            deleteAlertMessage(id);
+        };
     };
 
     return (

@@ -17,7 +17,7 @@ export const SearchTrainingDatasetMenuOption: MenuOption = {
     action: (selectedText: string) => {
         const params = new URLSearchParams();
         selectedText = selectedText.replace(/"/g, '\\"');
-        if (selectedText.indexOf(' ') !== -1) {
+        if (selectedText.includes(' ')) {
             selectedText = `"${selectedText}"`;
         }
         params.set('query', selectedText);
@@ -111,8 +111,8 @@ export const ContextMenu = ({
                       <Fab
                           sx={{
                               position: 'absolute',
-                              top: contextPos?.mouseY + i * buttonHeight,
-                              left: contextPos?.mouseX,
+                              top: contextPos.mouseY + i * buttonHeight,
+                              left: contextPos.mouseX,
                           }}
                           size="small"
                           variant="extended"
@@ -121,8 +121,8 @@ export const ContextMenu = ({
                           onClick={() => {
                               action.action(
                                   getSelectionText() || '',
-                                  contextPos?.mouseX,
-                                  contextPos?.mouseY
+                                  contextPos.mouseX,
+                                  contextPos.mouseY
                               );
                           }}>
                           {action.icon}

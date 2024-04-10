@@ -166,11 +166,15 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                 isLoading={isLoading}
                 promptTemplate={focusedPromptTemplate}
                 open={editorOpen}
-                onCancel={() => setEditorOpen(false)}
+                onCancel={() => {
+                    setEditorOpen(false);
+                }}
                 onSuccess={(name: string, content: string) => {
                     newPromptTemplate({ name, content });
                 }}
-                onRestore={() => updatePromptTemplate(focusedPromptTemplate?.id, false)}
+                onRestore={() => {
+                    updatePromptTemplate(focusedPromptTemplate?.id, false);
+                }}
             />
 
             {!hideTitle ? (

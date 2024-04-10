@@ -179,8 +179,12 @@ export const Admin = () => {
                                 });
                                 getAllLabels(model.page * model.pageSize, model.pageSize);
                             }}
-                            onSortModelChange={(model) => handleOnSortModelChange(model)}
-                            onFilterModelChange={(model) => handleOnFilterModelChange(model)}
+                            onSortModelChange={(model) => {
+                                handleOnSortModelChange(model);
+                            }}
+                            onFilterModelChange={(model) => {
+                                handleOnFilterModelChange(model);
+                            }}
                             columns={labelColumns}
                             pageSizeOptions={[10, 25, 50, 100]}
                             disableRowSelectionOnClick

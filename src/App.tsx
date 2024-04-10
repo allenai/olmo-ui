@@ -48,7 +48,7 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
         <>
             <Grid container justifyContent="space-between" spacing={2}>
                 <Grid item>
-                    {client && (
+                    {!!client && (
                         <span>
                             <WhiteTypography>{client}</WhiteTypography>
                         </span>
@@ -80,7 +80,9 @@ export const App = () => {
         setLoading(true);
         getUserInfo()
             .then(getSchema)
-            .finally(() => setLoading(false));
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     return (

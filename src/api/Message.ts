@@ -98,11 +98,11 @@ export const isMessageWithMetadata = (message: MessageStreamPart): message is JS
 };
 
 export const isFirstMessage = (message: MessageStreamPart): message is FirstMessage => {
-    return isMessageWithMetadata(message) && message.final === false;
+    return isMessageWithMetadata(message) && !message.final;
 };
 
 export const isFinalMessage = (message: MessageStreamPart): message is FinalMessage => {
-    return isMessageWithMetadata(message) && message.final === true;
+    return isMessageWithMetadata(message) && message.final;
 };
 
 export const isMessageChunk = (message: MessageStreamPart): message is MessageChunk => {

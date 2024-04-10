@@ -6,7 +6,9 @@ import { PARAMETERS_DRAWER_ID } from './ParameterDrawer';
 
 export const ParameterButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-    const toggleParametersDrawer = () => toggleDrawer(PARAMETERS_DRAWER_ID);
+    const toggleParametersDrawer = () => {
+        toggleDrawer(PARAMETERS_DRAWER_ID);
+    };
 
     const isParametersDrawerOpen = useAppContext(
         (state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID

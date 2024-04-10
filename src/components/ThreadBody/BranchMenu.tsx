@@ -29,7 +29,9 @@ export const BranchMenu = ({
             {messages.map((msg, i) => (
                 <MenuItem
                     key={i}
-                    onClick={() => handleBranchMenuSelect(i)}
+                    onClick={() => {
+                        handleBranchMenuSelect(i);
+                    }}
                     selected={i === curMessageIndex}
                     title={msg.snippet}>
                     <Typography variant="inherit" noWrap>

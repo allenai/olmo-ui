@@ -82,7 +82,9 @@ export const ThreadEditForm = ({
                         <OutlinedIconButton
                             sx={{ border: 1, borderRadius: 0, p: 0 }}
                             size="small"
-                            onClick={() => setIsEditing(false)}
+                            onClick={() => {
+                                setIsEditing(false);
+                            }}
                             aria-label="Reset changes to LLM response">
                             <Clear />
                         </OutlinedIconButton>
