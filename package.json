@@ -93,6 +93,7 @@
     "msw": "^2.2.8",
     "playwright-msw": "^3.0.1",
     "prettier": "^3.2.5",
+    "react-infinite-scroll-hook": "^4.1.1",
     "react-refresh": "^0.14.0",
     "react-refresh-typescript": "^2.0.9",
     "sort-package-json": "^2.8.0",

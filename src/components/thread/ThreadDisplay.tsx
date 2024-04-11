@@ -57,7 +57,7 @@ export const ThreadDisplay = (): JSX.Element => {
     const { id } = useParams();
 
     const selectedThread = useAppContext(
-        (state) => state.allThreadInfo.data.messages.find((thread) => thread.id === id)!
+        (state) => state.threads.find((thread) => thread.id === id)!
     );
 
     return (

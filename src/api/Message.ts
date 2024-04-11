@@ -137,8 +137,16 @@ export class MessageClient extends ClientBase {
         return this.fetch(url, { method: 'DELETE' });
     };
 
-    getAllThreads = async (offset: number = 0, creator?: string): Promise<MessageList> => {
+    getAllThreads = async (
+        offset: number = 0,
+        creator?: string,
+        limit?: number
+    ): Promise<MessageList> => {
         const url = this.createURL(MessagesApiUrl);
+        if (limit) {
+            url.searchParams.set('limit', limit.toString());
+        }
+
         url.searchParams.set('offset', offset.toString());
 
         if (creator != null) {

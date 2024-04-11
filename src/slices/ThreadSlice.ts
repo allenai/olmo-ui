@@ -1,13 +1,18 @@
 import { FetchInfo, OlmoStateCreator } from 'src/AppContext';
 
-import { MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
+import { Message, MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
 import { errorToAlert } from './AlertMessageSlice';
 
 export interface ThreadSlice {
     allThreadInfo: Required<FetchInfo<MessageList>>;
     deletedThreadInfo: FetchInfo<void>;
     expandedThreadID?: string;
-    getAllThreads: (offset: number, creator?: string) => Promise<FetchInfo<MessageList>>;
+    threads: Message[];
+    getAllThreads: (
+        offset: number,
+        creator?: string,
+        limit?: number
+    ) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
 }
 
@@ -16,15 +21,14 @@ export const messageClient = new MessageClient();
 export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
     deletedThreadInfo: {},
-    selectedModel: '',
-
-    getAllThreads: async (offset: number = 0, creator?: string) => {
+    threads: [],
+    getAllThreads: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
             set((state) => ({
                 allThreadInfo: { ...state.allThreadInfo, loading: true, error: false },
             }));
 
-            const { messages, meta } = await messageClient.getAllThreads(offset, creator);
+            const { messages, meta } = await messageClient.getAllThreads(offset, creator, limit);
 
             set((state) => ({
                 allThreadInfo: {
@@ -32,6 +36,13 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     data: { messages, meta },
                     loading: false,
                 },
+                threads: state.threads
+                    .concat(messages)
+                    .filter(
+                        (message, index, threadList) =>
+                            threadList.findIndex((threadList) => threadList.id === message.id) ===
+                            index
+                    ),
             }));
         } catch (err) {
             get().addAlertMessage(
