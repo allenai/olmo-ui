@@ -1,8 +1,17 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import { useEffect } from 'react';
-
-import { useSearchParams } from 'react-router-dom';
+import {
+    Box,
+    Divider,
+    IconButton,
+    ListItem,
+    ListSubheader,
+    Stack,
+    Typography,
+    ListItemText,
+} from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
+import { useEffect, useState } from 'react';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import { useAppContext } from '@/AppContext';
 import { Message } from '@/api/Message';
@@ -10,58 +19,63 @@ import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
-const DefaultPageSize = 10 as const;
+import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 
-const useGroupedThreadHistory = (): {
-    threadsFromToday: Message[];
-    threadsFromThisWeek: Message[];
-    threadsFromThisMonth: Message[];
-} => {
-    const userInfo = useAppContext((state) => state.userInfo);
-    const getAllThreads = useAppContext((state) => state.getAllThreads);
-    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
-
-    const [pageParams] = useSearchParams();
-    const page = Number(pageParams.get('page') ?? '1');
-
-    useEffect(() => {
-        const creator = userInfo?.client;
-        const offset = (page - 1) * DefaultPageSize;
-        getAllThreads(offset, creator);
-    }, [userInfo, page]);
-
-    const threadsFromToday: Message[] = [];
-    const threadsFromThisWeek: Message[] = [];
-    const threadsFromThisMonth: Message[] = [];
-
-    allThreadInfo.data?.messages.forEach((m) => {
-        const createdDay = m.created;
-
-        if (createdDay.toDateString() === new Date().toDateString()) {
-            threadsFromToday.push(m);
-        } else if (
-            new Date().getDate() - createdDay.getDate() > 7 &&
-            new Date().getDate() - createdDay.getDate() <= 30
-        ) {
-            threadsFromThisWeek.push(m);
-        } else {
-            threadsFromThisMonth.push(m);
-        }
-    });
-
-    return { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth };
-};
+const LIMIT = 20 as const;
+const PAGE_SIZE = 20 as const;
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history' as const;
 
 export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
+    const userInfo = useAppContext((state) => state.userInfo);
+    const getAllThreads = useAppContext((state) => state.getAllThreads);
+    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
+    const threads = useAppContext((state) => state.threads);
     const handleDrawerClose = () => closeDrawer(HISTORY_DRAWER_ID);
+    const hasMoreThreadsToFetch = useAppContext((state) => {
+        const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
+        const loadedThreadCount = state.threads.length;
+
+        return totalThreadsOnServer === 0 || loadedThreadCount < totalThreadsOnServer;
+    });
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
+    const [offset, setOffSet] = useState(10);
+    const creator = userInfo?.client;
 
-    const { threadsFromToday, threadsFromThisWeek, threadsFromThisMonth } =
-        useGroupedThreadHistory();
+    useEffect(() => {
+        getAllThreads(offset, creator, LIMIT);
+    }, []);
+
+    const threadsFromToday: Message[] = [];
+    const threadsFromThisWeek: Message[] = [];
+    const threadsOlderThanAWeek: Message[] = [];
+
+    threads.forEach((m) => {
+        if (isCurrentDay(m.created)) {
+            threadsFromToday.push(m);
+        } else if (isPastWeek(m.created)) {
+            threadsFromThisWeek.push(m);
+        } else {
+            threadsOlderThanAWeek.push(m);
+        }
+    });
+
+    const handleScroll = () => {
+        if (!allThreadInfo.loading) {
+            getAllThreads(offset + PAGE_SIZE, creator, LIMIT);
+            setOffSet(offset + PAGE_SIZE);
+        }
+    };
+
+    const [sentryRef, { rootRef }] = useInfiniteScroll({
+        loading: allThreadInfo.loading,
+        hasNextPage: hasMoreThreadsToFetch,
+        onLoadMore: handleScroll,
+        disabled: allThreadInfo.error,
+        delayInMs: 100,
+    });
 
     return (
         <ResponsiveDrawer
@@ -70,7 +84,12 @@ export const HistoryDrawer = (): JSX.Element => {
             anchor="right"
             desktopDrawerVariant="persistent"
             heading={
-                <Box sx={{ position: 'sticky', top: 0 }}>
+                <Box
+                    sx={{
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: (theme) => theme.palette.background.paper,
+                    }}>
                     <Stack justifyContent="space-between" direction="row" gap={2}>
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography variant="h5" margin={0} color="primary">
@@ -87,7 +106,7 @@ export const HistoryDrawer = (): JSX.Element => {
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack direction="column">
+            <Stack direction="column" ref={rootRef} sx={{ overflowY: 'scroll' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
@@ -95,10 +114,24 @@ export const HistoryDrawer = (): JSX.Element => {
                     hasDivider
                 />
                 <HistoryDrawerSection
-                    heading="Previous 30 Days"
-                    threads={threadsFromThisMonth}
+                    heading="Older Than A Week"
+                    threads={threadsOlderThanAWeek}
                     hasDivider
                 />
+                {(hasMoreThreadsToFetch || allThreadInfo.loading) && (
+                    <ListItem ref={sentryRef}>
+                        <ListItemText
+                            sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}
+                            primaryTypographyProps={{
+                                variant: 'caption',
+                                color: 'inherit',
+                                fontWeight: 'bold',
+                                sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
+                            }}>
+                            <Skeleton animation="wave" variant="text" />
+                        </ListItemText>
+                    </ListItem>
+                )}
             </Stack>
         </ResponsiveDrawer>
     );

@@ -22,7 +22,7 @@ import { Thread } from './pages/Thread';
 import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
 import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
-import { ThreadDisplay } from './components/thread/ThreadDisplay';
+import { ThreadDisplay, selectedThreadLoader } from './components/thread/ThreadDisplay';
 import { links } from './Links';
 
 const GlobalStyle = createGlobalStyle`
@@ -50,7 +50,6 @@ interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
 
-// @ts-expect-error the theme type isn't quite right
 const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps) => {
     const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
 
@@ -128,7 +127,6 @@ const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
-            // @ts-expect-error the theme type isn't quite right
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <NewApp />
             </VarnishedApp>
@@ -141,6 +139,8 @@ const uiRefreshRoutes: RouteObject[] = [
                 children: [
                     {
                         path: '/thread',
+                        // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
+                        // We just redirect to the playground to make sure people going to /thread get what they want
                         element: <Navigate to={links.playground} />,
                     },
                     {
@@ -149,6 +149,7 @@ const uiRefreshRoutes: RouteObject[] = [
                         handle: {
                             title: 'Playground',
                         },
+                        loader: selectedThreadLoader,
                     },
                 ],
                 handle: {
@@ -158,7 +159,6 @@ const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.document(':id'),
                 element: <Document />,
-                errorElement: <ErrorPage />,
                 handle: {
                     title: 'Document',
                 },
@@ -166,7 +166,6 @@ const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.datasetExplorer,
                 element: <DolmaExplorer />,
-                errorElement: <ErrorPage />,
                 handle: {
                     title: 'Dataset Explorer',
                 },
@@ -174,7 +173,6 @@ const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.search,
                 element: <Search />,
-                errorElement: <ErrorPage />,
                 handle: {
                     title: 'Search Datasets',
                 },

@@ -18,11 +18,19 @@ import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
 interface MessageInteractionProps {
-    message: Message;
+    role: Message['role'];
+    messageLabels: Message['labels'];
+    content: Message['content'];
+    messageId: Message['id'];
 }
 
-export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.Element | null => {
-    if (message.role === Role.User) {
+export const MessageInteraction = ({
+    role,
+    messageLabels,
+    content,
+    messageId,
+}: MessageInteractionProps): JSX.Element | null => {
+    if (role === Role.User) {
         return null;
     }
 
@@ -32,7 +40,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
     const [currentMessageLabel, setCurrentMessageLabel] = useState<Label | undefined>(
-        message.labels.filter((label) => label.creator === userInfo?.client).pop()
+        messageLabels.filter((label) => label.creator === userInfo?.client).pop()
     );
 
     const GoodIcon =
@@ -42,7 +50,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     const FlagIcon = currentMessageLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
 
     const rateMessage = async (newRating: LabelRating) => {
-        updateLabel({ rating: newRating, message: message.id }, currentMessageLabel).then(
+        updateLabel({ rating: newRating, message: messageId }, currentMessageLabel).then(
             (newLabel) => {
                 setCurrentMessageLabel(newLabel);
             }
@@ -50,8 +58,8 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     };
 
     const copyMessage = useCallback(() => {
-        navigator.clipboard.writeText(message.content);
-    }, [message]);
+        navigator.clipboard.writeText(content);
+    }, [content]);
 
     return (
         <Stack direction="row" gap={2} alignItems="start">

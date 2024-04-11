@@ -2,12 +2,23 @@ import { ButtonGroup, Card, Stack, Typography, alpha } from '@mui/material';
 
 import PlusIcon from '@mui/icons-material/Add';
 
+import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
-import { HistoryButton } from './history/HistoryButton';
 import { ResponsiveButton } from './ResponsiveButton';
+import { HistoryButton } from './history/HistoryButton';
 import { ParameterButton } from './parameter/ParameterButton';
 
 const ThreadButtons = (): JSX.Element => {
+    const NewThreadButton = () => (
+        <ResponsiveButton
+            startIcon={<PlusIcon />}
+            title="New Thread"
+            smallerVariant="outlined"
+            biggerVariant="contained"
+            href={links.playground}
+        />
+    );
+
     return (
         <>
             {/* Wide screens */}
@@ -19,12 +30,7 @@ const ThreadButtons = (): JSX.Element => {
                         display: 'none',
                     },
                 })}>
-                <ResponsiveButton
-                    startIcon={<PlusIcon />}
-                    title="New Thread"
-                    smallerVariant="outlined"
-                    biggerVariant="contained"
-                />
+                <NewThreadButton />
                 <ParameterButton />
                 <HistoryButton />
             </Stack>
@@ -38,12 +44,7 @@ const ThreadButtons = (): JSX.Element => {
                         display: 'none',
                     },
                 })}>
-                <ResponsiveButton
-                    startIcon={<PlusIcon />}
-                    title="New Thread"
-                    smallerVariant="outlined"
-                    biggerVariant="contained"
-                />
+                <NewThreadButton />
                 <ParameterButton />
                 <HistoryButton />
             </ButtonGroup>

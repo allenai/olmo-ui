@@ -1,4 +1,4 @@
-import { StateCreator } from 'zustand';
+import { OlmoStateCreator } from '@/AppContext';
 
 export type DrawerId = 'history' | 'parameters';
 
@@ -9,7 +9,7 @@ export interface DrawerSlice {
     toggleDrawer: (id: DrawerId) => void;
 }
 
-export const createDrawerSlice: StateCreator<DrawerSlice> = (set, get) => ({
+export const createDrawerSlice: OlmoStateCreator<DrawerSlice> = (set, get) => ({
     currentOpenDrawer: null,
 
     openDrawer: (id) => {
