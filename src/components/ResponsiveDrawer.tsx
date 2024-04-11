@@ -51,7 +51,7 @@ export const ResponsiveDrawer = ({
                 PaperProps={{
                     sx: {
                         // This is intentionally not following the breakpoint. It looks nicer this way
-                        width: { xs: '100vw', sm: 'auto' },
+                        width: { xs: '100vw', sm: '40vw' },
                     },
                 }}
                 sx={{

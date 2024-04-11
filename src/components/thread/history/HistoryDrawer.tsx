@@ -7,7 +7,9 @@ import {
     ListSubheader,
     Stack,
     Typography,
+    ListItemText,
 } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import { useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
@@ -17,7 +19,10 @@ import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
-const Limit = 20 as const;
+import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
+
+const LIMIT = 20 as const;
+const PAGE_SIZE = 20 as const;
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history' as const;
 
@@ -28,27 +33,29 @@ export const HistoryDrawer = (): JSX.Element => {
     const allThreadInfo = useAppContext((state) => state.allThreadInfo);
     const threads = useAppContext((state) => state.threads);
     const handleDrawerClose = () => closeDrawer(HISTORY_DRAWER_ID);
+    const hasMoreThreadsToFetch = useAppContext((state) => {
+        const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
+        const loadedThreadCount = state.threads.length;
+
+        return totalThreadsOnServer === 0 || loadedThreadCount < totalThreadsOnServer;
+    });
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
     const [offset, setOffSet] = useState(10);
     const creator = userInfo?.client;
 
     useEffect(() => {
-        getAllThreads(offset, creator, Limit);
-    }, [userInfo]);
+        getAllThreads(offset, creator, LIMIT);
+    }, []);
 
     const threadsFromToday: Message[] = [];
     const threadsFromThisWeek: Message[] = [];
     const threadsOlderThanAWeek: Message[] = [];
 
     threads.forEach((m) => {
-        const createdDay = m.created;
-        if (createdDay.toDateString() === new Date().toDateString()) {
+        if (isCurrentDay(m.created)) {
             threadsFromToday.push(m);
-        } else if (
-            new Date().getDate() - createdDay.getDate() > 7 &&
-            new Date().getDate() - createdDay.getDate() <= 30
-        ) {
+        } else if (isPastWeek(m.created)) {
             threadsFromThisWeek.push(m);
         } else {
             threadsOlderThanAWeek.push(m);
@@ -57,17 +64,15 @@ export const HistoryDrawer = (): JSX.Element => {
 
     const handleScroll = () => {
         if (!allThreadInfo.loading) {
-            getAllThreads(offset + 20, creator, Limit);
-            setOffSet(offset + 20);
+            getAllThreads(offset + PAGE_SIZE, creator, LIMIT);
+            setOffSet(offset + PAGE_SIZE);
         }
     };
 
-    const [sentryRef] = useInfiniteScroll({
-        loading: allThreadInfo.loading ? allThreadInfo.loading : false,
-        hasNextPage: allThreadInfo.data.meta.total > 0,
+    const [sentryRef, { rootRef }] = useInfiniteScroll({
+        loading: !!allThreadInfo.loading,
+        hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        // When there is an error, we stop infinite loading.
-        // It can be reactivated by setting "error" state as undefined.
         disabled: !!allThreadInfo.error,
         delayInMs: 100,
     });
@@ -101,7 +106,7 @@ export const HistoryDrawer = (): JSX.Element => {
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack direction="column" ref={sentryRef} sx={{ overflow: 'scroll' }}>
+            <Stack direction="column" ref={rootRef} sx={{ overflowY: 'scroll' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
@@ -113,11 +118,20 @@ export const HistoryDrawer = (): JSX.Element => {
                     threads={threadsOlderThanAWeek}
                     hasDivider
                 />
-                {/* {(loading || hasNextPage) && (
+                {(hasMoreThreadsToFetch || allThreadInfo.loading) && (
                     <ListItem ref={sentryRef}>
-                        <Typography>Loading... </Typography>
+                        <ListItemText
+                            sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}
+                            primaryTypographyProps={{
+                                variant: 'caption',
+                                color: 'inherit',
+                                fontWeight: 'bold',
+                                sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
+                            }}>
+                            <Skeleton animation="wave" variant="text" />
+                        </ListItemText>
                     </ListItem>
-                )} */}
+                )}
             </Stack>
         </ResponsiveDrawer>
     );

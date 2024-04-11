@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const todayDateFormatter = new Intl.DateTimeFormat(undefined, {
     hour: 'numeric',
     minute: 'numeric',
@@ -16,5 +18,7 @@ export const isCurrentDay = (date: Date): boolean => {
 };
 
 export const isPastWeek = (date: Date): boolean => {
-    return new Date().getDate() - date.getDate() > 7 && new Date().getDate() - date.getDate() <= 30;
+    const differenceInDays = dayjs().diff(dayjs(date), 'day');
+
+    return differenceInDays <= 7;
 };
