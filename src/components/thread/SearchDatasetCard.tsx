@@ -1,17 +1,13 @@
-import { Button, Card, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Card, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 import { SearchBar } from '@/components/dolma/SearchBar';
 import { search } from '@/api/dolma/search';
 
 export const SearchDatasetCard = (): JSX.Element => {
-    const theme = useTheme();
     const nav = useNavigate();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
     const [searchText, setSearchText] = useState<string>('');
 
     const onSearchBarChange = useCallback((value: string) => {
@@ -26,19 +22,10 @@ export const SearchDatasetCard = (): JSX.Element => {
 
     return (
         <Card
-            variant={isDesktopOrUp ? 'elevation' : 'outlined'}
-            sx={(theme) => ({
-                padding: 0,
-                [biggerContainerQuery(theme)]: {
-                    padding: 4,
-                },
-
+            sx={() => ({
                 backgroundColor: (theme) => theme.color.B10.hex,
-
                 border: 0,
-                [smallerContainerQuery(theme)]: {
-                    borderRadius: 0,
-                },
+                padding: 4,
             })}>
             <Stack gap={1.5} alignItems="flex-start">
                 <Typography
