@@ -9,17 +9,45 @@ import { HistoryButton } from './history/HistoryButton';
 import { ParameterButton } from './parameter/ParameterButton';
 
 const ThreadButtons = (): JSX.Element => {
+    const NewThreadButton = () => (
+        <ResponsiveButton
+            startIcon={<PlusIcon />}
+            title="New Thread"
+            smallerVariant="outlined"
+            biggerVariant="contained"
+            href={links.playground}
+        />
+    );
+
     return (
         <>
-            <ResponsiveButton
-                startIcon={<PlusIcon />}
-                title="New Thread"
-                smallerVariant="outlined"
-                biggerVariant="contained"
-                href={links.playground}
-            />
-            <ParameterButton />
-            <HistoryButton />
+            {/* Wide screens */}
+            <Stack
+                direction="row"
+                gap={2}
+                sx={(theme) => ({
+                    [smallerContainerQuery(theme)]: {
+                        display: 'none',
+                    },
+                })}>
+                <NewThreadButton />
+                <ParameterButton />
+                <HistoryButton />
+            </Stack>
+
+            {/* Small screens */}
+            <ButtonGroup
+                size="large"
+                variant="outlined"
+                sx={(theme) => ({
+                    [biggerContainerQuery(theme)]: {
+                        display: 'none',
+                    },
+                })}>
+                <NewThreadButton />
+                <ParameterButton />
+                <HistoryButton />
+            </ButtonGroup>
         </>
     );
 };
@@ -56,27 +84,7 @@ export const ThreadPageControls = (): JSX.Element => {
                 Thread
             </Typography>
 
-            <Stack
-                direction="row"
-                gap={2}
-                sx={(theme) => ({
-                    [smallerContainerQuery(theme)]: {
-                        display: 'none',
-                    },
-                })}>
-                <ThreadButtons />
-            </Stack>
-
-            <ButtonGroup
-                size="large"
-                variant="outlined"
-                sx={(theme) => ({
-                    [biggerContainerQuery(theme)]: {
-                        display: 'none',
-                    },
-                })}>
-                <ThreadButtons />
-            </ButtonGroup>
+            <ThreadButtons />
         </Card>
     );
 };
