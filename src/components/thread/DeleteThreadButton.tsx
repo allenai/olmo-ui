@@ -6,15 +6,15 @@ import dayjs from 'dayjs';
 
 import isBetween from 'dayjs/plugin/isBetween';
 
-import { useAppContext } from '@/AppContext';
+import { FetchInfo, useAppContext } from '@/AppContext';
 import { ResponsiveButton } from './ResponsiveButton';
 
 import { links } from '@/Links';
+import { Message } from '@/api/Message';
 
 dayjs.extend(isBetween);
 
-const isWithinThirtyDays = () => {
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+const isWithinThirtyDays = (selectedThreadInfo: FetchInfo<Message>) => {
     const thirtyDaysAgo: dayjs.Dayjs = dayjs().subtract(29, 'days');
     const currentDate = dayjs();
     const isWithinThirtyDaysBool = dayjs(selectedThreadInfo.data?.created).isBetween(
@@ -29,7 +29,6 @@ const isWithinThirtyDays = () => {
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
-    const deleteThreadInfo = useAppContext((state) => state.deletedThreadInfo);
     const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
 
     const handleDeleteThread = () => {
@@ -39,9 +38,9 @@ export const DeleteThreadButton = () => {
         }
     };
 
-    const canDelete = selectedThreadInfo.data ? isWithinThirtyDays() : false;
+    const canDelete = selectedThreadInfo.data ? isWithinThirtyDays(selectedThreadInfo) : false;
 
-    if (!canDelete || !!deleteThreadInfo.data) {
+    if (!canDelete) {
         return null;
     }
 

@@ -81,7 +81,8 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                 const messages = state.allThreadInfo.data.messages.filter((m) => m.id !== threadId);
                 const data = { ...state.allThreadInfo.data, messages };
                 const allThreadInfo = { ...state.allThreadInfo, data };
-                return { deletedThreadInfo, allThreadInfo };
+                const selectedThreadInfo = {};
+                return { deletedThreadInfo, allThreadInfo, selectedThreadInfo };
             });
         } catch (err) {
             get().addAlertMessage(

@@ -41,7 +41,7 @@ export const ShareThreadButton = () => {
                 open={open}
                 autoHideDuration={500}
                 onClose={handleClose}
-                message="Url Copied."
+                message="URL Copied."
             />
         </>
     );
