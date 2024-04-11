@@ -7,6 +7,11 @@ import { ResponsiveButton } from './ResponsiveButton';
 
 import { links } from '@/Links';
 
+import dayjs from 'dayjs';
+
+const isBetween = require('dayjs/plugin/isBetween')
+dayjs.extend(isBetween)
+
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
@@ -18,6 +23,14 @@ export const DeleteThreadButton = () => {
             nav(links.playground);
         }
     };
+
+    const canDeleteThread = () => {
+        // const thirtyDaysAgo: dayjs.Dayjs = dayjs().subtract(29, 'days');
+        // const currentDate = dayjs();
+        // const isWithinThirtyDaysBool = selectedThreadInfo.data ? dayjs(selectedThreadInfo.data.created).isBetween(thirtyDaysAgo.toDate(), currentDate.toDate(), null, {'m': 'numeric', 'd': 'numeric'});
+        // return isWithinThirtyDaysBool;
+    }
+
     return (
         <ResponsiveButton
             variant="outlined"
