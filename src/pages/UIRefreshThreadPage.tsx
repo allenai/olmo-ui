@@ -11,6 +11,7 @@ import { links } from '@/Links';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
+import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
 
 export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
@@ -48,6 +49,8 @@ export const UIRefreshThreadPage = () => {
                 <Outlet />
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
             </ThreadCard>
+
+            <SearchDatasetCard />
 
             <Typography variant="caption">
                 OLMo is experimental and can make mistakes. Consider fact-checking your results.

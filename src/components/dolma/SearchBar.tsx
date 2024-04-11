@@ -1,0 +1,102 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, ButtonProps, IconButton, Stack, Tooltip, styled } from '@mui/material';
+import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
+import { search } from '@/api/dolma/search';
+import { useAppContext } from '@/AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { links } from '@/Links';
+
+interface SearchBarProps {
+    defaultValue?: string;
+    disabled?: boolean;
+    showTooltip?: boolean;
+    title?: React.ReactNode;
+    submitButtonProps?: ButtonProps;
+}
+
+export const SearchBar = ({
+    defaultValue = '',
+    disabled,
+    showTooltip = true,
+    title,
+    submitButtonProps,
+}: SearchBarProps) => {
+    const nav = useNavigate();
+    const getMeta = useAppContext((state) => state.getMeta);
+    const meta = useAppContext((state) => state.meta);
+    const placeholder = meta?.count
+        ? `Search ${meta.count.toLocaleString()} pretraining documents…`
+        : 'Search pretraining documents…';
+
+    const formContext = useForm<{ queryText: string }>({
+        defaultValues: {
+            queryText: defaultValue,
+        },
+    });
+
+    useEffect(() => {
+        if (meta === undefined) {
+            getMeta();
+        }
+    }, [meta]);
+
+    const submitSearch = (formData: { queryText: string }) => {
+        if (formData.queryText.length > 0) {
+            nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
+        }
+    };
+
+    return (
+        <FormContainer formContext={formContext} onSuccess={submitSearch}>
+            <Stack gap={1.5} alignItems="flex-start">
+                {title}
+                <SearchTextField
+                    name="queryText"
+                    placeholder={placeholder}
+                    fullWidth
+                    disabled={disabled}
+                />
+                <Stack direction="row" justifyContent="space-between" width="100%">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        {...submitButtonProps}
+                        disabled={disabled}>
+                        Submit
+                    </Button>
+                    {showTooltip && (
+                        <Tooltip
+                            title="About Dataset Explorer"
+                            sx={{ color: (theme) => theme.palette.text.primary }}>
+                            <IconButton
+                                aria-label="About Dataset Explorer"
+                                size="large"
+                                href={links.faqs}
+                                sx={{
+                                    color: (theme) => theme.color.N9.hex,
+                                    padding: 0,
+                                    display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
+                                }}>
+                                <InfoOutlinedIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </Stack>
+            </Stack>
+        </FormContainer>
+    );
+};
+
+const SearchTextField = styled(TextFieldElement)`
+    background-color: ${({ theme }) => theme.palette.background.default};
+    border-radius: 4px;
+    fieldset {
+        border-color: ${({ theme }) => theme.color.N5.hex};
+    }
+    input::placeholder {
+        opacity: 1;
+    }
+`;
