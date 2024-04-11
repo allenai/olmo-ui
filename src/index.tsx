@@ -50,7 +50,6 @@ interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
 
-// @ts-expect-error the theme type isn't quite right
 const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps) => {
     const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
 
@@ -128,7 +127,6 @@ const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
-            // @ts-expect-error the theme type isn't quite right
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <NewApp />
             </VarnishedApp>
