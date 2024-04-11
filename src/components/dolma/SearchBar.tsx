@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonProps, IconButton, Stack, Tooltip, styled } from '@mui/material';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
-
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import { search } from '@/api/dolma/search';
@@ -45,7 +44,9 @@ export const SearchBar = ({
     }, [meta]);
 
     const submitSearch = (formData: { queryText: string }) => {
-        nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
+        if (formData.queryText.length > 0) {
+            nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
+        }
     };
 
     return (
