@@ -10,7 +10,7 @@ import 'highlight.js/styles/github-dark.css';
 import { BaseModelResponseView } from './ResponseView/BaseModelResponseView';
 import { ChatResponseView } from './ThreadBody/ChatResponseView';
 import { ThreadContextMenu } from './ThreadBody/ThreadContextMenu';
-import { ThreadEditForm } from './ThreadBody/TheadEditForm';
+import { ThreadEditForm } from './ThreadBody/ThreadEditForm';
 import { ThreadFollowUpForm } from './ThreadBody/ThreadFollowUpForm';
 
 interface ThreadBodyProps {
@@ -18,6 +18,7 @@ interface ThreadBodyProps {
     messages?: Message[];
     showFollowUp?: boolean;
     disabledActions?: boolean;
+    messagePath?: string[];
 }
 
 export const ThreadBodyView = ({
@@ -25,10 +26,8 @@ export const ThreadBodyView = ({
     messages,
     showFollowUp,
     disabledActions = false,
+    messagePath = parent?.id != null ? [parent.id] : [],
 }: ThreadBodyProps) => {
-    if (!messages) {
-        return null;
-    }
     const postLabel = useAppContext((state) => state.postLabel);
     let followUpControl = showFollowUp;
 
@@ -38,6 +37,10 @@ export const ThreadBodyView = ({
     // the anchor elements anchors the relevant dropdown menu to the dropdown menu button element (contextmenu, branchmenu)
     const [branchMenuAnchorEl, setBranchMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [contextMenuAnchorEl, setContextMenuAnchorEl] = useState<null | HTMLElement>(null);
+
+    if (messages == null || messages.length === 0) {
+        return null;
+    }
 
     const handleBranchMenuSelect = (index: number) => {
         setCurMessageIndex(index);
@@ -91,6 +94,7 @@ export const ThreadBodyView = ({
                                     parent={parent}
                                     setIsEditing={setIsEditing}
                                     setMessageLoading={setMessageLoading}
+                                    messagePath={messagePath.concat(curMessage.id)}
                                 />
                             ) : (
                                 <>
@@ -122,9 +126,14 @@ export const ThreadBodyView = ({
                         parent={curMessage}
                         showFollowUp={followUpControl}
                         disabledActions={disabledActions}
+                        messagePath={messagePath.concat(curMessage.id)}
                     />
                 ) : followUpControl ? (
-                    <ThreadFollowUpForm curMessage={curMessage} disabledActions={disabledActions} />
+                    <ThreadFollowUpForm
+                        curMessage={curMessage}
+                        disabledActions={disabledActions}
+                        messagePath={messagePath.concat(curMessage.id)}
+                    />
                 ) : null}
             </>
         </BarOnRightContainer>

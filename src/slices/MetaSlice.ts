@@ -1,9 +1,8 @@
-import { StateCreator } from 'zustand';
-
 import { search } from '../api/dolma/search';
 
 import { SearchClient } from '../api/dolma/SearchClient';
 
+import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '../contexts/util';
 
 export interface MetaSlice {
@@ -13,7 +12,7 @@ export interface MetaSlice {
     getMeta(): Promise<search.IndexMeta | Error>;
 }
 
-export const createMetaSlice: StateCreator<MetaSlice> = (set) => ({
+export const createMetaSlice: OlmoStateCreator<MetaSlice> = (set) => ({
     metaState: RemoteState.Loading,
     getMeta: async () => {
         set({ metaState: RemoteState.Loading, error: undefined });

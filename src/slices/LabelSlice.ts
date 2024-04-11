@@ -1,7 +1,6 @@
-import { StateCreator } from 'zustand';
 import { GridSortDirection } from '@mui/x-data-grid';
 
-import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
+import { OlmoStateCreator } from '@/AppContext';
 import {
     CreateLabelRequest,
     Label,
@@ -13,6 +12,7 @@ import {
 } from '../api/Label';
 import { Message } from '../api/Message';
 import { RemoteState } from '../contexts/util';
+import { errorToAlert } from './AlertMessageSlice';
 
 export interface LabelSlice {
     labelRemoteState?: RemoteState;
@@ -33,10 +33,7 @@ export interface LabelSlice {
 const labelClient = new LabelClient();
 const labelsClient = new LabelsClient();
 
-export const createLabelSlice: StateCreator<LabelSlice & AlertMessageSlice, [], [], LabelSlice> = (
-    set,
-    get
-) => ({
+export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     labelRemoteState: undefined,
     allLabelsRemoteState: undefined,
     label: null,

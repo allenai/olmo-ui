@@ -1,7 +1,5 @@
 import { produce } from 'immer';
 
-import { StateCreator } from 'zustand';
-
 import {
     DefaultPromptTemplate,
     PromptTemplate,
@@ -10,6 +8,7 @@ import {
     PromptTemplatePost,
 } from '../api/PromptTemplate';
 
+import { OlmoStateCreator } from '@/AppContext';
 import { PromptTemplateClient } from '../api/PromptTemplateClient';
 import { RemoteState } from '../contexts/util';
 
@@ -25,7 +24,7 @@ export interface PromptTemplateSlice {
 
 const promptTemplateClient = new PromptTemplateClient();
 
-export const createPromptTemplateSlice: StateCreator<PromptTemplateSlice> = (set, get) => ({
+export const createPromptTemplateSlice: OlmoStateCreator<PromptTemplateSlice> = (set, get) => ({
     promptTemplateList: [DefaultPromptTemplate],
     promptTemplateRemoteState: undefined,
     promptTemplateListRemoteState: undefined,

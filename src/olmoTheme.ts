@@ -5,8 +5,8 @@ import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
 export const olmoTheme = {
+    // @ts-ignore
     color2: {
-        // @ts-expect-error
         N7: new Color('Black7', '#333333', undefined, true),
         N8: new Color('Black8', '#282828', undefined, true),
         N9: new Color('Black9', '#262626', undefined, true),

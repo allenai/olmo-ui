@@ -14,6 +14,7 @@ interface ThreadEditFormProps {
     parent?: Message;
     setIsEditing: (isEditing: boolean) => void;
     setMessageLoading: (messageLoading: boolean) => void;
+    messagePath?: Message['id'][];
 }
 
 export const ThreadEditForm = ({
@@ -22,6 +23,7 @@ export const ThreadEditForm = ({
     parent,
     setIsEditing,
     setMessageLoading,
+    messagePath,
 }: ThreadEditFormProps) => {
     const curMessageRole = curMessage.role;
     const postMessage = useAppContext((state) => state.postMessage);
@@ -41,7 +43,7 @@ export const ThreadEditForm = ({
             original: curMessage.id,
         };
         handleBranchMenuSelect(0); // 0 because the new message is unshifted
-        const postMessageInfo = await postMessage(payload, parent);
+        const postMessageInfo = await postMessage(payload, parent, false, messagePath);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
             setMessageLoading(false);
         }

@@ -2,23 +2,39 @@ import { Stack, Typography } from '@mui/material';
 
 import { useNavigate } from 'react-router';
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 
-import { ThreadCard } from '@/components/thread/ThreadCard';
+import { useEffect } from 'react';
 
-import { QueryForm } from '@/components/thread/QueryForm';
-
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
+import { QueryForm } from '@/components/thread/QueryForm';
+import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
 
 export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
+    const postMessage = useAppContext((state) => state.postMessage);
+    const postToExistingThread = useAppContext((state) => state.postToExistingThread);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+
+    // if we're on the selected thread page, handle submission differently
+    const isNewThreadPage = useMatch(links.playground);
 
     const handlePromptSubmission = (data: { content: string }) => {
-        console.log('data', data);
-        navigate(links.thread('new'));
+        if (isNewThreadPage) {
+            postMessage(data, undefined, true);
+        } else {
+            postToExistingThread(data);
+        }
     };
+
+    useEffect(() => {
+        if (selectedThreadId) {
+            navigate(links.thread(selectedThreadId));
+        }
+    }, [selectedThreadId, navigate]);
 
     return (
         <Stack

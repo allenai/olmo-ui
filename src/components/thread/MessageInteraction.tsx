@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Stack, Typography } from '@mui/material';
+import { ButtonGroup, Stack } from '@mui/material';
 import {
     ContentCopy,
     ThumbUp,
@@ -13,15 +13,24 @@ import { useCallback, useState } from 'react';
 
 import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
+import { ResponsiveButton } from './ResponsiveButton';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
 interface MessageInteractionProps {
-    message: Message;
+    role: Message['role'];
+    messageLabels: Message['labels'];
+    content: Message['content'];
+    messageId: Message['id'];
 }
 
-export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.Element | null => {
-    if (message.role === Role.User) {
+export const MessageInteraction = ({
+    role,
+    messageLabels,
+    content,
+    messageId,
+}: MessageInteractionProps): JSX.Element | null => {
+    if (role === Role.User) {
         return null;
     }
 
@@ -31,7 +40,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
     const [currentMessageLabel, setCurrentMessageLabel] = useState<Label | undefined>(
-        message.labels.filter((label) => label.creator === userInfo?.client).pop()
+        messageLabels.filter((label) => label.creator === userInfo?.client).pop()
     );
 
     const GoodIcon =
@@ -41,7 +50,7 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     const FlagIcon = currentMessageLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
 
     const rateMessage = async (newRating: LabelRating) => {
-        updateLabel({ rating: newRating, message: message.id }, currentMessageLabel).then(
+        updateLabel({ rating: newRating, message: messageId }, currentMessageLabel).then(
             (newLabel) => {
                 setCurrentMessageLabel(newLabel);
             }
@@ -49,41 +58,40 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     };
 
     const copyMessage = useCallback(() => {
-        navigator.clipboard.writeText(message.content);
-    }, [message]);
+        navigator.clipboard.writeText(content);
+    }, [content]);
 
     return (
         <Stack direction="row" gap={2} alignItems="start">
             <FeedbackButtonGroup variant="outlined" aria-label="Thread feedback buttons">
-                <ActionButton
+                <ResponsiveButton
+                    variant="outlined"
                     startIcon={<GoodIcon />}
-                    onClick={() => rateMessage(LabelRating.Positive)}>
-                    <Typography>Good</Typography>
-                </ActionButton>
-                <ActionButton
+                    title="Good"
+                    onClick={() => rateMessage(LabelRating.Positive)}
+                />
+                <ResponsiveButton
+                    variant="outlined"
                     startIcon={<BadIcon />}
-                    onClick={() => rateMessage(LabelRating.Negative)}>
-                    <Typography>Bad</Typography>
-                </ActionButton>
-                <ActionButton
+                    title="Bad"
+                    onClick={() => rateMessage(LabelRating.Negative)}
+                />
+                <ResponsiveButton
+                    variant="outlined"
                     startIcon={<FlagIcon />}
-                    onClick={() => rateMessage(LabelRating.Flag)}>
-                    <Typography>Inappropriate</Typography>
-                </ActionButton>
+                    title="Inappropriate"
+                    onClick={() => rateMessage(LabelRating.Flag)}
+                />
             </FeedbackButtonGroup>
-            <ActionButton variant="outlined" startIcon={<ContentCopy />} onClick={copyMessage}>
-                <Typography>Copy</Typography>
-            </ActionButton>
+            <ResponsiveButton
+                variant="outlined"
+                startIcon={<ContentCopy />}
+                title="Copy"
+                onClick={copyMessage}
+            />
         </Stack>
     );
 };
-
-const ActionButton = styled(Button)`
-    && {
-        border-color: ${({ theme }) => theme.color.B6.hex};
-        color: ${({ theme }) => theme.color.B6.hex};
-    }
-`;
 
 const FeedbackButtonGroup = styled(ButtonGroup)`
     && {

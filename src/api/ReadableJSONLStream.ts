@@ -1,7 +1,7 @@
 /**
  * A TransformStream that yields JSON objects from a stream of newline delimited JSON objects.
  */
-export class ReadableJSONLStream<O> extends TransformStream<Uint8Array, O> {
+export class ReadableJSONLStream<TOutput> extends TransformStream<Uint8Array, TOutput> {
     constructor(encoding: string = 'utf-8') {
         // The tail of the buffer that has not yet been parsed.
         let tail = '';

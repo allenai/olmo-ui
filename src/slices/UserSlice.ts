@@ -1,8 +1,7 @@
-import { StateCreator } from 'zustand';
-
-import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
-import { RemoteState } from '../contexts/util';
+import { OlmoStateCreator } from '@/AppContext';
 import { User, UserClient, WhoamiApiUrl } from '../api/User';
+import { RemoteState } from '../contexts/util';
+import { errorToAlert } from './AlertMessageSlice';
 
 export interface UserSlice {
     userRemoteState?: RemoteState;
@@ -12,10 +11,7 @@ export interface UserSlice {
 
 const userClient = new UserClient();
 
-export const createUserSlice: StateCreator<UserSlice & AlertMessageSlice, [], [], UserSlice> = (
-    set,
-    get
-) => ({
+export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
     userRemoteState: undefined,
     userInfo: null,
     getUserInfo: async () => {
