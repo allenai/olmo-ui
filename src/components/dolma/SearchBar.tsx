@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, ButtonProps, IconButton, Stack, TextField, Tooltip, styled } from '@mui/material';
+import { Button, ButtonProps, IconButton, Stack, Tooltip, styled } from '@mui/material';
+import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
@@ -24,7 +25,6 @@ export const SearchBar = ({
     title,
     submitButtonProps,
 }: SearchBarProps) => {
-    const [queryText, setQueryText] = useState<string>(defaultValue);
     const nav = useNavigate();
     const getMeta = useAppContext((state) => state.getMeta);
     const meta = useAppContext((state) => state.meta);
@@ -32,71 +32,64 @@ export const SearchBar = ({
         ? `Search ${meta.count.toLocaleString()} pretraining documents…`
         : 'Search pretraining documents…';
 
+    const formContext = useForm<{ queryText: string }>({
+        defaultValues: {
+            queryText: defaultValue,
+        },
+    });
+
     useEffect(() => {
         if (meta === undefined) {
             getMeta();
         }
     }, [meta]);
 
-    const onTextFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setQueryText(e.currentTarget.value);
-    };
-
-    const submitSearch = () => {
-        nav(`/search?${search.toQueryString({ query: queryText })}`);
-    };
-
-    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key !== 'Enter' || queryText.trim().length === 0) {
-            return;
-        }
-        submitSearch();
+    const submitSearch = (formData: { queryText: string }) => {
+        nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
     };
 
     return (
-        <Stack gap={1.5} alignItems="flex-start">
-            {title}
-            <SearchTextField
-                fullWidth
-                multiline
-                value={queryText}
-                placeholder={placeholder}
-                onChange={onTextFieldChange}
-                onKeyDown={onKeyDown}
-                disabled={disabled}
-            />
-            <Stack direction="row" justifyContent="space-between" width="100%">
-                <Button
-                    variant="contained"
-                    onClick={submitSearch}
-                    sx={{ height: 'fit-content', paddingBlock: 1, paddingInline: 2 }}
+        <FormContainer formContext={formContext} onSuccess={submitSearch}>
+            <Stack gap={1.5} alignItems="flex-start">
+                {title}
+                <SearchTextField
+                    name="queryText"
+                    placeholder={placeholder}
+                    fullWidth
                     disabled={disabled}
-                    {...submitButtonProps}>
-                    Submit
-                </Button>
-                {showTooltip && (
-                    <Tooltip
-                        title="About Dataset Explorer"
-                        sx={{ color: (theme) => theme.palette.text.primary }}>
-                        <IconButton
-                            aria-label="About Dataset Explorer"
-                            size="large"
-                            href={links.faqs}
-                            sx={{
-                                color: (theme) => theme.color.N9.hex,
-                                padding: 0,
-                                display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
-                            }}>
-                            <InfoOutlinedIcon />
-                        </IconButton>
-                    </Tooltip>
-                )}
+                />
+                <Stack direction="row" justifyContent="space-between" width="100%">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        {...submitButtonProps}
+                        disabled={disabled}>
+                        Submit
+                    </Button>
+                    {showTooltip && (
+                        <Tooltip
+                            title="About Dataset Explorer"
+                            sx={{ color: (theme) => theme.palette.text.primary }}>
+                            <IconButton
+                                aria-label="About Dataset Explorer"
+                                size="large"
+                                href={links.faqs}
+                                sx={{
+                                    color: (theme) => theme.color.N9.hex,
+                                    padding: 0,
+                                    display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
+                                }}>
+                                <InfoOutlinedIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </Stack>
             </Stack>
-        </Stack>
+        </FormContainer>
     );
 };
 
-const SearchTextField = styled(TextField)`
+const SearchTextField = styled(TextFieldElement)`
     background-color: ${({ theme }) => theme.palette.background.default};
     border-radius: 4px;
     fieldset {
