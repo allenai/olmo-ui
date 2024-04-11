@@ -1,74 +1,66 @@
-import styled from 'styled-components';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { Grid, Pagination } from '@mui/material';
+import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/material';
+
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import { search } from '../../api/dolma/search';
-import { NoPaddingContainer, NoPaddingGrid } from './shared';
-import { SearchForm } from './SearchForm';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
 import { AnalyticsClient } from '../../api/dolma/AnalyticsClient';
 import { MetaTags } from './MetaTags';
 
-export function documentURL(id: string, query?: string) {
-    const qs = query ? `?${new URLSearchParams({ query })}` : '';
-    return `/document/${id}${qs}`;
-}
+import { links } from '../../Links';
 
-const NoResults = ({ query }: { query: string }) => {
-    return (
-        <NoPaddingGrid item>
-            <h4>No results for {query}.</h4>
-            <p>Your search did not match any documents.</p>
-        </NoPaddingGrid>
-    );
-};
-
-interface Props {
+interface SearchResultListProps {
     response: search.Response;
 }
-
-export const SearchResultList = ({ response }: Props) => {
+export const SearchResultList = ({ response }: SearchResultListProps) => {
     const loc = useLocation();
     const nav = useNavigate();
     const showPagination = response && Math.ceil(response.meta.total / response.request.size) > 1;
 
     return (
-        <NoPaddingContainer>
+        <>
             <MetaTags title={`${response.request.query} - Dolma Search Results`} />
-            <SearchForm defaultValue={response.request.query} />
-            <Grid container direction="column" spacing={2} p={2}>
-                <EqualPaddingGrid item>
-                    {response.meta.overflow ? 'More than ' : ''}
-                    <strong>{response.meta.total.toLocaleString()}</strong> results (
-                    {response.meta.took_ms.toLocaleString()}ms)
-                </EqualPaddingGrid>
+            <Stack direction="column" gap={1.5} pt={3.5}>
                 {response.meta.total === 0 && <NoResults query={response.request.query} />}
                 {response.results.map((result, idx) => (
-                    <NoPaddingGrid item key={result.id}>
-                        <ResultsContainer>
+                    <>
+                        <Box key={result.id} pb={1}>
                             <DocumentMeta doc={result} />
-                            <SearchTitleContainer>
-                                <SearchTitleLink
-                                    to={documentURL(result.id, response.request.query)}
-                                    onClick={() => {
-                                        const analytics = new AnalyticsClient();
-                                        analytics.trackSearchResultClick({
-                                            request: response.request,
-                                            id: result.id,
-                                            source: result.source,
-                                            index: response.request.offset + idx,
-                                        });
-                                    }}>
+                            <Link
+                                to={documentURL(result.id, response.request.query)}
+                                onClick={() => {
+                                    const analytics = new AnalyticsClient();
+                                    analytics.trackSearchResultClick({
+                                        request: response.request,
+                                        id: result.id,
+                                        source: result.source,
+                                        index: response.request.offset + idx,
+                                    });
+                                }}>
+                                <Typography
+                                    component="h3"
+                                    variant="h6"
+                                    m={0}
+                                    mt={1}
+                                    color={(theme) => theme.color.B6.hex}>
                                     {result.title}
-                                </SearchTitleLink>
-                            </SearchTitleContainer>
+                                </Typography>
+                            </Link>
                             <Snippets document={result} />
-                        </ResultsContainer>
-                    </NoPaddingGrid>
+                        </Box>
+                        {response.results.length - 1 !== idx && (
+                            <Divider sx={{ borderColor: (theme) => theme.color.N4.hex }} />
+                        )}
+                    </>
                 ))}
-                {showPagination ? (
-                    <NoPaddingGrid item>
+                <Stack
+                    justifyContent="space-between"
+                    alignItems="flex-start"
+                    direction={{ xs: 'column', sm: 'row' }}
+                    gap={{ xs: 2, sm: 0 }}>
+                    {showPagination ? (
                         <Pagination
                             boundaryCount={1}
                             count={Math.ceil(response.meta.total / response.request.size)}
@@ -85,36 +77,48 @@ export const SearchResultList = ({ response }: Props) => {
                                 );
                             }}
                         />
-                    </NoPaddingGrid>
-                ) : null}
-            </Grid>
-        </NoPaddingContainer>
+                    ) : null}
+                    <AboutTheseResults />
+                </Stack>
+            </Stack>
+        </>
     );
 };
 
-const EqualPaddingGrid = styled(Grid)`
-    &&& {
-        padding-top: ${({ theme }) => theme.spacing(2)};
-        padding-bottom: ${({ theme }) => theme.spacing(2)};
-        padding-left: 0;
-        color: ${({ theme }) => theme.color2.N1.hex};
-    }
-`;
+const NoResults = ({ query }: { query: string }) => {
+    return (
+        <>
+            <Typography component="h4" variant="h4" m={0}>
+                No results for {query}.
+            </Typography>
+            <p>Your search did not match any documents.</p>
+        </>
+    );
+};
 
-const ResultsContainer = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.color2.N1.hex};
-    padding-top: ${({ theme }) => theme.spacing(3.5)};
-    padding-bottom: ${({ theme }) => theme.spacing(3.5)};
-    word-break: break-word;
-`;
+const AboutTheseResults = () => (
+    <IconButton
+        aria-label="About These Results"
+        size="small"
+        href={links.faqs}
+        sx={{
+            color: (theme) => theme.color.N9.hex,
+        }}>
+        <InfoOutlinedIcon />
+        <Typography
+            sx={{
+                color: (theme) => theme.color.N9.hex,
+                padding: 0,
+                fontSize: 16,
+                fontWeight: 'bold',
+                textStyle: 'underline',
+            }}>
+            &nbsp;<u>About These Results</u>
+        </Typography>
+    </IconButton>
+);
 
-const SearchTitleContainer = styled.div`
-    padding-top: ${({ theme }) => theme.spacing(0.5)};
-    padding-bottom: ${({ theme }) => theme.spacing(1)};
-`;
-
-const SearchTitleLink = styled(Link)`
-    font-size: ${({ theme }) => theme.typography.h4.fontSize};
-    font-weight: bold;
-    color: ${({ theme }) => theme.color2.B3.hex};
-`;
+export function documentURL(id: string, query?: string) {
+    const qs = query ? `?${new URLSearchParams({ query })}` : '';
+    return `/document/${id}${qs}`;
+}
