@@ -6,7 +6,6 @@ import {
     isFinalMessage,
     isFirstMessage,
     isMessageChunk,
-    isMessageWithMetadata,
     parseMessage,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
