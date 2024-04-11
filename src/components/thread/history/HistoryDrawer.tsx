@@ -70,10 +70,10 @@ export const HistoryDrawer = (): JSX.Element => {
     };
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: !!allThreadInfo.loading,
+        loading: allThreadInfo.loading,
         hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        disabled: !!allThreadInfo.error,
+        disabled: allThreadInfo.error,
         delayInMs: 100,
     });
 
