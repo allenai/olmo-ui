@@ -17,15 +17,18 @@ export const SearchBar = ({ defaultValue = '', disabled, onChange, onSubmit }: S
     const nav = useNavigate();
     const getMeta = useAppContext((state) => state.getMeta);
     const meta = useAppContext((state) => state.meta);
-    useEffect(() => {
-        getMeta();
-    }, []);
     const placeholder = meta?.count
         ? `Search ${meta.count.toLocaleString()} pretraining documents…`
         : 'Search pretraining documents…';
 
+    useEffect(() => {
+        if (meta === undefined) {
+            getMeta();
+        }
+    }, []);
+
     const onTextFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setQueryText(e.currentTarget.value)
+        setQueryText(e.currentTarget.value);
         if (onChange !== undefined) {
             onChange(e.currentTarget.value);
         }

@@ -13,18 +13,16 @@ export const SearchDatasetCard = (): JSX.Element => {
     const nav = useNavigate();
     const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
     const [searchText, setSearchText] = useState<string>('');
-    
+
     const onSearchBarChange = useCallback((value: string) => {
         setSearchText(value);
     }, []);
 
     const onSubmit = () => {
-        if (!searchText) {
-            return;
+        if (searchText.length > 0) {
+            nav(`/search?${search.toQueryString({ query: searchText })}`);
         }
-
-        nav(`/search?${search.toQueryString({ query: searchText })}`);
-    }
+    };
 
     return (
         <Card
@@ -50,7 +48,7 @@ export const SearchDatasetCard = (): JSX.Element => {
                     color={(theme) => theme.palette.primary.contrastText}>
                     Search Training Data
                 </Typography>
-                <SearchBar onChange={onSearchBarChange}/>
+                <SearchBar onChange={onSearchBarChange} />
                 <Button
                     variant="contained"
                     onClick={onSubmit}
