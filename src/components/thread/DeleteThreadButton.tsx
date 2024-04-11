@@ -2,19 +2,34 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 import { useNavigate } from 'react-router-dom';
 
+import dayjs from 'dayjs';
+
+import isBetween from 'dayjs/plugin/isBetween';
+
 import { useAppContext } from '@/AppContext';
 import { ResponsiveButton } from './ResponsiveButton';
 
 import { links } from '@/Links';
 
-import dayjs from 'dayjs';
+dayjs.extend(isBetween);
 
-const isBetween = require('dayjs/plugin/isBetween')
-dayjs.extend(isBetween)
+const isWithinThirtyDays = () => {
+    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const thirtyDaysAgo: dayjs.Dayjs = dayjs().subtract(29, 'days');
+    const currentDate = dayjs();
+    const isWithinThirtyDaysBool = dayjs(selectedThreadInfo.data?.created).isBetween(
+        thirtyDaysAgo.toDate(),
+        currentDate.toDate(),
+        null,
+        '[]'
+    );
+    return isWithinThirtyDaysBool;
+};
 
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
+    const deleteThreadInfo = useAppContext((state) => state.deletedThreadInfo);
     const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
 
     const handleDeleteThread = () => {
@@ -24,11 +39,10 @@ export const DeleteThreadButton = () => {
         }
     };
 
-    const canDeleteThread = () => {
-        // const thirtyDaysAgo: dayjs.Dayjs = dayjs().subtract(29, 'days');
-        // const currentDate = dayjs();
-        // const isWithinThirtyDaysBool = selectedThreadInfo.data ? dayjs(selectedThreadInfo.data.created).isBetween(thirtyDaysAgo.toDate(), currentDate.toDate(), null, {'m': 'numeric', 'd': 'numeric'});
-        // return isWithinThirtyDaysBool;
+    const canDelete = selectedThreadInfo.data ? isWithinThirtyDays() : false;
+
+    if (!canDelete || !!deleteThreadInfo.data) {
+        return null;
     }
 
     return (
