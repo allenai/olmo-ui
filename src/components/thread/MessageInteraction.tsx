@@ -56,26 +56,26 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
     return (
         <Stack direction="row" gap={2} alignItems="start">
             <FeedbackButtonGroup variant="outlined" aria-label="Thread feedback buttons">
-                <ActionButton
+                <ResponsiveButton
                     variant="outlined"
                     startIcon={<GoodIcon />}
                     title="Good"
                     onClick={() => rateMessage(LabelRating.Positive)}
                 />
-                <ActionButton
+                <ResponsiveButton
                     variant="outlined"
                     startIcon={<BadIcon />}
                     title="Bad"
                     onClick={() => rateMessage(LabelRating.Negative)}
                 />
-                <ActionButton
+                <ResponsiveButton
                     variant="outlined"
                     startIcon={<FlagIcon />}
                     title="Inappropriate"
                     onClick={() => rateMessage(LabelRating.Flag)}
                 />
             </FeedbackButtonGroup>
-            <ActionButton
+            <ResponsiveButton
                 variant="outlined"
                 startIcon={<ContentCopy />}
                 title="Copy"
@@ -84,12 +84,6 @@ export const MessageInteraction = ({ message }: MessageInteractionProps): JSX.El
         </Stack>
     );
 };
-
-const ActionButton = styled(ResponsiveButton)`
-    && {
-        border-color: ${({ theme }) => theme.color.B6.hex};
-    }
-`;
 
 const FeedbackButtonGroup = styled(ButtonGroup)`
     && {
