@@ -1,6 +1,6 @@
 import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
-import { ThemeOptions } from '@mui/material';
+import { ThemeOptions, alpha } from '@mui/material';
 import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
@@ -93,6 +93,18 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                         '&:focus-visible,&:hover': {
                             backgroundColor: theme.palette.primary.dark,
                         },
+                    },
+                }),
+            },
+        },
+        MuiPaginationItem: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    fontSize: theme.typography.body1.fontSize,
+                    fontWeight: 'bold',
+                    '&.Mui-selected': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                        color: theme.palette.text.primary,
                     },
                 }),
             },

@@ -76,7 +76,7 @@ export const SearchBar = ({
                                 size="large"
                                 href={links.faqs}
                                 sx={{
-                                    color: (theme) => theme.color.N9.hex,
+                                    color: (theme) => theme.palette.text.primary,
                                     padding: 0,
                                     display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
                                 }}>

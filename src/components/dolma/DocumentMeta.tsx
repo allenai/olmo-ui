@@ -1,9 +1,8 @@
-import { Grid, Tooltip } from '@mui/material';
+import { Stack, Typography, styled } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import styled from 'styled-components';
-import { CopyToClipboardButton } from '@allenai/varnish2/components';
 
 import { search } from '../../api/dolma/search';
+import { CopyToClipboardButton } from './shared';
 
 interface Props {
     doc: search.Document;
@@ -11,43 +10,31 @@ interface Props {
 
 export const DocumentMeta = ({ doc }: Props) => {
     return (
-        <ResultMetadataContainer container direction="row" columnGap={1}>
-            <Grid item>
-                <CopyToClipboardButton
-                    buttonContent={<ContentCopyIcon fontSize="inherit" />}
-                    text={doc.url}>
-                    <Tooltip title={doc.url} placement="top">
-                        <TruncatableText>
-                            {doc.url ? <a href={doc.url}>{doc.url}</a> : null}
-                        </TruncatableText>
-                    </Tooltip>
-                </CopyToClipboardButton>
-            </Grid>
-            <Grid item>
-                <strong>Source:&nbsp;</strong> {doc.source}
-            </Grid>
-            <Grid item>
-                <strong>Archive:&nbsp;</strong>
-                {doc.archive}
-            </Grid>
-        </ResultMetadataContainer>
+        <Stack direction="row" gap={1}>
+            <Typography fontSize={14} fontWeight="bold">
+                Dolma ID:
+            </Typography>
+            <CopyToClipboardButton
+                buttonContent={<ContentCopyIcon fontSize="inherit" />}
+                text={doc.dolma_id}
+                ariaLabel="Copy Dolma ID">
+                <TruncatableText>&nbsp;{doc.dolma_id}</TruncatableText>
+            </CopyToClipboardButton>
+            <Typography fontSize={14} fontWeight="bold">
+                Source:
+            </Typography>
+            <Typography component="span" fontSize={14}>
+                {doc.source}
+            </Typography>
+        </Stack>
     );
 };
 
-const ResultMetadataContainer = styled(Grid)`
-    font-size: ${({ theme }) => theme.typography.body1.fontSize};
-    word-break: break-word;
-    color: ${({ theme }) => theme.color2.N1.hex};
-    &&& svg {
-        color: ${({ theme }) => theme.color2.N4.hex};
-    }
-`;
-
-const TruncatableText = styled.span`
+const TruncatableText = styled('span')`
     display: inline-block;
+    font-size: 14px;
     vertical-align: top;
-    padding-left: ${({ theme }) => theme.spacing(0.5)};
-    max-width: 200px;
+    max-width: 9ch;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
