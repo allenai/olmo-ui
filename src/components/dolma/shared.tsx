@@ -93,7 +93,7 @@ export function CopyToClipboardButton({
     ariaLabel,
     children,
 }: CopyToClipboardButtonProps) {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
     const value = text || JSON.stringify(children);
     const handleClick = () => {
         setOpen(true);
