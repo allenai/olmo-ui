@@ -10,9 +10,9 @@ interface Props {
 
 export const DocumentMeta = ({ doc }: Props) => {
     return (
-        <Stack direction="row" gap="6px">
+        <Stack direction="row" gap={1}>
             <Typography fontSize={14} fontWeight="bold">
-                Dolma ID:&nbsp;
+                Dolma ID:
             </Typography>
             <CopyToClipboardButton
                 buttonContent={<ContentCopyIcon fontSize="inherit" />}
@@ -21,7 +21,7 @@ export const DocumentMeta = ({ doc }: Props) => {
                 <TruncatableText>&nbsp;{doc.dolma_id}</TruncatableText>
             </CopyToClipboardButton>
             <Typography fontSize={14} fontWeight="bold">
-                Source:&nbsp;
+                Source:
             </Typography>
             <Typography component="span" fontSize={14}>
                 {doc.source}
