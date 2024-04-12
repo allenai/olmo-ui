@@ -1,12 +1,9 @@
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-
 import { useNavigate } from 'react-router-dom';
-
 import dayjs from 'dayjs';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveButton } from './ResponsiveButton';
-
 import { links } from '@/Links';
 
 const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
@@ -21,7 +18,9 @@ export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
     const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
-    const selectedThreadDate = useAppContext((state) => state.selectedThreadInfo.data?.created);
+    const isPastThirtyDays = useAppContext((state) =>
+        isAfterThirtyDays(state.selectedThreadInfo.data?.created)
+    );
 
     const handleDeleteThread = () => {
         if (selectedThreadId) {
@@ -29,8 +28,6 @@ export const DeleteThreadButton = () => {
             nav(links.playground);
         }
     };
-
-    const isPastThirtyDays = isAfterThirtyDays(selectedThreadDate);
 
     if (isPastThirtyDays || !selectedThreadId) {
         return null;

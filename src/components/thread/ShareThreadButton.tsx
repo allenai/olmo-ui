@@ -1,7 +1,5 @@
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-
 import { useState } from 'react';
-
 import { Snackbar } from '@mui/material';
 
 import { ResponsiveButton } from './ResponsiveButton';
@@ -23,10 +21,6 @@ export const ShareThreadButton = () => {
         return null;
     }
 
-    const handleClose = (_event: React.SyntheticEvent | Event, _reason?: string) => {
-        setOpen(false);
-    };
-
     return (
         <>
             <ResponsiveButton
@@ -38,7 +32,7 @@ export const ShareThreadButton = () => {
             <Snackbar
                 open={open}
                 autoHideDuration={500}
-                onClose={handleClose}
+                onClose={() => setOpen(false)}
                 message="URL Copied."
             />
         </>
