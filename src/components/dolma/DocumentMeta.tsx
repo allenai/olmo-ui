@@ -34,7 +34,7 @@ const TruncatableText = styled('span')`
     display: inline-block;
     font-size: 14px;
     vertical-align: top;
-    max-width: 100px;
+    max-width: 9ch;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
