@@ -422,7 +422,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
                             env: [
                                 {
                                     name: 'IS_UI_REFRESH_ENABLED',
-                                    value: if env == 'development' then 'true' else false
+                                    value: if env == 'refresh' then 'true' else false
                                 }
                             ],
                             resources: {
