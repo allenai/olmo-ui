@@ -83,7 +83,7 @@ interface CopyToClipboardButtonProps {
     autoHideDuration?: number;
     buttonContent?: React.ReactNode;
     ariaLabel?: string;
-    children: NonNullable<React.ReactNode>;
+    children: React.ReactNode;
 }
 
 export function CopyToClipboardButton({
