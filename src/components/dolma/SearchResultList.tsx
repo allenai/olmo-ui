@@ -113,5 +113,5 @@ const AboutTheseResults = () => (
 
 export function documentURL(id: string, query?: string) {
     const qs = query ? `?${new URLSearchParams({ query })}` : '';
-    return `/document/${id}${qs}`;
+    return links.document(id) + qs;
 }
