@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LinearProgress, useMediaQuery, useTheme } from '@mui/material';
+import { Box, LinearProgress } from '@mui/material';
 
 import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
-import { ElevatedPaper, NoPaddingContainer, NoPaddingGrid } from '../components/dolma/shared';
+import {
+    ElevatedCard,
+    ElevatedPaper,
+    NoPaddingContainer,
+    NoPaddingGrid,
+    ResponsiveWrapper,
+} from '../components/dolma/shared';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
 import { useAppContext } from '../AppContext';
-
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 const SearchError = ({ message }: { message: string }) => {
     return (
@@ -30,9 +34,6 @@ export const Search = () => {
     const response = useAppContext((state) => state.searchResponse);
     const error = useAppContext((state) => state.searchError);
 
-    const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
-
     useEffect(() => {
         doSearch(request).then((r) => {
             const analytics = new AnalyticsClient();
@@ -44,7 +45,9 @@ export const Search = () => {
         case RemoteState.Loading: {
             return (
                 <NoPaddingContainer>
-                    <SearchForm defaultValue={request.query} disabled={true} />
+                    <ElevatedCard>
+                        <SearchForm defaultValue={request.query} disabled={true} />
+                    </ElevatedCard>
                     <LinearProgress sx={{ mt: 3 }} />
                 </NoPaddingContainer>
             );
@@ -52,7 +55,9 @@ export const Search = () => {
         case RemoteState.Error: {
             return (
                 <NoPaddingContainer>
-                    <SearchForm defaultValue={request.query} noCard={!isDesktopOrUp} />
+                    <ResponsiveWrapper onMobile={Box} onDesktop={ElevatedCard}>
+                        <SearchForm defaultValue={request.query} />
+                    </ResponsiveWrapper>
                     <SearchError message={error?.message ?? 'Unexpected Error'} />
                 </NoPaddingContainer>
             );
@@ -61,12 +66,13 @@ export const Search = () => {
             if (!response) {
                 throw new Error('No response');
             }
-            const SearchWrapper = isDesktopOrUp ? ElevatedPaper : NoPaddingContainer;
             return (
-                <SearchWrapper>
-                    <SearchForm defaultValue={request.query} noCard={isDesktopOrUp} />
+                <ResponsiveWrapper onMobile={NoPaddingContainer} onDesktop={ElevatedPaper}>
+                    <ResponsiveWrapper onMobile={ElevatedCard} onDesktop={Box}>
+                        <SearchForm defaultValue={request.query} />
+                    </ResponsiveWrapper>
                     <SearchResultList response={response} />
-                </SearchWrapper>
+                </ResponsiveWrapper>
             );
         }
     }
