@@ -100,7 +100,7 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
         MuiPaginationItem: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    fontSize: 16,
+                    fontSize: theme.typography.body1.fontSize,
                     fontWeight: 'bold',
                     '&.Mui-selected': {
                         backgroundColor: alpha(theme.palette.primary.main, 0.08),
