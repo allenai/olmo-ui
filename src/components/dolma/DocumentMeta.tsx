@@ -1,4 +1,4 @@
-import { Stack, styled } from '@mui/material';
+import { Stack, Typography, styled } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { search } from '../../api/dolma/search';
@@ -10,21 +10,29 @@ interface Props {
 
 export const DocumentMeta = ({ doc }: Props) => {
     return (
-        <Stack direction="row" gap="6px" sx={{ fontSize: '14px' }}>
-            <strong>Dolma ID:&nbsp;</strong>
+        <Stack direction="row" gap="6px">
+            <Typography fontSize={14} fontWeight="bold">
+                Dolma ID:&nbsp;
+            </Typography>
             <CopyToClipboardButton
                 buttonContent={<ContentCopyIcon fontSize="inherit" />}
                 text={doc.dolma_id}
                 ariaLabel="Copy Dolma ID">
                 <TruncatableText>&nbsp;{doc.dolma_id}</TruncatableText>
             </CopyToClipboardButton>
-            <strong>Source:&nbsp;</strong> {doc.source}
+            <Typography fontSize={14} fontWeight="bold">
+                Source:&nbsp;
+            </Typography>
+            <Typography component="span" fontSize={14}>
+                {doc.source}
+            </Typography>
         </Stack>
     );
 };
 
 const TruncatableText = styled('span')`
     display: inline-block;
+    font-size: 14px;
     vertical-align: top;
     max-width: 100px;
     white-space: nowrap;

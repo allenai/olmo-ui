@@ -107,7 +107,8 @@ export function CopyToClipboardButton({
                 aria-label={ariaLabel || 'Copy'}
                 onClick={handleClick}
                 sx={{
-                    padding: '0 0 4px 0',
+                    padding: '0',
+                    verticalAlign: 'top',
                     color: (theme) => theme.color.N8.hex,
                     opacity: 0.66,
                 }}>
