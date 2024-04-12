@@ -105,14 +105,7 @@ const AboutTheseResults = () => (
             color: (theme) => theme.color.N9.hex,
         }}>
         <InfoOutlinedIcon />
-        <Typography
-            sx={{
-                color: (theme) => theme.color.N9.hex,
-                padding: 0,
-                fontSize: 16,
-                fontWeight: 'bold',
-                textStyle: 'underline',
-            }}>
+        <Typography fontWeight="bold" sx={{ textDecoration: 'underline' }}>
             &nbsp;<u>About These Results</u>
         </Typography>
     </IconButton>
