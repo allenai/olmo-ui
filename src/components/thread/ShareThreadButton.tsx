@@ -9,19 +9,17 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 export const ShareThreadButton = () => {
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
     const [open, setOpen] = useState(false);
 
     const handleShareThread = () => {
-        if (selectedThreadInfo.data) {
-            navigator.clipboard.writeText(
-                location.origin + links.thread(selectedThreadInfo.data.id)
-            );
+        if (selectedThreadId) {
+            navigator.clipboard.writeText(location.origin + links.thread(selectedThreadId));
             setOpen(true);
         }
     };
 
-    if (!selectedThreadInfo.data) {
+    if (!selectedThreadId) {
         return null;
     }
 

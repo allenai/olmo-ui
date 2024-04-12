@@ -6,41 +6,38 @@ import dayjs from 'dayjs';
 
 import isBetween from 'dayjs/plugin/isBetween';
 
-import { FetchInfo, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { ResponsiveButton } from './ResponsiveButton';
 
 import { links } from '@/Links';
-import { Message } from '@/api/Message';
 
 dayjs.extend(isBetween);
 
-const isWithinThirtyDays = (selectedThreadInfo: FetchInfo<Message>) => {
-    const thirtyDaysAgo: dayjs.Dayjs = dayjs().subtract(29, 'days');
-    const currentDate = dayjs();
-    const isWithinThirtyDaysBool = dayjs(selectedThreadInfo.data?.created).isBetween(
-        thirtyDaysAgo.toDate(),
-        currentDate.toDate(),
-        null,
-        '[]'
-    );
-    return isWithinThirtyDaysBool;
+const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
+    const currentDate = dayjs().format('YYYY-MM-DD');
+    const targetDate = dayjs(selectedThreadDate).add(29, 'days').format('YYYY-MM-DD');
+
+    const isAfterThirtyDays = dayjs().isAfter(targetDate, 'day');
+
+    return isAfterThirtyDays;
 };
 
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+    const selectedThreadDate = useAppContext((state) => state.selectedThreadInfo.data?.created);
 
     const handleDeleteThread = () => {
-        if (selectedThreadInfo.data) {
-            deleteThread(selectedThreadInfo.data.id);
+        if (selectedThreadId) {
+            deleteThread(selectedThreadId);
             nav(links.playground);
         }
     };
 
-    const canDelete = selectedThreadInfo.data ? isWithinThirtyDays(selectedThreadInfo) : false;
+    const isPastThirtyDays = isAfterThirtyDays(selectedThreadDate);
 
-    if (!canDelete) {
+    if (isPastThirtyDays || !selectedThreadId) {
         return null;
     }
 
