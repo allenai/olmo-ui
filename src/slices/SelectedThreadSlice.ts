@@ -1,5 +1,3 @@
-import { CssVarsProviderConfig } from '@mui/system';
-
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 
 import { Message, MessageApiUrl, MessagePost } from '@/api/Message';

@@ -4,17 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 import dayjs from 'dayjs';
 
-import isBetween from 'dayjs/plugin/isBetween';
-
 import { useAppContext } from '@/AppContext';
 import { ResponsiveButton } from './ResponsiveButton';
 
 import { links } from '@/Links';
 
-dayjs.extend(isBetween);
-
 const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
-    const currentDate = dayjs().format('YYYY-MM-DD');
     const targetDate = dayjs(selectedThreadDate).add(29, 'days').format('YYYY-MM-DD');
 
     const isAfterThirtyDays = dayjs().isAfter(targetDate, 'day');
