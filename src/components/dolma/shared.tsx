@@ -1,4 +1,4 @@
-import { ComponentType, PropsWithChildren, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import {
@@ -10,11 +10,7 @@ import {
     Paper,
     PaperProps,
     Snackbar,
-    useMediaQuery,
-    useTheme,
 } from '@mui/material';
-
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const ScrollToTopOnPageChange = () => {
     const location = useLocation();
@@ -81,32 +77,6 @@ export const ElevatedPaper = ({ children, ...paperProps }: PaperProps) => (
         {children}
     </Paper>
 );
-
-interface ResponsiveWrapperProps extends PropsWithChildren {
-    onDesktop: ComponentType<PropsWithChildren>;
-    onMobile: ComponentType<PropsWithChildren>;
-}
-
-export const ResponsiveWrapper = ({
-    onDesktop,
-    onMobile,
-    children,
-    ...rest
-}: ResponsiveWrapperProps): JSX.Element => {
-    const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
-    const DesktopWrapper = onDesktop;
-    const MobileWrapper = onMobile;
-    return (
-        <>
-            {isDesktopOrUp ? (
-                <DesktopWrapper {...rest}>{children}</DesktopWrapper>
-            ) : (
-                <MobileWrapper {...rest}>{children}</MobileWrapper>
-            )}
-        </>
-    );
-};
 
 interface CopyToClipboardButtonProps {
     text?: string;
