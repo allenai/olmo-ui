@@ -13,6 +13,7 @@ export interface SelectedThreadSlice {
     setExpandedThreadID: (id: string | undefined) => void;
     pathToLastMessageInThread: string[];
     postToExistingThread: (newMessage: MessagePost) => Promise<FetchInfo<Message>>;
+    deleteSelectedThread: () => void;
 }
 export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
     selectedThreadInfo: {},
@@ -28,6 +29,12 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             true,
             pathToLastMessageInThread
         );
+    },
+
+    deleteSelectedThread: () => {
+        set((state) => {
+            return { ...state, selectedThreadInfo: {} };
+        });
     },
 
     getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {

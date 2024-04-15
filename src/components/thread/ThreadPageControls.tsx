@@ -7,6 +7,8 @@ import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-q
 import { ResponsiveButton } from './ResponsiveButton';
 import { HistoryButton } from './history/HistoryButton';
 import { ParameterButton } from './parameter/ParameterButton';
+import { DeleteThreadButton } from './DeleteThreadButton';
+import { ShareThreadButton } from './ShareThreadButton';
 
 const ThreadButtons = (): JSX.Element => {
     const NewThreadButton = () => (
@@ -33,6 +35,8 @@ const ThreadButtons = (): JSX.Element => {
                 <NewThreadButton />
                 <ParameterButton />
                 <HistoryButton />
+                <DeleteThreadButton />
+                <ShareThreadButton />
             </Stack>
 
             {/* Small screens */}
@@ -47,6 +51,8 @@ const ThreadButtons = (): JSX.Element => {
                 <NewThreadButton />
                 <ParameterButton />
                 <HistoryButton />
+                <DeleteThreadButton />
+                <ShareThreadButton />
             </ButtonGroup>
         </>
     );
