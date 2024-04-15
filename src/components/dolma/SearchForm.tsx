@@ -1,23 +1,21 @@
-import { Card } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { SearchBar } from './SearchBar';
+import { ElevatedCard } from './shared';
 
 export const SearchForm = ({
     defaultValue,
     disabled,
+    noCard,
 }: {
     defaultValue?: string;
     disabled?: boolean;
+    noCard?: boolean;
 }) => {
+    const Wrapper = noCard ? Box : ElevatedCard;
     return (
-        <Card
-            variant="elevation"
-            elevation={1}
-            sx={{
-                padding: (theme) => theme.spacing(2.25),
-                backgroundColor: (theme) => theme.palette.background.default,
-            }}>
+        <Wrapper>
             <SearchBar defaultValue={defaultValue} disabled={disabled} />
-        </Card>
+        </Wrapper>
     );
 };

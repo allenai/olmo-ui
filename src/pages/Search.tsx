@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, useMediaQuery, useTheme } from '@mui/material';
 
 import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
-import { NoPaddingContainer, NoPaddingGrid } from '../components/dolma/shared';
+import { ElevatedPaper, NoPaddingContainer, NoPaddingGrid } from '../components/dolma/shared';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
 import { useAppContext } from '../AppContext';
+
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 const SearchError = ({ message }: { message: string }) => {
     return (
@@ -27,6 +29,9 @@ export const Search = () => {
     const searchState = useAppContext((state) => state.searchState);
     const response = useAppContext((state) => state.searchResponse);
     const error = useAppContext((state) => state.searchError);
+
+    const theme = useTheme();
+    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 
     useEffect(() => {
         doSearch(request).then((r) => {
@@ -47,7 +52,7 @@ export const Search = () => {
         case RemoteState.Error: {
             return (
                 <NoPaddingContainer>
-                    <SearchForm defaultValue={request.query} />
+                    <SearchForm defaultValue={request.query} noCard={!isDesktopOrUp} />
                     <SearchError message={error?.message ?? 'Unexpected Error'} />
                 </NoPaddingContainer>
             );
@@ -56,7 +61,13 @@ export const Search = () => {
             if (!response) {
                 throw new Error('No response');
             }
-            return <SearchResultList response={response} />;
+            const SearchWrapper = isDesktopOrUp ? ElevatedPaper : NoPaddingContainer;
+            return (
+                <SearchWrapper>
+                    <SearchForm defaultValue={request.query} noCard={isDesktopOrUp} />
+                    <SearchResultList response={response} />
+                </SearchWrapper>
+            );
         }
     }
 };

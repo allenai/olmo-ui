@@ -46,16 +46,23 @@ export const Snippets = ({
 };
 
 const PreformattedText = styled.p<{ whiteSpace?: string }>`
+    font-size: ${({ theme }) => theme.typography.body1.fontSize};
+    color: ${({ theme }) => theme.typography.body1.color};
+    margin-top: ${({ theme }) => theme.spacing(1)};
+
+    /* truncate after 4 lines of text */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
     &&& {
         em {
             font-style: normal;
             font-weight: bold;
         }
     }
-    white-space: ${({ whiteSpace }) => whiteSpace || 'initial'};
-    font-size: ${({ theme }) => theme.typography.body1.fontSize};
-    color: ${({ theme }) => theme.color2.N1.hex};
-    margin-top: 0;
 
     &:last-child {
         margin-bottom: 0;
