@@ -419,6 +419,12 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
                                     path: '/?check=rdy'
                                 }
                             },
+                            env: [
+                                {
+                                    name: 'IS_UI_REFRESH_ENABLED',
+                                    value: if env == 'refresh' then 'true' else false
+                                }
+                            ],
                             resources: {
                                 requests: {
                                    cpu: 0.1,
