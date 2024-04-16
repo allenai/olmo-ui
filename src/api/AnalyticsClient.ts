@@ -6,7 +6,7 @@ export namespace event {
         SearchResultClick = 'search.result.click',
         DocumentView = 'document.view',
         DocumentShare = 'document.share',
-        NewLLMPrompt = 'olmo.prompt.new',
+        NewPrompt = 'prompt.new',
     }
 
     export interface Event {
@@ -72,6 +72,6 @@ export class AnalyticsClient {
     }
 
     trackNewPrompt(details: event.PromptMessageDetails): boolean {
-        return this.track({ type: event.Type.NewLLMPrompt, occurred: new Date(), details });
+        return this.track({ type: event.Type.NewPrompt, occurred: new Date(), details });
     }
 }
