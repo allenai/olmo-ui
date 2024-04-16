@@ -8,7 +8,7 @@ import { RemoteState } from '../contexts/util';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
 import { search } from '../api/dolma/search';
-import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
+import { AnalyticsClient } from '../api/AnalyticsClient';
 import { MetaTags } from '../components/dolma/MetaTags';
 import { useAppContext } from '@/AppContext';
 
@@ -20,6 +20,7 @@ export const Document = () => {
     const [metadataModalOpen, setMetadataModalOpen] = React.useState(false);
     const handleModalOpen = () => setMetadataModalOpen(true);
     const handleModalClose = () => setMetadataModalOpen(false);
+    const analytics = new AnalyticsClient();
 
     const params = useParams<{ id: string; query?: string }>();
     if (!params.id) {
@@ -31,7 +32,6 @@ export const Document = () => {
     const { query } = search.fromQueryString(loc.search);
     useEffect(() => {
         getDocument({ id, query: query.trim() !== '' ? query.trim() : undefined }).then((d) => {
-            const analytics = new AnalyticsClient();
             analytics.trackDocumentView({ id, query, source: d.source });
         });
     }, [id]);
@@ -40,7 +40,6 @@ export const Document = () => {
 
     const handleShareClick = () => {
         navigator.clipboard.writeText(window.location.toString());
-        const analytics = new AnalyticsClient();
         if (documentDetails) {
             analytics.trackDocumentShare({
                 id: documentDetails.id,

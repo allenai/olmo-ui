@@ -7,7 +7,7 @@ import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { ElevatedPaper, NoPaddingContainer, NoPaddingGrid } from '../components/dolma/shared';
-import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
+import { AnalyticsClient } from '../api/AnalyticsClient';
 import { useAppContext } from '../AppContext';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -30,12 +30,12 @@ export const Search = () => {
     const response = useAppContext((state) => state.searchResponse);
     const error = useAppContext((state) => state.searchError);
 
+    const analytics = new AnalyticsClient();
     const theme = useTheme();
     const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 
     useEffect(() => {
         doSearch(request).then((r) => {
-            const analytics = new AnalyticsClient();
             analytics.trackSearchQuery({ request, response: { meta: r.meta } });
         });
     }, [search.toQueryString(request)]);
