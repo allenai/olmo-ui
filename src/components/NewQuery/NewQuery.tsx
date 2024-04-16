@@ -37,7 +37,7 @@ export const NewQuery = () => {
     }, []);
 
     const postNewMessage = async function (data: MessagePost) {
-        analytics.trackNewPrompt({ data: data.content });
+        analytics.trackNewPrompt({ content: data.content });
         await postMessage(data);
     };
 

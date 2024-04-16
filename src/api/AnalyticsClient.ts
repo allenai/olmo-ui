@@ -38,7 +38,7 @@ export namespace event {
     }
 
     export interface PromptMessageDetails {
-        data: string;
+        content: string;
         threadId?: string;
     }
 }
