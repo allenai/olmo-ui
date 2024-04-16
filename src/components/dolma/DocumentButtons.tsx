@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 const takeDownFormUrl = 'https://forms.gle/hGoEs8PJszcmxmh56';
 
+// TODO: Combine this with ShareThreadButton once page layouts/container querys are consistent
 export const ShareButton = ({ url, onClick }: { url: string; onClick?: () => void }) => {
     const [open, setOpen] = useState(false);
     if (!url) {
