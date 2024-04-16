@@ -3,6 +3,8 @@
 #
 FROM node:18-alpine
 
+ARG SKIFF_ENV_ARG
+ENV SKIFF_ENV=$SKIFF_ENV_ARG
 WORKDIR /ui
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
