@@ -1,0 +1,57 @@
+import { useState } from 'react';
+import { Button, Snackbar } from '@mui/material';
+
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import { Link } from 'react-router-dom';
+
+const takeDownFormUrl = 'https://forms.gle/hGoEs8PJszcmxmh56';
+
+export const ShareButton = ({ url, onClick }: { url: string; onClick?: () => void }) => {
+    const [open, setOpen] = useState(false);
+    if (!url) {
+        return null;
+    }
+
+    return (
+        <>
+            <Button
+                title="Share"
+                variant="outlined"
+                onClick={() => {
+                    if (onClick) {
+                        onClick();
+                    }
+                    navigator.clipboard.writeText(url);
+                    setOpen(true);
+                }}
+                startIcon={<ShareOutlinedIcon />}>
+                Share
+            </Button>
+            <Snackbar
+                open={open}
+                autoHideDuration={2500}
+                onClose={() => setOpen(false)}
+                message="Link copied to clipboard"
+            />
+        </>
+    );
+};
+
+export const RequestRemovalButton = () => {
+    // TODO: This button just links to a google form, figure out what it should actually do
+
+    return (
+        <>
+            <Button
+                variant="outlined"
+                component={Link}
+                startIcon={<RemoveCircleOutlineIcon />}
+                target="_blank"
+                href={takeDownFormUrl}
+                to={takeDownFormUrl}>
+                Request Removal
+            </Button>
+        </>
+    );
+};

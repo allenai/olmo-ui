@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import {
+    Box,
     Card,
     CardProps,
     Container,
@@ -101,7 +102,7 @@ export function CopyToClipboardButton({
     };
 
     return (
-        <div>
+        <Box sx={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
             <IconButton
                 size="small"
                 aria-label={ariaLabel || 'Copy'}
@@ -123,6 +124,6 @@ export function CopyToClipboardButton({
                 message={`Copied '${value}' to clipboard`}
             />
             {children}
-        </div>
+        </Box>
     );
 }
