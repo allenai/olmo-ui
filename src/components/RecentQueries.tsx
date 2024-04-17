@@ -14,6 +14,7 @@ import { ThreadAccordionView } from './ThreadAccordionView';
 import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
+import { RemoteState } from '@/contexts/util';
 
 enum QueryToggleOptions {
     All = 'all',
@@ -60,9 +61,10 @@ enum QueryStringParam {
 export const RecentQueries = () => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getAllThreads = useAppContext((state) => state.getAllThreads);
-    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
+    const allThreads = useAppContext((state) => state.allThreads);
+    const threadRemoteState = useAppContext((state) => state.threadRemoteState);
+    const threadUpdateRemoteState = useAppContext((state) => state.threadUpdateRemoteState);
     const setExpandedThreadID = useAppContext((state) => state.setExpandedThreadID);
-    const postMessageInfo = useAppContext((state) => state.postMessageInfo);
     const loc = useLocation();
     const nav = useNavigate();
     const qs = new URLSearchParams(loc.search);
@@ -82,7 +84,7 @@ export const RecentQueries = () => {
     };
 
     const size = 10;
-    const count = allThreadInfo.data ? Math.ceil(allThreadInfo.data?.meta.total / size) : 0;
+    const count = Math.ceil(allThreads.meta.total / size);
 
     useEffect(() => {
         const creator = queriesView === QueryToggleOptions.Mine ? userInfo?.client : undefined;
@@ -94,12 +96,12 @@ export const RecentQueries = () => {
         <>
             <QueriesHeader queriesView={queriesView} onToggleChange={onQueriesToggleChange} />
             <div>
-                {allThreadInfo.loading ? <LinearProgress /> : null}
-                {!allThreadInfo.loading && !allThreadInfo.error && allThreadInfo.data ? (
+                {threadRemoteState === RemoteState.Loading ? <LinearProgress /> : null}
+                {threadRemoteState === RemoteState.Loaded ? (
                     <Stack direction="column">
                         <ContextMenu>
                             <>
-                                {allThreadInfo.data.messages.map((t) => (
+                                {allThreads.messages.map((t) => (
                                     <ThreadAccordionView
                                         key={t.id}
                                         title={t.content}
@@ -109,7 +111,9 @@ export const RecentQueries = () => {
                                                 messages={t.children}
                                                 parent={t}
                                                 showFollowUp={userInfo?.client === t.creator}
-                                                disabledActions={postMessageInfo.loading}
+                                                disabledActions={
+                                                    threadUpdateRemoteState === RemoteState.Loading
+                                                }
                                             />
                                         }
                                         rootMessage={t}

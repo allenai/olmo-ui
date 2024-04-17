@@ -7,6 +7,7 @@ import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useAppContext } from '../../AppContext';
 
 import { MenuWrapperContainer } from '../MessageActionsMenu';
+import { RemoteState } from '@/contexts/util';
 
 interface ThreadEditFormProps {
     curMessage: Message;
@@ -27,6 +28,7 @@ export const ThreadEditForm = ({
 }: ThreadEditFormProps) => {
     const curMessageRole = curMessage.role;
     const postMessage = useAppContext((state) => state.postMessage);
+    const threadUpdateRemoteState = useAppContext((state) => state.threadUpdateRemoteState);
     const formContext = useForm({
         defaultValues: {
             editMessage: curMessage.content,
@@ -43,8 +45,8 @@ export const ThreadEditForm = ({
             original: curMessage.id,
         };
         handleBranchMenuSelect(0); // 0 because the new message is unshifted
-        const postMessageInfo = await postMessage(payload, parent, false, messagePath);
-        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
+        postMessage(payload, parent, false, messagePath);
+        if (threadUpdateRemoteState === RemoteState.Loaded) {
             setMessageLoading(false);
         }
     };
