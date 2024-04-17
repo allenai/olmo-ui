@@ -2,16 +2,16 @@ import { fireEvent, render, renderHook, screen, waitFor } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 
-import { messageId } from '@/mocks/handlers/messageStreamHandlers';
 import { useAppContext } from '../../AppContext';
 import { ThreadBodyView } from '../ThreadBodyView';
+import { RemoteState } from '@/contexts/util';
 
 describe('ThreadBodyView', () => {
     test('should send a follow up message', async () => {
         const user = userEvent.setup();
         const { result } = renderHook(() => useAppContext());
         await result.current.getAllThreads(0);
-        const firstThread = result.current.allThreadInfo.data.messages[0];
+        const firstThread = result.current.allThreads.messages[0];
 
         render(
             <ThreadBodyView
@@ -30,15 +30,14 @@ describe('ThreadBodyView', () => {
             });
         });
 
-        expect(result.current.postMessageInfo.error).toBeFalsy();
-        expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
+        expect(result.current.threadUpdateRemoteState).toEqual(RemoteState.Loaded);
     });
 
     test('should be able to edit message', async () => {
         const user = userEvent.setup();
         const { result } = renderHook(() => useAppContext());
         await result.current.getAllThreads(0);
-        const firstThread = result.current.allThreadInfo.data.messages[0];
+        const firstThread = result.current.allThreads.messages[0];
 
         render(
             <ThreadBodyView
@@ -55,12 +54,6 @@ describe('ThreadBodyView', () => {
         const editInput = screen.getByLabelText('Edit Prompt');
         await user.type(editInput, 'Hello');
         await user.click(screen.getByLabelText('Finish editing LLM response'));
-
-        await waitFor(() => {
-            expect(result.current.postMessageInfo.loading).toEqual(false);
-        });
-
-        expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
-        expect(result.current.postMessageInfo.error).toBeFalsy();
+        expect(result.current.threadUpdateRemoteState).toEqual(RemoteState.Loaded);
     });
 });

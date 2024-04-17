@@ -20,6 +20,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
+import { RemoteState } from '@/contexts/util';
 
 const LIMIT = 20 as const;
 const PAGE_SIZE = 20 as const;
@@ -30,11 +31,11 @@ export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const userInfo = useAppContext((state) => state.userInfo);
     const getAllThreads = useAppContext((state) => state.getAllThreads);
-    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
     const threads = useAppContext((state) => state.threads);
     const handleDrawerClose = () => closeDrawer(HISTORY_DRAWER_ID);
+    const threadRemoteState = useAppContext((state) => state.threadRemoteState);
     const hasMoreThreadsToFetch = useAppContext((state) => {
-        const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
+        const totalThreadsOnServer = state.allThreads.meta.total;
         const loadedThreadCount = state.threads.length;
 
         return totalThreadsOnServer === 0 || loadedThreadCount < totalThreadsOnServer;
@@ -63,17 +64,18 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     const handleScroll = () => {
-        if (!allThreadInfo.loading) {
+        if (threadRemoteState !== RemoteState.Loading) {
             getAllThreads(offset + PAGE_SIZE, creator, LIMIT);
             setOffSet(offset + PAGE_SIZE);
         }
     };
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: allThreadInfo.loading,
+        loading: threadRemoteState === RemoteState.Loading,
         hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        disabled: allThreadInfo.error,
+        disabled:
+            threadRemoteState === RemoteState.Error || threadRemoteState === RemoteState.Loading,
         delayInMs: 100,
     });
 
@@ -118,7 +120,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     threads={threadsOlderThanAWeek}
                     hasDivider
                 />
-                {(hasMoreThreadsToFetch || allThreadInfo.loading) && (
+                {(hasMoreThreadsToFetch || threadRemoteState === RemoteState.Loading) && (
                     <ListItem ref={sentryRef}>
                         <ListItemText
                             sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}

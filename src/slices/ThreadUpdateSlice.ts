@@ -1,4 +1,4 @@
-import { FetchInfo, OlmoStateCreator } from '@/AppContext';
+import { OlmoStateCreator } from '@/AppContext';
 import {
     InferenceOpts,
     Message,
@@ -11,6 +11,7 @@ import {
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
 import { errorToAlert } from './AlertMessageSlice';
+import { RemoteState } from '@/contexts/util';
 
 const ABORT_ERROR_MESSAGE: AlertMessage = {
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
@@ -20,22 +21,23 @@ const ABORT_ERROR_MESSAGE: AlertMessage = {
 } as const;
 
 export interface ThreadUpdateSlice {
+    threadUpdateRemoteState?: RemoteState;
     abortController: AbortController | null;
     ongoingThreadId: string | null;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
-    postMessageInfo: FetchInfo<Message>;
     postMessage: (
         newMessage: MessagePost,
         parentMessage?: Pick<Message, 'id' | 'children'>,
         shouldSetSelectedThread?: boolean,
         messagePath?: string[]
-    ) => Promise<FetchInfo<Message>>;
+    ) => Promise<void>;
     selectedModel: string;
     setSelectedModel: (selectedModel: string) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
+    threadUpdateRemoteState: undefined,
     abortController: null,
     ongoingThreadId: null,
     inferenceOpts: {},
@@ -62,8 +64,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         set(
             (state) => {
                 state.abortController = abortController;
-                state.postMessageInfo.loading = true;
-                state.postMessageInfo.error = false;
+                state.threadUpdateRemoteState = RemoteState.Loading;
             },
             false,
             'threadUpdate/startPostMessage'
@@ -79,9 +80,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 // Traverse the tree using the ids provided until we get to where messagePath pointed us
                 for (const id of messagePath) {
                     if (message == null) {
-                        message = state.allThreadInfo.data.messages.find(
-                            (message) => message.id === id
-                        );
+                        message = state.allThreads.messages.find((message) => message.id === id);
                     } else {
                         message = message?.children?.find((message) => message.id === id);
                     }
@@ -104,7 +103,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             // TODO: by this point allThreadInfo.data should always be set, so silly stuff
             // like this shouldn't be required
             // Note: Ran into issues in tests with sending a message without getting all threads first. It's not a safe assumption that allThreadInfo is defined.
-            return parentMsg?.children || state.allThreadInfo.data?.messages || [];
+            return parentMsg?.children || state.allThreads.messages || [];
         };
 
         try {
@@ -135,7 +134,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                             // since ThreadDisplay redirects when the id in selectedThreadInfo.data changes we only want to redirect if it's a new thread and not a followup
                             if (shouldSetSelectedThread && messagePath?.length === 0) {
-                                state.selectedThreadInfo.data = msg;
+                                state.selectedThread = msg;
                             }
                         },
                         false,
@@ -153,9 +152,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             const reply = (branch(state)[0]?.children ?? [])[0];
                             reply.content += chunk.content;
 
-                            if (shouldSetSelectedThread) {
-                                state.selectedThreadInfo.data!.children![0].content +=
-                                    chunk.content;
+                            if (shouldSetSelectedThread && state.selectedThread) {
+                                state.selectedThread.children![0].content += chunk.content;
                             }
                         },
                         false,
@@ -193,9 +191,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 (state) => {
                     state.abortController = null;
                     state.ongoingThreadId = null;
-                    state.postMessageInfo.loading = false;
-                    state.postMessageInfo.data = branch(state)[0];
-                    state.postMessageInfo.error = false;
+                    state.threadUpdateRemoteState = RemoteState.Loaded;
                 },
                 false,
                 'threadUpdate/finishPostMessage'
@@ -220,14 +216,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 (state) => {
                     state.abortController = null;
                     state.ongoingThreadId = null;
-                    state.postMessageInfo.loading = false;
-                    state.postMessageInfo.error = true;
+                    state.threadUpdateRemoteState = RemoteState.Error;
                 },
                 false,
                 'threadUpdate/errorPostMessage'
             );
         }
-
-        return get().postMessageInfo;
     },
 });

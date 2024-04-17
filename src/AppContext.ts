@@ -19,12 +19,6 @@ import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 import { SelectedThreadSlice, createSelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 
-export type FetchInfo<T> = {
-    data?: T;
-    loading?: boolean;
-    error?: boolean;
-};
-
 type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
 
 type AppContextState = LabelSlice &

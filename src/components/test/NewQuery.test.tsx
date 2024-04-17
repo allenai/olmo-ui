@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { useAppContext } from '@/AppContext';
 
 import { NewQuery } from '../NewQuery/NewQuery';
-import { newMessageId } from '@/mocks/handlers/messageStreamHandlers';
+import { RemoteState } from '@/contexts/util';
 
 describe('NewQuery', () => {
     test('should send a prompt', async () => {
@@ -28,8 +28,7 @@ describe('NewQuery', () => {
             });
         });
 
-        expect(result.current.postMessageInfo.error).toBeFalsy();
-        expect(result.current.postMessageInfo.data?.id).toEqual(newMessageId);
+        expect(result.current.threadUpdateRemoteState).toEqual(RemoteState.Loaded);
     });
 
     test('should populate the models list and change title description when selecting a new model', async () => {

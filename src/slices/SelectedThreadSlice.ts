@@ -1,61 +1,46 @@
-import { FetchInfo, OlmoStateCreator } from '@/AppContext';
+import { OlmoStateCreator } from '@/AppContext';
 
 import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
 import { errorToAlert } from './AlertMessageSlice';
 import { messageClient } from './ThreadSlice';
+import { RemoteState } from '@/contexts/util';
 
 export interface SelectedThreadSlice {
-    selectedThreadInfo: FetchInfo<Message>;
-    getSelectedThread: (
-        threadId: string,
-        checkExistingThreads?: boolean
-    ) => Promise<FetchInfo<Message>>;
+    selectedThreadRemoteState?: RemoteState;
+    selectedThread: Message | null;
+    getSelectedThread: (threadId: string, checkExistingThreads?: boolean) => Promise<void>;
     setExpandedThreadID: (id: string | undefined) => void;
     pathToLastMessageInThread: string[];
-    postToExistingThread: (newMessage: MessagePost) => Promise<FetchInfo<Message>>;
+    postToExistingThread: (newMessage: MessagePost) => Promise<void>;
     deleteSelectedThread: () => void;
 }
 export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
-    selectedThreadInfo: {},
+    selectedThreadRemoteState: undefined,
+    selectedThread: null,
     pathToLastMessageInThread: [],
 
     postToExistingThread: async (newMessage: MessagePost) => {
         const pathToLastMessageInThread = get().pathToLastMessageInThread;
         const parentMessageId = pathToLastMessageInThread[pathToLastMessageInThread.length - 1];
 
-        return get().postMessage(
-            newMessage,
-            { id: parentMessageId },
-            true,
-            pathToLastMessageInThread
-        );
+        get().postMessage(newMessage, { id: parentMessageId }, true, pathToLastMessageInThread);
     },
 
     deleteSelectedThread: () => {
-        set((state) => {
-            return { ...state, selectedThreadInfo: {} };
-        });
+        set({ selectedThread: null });
     },
 
     getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {
         let selectedThread: Message | undefined;
 
         if (checkExistingThreads) {
-            selectedThread = get().allThreadInfo.data.messages.find(
-                (message) => message.id === threadId
-            );
+            selectedThread = get().allThreads.messages.find((message) => message.id === threadId);
         }
 
         if (selectedThread == null) {
             try {
                 set(
-                    (state) => ({
-                        selectedThreadInfo: {
-                            ...state.selectedThreadInfo,
-                            loading: true,
-                            error: false,
-                        },
-                    }),
+                    { selectedThreadRemoteState: RemoteState.Loading },
                     false,
                     'selectedThread/getSelectedThreadStart'
                 );
@@ -66,7 +51,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                 set(
                     (state) => {
                         if (checkExistingThreads) {
-                            state.allThreadInfo.data.messages.push(localSelectedThread);
+                            state.allThreads.messages.push(localSelectedThread);
                         }
                     },
                     false,
@@ -81,13 +66,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     )
                 );
                 set(
-                    (state) => ({
-                        selectedThreadInfo: {
-                            ...state.selectedThreadInfo,
-                            error: true,
-                            loading: false,
-                        },
-                    }),
+                    { selectedThreadRemoteState: RemoteState.Loaded },
                     false,
                     'selectedThread/getSelectedThreadError'
                 );
@@ -107,17 +86,14 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
             set(
                 (state) => {
-                    state.selectedThreadInfo.data = selectedThread;
+                    state.selectedThread = selectedThread;
                     state.pathToLastMessageInThread = pathToLastMessageInThread;
-                    state.selectedThreadInfo.error = false;
-                    state.selectedThreadInfo.loading = false;
+                    state.selectedThreadRemoteState = RemoteState.Loaded;
                 },
                 false,
                 'selectedThread/setSelectedThread'
             );
         }
-
-        return get().selectedThreadInfo;
     },
 
     setExpandedThreadID: (id: string | undefined) => {

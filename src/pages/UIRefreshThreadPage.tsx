@@ -17,7 +17,7 @@ export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
     const postMessage = useAppContext((state) => state.postMessage);
     const postToExistingThread = useAppContext((state) => state.postToExistingThread);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+    const selectedThreadId = useAppContext((state) => state.selectedThread?.id);
 
     // if we're on the selected thread page, handle submission differently
     const isNewThreadPage = useMatch(links.playground);
