@@ -26,7 +26,7 @@ describe('ThreadBodyView', () => {
 
         await waitFor(() => {
             expect(screen.getByRole('form')).toHaveFormValues({
-                followUpMessage: '',
+                followUpMessage: 'Hello',
             });
         });
 
