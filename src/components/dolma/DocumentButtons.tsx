@@ -3,7 +3,6 @@ import { Button, Snackbar } from '@mui/material';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { Link } from 'react-router-dom';
 
 const takeDownFormUrl = 'https://forms.gle/hGoEs8PJszcmxmh56';
 

@@ -33,10 +33,6 @@ export const Search = () => {
 
     const SearchWrapper = isDesktopOrUp ? ElevatedPaper : NoPaddingContainer;
 
-    if (searchState === RemoteState.Loaded && !response) {
-        throw new Error('No response');
-    }
-
     return (
         <>
             <SearchWrapper>
