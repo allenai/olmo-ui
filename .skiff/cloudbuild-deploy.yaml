@@ -24,6 +24,7 @@ steps:
     '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:$COMMIT_SHA',
     '--cache-from', 'gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:latest',
     '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
+    '--build-arg', 'SKIFF_ENV_ARG=$_ENV',
     '.',
   ]
   waitFor: [ '-' ]

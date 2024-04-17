@@ -1,16 +1,8 @@
-import {
-    Breakpoint,
-    Drawer,
-    DrawerProps,
-    GlobalStyles,
-    SxProps,
-    Theme,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
+import { isDesktopOrUp } from './dolma/shared';
 
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
@@ -48,12 +40,10 @@ export const ResponsiveDrawer = ({
     desktopDrawerVariant = 'permanent',
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
-    const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 
     return (
         <>
-            {isDesktopOrUp ? (
+            {isDesktopOrUp() ? (
                 <Drawer
                     variant={desktopDrawerVariant}
                     open={open}

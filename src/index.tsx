@@ -160,7 +160,7 @@ const uiRefreshRoutes: RouteObject[] = [
                 path: links.document(':id'),
                 element: <Document />,
                 handle: {
-                    title: 'Document',
+                    title: 'Dataset Explorer',
                 },
             },
             {
@@ -174,7 +174,7 @@ const uiRefreshRoutes: RouteObject[] = [
                 path: links.search,
                 element: <Search />,
                 handle: {
-                    title: 'Search Datasets',
+                    title: 'Dataset Explorer',
                 },
             },
             {
@@ -210,7 +210,6 @@ const searchParams = new URL(window.location.href).searchParams;
 const isUIRefreshEnabled =
     searchParams.get('isUIRefreshEnabled') === 'true' ||
     process.env.IS_UI_REFRESH_ENABLED === 'true';
-console.log(process.env.IS_UI_REFRESH_ENABLED);
 const router = createBrowserRouter(isUIRefreshEnabled ? uiRefreshRoutes : routes);
 
 const container = document.getElementById('root');

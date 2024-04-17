@@ -1,16 +1,22 @@
-import { useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import {
+    Box,
     Card,
     CardProps,
     Container,
     Grid,
     IconButton,
+    LinearProgress,
     Paper,
     PaperProps,
     Snackbar,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
+
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const ScrollToTopOnPageChange = () => {
     const location = useLocation();
@@ -101,7 +107,7 @@ export function CopyToClipboardButton({
     };
 
     return (
-        <div>
+        <Box sx={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
             <IconButton
                 size="small"
                 aria-label={ariaLabel || 'Copy'}
@@ -123,6 +129,25 @@ export function CopyToClipboardButton({
                 message={`Copied '${value}' to clipboard`}
             />
             {children}
-        </div>
+        </Box>
     );
 }
+
+interface SearchWrapperProps extends PropsWithChildren {
+    isLoading?: boolean;
+}
+
+export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
+    const Wrapper = isDesktopOrUp() ? ElevatedPaper : NoPaddingContainer;
+    return (
+        <>
+            <Wrapper>{children}</Wrapper>
+            {isLoading && <LinearProgress sx={{ mt: 3 }} />}
+        </>
+    );
+};
+
+export const isDesktopOrUp = (): boolean => {
+    const theme = useTheme();
+    return useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
+};

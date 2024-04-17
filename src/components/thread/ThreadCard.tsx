@@ -1,18 +1,15 @@
-import { Card, Stack, useMediaQuery, useTheme } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
+import { isDesktopOrUp } from '../dolma/shared';
 
 interface ThreadPageCardProps extends PropsWithChildren {}
 
 export const ThreadCard = ({ children }: ThreadPageCardProps): JSX.Element => {
-    const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
-
     return (
         <Card
-            variant={isDesktopOrUp ? 'elevation' : 'outlined'}
+            variant={isDesktopOrUp() ? 'elevation' : 'outlined'}
             sx={(theme) => ({
                 padding: 0,
                 [biggerContainerQuery(theme)]: {
