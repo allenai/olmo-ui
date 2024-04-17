@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
-import styled from 'styled-components';
+
+import { styled } from '@mui/material';
 
 import { search } from '../../api/dolma/search';
 
@@ -19,18 +20,23 @@ function ellipsize(snippet: search.Snippet): search.Snippet {
 
 export const Snippets = ({
     document,
+    lineLimit,
     whiteSpace,
 }: {
     document: search.Document;
+    lineLimit?: number;
     whiteSpace?: boolean;
 }) => {
     const isCode = document.source === search.Source.Stack;
     const Container = isCode ? CodeContainer : TextContainer;
-    const ws = isCode || whiteSpace ? 'pre-wrap' : 'initial';
     return (
-        <Container>
+        <Container sx={{ mt: 1 }}>
             {document.snippets.map((snip, i) => (
-                <PreformattedText key={`${document.id}-snippet-${i}`} whiteSpace={ws}>
+                <PreformattedText
+                    key={`${document.id}-snippet-${i}`}
+                    className="preformatted-text"
+                    lineLimit={lineLimit}
+                    whiteSpace={isCode || whiteSpace ? 'pre-wrap' : 'initial'}>
                     {(!isCode ? ellipsize(snip) : snip).spans.map((span, j) => {
                         const key = `${document.id}-snippet-${i}-span-${j}`;
                         return span.highlight ? (
@@ -45,23 +51,22 @@ export const Snippets = ({
     );
 };
 
-const PreformattedText = styled.p<{ whiteSpace?: string }>`
+const PreformattedText = styled('p')<{ lineLimit?: number; whiteSpace?: string }>`
     font-size: ${({ theme }) => theme.typography.body1.fontSize};
     color: ${({ theme }) => theme.typography.body1.color};
-    margin-top: ${({ theme }) => theme.spacing(1)};
+    margin: 0;
 
     /* truncate after 4 lines of text */
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: ${({ lineLimit }) => lineLimit || 'unset'};
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow: hidden;
 
-    &&& {
-        em {
-            font-style: normal;
-            font-weight: bold;
-        }
+    white-space: ${({ whiteSpace }) => whiteSpace || 'initial'};
+    em {
+        font-style: normal;
+        font-weight: bold;
     }
 
     &:last-child {
@@ -69,16 +74,16 @@ const PreformattedText = styled.p<{ whiteSpace?: string }>`
     }
 `;
 
-const CodeContainer = styled.div`
-    border: 1px solid ${({ theme }) => theme.color2.N2.hex};
-    background: ${({ theme }) => theme.color2.N4.hex};
+const CodeContainer = styled('div')`
+    border: 1px solid ${({ theme }) => theme.color.N4.hex};
+    background: ${({ theme }) => theme.color.N3.hex};
     padding: ${({ theme }) => theme.spacing(1)};
 
     &,
-    & ${PreformattedText} {
+    & .preformatted-text {
         font-family: monospace;
         font-size: ${({ theme }) => theme.typography.caption.fontSize};
     }
 `;
 
-const TextContainer = styled.div``;
+const TextContainer = styled('div')``;

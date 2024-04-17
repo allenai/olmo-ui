@@ -8,19 +8,13 @@ import { MetaTags } from '../components/dolma/MetaTags';
 export const DolmaExplorer = () => (
     <>
         <MetaTags title="Dolma - AI2's Open Pretraining Dataset for AI Language Models" />
-        <ConstrainedCenterAlignedContainer>
+        <CenterAlignedContainer>
             <SearchForm />
             <NewSearchPlaceholder />
-        </ConstrainedCenterAlignedContainer>
+        </CenterAlignedContainer>
     </>
 );
 
 const CenterAlignedContainer = styled(Container)`
     text-align: center;
-`;
-
-const ConstrainedCenterAlignedContainer = styled(CenterAlignedContainer)`
-    &&& {
-        max-width: 800px;
-    }
 `;

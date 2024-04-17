@@ -27,7 +27,7 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                 {response.results.map((result, idx) => (
                     <>
                         <Box key={result.id} pb={1}>
-                            <DocumentMeta doc={result} />
+                            <DocumentMeta dolmaId={result.dolma_id} source={result.source} />
                             <Link
                                 to={documentURL(result.id, response.request.query)}
                                 onClick={() => {
@@ -44,11 +44,13 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                                     variant="h6"
                                     m={0}
                                     mt={1}
+                                    textOverflow="ellipsis"
+                                    overflow="hidden"
                                     color={(theme) => theme.color.B6.hex}>
                                     {result.title}
                                 </Typography>
                             </Link>
-                            <Snippets document={result} />
+                            <Snippets document={result} lineLimit={4} />
                         </Box>
                         {response.results.length - 1 !== idx && (
                             <Divider sx={{ borderColor: (theme) => theme.color.N4.hex }} />
