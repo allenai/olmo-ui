@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 
 import { useAppContext } from '../../AppContext';
 import { ThreadBodyView } from '../ThreadBodyView';
-import { RemoteState } from '@/contexts/util';
 
 describe('ThreadBodyView', () => {
     test('should send a follow up message', async () => {
