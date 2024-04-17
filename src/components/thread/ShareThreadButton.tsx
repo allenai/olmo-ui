@@ -32,7 +32,9 @@ export const ShareThreadButton = () => {
             <Snackbar
                 open={open}
                 autoHideDuration={500}
-                onClose={() => setOpen(false)}
+                onClose={() => {
+                    setOpen(false);
+                }}
                 message="URL Copied."
             />
         </>

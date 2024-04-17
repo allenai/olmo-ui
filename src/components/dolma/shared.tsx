@@ -138,7 +138,7 @@ interface SearchWrapperProps extends PropsWithChildren {
 }
 
 export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
-    const Wrapper = isDesktopOrUp() ? ElevatedPaper : NoPaddingContainer;
+    const Wrapper = useDesktopOrUp() ? ElevatedPaper : NoPaddingContainer;
     return (
         <>
             <Wrapper>{children}</Wrapper>
@@ -147,7 +147,7 @@ export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
     );
 };
 
-export const isDesktopOrUp = (): boolean => {
+export const useDesktopOrUp = (): boolean => {
     const theme = useTheme();
     return useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 };

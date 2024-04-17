@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 
 import { SearchBar } from './SearchBar';
-import { ElevatedCard, isDesktopOrUp } from './shared';
+import { ElevatedCard, useDesktopOrUp } from './shared';
 
 export const SearchForm = ({
     defaultValue,
@@ -12,7 +12,9 @@ export const SearchForm = ({
     disabled?: boolean;
     noCardOnDesktop?: boolean;
 }) => {
-    const Wrapper = noCardOnDesktop && isDesktopOrUp() ? Box : ElevatedCard;
+    const isDesktop = useDesktopOrUp();
+    const Wrapper = noCardOnDesktop && isDesktop ? Box : ElevatedCard;
+
     return (
         <Wrapper>
             <SearchBar defaultValue={defaultValue} disabled={disabled} />

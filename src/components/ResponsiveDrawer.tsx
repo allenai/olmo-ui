@@ -2,7 +2,7 @@ import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@
 import { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
-import { isDesktopOrUp } from './dolma/shared';
+import { useDesktopOrUp } from './dolma/shared';
 
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
@@ -43,7 +43,7 @@ export const ResponsiveDrawer = ({
 
     return (
         <>
-            {isDesktopOrUp() ? (
+            {useDesktopOrUp() ? (
                 <Drawer
                     variant={desktopDrawerVariant}
                     open={open}
