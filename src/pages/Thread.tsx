@@ -9,6 +9,7 @@ import { ThreadBodyView } from '../components/ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { StandardContainer } from '../components/StandardContainer';
 import { ContextMenu } from '../components/ContextMenu';
+import { RemoteState } from '@/contexts/util';
 
 export const Thread = () => {
     const { id } = useParams();
@@ -17,7 +18,8 @@ export const Thread = () => {
     }
 
     const getSelectedThread = useAppContext((state) => state.getSelectedThread);
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const selectedThread = useAppContext((state) => state.selectedThread);
+    const selectedThreadRemoteState = useAppContext((state) => state.selectedThreadRemoteState);
 
     useEffect(() => {
         getSelectedThread(id);
@@ -28,20 +30,17 @@ export const Thread = () => {
             <ContextMenu>
                 <Content>
                     <StandardContainer>
-                        {!selectedThreadInfo.error &&
-                        !selectedThreadInfo.loading &&
-                        selectedThreadInfo.data ? (
+                        {selectedThreadRemoteState === RemoteState.Loaded && !!selectedThread ? (
                             <>
-                                {selectedThreadInfo.data.deleted ? (
+                                {selectedThread.deleted ? (
                                     <Alert severity="warning">This message has been deleted.</Alert>
                                 ) : null}
-                                <ThreadBodyView
-                                    messages={[selectedThreadInfo.data]}
-                                    showFollowUp={false}
-                                />
+                                <ThreadBodyView messages={[selectedThread]} showFollowUp={false} />
                             </>
                         ) : null}
-                        {selectedThreadInfo.loading ? <LinearProgress /> : null}
+                        {selectedThreadRemoteState === RemoteState.Loading ? (
+                            <LinearProgress />
+                        ) : null}
                     </StandardContainer>
                     <NewQueryLink to={'/'}>New Query</NewQueryLink>
                 </Content>
