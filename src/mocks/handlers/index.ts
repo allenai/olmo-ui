@@ -68,7 +68,7 @@ const fakeSchemaResponse: Schema = {
             },
             max_tokens: {
                 default: 2048,
-                max: 4096,
+                max: 2048,
                 min: 1,
                 name: 'max_tokens',
                 step: 1,

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace error {
     export interface Details {
         code: number;
@@ -12,7 +13,7 @@ export namespace error {
         switch (r.headers.get('content-type')) {
             // The API returns JSON errors with additional information.
             case 'application/json': {
-                const err: Payload = await r.json();
+                const err = (await r.json()) as Payload;
                 return new Error(err.error.message);
             }
             // This is probably an error returned by the NGINX reverse proxy. Don't attempt to

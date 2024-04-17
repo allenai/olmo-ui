@@ -8,3 +8,4 @@ skiff.json
 /blob-report/
 /playwright/.cache/
 /api
+public/mockServiceWorker.js

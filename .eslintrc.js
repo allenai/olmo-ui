@@ -4,7 +4,7 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 0,
     },
     parserOptions: {
-        project: true
+        project: true,
     },
     overrides: [
         {

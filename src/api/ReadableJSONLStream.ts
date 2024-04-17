@@ -20,7 +20,7 @@ export class ReadableJSONLStream<TOutput> extends TransformStream<Uint8Array, TO
                     // Messages are newline delimited. Escaped newlines will not match this clause.
                     // Parse, yield and reset the buffer.
                     if (c === '\n') {
-                        controller.enqueue(JSON.parse(buffer));
+                        controller.enqueue(JSON.parse(buffer) as TOutput);
                         buffer = '';
                     } else {
                         buffer += c;

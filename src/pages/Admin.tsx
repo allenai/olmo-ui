@@ -66,6 +66,7 @@ export const Admin = () => {
         {
             field: 'rating',
             headerName: 'Rating',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             valueGetter: (params: GridValueGetterParams) => LabelRating[params.value],
             minWidth: 115,
             flex: 1,
@@ -87,6 +88,7 @@ export const Admin = () => {
             headerName: 'Created',
             align: 'right',
             valueGetter: (params: GridValueGetterParams) =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 dayjs(params.value).format(dateTimeFormat),
             minWidth: 150,
             flex: 1,
@@ -96,6 +98,7 @@ export const Admin = () => {
             headerName: 'Deleted',
             align: 'right',
             valueGetter: (params: GridValueGetterParams) =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 params.value ? dayjs(params.value).format(dateTimeFormat) : '',
             minWidth: 150,
             flex: 1,

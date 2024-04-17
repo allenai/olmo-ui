@@ -22,7 +22,7 @@ export class PromptTemplateClient extends ClientBase {
         const jsonPromptTemplateList = await this.fetch<JSONPromptTemplateList>(url, {
             credentials: 'include',
         });
-        return jsonPromptTemplateList.map(parsePromptTemplate) ?? [];
+        return jsonPromptTemplateList.map(parsePromptTemplate);
     }
 
     async getPromptTemplate(id: string): Promise<PromptTemplate> {

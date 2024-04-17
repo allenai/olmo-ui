@@ -18,6 +18,6 @@
     },
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*", "@types", "./vitest-setup.ts", "index.d.ts", "__mocks__", "webpack.config.js", "vitest.config.ts"],
+  "include": ["src/**/*", "@types", "./vitest-setup.ts", "index.d.ts", "__mocks__", "webpack.config.js", "vitest.config.ts", ".eslintrc.js", "e2e", "playwright.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

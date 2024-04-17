@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { styled, Button, Grid, CircularProgress, Typography } from '@mui/material';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
 import { LinkProps, Link, Outlet } from 'react-router-dom';
-import { Button, Grid, CircularProgress, Typography } from '@mui/material';
 
 import { useAppContext } from './AppContext';
 import { OlmoBanner } from './components/OlmoBanner';
@@ -132,12 +131,12 @@ const WhiteTypography = styled(Typography)`
     color: white;
 `;
 
-const AbsoluteContainer = styled.div`
+const AbsoluteContainer = styled('div')`
     position: absolute;
     z-index: 5;
 `;
 
-const RelativeContainer = styled.div`
+const RelativeContainer = styled('div')`
     position: relative;
     z-index: 10;
     min-height: 100vh;
@@ -145,7 +144,7 @@ const RelativeContainer = styled.div`
     margin: auto;
 `;
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled('div')`
     position: relative;
     width: 100vw;
     height: 100vh;
@@ -166,14 +165,15 @@ const OlmoFooter = styled(Footer)`
     }
 `;
 
-const BottomBanner = styled.div`
+const BottomBanner = styled('div')`
     margin: ${({ theme }) => theme.spacing(2)};
 `;
 
-const OuterContainer = styled.div`
+const OuterContainer = styled('div')`
     position: relative;
     overflow: hidden;
     background: ${({ theme }) =>
+        // @ts-expect-error we haven't updated the types for the old custom theme
         `linear-gradient(122deg, ${theme.color2.N7} 0%, transparent 100%), ${theme.color2.N8}`};
 `;
 

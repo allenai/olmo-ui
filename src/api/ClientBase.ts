@@ -15,7 +15,7 @@ export abstract class ClientBase {
     protected unpack = async <T>(response: Response): Promise<T> => {
         switch (response.status) {
             case 200:
-                return await response.json();
+                return (await response.json()) as T;
             case 401:
                 this.login();
                 // This shouldn't ever happen

@@ -1,17 +1,12 @@
 import { search } from './search';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace event {
     export enum Type {
         SearchQuery = 'search.query',
         SearchResultClick = 'search.result.click',
         DocumentView = 'document.view',
         DocumentShare = 'document.share',
-    }
-
-    export interface Event {
-        type: Type;
-        occurred: Date;
-        details?: SearchQueryDetails | SearchResultClickDetails | DocumentEventDetails;
     }
 
     export interface SearchQueryDetails {
@@ -30,6 +25,12 @@ export namespace event {
         id: string;
         source: search.Source;
         query?: string;
+    }
+
+    export interface Event {
+        type: Type;
+        occurred: Date;
+        details?: SearchQueryDetails | SearchResultClickDetails | DocumentEventDetails;
     }
 }
 

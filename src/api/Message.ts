@@ -6,6 +6,15 @@ import { PaginationData } from './Schema';
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
+export interface InferenceOpts {
+    max_tokens?: number;
+    temperature?: number;
+    n?: number;
+    top_p?: number;
+    logprobs?: number;
+    stop?: string[];
+}
+
 export interface MessagePost {
     content: string;
     role?: string; // in the case of edited messages
@@ -45,6 +54,13 @@ export interface MessageList {
     meta: PaginationData;
 }
 
+// The serialized representation, where certain fields (dates) are encoded as strings.
+export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
+    created: string;
+    deleted?: string;
+    children?: JSONMessage[];
+}
+
 export interface MessagesResponse {
     messages: JSONMessage[];
     meta: PaginationData;
@@ -60,27 +76,12 @@ export interface MessageStreamError {
     error: string;
 }
 
-export interface InferenceOpts {
-    max_tokens?: number;
-    temperature?: number;
-    n?: number;
-    top_p?: number;
-    logprobs?: number;
-    stop?: string[];
-}
-
 export interface Logprob {
     token: string;
     offset: number;
     prob: number;
 }
 
-// The serialized representation, where certain fields (dates) are encoded as strings.
-export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
-    created: string;
-    deleted?: string;
-    children?: JSONMessage[];
-}
 
 export interface FirstMessage extends JSONMessage {
     final: false;
