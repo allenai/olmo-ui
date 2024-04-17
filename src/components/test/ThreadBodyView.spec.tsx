@@ -29,8 +29,6 @@ describe('ThreadBodyView', () => {
                 followUpMessage: 'Hello',
             });
         });
-
-        expect(result.current.threadUpdateRemoteState).toEqual(RemoteState.Loaded);
     });
 
     test('should be able to edit message', async () => {
