@@ -5,7 +5,7 @@ import { Typography, Stack } from '@mui/material';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
 import { search } from '../api/dolma/search';
-import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
+import { AnalyticsClient } from '../api/AnalyticsClient';
 import { MetaTags } from '../components/dolma/MetaTags';
 import { useAppContext } from '@/AppContext';
 
@@ -20,6 +20,7 @@ export const Document = () => {
     const documentState = useAppContext((state) => state.documentState);
     const documentError = useAppContext((state) => state.documentError);
 
+    const analytics = new AnalyticsClient();
     const params = useParams<{ id: string; query?: string }>();
     if (!params.id) {
         throw new Error('No document ID');
@@ -30,13 +31,11 @@ export const Document = () => {
     const { query } = search.fromQueryString(loc.search);
     useEffect(() => {
         getDocument({ id, query: query.trim() !== '' ? query.trim() : undefined }).then((d) => {
-            const analytics = new AnalyticsClient();
             analytics.trackDocumentView({ id, query, source: d.source });
         });
     }, [id]);
 
     const handleShareClick = () => {
-        const analytics = new AnalyticsClient();
         if (documentDetails) {
             analytics.trackDocumentShare({
                 id: documentDetails.id,

@@ -1,4 +1,4 @@
-import { search } from './search';
+import { search } from './dolma/search';
 
 export namespace event {
     export enum Type {
@@ -6,12 +6,17 @@ export namespace event {
         SearchResultClick = 'search.result.click',
         DocumentView = 'document.view',
         DocumentShare = 'document.share',
+        NewPrompt = 'prompt.new',
     }
 
     export interface Event {
         type: Type;
         occurred: Date;
-        details?: SearchQueryDetails | SearchResultClickDetails | DocumentEventDetails;
+        details?:
+            | SearchQueryDetails
+            | SearchResultClickDetails
+            | DocumentEventDetails
+            | PromptMessageDetails;
     }
 
     export interface SearchQueryDetails {
@@ -30,6 +35,11 @@ export namespace event {
         id: string;
         source: search.Source;
         query?: string;
+    }
+
+    export interface PromptMessageDetails {
+        content: string;
+        threadId?: string;
     }
 }
 
@@ -59,5 +69,9 @@ export class AnalyticsClient {
 
     trackDocumentShare(details: event.DocumentEventDetails): boolean {
         return this.track({ type: event.Type.DocumentShare, occurred: new Date(), details });
+    }
+
+    trackNewPrompt(details: event.PromptMessageDetails): boolean {
+        return this.track({ type: event.Type.NewPrompt, occurred: new Date(), details });
     }
 }
