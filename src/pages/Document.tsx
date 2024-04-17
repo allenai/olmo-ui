@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { LinearProgress, Typography, Stack, useMediaQuery, useTheme } from '@mui/material';
+import { Typography, Stack } from '@mui/material';
 
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
@@ -9,8 +9,7 @@ import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
 import { MetaTags } from '../components/dolma/MetaTags';
 import { useAppContext } from '@/AppContext';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { ElevatedPaper, NoPaddingContainer } from '@/components/dolma/shared';
+import { NoPaddingContainer, SearchWrapper } from '@/components/dolma/shared';
 import { RemoteState } from '../contexts/util';
 import { RequestRemovalButton, ShareButton } from '@/components/dolma/DocumentButtons';
 import { SearchForm } from '@/components/dolma/SearchForm';
@@ -47,16 +46,12 @@ export const Document = () => {
         }
     };
 
-    const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
-    const SearchWrapper = isDesktopOrUp ? ElevatedPaper : NoPaddingContainer;
-
     return (
         <>
-            <SearchWrapper>
+            <SearchWrapper isLoading={documentState === RemoteState.Loading}>
                 <SearchForm
                     defaultValue={query}
-                    noCard={isDesktopOrUp}
+                    noCardOnDesktop={true}
                     disabled={documentState === RemoteState.Loading}
                 />
             </SearchWrapper>
@@ -87,7 +82,6 @@ export const Document = () => {
                     </Stack>
                 </Stack>
             )}
-            {documentState === RemoteState.Loading && <LinearProgress sx={{ mt: 3 }} />}
         </>
     );
 };

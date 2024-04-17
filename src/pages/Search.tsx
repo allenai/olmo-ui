@@ -1,16 +1,14 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LinearProgress, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Typography } from '@mui/material';
 
 import { RemoteState } from '../contexts/util';
 import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
-import { ElevatedPaper, NoPaddingContainer } from '../components/dolma/shared';
+import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';
 import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
 import { useAppContext } from '../AppContext';
-
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const Search = () => {
     const loc = useLocation();
@@ -21,9 +19,6 @@ export const Search = () => {
     const response = useAppContext((state) => state.searchResponse);
     const error = useAppContext((state) => state.searchError);
 
-    const theme = useTheme();
-    const isDesktopOrUp = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
-
     useEffect(() => {
         doSearch(request).then((r) => {
             const analytics = new AnalyticsClient();
@@ -31,14 +26,12 @@ export const Search = () => {
         });
     }, [search.toQueryString(request)]);
 
-    const SearchWrapper = isDesktopOrUp ? ElevatedPaper : NoPaddingContainer;
-
     return (
         <>
-            <SearchWrapper>
+            <SearchWrapper isLoading={searchState === RemoteState.Loading}>
                 <SearchForm
                     defaultValue={request.query}
-                    noCard={isDesktopOrUp}
+                    noCardOnDesktop={true}
                     disabled={searchState === RemoteState.Loading}
                 />
                 {searchState === RemoteState.Error && (
@@ -48,7 +41,6 @@ export const Search = () => {
                     <SearchResultList response={response} />
                 )}
             </SearchWrapper>
-            {searchState === RemoteState.Loading && <LinearProgress sx={{ mt: 3 }} />}
         </>
     );
 };

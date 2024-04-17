@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import {
@@ -8,10 +8,15 @@ import {
     Container,
     Grid,
     IconButton,
+    LinearProgress,
     Paper,
     PaperProps,
     Snackbar,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
+
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const ScrollToTopOnPageChange = () => {
     const location = useLocation();
@@ -127,3 +132,22 @@ export function CopyToClipboardButton({
         </Box>
     );
 }
+
+interface SearchWrapperProps extends PropsWithChildren {
+    isLoading?: boolean;
+}
+
+export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
+    const Wrapper = isDesktopOrUp() ? ElevatedPaper : NoPaddingContainer;
+    return (
+        <>
+            <Wrapper>{children}</Wrapper>
+            {isLoading && <LinearProgress sx={{ mt: 3 }} />}
+        </>
+    );
+};
+
+export const isDesktopOrUp = (): boolean => {
+    const theme = useTheme();
+    return useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
+};
