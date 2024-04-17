@@ -174,7 +174,7 @@ const uiRefreshRoutes: RouteObject[] = [
                 path: links.search,
                 element: <Search />,
                 handle: {
-                    title: 'Search Datasets',
+                    title: 'Dataset Explorer',
                 },
             },
             {
