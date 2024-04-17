@@ -142,12 +142,12 @@ export const Admin = () => {
 
         // handle creator filtering case
         if (model.items[0].field && model.items[0].field === 'creator' && model.items[0].value) {
-            getAllFilteredLabels(model.items[0].value, undefined, undefined);
+            getAllFilteredLabels(model.items[0].value as string, undefined, undefined);
         }
 
         // handle message filtering case
         if (model.items[0].field && model.items[0].field === 'message' && model.items[0].value) {
-            getAllFilteredLabels(undefined, model.items[0].value, undefined);
+            getAllFilteredLabels(undefined, model.items[0].value as string, undefined);
         }
     };
 

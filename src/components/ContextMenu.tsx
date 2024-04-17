@@ -34,10 +34,6 @@ export const ContextMenu = ({
     menuOptions = [SearchTrainingDatasetMenuOption],
     children,
 }: Props) => {
-    if (!menuOptions.length) {
-        return <>{children}</>;
-    }
-
     const [contextPos, setContextPos] = useState<{
         mouseX: number;
         mouseY: number;
@@ -95,13 +91,17 @@ export const ContextMenu = ({
 
     useEffect(() => {
         const targetElement = divRef.current;
-        if (targetElement) {
+        if (targetElement && menuOptions.length > 0) {
             targetElement.addEventListener('mouseup', handleMouseUp);
             return () => {
                 targetElement.removeEventListener('mouseup', handleMouseUp);
             };
         }
     }, [selText]);
+
+    if (!menuOptions.length) {
+        return <>{children}</>;
+    }
 
     return (
         <Box sx={{ position: 'relative' }} ref={divRef}>

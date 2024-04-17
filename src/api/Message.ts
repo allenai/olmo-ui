@@ -15,6 +15,12 @@ export interface InferenceOpts {
     stop?: string[];
 }
 
+export interface Logprob {
+    token: string;
+    offset: number;
+    prob: number;
+}
+
 export interface MessagePost {
     content: string;
     role?: string; // in the case of edited messages
@@ -75,13 +81,6 @@ export interface MessageStreamError {
     message: string;
     error: string;
 }
-
-export interface Logprob {
-    token: string;
-    offset: number;
-    prob: number;
-}
-
 
 export interface FirstMessage extends JSONMessage {
     final: false;
