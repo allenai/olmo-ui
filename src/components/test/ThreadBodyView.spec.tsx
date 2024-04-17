@@ -54,6 +54,10 @@ describe('ThreadBodyView', () => {
         const editInput = screen.getByLabelText('Edit Prompt');
         await user.type(editInput, 'Hello');
         await user.click(screen.getByLabelText('Finish editing LLM response'));
-        expect(result.current.threadUpdateRemoteState).toEqual(RemoteState.Loaded);
+        await waitFor(() => {
+            expect(screen.getByRole('form')).toHaveFormValues({
+                followUpMessage: 'Hello',
+            });
+        });
     });
 });
