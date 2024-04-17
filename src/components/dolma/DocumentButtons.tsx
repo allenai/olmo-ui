@@ -46,11 +46,9 @@ export const RequestRemovalButton = () => {
         <>
             <Button
                 variant="outlined"
-                component={Link}
                 startIcon={<RemoveCircleOutlineIcon />}
                 target="_blank"
-                href={takeDownFormUrl}
-                to={takeDownFormUrl}>
+                href={takeDownFormUrl}>
                 Request Removal
             </Button>
         </>
