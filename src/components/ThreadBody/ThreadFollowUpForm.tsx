@@ -9,6 +9,7 @@ import { Message, MessagePost } from '../../api/Message';
 
 import { useAppContext } from '../../AppContext';
 import { analyticsClient } from '@/api/AnalyticsClient';
+import { RemoteState } from '@/contexts/util';
 
 interface ThreadFollowUpFormProps {
     curMessage: Message;
@@ -22,6 +23,8 @@ export const ThreadFollowUpForm = ({
     messagePath,
 }: ThreadFollowUpFormProps) => {
     const postMessage = useAppContext((state) => state.postMessage);
+    const selectedThread = useAppContext((state) => state.selectedThread);
+    const threadUpdateRemoteState = useAppContext((state) => state.threadUpdateRemoteState);
     const formContext = useForm({
         defaultValues: {
             followUpMessage: '',
@@ -35,11 +38,11 @@ export const ThreadFollowUpForm = ({
         const payload: MessagePost = {
             content: watchFollowUpMessage || '',
         };
-        const postMessageInfo = await postMessage(payload, parent, false, messagePath);
-        if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
+        postMessage(payload, parent, false, messagePath);
+        if (threadUpdateRemoteState === RemoteState.Loaded) {
             analyticsClient.trackFollowUpPrompt({
-                content: postMessageInfo.data.content,
-                threadId: postMessageInfo.data.root,
+                content: selectedThread ? selectedThread.content : '',
+                threadId: selectedThread?.id,
             });
             formContext.setValue('followUpMessage', '');
         }
