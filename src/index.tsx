@@ -160,7 +160,7 @@ const uiRefreshRoutes: RouteObject[] = [
                 path: links.document(':id'),
                 element: <Document />,
                 handle: {
-                    title: 'Document',
+                    title: 'Dataset Explorer',
                 },
             },
             {
