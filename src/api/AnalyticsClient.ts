@@ -75,3 +75,5 @@ export class AnalyticsClient {
         return this.track({ type: event.Type.NewPrompt, occurred: new Date(), details });
     }
 }
+
+export const analyticsClient = new AnalyticsClient();

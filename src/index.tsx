@@ -185,13 +185,6 @@ const uiRefreshRoutes: RouteObject[] = [
                 },
             },
             {
-                path: links.admin,
-                element: <Admin />,
-                handle: {
-                    title: 'Admin',
-                },
-            },
-            {
                 path: '/*',
                 element: (
                     <VarnishedApp>

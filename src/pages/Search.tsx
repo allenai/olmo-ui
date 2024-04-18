@@ -7,13 +7,12 @@ import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';
-import { AnalyticsClient } from '../api/AnalyticsClient';
+import { analyticsClient } from '@/api/AnalyticsClient';
 import { useAppContext } from '../AppContext';
 
 export const Search = () => {
     const loc = useLocation();
     const request = search.fromQueryString(loc.search);
-    const analytics = new AnalyticsClient();
 
     const doSearch = useAppContext((state) => state.doSearch);
     const searchState = useAppContext((state) => state.searchState);
@@ -22,7 +21,7 @@ export const Search = () => {
 
     useEffect(() => {
         doSearch(request).then((r) => {
-            analytics.trackSearchQuery({ request, response: { meta: r.meta } });
+            analyticsClient.trackSearchQuery({ request, response: { meta: r.meta } });
         });
     }, [search.toQueryString(request)]);
 

@@ -9,13 +9,12 @@ import { RemoteState } from '../../contexts/util';
 import { StandardContainer } from '../StandardContainer';
 import { Parameters } from '../configuration/Parameters';
 import { NewQueryForm } from './NewQueryForm';
-import { AnalyticsClient } from '@/api/AnalyticsClient';
+import { analyticsClient } from '@/api/AnalyticsClient';
 
 export const NewQuery = () => {
     const modelRemoteState = useAppContext((state) => state.modelRemoteState);
     const postMessage = useAppContext((state) => state.postMessage);
     const getAllModels = useAppContext((state) => state.getAllModels);
-    const analytics = new AnalyticsClient();
 
     // should we show the content inside a fullscreen dialog?
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -37,7 +36,7 @@ export const NewQuery = () => {
     }, []);
 
     const postNewMessage = async function (data: MessagePost) {
-        analytics.trackNewPrompt({ content: data.content });
+        analyticsClient.trackNewPrompt({ content: data.content });
         await postMessage(data);
     };
 

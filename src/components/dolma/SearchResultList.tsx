@@ -6,7 +6,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { search } from '../../api/dolma/search';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
-import { AnalyticsClient } from '../../api/AnalyticsClient';
+import { analyticsClient } from '@/api/AnalyticsClient';
 import { MetaTags } from './MetaTags';
 
 import { links } from '../../Links';
@@ -17,7 +17,6 @@ interface SearchResultListProps {
 export const SearchResultList = ({ response }: SearchResultListProps) => {
     const loc = useLocation();
     const nav = useNavigate();
-    const analytics = new AnalyticsClient();
     const showPagination = response && Math.ceil(response.meta.total / response.request.size) > 1;
 
     return (
@@ -32,7 +31,7 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                             <Link
                                 to={documentURL(result.id, response.request.query)}
                                 onClick={() => {
-                                    analytics.trackSearchResultClick({
+                                    analyticsClient.trackSearchResultClick({
                                         request: response.request,
                                         id: result.id,
                                         source: result.source,
