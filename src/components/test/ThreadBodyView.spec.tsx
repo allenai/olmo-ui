@@ -1,4 +1,4 @@
-import { fireEvent, render, renderHook, screen, waitFor } from '@test-utils';
+import { render, renderHook, screen, waitFor } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 
@@ -35,7 +35,6 @@ describe('ThreadBodyView', () => {
         const { result } = renderHook(() => useAppContext());
         await result.current.getAllThreads(0);
         const firstThread = result.current.allThreads.messages[0];
-
         render(
             <ThreadBodyView
                 showFollowUp={true}
@@ -44,7 +43,7 @@ describe('ThreadBodyView', () => {
             />
         );
 
-        fireEvent.mouseEnter(screen.getAllByLabelText('LLM Response')[0]);
+        await user.click(screen.getAllByLabelText('LLM Response')[0]);
         await user.click(screen.getAllByLabelText('More Options')[0]);
         await user.click(screen.getByText('Edit'));
 

@@ -40,12 +40,12 @@ export const ThreadEditForm = ({
         setIsEditing(false);
         setMessageLoading(true);
         const payload: MessagePost = {
-            content: watchEditMessage.trim(),
+            content: watchEditMessage,
             role: curMessageRole,
             original: curMessage.id,
         };
         handleBranchMenuSelect(0); // 0 because the new message is unshifted
-        postMessage(payload, parent, false, messagePath);
+        await postMessage(payload, parent, false, messagePath);
         if (threadUpdateRemoteState === RemoteState.Loaded) {
             setMessageLoading(false);
         }

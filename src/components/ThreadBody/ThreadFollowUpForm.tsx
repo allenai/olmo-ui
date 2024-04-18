@@ -38,7 +38,7 @@ export const ThreadFollowUpForm = ({
         const payload: MessagePost = {
             content: watchFollowUpMessage || '',
         };
-        postMessage(payload, parent, false, messagePath);
+        await postMessage(payload, parent, false, messagePath);
         if (threadUpdateRemoteState === RemoteState.Loaded) {
             analyticsClient.trackFollowUpPrompt({
                 content: selectedThread ? selectedThread.content : '',
