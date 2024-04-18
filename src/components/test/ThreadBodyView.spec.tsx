@@ -52,7 +52,7 @@ describe('ThreadBodyView', () => {
         await user.click(screen.getByLabelText('Finish editing LLM response'));
         await waitFor(() => {
             expect(screen.getByRole('form')).toHaveFormValues({
-                followUpMessage: 'clear',
+                followUpMessage: '',
             });
         });
     });
