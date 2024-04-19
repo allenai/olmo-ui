@@ -2,14 +2,14 @@ import { Card, Stack } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
-import { isDesktopOrUp } from '../dolma/shared';
+import { useDesktopOrUp } from '../dolma/shared';
 
 interface ThreadPageCardProps extends PropsWithChildren {}
 
 export const ThreadCard = ({ children }: ThreadPageCardProps): JSX.Element => {
     return (
         <Card
-            variant={isDesktopOrUp() ? 'elevation' : 'outlined'}
+            variant={useDesktopOrUp() ? 'elevation' : 'outlined'}
             sx={(theme) => ({
                 padding: 0,
                 [biggerContainerQuery(theme)]: {

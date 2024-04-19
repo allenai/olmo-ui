@@ -39,8 +39,7 @@ export const DomainsTable = ({ domains, sources, loading }: Props) => {
         {
             field: 'source',
             headerName: 'Source',
-            valueGetter: (params: GridValueGetterParams<DomainData>) =>
-                sources[params.value]?.label,
+            valueGetter: (params: GridValueGetterParams<DomainData>) => sources[params.value].label,
             renderCell: (params: GridRenderCellParams<DomainData>) => (
                 <Grid
                     container

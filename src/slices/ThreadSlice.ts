@@ -70,11 +70,6 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
             set((state) => {
                 const deletedThreadInfo = { ...state.deletedThreadInfo, loading: false };
 
-                // TODO: this should be factored out w/ better abstractions
-                if (!state.allThreadInfo.data) {
-                    return { deletedThreadInfo };
-                }
-
                 // EFFECT: remove the deleted message from the local store
                 // TODO: when this occurs we should be refetching the list; the metadata
                 // we have is no longer out of date, and needs to be updated from the server.

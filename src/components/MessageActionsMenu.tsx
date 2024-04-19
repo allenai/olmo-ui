@@ -52,15 +52,19 @@ export const MessageActionsMenu = ({
                 startIcon={startIcon}
                 disabled={disabled}
                 variant="outlined"
-                onClick={(e) => handleResponseMenuButtonClick(e)}
+                onClick={(e) => {
+                    handleResponseMenuButtonClick(e);
+                }}
                 aria-label="More Options">
                 {primaryIcon || null}
-                {label && <Typography noWrap>{label}</Typography>}
+                {!!label && <Typography noWrap>{label}</Typography>}
             </ResponseMenuButton>
             <Menu
                 anchorEl={menuAnchorEl}
                 open={Boolean(menuAnchorEl)}
-                onClose={() => setMenuAnchorEl(null)}
+                onClose={() => {
+                    setMenuAnchorEl(null);
+                }}
                 PaperProps={{
                     style: menuPaperStyle,
                 }}>

@@ -102,7 +102,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             while (message != null) {
                 pathToLastMessageInThread.push(message.id);
 
-                message = message?.children?.[0];
+                message = message.children?.[0];
             }
 
             set(

@@ -27,7 +27,7 @@ import { NewInputSlider } from '@/components/configuration/NewInputSlider';
 import { Schema } from '@/api/Schema';
 import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 
-export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters' as const;
+export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
 const MAX_NEW_TOKEN_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
@@ -167,9 +167,9 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                 options={inferenceOpts.stop ?? []}
                                 value={inferenceOpts.stop}
                                 freeSolo
-                                onChange={(event, value, reason) =>
-                                    handleOnChange(event, value, reason)
-                                }
+                                onChange={(event, value, reason) => {
+                                    handleOnChange(event, value, reason);
+                                }}
                                 renderTags={(stopWords: readonly string[], getTagProps) =>
                                     stopWords.map((option: string, index: number) => (
                                         // getTagProps already included a key but eslint doesnt know about it.

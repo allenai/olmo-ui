@@ -33,16 +33,13 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const [promptTemplatesLoading, setPromptTemplatesLoading] = useState(
         remoteState === RemoteState.Loading
     );
-    const getPromptTemplates = async function () {
+
+    useEffect(() => {
         setPromptTemplatesLoading(true);
         getPromptTemplateList(true).finally(() => {
             setPromptTemplatesLoading(false);
         });
-    };
-
-    useEffect(() => {
-        getPromptTemplates();
-    }, []);
+    }, [getPromptTemplateList]);
 
     useEffect(() => {
         setFilteredPromptTemplates(
@@ -50,7 +47,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                 return userInfo?.client === promptTemplate.creator || !promptTemplate.deleted;
             })
         );
-    }, [promptTemplateList]);
+    }, [promptTemplateList, userInfo?.client]);
 
     const [editorOpen, setEditorOpen] = useState(false);
     const [focusedPromptTemplate, setFocusedPromptTemplate] = useState<PromptTemplate>();
@@ -80,8 +77,8 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             sortComparator: (a: number, b: number) => a - b,
             valueGetter: (params: GridValueGetterParams<PromptTemplate>) =>
                 params.row.content.length,
-            renderCell: (params: GridRenderCellParams<PromptTemplate>) =>
-                params.value.toLocaleString(),
+            renderCell: (params: GridRenderCellParams<PromptTemplate, string>) =>
+                params.value?.toLocaleString(),
             minWidth: 100,
             flex: 1,
         },
@@ -95,7 +92,7 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
             field: 'created',
             headerName: 'Created',
             align: 'right',
-            valueGetter: (params: GridValueGetterParams) =>
+            valueGetter: (params: GridValueGetterParams<PromptTemplate, string>) =>
                 dayjs(params.value).format(dateTimeFormat),
             minWidth: 150,
             flex: 1,
@@ -112,17 +109,17 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                         {!params.row.deleted ? (
                             <IconButton
                                 aria-label="visible"
-                                onClick={() =>
-                                    patchPromptTemplate(params.row.id, { deleted: true })
-                                }>
+                                onClick={() => {
+                                    patchPromptTemplate(params.row.id, { deleted: true });
+                                }}>
                                 <VisibilityIcon />
                             </IconButton>
                         ) : (
                             <IconButton
                                 aria-label="hidden"
-                                onClick={() =>
-                                    patchPromptTemplate(params.row.id, { deleted: false })
-                                }>
+                                onClick={() => {
+                                    patchPromptTemplate(params.row.id, { deleted: false });
+                                }}>
                                 <VisibilityOffIcon />
                             </IconButton>
                         )}
@@ -166,11 +163,15 @@ export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
                 isLoading={isLoading}
                 promptTemplate={focusedPromptTemplate}
                 open={editorOpen}
-                onCancel={() => setEditorOpen(false)}
+                onCancel={() => {
+                    setEditorOpen(false);
+                }}
                 onSuccess={(name: string, content: string) => {
                     newPromptTemplate({ name, content });
                 }}
-                onRestore={() => updatePromptTemplate(focusedPromptTemplate?.id, false)}
+                onRestore={() => {
+                    updatePromptTemplate(focusedPromptTemplate?.id, false);
+                }}
             />
 
             {!hideTitle ? (

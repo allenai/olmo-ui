@@ -31,7 +31,9 @@ export const ShareButton = ({ url, onClick }: { url: string; onClick?: () => voi
             <Snackbar
                 open={open}
                 autoHideDuration={2500}
-                onClose={() => setOpen(false)}
+                onClose={() => {
+                    setOpen(false);
+                }}
                 message="Link copied to clipboard"
             />
         </>

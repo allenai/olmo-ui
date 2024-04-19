@@ -31,7 +31,9 @@ export const Parameters = () => {
                 max={opts.max_tokens.max}
                 step={opts.max_tokens.step}
                 initialValue={opts.max_tokens.default}
-                onChange={(v) => updateInferenceOpts({ max_tokens: v })}
+                onChange={(v) => {
+                    updateInferenceOpts({ max_tokens: v });
+                }}
             />
             <InputSlider
                 label="Temperature"
@@ -39,7 +41,9 @@ export const Parameters = () => {
                 max={opts.temperature.max}
                 step={opts.temperature.step}
                 initialValue={opts.temperature.default}
-                onChange={(v) => updateInferenceOpts({ temperature: v })}
+                onChange={(v) => {
+                    updateInferenceOpts({ temperature: v });
+                }}
             />
             {/* <InputSlider
                 label="N"
@@ -55,7 +59,9 @@ export const Parameters = () => {
                 max={opts.top_p.max}
                 step={opts.top_p.step}
                 initialValue={opts.top_p.default}
-                onChange={(v) => updateInferenceOpts({ top_p: v })}
+                onChange={(v) => {
+                    updateInferenceOpts({ top_p: v });
+                }}
             />
             {/* <InputSlider
                 label="Log Probs"
@@ -86,7 +92,9 @@ export const Parameters = () => {
                 <TextField
                     fullWidth
                     value={stopWordsInput}
-                    onChange={(e) => setStopWordsInput(e.target.value)}
+                    onChange={(e) => {
+                        setStopWordsInput(e.target.value);
+                    }}
                     onKeyDown={(e) => {
                         if (e.key !== 'Tab') {
                             return;

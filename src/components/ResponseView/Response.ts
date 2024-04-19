@@ -18,6 +18,8 @@ export interface ResponseProps {
 }
 
 export const marked = new Marked(
+    // there's something funky happening w the marked types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     markedHighlight({
         langPrefix: 'hljs language-',
         highlight(code, lang) {

@@ -1,12 +1,12 @@
 import { createContext, useState, useEffect } from 'react';
 import * as React from 'react';
 
-type FeatureToggles = Record<FeatureToggle, boolean>;
-
 export enum FeatureToggle {
     logToggles = 'logToggles',
     isUIRefreshEnabled = 'isUIRefreshEnabled',
 }
+
+type FeatureToggles = Record<FeatureToggle, boolean>;
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
@@ -62,7 +62,7 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
     useEffect(() => {
         // grab from local storage if we have any
         const localStorageToggles = parseToggles(
-            JSON.parse(localStorage.getItem(localStorageKey) || '{}')
+            JSON.parse(localStorage.getItem(localStorageKey) || '{}') as Record<string, FTValue>
         );
 
         // grab from url if we have any

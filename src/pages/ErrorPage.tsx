@@ -1,6 +1,6 @@
-import { useRouteError } from 'react-router-dom';
-import { Typography } from '@mui/material';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import { Typography } from '@mui/material';
+import { useRouteError } from 'react-router-dom';
 
 import { MajorityScreen } from '../components/MajorityScreen';
 import { StandardContainer } from '../components/StandardContainer';
@@ -8,17 +8,17 @@ import { StandardContainer } from '../components/StandardContainer';
 export const ErrorPage = () => {
     const error = useRouteError();
 
-    const hasStatusText = (error: any): error is { statusText: string } => {
-        return 'statusText' in error;
+    const hasStatusText = (error: unknown): error is { statusText: string } => {
+        return 'statusText' in (error as object);
     };
-    const hasStatus = (error: any): error is { status: number } => {
-        return 'status' in error;
+    const hasStatus = (error: unknown): error is { status: number } => {
+        return 'status' in (error as object);
     };
-    const hasMessage = (error: any): error is { message: string } => {
-        return 'message' in error;
+    const hasMessage = (error: unknown): error is { message: string } => {
+        return 'message' in (error as object);
     };
-    const hasStack = (error: any): error is { stack: string } => {
-        return 'stack' in error;
+    const hasStack = (error: unknown): error is { stack: string } => {
+        return 'stack' in (error as object);
     };
 
     let statusMessage = '';

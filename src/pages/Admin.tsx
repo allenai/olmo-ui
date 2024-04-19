@@ -66,6 +66,7 @@ export const Admin = () => {
         {
             field: 'rating',
             headerName: 'Rating',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             valueGetter: (params: GridValueGetterParams) => LabelRating[params.value],
             minWidth: 115,
             flex: 1,
@@ -87,6 +88,7 @@ export const Admin = () => {
             headerName: 'Created',
             align: 'right',
             valueGetter: (params: GridValueGetterParams) =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 dayjs(params.value).format(dateTimeFormat),
             minWidth: 150,
             flex: 1,
@@ -96,6 +98,7 @@ export const Admin = () => {
             headerName: 'Deleted',
             align: 'right',
             valueGetter: (params: GridValueGetterParams) =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 params.value ? dayjs(params.value).format(dateTimeFormat) : '',
             minWidth: 150,
             flex: 1,
@@ -139,12 +142,12 @@ export const Admin = () => {
 
         // handle creator filtering case
         if (model.items[0].field && model.items[0].field === 'creator' && model.items[0].value) {
-            getAllFilteredLabels(model.items[0].value, undefined, undefined);
+            getAllFilteredLabels(model.items[0].value as string, undefined, undefined);
         }
 
         // handle message filtering case
         if (model.items[0].field && model.items[0].field === 'message' && model.items[0].value) {
-            getAllFilteredLabels(undefined, model.items[0].value, undefined);
+            getAllFilteredLabels(undefined, model.items[0].value as string, undefined);
         }
     };
 
@@ -179,8 +182,12 @@ export const Admin = () => {
                                 });
                                 getAllLabels(model.page * model.pageSize, model.pageSize);
                             }}
-                            onSortModelChange={(model) => handleOnSortModelChange(model)}
-                            onFilterModelChange={(model) => handleOnFilterModelChange(model)}
+                            onSortModelChange={(model) => {
+                                handleOnSortModelChange(model);
+                            }}
+                            onFilterModelChange={(model) => {
+                                handleOnFilterModelChange(model);
+                            }}
                             columns={labelColumns}
                             pageSizeOptions={[10, 25, 50, 100]}
                             disableRowSelectionOnClick

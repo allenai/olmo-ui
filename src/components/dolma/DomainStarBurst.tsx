@@ -38,7 +38,7 @@ export const DomainStarBurst = ({ data }: Props) => {
                             <Grid item>{d.data.name}</Grid>
                             {d.data.value ? (
                                 <Grid item>
-                                    <b>{d.data.value?.toLocaleString()} documents</b>
+                                    <b>{d.data.value.toLocaleString()} documents</b>
                                 </Grid>
                             ) : null}
                         </Grid>

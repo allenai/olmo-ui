@@ -32,7 +32,7 @@ export const Document = () => {
         getDocument({ id, query: query.trim() !== '' ? query.trim() : undefined }).then((d) => {
             analyticsClient.trackDocumentView({ id, query, source: d.source });
         });
-    }, [id]);
+    }, [getDocument, id, query]);
 
     const handleShareClick = () => {
         if (documentDetails) {

@@ -1,5 +1,5 @@
 import { color2 } from '@allenai/varnish2/theme';
-import { DatumValue, Theme } from '@nivo/core';
+import { DatumValue, TextStyle, Theme } from '@nivo/core';
 import styled from 'styled-components';
 
 import { staticData } from '../../api/dolma/staticData';
@@ -41,7 +41,7 @@ export const chartTheme: Theme = {
     },
     legends: {
         hidden: {
-            text: { ...textStyle, textDecoration: 'line-through' } as any,
+            text: { ...textStyle, textDecoration: 'line-through' } as TextStyle,
         },
         title: {
             text: textStyle,

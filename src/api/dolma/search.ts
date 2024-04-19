@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace search {
     export enum Source {
         Gutenberg = 'gutenberg',
@@ -19,7 +20,7 @@ export namespace search {
             Source.Reddit,
             Source.Stack,
         ];
-        const match = all.find((x) => x === s);
+        const match = all.find((x) => x.toString() === s.toString());
         if (match === undefined) {
             throw new Error(`Unknown source: ${s}`);
         }
@@ -63,17 +64,6 @@ export namespace search {
         overflow: boolean;
     }
 
-    export interface Response {
-        request: ResponseRequest;
-        meta: Meta;
-        results: Result[];
-    }
-
-    export interface Filters {
-        sources: Source[];
-        ids: string[];
-    }
-
     /**
      * Dictates how the query should be matched against the documents.
      * See https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#query-dsl-bool-query
@@ -86,6 +76,11 @@ export namespace search {
     export enum SnippetType {
         Short = 'short',
         Long = 'long',
+    }
+
+    export interface Filters {
+        sources: Source[];
+        ids: string[];
     }
 
     export interface Request {
@@ -102,6 +97,12 @@ export namespace search {
         offset: number;
         size: number;
         match: MatchType;
+    }
+
+    export interface Response {
+        request: ResponseRequest;
+        meta: Meta;
+        results: Result[];
     }
 
     export enum QueryStringParam {
@@ -170,7 +171,7 @@ export namespace search {
         if (q.snippet) {
             qs.set(QueryStringParam.SnippetType, q.snippet);
         }
-        return `${qs}`;
+        return qs.toString();
     }
 
     export interface IndexMeta {

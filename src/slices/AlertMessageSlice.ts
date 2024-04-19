@@ -7,7 +7,7 @@ export interface AlertMessageSlice {
     deleteAlertMessage: (alertMessageId: string) => void;
 }
 
-export function errorToAlert(id: string, title: string, error: any): AlertMessage {
+export function errorToAlert(id: string, title: string, error: unknown): AlertMessage {
     const message = error instanceof Error ? `${error.message} (${error.name})` : `${error}`;
     return { id, title, message, severity: AlertMessageSeverity.Error };
 }

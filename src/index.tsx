@@ -210,7 +210,7 @@ if (!container) {
     throw new Error("No element with an id of 'root' was found.");
 }
 const root = createRoot(container);
-enableMocking().then(() =>
+enableMocking().then(() => {
     root.render(
         <RouterProvider
             router={router}
@@ -220,5 +220,5 @@ enableMocking().then(() =>
                 </VarnishedApp>
             }
         />
-    )
-);
+    );
+});

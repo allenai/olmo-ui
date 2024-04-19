@@ -74,7 +74,9 @@ export const TemplateSelect = ({ disabled, onChange }: TemplateSelectProps): JSX
                     setIsPromptAlertOpen(false);
                     handleChange(selectedPromptTemplateId);
                 }}
-                onCancel={() => setIsPromptAlertOpen(false)}
+                onCancel={() => {
+                    setIsPromptAlertOpen(false);
+                }}
                 successText="Continue"
             />
         </>

@@ -5,9 +5,11 @@ export const SchemaApiUrl = `/v3/schema`;
 
 export interface Field {
     name: string;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     default: any;
     min?: any;
     max?: any;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     step?: number;
 }
 

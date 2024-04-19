@@ -70,7 +70,9 @@ export const PromptTemplateEditor = ({
                                 }}
                                 placeholder="Enter a name for the Prompt Template..."
                                 value={name}
-                                onChange={(v) => setName(v.target.value)}
+                                onChange={(v) => {
+                                    setName(v.target.value);
+                                }}
                             />
                         )}
                     </FormControl>
@@ -92,7 +94,9 @@ export const PromptTemplateEditor = ({
                                 maxRows={10}
                                 placeholder="Enter full content for the Prompt Template..."
                                 value={content}
-                                onChange={(v) => setContent(v.target.value)}
+                                onChange={(v) => {
+                                    setContent(v.target.value);
+                                }}
                             />
                         )}
                         <Metadata
@@ -103,7 +107,7 @@ export const PromptTemplateEditor = ({
                                 `${
                                     promptTemplate
                                         ? promptTemplate.content.length
-                                        : content?.length || 0
+                                        : content.length || 0
                                 } characters`,
                             ]}
                         />
@@ -116,7 +120,9 @@ export const PromptTemplateEditor = ({
                         <Button
                             disabled={isLoading || !name || !content}
                             variant="contained"
-                            onClick={() => onSuccess(name!, content!)}>
+                            onClick={() => {
+                                onSuccess(name, content);
+                            }}>
                             Save
                         </Button>
                         <Button onClick={onCancel}>Cancel</Button>

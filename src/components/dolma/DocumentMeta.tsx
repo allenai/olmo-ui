@@ -14,7 +14,7 @@ interface Props {
 export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
     return (
         <Stack direction="row" gap={1} flexWrap="wrap">
-            {url && (
+            {!!url && (
                 <Box sx={{ minWidth: '0' }}>
                     <Link to={url}>
                         <Typography

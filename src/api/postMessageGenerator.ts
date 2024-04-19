@@ -27,6 +27,7 @@ export const postMessageGenerator = async function* (
 
     const rdr = resp.pipeThrough(new ReadableJSONLStream<MessageStreamPart>()).getReader();
     let firstPart = true;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while (true) {
         const part = await rdr.read();
 
@@ -43,7 +44,7 @@ export const postMessageGenerator = async function* (
         // If it's not, something has gone wrong and we want to exit quickly
         if (firstPart && !isFirstMessage(part.value)) {
             throw new Error(
-                `malformed response, the first part must be a valid message: ${part.value}`
+                `malformed response, the first part must be a valid message: ${JSON.stringify(part.value)}`
             );
         }
 

@@ -7,6 +7,15 @@
 			"problemMatcher": [],
 			"label": "npm: vitest-preview",
 			"detail": "vitest-preview"
+		},
+		{
+			"type": "npm",
+			"script": "lint",
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"label": "npm: lint",
+			"detail": "eslint '**/*.{js,ts,tsx,json}' && echo '💫  Lint complete.'"
 		}
 	]
 }

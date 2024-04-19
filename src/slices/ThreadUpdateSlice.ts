@@ -42,7 +42,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     postMessageInfo: {},
 
     selectedModel: '',
-    setSelectedModel: (model: string) => set({ selectedModel: model }),
+    setSelectedModel: (model: string) => {
+        set({ selectedModel: model });
+    },
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
@@ -83,7 +85,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             (message) => message.id === id
                         );
                     } else {
-                        message = message?.children?.find((message) => message.id === id);
+                        message = message.children?.find((message) => message.id === id);
                     }
                 }
 
@@ -101,10 +103,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 parentMsg.children = parentMsg.children ?? [];
             }
 
-            // TODO: by this point allThreadInfo.data should always be set, so silly stuff
-            // like this shouldn't be required
-            // Note: Ran into issues in tests with sending a message without getting all threads first. It's not a safe assumption that allThreadInfo is defined.
-            return parentMsg?.children || state.allThreadInfo.data?.messages || [];
+            return parentMsg?.children || state.allThreadInfo.data.messages;
         };
 
         try {
@@ -134,7 +133,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             state.expandedThreadID = msg.root;
 
                             // since ThreadDisplay redirects when the id in selectedThreadInfo.data changes we only want to redirect if it's a new thread and not a followup
-                            if (shouldSetSelectedThread && messagePath?.length === 0) {
+                            if (shouldSetSelectedThread && messagePath.length === 0) {
                                 state.selectedThreadInfo.data = msg;
                             }
                         },
@@ -154,6 +153,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                             reply.content += chunk.content;
 
                             if (shouldSetSelectedThread) {
+                                // We generally know that our data has children here so we can non-null assert
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                 state.selectedThreadInfo.data!.children![0].content +=
                                     chunk.content;
                             }
@@ -174,10 +175,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                             if (shouldSetSelectedThread) {
                                 if (messagePath.length === 0) {
+                                    // We generally know that our data has children here so we can non-null assert
+                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                     state.pathToLastMessageInThread = [msg.id, msg.children![0].id];
                                 } else {
                                     state.pathToLastMessageInThread.push(
                                         msg.id,
+                                        // We generally know that our data has children here so we can non-null assert
+                                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                         msg.children![0].id
                                     );
                                 }

@@ -21,7 +21,7 @@ export const NewModelSelect = ({ disabled, setParametersChanged }: ModelSelectPr
     }, [models]);
 
     const handleOnChange = (event: SelectChangeEvent) => {
-        setSelectedModel(event.target.value as string);
+        setSelectedModel(event.target.value);
         setParametersChanged(true);
     };
 
@@ -35,7 +35,7 @@ export const NewModelSelect = ({ disabled, setParametersChanged }: ModelSelectPr
                 flex: '1 1 auto',
             }}
             onChange={handleOnChange}>
-            {models?.map((model) => {
+            {models.map((model) => {
                 return (
                     <MenuItem key={model.id} value={model.id}>
                         {model.name}

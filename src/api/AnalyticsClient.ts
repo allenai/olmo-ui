@@ -1,5 +1,6 @@
 import { search } from './dolma/search';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace event {
     export enum Type {
         SearchQuery = 'search.query',
@@ -8,16 +9,6 @@ export namespace event {
         DocumentShare = 'document.share',
         NewPrompt = 'prompt.new',
         FollowUpPrompt = 'prompt.followup',
-    }
-
-    export interface Event {
-        type: Type;
-        occurred: Date;
-        details?:
-            | SearchQueryDetails
-            | SearchResultClickDetails
-            | DocumentEventDetails
-            | PromptMessageDetails;
     }
 
     export interface SearchQueryDetails {
@@ -41,6 +32,16 @@ export namespace event {
     export interface PromptMessageDetails {
         content: string;
         threadId?: string;
+    }
+
+    export interface Event {
+        type: Type;
+        occurred: Date;
+        details?:
+            | SearchQueryDetails
+            | SearchResultClickDetails
+            | DocumentEventDetails
+            | PromptMessageDetails;
     }
 }
 

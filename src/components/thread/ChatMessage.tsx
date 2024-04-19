@@ -28,8 +28,8 @@ interface ChatMessageProps extends PropsWithChildren {
 }
 
 export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.Element => {
-    const MessageComponent = variant === 'user' ? UserMessage : LLMMessage;
-    const icon = variant === 'user' ? null : <RobotAvatar />;
+    const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
+    const icon = variant === Role.User ? null : <RobotAvatar />;
 
     return (
         <Stack direction="row" gap={1} alignItems="start">

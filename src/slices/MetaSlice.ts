@@ -9,7 +9,7 @@ export interface MetaSlice {
     metaState: RemoteState;
     error?: Error;
     meta?: search.IndexMeta;
-    getMeta(): Promise<search.IndexMeta | Error>;
+    getMeta: () => Promise<search.IndexMeta | Error>;
 }
 
 export const createMetaSlice: OlmoStateCreator<MetaSlice> = (set) => ({

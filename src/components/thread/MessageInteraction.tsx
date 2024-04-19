@@ -30,10 +30,6 @@ export const MessageInteraction = ({
     content,
     messageId,
 }: MessageInteractionProps): JSX.Element | null => {
-    if (role === Role.User) {
-        return null;
-    }
-
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
 
@@ -60,6 +56,10 @@ export const MessageInteraction = ({
     const copyMessage = useCallback(() => {
         navigator.clipboard.writeText(content);
     }, [content]);
+
+    if (role === Role.User) {
+        return null;
+    }
 
     return (
         <Stack direction="row" gap={2} alignItems="start">

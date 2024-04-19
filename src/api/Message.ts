@@ -6,6 +6,21 @@ import { PaginationData } from './Schema';
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
+export interface InferenceOpts {
+    max_tokens?: number;
+    temperature?: number;
+    n?: number;
+    top_p?: number;
+    logprobs?: number;
+    stop?: string[];
+}
+
+export interface Logprob {
+    token: string;
+    offset: number;
+    prob: number;
+}
+
 export interface MessagePost {
     content: string;
     role?: string; // in the case of edited messages
@@ -45,6 +60,13 @@ export interface MessageList {
     meta: PaginationData;
 }
 
+// The serialized representation, where certain fields (dates) are encoded as strings.
+export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
+    created: string;
+    deleted?: string;
+    children?: JSONMessage[];
+}
+
 export interface MessagesResponse {
     messages: JSONMessage[];
     meta: PaginationData;
@@ -58,28 +80,6 @@ export interface MessageChunk {
 export interface MessageStreamError {
     message: string;
     error: string;
-}
-
-export interface InferenceOpts {
-    max_tokens?: number;
-    temperature?: number;
-    n?: number;
-    top_p?: number;
-    logprobs?: number;
-    stop?: string[];
-}
-
-export interface Logprob {
-    token: string;
-    offset: number;
-    prob: number;
-}
-
-// The serialized representation, where certain fields (dates) are encoded as strings.
-export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
-    created: string;
-    deleted?: string;
-    children?: JSONMessage[];
 }
 
 export interface FirstMessage extends JSONMessage {
@@ -98,11 +98,11 @@ export const isMessageWithMetadata = (message: MessageStreamPart): message is JS
 };
 
 export const isFirstMessage = (message: MessageStreamPart): message is FirstMessage => {
-    return isMessageWithMetadata(message) && message.final === false;
+    return isMessageWithMetadata(message) && !message.final;
 };
 
 export const isFinalMessage = (message: MessageStreamPart): message is FinalMessage => {
-    return isMessageWithMetadata(message) && message.final === true;
+    return isMessageWithMetadata(message) && message.final;
 };
 
 export const isMessageChunk = (message: MessageStreamPart): message is MessageChunk => {

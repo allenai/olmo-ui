@@ -7,5 +7,7 @@ export interface RepromptSlice {
 
 export const createRepromptSlice: OlmoStateCreator<RepromptSlice> = (set) => ({
     repromptText: '',
-    setRepromptText: (text) => set({ repromptText: text }),
+    setRepromptText: (text) => {
+        set({ repromptText: text });
+    },
 });

@@ -33,7 +33,7 @@ export const OlmoBanner = React.forwardRef<HTMLDivElement, BannerProps>(
             <BannerContent>
                 <Grid container justifyContent="space-between" spacing={2}>
                     <Grid item>{bannerLogo}</Grid>
-                    {endSlot && <Grid item>{endSlot}</Grid>}
+                    {!!endSlot && <Grid item>{endSlot}</Grid>}
                 </Grid>
             </BannerContent>
         </BannerContainer>

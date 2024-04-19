@@ -9,9 +9,15 @@ export const ChatResponseContainer = ({ children, setHover }: ChatResponseContai
         <div
             style={{ position: 'relative', overflow: 'auto' }}
             role="presentation" // TODO: need a better a11y keyboard-only story pre-release
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            onFocus={() => setHover(true)}
+            onMouseEnter={() => {
+                setHover(true);
+            }}
+            onMouseLeave={() => {
+                setHover(false);
+            }}
+            onFocus={() => {
+                setHover(true);
+            }}
             onBlur={() => {
                 setHover(false);
             }}>

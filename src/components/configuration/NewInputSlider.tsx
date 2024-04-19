@@ -121,7 +121,7 @@ export const NewInputSlider = ({
                         </Typography>
                     </Grid>
                     <Grid item>
-                        {dialogContent && dialogTitle && (
+                        {!!dialogContent && !!dialogTitle && (
                             <IconButton
                                 sx={{ color: 'inherit' }}
                                 onClick={() => {

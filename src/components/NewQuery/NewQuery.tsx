@@ -47,11 +47,15 @@ export const NewQuery = () => {
                     <NewQueryForm
                         isFormDisabled={isLoading}
                         onSubmit={(formData) => postNewMessage(formData)}
-                        onParametersButtonClick={() => setShowParams(!showParams)}
+                        onParametersButtonClick={() => {
+                            setShowParams(!showParams);
+                        }}
                         topRightFormControls={
                             <IconButton
                                 size="large"
-                                onClick={() => setIsFullScreen(!isFullScreen)}
+                                onClick={() => {
+                                    setIsFullScreen(!isFullScreen);
+                                }}
                                 sx={{ marginLeft: 'auto' }}>
                                 {!isFullScreen ? (
                                     <FullscreenIcon fontSize="inherit" />

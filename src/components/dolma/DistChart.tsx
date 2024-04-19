@@ -113,35 +113,15 @@ export const DistChart = ({ data, mapData, sourceMap, categoryLabel }: Props) =>
                     },
                 ]}
                 tooltip={({ id, value, color, data }) => {
-                    const theme = useTheme();
                     return (
-                        <TableTooltip
-                            title={
-                                <div>
-                                    {categoryLabel}: {data.bucket}
-                                </div>
-                            }
-                            rows={[
-                                [
-                                    <Chip key="chip" color={color} style={theme.tooltip.chip} />,
-                                    <Typography key="label" sx={{ textAlign: 'left' }}>
-                                        {sourceMap[id.toString()].label}
-                                    </Typography>,
-                                    <Typography key="docCount" sx={{ textAlign: 'right' }}>
-                                        <span key="value" style={theme.tooltip.tableCellValue}>
-                                            {mapData[data.bucket][
-                                                id.toString()
-                                            ].doc_count.toLocaleString()}
-                                            docs
-                                        </span>
-                                    </Typography>,
-                                    <Typography key="value2Container" sx={{ textAlign: 'left' }}>
-                                        <span key="value2" style={theme.tooltip.tableCellValue}>
-                                            {percentValueFormat(value)}
-                                        </span>
-                                    </Typography>,
-                                ],
-                            ]}
+                        <DistChartTooltip
+                            categoryLabel={categoryLabel}
+                            data={data}
+                            color={color}
+                            sourceMap={sourceMap}
+                            id={id}
+                            mapData={mapData}
+                            value={value}
                         />
                     );
                 }}
@@ -149,3 +129,52 @@ export const DistChart = ({ data, mapData, sourceMap, categoryLabel }: Props) =>
         </ChartContainer>
     );
 };
+interface DistChartTooltipProps {
+    categoryLabel: string;
+    data: DistData;
+    color: string;
+    sourceMap: staticData.Sources;
+    id: string | number;
+    mapData: MapDistData;
+    value: number;
+}
+
+function DistChartTooltip({
+    categoryLabel,
+    data,
+    color,
+    sourceMap,
+    id,
+    mapData,
+    value,
+}: DistChartTooltipProps): JSX.Element {
+    const theme = useTheme();
+    return (
+        <TableTooltip
+            title={
+                <div>
+                    {categoryLabel}: {data.bucket}
+                </div>
+            }
+            rows={[
+                [
+                    <Chip key="chip" color={color} style={theme.tooltip.chip} />,
+                    <Typography key="label" sx={{ textAlign: 'left' }}>
+                        {sourceMap[id.toString()].label}
+                    </Typography>,
+                    <Typography key="docCount" sx={{ textAlign: 'right' }}>
+                        <span key="value" style={theme.tooltip.tableCellValue}>
+                            {mapData[data.bucket][id.toString()].doc_count.toLocaleString()}
+                            docs
+                        </span>
+                    </Typography>,
+                    <Typography key="value2Container" sx={{ textAlign: 'left' }}>
+                        <span key="value2" style={theme.tooltip.tableCellValue}>
+                            {percentValueFormat(value)}
+                        </span>
+                    </Typography>,
+                ],
+            ]}
+        />
+    );
+}

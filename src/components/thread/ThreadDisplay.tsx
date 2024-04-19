@@ -57,6 +57,8 @@ export const ThreadDisplay = (): JSX.Element => {
     const { id } = useParams();
 
     const selectedThread = useAppContext(
+        // it's fairly safe to assume these are non-null, we'll want to fix the typings later
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (state) => state.threads.find((thread) => thread.id === id)!
     );
 
@@ -76,6 +78,8 @@ export const ThreadDisplay = (): JSX.Element => {
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
     const getSelectedThread = appContext.getState().getSelectedThread;
+    // it's fairly safe to assume these are non-null, we'll want to fix the typings later
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await getSelectedThread(params.id!, true);
     return null;
 };
