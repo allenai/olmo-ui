@@ -5,18 +5,27 @@ import { errorToAlert } from './AlertMessageSlice';
 import { messageClient } from './ThreadSlice';
 import { Role } from '@/api/Role';
 
+const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
+    const mappedChildren = message.children?.map(child => child.id) ?? []
+    return {
+        id: message.id,
+        children: mappedChildren,
+        selectedChildId: mappedChildren[0],
+        content: message.content,
+        role: message.role
+    }
+}
+
 const mapMessages = (message: Message): SelectedThreadMessage[] => {
     const messages: SelectedThreadMessage[] = [];
+
+    const mappedMessage = mapMessageToSelectedThreadMessage(message)
+    
     message.children?.forEach((childMessage) => {
-        messages.push({
-            id: childMessage.id,
-            children: childMessage.children ? childMessage.children.map((m) => m.id) : [],
-            selectedChildId: childMessage.children?.[0].id,
-            content: childMessage.content,
-            role: childMessage.role,
-        })
+        messages.push(mapMessageToSelectedThreadMessage(childMessage))
         mapMessages(childMessage);
     });
+    
     return messages;
 }
 
