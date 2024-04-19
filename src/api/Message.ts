@@ -45,7 +45,7 @@ export interface Message {
     logprobs?: Logprob[];
     model_type?: string;
     opts: InferenceOpts;
-    original?: string;
+    original?: string | null;
     parent?: string;
     private?: boolean;
     role: Role;
