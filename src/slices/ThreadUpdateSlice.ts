@@ -28,7 +28,7 @@ export interface ThreadUpdateSlice {
     postMessageInfo: FetchInfo<Message>;
     createNewThread: (
         newMessage: MessagePost,
-        parentMessageId: string
+        parentMessageId?: string
     ) => Promise<FetchInfo<Message>>;
     postMessage: (
         newMessage: MessagePost,
@@ -57,7 +57,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         }));
     },
 
-    createNewThread: async (newMessage: MessagePost, parentMessageId: string) => {
+    createNewThread: async (newMessage: MessagePost, parentMessageId?: string) => {
         const { inferenceOpts, setSelectedThread, addContentToMessage } = get();
         const abortController = new AbortController();
 

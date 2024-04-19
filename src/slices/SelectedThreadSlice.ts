@@ -4,6 +4,7 @@ import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
 import { errorToAlert } from './AlertMessageSlice';
 import { messageClient } from './ThreadSlice';
 import { Role } from '@/api/Role';
+import { Label } from '@/api/Label';
 
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
     const mappedChildren = message.children?.map((child) => child.id) ?? [];
@@ -13,6 +14,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         selectedChildId: mappedChildren[0],
         content: message.content,
         role: message.role,
+        labels: message.labels,
     };
 };
 
@@ -30,12 +32,13 @@ const mapMessages = (
     return messageList;
 };
 
-interface SelectedThreadMessage {
+export interface SelectedThreadMessage {
     id: string;
     children: string[]; // array of children ids
     selectedChildId?: string;
     content: string;
     role: Role;
+    labels: Label[];
 }
 
 export interface SelectedThreadSlice {
@@ -93,6 +96,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             selectedChildId: rootMessage.children?.[0].id ?? '',
             content: rootMessage.content,
             role: rootMessage.role,
+            labels: rootMessage.labels,
         };
 
         const mappedMessages = mapMessages(rootMessage);

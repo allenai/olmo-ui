@@ -15,16 +15,16 @@ import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 
 export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
-    const postMessage = useAppContext((state) => state.postMessage);
+    const createNewThread = useAppContext((state) => state.createNewThread);
     const postToExistingThread = useAppContext((state) => state.postToExistingThread);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
 
     // if we're on the selected thread page, handle submission differently
     const isNewThreadPage = useMatch(links.playground);
 
     const handlePromptSubmission = async (data: { content: string }) => {
         if (isNewThreadPage) {
-            await postMessage(data, undefined, true);
+            createNewThread(data);
         } else {
             await postToExistingThread(data);
         }

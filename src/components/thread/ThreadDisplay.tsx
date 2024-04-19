@@ -1,34 +1,22 @@
 import { Stack } from '@mui/material';
-import { LoaderFunction, useParams } from 'react-router-dom';
+import { LoaderFunction } from 'react-router-dom';
 
-import { ChatMessage } from './ChatMessage';
-import { Message } from '@/api/Message';
-import { MessageInteraction } from './MessageInteraction';
 import { appContext, useAppContext } from '@/AppContext';
+import { Message } from '@/api/Message';
+import { SelectedThreadMessage } from '@/slices/SelectedThreadSlice';
+import { ChatMessage } from './ChatMessage';
+import { MessageInteraction } from './MessageInteraction';
 
 interface MessageViewProps {
-    content?: Message['content'];
-    childMessages?: Message['children'];
-    role?: Message['role'];
-    messagePath?: string[];
-    messageLabels?: Message['labels'];
     messageId: Message['id'];
 }
 
-const MessageView = ({
-    content,
-    childMessages,
-    role,
-    messagePath = [],
-    messageLabels = [],
-    messageId,
-}: MessageViewProps) => {
-    if (content == null || role == null) {
-        return null;
-    }
-
-    const firstChild = childMessages?.[0];
-
+const MessageView = ({ messageId }: MessageViewProps) => {
+    const {
+        role,
+        content,
+        labels: messageLabels,
+    } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
     return (
         <>
             <ChatMessage role={role}>{content}</ChatMessage>
@@ -38,40 +26,35 @@ const MessageView = ({
                 messageLabels={messageLabels}
                 messageId={messageId}
             />
-            {/* TODO: add branch and edit handling */}
-            {firstChild != null && (
-                <MessageView
-                    content={firstChild.content}
-                    role={firstChild.role}
-                    childMessages={firstChild.children}
-                    messagePath={messagePath.concat(firstChild.id)}
-                    messageId={firstChild.id}
-                    messageLabels={firstChild.labels}
-                />
-            )}
         </>
     );
 };
 
-export const ThreadDisplay = (): JSX.Element => {
-    const { id } = useParams();
+const getMessageIdsToShow = (
+    message: SelectedThreadMessage,
+    messagesById: Record<string, SelectedThreadMessage>,
+    messageIdList: string[] = []
+): string[] => {
+    messageIdList.push(message.id);
+    if (message.selectedChildId != null) {
+        const childMessage = messagesById[message.selectedChildId];
+        getMessageIdsToShow(childMessage, messagesById, messageIdList);
+    }
 
-    const selectedThread = useAppContext(
-        // it's fairly safe to assume these are non-null, we'll want to fix the typings later
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (state) => state.threads.find((thread) => thread.id === id)!
-    );
+    return messageIdList;
+};
+
+export const ThreadDisplay = (): JSX.Element => {
+    const childMessageIds = useAppContext((state) => {
+        const firstMessage = state.selectedThreadMessagesById[state.selectedThreadRootId];
+        return getMessageIdsToShow(firstMessage, state.selectedThreadMessagesById);
+    });
 
     return (
         <Stack gap={2} direction="column">
-            <MessageView
-                content={selectedThread.content}
-                role={selectedThread.role}
-                childMessages={selectedThread.children}
-                messagePath={[selectedThread.id]}
-                messageId={selectedThread.id}
-                messageLabels={selectedThread.labels}
-            />
+            {childMessageIds.map((messageId) => (
+                <MessageView messageId={messageId} key={messageId} />
+            ))}
         </Stack>
     );
 };
