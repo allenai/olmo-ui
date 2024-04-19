@@ -10,6 +10,7 @@ import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
+import { TermsAndServiceModal } from './TermsAndServicesModal';
 
 export const NewApp = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -37,6 +38,7 @@ export const NewApp = () => {
                 <>
                     <OlmoAppBar />
                     <GlobalAlertList />
+                    <TermsAndServiceModal />
                     <Container
                         component="main"
                         sx={{

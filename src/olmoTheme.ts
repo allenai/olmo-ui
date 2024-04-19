@@ -97,6 +97,15 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                 }),
             },
         },
+        MuiModal: {
+            styleOverrides: {
+                root: () => ({
+                    '& .mui-selected, & :focus-visible': {
+                        outline: 'none', // prevent blue focus outline around modal
+                    },
+                }),
+            },
+        },
         MuiPaginationItem: {
             styleOverrides: {
                 root: ({ theme }) => ({
