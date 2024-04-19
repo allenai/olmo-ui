@@ -12,6 +12,8 @@ import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
 import { errorToAlert } from './AlertMessageSlice';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { router } from '@/router';
+import { links } from '@/Links';
 
 const ABORT_ERROR_MESSAGE: AlertMessage = {
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
@@ -88,7 +90,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     const parsedMessage = parseMessage(message);
 
                     if (isCreatingNewThread) {
-                        setSelectedThread(parsedMessage);
+                        get().setSelectedThread(parsedMessage);
+                        router.navigate(links.thread(parsedMessage.id));
                     } else {
                         addChildToSelectedThread(parsedMessage);
                     }

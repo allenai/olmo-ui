@@ -156,9 +156,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         let selectedThread: Message | undefined;
 
         if (checkExistingThreads) {
-            selectedThread = get().allThreadInfo.data.messages.find(
-                (message) => message.id === threadId
-            );
+            selectedThread = get().threads.find((message) => message.id === threadId);
         }
 
         if (selectedThread == null) {

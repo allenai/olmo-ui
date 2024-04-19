@@ -1,7 +1,5 @@
 import { Stack, Typography } from '@mui/material';
 
-import { useNavigate } from 'react-router';
-
 import { Outlet, useMatch } from 'react-router-dom';
 
 import { useEffect } from 'react';
@@ -14,21 +12,13 @@ import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 
 export const UIRefreshThreadPage = () => {
-    const navigate = useNavigate();
     const sendAMessageToTheLLM = useAppContext((state) => state.sendAMessageToTheLLM);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const resetSelectedThreadState = useAppContext((state) => state.resetSelectedThreadState);
     const isRootPlaygroundPage = useMatch(links.playground);
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         sendAMessageToTheLLM(data);
     };
-
-    useEffect(() => {
-        if (selectedThreadId) {
-            navigate(links.thread(selectedThreadId));
-        }
-    }, [selectedThreadId, navigate]);
 
     useEffect(() => {
         if (isRootPlaygroundPage) {

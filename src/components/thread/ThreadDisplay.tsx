@@ -65,9 +65,10 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const { getSelectedThread } = appContext.getState();
+    const { getSelectedThread, selectedThreadRootId } = appContext.getState();
 
-    if (params.id != null) {
+    // if selectedThreadRootId is set we've already loaded this in so we don't need to load it again
+    if (params.id != null && params.id !== selectedThreadRootId) {
         await getSelectedThread(params.id!, true);
     }
 
