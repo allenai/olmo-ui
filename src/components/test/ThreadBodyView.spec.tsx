@@ -28,6 +28,7 @@ describe('ThreadBodyView', () => {
                 followUpMessage: 'Hello',
             });
         });
+        expect(result.current.threadUpdateRemoteState).toBeFalsy();
     });
 
     test('should be able to edit message', async () => {
@@ -55,5 +56,6 @@ describe('ThreadBodyView', () => {
                 followUpMessage: '',
             });
         });
+        expect(result.current.threadUpdateRemoteState).toBeFalsy();
     });
 });
