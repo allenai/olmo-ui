@@ -217,7 +217,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
                 message = message.children?.[0];
             }
-
+            get().setSelectedThread(selectedThread);
             set(
                 (state) => {
                     state.selectedThreadInfo.data = selectedThread;
