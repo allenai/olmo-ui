@@ -15,6 +15,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         content: message.content,
         role: message.role,
         labels: message.labels,
+        parent: message.parent ?? undefined,
     };
 };
 
@@ -39,6 +40,7 @@ export interface SelectedThreadMessage {
     content: string;
     role: Role;
     labels: Label[];
+    parent?: string;
 }
 
 export interface SelectedThreadSlice {
@@ -47,6 +49,7 @@ export interface SelectedThreadSlice {
     selectedThreadMessages: string[]; // array of every message id in the thread, including root and branches
     selectedThreadMessagesById: Record<string, SelectedThreadMessage>;
     addContentToMessage: (messageId: string, content: string) => void;
+    addChildToSelectedThread: (message: Message) => void;
     getSelectedThread: (
         threadId: string,
         checkExistingThreads?: boolean
@@ -82,9 +85,35 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
     },
 
     addContentToMessage: (messageId: string, content: string) => {
-        set((state) => {
-            state.selectedThreadMessagesById[messageId].content += content;
-        });
+        set(
+            (state) => {
+                state.selectedThreadMessagesById[messageId].content += content;
+            },
+            false,
+            'selectedThread/addContentToMessage'
+        );
+    },
+
+    addChildToSelectedThread: (message: Message) => {
+        const mappedMessages = mapMessages(message);
+
+        set(
+            (state) => {
+                if (message.parent != null) {
+                    mappedMessages.forEach((message) => {
+                        state.selectedThreadMessagesById[message.id] = message;
+                    });
+
+                    state.selectedThreadMessagesById[message.parent].children.push(
+                        mappedMessages[0].id
+                    );
+                    state.selectedThreadMessagesById[message.parent].selectedChildId =
+                        mappedMessages[0].id;
+                }
+            },
+            false,
+            'selectedThread/addChildToSelectedThread'
+        );
     },
 
     setSelectedThread: (rootMessage: Message) => {

@@ -1,10 +1,12 @@
 import { Button, Stack } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 
+import { useAppContext } from '@/AppContext';
 import { useNewQueryFormHandling } from '../NewQuery/NewQueryForm';
+import { getSelectedMessagesToShow } from './ThreadDisplay';
 
 interface QueryFormProps {
-    onSubmit: (data: { content: string }) => Promise<void> | void;
+    onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
     variant: 'new' | 'response';
 }
 
@@ -12,8 +14,15 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
 
+    const lastMessageId = useAppContext((state) => {
+        const messagesToShow = getSelectedMessagesToShow(state);
+        const lastMessage = messagesToShow[messagesToShow.length - 1];
+
+        return lastMessage;
+    });
+
     const handleSubmit = async (data: { content: string }) => {
-        await onSubmit(data);
+        await onSubmit({ ...data, parent: lastMessageId });
         formContext.reset();
     };
 

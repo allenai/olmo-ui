@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { LoaderFunction } from 'react-router-dom';
 
-import { appContext, useAppContext } from '@/AppContext';
+import { AppContextState, appContext, useAppContext } from '@/AppContext';
 import { Message } from '@/api/Message';
 import { SelectedThreadMessage } from '@/slices/SelectedThreadSlice';
 import { ChatMessage } from './ChatMessage';
@@ -30,25 +30,27 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     );
 };
 
+export const getSelectedMessagesToShow = (state: AppContextState) =>
+    getMessageIdsToShow(state.selectedThreadRootId, state.selectedThreadMessagesById);
+
 const getMessageIdsToShow = (
-    message: SelectedThreadMessage,
+    rootMessageId: string,
     messagesById: Record<string, SelectedThreadMessage>,
     messageIdList: string[] = []
 ): string[] => {
-    messageIdList.push(message.id);
+    const message = messagesById[rootMessageId];
+
+    messageIdList.push(rootMessageId);
     if (message.selectedChildId != null) {
         const childMessage = messagesById[message.selectedChildId];
-        getMessageIdsToShow(childMessage, messagesById, messageIdList);
+        getMessageIdsToShow(childMessage.id, messagesById, messageIdList);
     }
 
     return messageIdList;
 };
 
 export const ThreadDisplay = (): JSX.Element => {
-    const childMessageIds = useAppContext((state) => {
-        const firstMessage = state.selectedThreadMessagesById[state.selectedThreadRootId];
-        return getMessageIdsToShow(firstMessage, state.selectedThreadMessagesById);
-    });
+    const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
         <Stack gap={2} direction="column">

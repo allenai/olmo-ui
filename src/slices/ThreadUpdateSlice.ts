@@ -26,7 +26,7 @@ export interface ThreadUpdateSlice {
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     postMessageInfo: FetchInfo<Message>;
-    createNewThread: (
+    sendAMessageToTheLLM: (
         newMessage: MessagePost,
         parentMessageId?: string
     ) => Promise<FetchInfo<Message>>;
@@ -57,9 +57,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         }));
     },
 
-    createNewThread: async (newMessage: MessagePost, parentMessageId?: string) => {
-        const { inferenceOpts, setSelectedThread, addContentToMessage } = get();
+    sendAMessageToTheLLM: async (newMessage: MessagePost) => {
+        const { inferenceOpts, setSelectedThread, addContentToMessage, addChildToSelectedThread } =
+            get();
         const abortController = new AbortController();
+        const isCreatingNewThread = newMessage.parent == null;
 
         set(
             (state) => {
@@ -76,7 +78,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 newMessage,
                 inferenceOpts,
                 abortController,
-                parentMessageId
+                newMessage.parent
             );
 
             // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.
@@ -84,7 +86,12 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             for await (const message of messageChunks) {
                 if (isFirstMessage(message)) {
                     const parsedMessage = parseMessage(message);
-                    setSelectedThread(parsedMessage);
+
+                    if (isCreatingNewThread) {
+                        setSelectedThread(parsedMessage);
+                    } else {
+                        addChildToSelectedThread(parsedMessage);
+                    }
                 }
 
                 if (isMessageChunk(message)) {
@@ -93,7 +100,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 if (isFinalMessage(message)) {
                     const parsedMessage = parseMessage(message);
-                    setSelectedThread(parsedMessage);
+
+                    if (isCreatingNewThread) {
+                        setSelectedThread(parsedMessage);
+                    }
 
                     set(
                         (state) => {
