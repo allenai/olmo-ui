@@ -22,10 +22,10 @@ export interface Label {
     id: string;
     created: Date;
     creator: string;
-    deleted?: Date;
+    deleted?: Date | null;
     message: string;
     rating: LabelRating;
-    comment?: string;
+    comment?: string | null;
 }
 
 export interface LabelList {

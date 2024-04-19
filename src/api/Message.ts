@@ -33,24 +33,24 @@ export interface MessagePost {
 }
 
 export interface Message {
-    children?: Message[];
+    children?: Message[] | null;
     content: string;
     snippet: string;
     created: Date;
     creator: string;
-    deleted?: Date;
+    deleted?: Date | null;
     id: string;
     labels: Label[];
-    completion?: string;
-    logprobs?: Logprob[];
-    model_type?: string;
+    completion?: string | null;
+    logprobs?: Logprob[] | null;
+    model_type?: string | null;
     opts: InferenceOpts;
     original?: string | null;
-    parent?: string;
-    private?: boolean;
+    parent?: string | null;
+    private?: boolean | null;
     role: Role;
     root: string;
-    template?: string;
+    template?: string | null;
     final: boolean;
     model?: string;
 }
