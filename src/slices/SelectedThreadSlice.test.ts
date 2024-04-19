@@ -8,6 +8,7 @@ describe('SelectedThreadSlice', () => {
         setSelectedThread(thread);
         expect(appContext.getState().selectedThreadRootId).equals(thread.id);
         expect(appContext.getState().selectedThreadMessages.length).equals(5);
+        expect(Object.values(appContext.getState().selectedThreadMessagesById)).toEqual(5)
 
         const expectedMessage = {
             id: thread.id,
@@ -17,6 +18,36 @@ describe('SelectedThreadSlice', () => {
             role: thread.role,
         }
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(expectedMessage);
+
+        const expectedLastChild = {
+            "children": null,
+            "completion": "cpl_Z0L9Q5Z2C2",
+            "content": "One.",
+            "created": "2024-04-04T19:47:57.396638+00:00",
+            "creator": "murphy@allenai.org",
+            "deleted": null,
+            "final": true,
+            "id": "msg_X2T9X3L5M0",
+            "labels": [],
+            "logprobs": [],
+            "model_type": "chat",
+            "opts": {
+                "logprobs": null,
+                "max_tokens": 2048,
+                "n": 1,
+                "stop": null,
+                "temperature": 1,
+                "top_p": 1
+            },
+            "original": null,
+            "parent": "msg_W1O3Y8E0J4",
+            "private": false,
+            "role": Role.LLM,
+            "root": "msg_U6E0D4X1P4",
+            "snippet": "One.",
+            "template": null
+        }
+        expect(appContext.getState().selectedThreadMessagesById['msg_X2T9X3L5M0']).toEqual(expectedLastChild)
     })
 });
 
