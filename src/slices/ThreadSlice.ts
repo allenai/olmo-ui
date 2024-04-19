@@ -58,13 +58,14 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
             // EFFECT: remove the deleted message from the local store
             // TODO: when this occurs we should be refetching the list; the metadata
             // we have is no longer out of date, and needs to be updated from the server.
-            const filterMessages = allThreads.messages.filter((m) => m.id !== threadId);
-            allThreads.messages = filterMessages;
-            const newAllThreads = allThreads;
+            const filteredMessages = allThreads.messages.filter((m) => m.id !== threadId);
             deleteSelectedThread();
             set({
                 threadRemoteState: RemoteState.Loaded,
-                allThreads: newAllThreads,
+                allThreads: {
+                    messages: filteredMessages,
+                    meta: allThreads.meta,
+                },
             });
         } catch (err) {
             get().addAlertMessage(

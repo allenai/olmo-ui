@@ -62,9 +62,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         const abortController = new AbortController();
 
         set(
-            (state) => {
-                state.abortController = abortController;
-                state.threadUpdateRemoteState = RemoteState.Loading;
+            {
+                abortController,
+                threadUpdateRemoteState: RemoteState.Loading,
             },
             false,
             'threadUpdate/startPostMessage'
@@ -188,10 +188,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             }
 
             set(
-                (state) => {
-                    state.abortController = null;
-                    state.ongoingThreadId = null;
-                    state.threadUpdateRemoteState = RemoteState.Loaded;
+                {
+                    abortController: null,
+                    ongoingThreadId: null,
+                    threadUpdateRemoteState: RemoteState.Loaded,
                 },
                 false,
                 'threadUpdate/finishPostMessage'
