@@ -75,7 +75,7 @@ export const TermsAndServiceModal = () => {
                     {section.title}
                 </Typography>
                 <Typography variant="body1">{section.contents}</Typography>
-                <FormContainer formContext={formContext} onSuccess={() => handleSubmit()}>
+                <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                     <FormControlLabel
                         sx={{ alignItems: 'flex-start', gap: 2 }}
                         control={
