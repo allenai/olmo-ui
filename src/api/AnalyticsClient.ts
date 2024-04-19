@@ -7,6 +7,7 @@ export namespace event {
         DocumentView = 'document.view',
         DocumentShare = 'document.share',
         NewPrompt = 'prompt.new',
+        FollowUpPrompt = 'prompt.followup',
     }
 
     export interface Event {
@@ -74,4 +75,10 @@ export class AnalyticsClient {
     trackNewPrompt(details: event.PromptMessageDetails): boolean {
         return this.track({ type: event.Type.NewPrompt, occurred: new Date(), details });
     }
+
+    trackFollowUpPrompt(details: event.PromptMessageDetails): boolean {
+        return this.track({ type: event.Type.FollowUpPrompt, occurred: new Date(), details });
+    }
 }
+
+export const analyticsClient = new AnalyticsClient();
