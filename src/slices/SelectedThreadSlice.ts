@@ -6,35 +6,36 @@ import { messageClient } from './ThreadSlice';
 import { Role } from '@/api/Role';
 
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
-    const mappedChildren = message.children?.map(child => child.id) ?? []
+    const mappedChildren = message.children?.map((child) => child.id) ?? [];
     return {
         id: message.id,
         children: mappedChildren,
         selectedChildId: mappedChildren[0],
         content: message.content,
-        role: message.role
-    }
-}
+        role: message.role,
+    };
+};
 
-const mapMessages = (message: Message): SelectedThreadMessage[] => {
-    const messages: SelectedThreadMessage[] = [];
+const mapMessages = (
+    message: Message,
+    messageList: SelectedThreadMessage[] = []
+): SelectedThreadMessage[] => {
+    const mappedMessage = mapMessageToSelectedThreadMessage(message);
+    messageList.push(mappedMessage);
 
-    const mappedMessage = mapMessageToSelectedThreadMessage(message)
-    
     message.children?.forEach((childMessage) => {
-        messages.push(mapMessageToSelectedThreadMessage(childMessage))
-        mapMessages(childMessage);
+        mapMessages(childMessage, messageList);
     });
-    
-    return messages;
-}
+
+    return messageList;
+};
 
 interface SelectedThreadMessage {
-    id: string,
-    children: string[], // array of children ids
-    selectedChildId?: string,
-    content: string,
-    role: Role,
+    id: string;
+    children: string[]; // array of children ids
+    selectedChildId?: string;
+    content: string;
+    role: Role;
 }
 
 export interface SelectedThreadSlice {
@@ -42,6 +43,7 @@ export interface SelectedThreadSlice {
     selectedThreadRootId: string;
     selectedThreadMessages: string[]; // array of every message id in the thread, including root and branches
     selectedThreadMessagesById: Record<string, SelectedThreadMessage>;
+    addContentToMessage: (messageId: string, content: string) => void;
     getSelectedThread: (
         threadId: string,
         checkExistingThreads?: boolean
@@ -76,22 +78,37 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         });
     },
 
+    addContentToMessage: (messageId: string, content: string) => {
+        set((state) => {
+            state.selectedThreadMessagesById[messageId].content += content;
+        });
+    },
+
     setSelectedThread: (rootMessage: Message) => {
         const selectedThreadMessage: SelectedThreadMessage = {
             id: rootMessage.id,
-            children: rootMessage.children ? rootMessage.children?.map((childMessage) => childMessage.id) : [],
+            children: rootMessage.children
+                ? rootMessage.children?.map((childMessage) => childMessage.id)
+                : [],
             selectedChildId: rootMessage.children?.[0].id ?? '',
             content: rootMessage.content,
             role: rootMessage.role,
-        }
+        };
 
         const mappedMessages = mapMessages(rootMessage);
 
-        set(state => {
-            state.selectedThreadRootId = selectedThreadMessage.id;
-            state.selectedThreadMessagesById[selectedThreadMessage.id] = selectedThreadMessage;
-            state.selectedThreadMessages = mappedMessages.map((message) => message.id);
-        }, false, 'selectedThread/setSelectedThread');
+        set(
+            (state) => {
+                state.selectedThreadRootId = selectedThreadMessage.id;
+                state.selectedThreadMessages = mappedMessages.map((message) => message.id);
+
+                mappedMessages.forEach((message) => {
+                    state.selectedThreadMessagesById[message.id] = message;
+                });
+            },
+            false,
+            'selectedThread/setSelectedThread'
+        );
     },
 
     getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {

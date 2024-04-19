@@ -26,6 +26,10 @@ export interface ThreadUpdateSlice {
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     postMessageInfo: FetchInfo<Message>;
+    createNewThread: (
+        newMessage: MessagePost,
+        parentMessageId: string
+    ) => Promise<FetchInfo<Message>>;
     postMessage: (
         newMessage: MessagePost,
         parentMessage?: Pick<Message, 'id' | 'children'>,
@@ -51,6 +55,89 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
         }));
+    },
+
+    createNewThread: async (newMessage: MessagePost, parentMessageId: string) => {
+        const { inferenceOpts, setSelectedThread, addContentToMessage } = get();
+        const abortController = new AbortController();
+
+        set(
+            (state) => {
+                state.abortController = abortController;
+                state.postMessageInfo.loading = true;
+                state.postMessageInfo.error = false;
+            },
+            false,
+            'threadUpdate/startCreateNewThread'
+        );
+
+        try {
+            const messageChunks = postMessageGenerator(
+                newMessage,
+                inferenceOpts,
+                abortController,
+                parentMessageId
+            );
+
+            // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.
+            // See MDN for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+            for await (const message of messageChunks) {
+                if (isFirstMessage(message)) {
+                    const parsedMessage = parseMessage(message);
+                    setSelectedThread(parsedMessage);
+                }
+
+                if (isMessageChunk(message)) {
+                    addContentToMessage(message.message, message.content);
+                }
+
+                if (isFinalMessage(message)) {
+                    const parsedMessage = parseMessage(message);
+                    setSelectedThread(parsedMessage);
+
+                    set(
+                        (state) => {
+                            state.threads.unshift(parsedMessage);
+                            state.abortController = null;
+                            state.ongoingThreadId = null;
+                            state.postMessageInfo.loading = false;
+                            state.postMessageInfo.data = parsedMessage;
+                            state.postMessageInfo.error = false;
+                        },
+                        false,
+                        'threadUpdate/finishCreateNewThread'
+                    );
+                }
+            }
+        } catch (err) {
+            const addAlertMessage = get().addAlertMessage;
+
+            if (err instanceof Error && err.name === 'AbortError') {
+                addAlertMessage(ABORT_ERROR_MESSAGE);
+            } else {
+                console.error(err);
+                addAlertMessage(
+                    errorToAlert(
+                        `create-message-${new Date().getTime()}`.toLowerCase(),
+                        'Unable to Submit Message',
+                        err
+                    )
+                );
+            }
+
+            set(
+                (state) => {
+                    state.abortController = null;
+                    state.ongoingThreadId = null;
+                    state.postMessageInfo.loading = false;
+                    state.postMessageInfo.error = true;
+                },
+                false,
+                'threadUpdate/errorCreateNewThreadr'
+            );
+        }
+
+        return get().postMessageInfo;
     },
 
     postMessage: async (
