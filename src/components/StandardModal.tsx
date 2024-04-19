@@ -17,7 +17,9 @@ export const StandardModal = ({
     ...rest
 }: StandardModalProps) => {
     const [open, setOpen] = useState<boolean>(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <StyledModal
