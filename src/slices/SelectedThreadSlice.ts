@@ -59,13 +59,19 @@ export interface SelectedThreadSlice {
     postToExistingThread: (newMessage: MessagePost) => Promise<FetchInfo<Message>>;
     deleteSelectedThread: () => void;
     setSelectedThread: (rootMessage: Message) => void;
+    resetSelectedThreadState: () => void;
 }
-export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
+
+const initialState = {
     selectedThreadInfo: {},
     pathToLastMessageInThread: [],
     selectedThreadRootId: '',
     selectedThreadMessages: [],
     selectedThreadMessagesById: {},
+};
+
+export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
+    ...initialState,
     postToExistingThread: async (newMessage: MessagePost) => {
         const pathToLastMessageInThread = get().pathToLastMessageInThread;
         const parentMessageId = pathToLastMessageInThread[pathToLastMessageInThread.length - 1];
@@ -135,9 +141,11 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                 state.selectedThreadRootId = selectedThreadMessage.id;
                 state.selectedThreadMessages = mappedMessages.map((message) => message.id);
 
+                const newSelectedThreadsById: Record<string, SelectedThreadMessage> = {};
                 mappedMessages.forEach((message) => {
-                    state.selectedThreadMessagesById[message.id] = message;
+                    newSelectedThreadsById[message.id] = message;
                 });
+                state.selectedThreadMessagesById = newSelectedThreadsById;
             },
             false,
             'selectedThread/setSelectedThread'
@@ -231,5 +239,9 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         set((state) => {
             return { ...state, expandedThreadID: id };
         });
+    },
+
+    resetSelectedThreadState() {
+        set(initialState, false, 'selectedThread/resetSelectedThreadState');
     },
 });

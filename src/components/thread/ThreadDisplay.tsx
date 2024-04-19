@@ -39,6 +39,9 @@ const getMessageIdsToShow = (
     messageIdList: string[] = []
 ): string[] => {
     const message = messagesById[rootMessageId];
+    if (message == null || rootMessageId == null) {
+        return [];
+    }
 
     messageIdList.push(rootMessageId);
     if (message.selectedChildId != null) {
@@ -62,9 +65,11 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const getSelectedThread = appContext.getState().getSelectedThread;
-    // it's fairly safe to assume these are non-null, we'll want to fix the typings later
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    await getSelectedThread(params.id!, true);
+    const { getSelectedThread } = appContext.getState();
+
+    if (params.id != null) {
+        await getSelectedThread(params.id!, true);
+    }
+
     return null;
 };

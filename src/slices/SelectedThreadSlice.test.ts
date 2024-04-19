@@ -18,6 +18,8 @@ describe('SelectedThreadSlice', () => {
             selectedChildId: thread.children?.[0].id ?? '',
             content: thread.content,
             role: thread.role,
+            labels: [],
+            parent: undefined,
         };
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(
             expectedMessage
@@ -29,6 +31,8 @@ describe('SelectedThreadSlice', () => {
             id: 'msg_X2T9X3L5M0',
             role: Role.LLM,
             selectedChildId: undefined,
+            labels: [],
+            parent: 'msg_W1O3Y8E0J4',
         };
         expect(appContext.getState().selectedThreadMessagesById.msg_X2T9X3L5M0).toEqual(
             expectedLastChild

@@ -17,9 +17,8 @@ export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();
     const sendAMessageToTheLLM = useAppContext((state) => state.sendAMessageToTheLLM);
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
-
-    // if we're on the selected thread page, handle submission differently
-    const isNewThreadPage = useMatch(links.playground);
+    const resetSelectedThreadState = useAppContext((state) => state.resetSelectedThreadState);
+    const isRootPlaygroundPage = useMatch(links.playground);
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         sendAMessageToTheLLM(data);
@@ -30,6 +29,12 @@ export const UIRefreshThreadPage = () => {
             navigate(links.thread(selectedThreadId));
         }
     }, [selectedThreadId, navigate]);
+
+    useEffect(() => {
+        if (isRootPlaygroundPage) {
+            resetSelectedThreadState();
+        }
+    }, [isRootPlaygroundPage]);
 
     return (
         <Stack
