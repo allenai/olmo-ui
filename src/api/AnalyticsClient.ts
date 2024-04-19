@@ -11,16 +11,6 @@ export namespace event {
         FollowUpPrompt = 'prompt.followup',
     }
 
-    export interface Event {
-        type: Type;
-        occurred: Date;
-        details?:
-            | SearchQueryDetails
-            | SearchResultClickDetails
-            | DocumentEventDetails
-            | PromptMessageDetails;
-    }
-
     export interface SearchQueryDetails {
         request: search.Request;
         response: { meta: search.Meta };
@@ -42,6 +32,16 @@ export namespace event {
     export interface PromptMessageDetails {
         content: string;
         threadId?: string;
+    }
+
+    export interface Event {
+        type: Type;
+        occurred: Date;
+        details?:
+            | SearchQueryDetails
+            | SearchResultClickDetails
+            | DocumentEventDetails
+            | PromptMessageDetails;
     }
 }
 
