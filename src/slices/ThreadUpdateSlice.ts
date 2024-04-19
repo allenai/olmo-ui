@@ -213,10 +213,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             }
 
             set(
-                (state) => {
-                    state.abortController = null;
-                    state.ongoingThreadId = null;
-                    state.threadUpdateRemoteState = RemoteState.Error;
+                {
+                    abortController: null,
+                    ongoingThreadId: null,
+                    threadUpdateRemoteState: RemoteState.Error,
                 },
                 false,
                 'threadUpdate/errorPostMessage'

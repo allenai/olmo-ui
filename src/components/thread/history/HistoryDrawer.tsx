@@ -74,8 +74,7 @@ export const HistoryDrawer = (): JSX.Element => {
         loading: threadRemoteState === RemoteState.Loading,
         hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        disabled:
-            threadRemoteState === RemoteState.Error || threadRemoteState === RemoteState.Loading,
+        disabled: threadRemoteState === RemoteState.Error,
         delayInMs: 100,
     });
 

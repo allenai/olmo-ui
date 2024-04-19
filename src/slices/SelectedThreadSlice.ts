@@ -85,10 +85,10 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             }
 
             set(
-                (state) => {
-                    state.selectedThread = selectedThread;
-                    state.pathToLastMessageInThread = pathToLastMessageInThread;
-                    state.selectedThreadRemoteState = RemoteState.Loaded;
+                {
+                    selectedThread,
+                    pathToLastMessageInThread,
+                    selectedThreadRemoteState: RemoteState.Loaded,
                 },
                 false,
                 'selectedThread/setSelectedThread'
