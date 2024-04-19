@@ -1,4 +1,4 @@
-import { search } from './search';
+import { search } from './dolma/search';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace event {
@@ -7,6 +7,18 @@ export namespace event {
         SearchResultClick = 'search.result.click',
         DocumentView = 'document.view',
         DocumentShare = 'document.share',
+        NewPrompt = 'prompt.new',
+        FollowUpPrompt = 'prompt.followup',
+    }
+
+    export interface Event {
+        type: Type;
+        occurred: Date;
+        details?:
+            | SearchQueryDetails
+            | SearchResultClickDetails
+            | DocumentEventDetails
+            | PromptMessageDetails;
     }
 
     export interface SearchQueryDetails {
@@ -27,10 +39,9 @@ export namespace event {
         query?: string;
     }
 
-    export interface Event {
-        type: Type;
-        occurred: Date;
-        details?: SearchQueryDetails | SearchResultClickDetails | DocumentEventDetails;
+    export interface PromptMessageDetails {
+        content: string;
+        threadId?: string;
     }
 }
 
@@ -61,4 +72,14 @@ export class AnalyticsClient {
     trackDocumentShare(details: event.DocumentEventDetails): boolean {
         return this.track({ type: event.Type.DocumentShare, occurred: new Date(), details });
     }
+
+    trackNewPrompt(details: event.PromptMessageDetails): boolean {
+        return this.track({ type: event.Type.NewPrompt, occurred: new Date(), details });
+    }
+
+    trackFollowUpPrompt(details: event.PromptMessageDetails): boolean {
+        return this.track({ type: event.Type.FollowUpPrompt, occurred: new Date(), details });
+    }
 }
+
+export const analyticsClient = new AnalyticsClient();

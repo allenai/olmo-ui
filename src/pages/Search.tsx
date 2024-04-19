@@ -7,7 +7,7 @@ import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';
-import { AnalyticsClient } from '../api/dolma/AnalyticsClient';
+import { analyticsClient } from '@/api/AnalyticsClient';
 import { useAppContext } from '../AppContext';
 
 export const Search = () => {
@@ -22,8 +22,7 @@ export const Search = () => {
 
     useEffect(() => {
         doSearch(request).then((r) => {
-            const analytics = new AnalyticsClient();
-            analytics.trackSearchQuery({ request, response: { meta: r.meta } });
+            analyticsClient.trackSearchQuery({ request, response: { meta: r.meta } });
         });
     }, [doSearch, request]);
 

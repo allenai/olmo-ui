@@ -6,6 +6,10 @@ vi.stubEnv('LLMX_API_URL', 'http://localhost:8080');
 
 beforeAll(() => {
     server.listen();
+    // need to mock sendBeacon, which is a part of our analytics tracking
+    Object.assign(navigator, {
+        sendBeacon: async () => {},
+    });
 });
 
 afterEach(() => {

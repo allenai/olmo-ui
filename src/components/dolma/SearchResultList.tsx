@@ -6,7 +6,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { search } from '../../api/dolma/search';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
-import { AnalyticsClient } from '../../api/dolma/AnalyticsClient';
+import { analyticsClient } from '@/api/AnalyticsClient';
 import { MetaTags } from './MetaTags';
 
 import { links } from '../../Links';
@@ -31,8 +31,7 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                             <Link
                                 to={documentURL(result.id, response.request.query)}
                                 onClick={() => {
-                                    const analytics = new AnalyticsClient();
-                                    analytics.trackSearchResultClick({
+                                    analyticsClient.trackSearchResultClick({
                                         request: response.request,
                                         id: result.id,
                                         source: result.source,

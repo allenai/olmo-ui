@@ -8,6 +8,7 @@ import React from 'react';
 import { Message, MessagePost } from '../../api/Message';
 
 import { useAppContext } from '../../AppContext';
+import { analyticsClient } from '@/api/AnalyticsClient';
 
 interface ThreadFollowUpFormProps {
     curMessage: Message;
@@ -36,6 +37,10 @@ export const ThreadFollowUpForm = ({
         };
         const postMessageInfo = await postMessage(payload, parent, false, messagePath);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
+            analyticsClient.trackFollowUpPrompt({
+                content: postMessageInfo.data.content,
+                threadId: postMessageInfo.data.root,
+            });
             formContext.setValue('followUpMessage', '');
         }
     };
