@@ -50,8 +50,9 @@ export class AnalyticsClient {
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
     private track(e: AnalyticsEvent): boolean {
-        const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
         plausibleTrackEvent(e);
+
+        const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
         return navigator.sendBeacon('/api/v1/event', data);
     }
 
@@ -79,7 +80,7 @@ export class AnalyticsClient {
         return this.track({ type: EventType.FollowUpPrompt, occurred: new Date(), details });
     }
 
-    trackPageView(url?: string): void {
+    trackPageView(url: string): void {
         plausibleTrackPageview({ url });
     }
 }
