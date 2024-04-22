@@ -165,7 +165,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             <Autocomplete
                                 multiple
                                 options={inferenceOpts.stop ?? []}
-                                value={inferenceOpts.stop}
+                                value={inferenceOpts.stop ?? []}
                                 freeSolo
                                 onChange={(event, value, reason) => {
                                     handleOnChange(event, value, reason);
