@@ -18,4 +18,3 @@ coverage/
 .venv
 api/config*.json
 api/service_account.json
-pipeline/config*.json
