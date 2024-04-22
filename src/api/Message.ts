@@ -5,6 +5,21 @@ import { PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
+
+export interface InferenceOpts {
+    max_tokens?: number | null;
+    temperature?: number | null;
+    n?: number | null;
+    top_p?: number | null;
+    logprobs?: number | null;
+    stop?: string[] | null;
+}
+export interface Logprob {
+    token: string;
+    offset: number;
+    prob: number;
+}
+
 export interface MessagePost {
     content: string;
     role?: string; // in the case of edited messages
@@ -64,28 +79,6 @@ export interface MessageChunk {
 export interface MessageStreamError {
     message: string;
     error: string;
-}
-
-export interface InferenceOpts {
-    max_tokens?: number | null;
-    temperature?: number | null;
-    n?: number | null;
-    top_p?: number | null;
-    logprobs?: number | null;
-    stop?: string[] | null;
-}
-
-export interface Logprob {
-    token: string;
-    offset: number;
-    prob: number;
-}
-
-// The serialized representation, where certain fields (dates) are encoded as strings.
-export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
-    created: string;
-    deleted?: string;
-    children?: JSONMessage[];
 }
 
 export interface FirstMessage extends JSONMessage {
