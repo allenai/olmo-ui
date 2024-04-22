@@ -110,7 +110,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     set(
                         (state) => {
-                            state.threads.unshift(parsedMessage);
+                            if (isCreatingNewThread) {
+                                state.threads.unshift(parsedMessage);
+                            }
                             state.abortController = null;
                             state.ongoingThreadId = null;
                             state.postMessageInfo.loading = false;
