@@ -9,10 +9,9 @@ import { useEffect } from 'react';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { QueryForm } from '@/components/thread/QueryForm';
+import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
 import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
-import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 export const UIRefreshThreadPage = () => {
     const navigate = useNavigate();

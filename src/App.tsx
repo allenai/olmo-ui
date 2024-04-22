@@ -1,15 +1,14 @@
-import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { Button, CircularProgress, Grid, Typography, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link, LinkProps, Outlet } from 'react-router-dom';
+import { styled, Button, Grid, CircularProgress, Typography } from '@mui/material';
+import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
+import { LinkProps, Link, Outlet } from 'react-router-dom';
 
 import { useAppContext } from './AppContext';
-import { links } from './Links';
-import { GlobalAlertList } from './components/GlobalAlertList';
 import { OlmoBanner } from './components/OlmoBanner';
+import { GlobalAlertList } from './components/GlobalAlertList';
 import { WallpaperCircle } from './components/WallpaperCircle';
-import { OlmoLogo } from './components/logos/OlmoLogo';
 import { olmoTheme } from './olmoTheme';
+import { OlmoLogo } from './components/logos/OlmoLogo';
 
 export interface AppRoute {
     path: string;
@@ -40,6 +39,9 @@ const HeaderButton = ({ url, label }: HeaderButtonProps) => {
     );
 };
 
+const feedbackFormUrl =
+    'https://docs.google.com/forms/d/e/1FAIpQLSfmPUnxBss08X8aq7Aiy17YSPhH-OqHzHMIzXg4zsIhAbvqxg/viewform?usp=sf_link';
+
 const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
     return (
         <>
@@ -55,7 +57,7 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                     <HeaderButton url="https://dolma.allen.ai" label="Explore Dataset" />
                 </Grid>
                 <Grid item>
-                    <HeaderButton openOnNewPage={true} url={links.feedbackForm} label="Feedback" />
+                    <HeaderButton openOnNewPage={true} url={feedbackFormUrl} label="Feedback" />
                 </Grid>
             </Grid>
         </>
@@ -115,7 +117,7 @@ export const App = () => {
                                 </BannerLink>
                             }
                             transparentBackground={false}
-                            endSlot={<HeaderButton url={links.feedbackForm} label="Feedback" />}
+                            endSlot={<HeaderButton url={feedbackFormUrl} label="Feedback" />}
                         />
                     </BottomBanner>
                     <OlmoFooter />
