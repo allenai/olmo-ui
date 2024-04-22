@@ -12,9 +12,7 @@ describe('SelectedThreadSlice', () => {
 
         const expectedMessage = {
             id: thread.id,
-            children: thread.children
-                ? thread.children?.map((childMessage) => childMessage.id)
-                : [],
+            children: thread.children ? thread.children.map((childMessage) => childMessage.id) : [],
             selectedChildId: thread.children?.[0].id ?? '',
             content: thread.content,
             role: thread.role,

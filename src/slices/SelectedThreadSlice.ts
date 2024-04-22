@@ -6,6 +6,16 @@ import { messageClient } from './ThreadSlice';
 import { Role } from '@/api/Role';
 import { Label } from '@/api/Label';
 
+export interface SelectedThreadMessage {
+    id: string;
+    children: string[]; // array of children ids
+    selectedChildId?: string;
+    content: string;
+    role: Role;
+    labels: Label[];
+    parent?: string;
+}
+
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
     const mappedChildren = message.children?.map((child) => child.id) ?? [];
     return {
@@ -32,17 +42,6 @@ const mapMessages = (
 
     return messageList;
 };
-
-export interface SelectedThreadMessage {
-    id: string;
-    children: string[]; // array of children ids
-    selectedChildId?: string;
-    content: string;
-    role: Role;
-    labels: Label[];
-    parent?: string;
-}
-
 export interface SelectedThreadSlice {
     selectedThreadInfo: FetchInfo<Message>;
     selectedThreadRootId: string;
@@ -126,7 +125,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         const selectedThreadMessage: SelectedThreadMessage = {
             id: rootMessage.id,
             children: rootMessage.children
-                ? rootMessage.children?.map((childMessage) => childMessage.id)
+                ? rootMessage.children.map((childMessage) => childMessage.id)
                 : [],
             selectedChildId: rootMessage.children?.[0].id ?? '',
             content: rootMessage.content,

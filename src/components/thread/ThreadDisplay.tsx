@@ -69,7 +69,7 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
 
     // if selectedThreadRootId is set we've already loaded this in so we don't need to load it again
     if (params.id != null && params.id !== selectedThreadRootId) {
-        await getSelectedThread(params.id!, true);
+        await getSelectedThread(params.id, true);
     }
 
     return null;

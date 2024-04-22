@@ -5,22 +5,6 @@ import { PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
-
-export interface InferenceOpts {
-    max_tokens?: number;
-    temperature?: number;
-    n?: number;
-    top_p?: number;
-    logprobs?: number;
-    stop?: string[];
-}
-
-export interface Logprob {
-    token: string;
-    offset: number;
-    prob: number;
-}
-
 export interface MessagePost {
     content: string;
     role?: string; // in the case of edited messages
@@ -82,8 +66,6 @@ export interface MessageStreamError {
     error: string;
 }
 
-<<<<<<< HEAD
-=======
 export interface InferenceOpts {
     max_tokens?: number | null;
     temperature?: number | null;
@@ -102,11 +84,10 @@ export interface Logprob {
 // The serialized representation, where certain fields (dates) are encoded as strings.
 export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
     created: string;
-    deleted?: string | null;
-    children?: JSONMessage[] | null;
+    deleted?: string;
+    children?: JSONMessage[];
 }
 
->>>>>>> Fix issue on how to render DeleteButton & how we fetch data using offset
 export interface FirstMessage extends JSONMessage {
     final: false;
 }

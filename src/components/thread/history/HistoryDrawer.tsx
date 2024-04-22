@@ -21,8 +21,8 @@ import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 
-const LIMIT = 10 as const;
-const PAGE_SIZE = 10 as const;
+const LIMIT = 10;
+const PAGE_SIZE = 10;
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
