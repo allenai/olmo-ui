@@ -114,7 +114,7 @@ export const NewInputSlider = ({
             }>
             <Box sx={{ width: '100%' }}>
                 <Stack direction="row" alignItems="center" gap={1}></Stack>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={3} alignItems="center">
                     <Grid item>
                         <Typography id="input-slider" gutterBottom>
                             {label}
