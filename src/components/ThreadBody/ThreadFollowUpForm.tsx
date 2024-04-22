@@ -8,7 +8,7 @@ import React from 'react';
 import { Message, MessagePost } from '../../api/Message';
 
 import { useAppContext } from '../../AppContext';
-import { analyticsClient } from '@/api/AnalyticsClient';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 interface ThreadFollowUpFormProps {
     curMessage: Message;

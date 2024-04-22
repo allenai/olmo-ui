@@ -10,8 +10,11 @@ import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
+import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 export const NewApp = () => {
+    useTrackPageView();
+
     const userInfo = useAppContext((state) => state.userInfo);
     const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);

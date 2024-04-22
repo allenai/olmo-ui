@@ -1,5 +1,5 @@
 import { search } from '../api/dolma/search';
-import { plausibleTrackPageview } from './plausible';
+import { plausibleTrackEvent, plausibleTrackPageview } from './plausible';
 
 export enum EventType {
     SearchQuery = 'search.query',
@@ -51,6 +51,7 @@ export class AnalyticsClient {
      */
     private track(e: AnalyticsEvent): boolean {
         const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
+        plausibleTrackEvent(e);
         return navigator.sendBeacon('/api/v1/event', data);
     }
 

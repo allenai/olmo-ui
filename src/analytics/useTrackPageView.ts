@@ -7,6 +7,6 @@ export const useTrackPageView = () => {
     const location = useLocation();
 
     useEffect(() => {
-        analyticsClient.trackPageView();
+        analyticsClient.trackPageView(location.pathname);
     }, [location]);
 };

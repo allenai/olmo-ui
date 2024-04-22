@@ -6,7 +6,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { search } from '../../api/dolma/search';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
-import { analyticsClient } from '@/api/AnalyticsClient';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { MetaTags } from './MetaTags';
 
 import { links } from '../../Links';

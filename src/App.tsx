@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react';
-import { styled, Button, Grid, CircularProgress, Typography } from '@mui/material';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { LinkProps, Link, Outlet } from 'react-router-dom';
+import { Button, CircularProgress, Grid, Typography, styled } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link, LinkProps, Outlet } from 'react-router-dom';
 
 import { useAppContext } from './AppContext';
-import { OlmoBanner } from './components/OlmoBanner';
-import { GlobalAlertList } from './components/GlobalAlertList';
-import { WallpaperCircle } from './components/WallpaperCircle';
-import { olmoTheme } from './olmoTheme';
-import { OlmoLogo } from './components/logos/OlmoLogo';
-import { useTrackPageView } from './analytics/useTrackPageView';
 import { links } from './Links';
+import { GlobalAlertList } from './components/GlobalAlertList';
+import { OlmoBanner } from './components/OlmoBanner';
+import { WallpaperCircle } from './components/WallpaperCircle';
+import { OlmoLogo } from './components/logos/OlmoLogo';
+import { olmoTheme } from './olmoTheme';
 
 export interface AppRoute {
     path: string;
@@ -64,7 +63,6 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
 };
 
 export const App = () => {
-    useTrackPageView();
     const userInfo = useAppContext((state) => state.userInfo);
     const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);
