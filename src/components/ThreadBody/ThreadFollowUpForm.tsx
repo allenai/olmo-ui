@@ -38,7 +38,6 @@ export const ThreadFollowUpForm = ({
         const postMessageInfo = await postMessage(payload, parent, false, messagePath);
         if (!postMessageInfo.loading && postMessageInfo.data && !postMessageInfo.error) {
             analyticsClient.trackFollowUpPrompt({
-                content: postMessageInfo.data.content,
                 threadId: postMessageInfo.data.root,
             });
             formContext.setValue('followUpMessage', '');
