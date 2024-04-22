@@ -9,6 +9,8 @@ import { GlobalAlertList } from './components/GlobalAlertList';
 import { WallpaperCircle } from './components/WallpaperCircle';
 import { olmoTheme } from './olmoTheme';
 import { OlmoLogo } from './components/logos/OlmoLogo';
+import { useTrackPageView } from './analytics/useTrackPageView';
+import { links } from './Links';
 
 export interface AppRoute {
     path: string;
@@ -39,9 +41,6 @@ const HeaderButton = ({ url, label }: HeaderButtonProps) => {
     );
 };
 
-const feedbackFormUrl =
-    'https://docs.google.com/forms/d/e/1FAIpQLSfmPUnxBss08X8aq7Aiy17YSPhH-OqHzHMIzXg4zsIhAbvqxg/viewform?usp=sf_link';
-
 const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
     return (
         <>
@@ -57,7 +56,7 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
                     <HeaderButton url="https://dolma.allen.ai" label="Explore Dataset" />
                 </Grid>
                 <Grid item>
-                    <HeaderButton openOnNewPage={true} url={feedbackFormUrl} label="Feedback" />
+                    <HeaderButton openOnNewPage={true} url={links.feedbackForm} label="Feedback" />
                 </Grid>
             </Grid>
         </>
@@ -65,6 +64,7 @@ const HeaderEndSlot = ({ client }: HeaderEndSlotProps) => {
 };
 
 export const App = () => {
+    useTrackPageView();
     const userInfo = useAppContext((state) => state.userInfo);
     const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);
@@ -117,7 +117,7 @@ export const App = () => {
                                 </BannerLink>
                             }
                             transparentBackground={false}
-                            endSlot={<HeaderButton url={feedbackFormUrl} label="Feedback" />}
+                            endSlot={<HeaderButton url={links.feedbackForm} label="Feedback" />}
                         />
                     </BottomBanner>
                     <OlmoFooter />

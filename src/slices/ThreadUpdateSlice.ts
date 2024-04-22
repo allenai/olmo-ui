@@ -11,6 +11,7 @@ import {
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
 import { errorToAlert } from './AlertMessageSlice';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 const ABORT_ERROR_MESSAGE: AlertMessage = {
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
@@ -60,6 +61,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     ) => {
         const state = get();
         const abortController = new AbortController();
+        if (parentMsg == null) {
+            analyticsClient.trackNewPrompt();
+        } else {
+            analyticsClient.trackFollowUpPrompt({ threadId: messagePath[0] });
+        }
 
         set(
             (state) => {
