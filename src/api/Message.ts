@@ -7,13 +7,14 @@ export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
 export interface InferenceOpts {
-    max_tokens?: number | null;
-    temperature?: number | null;
-    n?: number | null;
-    top_p?: number | null;
-    logprobs?: number | null;
-    stop?: string[] | null;
+    max_tokens?: number;
+    temperature?: number;
+    n?: number;
+    top_p?: number;
+    logprobs?: number;
+    stop?: string[];
 }
+
 export interface Logprob {
     token: string;
     offset: number;
@@ -32,24 +33,24 @@ export interface MessagePost {
 }
 
 export interface Message {
-    children?: Message[] | null;
+    children?: Message[];
     content: string;
     snippet: string;
     created: Date;
     creator: string;
-    deleted?: Date | null;
+    deleted?: Date;
     id: string;
     labels: Label[];
-    completion?: string | null;
-    logprobs?: Logprob[] | null;
-    model_type?: string | null;
+    completion?: string;
+    logprobs?: Logprob[];
+    model_type?: string;
     opts: InferenceOpts;
     original?: string | null;
-    parent?: string | null;
-    private?: boolean | null;
+    parent?: string;
+    private?: boolean;
     role: Role;
     root: string;
-    template?: string | null;
+    template?: string;
     final: boolean;
     model?: string;
 }
