@@ -17,7 +17,7 @@ const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const isPastThirtyDays = useAppContext((state) =>
         isAfterThirtyDays(state.selectedThreadInfo.data?.created)
     );

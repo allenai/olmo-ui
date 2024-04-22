@@ -82,6 +82,31 @@ export interface MessageStreamError {
     error: string;
 }
 
+<<<<<<< HEAD
+=======
+export interface InferenceOpts {
+    max_tokens?: number | null;
+    temperature?: number | null;
+    n?: number | null;
+    top_p?: number | null;
+    logprobs?: number | null;
+    stop?: string[] | null;
+}
+
+export interface Logprob {
+    token: string;
+    offset: number;
+    prob: number;
+}
+
+// The serialized representation, where certain fields (dates) are encoded as strings.
+export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
+    created: string;
+    deleted?: string | null;
+    children?: JSONMessage[] | null;
+}
+
+>>>>>>> Fix issue on how to render DeleteButton & how we fetch data using offset
 export interface FirstMessage extends JSONMessage {
     final: false;
 }
