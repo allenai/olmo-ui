@@ -81,7 +81,7 @@ export const TermsAndServiceModal = () => {
                     </Typography>
                     <Typography variant="body1">{section.contents}</Typography>
                 </DialogContent>
-                <DialogActions sx={{ p: 0 }}>
+                <DialogActions sx={{ p: 0, justifyContent: 'flex-start' }}>
                     <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                         <FormControlLabel
                             sx={{ alignItems: 'flex-start', gap: 2 }}
