@@ -57,8 +57,8 @@ export const TermsAndServiceModal = () => {
                 sx={(theme) => ({
                     gap: 2,
                     [theme.breakpoints.up('md')]: {
-                        width: '555px',
-                        height: '488px',
+                        width: '35rem',
+                        height: '30rem',
                     },
                 })}>
                 <Typography variant="h1" m={0}>
