@@ -13,3 +13,8 @@ coverage/
 **/__pycache__/
 # Vitest Preview
 .vitest-preview
+
+**/*.pyc
+.venv
+api/config*.json
+api/service_account.json

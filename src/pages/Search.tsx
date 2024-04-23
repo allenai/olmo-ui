@@ -7,7 +7,7 @@ import { search } from '../api/dolma/search';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';
-import { analyticsClient } from '@/api/AnalyticsClient';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '../AppContext';
 
 export const Search = () => {

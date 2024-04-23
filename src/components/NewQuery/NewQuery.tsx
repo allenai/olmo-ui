@@ -9,7 +9,7 @@ import { RemoteState } from '../../contexts/util';
 import { StandardContainer } from '../StandardContainer';
 import { Parameters } from '../configuration/Parameters';
 import { NewQueryForm } from './NewQueryForm';
-import { analyticsClient } from '@/api/AnalyticsClient';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 export const NewQuery = () => {
     const modelRemoteState = useAppContext((state) => state.modelRemoteState);
@@ -36,7 +36,7 @@ export const NewQuery = () => {
     }, []);
 
     const postNewMessage = async function (data: MessagePost) {
-        analyticsClient.trackNewPrompt({ content: data.content });
+        analyticsClient.trackNewPrompt();
         await postMessage(data);
     };
 
