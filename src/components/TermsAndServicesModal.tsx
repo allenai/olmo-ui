@@ -7,7 +7,7 @@ import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
 import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
 
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
-import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
+import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
 import { Link } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ export const TermsAndServiceModal = () => {
             checked: false,
         },
     });
-    const checked = formContext.watch('checked');
+    const { isValid } = useFormState({ control: formContext.control });
 
     const handleSubmit = useCallback(() => {
         if (activeStep + 1 === sections.length) {
@@ -80,6 +80,7 @@ export const TermsAndServiceModal = () => {
                         sx={{ alignItems: 'flex-start', gap: 2 }}
                         control={
                             <Controller
+                                rules={{ required: true }}
                                 control={formContext.control}
                                 render={({ field: { onChange, value } }) => (
                                     <Checkbox checked={value} onChange={onChange} />
@@ -107,7 +108,7 @@ export const TermsAndServiceModal = () => {
                         )}
                         <Button
                             variant="contained"
-                            disabled={!checked}
+                            disabled={!isValid}
                             type="submit"
                             fullWidth
                             sx={{
