@@ -48,23 +48,16 @@ export const TermsAndServiceModal = () => {
 
     const section = sections[activeStep];
     return (
-        <StandardModal
-            disableOutsideClick
-            isOpen={open}
-            ariaTitle="Terms and Services"
-            ariaDescription="Please read and confirm to our terms and services">
-            <Stack
-                sx={(theme) => ({
-                    gap: 2,
-                    [theme.breakpoints.up('md')]: {
-                        width: '35rem',
-                        height: '30rem',
-                    },
-                })}>
-                <Typography variant="h1" m={0}>
+        <StandardModal isOpen={open}>
+            <Stack gap={2}>
+                <Typography id="modal-title" variant="h1" m={0}>
                     Getting Started
                 </Typography>
-                <Typography variant="h4" color={(theme) => theme.palette.primary.main} m={0}>
+                <Typography
+                    id="modal-description"
+                    variant="h4"
+                    color={(theme) => theme.palette.primary.main}
+                    m={0}>
                     Please read carefully.
                 </Typography>
                 <Typography
