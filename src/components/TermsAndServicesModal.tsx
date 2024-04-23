@@ -1,5 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { Button, Checkbox, Typography, FormControlLabel, Stack, styled } from '@mui/material';
+import {
+    Button,
+    Checkbox,
+    DialogTitle,
+    Typography,
+    FormControlLabel,
+    Stack,
+    styled,
+    DialogContent,
+    DialogActions,
+} from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
 
@@ -50,45 +60,64 @@ export const TermsAndServiceModal = () => {
     return (
         <StandardModal open={open}>
             <Stack gap={2}>
-                <Typography id="modal-title" variant="h1" m={0}>
+                <DialogTitle id="modal-title" variant="h1" sx={{ p: 0, m: 0 }}>
                     Getting Started
-                </Typography>
-                <Typography
-                    id="modal-description"
-                    variant="h4"
-                    color={(theme) => theme.palette.primary.main}
-                    m={0}>
-                    Please read carefully.
-                </Typography>
-                <Typography
-                    variant="h3"
-                    color={(theme) => theme.color.N9.hex}
-                    sx={{ m: 0, alignItems: 'center', display: 'inline-flex' }}>
-                    {section.icon}
-                    {section.title}
-                </Typography>
-                <Typography variant="body1">{section.contents}</Typography>
-                <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                    <FormControlLabel
-                        sx={{ alignItems: 'flex-start', gap: 2 }}
-                        control={
-                            <Controller
-                                rules={{ required: true }}
-                                control={formContext.control}
-                                render={({ field: { onChange, value } }) => (
-                                    <Checkbox checked={value} onChange={onChange} />
-                                )}
-                                name="checked"
-                            />
-                        }
-                        label={section.acknowledgement}
-                    />
-                    <Stack gap={2} direction="row" mt={2}>
-                        {activeStep > 0 && (
+                </DialogTitle>
+                <DialogContent
+                    sx={{ p: 0, m: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Typography
+                        id="modal-description"
+                        variant="h4"
+                        color={(theme) => theme.palette.primary.main}
+                        m={0}>
+                        Please read carefully.
+                    </Typography>
+                    <Typography
+                        variant="h3"
+                        color={(theme) => theme.color.N9.hex}
+                        sx={{ m: 0, alignItems: 'center', display: 'inline-flex' }}>
+                        {section.icon}
+                        {section.title}
+                    </Typography>
+                    <Typography variant="body1">{section.contents}</Typography>
+                </DialogContent>
+                <DialogActions sx={{ p: 0 }}>
+                    <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+                        <FormControlLabel
+                            sx={{ alignItems: 'flex-start', gap: 2 }}
+                            control={
+                                <Controller
+                                    rules={{ required: true }}
+                                    control={formContext.control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <Checkbox checked={value} onChange={onChange} />
+                                    )}
+                                    name="checked"
+                                />
+                            }
+                            label={section.acknowledgement}
+                        />
+                        <Stack gap={2} direction="row" mt={2}>
+                            {activeStep > 0 && (
+                                <Button
+                                    variant="outlined"
+                                    fullWidth
+                                    onClick={handlePrevious}
+                                    sx={{
+                                        height: 'fit-content',
+                                        width: 'fit-content',
+                                        paddingX: 3,
+                                        paddingY: 1,
+                                        whiteSpace: 'nowrap',
+                                    }}>
+                                    Previous
+                                </Button>
+                            )}
                             <Button
-                                variant="outlined"
+                                variant="contained"
+                                disabled={!isValid}
+                                type="submit"
                                 fullWidth
-                                onClick={handlePrevious}
                                 sx={{
                                     height: 'fit-content',
                                     width: 'fit-content',
@@ -96,25 +125,11 @@ export const TermsAndServiceModal = () => {
                                     paddingY: 1,
                                     whiteSpace: 'nowrap',
                                 }}>
-                                Previous
+                                {section.submitButtonText}
                             </Button>
-                        )}
-                        <Button
-                            variant="contained"
-                            disabled={!isValid}
-                            type="submit"
-                            fullWidth
-                            sx={{
-                                height: 'fit-content',
-                                width: 'fit-content',
-                                paddingX: 3,
-                                paddingY: 1,
-                                whiteSpace: 'nowrap',
-                            }}>
-                            {section.submitButtonText}
-                        </Button>
-                    </Stack>
-                </FormContainer>
+                        </Stack>
+                    </FormContainer>
+                </DialogActions>
                 <ProgressIndicator steps={sections.length} activeStep={activeStep} />
             </Stack>
         </StandardModal>
