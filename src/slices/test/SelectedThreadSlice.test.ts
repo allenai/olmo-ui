@@ -113,10 +113,10 @@ const thread: Message = parseMessage({
                             id: 'msg_Y7H3X7B0E0',
                             labels: [
                                 {
-                                    comment: null,
+                                    comment: undefined,
                                     created: new Date('2024-04-09T19:41:30.175762+00:00'),
                                     creator: 'murphy@allenai.org',
-                                    deleted: null,
+                                    deleted: undefined,
                                     id: 'lbl_S2Q0K3L3I2',
                                     message: 'msg_Y7H3X7B0E0',
                                     rating: 1,
@@ -178,10 +178,10 @@ const thread: Message = parseMessage({
             id: 'msg_H4I0H5F0G5',
             labels: [
                 {
-                    comment: null,
+                    comment: undefined,
                     created: new Date('2024-04-09T19:41:39.107441+00:00'),
                     creator: 'murphy@allenai.org',
-                    deleted: null,
+                    deleted: undefined,
                     id: 'lbl_S5D2O1Z7I5',
                     message: 'msg_H4I0H5F0G5',
                     rating: 1,
