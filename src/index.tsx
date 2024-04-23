@@ -17,7 +17,7 @@ import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
-import { Search } from './pages/Search';
+import { Search, searchPageLoader } from './pages/Search';
 import { Thread } from './pages/Thread';
 import { Document } from './pages/Document';
 import { NewApp } from './components/NewApp';
@@ -94,6 +94,7 @@ const routes = [
                 path: '/search',
                 element: <Search />,
                 errorElement: <ErrorPage />,
+                loader: searchPageLoader,
             },
             {
                 path: '/thread/:id',
@@ -176,6 +177,7 @@ const uiRefreshRoutes: RouteObject[] = [
                 handle: {
                     title: 'Dataset Explorer',
                 },
+                loader: searchPageLoader,
             },
             {
                 path: links.promptTemplates,

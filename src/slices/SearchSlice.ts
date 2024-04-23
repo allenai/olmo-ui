@@ -2,6 +2,7 @@ import { OlmoStateCreator } from '@/AppContext';
 import { search } from '../api/dolma/search';
 import { SearchClient } from '../api/dolma/SearchClient';
 import { RemoteState } from '../contexts/util';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 enum ActionType {
     NewSearch,
@@ -11,7 +12,7 @@ enum ActionType {
 
 export interface SearchSlice {
     searchState: RemoteState;
-    doSearch(request: search.Request): Promise<search.Response>;
+    doSearch: (request: search.Request) => Promise<search.Response>;
     type?: ActionType;
     searchRequest?: search.Request;
     searchError?: Error;
@@ -30,6 +31,11 @@ export const createSearchSlice: OlmoStateCreator<SearchSlice> = (set) => ({
                 type: ActionType.SearchResponse,
                 searchRequest,
                 searchResponse,
+            });
+
+            analyticsClient.trackSearchQuery({
+                request: searchRequest,
+                response: { meta: searchResponse.meta },
             });
             return searchResponse;
         } catch (e) {
