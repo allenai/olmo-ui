@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Checkbox, Typography, FormControlLabel, Stack, styled } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
@@ -7,7 +7,7 @@ import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
 import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
 
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
-import { FormContainer, useForm } from 'react-hook-form-mui';
+import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
 
 import { Link } from 'react-router-dom';
 
@@ -79,15 +79,12 @@ export const TermsAndServiceModal = () => {
                     <FormControlLabel
                         sx={{ alignItems: 'flex-start', gap: 2 }}
                         control={
-                            <Checkbox
+                            <Controller
+                                control={formContext.control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Checkbox checked={value} onChange={onChange} />
+                                )}
                                 name="checked"
-                                checked={checked}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                    // manually set formContext
-                                    // the alternative is to use CheckboxElement from 'react-hook-form-mui'
-                                    // but that component has limited styling and bad space formatting
-                                    formContext.setValue('checked', e.target.checked);
-                                }}
                             />
                         }
                         label={section.acknowledgement}
