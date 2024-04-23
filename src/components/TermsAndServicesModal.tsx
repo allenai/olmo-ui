@@ -48,7 +48,7 @@ export const TermsAndServiceModal = () => {
 
     const section = sections[activeStep];
     return (
-        <StandardModal isOpen={open}>
+        <StandardModal open={open}>
             <Stack gap={2}>
                 <Typography id="modal-title" variant="h1" m={0}>
                     Getting Started
