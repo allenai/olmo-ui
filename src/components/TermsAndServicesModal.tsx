@@ -152,7 +152,7 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
 };
 
 const GrayLink = styled(Link)`
-    color: ${({ theme }) => theme.color.N9.hex};
+    color: inherit;
     text-decoration: underline;
 `;
 
