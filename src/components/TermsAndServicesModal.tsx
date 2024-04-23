@@ -38,12 +38,12 @@ export const TermsAndServiceModal = () => {
             return;
         }
         setActiveStep(activeStep + 1);
-        formContext.setValue('checked', false);
+        formContext.reset();
     }, [activeStep]);
 
     const handlePrevious = useCallback(() => {
         setActiveStep(Math.max(activeStep - 1, 0));
-        formContext.setValue('checked', false);
+        formContext.reset();
     }, [activeStep]);
 
     const section = sections[activeStep];
