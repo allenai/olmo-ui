@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Paper, Modal, ModalProps, styled } from '@mui/material';
+import { Paper, Modal, ModalProps } from '@mui/material';
 
 export interface StandardModalProps extends Omit<ModalProps, 'open'> {
     isOpen?: boolean;
@@ -22,7 +22,7 @@ export const StandardModal = ({
     };
 
     return (
-        <StyledModal
+        <Modal
             onClose={disableOutsideClick ? () => {} : handleClose}
             aria-labelledby={ariaTitle || 'modal-title'}
             aria-describedby={ariaDescription || 'modal-description'}
@@ -44,10 +44,6 @@ export const StandardModal = ({
                 })}>
                 {children}
             </Paper>
-        </StyledModal>
+        </Modal>
     );
 };
-
-const StyledModal = styled(Modal)`
-    background: 'red';
-`;
