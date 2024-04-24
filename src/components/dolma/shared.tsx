@@ -142,7 +142,7 @@ export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
     return (
         <>
             <Wrapper>{children}</Wrapper>
-            {isLoading && <LinearProgress sx={{ mt: 3 }} />}
+            {isLoading && <LinearProgress sx={{ mt: 3 }} data-testid="search-progress-bar" />}
         </>
     );
 };
