@@ -59,7 +59,8 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                     <NavigationLink
                         href={links.ourModels}
                         icon={<ModelTrainingIcon />}
-                        selected={curriedDoesMatchPath(links.ourModels)}>
+                        selected={curriedDoesMatchPath(links.ourModels)}
+                        isExternalLink={true}>
                         Our Models
                     </NavigationLink>
                     <Divider />
@@ -73,7 +74,8 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                     <NavigationLink
                         href={links.ourDatasets}
                         icon={<DatasetIcon />}
-                        selected={curriedDoesMatchPath(links.ourDatasets)}>
+                        selected={curriedDoesMatchPath(links.ourDatasets)}
+                        isExternalLink={true}>
                         Our Datasets
                     </NavigationLink>
                 </List>
