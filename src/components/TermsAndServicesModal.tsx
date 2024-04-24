@@ -45,6 +45,7 @@ export const TermsAndServiceModal = () => {
         if (activeStep + 1 === sections.length) {
             setOpen(false); // close modal
             /// TODO: Add POST request here
+            // https://github.com/allenai/olmo-ui/issues/327
             return;
         }
         setActiveStep(activeStep + 1);
