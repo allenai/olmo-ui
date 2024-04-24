@@ -10,9 +10,9 @@ import { RemoteState } from '../contexts/util';
 
 export const searchPageLoader: LoaderFunction = ({ request }) => {
     const query = new URL(request.url).searchParams.toString();
+    const searchRequest = search.fromQueryString(query);
 
-    if (query) {
-        const searchRequest = search.fromQueryString(query);
+    if (searchRequest.query) {
         return defer({ searchResponse: appContext.getState().doSearch(searchRequest) });
     }
 
