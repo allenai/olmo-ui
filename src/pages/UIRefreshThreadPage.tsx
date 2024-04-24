@@ -1,30 +1,20 @@
 import { Stack, Typography } from '@mui/material';
 
-import { Outlet, useMatch } from 'react-router-dom';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
-import { useEffect } from 'react';
-
-import { useAppContext } from '@/AppContext';
-import { links } from '@/Links';
+import { appContext, useAppContext } from '@/AppContext';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
 import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
+import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
     const sendAMessageToTheLLM = useAppContext((state) => state.sendAMessageToTheLLM);
-    const resetSelectedThreadState = useAppContext((state) => state.resetSelectedThreadState);
-    const isRootPlaygroundPage = useMatch(links.playground);
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         sendAMessageToTheLLM(data);
     };
-
-    useEffect(() => {
-        if (isRootPlaygroundPage) {
-            resetSelectedThreadState();
-        }
-    }, [isRootPlaygroundPage]);
 
     return (
         <Stack
@@ -47,4 +37,16 @@ export const UIRefreshThreadPage = () => {
             </Typography>
         </Stack>
     );
+};
+
+export const resetSelectedThreadLoader: LoaderFunction = async ({ params }) => {
+    const { resetSelectedThreadState } = appContext.getState();
+    if (params.id === undefined) {
+        resetSelectedThreadState();
+    }
+    return null;
+};
+
+export const handleRevalidation: ShouldRevalidateFunction = ({ nextUrl }) => {
+    return nextUrl.pathname === links.playground;
 };

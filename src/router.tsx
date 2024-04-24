@@ -15,7 +15,11 @@ import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { Search } from './pages/Search';
 import { Thread } from './pages/Thread';
-import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
+import {
+    handleRevalidation,
+    resetSelectedThreadLoader,
+    UIRefreshThreadPage,
+} from './pages/UIRefreshThreadPage';
 
 const routes = [
     {
@@ -105,6 +109,8 @@ const uiRefreshRoutes: RouteObject[] = [
                 handle: {
                     title: 'Playground',
                 },
+                loader: resetSelectedThreadLoader,
+                shouldRevalidate: handleRevalidation,
             },
             {
                 path: links.document(':id'),
