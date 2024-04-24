@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { LoaderFunction, useLocation } from 'react-router-dom';
+import { LoaderFunction, defer, useLocation } from 'react-router-dom';
 
 import { appContext, useAppContext } from '../AppContext';
 import { search } from '../api/dolma/search';
@@ -8,13 +8,11 @@ import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';
 import { RemoteState } from '../contexts/util';
 
-export const searchPageLoader: LoaderFunction = async ({ request }) => {
+export const searchPageLoader: LoaderFunction = ({ request }) => {
     const query = new URL(request.url).searchParams.toString();
 
     const searchRequest = search.fromQueryString(query);
-    await appContext.getState().doSearch(searchRequest);
-
-    return null;
+    return defer({ searchResponse: appContext.getState().doSearch(searchRequest) });
 };
 
 export const Search = () => {
