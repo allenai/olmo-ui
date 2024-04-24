@@ -137,8 +137,8 @@ export const TermsAndServiceModal = () => {
 const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: number }) => {
     return (
         <Stack direction="row" gap={2} mt={3}>
-            {[...Array<number>(steps)].map((_, i) => {
-                return i <= activeStep ? (
+            {[...Array(steps).keys()].map((step, i) => {
+                return step <= activeStep ? (
                     <CircleIcon
                         key={i}
                         sx={{ fontSize: 'large', color: (theme) => theme.color.N6.hex }}
