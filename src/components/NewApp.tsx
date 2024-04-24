@@ -40,6 +40,11 @@ export const NewApp = () => {
                 <>
                     <OlmoAppBar />
                     <GlobalAlertList />
+                    {/* 
+                    TODO: Add whoami check to see if user hasnt signed T&S yet
+                    TR: https://github.com/allenai/olmo-ui/issues/327
+                    <TermsAndServiceModal /> 
+                    */}
                     <Container
                         component="main"
                         sx={{
