@@ -39,7 +39,7 @@ export const HistoryDrawer = (): JSX.Element => {
         const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
         const loadedThreadCount = state.threads.length;
 
-        return totalThreadsOnServer !== 0 || loadedThreadCount < totalThreadsOnServer;
+        return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
     });
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
