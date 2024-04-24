@@ -12,13 +12,10 @@ import {
 } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
-
 import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
 import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
-
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
-
 import { Link } from 'react-router-dom';
 
 import { StandardModal } from './StandardModal';
