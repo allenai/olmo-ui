@@ -96,21 +96,20 @@ export const TermsAndServiceModal = () => {
                             label={section.acknowledgement}
                         />
                         <Stack gap={2} direction="row" mt={2}>
-                            {activeStep > 0 && (
-                                <Button
-                                    variant="outlined"
-                                    fullWidth
-                                    onClick={handlePrevious}
-                                    sx={{
-                                        height: 'fit-content',
-                                        width: 'fit-content',
-                                        paddingX: 3,
-                                        paddingY: 1,
-                                        whiteSpace: 'nowrap',
-                                    }}>
-                                    Previous
-                                </Button>
-                            )}
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                onClick={handlePrevious}
+                                disabled={activeStep === 0}
+                                sx={{
+                                    height: 'fit-content',
+                                    width: 'fit-content',
+                                    paddingX: 3,
+                                    paddingY: 1,
+                                    whiteSpace: 'nowrap',
+                                }}>
+                                Previous
+                            </Button>
                             <Button
                                 variant="contained"
                                 disabled={!isValid}
