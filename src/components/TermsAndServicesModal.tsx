@@ -41,9 +41,11 @@ export const TermsAndServiceModal = () => {
 
     const handleSubmit = useCallback(async () => {
         if (activeStep + 1 === sections.length) {
-            setOpen(false); // close modal
-            const userClient = new UserClient();
-            await userClient.acceptTermsAndConditions();
+            const userClient: UserClient = new UserClient();
+            const response = await userClient.acceptTermsAndConditions();
+            if (response?.ok) {
+                setOpen(false); // close modal
+            }
             return;
         }
         setActiveStep(activeStep + 1);

@@ -16,25 +16,29 @@ export class UserClient extends ClientBase {
     };
 
     acceptTermsAndConditions = async () => {
-        const url = this.createURL(AcceptTermsAndConditionsUrl);
-        const dateTime = new Date().toISOString();
-        const request = {
-            termsAcceptedDate: dateTime,
-        };
+        try {
+            const url = this.createURL(AcceptTermsAndConditionsUrl);
+            const dateTime = new Date().toISOString();
+            const request = {
+                termsAcceptedDate: dateTime,
+            };
 
-        const response = await fetch(url, {
-            method: 'PUT',
-            body: JSON.stringify(request),
-            headers: { 'Content-Type': 'application/json' },
-        });
+            const response = await fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(request),
+                headers: { 'Content-Type': 'application/json' },
+            });
 
-        if (!response.ok) {
-            throw new Error(`PUT ${url.toString()}: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+                throw new Error(`PUT ${url.toString()}: ${response.status} ${response.statusText}`);
+            }
+            if (!response.body) {
+                throw new Error(`PUT ${url.toString()}: missing response body`);
+            }
+
+            return response;
+        } catch (e: unknown) {
+            console.error(e);
         }
-        if (!response.body) {
-            throw new Error(`PUT ${url.toString()}: missing response body`);
-        }
-
-        return response.body;
     };
 }
