@@ -1,13 +1,10 @@
 import { Button, Stack } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 
-import { useMatch } from 'react-router-dom';
-
 import { useAppContext } from '@/AppContext';
+import { MessagePost } from '@/api/Message';
 import { useNewQueryFormHandling } from '../NewQuery/NewQueryForm';
 import { getSelectedMessagesToShow } from './ThreadDisplay';
-import { MessagePost } from '@/api/Message';
-import { links } from '@/Links';
 
 interface QueryFormProps {
     onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
@@ -18,19 +15,21 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
 
-    const isRootPlaygroundPage = useMatch(links.playground);
-
     const lastMessageId = useAppContext((state) => {
         const messagesToShow = getSelectedMessagesToShow(state);
-        const lastMessage = messagesToShow[messagesToShow.length - 1];
 
+        if (messagesToShow.length === 0) {
+            return undefined;
+        }
+
+        const lastMessage = messagesToShow[messagesToShow.length - 1];
         return lastMessage;
     });
 
     const handleSubmit = async (data: { content: string }) => {
         const request: MessagePost = { ...data };
 
-        if (!isRootPlaygroundPage && lastMessageId != null) {
+        if (lastMessageId != null) {
             request.parent = lastMessageId;
         }
 

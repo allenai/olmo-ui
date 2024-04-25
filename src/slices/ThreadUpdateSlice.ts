@@ -1,7 +1,8 @@
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
+import { links } from '@/Links';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     InferenceOpts,
-    JSONMessage,
     Message,
     MessagePost,
     isFinalMessage,
@@ -11,10 +12,8 @@ import {
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
-import { errorToAlert } from './AlertMessageSlice';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { router } from '@/router';
-import { links } from '@/Links';
+import { errorToAlert } from './AlertMessageSlice';
 
 const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
@@ -45,7 +44,7 @@ export interface ThreadUpdateSlice {
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     postMessageInfo: FetchInfo<Message>;
-    sendAMessageToTheLLM: (
+    streamPrompt: (
         newMessage: MessagePost,
         parentMessageId?: string
     ) => Promise<FetchInfo<Message>>;
@@ -122,7 +121,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
     },
 
-    sendAMessageToTheLLM: async (newMessage: MessagePost) => {
+    streamPrompt: async (newMessage: MessagePost) => {
         const { inferenceOpts, addContentToMessage, addChildToSelectedThread } = get();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;

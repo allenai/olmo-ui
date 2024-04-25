@@ -10,10 +10,10 @@ import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
-    const sendAMessageToTheLLM = useAppContext((state) => state.sendAMessageToTheLLM);
+    const streamPrompt = useAppContext((state) => state.streamPrompt);
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
-        sendAMessageToTheLLM(data);
+        streamPrompt(data);
     };
 
     return (
