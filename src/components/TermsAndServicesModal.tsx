@@ -19,6 +19,7 @@ import { Controller, FormContainer, useForm, useFormState } from 'react-hook-for
 import { Link } from 'react-router-dom';
 
 import { StandardModal } from './StandardModal';
+import { UserClient } from '@/api/User';
 
 interface TermsAndServiceSection {
     title: string;
@@ -38,21 +39,21 @@ export const TermsAndServiceModal = () => {
     });
     const { isValid } = useFormState({ control: formContext.control });
 
-    const handleSubmit = useCallback(() => {
+    const handleSubmit = useCallback(async () => {
         if (activeStep + 1 === sections.length) {
             setOpen(false); // close modal
-            /// TODO: Add POST request here
-            // https://github.com/allenai/olmo-ui/issues/327
+            const userClient = new UserClient();
+            await userClient.acceptTermsAndConditions();
             return;
         }
         setActiveStep(activeStep + 1);
         formContext.reset();
-    }, [activeStep]);
+    }, [activeStep, formContext]);
 
     const handlePrevious = useCallback(() => {
         setActiveStep(Math.max(activeStep - 1, 0));
         formContext.reset();
-    }, [activeStep]);
+    }, [activeStep, formContext]);
 
     const section = sections[activeStep];
     return (
