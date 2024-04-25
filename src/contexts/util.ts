@@ -4,9 +4,9 @@ import * as React from 'react';
 
 // global state of the store.
 export enum RemoteState {
-    Loading,
-    Loaded,
-    Error,
+    Loading = 'Loading',
+    Loaded = 'Loaded',
+    Error = 'Error',
 }
 
 // return a react useContext wrapped with a check for missing provider.

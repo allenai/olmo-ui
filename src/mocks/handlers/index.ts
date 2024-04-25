@@ -1,14 +1,15 @@
-import { http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse, passthrough } from 'msw';
 
-import { Schema, SchemaApiUrl } from '../../api/Schema';
+import { Schema, SchemaApiUrl } from '@/api/Schema';
 
-import { WhoamiApiUrl } from '../../api/User';
+import { WhoamiApiUrl } from '@/api/User';
 
-import { ModelApiUrl, ModelList } from '../../api/Model';
+import { ModelApiUrl, ModelList } from '@/api/Model';
 
-import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '../../api/PromptTemplate';
+import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 
 import { messageStreamHandlers } from './messageStreamHandlers';
+import { datasetSearchResponse } from './datasetSearchResponse';
 
 export const handlers = [
     ...messageStreamHandlers,
@@ -20,6 +21,7 @@ export const handlers = [
     http.get(`*${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
             client: 'murphy@allenai.org',
+            hasAcceptedTermsAndConditions: true,
         });
     }),
 
@@ -29,6 +31,16 @@ export const handlers = [
 
     http.get(`*${PromptTemplatesApiUrl}`, () => {
         return HttpResponse.json(fakePromptsResponse);
+    }),
+
+    http.get(`${process.env.DOLMA_API_URL}/v1/search`, async ({ request }) => {
+        const query = new URL(request.url).searchParams.get('query');
+        if (query === 'Seattle') {
+            await delay();
+            return HttpResponse.json(datasetSearchResponse);
+        }
+
+        return passthrough();
     }),
 ];
 
