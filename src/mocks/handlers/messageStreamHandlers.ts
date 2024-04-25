@@ -5,8 +5,6 @@ import { Role } from '@/api/Role';
 
 const encoder = new TextEncoder();
 
-export const messageId = 'msg_A8E5H1X2O3';
-
 export const messageStreamHandlers = [
     http.post(`*/v3/message/stream`, async ({ request }) => {
         const requestBody = (await request.json()) as Record<string, unknown>;
@@ -166,6 +164,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
     },
 ];
 
+export const messageId = 'msg_A8E5H1X2O3';
 const fakeGetAllThreadsResponse: MessagesResponse = {
     messages: [
         {
@@ -256,9 +255,11 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
     meta: { limit: 10, offset: 0, total: 2 },
 };
 
+const followupUserMessageId = 'msg_G8D2Q9Y8Q7';
+const followupLLMMessageId = 'msg_V6Y0U4H414';
 const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
     {
-        id: messageId,
+        id: followupUserMessageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -269,11 +270,12 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
             n: 1,
             top_p: 1,
         },
-        root: parentId,
+        root: newMessageId,
+        parent: parentId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
-                id: 'msg_V6Y0U4H4O9',
+                id: followupLLMMessageId,
                 content: '',
                 snippet: '',
                 creator: 'murphy@allenai.org',
@@ -284,9 +286,9 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
                     n: 1,
                     top_p: 1,
                 },
-                root: parentId,
+                root: newMessageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: parentId,
+                parent: followupUserMessageId,
                 final: false,
                 private: false,
                 model_type: 'chat',
@@ -298,51 +300,51 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
         labels: [],
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: '',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: '',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        message: 'msg_V6Y0U4H4O9',
+        message: followupLLMMessageId,
         content: 'Okay',
     },
     {
-        id: messageId,
+        id: followupUserMessageId,
         content: 'say one word',
         snippet: 'say one word',
         creator: 'murphy@allenai.org',
@@ -353,11 +355,11 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
             n: 1,
             top_p: 1,
         },
-        root: messageId,
+        root: newMessageId,
         created: '2024-03-20T22:34:03.329111+00:00',
         children: [
             {
-                id: 'msg_V6Y0U4H4O9',
+                id: followupLLMMessageId,
                 content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
                 snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
                 creator: 'murphy@allenai.org',
@@ -368,9 +370,9 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
                     n: 1,
                     top_p: 1,
                 },
-                root: messageId,
+                root: newMessageId,
                 created: '2024-03-20T22:34:03.342086+00:00',
-                parent: messageId,
+                parent: followupUserMessageId,
                 logprobs: [],
                 completion: 'cpl_R5T5K6B4C9',
                 final: true,

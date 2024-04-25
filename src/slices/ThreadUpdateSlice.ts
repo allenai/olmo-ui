@@ -148,7 +148,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     state.postMessageInfo.error = true;
                 },
                 false,
-                'threadUpdate/errorCreateNewThreadr'
+                'threadUpdate/errorCreateNewThread'
             );
         }
 
