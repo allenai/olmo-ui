@@ -19,6 +19,7 @@ const container = document.getElementById('root');
 if (!container) {
     throw new Error("No element with an id of 'root' was found.");
 }
+
 const root = createRoot(container);
 enableMocking().then(() => {
     root.render(

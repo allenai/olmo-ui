@@ -13,7 +13,7 @@ import { ErrorPage } from './pages/ErrorPage';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
-import { Search } from './pages/Search';
+import { Search, searchPageLoader } from './pages/Search';
 import { Thread } from './pages/Thread';
 import {
     handleRevalidation,
@@ -49,6 +49,7 @@ const routes = [
                 path: '/search',
                 element: <Search />,
                 errorElement: <ErrorPage />,
+                loader: searchPageLoader,
             },
             {
                 path: '/thread/:id',
@@ -77,7 +78,8 @@ const routes = [
         ],
     },
 ];
-const uiRefreshRoutes: RouteObject[] = [
+
+export const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
@@ -132,6 +134,7 @@ const uiRefreshRoutes: RouteObject[] = [
                 handle: {
                     title: 'Dataset Explorer',
                 },
+                loader: searchPageLoader,
             },
             {
                 path: links.promptTemplates,
@@ -154,6 +157,7 @@ const uiRefreshRoutes: RouteObject[] = [
         ],
     },
 ];
+
 const searchParams = new URL(window.location.href).searchParams;
 const isUIRefreshEnabled =
     searchParams.get('isUIRefreshEnabled') === 'true' ||

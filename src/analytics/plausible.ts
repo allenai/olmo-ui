@@ -28,9 +28,15 @@ const flattenObject = <T extends Record<string, unknown>>(
 };
 
 export const plausibleTrackEvent = (event: AnalyticsEvent): void => {
-    plausibleClient.trackEvent(event.type, {
-        props: { ...flattenObject(event.details), occurred: event.occurred.toISOString() },
-    });
+    try {
+        plausibleClient.trackEvent(event.type, {
+            props: { ...flattenObject(event.details), occurred: event.occurred.toISOString() },
+        });
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error('Plausible failed to track an event: ' + e.message);
+        }
+    }
 };
 
 export const plausibleTrackPageview = plausibleClient.trackPageview;

@@ -253,7 +253,7 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
             snippet: 'say one word',
         },
     ],
-    meta: { limit: 10, offset: 0, total: 229 },
+    meta: { limit: 10, offset: 0, total: 2 },
 };
 
 const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
