@@ -27,7 +27,7 @@ export type FetchInfo<T> = {
 
 type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
 
-type AppContextState = LabelSlice &
+export type AppContextState = LabelSlice &
     PromptTemplateSlice &
     RepromptSlice &
     ThreadSlice &

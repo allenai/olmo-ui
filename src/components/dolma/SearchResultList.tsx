@@ -3,6 +3,8 @@ import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/ma
 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
+import { Fragment } from 'react';
+
 import { search } from '../../api/dolma/search';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
@@ -25,8 +27,8 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
             <Stack direction="column" gap={1.5} pt={3.5}>
                 {response.meta.total === 0 && <NoResults query={response.request.query} />}
                 {response.results.map((result, idx) => (
-                    <>
-                        <Box key={result.id} pb={1}>
+                    <Fragment key={result.id}>
+                        <Box pb={1}>
                             <DocumentMeta dolmaId={result.dolma_id} source={result.source} />
                             <Link
                                 to={documentURL(result.id, response.request.query)}
@@ -54,7 +56,7 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                         {response.results.length - 1 !== idx && (
                             <Divider sx={{ borderColor: (theme) => theme.color.N4.hex }} />
                         )}
-                    </>
+                    </Fragment>
                 ))}
                 <Stack
                     justifyContent="space-between"

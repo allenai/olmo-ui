@@ -55,6 +55,9 @@ export const SearchBar = ({
                 {title}
                 <SearchTextField
                     name="queryText"
+                    inputProps={{
+                        'aria-label': 'Search Term',
+                    }}
                     placeholder={placeholder}
                     fullWidth
                     disabled={disabled}

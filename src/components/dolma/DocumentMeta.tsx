@@ -24,13 +24,14 @@ export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
                                 overflow: 'hidden',
                             }}
                             variant="subtitle1"
+                            component="div"
                             color={(theme) => theme.color.B6.hex}>
                             {url}
                         </Typography>
                     </Link>
                 </Box>
             )}
-            <Typography noWrap variant="subtitle1" sx={{ flexShrink: 0 }}>
+            <Typography noWrap variant="subtitle1" component="div" sx={{ flexShrink: 0 }}>
                 <Typography variant="subtitle1" fontWeight="bold" sx={{ display: 'inline-block' }}>
                     Dolma ID:&nbsp;&nbsp;
                 </Typography>
@@ -40,7 +41,11 @@ export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
                     ariaLabel="Copy Dolma ID">
                     <TruncatableText>&nbsp;{dolmaId}</TruncatableText>
                 </CopyToClipboardButton>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ display: 'inline-block' }}>
+                <Typography
+                    variant="subtitle1"
+                    component="div"
+                    fontWeight="bold"
+                    sx={{ display: 'inline-block' }}>
                     Source:&nbsp;
                 </Typography>
                 {source}
