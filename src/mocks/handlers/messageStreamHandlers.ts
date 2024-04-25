@@ -239,7 +239,7 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
     meta: { limit: 10, offset: 0, total: 2 },
 };
 
-const followupUserMessageId = 'msg_G8D2Q9Y8Q7';
+export const followupUserMessageId = 'msg_G8D2Q9Y8Q7';
 const followupLLMMessageId = 'msg_V6Y0U4H414';
 const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
     {
