@@ -21,37 +21,47 @@ test('can prompt', async ({ page }) => {
 });
 
 test('can send prompt in Olmo Playground', async ({ page }) => {
+    const selectedThreadId = 'msg_A8E5H1X2O4';
+
+    // Send the first message
     await page.goto('/?isUIRefreshEnabled=true');
     await page.waitForLoadState('networkidle');
-    await page.getByPlaceholder('Enter your prompt here').focus();
-    await page.getByPlaceholder('Enter your prompt here').fill('Can you tell me a friday joke?');
+    await page.getByRole('textbox', { name: 'Prompt' }).focus();
+    await page.getByRole('textbox', { name: 'Prompt' }).fill('Can you tell me a friday joke?');
     await page.getByTestId('Submit Prompt Button').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+    await expect(page.getByText('This is the first response.')).toBeVisible();
+    expect(page.url()).toContain(selectedThreadId);
 
+    // Make sure the new message is in the history drawer
     await page.getByRole('button', { name: 'History' }).click();
-    await page.getByTestId('Drawer').focus();
     await expect(page.getByText('Today')).toBeVisible();
-    await expect(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkayOkay')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'User message' })).toBeVisible();
     await page.getByTestId('Close History Drawer').click();
 
-    await page.getByPlaceholder('Enter your prompt here').focus();
-    await page.getByPlaceholder('Enter your prompt here').fill('say one word');
+    // Send a second message in the thread
+    await page.getByRole('textbox', { name: 'Prompt' }).focus();
+    await page.getByRole('textbox', { name: 'Prompt' }).fill('say one word');
     await page.getByTestId('Submit Prompt Button').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+    await expect(page.getByText('This is the first response.')).toBeVisible();
+    await expect(page.getByText('This is the second response.')).toBeVisible();
+    expect(page.url()).toContain(selectedThreadId);
 
+    // Look at another thread
     await page.getByRole('button', { name: 'History' }).click();
-    await page.getByTestId('Drawer').focus();
-    await expect(page.getByText('Today')).toBeVisible();
-    await expect(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkayOkay')).toBeVisible();
+    await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
     await page.getByTestId('Close History Drawer').click();
+    await expect(page.getByText('Ether')).toBeVisible();
 
+    // Go back to the first thread and make sure it's still showing all the messages
     await page.getByRole('button', { name: 'History' }).click();
-    await page.getByTestId('Drawer').focus();
-    await (await page.getByText('say one word').all()).at(2)?.click();
+    await page.getByTestId('Drawer').getByRole('link', { name: 'User message' }).click();
     await page.getByTestId('Close History Drawer').click();
-    await expect(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkayOkay')).toBeVisible();
+    await expect(page.getByText('This is the first response.')).toBeVisible();
+    await expect(page.getByText('This is the second response.')).toBeVisible();
 });

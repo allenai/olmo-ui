@@ -38,8 +38,8 @@ export const newMessageId = 'msg_A8E5H1X2O4';
 const fakeNewThreadMessages: Array<MessageStreamPart> = [
     {
         id: newMessageId,
-        content: 'say one word',
-        snippet: 'say one word',
+        content: 'User message',
+        snippet: 'User message',
         creator: 'murphy@allenai.org',
         role: Role.User,
         opts: {
@@ -86,44 +86,28 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
+        content: 'This ',
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
+        content: 'is',
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
+        content: ' ',
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
+        content: 'the',
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
-    },
-    {
-        message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
-    },
-    {
-        message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
-    },
-    {
-        message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
-    },
-    {
-        message: 'msg_V6Y0U4H4O9',
-        content: 'Okay',
+        content: ' first response.',
     },
     {
         id: newMessageId,
-        content: 'say one word',
-        snippet: 'say one word',
+        content: 'User message',
+        snippet: 'User message',
         creator: 'murphy@allenai.org',
         role: Role.User,
         opts: {
@@ -137,8 +121,8 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
         children: [
             {
                 id: 'msg_V6Y0U4H4O9',
-                content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
-                snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                content: 'This is the first response.',
+                snippet: 'This is the first response.',
                 creator: 'murphy@allenai.org',
                 role: Role.LLM,
                 opts: {
@@ -169,8 +153,8 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
     messages: [
         {
             id: messageId,
-            content: 'say one word',
-            snippet: 'say one word',
+            content: 'Second existing message',
+            snippet: 'Second existing message',
             creator: 'murphy@allenai.org',
             role: Role.User,
             opts: {
@@ -234,7 +218,7 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
                     snippet: 'Ether',
                 },
             ],
-            content: 'say one word',
+            content: 'First existing message',
             created: '2024-03-20T18:45:58.032751+00:00',
             creator: 'murphy@allenai.org',
             final: true,
@@ -249,7 +233,7 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
             private: false,
             role: Role.User,
             root: 'msg_G8D2Q9Y8Q3',
-            snippet: 'say one word',
+            snippet: 'First existing message',
         },
     ],
     meta: { limit: 10, offset: 0, total: 2 },
@@ -260,8 +244,8 @@ const followupLLMMessageId = 'msg_V6Y0U4H414';
 const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
     {
         id: followupUserMessageId,
-        content: 'say one word',
-        snippet: 'say one word',
+        content: 'Second user message',
+        snippet: 'Second user message',
         creator: 'murphy@allenai.org',
         role: Role.User,
         opts: {
@@ -309,44 +293,28 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
     },
     {
         message: followupLLMMessageId,
-        content: 'Okay',
+        content: 'This ',
     },
     {
         message: followupLLMMessageId,
-        content: 'Okay',
+        content: 'is ',
     },
     {
         message: followupLLMMessageId,
-        content: 'Okay',
+        content: '',
     },
     {
         message: followupLLMMessageId,
-        content: 'Okay',
+        content: 'the ',
     },
     {
         message: followupLLMMessageId,
-        content: 'Okay',
-    },
-    {
-        message: followupLLMMessageId,
-        content: 'Okay',
-    },
-    {
-        message: followupLLMMessageId,
-        content: 'Okay',
-    },
-    {
-        message: followupLLMMessageId,
-        content: 'Okay',
-    },
-    {
-        message: followupLLMMessageId,
-        content: 'Okay',
+        content: 'second response.',
     },
     {
         id: followupUserMessageId,
-        content: 'say one word',
-        snippet: 'say one word',
+        content: 'Second user message',
+        snippet: 'Second user message',
         creator: 'murphy@allenai.org',
         role: Role.User,
         opts: {
@@ -360,7 +328,7 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
         children: [
             {
                 id: followupLLMMessageId,
-                content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
+                content: 'This is the second response.',
                 snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
                 creator: 'murphy@allenai.org',
                 role: Role.LLM,
