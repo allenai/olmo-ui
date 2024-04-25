@@ -1,6 +1,7 @@
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 import {
     InferenceOpts,
+    JSONMessage,
     Message,
     MessagePost,
     isFinalMessage,
@@ -14,6 +15,22 @@ import { errorToAlert } from './AlertMessageSlice';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { router } from '@/router';
 import { links } from '@/Links';
+
+const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
+    for (const childMessage of rootMessage.children ?? []) {
+        if (childMessage.id === messageId) {
+            return childMessage;
+        }
+
+        const foundChild = findChildMessageById(messageId, childMessage);
+
+        if (foundChild != null) {
+            return foundChild;
+        }
+    }
+
+    return null;
+};
 
 const ABORT_ERROR_MESSAGE: AlertMessage = {
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
@@ -40,6 +57,7 @@ export interface ThreadUpdateSlice {
     ) => Promise<FetchInfo<Message>>;
     selectedModel: string;
     setSelectedModel: (selectedModel: string) => void;
+    handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
@@ -59,9 +77,53 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         }));
     },
 
+    handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => {
+        if (isCreatingNewThread) {
+            get().setSelectedThread(finalMessage);
+        }
+
+        set(
+            (state) => {
+                if (isCreatingNewThread) {
+                    state.threads.unshift(finalMessage);
+                } else {
+                    const rootMessage = state.threads.find(
+                        (thread) => thread.id === finalMessage.root
+                    );
+
+                    if (finalMessage.parent == null || rootMessage == null) {
+                        throw new Error(
+                            "Bad response from server. Trying to add a message that doesn't have a parent or a root."
+                        );
+                    }
+
+                    const parentToParsedMessage = findChildMessageById(
+                        finalMessage.parent,
+                        rootMessage
+                    );
+
+                    if (parentToParsedMessage != null) {
+                        if (parentToParsedMessage.children == null) {
+                            parentToParsedMessage.children = [finalMessage];
+                        } else {
+                            parentToParsedMessage.children.push(finalMessage);
+                        }
+                    }
+                }
+
+                state.abortController = null;
+                state.ongoingThreadId = null;
+                state.postMessageInfo.loading = false;
+                state.postMessageInfo.data = finalMessage;
+                state.postMessageInfo.error = false;
+            },
+            false,
+            'threadUpdate/finishCreateNewThread'
+        );
+    },
+
     sendAMessageToTheLLM: async (newMessage: MessagePost) => {
-        const { inferenceOpts, setSelectedThread, addContentToMessage, addChildToSelectedThread } =
-            get();
+        const { inferenceOpts, addContentToMessage, addChildToSelectedThread } = get();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
 
@@ -91,7 +153,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     if (isCreatingNewThread) {
                         get().setSelectedThread(parsedMessage);
-                        router.navigate(links.thread(parsedMessage.id));
+                        await router.navigate(links.thread(parsedMessage.id));
                     } else {
                         addChildToSelectedThread(parsedMessage);
                     }
@@ -102,26 +164,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 if (isFinalMessage(message)) {
-                    const parsedMessage = parseMessage(message);
-
-                    if (isCreatingNewThread) {
-                        setSelectedThread(parsedMessage);
-                    }
-
-                    set(
-                        (state) => {
-                            if (isCreatingNewThread) {
-                                state.threads.unshift(parsedMessage);
-                            }
-                            state.abortController = null;
-                            state.ongoingThreadId = null;
-                            state.postMessageInfo.loading = false;
-                            state.postMessageInfo.data = parsedMessage;
-                            state.postMessageInfo.error = false;
-                        },
-                        false,
-                        'threadUpdate/finishCreateNewThread'
-                    );
+                    get().handleFinalMessage(parseMessage(message), isCreatingNewThread);
                 }
             }
         } catch (err) {

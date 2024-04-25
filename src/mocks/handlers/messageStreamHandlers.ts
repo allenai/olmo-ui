@@ -316,6 +316,7 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
         content: 'Second user message',
         snippet: 'Second user message',
         creator: 'murphy@allenai.org',
+        parent: parentId,
         role: Role.User,
         opts: {
             max_tokens: 2048,
