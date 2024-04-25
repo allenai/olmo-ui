@@ -100,7 +100,8 @@ export const HistoryDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
+                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}
+                            data-testid="Close History Drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>

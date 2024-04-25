@@ -37,6 +37,7 @@ export default defineConfig({
             'X-Auth-Request-User': 'foo',
             'X-Auth-Request-Email': 'foo@bar.com',
         },
+        headless: false,
     },
 
     /* Configure projects for major browsers */

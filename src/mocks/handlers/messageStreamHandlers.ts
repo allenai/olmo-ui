@@ -51,7 +51,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
             top_p: 1,
         },
         root: newMessageId,
-        created: '2024-03-20T22:34:03.329111+00:00',
+        created: new Date().toDateString(),
         children: [
             {
                 id: 'msg_V6Y0U4H4O9',
@@ -66,7 +66,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
                     top_p: 1,
                 },
                 root: newMessageId,
-                created: '2024-03-20T22:34:03.342086+00:00',
+                created: new Date().toDateString(),
                 parent: newMessageId,
                 final: false,
                 private: false,
@@ -135,7 +135,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
             top_p: 1,
         },
         root: newMessageId,
-        created: '2024-03-20T22:34:03.329111+00:00',
+        created: new Date().toDateString(),
         children: [
             {
                 id: 'msg_V6Y0U4H4O9',
@@ -150,7 +150,7 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
                     top_p: 1,
                 },
                 root: newMessageId,
-                created: '2024-03-20T22:34:03.342086+00:00',
+                created: new Date().toDateString(),
                 parent: newMessageId,
                 logprobs: [],
                 completion: 'cpl_R5T5K6B4C9',

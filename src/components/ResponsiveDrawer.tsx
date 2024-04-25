@@ -64,7 +64,8 @@ export const ResponsiveDrawer = ({
                             backgroundColor: (theme) => theme.palette.background.default,
                             borderRight: 'none',
                         },
-                    }}>
+                    }}
+                    data-testid="Drawer">
                     {heading}
                     {children}
                 </Drawer>
@@ -84,7 +85,8 @@ export const ResponsiveDrawer = ({
                     sx={{
                         display: { xs: 'flex', [drawerBreakpoint]: 'none' },
                         ...mobileDrawerSx,
-                    }}>
+                    }}
+                    data-testid="Drawer">
                     {mobileHeading ?? heading}
                     {children}
                 </Drawer>
