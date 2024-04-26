@@ -46,7 +46,7 @@ export const NewApp = () => {
                 <>
                     <OlmoAppBar />
                     <GlobalAlertList />
-                    {showModal && <TermsAndConditionsModal />}
+                    {/* {showModal && <TermsAndConditionsModal />} */}
                     <Container
                         component="main"
                         sx={{
