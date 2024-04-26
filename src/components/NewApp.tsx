@@ -11,7 +11,7 @@ import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
-import { TermsAndServiceModal } from './TermsAndServicesModal';
+import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -46,7 +46,7 @@ export const NewApp = () => {
                 <>
                     <OlmoAppBar />
                     <GlobalAlertList />
-                    {showModal && <TermsAndServiceModal />}
+                    {showModal && <TermsAndConditionsModal />}
                     <Container
                         component="main"
                         sx={{

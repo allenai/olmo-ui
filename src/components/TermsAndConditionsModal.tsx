@@ -21,7 +21,7 @@ import { Link } from 'react-router-dom';
 import { StandardModal } from './StandardModal';
 import { UserClient } from '@/api/User';
 
-interface TermsAndServiceSection {
+interface TermsAndConditionsSection {
     title: string;
     icon: React.ReactNode;
     contents: React.ReactNode;
@@ -29,7 +29,7 @@ interface TermsAndServiceSection {
     submitButtonText: string;
 }
 
-export const TermsAndServiceModal = () => {
+export const TermsAndConditionsModal = () => {
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
     const formContext = useForm({
@@ -164,7 +164,7 @@ const GrayLink = styled(Link)`
     text-decoration: underline;
 `;
 
-const Section1: TermsAndServiceSection = {
+const Section1: TermsAndConditionsSection = {
     title: 'Research Purposes',
     icon: <ScienceOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
@@ -180,7 +180,7 @@ const Section1: TermsAndServiceSection = {
     submitButtonText: 'Next',
 };
 
-const Section2: TermsAndServiceSection = {
+const Section2: TermsAndConditionsSection = {
     title: 'Limitations',
     icon: <DangerousOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
@@ -203,7 +203,7 @@ const Section2: TermsAndServiceSection = {
     submitButtonText: 'Next',
 };
 
-const Section3: TermsAndServiceSection = {
+const Section3: TermsAndConditionsSection = {
     title: 'Privacy and Data Collection',
     icon: <PrivacyTipOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
