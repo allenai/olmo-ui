@@ -81,9 +81,9 @@ test('can search pretraining documents in DataSet Explorer', async ({ page }) =>
     await page.waitForLoadState('networkidle');
 
     await expect(
-        page.getByRole('link', {
-            name: 'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)',
-        })
+        page.getByLabel(
+            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
+        )
     ).toBeVisible();
     await expect(page.getByText('About These Results')).toBeVisible();
 });
