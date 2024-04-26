@@ -1,4 +1,4 @@
-import { delay, http, HttpResponse, passthrough } from 'msw';
+import { http, HttpResponse, passthrough } from 'msw';
 
 import { Schema, SchemaApiUrl } from '@/api/Schema';
 
