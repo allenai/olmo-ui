@@ -11,7 +11,7 @@ import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
-// import { TermsAndConditionsModal } from './TermsAndConditionsModal';
+import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -39,7 +39,7 @@ export const NewApp = () => {
             });
     }, [getSchema, getUserInfo]);
 
-    // const showModal = userInfo?.hasAcceptedTermsAndConditions === false;
+    const showModal = userInfo?.hasAcceptedTermsAndConditions === false;
     return (
         <OuterContainer square variant="outlined">
             {!isLoading && userInfo && schema ? (
