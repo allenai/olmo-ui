@@ -36,7 +36,6 @@ export const handlers = [
     http.get(`${process.env.DOLMA_API_URL}/v1/search`, async ({ request }) => {
         const query = new URL(request.url).searchParams.get('query');
         if (query === 'Seattle') {
-            await delay();
             return HttpResponse.json(datasetSearchResponse);
         }
 
