@@ -19,8 +19,9 @@ import { Controller, FormContainer, useForm, useFormState } from 'react-hook-for
 import { Link } from 'react-router-dom';
 
 import { StandardModal } from './StandardModal';
+import { UserClient } from '@/api/User';
 
-interface TermsAndServiceSection {
+interface TermsAndConditionsSection {
     title: string;
     icon: React.ReactNode;
     contents: React.ReactNode;
@@ -28,7 +29,7 @@ interface TermsAndServiceSection {
     submitButtonText: string;
 }
 
-export const TermsAndServiceModal = () => {
+export const TermsAndConditionsModal = () => {
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
     const formContext = useForm({
@@ -38,21 +39,23 @@ export const TermsAndServiceModal = () => {
     });
     const { isValid } = useFormState({ control: formContext.control });
 
-    const handleSubmit = useCallback(() => {
+    const handleSubmit = useCallback(async () => {
         if (activeStep + 1 === sections.length) {
-            setOpen(false); // close modal
-            /// TODO: Add POST request here
-            // https://github.com/allenai/olmo-ui/issues/327
+            const userClient: UserClient = new UserClient();
+            const response = await userClient.acceptTermsAndConditions();
+            if (response?.ok) {
+                setOpen(false); // close modal
+            }
             return;
         }
         setActiveStep(activeStep + 1);
         formContext.reset();
-    }, [activeStep]);
+    }, [activeStep, formContext]);
 
     const handlePrevious = useCallback(() => {
         setActiveStep(Math.max(activeStep - 1, 0));
         formContext.reset();
-    }, [activeStep]);
+    }, [activeStep, formContext]);
 
     const section = sections[activeStep];
     return (
@@ -161,7 +164,7 @@ const GrayLink = styled(Link)`
     text-decoration: underline;
 `;
 
-const Section1: TermsAndServiceSection = {
+const Section1: TermsAndConditionsSection = {
     title: 'Research Purposes',
     icon: <ScienceOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
@@ -177,7 +180,7 @@ const Section1: TermsAndServiceSection = {
     submitButtonText: 'Next',
 };
 
-const Section2: TermsAndServiceSection = {
+const Section2: TermsAndConditionsSection = {
     title: 'Limitations',
     icon: <DangerousOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
@@ -200,7 +203,7 @@ const Section2: TermsAndServiceSection = {
     submitButtonText: 'Next',
 };
 
-const Section3: TermsAndServiceSection = {
+const Section3: TermsAndConditionsSection = {
     title: 'Privacy and Data Collection',
     icon: <PrivacyTipOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (

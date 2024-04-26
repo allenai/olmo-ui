@@ -11,6 +11,7 @@ import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
+import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -31,20 +32,21 @@ export const NewApp = () => {
             .then(getSchema)
             .finally(() => {
                 setLoading(false);
+            })
+            .catch((error: unknown) => {
+                console.error('Failed to get user info');
+                throw error;
             });
-    }, []);
+    }, [getSchema, getUserInfo]);
 
+    const showModal = userInfo?.hasAcceptedTermsAndConditions === false;
     return (
         <OuterContainer square variant="outlined">
             {!isLoading && userInfo && schema ? (
                 <>
                     <OlmoAppBar />
                     <GlobalAlertList />
-                    {/* 
-                    TODO: Add whoami check to see if user hasnt signed T&S yet
-                    TR: https://github.com/allenai/olmo-ui/issues/327
-                    <TermsAndServiceModal /> 
-                    */}
+                    {showModal && <TermsAndConditionsModal />}
                     <Container
                         component="main"
                         sx={{
