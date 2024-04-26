@@ -27,6 +27,7 @@ export class UserClient extends ClientBase {
                 method: 'PUT',
                 body: JSON.stringify(request),
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
             });
 
             if (!response.ok) {
