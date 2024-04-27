@@ -33,7 +33,7 @@ export const handlers = [
         return HttpResponse.json(fakePromptsResponse);
     }),
 
-    http.get(`${process.env.DOLMA_API_URL}/v1/search`, async ({ request }) => {
+    http.get(`*/v1/search`, async ({ request }) => {
         const query = new URL(request.url).searchParams.get('query');
         if (query === 'Seattle') {
             return HttpResponse.json(datasetSearchResponse);
