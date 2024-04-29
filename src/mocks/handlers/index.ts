@@ -10,6 +10,7 @@ import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTempl
 
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetSearchResponse } from './datasetSearchResponse';
+import { datasetDocumentResponse } from './datasetDocumentResponse';
 
 export const handlers = [
     ...messageStreamHandlers,
@@ -35,7 +36,11 @@ export const handlers = [
 
     http.get(`*/v1/search`, async ({ request }) => {
         const query = new URL(request.url).searchParams.get('query');
+        const id = new URL(request.url).searchParams.get('id');
         if (query === 'Seattle') {
+            if (id === 'a718be1486e24cbb7e0aee7d0bef8442') {
+                return HttpResponse.json(datasetDocumentResponse);
+            }
             return HttpResponse.json(datasetSearchResponse);
         }
 
