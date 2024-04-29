@@ -16,16 +16,16 @@ import { links } from '../../Links';
 interface SearchResultListProps {
     response: search.Response;
 }
-export const SearchResultList = ({ response }: SearchResultListProps) => {
+export const SearchResultList = ({ response }: SearchResultListProps): JSX.Element => {
     const loc = useLocation();
     const nav = useNavigate();
-    const showPagination = response && Math.ceil(response.meta.total / response.request.size) > 1;
+    const showPagination = Math.ceil(response.meta.total / response.request.size) > 1;
 
     return (
         <>
             <MetaTags title={`${response.request.query} - Dolma Search Results`} />
-            <Stack direction="column" gap={1.5} pt={3.5}>
-                {response.meta.total === 0 && <NoResults query={response.request.query} />}
+            <Stack direction="column" gap={1.5} pt={2}>
+                {response.meta.total === 0 && <NoResults request={response.request.query} />}
                 {response.results.map((result, idx) => (
                     <Fragment key={result.id}>
                         <Box pb={1}>
@@ -69,9 +69,6 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                             count={Math.ceil(response.meta.total / response.request.size)}
                             page={Math.ceil(response.request.offset / response.request.size) + 1}
                             onChange={(_, page: number) => {
-                                if (!response) {
-                                    return;
-                                }
                                 nav(
                                     `${loc.pathname}?${search.toQueryString({
                                         ...response.request,
@@ -80,21 +77,12 @@ export const SearchResultList = ({ response }: SearchResultListProps) => {
                                 );
                             }}
                         />
-                    ) : null}
+                    ) : (
+                        <Box></Box> // pagination placeholder so flexbox stays consistent
+                    )}
                     <AboutTheseResults />
                 </Stack>
             </Stack>
-        </>
-    );
-};
-
-const NoResults = ({ query }: { query: string }) => {
-    return (
-        <>
-            <Typography component="h4" variant="h4" m={0}>
-                No results for {query}.
-            </Typography>
-            <p>Your search did not match any documents.</p>
         </>
     );
 };
@@ -115,6 +103,28 @@ const AboutTheseResults = () => (
 );
 
 export function documentURL(id: string, query?: string) {
-    const qs = query ? `?${new URLSearchParams({ query })}` : '';
+    const qs = query ? `?${new URLSearchParams({ query }).toString()}` : '';
     return links.document(id) + qs;
 }
+
+const NoResults = ({ request }: { request: string }) => (
+    <Box sx={{ p: 4, borderRadius: '12px', backgroundColor: (theme) => theme.color.N2.hex }}>
+        <Typography
+            variant="h6"
+            sx={{ mt: 0, mb: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            Your Search - &quot;{request}&quot; - did not match any results.
+        </Typography>
+        <Typography variant="body1">Suggestions</Typography>
+        <Typography component="ul" variant="body1">
+            <Typography component="li" variant="body1">
+                Check spelling of keywords.
+            </Typography>
+            <Typography component="li" variant="body1">
+                Try different keywords.
+            </Typography>
+            <Typography component="li" variant="body1">
+                Try more general keywords.
+            </Typography>
+        </Typography>
+    </Box>
+);
