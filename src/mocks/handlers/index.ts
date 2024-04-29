@@ -15,26 +15,26 @@ import { datasetDocumentResponse } from './datasetDocumentResponse';
 export const handlers = [
     ...messageStreamHandlers,
 
-    http.get(`*${SchemaApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${SchemaApiUrl}`, () => {
         return HttpResponse.json(fakeSchemaResponse);
     }),
 
-    http.get(`*${WhoamiApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
             client: 'murphy@allenai.org',
             hasAcceptedTermsAndConditions: true,
         });
     }),
 
-    http.get(`*${ModelApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${ModelApiUrl}`, () => {
         return HttpResponse.json(fakeModelsResponse);
     }),
 
-    http.get(`*${PromptTemplatesApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${PromptTemplatesApiUrl}`, () => {
         return HttpResponse.json(fakePromptsResponse);
     }),
 
-    http.get(`*${process.env.DOLMA_API_URL}/v1/search`, async ({ request }) => {
+    http.get(`${process.env.DOLMA_API_URL}/v1/search`, ({ request }) => {
         const searchParams = new URL(request.url).searchParams;
         const query = searchParams.get('query');
         const id = searchParams.get('id');
