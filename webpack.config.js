@@ -83,7 +83,7 @@ module.exports = (env) => ({
             LLMX_API_URL: 'http://localhost:8080',
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
-            IS_UI_REFRESH_ENABLED: process.env.SKIFF_ENV === 'refresh' ? 'true' : false,
+            IS_UI_REFRESH_ENABLED: 'true',
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],

@@ -159,7 +159,5 @@ export const uiRefreshRoutes: RouteObject[] = [
 ];
 
 const searchParams = new URL(window.location.href).searchParams;
-const isUIRefreshEnabled =
-    searchParams.get('isUIRefreshEnabled') === 'true' ||
-    process.env.IS_UI_REFRESH_ENABLED === 'true';
+const isUIRefreshEnabled = searchParams.get('isUIRefreshEnabled') !== 'false';
 export const router = createBrowserRouter(isUIRefreshEnabled ? uiRefreshRoutes : routes);
