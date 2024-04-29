@@ -61,7 +61,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
 });
 
 test('can search pretraining documents in DataSet Explorer', async ({ page }) => {
-    await page.goto('/dolma?isUIRefreshEnabled=true');
+    await page.goto('/dolma');
     await page.getByLabel('Search Term').focus();
     await page.getByLabel('Search Term').fill('Seattle');
     await page.getByRole('button', { name: 'Submit' }).click();
