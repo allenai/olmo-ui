@@ -67,14 +67,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
 });
 
 test('can search pretraining documents in DataSet Explorer', async ({ page }) => {
-    await page.goto('/?isUIRefreshEnabled=true');
-    await page.waitForLoadState('networkidle');
-    await page.getByTestId('MenuIcon').click();
-
-    await page.getByRole('link', { name: 'Dataset Explorer' }).click();
-    await page.waitForLoadState('networkidle');
-    await page.getByLabel('Close navigation drawer').click();
-
+    await page.goto('/dolma?isUIRefreshEnabled=true');
     await page.getByLabel('Search Term').focus();
     await page.getByLabel('Search Term').fill('Seattle');
     await page.getByRole('button', { name: 'Submit' }).click();
