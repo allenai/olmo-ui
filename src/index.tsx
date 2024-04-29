@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import { router } from './router';
-import { VarnishedApp } from './VarnishedApp';
+import { VarnishedApp } from './components/VarnishedApp';
 
 const enableMocking = async () => {
     if (process.env.NODE_ENV !== 'development' || process.env.ENABLE_MOCKING !== 'true') {

@@ -7,7 +7,7 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 export const ShareThreadButton = () => {
-    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const [open, setOpen] = useState(false);
 
     const handleShareThread = () => {

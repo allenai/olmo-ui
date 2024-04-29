@@ -1,21 +1,25 @@
 import { Navigate, RouteObject, createBrowserRouter } from 'react-router-dom';
 
+import { VarnishedApp } from './components/VarnishedApp';
 import { App } from './App';
+import { links } from './Links';
+import { NewApp } from './components/NewApp';
+import { ThreadDisplay, selectedThreadLoader } from './components/thread/ThreadDisplay';
 import { uiRefreshOlmoTheme } from './olmoTheme';
-import { Home } from './pages/Home';
 import { Admin } from './pages/Admin';
+import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
+import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
 import { Search, searchPageLoader } from './pages/Search';
 import { Thread } from './pages/Thread';
-import { Document } from './pages/Document';
-import { NewApp } from './components/NewApp';
-import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
-import { ThreadDisplay, selectedThreadLoader } from './components/thread/ThreadDisplay';
-import { links } from './Links';
-import { VarnishedApp } from './VarnishedApp';
+import {
+    handleRevalidation,
+    resetSelectedThreadLoader,
+    UIRefreshThreadPage,
+} from './pages/UIRefreshThreadPage';
 
 const routes = [
     {
@@ -107,6 +111,8 @@ export const uiRefreshRoutes: RouteObject[] = [
                 handle: {
                     title: 'Playground',
                 },
+                loader: resetSelectedThreadLoader,
+                shouldRevalidate: handleRevalidation,
             },
             {
                 path: links.document(':id'),

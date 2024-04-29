@@ -2,7 +2,7 @@ import { fireEvent, render, renderHook, screen, waitFor } from '@test-utils';
 
 import userEvent from '@testing-library/user-event';
 
-import { messageId } from '@/mocks/handlers/messageStreamHandlers';
+import { followupUserMessageId } from '@/mocks/handlers/messageStreamHandlers';
 import { useAppContext } from '../../AppContext';
 import { ThreadBodyView } from '../ThreadBodyView';
 
@@ -31,7 +31,7 @@ describe('ThreadBodyView', () => {
         });
 
         expect(result.current.postMessageInfo.error).toBeFalsy();
-        expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
+        expect(result.current.postMessageInfo.data?.id).toEqual(followupUserMessageId);
     });
 
     test('should be able to edit message', async () => {
@@ -60,7 +60,7 @@ describe('ThreadBodyView', () => {
             expect(result.current.postMessageInfo.loading).toEqual(false);
         });
 
-        expect(result.current.postMessageInfo.data?.id).toEqual(messageId);
+        expect(result.current.postMessageInfo.data?.id).toEqual(followupUserMessageId);
         expect(result.current.postMessageInfo.error).toBeFalsy();
     });
 });

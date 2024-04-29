@@ -1,4 +1,6 @@
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
+import { links } from '@/Links';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     InferenceOpts,
     Message,
@@ -10,8 +12,24 @@ import {
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
+import { router } from '@/router';
 import { errorToAlert } from './AlertMessageSlice';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
+
+const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
+    for (const childMessage of rootMessage.children ?? []) {
+        if (childMessage.id === messageId) {
+            return childMessage;
+        }
+
+        const foundChild = findChildMessageById(messageId, childMessage);
+
+        if (foundChild != null) {
+            return foundChild;
+        }
+    }
+
+    return null;
+};
 
 const ABORT_ERROR_MESSAGE: AlertMessage = {
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
@@ -26,6 +44,10 @@ export interface ThreadUpdateSlice {
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     postMessageInfo: FetchInfo<Message>;
+    streamPrompt: (
+        newMessage: MessagePost,
+        parentMessageId?: string
+    ) => Promise<FetchInfo<Message>>;
     postMessage: (
         newMessage: MessagePost,
         parentMessage?: Pick<Message, 'id' | 'children'>,
@@ -34,6 +56,7 @@ export interface ThreadUpdateSlice {
     ) => Promise<FetchInfo<Message>>;
     selectedModel: string;
     setSelectedModel: (selectedModel: string) => void;
+    handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
@@ -51,6 +74,127 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
         }));
+    },
+
+    handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => {
+        if (isCreatingNewThread) {
+            get().setSelectedThread(finalMessage);
+        }
+
+        set(
+            (state) => {
+                if (isCreatingNewThread) {
+                    state.threads.unshift(finalMessage);
+                } else {
+                    const rootMessage = state.threads.find(
+                        (thread) => thread.id === finalMessage.root
+                    );
+
+                    if (finalMessage.parent == null || rootMessage == null) {
+                        throw new Error(
+                            "Bad response from server. Trying to add a message that doesn't have a parent or a root."
+                        );
+                    }
+
+                    const parentToParsedMessage = findChildMessageById(
+                        finalMessage.parent,
+                        rootMessage
+                    );
+
+                    if (parentToParsedMessage != null) {
+                        if (parentToParsedMessage.children == null) {
+                            parentToParsedMessage.children = [finalMessage];
+                        } else {
+                            parentToParsedMessage.children.push(finalMessage);
+                        }
+                    }
+                }
+
+                state.abortController = null;
+                state.ongoingThreadId = null;
+                state.postMessageInfo.loading = false;
+                state.postMessageInfo.data = finalMessage;
+                state.postMessageInfo.error = false;
+            },
+            false,
+            'threadUpdate/finishCreateNewThread'
+        );
+    },
+
+    streamPrompt: async (newMessage: MessagePost) => {
+        const { inferenceOpts, addContentToMessage, addChildToSelectedThread } = get();
+        const abortController = new AbortController();
+        const isCreatingNewThread = newMessage.parent == null;
+
+        set(
+            (state) => {
+                state.abortController = abortController;
+                state.postMessageInfo.loading = true;
+                state.postMessageInfo.error = false;
+            },
+            false,
+            'threadUpdate/startCreateNewThread'
+        );
+
+        try {
+            const messageChunks = postMessageGenerator(
+                newMessage,
+                inferenceOpts,
+                abortController,
+                newMessage.parent
+            );
+
+            // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.
+            // See MDN for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+            for await (const message of messageChunks) {
+                if (isFirstMessage(message)) {
+                    const parsedMessage = parseMessage(message);
+
+                    if (isCreatingNewThread) {
+                        get().setSelectedThread(parsedMessage);
+                        await router.navigate(links.thread(parsedMessage.id));
+                    } else {
+                        addChildToSelectedThread(parsedMessage);
+                    }
+                }
+
+                if (isMessageChunk(message)) {
+                    addContentToMessage(message.message, message.content);
+                }
+
+                if (isFinalMessage(message)) {
+                    get().handleFinalMessage(parseMessage(message), isCreatingNewThread);
+                }
+            }
+        } catch (err) {
+            const addAlertMessage = get().addAlertMessage;
+
+            if (err instanceof Error && err.name === 'AbortError') {
+                addAlertMessage(ABORT_ERROR_MESSAGE);
+            } else {
+                console.error(err);
+                addAlertMessage(
+                    errorToAlert(
+                        `create-message-${new Date().getTime()}`.toLowerCase(),
+                        'Unable to Submit Message',
+                        err
+                    )
+                );
+            }
+
+            set(
+                (state) => {
+                    state.abortController = null;
+                    state.ongoingThreadId = null;
+                    state.postMessageInfo.loading = false;
+                    state.postMessageInfo.error = true;
+                },
+                false,
+                'threadUpdate/errorCreateNewThread'
+            );
+        }
+
+        return get().postMessageInfo;
     },
 
     postMessage: async (

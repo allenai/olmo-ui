@@ -1,40 +1,20 @@
 import { Stack, Typography } from '@mui/material';
 
-import { useNavigate } from 'react-router';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
-import { Outlet, useMatch } from 'react-router-dom';
-
-import { useEffect } from 'react';
-
-import { useAppContext } from '@/AppContext';
-import { links } from '@/Links';
+import { appContext, useAppContext } from '@/AppContext';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
 import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
+import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
-    const navigate = useNavigate();
-    const postMessage = useAppContext((state) => state.postMessage);
-    const postToExistingThread = useAppContext((state) => state.postToExistingThread);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadInfo.data?.id);
+    const streamPrompt = useAppContext((state) => state.streamPrompt);
 
-    // if we're on the selected thread page, handle submission differently
-    const isNewThreadPage = useMatch(links.playground);
-
-    const handlePromptSubmission = async (data: { content: string }) => {
-        if (isNewThreadPage) {
-            await postMessage(data, undefined, true);
-        } else {
-            await postToExistingThread(data);
-        }
+    const handlePromptSubmission = (data: { content: string; parent?: string }) => {
+        streamPrompt(data);
     };
-
-    useEffect(() => {
-        if (selectedThreadId) {
-            navigate(links.thread(selectedThreadId));
-        }
-    }, [selectedThreadId, navigate]);
 
     return (
         <Stack
@@ -57,4 +37,16 @@ export const UIRefreshThreadPage = () => {
             </Typography>
         </Stack>
     );
+};
+
+export const resetSelectedThreadLoader: LoaderFunction = async ({ params }) => {
+    const { resetSelectedThreadState } = appContext.getState();
+    if (params.id === undefined) {
+        resetSelectedThreadState();
+    }
+    return null;
+};
+
+export const handleRevalidation: ShouldRevalidateFunction = ({ nextUrl }) => {
+    return nextUrl.pathname === links.playground;
 };

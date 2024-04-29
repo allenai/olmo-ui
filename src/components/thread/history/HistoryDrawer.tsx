@@ -21,8 +21,8 @@ import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 
-const LIMIT = 20;
-const PAGE_SIZE = 20;
+const LIMIT = 10;
+const PAGE_SIZE = 10;
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
@@ -43,7 +43,7 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
-    const [offset, setOffSet] = useState(10);
+    const [offset, setOffSet] = useState(0);
     const creator = userInfo?.client;
 
     useEffect(() => {
@@ -100,7 +100,8 @@ export const HistoryDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}>
+                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}
+                            data-testid="Close History Drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>

@@ -1,16 +1,18 @@
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
-import { ThemeOptions } from '@mui/material';
-import { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
-import { FeatureToggleProvider } from './FeatureToggleContext';
-import { ScrollToTopOnPageChange } from './components/ScrollToTopOnPageChange';
-import { olmoTheme } from './olmoTheme';
+import { ThemeOptions } from '@mui/material';
 
-const GlobalStyle = createGlobalStyle`
+import { PropsWithChildren } from 'react';
+
+import { FeatureToggleProvider } from '../FeatureToggleContext';
+import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';
+import { olmoTheme } from '../olmoTheme';
+
+export const GlobalStyle = createGlobalStyle`
     html {
         background: transparent;
 
