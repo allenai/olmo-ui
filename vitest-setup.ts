@@ -3,6 +3,7 @@ import { server } from 'src/mocks/node';
 
 vi.mock('zustand');
 vi.stubEnv('LLMX_API_URL', 'http://localhost:8080');
+vi.stubEnv('DOLMA_API_URL', '/api');
 
 beforeAll(() => {
     server.listen();
