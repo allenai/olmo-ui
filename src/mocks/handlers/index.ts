@@ -34,7 +34,7 @@ export const handlers = [
         return HttpResponse.json(fakePromptsResponse);
     }),
 
-    http.get(`*/v1/search`, async ({ request }) => {
+    http.get(`*${process.env.DOLMA_API_URL}/v1/search`, async ({ request }) => {
         const searchParams = new URL(request.url).searchParams;
         const query = searchParams.get('query');
         const id = searchParams.get('id');
