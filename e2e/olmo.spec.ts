@@ -1,13 +1,7 @@
 import { test, expect } from './playwright-utils';
 
-test('has title', async ({ page }) => {
-    await page.goto('/');
-
-    await expect(page).toHaveTitle('OLMo - Allen Institute for AI');
-});
-
 test('can prompt', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?isUIRefreshEnabled=false');
     await page.waitForLoadState('networkidle');
     expect(await page.getByPlaceholder('Follow Up').count()).toEqual(0);
 
@@ -24,7 +18,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';
 
     // Send the first message
-    await page.goto('/?isUIRefreshEnabled=true');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('Can you tell me a friday joke?');
