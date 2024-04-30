@@ -1,8 +1,8 @@
 export const links = {
     playground: '/',
-    ourModels: '/models',
+    ourModels: 'https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778',
     datasetExplorer: '/dolma',
-    ourDatasets: '/dolma/datasets/about',
+    ourDatasets: 'https://huggingface.co/datasets/allenai/dolma',
     thread: (threadId: string) => `/thread/${threadId}`,
     faqs: '/faqs',
     dataPolicy: '/data-policy',

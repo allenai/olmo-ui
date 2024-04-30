@@ -25,6 +25,7 @@ export const NavigationLink = ({
                 sx={{
                     gap: (theme) => theme.spacing(1),
                 }}
+                target={isExternalLink ? '_blank' : '_self'}
                 href={href}>
                 <Icon>{icon}</Icon>
                 <ListItemText
