@@ -176,7 +176,7 @@ const Section1: TermsAndConditionsSection = {
         </>
     ),
     acknowledgement:
-        'I understand the OLMo Platform is a research tool for the ongoing research and development of AI systems',
+        'I understand that my queries and inputs will be used for future research and development.',
     submitButtonText: 'Next',
 };
 
