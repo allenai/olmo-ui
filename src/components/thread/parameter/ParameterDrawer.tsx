@@ -83,19 +83,17 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             desktopDrawerVariant="persistent"
             heading={
                 <Box sx={{ position: 'sticky', top: 0 }}>
-                    <Stack justifyContent="space-between" direction="row" gap={2}>
+                    <Stack
+                        justifyContent="space-between"
+                        direction="row"
+                        gap={2}
+                        alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography variant="h5" margin={0} color="primary">
                                 Parameters
                             </Typography>
                         </ListSubheader>
-                        <IconButton
-                            onClick={handleDrawerClose}
-                            sx={{
-                                verticalAlign: 'middle',
-                                display: 'inline-flex',
-                                color: 'inherit',
-                            }}>
+                        <IconButton onClick={handleDrawerClose} sx={{ color: 'inherit' }}>
                             <CloseIcon />
                         </IconButton>
                     </Stack>
