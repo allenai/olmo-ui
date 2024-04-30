@@ -59,3 +59,28 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await expect(page.getByText('This is the first response.')).toBeVisible();
     await expect(page.getByText('This is the second response.')).toBeVisible();
 });
+
+test('can search pretraining documents in DataSet Explorer', async ({ page }) => {
+    await page.goto('/dolma');
+    await page.getByLabel('Search Term').focus();
+    await page.getByLabel('Search Term').fill('Seattle');
+    await page.getByRole('button', { name: 'Submit' }).click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(
+        page.getByText(
+            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
+        )
+    ).toBeVisible();
+    await page
+        .getByText(
+            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
+        )
+        .click();
+    await page.waitForLoadState('networkidle');
+    await expect(
+        page.getByText(
+            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
+        )
+    ).toBeVisible();
+});

@@ -31,6 +31,7 @@ export const Search = () => {
         <>
             <SearchWrapper isLoading={searchState === RemoteState.Loading}>
                 <SearchForm
+                    showTooltip={false}
                     defaultValue={request.query}
                     noCardOnDesktop={true}
                     disabled={searchState === RemoteState.Loading}
