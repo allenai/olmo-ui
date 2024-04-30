@@ -39,9 +39,11 @@ export const SearchBar = ({
 
     useEffect(() => {
         if (meta === undefined) {
-            getMeta();
+            getMeta().catch((error: unknown) => {
+                console.error('getMeta() failed' + String(error));
+            });
         }
-    }, [meta]);
+    }, [getMeta, meta]);
 
     const submitSearch = (formData: { queryText: string }) => {
         if (formData.queryText.length > 0) {
@@ -57,6 +59,7 @@ export const SearchBar = ({
                     name="queryText"
                     inputProps={{
                         'aria-label': 'Search Term',
+                        maxLength: 100,
                     }}
                     placeholder={placeholder}
                     fullWidth

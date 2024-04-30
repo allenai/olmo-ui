@@ -6,10 +6,12 @@ import { ElevatedCard, useDesktopOrUp } from './shared';
 export const SearchForm = ({
     defaultValue,
     disabled,
+    showTooltip,
     noCardOnDesktop,
 }: {
     defaultValue?: string;
     disabled?: boolean;
+    showTooltip?: boolean;
     noCardOnDesktop?: boolean;
 }) => {
     const isDesktop = useDesktopOrUp();
@@ -17,7 +19,7 @@ export const SearchForm = ({
 
     return (
         <Wrapper>
-            <SearchBar defaultValue={defaultValue} disabled={disabled} />
+            <SearchBar defaultValue={defaultValue} disabled={disabled} showTooltip={showTooltip} />
         </Wrapper>
     );
 };
