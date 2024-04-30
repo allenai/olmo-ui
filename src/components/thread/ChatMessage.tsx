@@ -1,11 +1,19 @@
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack, SxProps, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { RobotAvatar } from '../avatars/RobotAvatar';
 import { Role } from '@/api/Role';
 
+const sharedMessageStyle: SxProps = {
+    whiteSpace: 'preserve',
+};
+
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
-    return <Typography fontWeight="bold">{children}</Typography>;
+    return (
+        <Typography fontWeight="bold" sx={sharedMessageStyle}>
+            {children}
+        </Typography>
+    );
 };
 
 const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
@@ -18,7 +26,7 @@ const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
                 backgroundColor: (theme) => theme.palette.background.paper,
                 padding: 2,
             }}>
-            <Typography>{children}</Typography>
+            <Typography sx={sharedMessageStyle}>{children}</Typography>
         </Paper>
     );
 };
