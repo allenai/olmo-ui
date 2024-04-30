@@ -1,6 +1,5 @@
+import { Link } from '@mui/material';
 import { PropsWithChildren } from 'react';
-import { Link } from 'react-router-dom';
-import { styled } from '@mui/material';
 
 interface TermsAndConditionsLinkProps {
     link: string;
@@ -11,13 +10,8 @@ export const TermAndConditionsLink = ({
     children,
 }: TermsAndConditionsLinkProps & PropsWithChildren) => {
     return (
-        <GrayLink target="__blank" to={link}>
+        <Link target="__blank" href={link} color="inherit" underline="always">
             {children}
-        </GrayLink>
+        </Link>
     );
 };
-
-const GrayLink = styled(Link)`
-    color: inherit;
-    text-decoration: underline;
-`;
