@@ -201,8 +201,9 @@ const Section2: TermsAndConditionsSection = {
             </GrayLink>
             , and
             <GrayLink to="https://aclanthology.org/D19-1339/" target="_blank">
+                {' '}
                 harmful
-            </GrayLink>
+            </GrayLink>{' '}
             content, especially about minority groups. We have tried to mitigate this when designing
             OLMo, but it may still contain biases. Thus, some responses from OLMo may contain
             inappropriate or offensive results.
