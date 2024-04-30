@@ -6,7 +6,6 @@ import {
     Typography,
     FormControlLabel,
     Stack,
-    styled,
     DialogContent,
     DialogActions,
 } from '@mui/material';
@@ -16,10 +15,10 @@ import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
 import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
-import { Link } from 'react-router-dom';
 
 import { StandardModal } from './StandardModal';
 import { UserClient } from '@/api/User';
+import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
 interface TermsAndConditionsSection {
     title: string;
@@ -159,11 +158,6 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
     );
 };
 
-const GrayLink = styled(Link)`
-    color: inherit;
-    text-decoration: underline;
-`;
-
 const Section1: TermsAndConditionsSection = {
     title: 'Research Purposes',
     icon: <ScienceOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
@@ -186,24 +180,22 @@ const Section2: TermsAndConditionsSection = {
     contents: (
         <>
             Large pretrained language models, such as OLMo, are trained on mostly{' '}
-            <GrayLink to="https://arxiv.org/abs/2104.08758" target="_blank">
+            <TermAndConditionsLink link="https://arxiv.org/abs/2104.08758">
                 unfiltered internet data
-            </GrayLink>
+            </TermAndConditionsLink>
             , and therefore are extremely quick to produce{' '}
-            <GrayLink
-                to="https://spectrum.ieee.org/open-ais-powerful-text-generating-tool-is-ready-for-business"
-                target="_blank">
+            <TermAndConditionsLink link="https://spectrum.ieee.org/open-ais-powerful-text-generating-tool-is-ready-for-business">
                 toxic
-            </GrayLink>
+            </TermAndConditionsLink>
             ,
-            <GrayLink to="https://arxiv.org/abs/2009.06807" target="_blank">
+            <TermAndConditionsLink link="https://arxiv.org/abs/2009.06807">
                 unethical
-            </GrayLink>
+            </TermAndConditionsLink>
             , and
-            <GrayLink to="https://aclanthology.org/D19-1339/" target="_blank">
+            <TermAndConditionsLink link="https://aclanthology.org/D19-1339/">
                 {' '}
                 harmful
-            </GrayLink>{' '}
+            </TermAndConditionsLink>{' '}
             content, especially about minority groups. We have tried to mitigate this when designing
             OLMo, but it may still contain biases. Thus, some responses from OLMo may contain
             inappropriate or offensive results.
