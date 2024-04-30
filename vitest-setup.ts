@@ -1,12 +1,17 @@
 import '@testing-library/jest-dom/vitest';
-import { server } from 'src/mocks/node';
+import { SetupServerApi } from 'msw/node';
 
 vi.mock('zustand');
 vi.stubEnv('LLMX_API_URL', 'http://localhost:8080');
 vi.stubEnv('DOLMA_API_URL', '/api');
 
-beforeAll(() => {
-    server.listen();
+let server: SetupServerApi;
+
+beforeAll(async () => {
+    const { server: importedServer } = await import('src/mocks/node');
+    server = importedServer;
+
+    server.listen({ onUnhandledRequest: 'error' });
     // need to mock sendBeacon, which is a part of our analytics tracking
     Object.assign(navigator, {
         sendBeacon: async () => {},
