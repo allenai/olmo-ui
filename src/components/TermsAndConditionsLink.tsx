@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { styled } from '@mui/material';
 
 interface TermsAndConditionsLinkProps {
     link: string;
