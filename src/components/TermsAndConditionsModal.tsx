@@ -186,15 +186,26 @@ const Section2: TermsAndConditionsSection = {
     contents: (
         <>
             Large pretrained language models, such as OLMo, are trained on mostly{' '}
-            <GrayLink to="https://arxiv.org/abs/2104.08758">unfiltered internet data</GrayLink>, and
-            therefore are extremely quick to produce{' '}
-            <GrayLink to="https://spectrum.ieee.org/open-ais-powerful-text-generating-tool-is-ready-for-business">
+            <GrayLink to="https://arxiv.org/abs/2104.08758" target="_blank">
+                unfiltered internet data
+            </GrayLink>
+            , and therefore are extremely quick to produce{' '}
+            <GrayLink
+                to="https://spectrum.ieee.org/open-ais-powerful-text-generating-tool-is-ready-for-business"
+                target="_blank">
                 toxic
             </GrayLink>
-            , <GrayLink to="https://arxiv.org/abs/2009.06807">unethical</GrayLink>, and
-            <GrayLink to="https://aclanthology.org/D19-1339/"> harmful</GrayLink> content,
-            especially about minority groups. We have tried to mitigate this when designing OLMo,
-            but it may still contain biases. Thus, some responses from OLMo may contain
+            ,{' '}
+            <GrayLink to="https://arxiv.org/abs/2009.06807" target="_blank">
+                unethical
+            </GrayLink>
+            , and
+            <GrayLink to="https://aclanthology.org/D19-1339/" target="_blank">
+                {' '}
+                harmful
+            </GrayLink>{' '}
+            content, especially about minority groups. We have tried to mitigate this when designing
+            OLMo, but it may still contain biases. Thus, some responses from OLMo may contain
             inappropriate or offensive results.
         </>
     ),
