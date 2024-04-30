@@ -1,4 +1,4 @@
-import { delay, http, HttpResponse, passthrough } from 'msw';
+import { http, HttpResponse, passthrough } from 'msw';
 
 import { Schema, SchemaApiUrl } from '@/api/Schema';
 
@@ -10,33 +10,38 @@ import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTempl
 
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetSearchResponse } from './datasetSearchResponse';
+import { datasetDocumentResponse } from './datasetDocumentResponse';
 
 export const handlers = [
     ...messageStreamHandlers,
 
-    http.get(`*${SchemaApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${SchemaApiUrl}`, () => {
         return HttpResponse.json(fakeSchemaResponse);
     }),
 
-    http.get(`*${WhoamiApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
             client: 'murphy@allenai.org',
             hasAcceptedTermsAndConditions: true,
         });
     }),
 
-    http.get(`*${ModelApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${ModelApiUrl}`, () => {
         return HttpResponse.json(fakeModelsResponse);
     }),
 
-    http.get(`*${PromptTemplatesApiUrl}`, () => {
+    http.get(`${process.env.LLMX_API_URL}${PromptTemplatesApiUrl}`, () => {
         return HttpResponse.json(fakePromptsResponse);
     }),
 
-    http.get(`${process.env.DOLMA_API_URL}/v1/search`, async ({ request }) => {
-        const query = new URL(request.url).searchParams.get('query');
+    http.get(`${process.env.DOLMA_API_URL}/v1/search`, ({ request }) => {
+        const searchParams = new URL(request.url).searchParams;
+        const query = searchParams.get('query');
+        const id = searchParams.get('id');
         if (query === 'Seattle') {
-            await delay();
+            if (id === 'a718be1486e24cbb7e0aee7d0bef8442') {
+                return HttpResponse.json(datasetDocumentResponse);
+            }
             return HttpResponse.json(datasetSearchResponse);
         }
 

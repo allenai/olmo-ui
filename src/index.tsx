@@ -6,7 +6,7 @@ import { router } from './router';
 import { VarnishedApp } from './components/VarnishedApp';
 
 const enableMocking = async () => {
-    if (process.env.NODE_ENV !== 'development' || process.env.ENABLE_MOCKING !== 'true') {
+    if (process.env.NODE_ENV === 'production' || process.env.ENABLE_MOCKING !== 'true') {
         return;
     }
 
