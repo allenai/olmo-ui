@@ -61,22 +61,30 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
 
     deleteThread: async (threadId: string) => {
         try {
-            set((state) => ({
-                deletedThreadInfo: { ...state.deletedThreadInfo, loading: true, error: false },
-            }));
+            set(
+                (state) => {
+                    state.deletedThreadInfo.loading = true;
+                    state.deletedThreadInfo.error = false;
+                },
+                false,
+                'threadUpdate/startDeleteThread'
+            );
 
             await messageClient.deleteThread(threadId);
 
-            set((state) => {
-                const deletedThreadInfo = { ...state.deletedThreadInfo, loading: false };
-
-                const messages = state.allThreadInfo.data.messages.filter((m) => m.id !== threadId);
-                const data = { ...state.allThreadInfo.data, messages };
-                const allThreadInfo = { ...state.allThreadInfo, data };
-                const threads = state.threads.filter((thread) => thread.id !== threadId);
-                get().deleteSelectedThread();
-                return { deletedThreadInfo, allThreadInfo, threads };
-            });
+            set(
+                (state) => {
+                    state.deletedThreadInfo.loading = false;
+                    state.allThreadInfo.data.messages.filter((m) => m.id !== threadId);
+                    const threadIndexToRemove = state.threads.findIndex(
+                        (thread) => thread.id === threadId
+                    );
+                    state.threads.splice(threadIndexToRemove, 1);
+                    get().deleteSelectedThread();
+                },
+                false,
+                'threadUpdate/finishDeleteThread'
+            );
         } catch (err) {
             get().addAlertMessage(
                 errorToAlert(
@@ -85,9 +93,14 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     err
                 )
             );
-            set((state) => ({
-                deletedThreadInfo: { ...state.deletedThreadInfo, error: true, loading: false },
-            }));
+            set(
+                (state) => {
+                    state.deletedThreadInfo.loading = false;
+                    state.deletedThreadInfo.error = true;
+                },
+                false,
+                'threadUpdate/errorDeleteThread'
+            );
         }
         return get().deletedThreadInfo;
     },
