@@ -5,17 +5,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
-import {
-    Box,
-    Grid,
-    Typography,
-    Slider,
-    Input,
-    Stack,
-    Tooltip,
-    Button,
-    IconButton,
-} from '@mui/material';
+import { Box, Grid, Typography, Slider, Input, Tooltip, Button, IconButton } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface Props {
@@ -62,7 +52,7 @@ export const NewInputSlider = ({
             return;
         }
         onChange && onChange(value);
-    }, [value]);
+    }, [onChange, value]);
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         // this component will only have 1 value
@@ -113,14 +103,17 @@ export const NewInputSlider = ({
                 </>
             }>
             <Box sx={{ width: '100%' }}>
-                <Stack direction="row" alignItems="center" gap={1}></Stack>
                 <Grid container spacing={4} alignItems="center">
-                    <Grid item>
+                    <Grid
+                        item
+                        xs={12}
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center"
+                        gap={1}>
                         <Typography id="input-slider" gutterBottom>
                             {label}
                         </Typography>
-                    </Grid>
-                    <Grid item>
                         {!!dialogContent && !!dialogTitle && (
                             <IconButton
                                 sx={{ color: 'inherit' }}
