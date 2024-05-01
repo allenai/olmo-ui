@@ -47,8 +47,10 @@ export const HistoryDrawer = (): JSX.Element => {
     const creator = userInfo?.client;
 
     useEffect(() => {
-        getAllThreads(offset, creator, LIMIT);
-    }, []);
+        if (creator) {
+            getAllThreads(offset, creator, LIMIT);
+        }
+    }, [creator]);
 
     const threadsFromToday: Message[] = [];
     const threadsFromThisWeek: Message[] = [];
