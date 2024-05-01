@@ -113,14 +113,17 @@ export const NewInputSlider = ({
                 </>
             }>
             <Box sx={{ width: '100%' }}>
-                <Stack direction="row" alignItems="center" gap={1}></Stack>
                 <Grid container spacing={4} alignItems="center">
-                    <Grid item>
+                    <Grid
+                        item
+                        xs={12}
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center"
+                        gap={1}>
                         <Typography id="input-slider" gutterBottom>
                             {label}
                         </Typography>
-                    </Grid>
-                    <Grid item>
                         {!!dialogContent && !!dialogTitle && (
                             <IconButton
                                 sx={{ color: 'inherit' }}
