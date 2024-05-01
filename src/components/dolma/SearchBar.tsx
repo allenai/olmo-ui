@@ -65,7 +65,11 @@ export const SearchBar = ({
                     fullWidth
                     disabled={disabled}
                 />
-                <Stack direction="row" justifyContent="space-between" width="100%">
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%">
                     <Button
                         type="submit"
                         variant="contained"
@@ -83,8 +87,12 @@ export const SearchBar = ({
                                 href={links.faqs}
                                 sx={{
                                     color: (theme) => theme.palette.text.primary,
-                                    padding: 0,
-                                    display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
+                                    padding: 1,
+                                    right: '-8px',
+                                    display: {
+                                        xs: 'none',
+                                        [DESKTOP_LAYOUT_BREAKPOINT]: 'inline-flex',
+                                    },
                                 }}>
                                 <InfoOutlinedIcon />
                             </IconButton>

@@ -93,6 +93,7 @@ const AboutTheseResults = () => (
         size="small"
         href={links.faqs}
         sx={{
+            '&:hover': { borderRadius: '12px' },
             color: (theme) => theme.palette.text.primary,
         }}>
         <InfoOutlinedIcon />
