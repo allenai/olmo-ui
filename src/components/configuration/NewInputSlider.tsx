@@ -52,7 +52,7 @@ export const NewInputSlider = ({
             return;
         }
         onChange && onChange(value);
-    }, [onChange, value]);
+    }, [value]);
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         // this component will only have 1 value
