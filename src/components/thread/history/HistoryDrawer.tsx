@@ -94,7 +94,11 @@ export const HistoryDrawer = (): JSX.Element => {
                         top: 0,
                         backgroundColor: (theme) => theme.palette.background.paper,
                     }}>
-                    <Stack justifyContent="space-between" direction="row" gap={2}>
+                    <Stack
+                        justifyContent="space-between"
+                        direction="row"
+                        gap={2}
+                        alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography variant="h5" margin={0} color="primary">
                                 History
@@ -102,7 +106,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ verticalAlign: 'middle', display: 'inline-flex' }}
+                            sx={{ color: 'inherit' }}
                             data-testid="Close History Drawer">
                             <CloseIcon />
                         </IconButton>
