@@ -16,7 +16,7 @@ const ThreadButtons = (): JSX.Element => {
             startIcon={<PlusIcon />}
             title="New Thread"
             smallerVariant="outlined"
-            biggerVariant="contained"
+            biggerVariant="outlined"
             href={links.playground}
         />
     );
