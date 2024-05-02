@@ -13,10 +13,12 @@ export const ThreadCard = ({ children }: ThreadPageCardProps): JSX.Element => {
         <Card
             variant={isDesktopOrUp ? 'elevation' : 'outlined'}
             sx={(theme) => ({
+                borderRadius: 0,
                 // This component uses screen size rather than container queries
                 // We want it to always be a card on desktop and always be flat on mobile
                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                     padding: 2,
+                    borderRadius: '12px',
                 },
 
                 backgroundColor: (theme) => theme.palette.background.default,
