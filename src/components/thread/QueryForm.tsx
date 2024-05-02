@@ -53,7 +53,11 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
                 />
-                <Button type="submit" variant="contained" data-testid="Submit Prompt Button">
+                <Button
+                    type="submit"
+                    variant="contained"
+                    data-testid="Submit Prompt Button"
+                    aria-label="Submit Prompt">
                     Submit
                 </Button>
             </Stack>

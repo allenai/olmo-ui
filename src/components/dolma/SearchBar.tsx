@@ -73,6 +73,7 @@ export const SearchBar = ({
                     <Button
                         type="submit"
                         variant="contained"
+                        aria-label="Submit"
                         {...submitButtonProps}
                         disabled={disabled}>
                         Submit
