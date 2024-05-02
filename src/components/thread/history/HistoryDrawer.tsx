@@ -20,7 +20,6 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
-import { inherits } from 'util';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;
