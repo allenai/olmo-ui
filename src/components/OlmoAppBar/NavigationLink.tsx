@@ -1,6 +1,6 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Icon, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Icon, ListItem, ListItemButton, ListItemText, SxProps, Theme } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 
 interface NavigationLinkProps extends PropsWithChildren {
@@ -8,6 +8,7 @@ interface NavigationLinkProps extends PropsWithChildren {
     href: string;
     selected?: boolean;
     isExternalLink?: boolean;
+    sx?: SxProps<Theme>;
 }
 
 export const NavigationLink = ({
@@ -16,9 +17,10 @@ export const NavigationLink = ({
     href,
     selected,
     isExternalLink,
+    sx,
 }: NavigationLinkProps) => {
     return (
-        <ListItem disableGutters>
+        <ListItem disableGutters sx={sx}>
             <ListItemButton
                 alignItems="center"
                 selected={selected}

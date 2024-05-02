@@ -1,24 +1,25 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
 
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 
 import DatasetIcon from '@mui/icons-material/DatasetOutlined';
-
-import MagnifyingGlassIcon from '@mui/icons-material/Search';
+import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 
 import { logos } from '@allenai/varnish2/components';
 
 import { UIMatch, useMatches } from 'react-router-dom';
 
-import { links } from '../../Links';
+import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 
-import { NavigationFooter } from './NavigationFooter';
-import { NavigationHeading } from './NavigationHeading';
-import { NavigationLink } from './NavigationLink';
+import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+
+import { links } from '@/Links';
+
 import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
+import { NavigationLink } from './NavigationLink';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -47,9 +48,8 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
             desktopDrawerSx={{ gridArea: 'nav' }}>
-            <Stack component="nav" direction="column" justifyContent="space-between" height={1}>
-                <List>
-                    <NavigationHeading>Models</NavigationHeading>
+            <Box component="nav" sx={{ height: 1 }}>
+                <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
                     <NavigationLink
                         href={links.playground}
                         icon={<ChatBubbleIcon />}
@@ -61,13 +61,12 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                         icon={<ModelTrainingIcon />}
                         selected={curriedDoesMatchPath(links.ourModels)}
                         isExternalLink={true}>
-                        Our Models
+                        OLMo Models
                     </NavigationLink>
                     <Divider />
-                    <NavigationHeading>Datasets</NavigationHeading>
                     <NavigationLink
                         href={links.datasetExplorer}
-                        icon={<MagnifyingGlassIcon />}
+                        icon={<ExploreIcon />}
                         selected={curriedDoesMatchPath(links.datasetExplorer)}>
                         Dataset Explorer
                     </NavigationLink>
@@ -76,11 +75,19 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                         icon={<DatasetIcon />}
                         selected={curriedDoesMatchPath(links.ourDatasets)}
                         isExternalLink={true}>
-                        Our Datasets
+                        Dolma Dataset
                     </NavigationLink>
-                </List>
-                <NavigationFooter />
-            </Stack>
+                    <NavigationLink
+                        icon={<HelpCenterIcon />}
+                        href={links.faqs}
+                        sx={{ marginBlockStart: 'auto' }}>
+                        FAQ
+                    </NavigationLink>
+                    <NavigationLink icon={<LogoutIcon />} href={links.logOut}>
+                        Log Out
+                    </NavigationLink>
+                </Stack>
+            </Box>
         </ResponsiveDrawer>
     );
 };
