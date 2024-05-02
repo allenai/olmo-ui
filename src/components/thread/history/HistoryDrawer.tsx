@@ -20,6 +20,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
+import { inherits } from 'util';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;
@@ -92,7 +93,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     sx={{
                         position: 'sticky',
                         top: 0,
-                        backgroundColor: (theme) => theme.palette.background.default,
+                        backgroundColor: 'inherit',
                     }}>
                     <Stack
                         justifyContent="space-between"
