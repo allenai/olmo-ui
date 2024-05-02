@@ -33,10 +33,10 @@ const ThreadButtons = (): JSX.Element => {
                     },
                 })}>
                 <NewThreadButton />
-                <ParameterButton />
-                <HistoryButton />
                 <DeleteThreadButton />
                 <ShareThreadButton />
+                <ParameterButton />
+                <HistoryButton />
             </Stack>
 
             {/* Small screens */}
@@ -49,10 +49,10 @@ const ThreadButtons = (): JSX.Element => {
                     },
                 })}>
                 <NewThreadButton />
-                <ParameterButton />
-                <HistoryButton />
                 <DeleteThreadButton />
                 <ShareThreadButton />
+                <ParameterButton />
+                <HistoryButton />
             </ButtonGroup>
         </>
     );
