@@ -17,6 +17,7 @@ export const HistoryButton = () => {
     return (
         <ResponsiveButton
             variant={isHistoryDrawerOpen ? 'contained' : 'outlined'}
+            color="secondary"
             startIcon={<HistoryIcon />}
             title="History"
             onClick={toggleHistoryDrawer}

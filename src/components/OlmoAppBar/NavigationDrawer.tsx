@@ -16,10 +16,14 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 
+import { useState } from 'react';
+
 import { links } from '@/Links';
 
-import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
+import { ResponsiveDrawerProps } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
+
+import MiniDrawer from './MiniDrawer';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -41,13 +45,19 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
+    const [open, setOpen] = useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+
     return (
-        <ResponsiveDrawer
-            {...props}
-            onClose={onClose}
-            mobileHeading={<MobileHeading onClose={onClose} />}
-            heading={<DesktopHeading />}
-            desktopDrawerSx={{ gridArea: 'nav' }}>
+        <MiniDrawer>
+            <MobileHeading onClose={handleDrawerClose} />
             <Box component="nav" sx={{ height: 1 }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
                     <NavigationLink
@@ -86,7 +96,15 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                     </NavigationLink>
                 </Stack>
             </Box>
-        </ResponsiveDrawer>
+        </MiniDrawer>
+        // <ResponsiveDrawer
+        //     {...props}
+        //     onClose={onClose}
+        //     mobileHeading={<MobileHeading onClose={onClose} />}
+        //     heading={<DesktopHeading />}
+        //     desktopDrawerSx={{ gridArea: 'nav' }}>
+
+        // </ResponsiveDrawer>
     );
 };
 
