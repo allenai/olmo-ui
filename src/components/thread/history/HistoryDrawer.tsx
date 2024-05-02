@@ -92,7 +92,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     sx={{
                         position: 'sticky',
                         top: 0,
-                        backgroundColor: (theme) => theme.palette.background.paper,
+                        backgroundColor: 'inherit',
                     }}>
                     <Stack
                         justifyContent="space-between"

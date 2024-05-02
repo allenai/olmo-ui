@@ -82,7 +82,13 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             anchor="right"
             desktopDrawerVariant="persistent"
             heading={
-                <Box sx={{ position: 'sticky', top: 0 }}>
+                <Box
+                    sx={{
+                        position: 'sticky',
+                        top: 0,
+                        background: 'inherit',
+                        zIndex: 1,
+                    }}>
                     <Stack
                         justifyContent="space-between"
                         direction="row"
