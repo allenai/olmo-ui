@@ -23,6 +23,8 @@ import { NewModelSelect } from '@/components/NewModelSelect';
 import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { closingDrawerOnNavigation } from '@/utils/closingDrawerOnNavgation-utils';
+import { links } from '@/Links';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -76,6 +78,11 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             handleDrawerClose();
         }
     };
+
+    closingDrawerOnNavigation({
+        path: links.datasetExplorer,
+        handleDrawerClose,
+    });
 
     return (
         <ResponsiveDrawer

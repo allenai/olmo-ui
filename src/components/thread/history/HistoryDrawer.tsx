@@ -18,6 +18,8 @@ import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
+import { links } from '@/Links';
+import { closingDrawerOnNavigation } from '@/utils/closingDrawerOnNavgation-utils';
 
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
@@ -87,6 +89,11 @@ export const HistoryDrawer = (): JSX.Element => {
         onLoadMore: handleScroll,
         disabled: allThreadInfo.error,
         delayInMs: 100,
+    });
+
+    closingDrawerOnNavigation({
+        path: links.datasetExplorer,
+        handleDrawerClose,
     });
 
     return (
