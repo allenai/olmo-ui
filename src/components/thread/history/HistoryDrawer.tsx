@@ -18,7 +18,7 @@ import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
-import { useKeyboardShortCut } from '@/utils/keyboard-util';
+import { KeyBoardKey, useKeyboardShortCut } from '@/utils/keyboard-util';
 
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
@@ -83,7 +83,7 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     useKeyboardShortCut({
-        key: 'Escape',
+        key: KeyBoardKey.ESC,
         onKeyPressed: handleDrawerClose,
     });
 

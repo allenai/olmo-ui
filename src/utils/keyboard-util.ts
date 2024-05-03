@@ -5,6 +5,10 @@ interface UseKeyboardShortCutProps {
     onKeyPressed: () => void;
 }
 
+export const KeyBoardKey = {
+    ESC: 'Escape',
+} as const;
+
 export const useKeyboardShortCut = ({ key, onKeyPressed }: UseKeyboardShortCutProps) => {
     useEffect(() => {
         const onKeyDownHandler = (event: KeyboardEvent) => {
