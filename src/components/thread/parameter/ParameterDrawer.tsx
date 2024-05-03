@@ -68,7 +68,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             }
         }
     };
-
     return (
         <ResponsiveDrawer
             onClose={handleDrawerClose}
