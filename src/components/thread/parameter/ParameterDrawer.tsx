@@ -26,7 +26,7 @@ import { NewModelSelect } from '@/components/NewModelSelect';
 import { NewInputSlider } from '@/components/configuration/NewInputSlider';
 import { Schema } from '@/api/Schema';
 import { ParameterSnackBar } from '@/components/ParameterSnackBar';
-import { useKeyboardShortCut } from '@/utils/keyboard-util';
+import { KeyBoardKey, useKeyboardShortCut } from '@/utils/keyboard-util';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -77,7 +77,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     };
 
     useKeyboardShortCut({
-        key: 'Escape',
+        key: KeyBoardKey.ESC,
         onKeyPressed: handleDrawerClose,
     });
 
