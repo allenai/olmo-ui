@@ -12,8 +12,9 @@ import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
-import { FooterLink } from './FooterLink';
+import { FooterLink } from './Footer/FooterLink';
 import { links } from '@/Links';
+import { Footer } from './Footer/Footer';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -72,10 +73,7 @@ export const NewApp = () => {
                         maxWidth={false}>
                         <MobilePageTitle />
                         <Outlet />
-                        <Stack direction="row" flexWrap="wrap" gap={1}>
-                            <FooterLink href={links.feedbackForm}>Give Feedback</FooterLink>
-                            <FooterLink href={links.dataPolicy}>Data Policy</FooterLink>
-                        </Stack>
+                        <Footer />
                     </Container>
                 </>
             ) : null}
