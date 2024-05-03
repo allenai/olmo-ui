@@ -77,10 +77,8 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                         isExternalLink={true}>
                         Dolma Dataset
                     </NavigationLink>
-                    <NavigationLink
-                        icon={<HelpCenterIcon />}
-                        href={links.faqs}
-                        sx={{ marginBlockStart: 'auto' }}>
+                    <Divider sx={{ marginBlockStart: 'auto' }} />
+                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
                         FAQ
                     </NavigationLink>
                     <NavigationLink icon={<LogoutIcon />} href={links.logOut}>
