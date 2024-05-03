@@ -20,6 +20,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
+import { useKeyboardShortCut } from '@/utils/keyboard-util';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;
@@ -79,6 +80,11 @@ export const HistoryDrawer = (): JSX.Element => {
         onLoadMore: handleScroll,
         disabled: allThreadInfo.error,
         delayInMs: 100,
+    });
+
+    useKeyboardShortCut({
+        key: 'Escape',
+        onKeyPressed: handleDrawerClose,
     });
 
     return (
