@@ -1,8 +1,9 @@
 import { Box, Paper, Stack, SxProps, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { RobotAvatar } from '../avatars/RobotAvatar';
 import { Role } from '@/api/Role';
+
+import { RobotAvatar } from '../avatars/RobotAvatar';
 
 const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',

@@ -3,13 +3,14 @@ import FullscreenIconExit from '@mui/icons-material/FullscreenExit';
 import { Dialog, DialogContent, Grid, IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { useAppContext } from '../../AppContext';
-import { MessagePost } from '../../api/Message';
-import { RemoteState } from '../../contexts/util';
-import { StandardContainer } from '../StandardContainer';
-import { Parameters } from '../configuration/Parameters';
-import { NewQueryForm } from './NewQueryForm';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+
+import { MessagePost } from '../../api/Message';
+import { useAppContext } from '../../AppContext';
+import { RemoteState } from '../../contexts/util';
+import { Parameters } from '../configuration/Parameters';
+import { StandardContainer } from '../StandardContainer';
+import { NewQueryForm } from './NewQueryForm';
 
 export const NewQuery = () => {
     const modelRemoteState = useAppContext((state) => state.modelRemoteState);

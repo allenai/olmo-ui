@@ -1,8 +1,8 @@
 import { fireEvent, render, renderHook, screen, waitFor } from '@test-utils';
-
 import userEvent from '@testing-library/user-event';
 
 import { followupUserMessageId } from '@/mocks/handlers/messageStreamHandlers';
+
 import { useAppContext } from '../../AppContext';
 import { ThreadBodyView } from '../ThreadBodyView';
 

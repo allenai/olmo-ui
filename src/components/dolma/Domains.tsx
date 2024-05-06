@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { staticData } from '../../api/dolma/staticData';
+import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { DomainData, DomainsTable } from './DomainsTable';
 
 export const Domains = () => {

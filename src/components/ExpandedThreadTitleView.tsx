@@ -1,15 +1,13 @@
-import { useState } from 'react';
 import { MoreHoriz } from '@mui/icons-material';
-
 import { Stack } from '@mui/material';
-
+import { useState } from 'react';
 import styled from 'styled-components';
 
+import { LabelRating } from '../api/Label';
 import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
-import { MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
-import { LabelRating } from '../api/Label';
 import { UserAvatar } from './avatars/UserAvatar';
+import { MessageActionsMenu, MessageContextMenu } from './MessageActionsMenu';
 
 interface ExpandedThreadTitleViewProps {
     copyableTitle: React.ReactNode;

@@ -1,15 +1,15 @@
+import CheckIcon from '@mui/icons-material/Check';
 import {
-    TableContainer,
+    Container,
     Paper,
     Table,
+    TableBody,
+    TableCell,
+    tableCellClasses,
+    TableContainer,
     TableHead,
     TableRow,
-    TableCell,
-    TableBody,
-    tableCellClasses,
-    Container,
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 

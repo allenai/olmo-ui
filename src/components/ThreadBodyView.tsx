@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Box, Grid, Stack } from '@mui/material';
-
-import { Message } from '../api/Message';
-import { BarOnRightContainer } from './BarOnRightContainer';
-import { useAppContext } from '../AppContext';
-import { LabelRating } from '../api/Label';
-
 import 'highlight.js/styles/github-dark.css';
+
+import { Box, Grid, Stack } from '@mui/material';
+import { useState } from 'react';
+
+import { LabelRating } from '../api/Label';
+import { Message } from '../api/Message';
+import { useAppContext } from '../AppContext';
+import { BarOnRightContainer } from './BarOnRightContainer';
 import { BaseModelResponseView } from './ResponseView/BaseModelResponseView';
 import { ChatResponseView } from './ThreadBody/ChatResponseView';
 import { ThreadContextMenu } from './ThreadBody/ThreadContextMenu';

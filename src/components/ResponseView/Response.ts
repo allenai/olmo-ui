@@ -1,11 +1,11 @@
+import 'highlight.js/styles/github-dark.css';
+
 import { Button, Stack } from '@mui/material';
-import styled from 'styled-components';
+import hljs from 'highlight.js';
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
-import hljs from 'highlight.js';
-
-import 'highlight.js/styles/github-dark.css';
 import { ReactNode } from 'react';
+import styled from 'styled-components';
 
 export interface ResponseProps {
     msgId: string;

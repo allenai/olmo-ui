@@ -2,11 +2,10 @@
  * A slider with a number control next to it.
  */
 
+import { Box, Grid, Input as MuiInput, Slider, Typography } from '@mui/material';
 import { useEffect, useRef } from 'react';
-
 import * as React from 'react';
 import styled from 'styled-components';
-import { Box, Grid, Typography, Slider, Input as MuiInput } from '@mui/material';
 
 interface Props {
     label: string;

@@ -1,11 +1,10 @@
 import { render, renderHook, screen, waitFor } from '@test-utils';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-
 import userEvent from '@testing-library/user-event';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
-import { links } from '@/Links';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { uiRefreshRoutes } from '@/router';
 
 describe('Dataset Explorer Search', () => {

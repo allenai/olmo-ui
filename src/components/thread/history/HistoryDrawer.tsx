@@ -4,22 +4,22 @@ import {
     Divider,
     IconButton,
     ListItem,
+    ListItemText,
     ListSubheader,
     Stack,
     Typography,
-    ListItemText,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import { useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
-import { useAppContext } from '@/AppContext';
 import { Message } from '@/api/Message';
+import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
-import { HistoryDrawerSection } from './HistoryDrawerSection';
-
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
+
+import { HistoryDrawerSection } from './HistoryDrawerSection';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;

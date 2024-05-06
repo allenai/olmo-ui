@@ -1,6 +1,3 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
 import {
     Box,
     Card,
@@ -15,6 +12,9 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 

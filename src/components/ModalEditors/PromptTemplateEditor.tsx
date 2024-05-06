@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
+    FilledInput,
     FormControl,
     FormLabel,
     OutlinedInput,
     Stack,
-    FilledInput,
 } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 import { PromptTemplate } from '../../api/PromptTemplate';
 import { ArchivedAlert, Metadata } from './Shared';

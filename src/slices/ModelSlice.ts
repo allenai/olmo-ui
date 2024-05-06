@@ -1,9 +1,9 @@
 import { StateCreator } from 'zustand';
 
-import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
-import { RemoteState } from '../contexts/util';
-import { WhoamiApiUrl } from '../api/User';
 import { ModelClient, ModelList } from '../api/Model';
+import { WhoamiApiUrl } from '../api/User';
+import { RemoteState } from '../contexts/util';
+import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
 
 export interface ModelSlice {
     modelRemoteState?: RemoteState;

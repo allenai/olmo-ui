@@ -1,23 +1,24 @@
-import React, { useCallback, useState } from 'react';
+import CircleIcon from '@mui/icons-material/Circle';
+import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
+import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
+import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
 import {
     Button,
     Checkbox,
+    DialogActions,
+    DialogContent,
     DialogTitle,
-    Typography,
     FormControlLabel,
     Stack,
-    DialogContent,
-    DialogActions,
+    Typography,
 } from '@mui/material';
-import CircleIcon from '@mui/icons-material/Circle';
-import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
-import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
-import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
-import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+import React, { useCallback, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
-import { StandardModal } from './StandardModal';
 import { UserClient } from '@/api/User';
+
+import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
 interface TermsAndConditionsSection {

@@ -2,8 +2,8 @@ import { LinearProgress } from '@mui/material';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
-import { router } from './router';
 import { VarnishedApp } from './components/VarnishedApp';
+import { router } from './router';
 
 const enableMocking = async () => {
     if (process.env.NODE_ENV === 'production' || process.env.ENABLE_MOCKING !== 'true') {

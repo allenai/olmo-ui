@@ -1,6 +1,6 @@
 import { Message, parseMessage } from '@/api/Message';
-import { appContext } from '@/AppContext';
 import { Role } from '@/api/Role';
+import { appContext } from '@/AppContext';
 
 describe('SelectedThreadSlice', () => {
     it('should map and set a selected thread', () => {

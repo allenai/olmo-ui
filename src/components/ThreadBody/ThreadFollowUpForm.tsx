@@ -1,14 +1,12 @@
 import { LinearProgress } from '@mui/material';
+import React from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
-
 import styled from 'styled-components';
 
-import React from 'react';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { Message, MessagePost } from '../../api/Message';
-
 import { useAppContext } from '../../AppContext';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 interface ThreadFollowUpFormProps {
     curMessage: Message;

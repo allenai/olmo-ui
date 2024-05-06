@@ -1,5 +1,4 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-
 import { useEffect } from 'react';
 
 import { useAppContext } from '../AppContext';

@@ -1,6 +1,6 @@
 import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
-import { ThemeOptions, alpha } from '@mui/material';
+import { alpha, ThemeOptions } from '@mui/material';
 import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides

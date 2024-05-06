@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
 import { Stack } from '@mui/material';
 import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 import { search } from '../../api/dolma/search';
 import { NoPaddingGrid } from './shared';

@@ -1,4 +1,4 @@
-import { ListItem, ListItemText, Link } from '@mui/material';
+import { Link, ListItem, ListItemText } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 interface FooterLinkProps extends PropsWithChildren {

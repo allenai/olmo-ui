@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 import { LinearProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { staticData } from '../../api/dolma/staticData';
-import { DistData, MapDistData, getDistAndMapDistData } from './sharedCharting';
+import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { DistChart } from './DistChart';
+import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 
 export const WordDist = () => {
     const [loading, setLoading] = useState<boolean>(false);
