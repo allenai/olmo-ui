@@ -99,7 +99,8 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}
+            drawerRef={drawerRef}>
             <Stack component="nav" direction="column" justifyContent="space-between" height="1">
                 <List>
                     <ListItem>

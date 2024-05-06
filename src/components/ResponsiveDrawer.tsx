@@ -15,6 +15,7 @@ export interface ResponsiveDrawerProps
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
+    drawerRef: React.RefObject<HTMLDivElement>;
 }
 
 const GlobalStyle = () => (
@@ -38,6 +39,7 @@ export const ResponsiveDrawer = ({
     drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
+    drawerRef,
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
 
@@ -65,7 +67,9 @@ export const ResponsiveDrawer = ({
                             borderRight: 'none',
                         },
                     }}
-                    data-testid="Drawer">
+                    data-testid="Drawer"
+                    ref={drawerRef}
+                    tabIndex={0}>
                     {heading}
                     {children}
                 </Drawer>

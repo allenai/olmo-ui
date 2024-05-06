@@ -10,7 +10,7 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import { Message } from '@/api/Message';
@@ -82,9 +82,13 @@ export const HistoryDrawer = (): JSX.Element => {
         delayInMs: 100,
     });
 
+    const drawerRef = createRef<HTMLDivElement>();
+
     useKeyboardShortCut({
         key: KeyBoardKey.ESC,
         onKeyPressed: handleDrawerClose,
+        ref: drawerRef,
+        isDrawerOpen,
     });
 
     return (
@@ -120,7 +124,8 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}
+            drawerRef={drawerRef}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'scroll' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
