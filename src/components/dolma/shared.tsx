@@ -148,25 +148,12 @@ export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
     );
 };
 
-// taken from https://mui.com/material-ui/react-use-media-query/#migrating-from-withwidth
-/**
- * Be careful using this hook. It only works because the number of
- * breakpoints in theme is static. It will break once you change the number of
- * breakpoints. See https://legacy.reactjs.org/docs/hooks-rules.html#only-call-hooks-at-the-top-level
- */
-export const useMatchingMediaQuery = (): Breakpoint => {
+export const useIsOnlyBreakpoint = (breakpoint: Breakpoint): boolean => {
     const theme = useTheme();
-    const keys = [...theme.breakpoints.keys].reverse();
-
-    return (
-        keys.reduce((output: Breakpoint | null, key: Breakpoint) => {
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const matches = useMediaQuery(theme.breakpoints.up(key));
-            return !output && matches ? key : output;
-        }, null) || 'xs'
-    );
+    return useMediaQuery(theme.breakpoints.only(breakpoint));
 };
 
 export const useDesktopOrUp = (): boolean => {
-    return useMatchingMediaQuery() === DESKTOP_LAYOUT_BREAKPOINT;
+    const theme = useTheme();
+    return useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 };

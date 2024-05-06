@@ -111,8 +111,10 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
-            tabletHeading={<TabletHeading toggleOpen={toggleDrawer} open={open} />}
-            enableTabletMiniDrawer
+            miniHeading={<TabletHeading toggleOpen={toggleDrawer} open={open} />}
+            enableMiniVariant
+            miniVariantCollapsedWidth={7}
+            miniVariantOpenedWidth={45}
             desktopDrawerSx={{ gridArea: 'nav' }}>
             <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
@@ -196,15 +198,17 @@ const TabletHeading = ({ toggleOpen, open }: TabletHeadingProps): JSX.Element =>
             direction="row"
             justifyContent="flex-start"
             alignItems="center"
-            paddingInline={1}
-            paddingBlock={2}
+            paddingInlineStart={1}
+            paddingInlineEnd={2}
+            paddingBlock={4}
             gap={2}
-            width={1}>
+            width={1}
+            flexWrap="nowrap">
             <IconButton onClick={toggleOpen}>
                 {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
-            <Link href="https://allenai.org">
-                <logos.AI2Logo />
+            <Link href="https://allenai.org" marginInlineStart="auto">
+                <logos.AI2Logo includeText={false} />
             </Link>
         </Stack>
     );

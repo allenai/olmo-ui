@@ -1,24 +1,42 @@
-import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
+import { Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
-import { useDesktopOrUp, useMatchingMediaQuery } from './dolma/shared';
+import { useDesktopOrUp, useIsOnlyBreakpoint } from './dolma/shared';
 
-export interface ResponsiveDrawerProps
-    extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
+export type ResponsiveDrawerProps = (Pick<
+    DrawerProps,
+    'open' | 'anchor' | 'children' | 'onClose'
+> & {
     mobileHeading?: ReactNode;
-    tabletHeading?: ReactNode;
+    miniHeading?: ReactNode;
     heading?: ReactNode;
-
-    drawerBreakpoint?: Breakpoint;
 
     desktopDrawerVariant?: DrawerProps['variant'];
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
+}) &
+    (
+        | {
+              enableMiniVariant?: false;
+              miniVariantCollapsedWidth: never;
+              miniVariantOpenedWidth: never;
+          }
+        | {
+              enableMiniVariant: true;
 
-    enableTabletMiniDrawer?: boolean;
-}
+              /**
+               * This is a spacing token
+               */
+              miniVariantCollapsedWidth: number;
+
+              /**
+               * This is a spacing token
+               */
+              miniVariantOpenedWidth: number;
+          }
+    );
 
 const GlobalStyle = () => (
     <GlobalStyles
@@ -35,23 +53,22 @@ export const ResponsiveDrawer = ({
     open,
     onClose,
     mobileHeading,
-    tabletHeading: tabletMiniDrawerHeading,
+    miniHeading,
     heading,
     mobileDrawerSx,
     desktopDrawerSx,
-    drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
-    enableTabletMiniDrawer = false,
+    enableMiniVariant: enableTabletMiniDrawer = false,
+    miniVariantOpenedWidth,
+    miniVariantCollapsedWidth,
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
     const isDesktop = useDesktopOrUp();
-    const width = useMatchingMediaQuery();
+    const isSmallestDesktopBreakpoint = useIsOnlyBreakpoint(DESKTOP_LAYOUT_BREAKPOINT);
 
     const desktopHeading =
-        width === DESKTOP_LAYOUT_BREAKPOINT && enableTabletMiniDrawer
-            ? tabletMiniDrawerHeading
-            : heading;
+        isSmallestDesktopBreakpoint && enableTabletMiniDrawer ? miniHeading : heading;
 
     return (
         <>
@@ -74,7 +91,7 @@ export const ResponsiveDrawer = ({
                                 // This is slightly larger than the rough width of the drawer when it's expanded
                                 // If the text gets longer and things start getting cut off you'll want to bump this up
                                 maxWidth: (theme) =>
-                                    `var(--navigation-drawer-max-width, ${theme.spacing(45)})`,
+                                    `var(--navigation-drawer-max-width, ${theme.spacing(miniVariantOpenedWidth)})`,
 
                                 transition: (theme) =>
                                     theme.transitions.create('max-width', {
@@ -82,13 +99,16 @@ export const ResponsiveDrawer = ({
                                         duration: `var(--navigation-drawer-max-width-transition-duration, ${theme.transitions.duration.enteringScreen}ms)`,
                                     }),
 
-                                ...(!open && {
-                                    // This is a number I thought looked good to have just the icons showing.
-                                    // If the icons get bigger or the padding around them changes, this will need to change
-                                    '--navigation-drawer-max-width': (theme) => theme.spacing(7),
-                                    '--navigation-drawer-max-width-transition-duration': (theme) =>
-                                        `${theme.transitions.duration.leavingScreen}ms`,
-                                }),
+                                ...(!open &&
+                                    isSmallestDesktopBreakpoint && {
+                                        // This is a number I thought looked good to have just the icons showing.
+                                        // If the icons get bigger or the padding around them changes, this will need to change
+                                        '--navigation-drawer-max-width': (theme) =>
+                                            theme.spacing(miniVariantCollapsedWidth),
+                                        '--navigation-drawer-max-width-transition-duration': (
+                                            theme
+                                        ) => `${theme.transitions.duration.leavingScreen}ms`,
+                                    }),
                             }),
 
                         ...desktopDrawerSx,
