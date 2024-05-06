@@ -94,11 +94,11 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                     height: '100vh',
                     width: '100%',
 
-                    ...(!isNavigationDrawerOpen && {
-                        [theme.breakpoints.only(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            '--navigation-drawer-width': theme.spacing(7),
-                        },
-                    }),
+                    // ...(!isNavigationDrawerOpen && {
+                    //     [theme.breakpoints.only(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                    //         '--navigation-drawer-width': theme.spacing(7),
+                    //     },
+                    // }),
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         display: 'grid',

@@ -8,20 +8,20 @@ import { logos } from '@allenai/varnish2/components';
 import { useAppContext } from '@/AppContext';
 
 const openedMixin = (theme: Theme): CSSObject => ({
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
+    transition: theme.transitions.create('max-width', {
+        easing: theme.transitions.easing.easeIn,
         duration: theme.transitions.duration.enteringScreen,
     }),
     overflowX: 'hidden',
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
+    transition: theme.transitions.create('max-width', {
+        easing: theme.transitions.easing.easeIn,
         duration: theme.transitions.duration.leavingScreen,
     }),
-    overflowX: 'hidden',
-    width: `calc(${theme.spacing(7)} + 1px)`,
+    // overflowX: 'hidden',
+    // width: `calc(${theme.spacing(7)} + 1px)`,
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -38,16 +38,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         boxSizing: 'border-box',
         gridArea: 'nav',
         '& .MuiPaper-root': { position: 'static' },
-        ...(open &&
-            {
-                // ...openedMixin(theme),
-                // '& .MuiDrawer-paper': openedMixin(theme),
-            }),
-        ...(!open &&
-            {
-                // ...closedMixin(theme),
-                // '& .MuiDrawer-paper': closedMixin(theme),
-            }),
+        overflowX: 'hidden',
+        ...openedMixin(theme),
+        ...(open && {
+            maxWidth: theme.spacing(45),
+
+            // '& .MuiDrawer-paper': openedMixin(theme),
+        }),
+        ...(!open && {
+            maxWidth: theme.spacing(7),
+            // ...closedMixin(theme),
+            // '& .MuiDrawer-paper': closedMixin(theme),
+        }),
     })
 );
 
