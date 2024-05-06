@@ -1,11 +1,9 @@
-import { ResponsiveSunburst } from '@nivo/sunburst';
-
 import { Grid } from '@mui/material';
-
+import { ResponsiveSunburst } from '@nivo/sunburst';
 import { Chip } from '@nivo/tooltip';
 
-import { ChartContainerSansLegend } from './sharedCharting';
 import { TreeData } from './DomainsTable';
+import { ChartContainerSansLegend } from './sharedCharting';
 
 interface Props {
     data: TreeData;

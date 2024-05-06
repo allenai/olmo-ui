@@ -1,21 +1,22 @@
-import { ButtonGroup, Stack } from '@mui/material';
 import {
     ContentCopy,
-    ThumbUp,
-    ThumbUpOutlined,
-    ThumbDown,
-    ThumbDownOutlined,
     Flag,
     FlagOutlined,
+    ThumbDown,
+    ThumbDownOutlined,
+    ThumbUp,
+    ThumbUpOutlined,
 } from '@mui/icons-material';
-import styled from 'styled-components';
+import { ButtonGroup, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
+import styled from 'styled-components';
 
 import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
-import { ResponsiveButton } from './ResponsiveButton';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
+
+import { ResponsiveButton } from './ResponsiveButton';
 
 interface MessageInteractionProps {
     role: Message['role'];

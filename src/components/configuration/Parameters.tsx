@@ -2,11 +2,11 @@
  * Display to alter the options of a message.
  */
 
+import { Box, Chip, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { Stack, Box, Grid, Typography, Chip, TextField } from '@mui/material';
 
-import { InputSlider } from './InputSlider';
 import { useAppContext } from '../../AppContext';
+import { InputSlider } from './InputSlider';
 
 export const Parameters = () => {
     const inferenceOpts = useAppContext((state) => state.inferenceOpts);

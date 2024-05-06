@@ -1,5 +1,4 @@
 import CloseIcon from '@mui/icons-material/Close';
-
 import {
     Autocomplete,
     AutocompleteChangeReason,
@@ -15,17 +14,15 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-
 import { useEffect, useState } from 'react';
 
+import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
+import { NewInputSlider } from '@/components/configuration/NewInputSlider';
+import { NewModelSelect } from '@/components/NewModelSelect';
+import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
-
-import { NewModelSelect } from '@/components/NewModelSelect';
-import { NewInputSlider } from '@/components/configuration/NewInputSlider';
-import { Schema } from '@/api/Schema';
-import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 

@@ -1,15 +1,13 @@
 /* eslint-disable no-restricted-imports */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
-import { RenderOptions, render } from '@testing-library/react';
-import { PropsWithChildren, ReactNode } from 'react';
-
+import { getRouterOverriddenTheme } from '@allenai/varnish2';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
-import { ThemeProvider } from 'styled-components';
+import { render, RenderOptions } from '@testing-library/react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { getRouterOverriddenTheme } from '@allenai/varnish2';
-
 import { FeatureToggleProvider } from 'src/FeatureToggleContext';
+import { ThemeProvider } from 'styled-components';
 
 import { olmoTheme } from '../olmoTheme';
 

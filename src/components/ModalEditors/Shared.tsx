@@ -1,5 +1,5 @@
+import { Alert, AlertTitle, Button, FormHelperText } from '@mui/material';
 import { Fragment } from 'react';
-import { Alert, Button, FormHelperText, AlertTitle } from '@mui/material';
 
 export const ArchivedAlert = ({
     onRestore,

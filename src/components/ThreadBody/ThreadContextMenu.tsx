@@ -1,7 +1,6 @@
+import { MoreHoriz } from '@mui/icons-material';
 import { LabelRating } from 'src/api/Label';
 import { Message } from 'src/api/Message';
-
-import { MoreHoriz } from '@mui/icons-material';
 
 import { MessageActionsMenu, MessageContextMenu } from '../MessageActionsMenu';
 

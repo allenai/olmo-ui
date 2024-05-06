@@ -2,6 +2,7 @@ import { Card, Stack } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+
 import { useDesktopOrUp } from '../dolma/shared';
 
 interface ThreadPageCardProps extends PropsWithChildren {}

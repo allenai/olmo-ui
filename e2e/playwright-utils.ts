@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { expect, test as base } from '@playwright/test';
 import { createWorker, MockServiceWorker } from 'playwright-msw';
 
 import { handlers } from '../src/mocks/handlers/index';
@@ -32,4 +32,4 @@ const test = base.extend<{
     ],
 });
 
-export { test, expect };
+export { expect, test };

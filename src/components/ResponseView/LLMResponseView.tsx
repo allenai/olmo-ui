@@ -1,17 +1,15 @@
-import { useCallback, useState } from 'react';
-
-import DOMPurify from 'dompurify';
-import styled from 'styled-components';
 import { Stack } from '@mui/material';
+import DOMPurify from 'dompurify';
+import { useCallback, useState } from 'react';
+import styled from 'styled-components';
 
 import { useAppContext } from '../../AppContext';
-
-import { IconContainer, ResponseProps, marked } from './Response';
+import { BranchIcon } from '../assets/BranchIcon';
 import { RobotAvatar } from '../avatars/RobotAvatar';
 import { UserAvatar } from '../avatars/UserAvatar';
-import { BranchIcon } from '../assets/BranchIcon';
 import { ChatResponseContainer } from './ChatResponseContainer';
 import { LLMMenu } from './LLMMenu';
+import { IconContainer, marked, ResponseProps } from './Response';
 
 export const LLMResponseView = ({
     response,

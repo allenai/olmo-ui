@@ -1,24 +1,17 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
-
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-
-import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
-
-import DatasetIcon from '@mui/icons-material/DatasetOutlined';
-
-import MagnifyingGlassIcon from '@mui/icons-material/Search';
-
 import { logos } from '@allenai/varnish2/components';
-
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import CloseIcon from '@mui/icons-material/Close';
+import DatasetIcon from '@mui/icons-material/DatasetOutlined';
+import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
+import MagnifyingGlassIcon from '@mui/icons-material/Search';
+import { Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { links } from '../../Links';
-
+import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
 import { NavigationFooter } from './NavigationFooter';
 import { NavigationHeading } from './NavigationHeading';
 import { NavigationLink } from './NavigationLink';
-import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {

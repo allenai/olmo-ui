@@ -1,14 +1,14 @@
 import { ClientBase } from './ClientBase';
 import {
-    PromptTemplate,
-    PromptTemplateApiUrl,
-    PromptTemplateList,
-    PromptTemplatePost,
-    PromptTemplatesApiUrl,
     JSONPromptTemplate,
     JSONPromptTemplateList,
     parsePromptTemplate,
+    PromptTemplate,
+    PromptTemplateApiUrl,
+    PromptTemplateList,
     PromptTemplatePatch,
+    PromptTemplatePost,
+    PromptTemplatesApiUrl,
 } from './PromptTemplate';
 
 export class PromptTemplateClient extends ClientBase {

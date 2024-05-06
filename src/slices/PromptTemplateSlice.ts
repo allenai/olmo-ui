@@ -1,5 +1,7 @@
 import { produce } from 'immer';
 
+import { OlmoStateCreator } from '@/AppContext';
+
 import {
     DefaultPromptTemplate,
     PromptTemplate,
@@ -7,8 +9,6 @@ import {
     PromptTemplatePatch,
     PromptTemplatePost,
 } from '../api/PromptTemplate';
-
-import { OlmoStateCreator } from '@/AppContext';
 import { PromptTemplateClient } from '../api/PromptTemplateClient';
 import { RemoteState } from '../contexts/util';
 

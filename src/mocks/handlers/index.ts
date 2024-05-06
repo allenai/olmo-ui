@@ -1,16 +1,13 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
+import { ModelApiUrl, ModelList } from '@/api/Model';
+import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 import { Schema, SchemaApiUrl } from '@/api/Schema';
-
 import { WhoamiApiUrl } from '@/api/User';
 
-import { ModelApiUrl, ModelList } from '@/api/Model';
-
-import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
-
-import { messageStreamHandlers } from './messageStreamHandlers';
-import { datasetSearchResponse } from './datasetSearchResponse';
 import { datasetDocumentResponse } from './datasetDocumentResponse';
+import { datasetSearchResponse } from './datasetSearchResponse';
+import { messageStreamHandlers } from './messageStreamHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,

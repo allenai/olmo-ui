@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import { Typography } from '@mui/material';
 
 import { MajorityScreen } from '../components/MajorityScreen';
 import { StandardContainer } from '../components/StandardContainer';

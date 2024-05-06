@@ -1,19 +1,19 @@
-import styled from 'styled-components';
-import { Button, Typography } from '@mui/material';
 import {
-    ThumbUp,
-    ThumbUpOutlined,
-    ThumbDown,
-    ThumbDownOutlined,
     Delete,
     Flag,
     FlagOutlined,
     Send,
+    ThumbDown,
+    ThumbDownOutlined,
+    ThumbUp,
+    ThumbUpOutlined,
 } from '@mui/icons-material';
+import { Button, Typography } from '@mui/material';
+import styled from 'styled-components';
 
-import { useAppContext } from '../AppContext';
 import { LabelRating } from '../api/Label';
 import { Message } from '../api/Message';
+import { useAppContext } from '../AppContext';
 import { RemoteState } from '../contexts/util';
 
 interface ThreadControlProps {

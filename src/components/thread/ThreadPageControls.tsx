@@ -1,13 +1,13 @@
-import { ButtonGroup, Card, Stack, Typography, alpha } from '@mui/material';
-
 import PlusIcon from '@mui/icons-material/Add';
+import { alpha, ButtonGroup, Card, Stack, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
-import { ResponsiveButton } from './ResponsiveButton';
+
+import { DeleteThreadButton } from './DeleteThreadButton';
 import { HistoryButton } from './history/HistoryButton';
 import { ParameterButton } from './parameter/ParameterButton';
-import { DeleteThreadButton } from './DeleteThreadButton';
+import { ResponsiveButton } from './ResponsiveButton';
 import { ShareThreadButton } from './ShareThreadButton';
 
 const ThreadButtons = (): JSX.Element => {

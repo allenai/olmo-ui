@@ -1,6 +1,6 @@
-import { Message } from 'src/api/Message';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { MenuItem, Typography } from '@mui/material';
+import { Message } from 'src/api/Message';
 
 import { MessageActionsMenu } from '../MessageActionsMenu';
 

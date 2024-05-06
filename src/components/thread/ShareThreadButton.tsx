@@ -1,10 +1,11 @@
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { useState } from 'react';
 import { Snackbar } from '@mui/material';
+import { useState } from 'react';
 
-import { ResponsiveButton } from './ResponsiveButton';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
+
+import { ResponsiveButton } from './ResponsiveButton';
 
 export const ShareThreadButton = () => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);

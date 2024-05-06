@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
 import {
     Grid,
     LinearProgress,
-    ToggleButton,
-    ToggleButtonGroup,
     Pagination,
     Stack,
+    ToggleButton,
+    ToggleButtonGroup,
 } from '@mui/material';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useNavigate, useLocation } from 'react-router-dom';
 
-import { ThreadAccordionView } from './ThreadAccordionView';
-import { ThreadBodyView } from './ThreadBodyView';
 import { useAppContext } from '../AppContext';
 import { ContextMenu } from './ContextMenu';
+import { ThreadAccordionView } from './ThreadAccordionView';
+import { ThreadBodyView } from './ThreadBodyView';
 
 enum QueryToggleOptions {
     All = 'all',

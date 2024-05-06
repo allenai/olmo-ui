@@ -1,8 +1,9 @@
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { OlmoStateCreator } from '@/AppContext';
+
 import { search } from '../api/dolma/search';
 import { SearchClient } from '../api/dolma/SearchClient';
 import { RemoteState } from '../contexts/util';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 enum ActionType {
     NewSearch,

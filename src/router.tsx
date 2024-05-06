@@ -1,10 +1,10 @@
-import { Navigate, RouteObject, createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
-import { VarnishedApp } from './components/VarnishedApp';
 import { App } from './App';
-import { links } from './Links';
 import { NewApp } from './components/NewApp';
-import { ThreadDisplay, selectedThreadLoader } from './components/thread/ThreadDisplay';
+import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
+import { VarnishedApp } from './components/VarnishedApp';
+import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { Admin } from './pages/Admin';
 import { Document } from './pages/Document';
