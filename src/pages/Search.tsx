@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
-import { LoaderFunction, defer, useLocation } from 'react-router-dom';
+import { defer, LoaderFunction, useLocation } from 'react-router-dom';
 
-import { appContext, useAppContext } from '../AppContext';
 import { search } from '../api/dolma/search';
+import { appContext, useAppContext } from '../AppContext';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
 import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';

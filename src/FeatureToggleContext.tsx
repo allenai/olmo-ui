@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import * as React from 'react';
 
 export enum FeatureToggle {

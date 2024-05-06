@@ -3,7 +3,6 @@ import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
-
 import { TimeDisplay } from './TimeDisplay';
 interface ThreadLinkProps {
     content: string;

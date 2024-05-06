@@ -1,7 +1,10 @@
 module.exports = {
     extends: ['@allenai/eslint-config-varnish'],
+    plugins: ['simple-import-sort'],
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
+        'simple-import-sort/imports': 'error',
+        'simple-import-sort/exports': 'error',
     },
     parserOptions: {
         project: true,

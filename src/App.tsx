@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { styled, Button, Grid, CircularProgress, Typography } from '@mui/material';
 import { BannerLink, Content, Footer, logos } from '@allenai/varnish2/components';
-import { LinkProps, Link, Outlet } from 'react-router-dom';
+import { Button, CircularProgress, Grid, styled, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link, LinkProps, Outlet } from 'react-router-dom';
 
 import { useAppContext } from './AppContext';
-import { OlmoBanner } from './components/OlmoBanner';
 import { GlobalAlertList } from './components/GlobalAlertList';
+import { OlmoLogo } from './components/logos/OlmoLogo';
+import { OlmoBanner } from './components/OlmoBanner';
 import { WallpaperCircle } from './components/WallpaperCircle';
 import { olmoTheme } from './olmoTheme';
-import { OlmoLogo } from './components/logos/OlmoLogo';
 
 export interface AppRoute {
     path: string;

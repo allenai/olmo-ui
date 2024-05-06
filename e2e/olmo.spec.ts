@@ -1,4 +1,4 @@
-import { test, expect } from './playwright-utils';
+import { expect, test } from './playwright-utils';
 
 test('can prompt', async ({ page }) => {
     await page.goto('/?isUIRefreshEnabled=false');

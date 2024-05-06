@@ -1,10 +1,10 @@
 import {
     Button,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
-    DialogActions,
+    DialogTitle,
 } from '@mui/material';
 
 interface Props {

@@ -1,5 +1,5 @@
-import * as zustand from 'zustand';
 import { act } from '@testing-library/react';
+import * as zustand from 'zustand';
 
 const {
     create: actualCreate,

@@ -1,6 +1,7 @@
 import HistoryIcon from '@mui/icons-material/History';
 
 import { useAppContext } from '@/AppContext';
+
 import { ResponsiveButton } from '../ResponsiveButton';
 import { HISTORY_DRAWER_ID } from './HistoryDrawer';
 

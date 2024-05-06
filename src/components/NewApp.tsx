@@ -2,10 +2,10 @@ import { Container, Paper, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
-
 import { useTrackPageView } from '@/analytics/useTrackPageView';
+
 import { useAppContext } from '../AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { Footer } from './Footer/Footer';
 import { GlobalAlertList } from './GlobalAlertList';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';

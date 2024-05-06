@@ -1,6 +1,5 @@
-import Snackbar from '@mui/material/Snackbar';
-
 import { Box } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
 import { useDebouncedCallback } from 'use-debounce';
 
 interface ParameterSnackBarProps {

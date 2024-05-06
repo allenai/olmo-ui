@@ -1,20 +1,13 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
-
+import { logos } from '@allenai/varnish2/components';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-
-import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
-
+import CloseIcon from '@mui/icons-material/Close';
 import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
-
-import { logos } from '@allenai/varnish2/components';
-
-import { UIMatch, useMatches } from 'react-router-dom';
-
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
-
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
+import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
+import { UIMatch, useMatches } from 'react-router-dom';
 
 import { links } from '@/Links';
 

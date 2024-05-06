@@ -1,8 +1,9 @@
 import { Button, Stack } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 
-import { useAppContext } from '@/AppContext';
 import { MessagePost } from '@/api/Message';
+import { useAppContext } from '@/AppContext';
+
 import { useNewQueryFormHandling } from '../NewQuery/NewQueryForm';
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 

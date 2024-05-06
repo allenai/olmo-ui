@@ -1,11 +1,10 @@
 import { render, renderHook, screen, waitFor } from '@test-utils';
-
 import userEvent from '@testing-library/user-event';
 
 import { useAppContext } from '@/AppContext';
+import { newMessageId } from '@/mocks/handlers/messageStreamHandlers';
 
 import { NewQuery } from '../NewQuery/NewQuery';
-import { newMessageId } from '@/mocks/handlers/messageStreamHandlers';
 
 describe('NewQuery', () => {
     test('should send a prompt', async () => {

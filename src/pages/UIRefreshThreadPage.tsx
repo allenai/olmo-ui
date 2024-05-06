@@ -1,5 +1,4 @@
 import { Stack, Typography } from '@mui/material';
-
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';

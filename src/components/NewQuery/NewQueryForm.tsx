@@ -1,12 +1,9 @@
 import { Button, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { MouseEventHandler, ReactNode, useEffect } from 'react';
-
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
-import { useAppContext } from '../../AppContext';
-
 import { MessagePost } from '../../api/Message';
-
+import { useAppContext } from '../../AppContext';
 import { ModelSelect } from './ModelSelect';
 import { TemplateSelect } from './TemplateSelect';
 

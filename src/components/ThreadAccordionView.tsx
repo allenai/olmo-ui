@@ -1,24 +1,24 @@
-import { useState, ReactNode } from 'react';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
+    Accordion as MuiAccordion,
     AccordionDetails,
     AccordionProps,
-    AccordionSummaryProps,
-    Typography,
-    Grid,
-    Button,
-    Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
+    AccordionSummaryProps,
+    Button,
+    Grid,
     Tooltip,
+    Typography,
 } from '@mui/material';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { ReactNode, useState } from 'react';
 import styled from 'styled-components';
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
-import { ThreadControls } from './ThreadControls';
 import { Message } from '../api/Message';
 import { useAppContext } from '../AppContext';
-import { MetadataModal } from './MetadataModal';
 import { ExpandedThreadTitleView } from './ExpandedThreadTitleView';
+import { MetadataModal } from './MetadataModal';
+import { ThreadControls } from './ThreadControls';
 
 interface ThreadAccordionProps {
     title: string;

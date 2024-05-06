@@ -2,11 +2,10 @@
  * A slider with a number control next to it.
  */
 
-import { useEffect, useRef, useState } from 'react';
-
-import styled from 'styled-components';
-import { Box, Grid, Typography, Slider, Input, Tooltip, Button, IconButton } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Box, Button, Grid, IconButton, Input, Slider, Tooltip, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 
 interface Props {
     label: string;

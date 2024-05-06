@@ -1,18 +1,13 @@
+import CropSquareIcon from '@mui/icons-material/CropSquare';
+import { Stack } from '@mui/material';
+import DOMPurify from 'dompurify';
 import { useCallback } from 'react';
 
-import DOMPurify from 'dompurify';
-
-import { Stack } from '@mui/material';
-
-import CropSquareIcon from '@mui/icons-material/CropSquare';
-
 import { useAppContext } from '../../AppContext';
-import { ResponseProps, StopButton, marked } from './Response';
-
-import { UserAvatar } from '../avatars/UserAvatar';
 import { RobotAvatar } from '../avatars/RobotAvatar';
-
+import { UserAvatar } from '../avatars/UserAvatar';
 import { LLMResponseContainer } from './LLMResponseView';
+import { marked, ResponseProps, StopButton } from './Response';
 
 export interface BaseResponseContainerProps {
     children: React.ReactNode;

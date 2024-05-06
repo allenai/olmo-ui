@@ -1,6 +1,5 @@
-import { Box, Stack, Typography, styled } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
+import { Box, Stack, styled, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import { CopyToClipboardButton } from './shared';

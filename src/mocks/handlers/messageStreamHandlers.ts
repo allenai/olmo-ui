@@ -1,6 +1,6 @@
-import { HttpResponse, delay, http } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 
-import { MessageStreamPart, MessagesApiUrl, MessagesResponse } from '@/api/Message';
+import { MessagesApiUrl, MessagesResponse, MessageStreamPart } from '@/api/Message';
 import { Role } from '@/api/Role';
 
 const encoder = new TextEncoder();

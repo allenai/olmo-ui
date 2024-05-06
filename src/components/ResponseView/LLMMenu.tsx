@@ -1,9 +1,7 @@
 import CropSquareIcon from '@mui/icons-material/CropSquare';
-
 import { ReactNode } from 'react';
 
 import { useAppContext } from '../../AppContext';
-
 import { HideAndShowContainer, StopButton } from './Response';
 
 interface MenuProps {
