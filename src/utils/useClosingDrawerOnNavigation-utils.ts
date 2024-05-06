@@ -1,6 +1,7 @@
-import { links } from '@/Links';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+
+import { links } from '@/Links';
 
 interface UseCloseDrawerOnNavigationProps {
     handleDrawerClose: () => void;
