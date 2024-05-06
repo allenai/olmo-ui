@@ -187,13 +187,12 @@ const Section2: TermsAndConditionsSection = {
             <TermAndConditionsLink link="https://spectrum.ieee.org/open-ais-powerful-text-generating-tool-is-ready-for-business">
                 toxic
             </TermAndConditionsLink>
-            ,
+            ,{' '}
             <TermAndConditionsLink link="https://arxiv.org/abs/2009.06807">
                 unethical
             </TermAndConditionsLink>
-            , and
+            , and{' '}
             <TermAndConditionsLink link="https://aclanthology.org/D19-1339/">
-                {' '}
                 harmful
             </TermAndConditionsLink>{' '}
             content, especially about minority groups. We have tried to mitigate this when designing
