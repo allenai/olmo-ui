@@ -18,7 +18,7 @@ import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
-import { useClosingDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
+import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
@@ -90,7 +90,7 @@ export const HistoryDrawer = (): JSX.Element => {
         delayInMs: 100,
     });
 
-    useClosingDrawerOnNavigation({
+    useCloseDrawerOnNavigation({
         handleDrawerClose,
     });
 

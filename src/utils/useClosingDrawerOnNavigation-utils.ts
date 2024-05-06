@@ -2,13 +2,13 @@ import { links } from '@/Links';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-interface UseClosingDrawerOnNavigationProps {
+interface UseCloseDrawerOnNavigationProps {
     handleDrawerClose: () => void;
 }
 
-export const useClosingDrawerOnNavigation = ({
+export const useCloseDrawerOnNavigation = ({
     handleDrawerClose,
-}: UseClosingDrawerOnNavigationProps) => {
+}: UseCloseDrawerOnNavigationProps) => {
     const location = useLocation();
     useEffect(() => {
         if (location.pathname !== links.playground) {
