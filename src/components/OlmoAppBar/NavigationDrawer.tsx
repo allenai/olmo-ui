@@ -16,8 +16,6 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 
-import { useState } from 'react';
-
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -26,8 +24,6 @@ import { links } from '@/Links';
 
 import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
-
-import { NavigationMiniDrawer } from './NavigationMiniDrawer';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -60,47 +56,6 @@ export const NavigationDrawer = ({
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     return (
-        // <NavigationMiniDrawer Heading={<DesktopHeading />}>
-        //     {/* <MobileHeading onClose={handleDrawerClose} /> */}
-        //     <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
-        //         <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
-        //             <NavigationLink
-        //                 href={links.playground}
-        //                 icon={<ChatBubbleIcon />}
-        //                 selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-        //                 Playground
-        //             </NavigationLink>
-        //             <NavigationLink
-        //                 href={links.ourModels}
-        //                 icon={<ModelTrainingIcon />}
-        //                 selected={curriedDoesMatchPath(links.ourModels)}
-        //                 isExternalLink={true}>
-        //                 OLMo Models
-        //             </NavigationLink>
-        //             <Divider />
-        //             <NavigationLink
-        //                 href={links.datasetExplorer}
-        //                 icon={<ExploreIcon />}
-        //                 selected={curriedDoesMatchPath(links.datasetExplorer)}>
-        //                 Dataset Explorer
-        //             </NavigationLink>
-        //             <NavigationLink
-        //                 href={links.ourDatasets}
-        //                 icon={<DatasetIcon />}
-        //                 selected={curriedDoesMatchPath(links.ourDatasets)}
-        //                 isExternalLink={true}>
-        //                 Dolma Dataset
-        //             </NavigationLink>
-        //             <Divider sx={{ marginBlockStart: 'auto' }} />
-        //             <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
-        //                 FAQ
-        //             </NavigationLink>
-        //             <NavigationLink icon={<LogoutIcon />} href={links.logOut}>
-        //                 Log Out
-        //             </NavigationLink>
-        //         </Stack>
-        //     </Box>
-        // </NavigationMiniDrawer>
         <ResponsiveDrawer
             {...props}
             open={open}
@@ -110,7 +65,7 @@ export const NavigationDrawer = ({
             miniHeading={<TabletHeading toggleOpen={onDrawerToggle} open={open} />}
             enableMiniVariant
             miniVariantCollapsedWidth={7}
-            miniVariantOpenedWidth={45}
+            miniVariantExpandedWidth={45}
             desktopDrawerSx={{ gridArea: 'nav' }}>
             <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
@@ -192,15 +147,16 @@ const TabletHeading = ({ toggleOpen, open }: TabletHeadingProps): JSX.Element =>
     return (
         <Stack
             direction="row"
-            justifyContent="flex-start"
+            justifyContent="space-between"
             alignItems="center"
             paddingInlineStart={1}
             paddingInlineEnd={2}
             paddingBlock={4}
             gap={2}
-            width={1}
             flexWrap="nowrap">
-            <IconButton onClick={toggleOpen}>
+            <IconButton
+                onClick={toggleOpen}
+                title={`${open === true ? 'Collapse' : 'Expand'} navigation drawer`}>
                 {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
             <Link href="https://allenai.org" marginInlineStart="auto">

@@ -21,7 +21,7 @@ export type ResponsiveDrawerProps = (Pick<
         | {
               enableMiniVariant?: false;
               miniVariantCollapsedWidth?: never;
-              miniVariantOpenedWidth?: never;
+              miniVariantExpandedWidth?: never;
           }
         | {
               enableMiniVariant: true;
@@ -34,7 +34,7 @@ export type ResponsiveDrawerProps = (Pick<
               /**
                * This is a spacing token
                */
-              miniVariantOpenedWidth: number;
+              miniVariantExpandedWidth: number;
           }
     );
 
@@ -59,16 +59,15 @@ export const ResponsiveDrawer = ({
     desktopDrawerSx,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
-    enableMiniVariant: enableTabletMiniDrawer = false,
-    miniVariantOpenedWidth,
-    miniVariantCollapsedWidth,
+    ...rest
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
     const isDesktop = useDesktopOrUp();
     const isSmallestDesktopBreakpoint = useIsOnlyBreakpoint(DESKTOP_LAYOUT_BREAKPOINT);
 
     const desktopHeading =
-        isSmallestDesktopBreakpoint && enableTabletMiniDrawer ? miniHeading : heading;
+        // Using `rest` for enableMiniVariant so we can infer the type of the mini variant widths easily
+        isSmallestDesktopBreakpoint && rest.enableMiniVariant ? miniHeading : heading;
 
     return (
         <>
@@ -83,7 +82,7 @@ export const ResponsiveDrawer = ({
                         overflow: isPersistentDrawerClosed ? 'hidden' : 'visible',
 
                         ...(desktopDrawerVariant === 'permanent' &&
-                            enableTabletMiniDrawer && {
+                            rest.enableMiniVariant && {
                                 '& .MuiPaper-root': { position: 'static' },
                                 whiteSpace: 'noWrap',
 
@@ -91,7 +90,7 @@ export const ResponsiveDrawer = ({
                                 // This is slightly larger than the rough width of the drawer when it's expanded
                                 // If the text gets longer and things start getting cut off you'll want to bump this up
                                 maxWidth: (theme) =>
-                                    `var(--navigation-drawer-max-width, ${theme.spacing(miniVariantOpenedWidth)})`,
+                                    `var(--navigation-drawer-max-width, ${theme.spacing(rest.miniVariantExpandedWidth)})`,
 
                                 transition: (theme) =>
                                     theme.transitions.create('max-width', {
@@ -104,7 +103,7 @@ export const ResponsiveDrawer = ({
                                         // This is a number I thought looked good to have just the icons showing.
                                         // If the icons get bigger or the padding around them changes, this will need to change
                                         '--navigation-drawer-max-width': (theme) =>
-                                            theme.spacing(miniVariantCollapsedWidth),
+                                            theme.spacing(rest.miniVariantCollapsedWidth),
                                         '--navigation-drawer-max-width-transition-duration': (
                                             theme
                                         ) => `${theme.transitions.duration.leavingScreen}ms`,
