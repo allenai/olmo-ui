@@ -16,7 +16,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
@@ -76,9 +76,13 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
         }
     };
 
+    const drawerRef = createRef<HTMLDivElement>();
+
     useKeyboardShortCut({
         key: KeyBoardKey.ESC,
         onKeyPressed: handleDrawerClose,
+        ref: drawerRef,
+        isDrawerOpen,
     });
 
     return (
@@ -112,7 +116,8 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}
+            drawerRef={drawerRef}>
             <Stack component="nav" direction="column" justifyContent="space-between" height="1">
                 <List>
                     <ListItem>
