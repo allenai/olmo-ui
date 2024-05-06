@@ -2,11 +2,12 @@ import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@
 import { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
-import { useDesktopOrUp } from './dolma/shared';
+import { useDesktopOrUp, useMatchingMediaQuery } from './dolma/shared';
 
 export interface ResponsiveDrawerProps
     extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
     mobileHeading?: ReactNode;
+    tabletHeading?: ReactNode;
     heading?: ReactNode;
 
     drawerBreakpoint?: Breakpoint;
@@ -15,6 +16,8 @@ export interface ResponsiveDrawerProps
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
+
+    enableTabletMiniDrawer?: boolean;
 }
 
 const GlobalStyle = () => (
@@ -32,18 +35,27 @@ export const ResponsiveDrawer = ({
     open,
     onClose,
     mobileHeading,
+    tabletHeading: tabletMiniDrawerHeading,
     heading,
     mobileDrawerSx,
     desktopDrawerSx,
     drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
+    enableTabletMiniDrawer = false,
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
+    const isDesktop = useDesktopOrUp();
+    const width = useMatchingMediaQuery();
+
+    const desktopHeading =
+        width === DESKTOP_LAYOUT_BREAKPOINT && enableTabletMiniDrawer
+            ? tabletMiniDrawerHeading
+            : heading;
 
     return (
         <>
-            {useDesktopOrUp() ? (
+            {isDesktop ? (
                 <Drawer
                     variant={desktopDrawerVariant}
                     open={open}
@@ -51,8 +63,33 @@ export const ResponsiveDrawer = ({
                     onClose={onClose}
                     sx={{
                         width: 'auto',
-                        display: { xs: 'none', [drawerBreakpoint]: 'flex' },
                         overflow: isPersistentDrawerClosed ? 'hidden' : 'visible',
+
+                        ...(desktopDrawerVariant === 'permanent' &&
+                            enableTabletMiniDrawer && {
+                                '& .MuiPaper-root': { position: 'static' },
+                                whiteSpace: 'noWrap',
+
+                                overflowX: 'hidden',
+                                // This is slightly larger than the rough width of the drawer when it's expanded
+                                // If the text gets longer and things start getting cut off you'll want to bump this up
+                                maxWidth: (theme) =>
+                                    `var(--navigation-drawer-max-width, ${theme.spacing(45)})`,
+
+                                transition: (theme) =>
+                                    theme.transitions.create('max-width', {
+                                        easing: theme.transitions.easing.sharp,
+                                        duration: `var(--navigation-drawer-max-width-transition-duration, ${theme.transitions.duration.enteringScreen}ms)`,
+                                    }),
+
+                                ...(!open && {
+                                    // This is a number I thought looked good to have just the icons showing.
+                                    // If the icons get bigger or the padding around them changes, this will need to change
+                                    '--navigation-drawer-max-width': (theme) => theme.spacing(7),
+                                    '--navigation-drawer-max-width-transition-duration': (theme) =>
+                                        `${theme.transitions.duration.leavingScreen}ms`,
+                                }),
+                            }),
 
                         ...desktopDrawerSx,
                     }}
@@ -66,7 +103,7 @@ export const ResponsiveDrawer = ({
                         },
                     }}
                     data-testid="Drawer">
-                    {heading}
+                    {desktopHeading}
                     {children}
                 </Drawer>
             ) : (
@@ -83,7 +120,6 @@ export const ResponsiveDrawer = ({
                         },
                     }}
                     sx={{
-                        display: { xs: 'flex', [drawerBreakpoint]: 'none' },
                         ...mobileDrawerSx,
                     }}
                     data-testid="Drawer">
