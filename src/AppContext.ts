@@ -18,7 +18,6 @@ import { RepromptSlice, createRepromptSlice } from './slices/repromptSlice';
 
 import { SelectedThreadSlice, createSelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { ThreadUpdateSlice, createThreadUpdateSlice } from './slices/ThreadUpdateSlice';
-import { NavigationDrawerSlice, createNavigationDrawerSlice } from './slices/NavigationDrawerSlice';
 
 export type FetchInfo<T> = {
     data?: T;
@@ -39,8 +38,7 @@ export type AppContextState = LabelSlice &
     DrawerSlice &
     ThreadUpdateSlice &
     SelectedThreadSlice &
-    DatasetExplorerSliceStates &
-    NavigationDrawerSlice;
+    DatasetExplorerSliceStates;
 
 export const appContext = createStore<AppContextState>()(
     devtools(
@@ -59,7 +57,6 @@ export const appContext = createStore<AppContextState>()(
             ...createDocumentSlice(...store),
             ...createThreadUpdateSlice(...store),
             ...createSelectedThreadSlice(...store),
-            ...createNavigationDrawerSlice(...store),
         }))
     )
 );

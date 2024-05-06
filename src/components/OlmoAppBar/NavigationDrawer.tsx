@@ -58,7 +58,7 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
     return (
         <NavigationMiniDrawer Heading={<DesktopHeading />}>
             {/* <MobileHeading onClose={handleDrawerClose} /> */}
-            <Box component="nav" sx={{ height: 1 }}>
+            <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
                     <NavigationLink
                         href={links.playground}
