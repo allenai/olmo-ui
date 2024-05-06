@@ -6,6 +6,7 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 import { useAppContext } from '../AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
+import { Footer } from './Footer/Footer';
 import { GlobalAlertList } from './GlobalAlertList';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
@@ -70,6 +71,7 @@ export const NewApp = () => {
                         maxWidth={false}>
                         <MobilePageTitle />
                         <Outlet />
+                        <Footer />
                     </Container>
                 </>
             ) : null}
