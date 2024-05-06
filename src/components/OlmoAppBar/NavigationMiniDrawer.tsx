@@ -5,10 +5,9 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { logos } from '@allenai/varnish2/components';
 
-const DRAWER_WIDTH = 340;
+import { useAppContext } from '@/AppContext';
 
 const openedMixin = (theme: Theme): CSSObject => ({
-    width: DRAWER_WIDTH,
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -34,18 +33,21 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
-        width: DRAWER_WIDTH,
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
-        ...(open && {
-            ...openedMixin(theme),
-            '& .MuiDrawer-paper': openedMixin(theme),
-        }),
-        ...(!open && {
-            ...closedMixin(theme),
-            '& .MuiDrawer-paper': closedMixin(theme),
-        }),
+        gridArea: 'nav',
+        '& .MuiPaper-root': { position: 'static' },
+        ...(open &&
+            {
+                // ...openedMixin(theme),
+                // '& .MuiDrawer-paper': openedMixin(theme),
+            }),
+        ...(!open &&
+            {
+                // ...closedMixin(theme),
+                // '& .MuiDrawer-paper': closedMixin(theme),
+            }),
     })
 );
 
@@ -54,17 +56,17 @@ interface NavigationMiniDrawerProps extends PropsWithChildren {
 }
 
 export const NavigationMiniDrawer = ({ children, Heading }: NavigationMiniDrawerProps) => {
-    const [open, setOpen] = useState(false);
-    const toggleDrawerOpen = () => {
-        setOpen(!open);
-    };
+    const isNavigationDrawerOpen = useAppContext((state) => state.isNavigationDrawerOpen);
+    const toggleIsNavigationDrawerOpen = useAppContext(
+        (state) => state.toggleIsNavigationDrawerOpen
+    );
 
     return (
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open={isNavigationDrawerOpen}>
             <DrawerHeader>
                 {Heading}
-                <IconButton onClick={toggleDrawerOpen}>
-                    {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                <IconButton onClick={toggleIsNavigationDrawerOpen}>
+                    {isNavigationDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                 </IconButton>
             </DrawerHeader>
             {children}

@@ -1,5 +1,5 @@
-import { Container, Paper, styled } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Container, Paper, PaperProps, styled } from '@mui/material';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
@@ -21,6 +21,7 @@ export const NewApp = () => {
     const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);
     const getSchema = useAppContext((state) => state.getSchema);
+    const isNavigationDrawerOpen = useAppContext((state) => state.isNavigationDrawerOpen);
 
     const [isLoading, setLoading] = useState(true);
 
@@ -42,7 +43,7 @@ export const NewApp = () => {
 
     const showModal = userInfo?.hasAcceptedTermsAndConditions === false;
     return (
-        <OuterContainer square variant="outlined">
+        <OuterContainer square variant="outlined" isNavigationDrawerOpen={isNavigationDrawerOpen}>
             {!isLoading && userInfo && schema ? (
                 <>
                     <OlmoAppBar />
@@ -81,19 +82,65 @@ export const NewApp = () => {
     );
 };
 
-const OuterContainer = styled(Paper)`
-    ${({ theme }) => theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)} {
-        display: grid;
+interface OuterContainerProps extends PaperProps {
+    isNavigationDrawerOpen?: boolean;
+}
 
-        grid-template-areas:
-            'nav app-bar side-drawer'
-            'nav content side-drawer';
+const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps) => {
+    return (
+        <Paper
+            sx={[
+                (theme) => ({
+                    height: '100vh',
+                    width: '100%',
 
-        grid-template-rows: auto 1fr;
-        grid-template-columns: auto 1fr auto;
+                    ...(!isNavigationDrawerOpen && {
+                        [theme.breakpoints.only(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            '--navigation-drawer-width': theme.spacing(7),
+                        },
+                    }),
 
-        grid-column-gap: ${({ theme }) => theme.spacing(8)};
-    }
-    height: 100vh;
-    width: 100%;
-`;
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        display: 'grid',
+                        gridTemplateAreas: `
+                            'nav app-bar side-drawer'
+                            'nav content side-drawer'`,
+                        gridTemplateRows: 'auto 1fr',
+                        gridTemplateColumns: 'var(--navigation-drawer-width, auto) 1fr auto',
+                        gap: theme.spacing(8),
+
+                        transition: theme.transitions.create('grid-template-columns', {
+                            easing: theme.transitions.easing.sharp,
+                            duration: theme.transitions.duration.enteringScreen,
+                        }),
+                    },
+                }),
+            ]}
+            {...rest}
+        />
+    );
+};
+
+// const OuterContainer = styled(Paper, {
+//     shouldForwardProp: (prop) => prop !== 'isNavigationDrawerOpen',
+// })`
+//     ${({ theme }) => theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)} {
+//         display: grid;
+
+//         grid-template-areas:
+//             'nav app-bar side-drawer'
+//             'nav content side-drawer';
+
+//         grid-template-rows: auto 1fr;
+//         grid-template-columns: auto 1fr auto;
+
+//         grid-column-gap: ${({ theme }) => theme.spacing(8)};
+//         ${({ theme }) => theme.breakpoints.only(DESKTOP_LAYOUT_BREAKPOINT)} {
+//             grid-template-columns: ${({ theme, isNavigationDrawerOpen }) =>
+//                     isNavigationDrawerOpen ? 'auto' : theme.spacing(7)} 1fr;
+//         }
+//     }
+
+//     height: 100vh;
+//     width: 100%;
+// `;
