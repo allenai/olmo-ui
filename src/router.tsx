@@ -1,5 +1,5 @@
-import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 import { PropsWithChildren } from 'react';
+import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
 import { App } from './App';
 import { MetaTags } from './components/MetaTags';

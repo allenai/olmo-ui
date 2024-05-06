@@ -6,16 +6,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { search } from '../../api/dolma/search';
-<<<<<<< HEAD
-import { DocumentMeta } from './DocumentMeta';
-import { Snippets } from './Snippets';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
-
-=======
->>>>>>> main
 import { links } from '../../Links';
 import { DocumentMeta } from './DocumentMeta';
-import { MetaTags } from './MetaTags';
 import { Snippets } from './Snippets';
 
 interface SearchResultListProps {

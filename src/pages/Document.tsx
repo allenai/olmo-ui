@@ -10,7 +10,6 @@ import { NoPaddingContainer, SearchWrapper } from '@/components/dolma/shared';
 
 import { search } from '../api/dolma/search';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
-import { MetaTags } from '../components/dolma/MetaTags';
 import { Snippets } from '../components/dolma/Snippets';
 import { RemoteState } from '../contexts/util';
 
