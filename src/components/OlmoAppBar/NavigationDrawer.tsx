@@ -23,7 +23,7 @@ import { links } from '@/Links';
 import { ResponsiveDrawerProps } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
-import MiniDrawer from './MiniDrawer';
+import { NavigationMiniDrawer } from './NavigationMiniDrawer';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -56,7 +56,7 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
     };
 
     return (
-        <MiniDrawer>
+        <NavigationMiniDrawer Heading={<DesktopHeading />}>
             {/* <MobileHeading onClose={handleDrawerClose} /> */}
             <Box component="nav" sx={{ height: 1 }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
@@ -96,7 +96,7 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
                     </NavigationLink>
                 </Stack>
             </Box>
-        </MiniDrawer>
+        </NavigationMiniDrawer>
         // <ResponsiveDrawer
         //     {...props}
         //     onClose={onClose}
