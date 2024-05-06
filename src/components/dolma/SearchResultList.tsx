@@ -9,7 +9,6 @@ import { search } from '../../api/dolma/search';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { MetaTags } from './MetaTags';
 
 import { links } from '../../Links';
 
@@ -23,7 +22,6 @@ export const SearchResultList = ({ response }: SearchResultListProps): JSX.Eleme
 
     return (
         <>
-            <MetaTags title={`${response.request.query} - Dolma Search Results`} />
             <Stack direction="column" gap={1.5} pt={2}>
                 {response.meta.total === 0 && <NoResults request={response.request.query} />}
                 {response.results.map((result, idx) => (

@@ -6,7 +6,6 @@ import { DocumentMeta } from '../components/dolma/DocumentMeta';
 import { Snippets } from '../components/dolma/Snippets';
 import { search } from '../api/dolma/search';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { MetaTags } from '../components/dolma/MetaTags';
 import { useAppContext } from '@/AppContext';
 
 import { NoPaddingContainer, SearchWrapper } from '@/components/dolma/shared';
@@ -58,13 +57,6 @@ export const Document = () => {
             )}
             {documentState === RemoteState.Loaded && documentDetails && (
                 <Stack pt={3.5}>
-                    <MetaTags
-                        title={
-                            documentDetails.title
-                                ? `Dolma Document - ${documentDetails.title}`
-                                : undefined
-                        }
-                    />
                     <DocumentMeta
                         dolmaId={documentDetails.dolma_id}
                         source={documentDetails.source}

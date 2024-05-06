@@ -1,8 +1,10 @@
 import { Navigate, RouteObject, createBrowserRouter } from 'react-router-dom';
+import { PropsWithChildren } from 'react';
 
 import { VarnishedApp } from './components/VarnishedApp';
 import { App } from './App';
 import { links } from './Links';
+import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { ThreadDisplay, selectedThreadLoader } from './components/thread/ThreadDisplay';
 import { uiRefreshOlmoTheme } from './olmoTheme';
@@ -79,11 +81,30 @@ const routes = [
     },
 ];
 
+const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
+    return (
+        <>
+            <MetaTags title="AI2 OLMo - Playground" />
+            {children}
+        </>
+    );
+};
+
+const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
+    return (
+        <>
+            <MetaTags title="AI2 OLMo - Dataset Explorer" />
+            {children}
+        </>
+    );
+};
+
 export const uiRefreshRoutes: RouteObject[] = [
     {
         path: '/',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
+                <MetaTags title="AI2 OLMo - Playground" />
                 <NewApp />
             </VarnishedApp>
         ),
@@ -101,7 +122,11 @@ export const uiRefreshRoutes: RouteObject[] = [
                     },
                     {
                         path: links.thread(':id'),
-                        element: <ThreadDisplay />,
+                        element: (
+                            <OlmoPage>
+                                <ThreadDisplay />
+                            </OlmoPage>
+                        ),
                         handle: {
                             title: 'Playground',
                         },
@@ -116,21 +141,33 @@ export const uiRefreshRoutes: RouteObject[] = [
             },
             {
                 path: links.document(':id'),
-                element: <Document />,
+                element: (
+                    <DolmaPage>
+                        <Document />
+                    </DolmaPage>
+                ),
                 handle: {
                     title: 'Dataset Explorer',
                 },
             },
             {
                 path: links.datasetExplorer,
-                element: <DolmaExplorer />,
+                element: (
+                    <DolmaPage>
+                        <DolmaExplorer />
+                    </DolmaPage>
+                ),
                 handle: {
                     title: 'Dataset Explorer',
                 },
             },
             {
                 path: links.search,
-                element: <Search />,
+                element: (
+                    <DolmaPage>
+                        <Search />
+                    </DolmaPage>
+                ),
                 handle: {
                     title: 'Dataset Explorer',
                 },
@@ -138,7 +175,11 @@ export const uiRefreshRoutes: RouteObject[] = [
             },
             {
                 path: links.promptTemplates,
-                element: <PromptTemplates />,
+                element: (
+                    <OlmoPage>
+                        <PromptTemplates />
+                    </OlmoPage>
+                ),
                 handle: {
                     title: 'Prompt Templates',
                 },
