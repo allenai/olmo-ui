@@ -15,7 +15,7 @@ export interface ResponsiveDrawerProps
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
-    drawerRef: React.RefObject<HTMLDivElement>;
+    drawerRef?: React.RefObject<HTMLDivElement>;
 }
 
 const GlobalStyle = () => (
