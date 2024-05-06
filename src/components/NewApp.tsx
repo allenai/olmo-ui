@@ -1,20 +1,18 @@
-import { Container, Paper, Stack, styled } from '@mui/material';
+import { Container, Paper, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 
+import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useAppContext } from '../AppContext';
+import { Footer } from './Footer/Footer';
 import { GlobalAlertList } from './GlobalAlertList';
-import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
+import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
+import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
-import { useTrackPageView } from '@/analytics/useTrackPageView';
-import { TermsAndConditionsModal } from './TermsAndConditionsModal';
-import { FooterLink } from './Footer/FooterLink';
-import { links } from '@/Links';
-import { Footer } from './Footer/Footer';
 
 export const NewApp = () => {
     useTrackPageView();
