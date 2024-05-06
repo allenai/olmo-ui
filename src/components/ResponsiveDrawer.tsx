@@ -20,8 +20,8 @@ export type ResponsiveDrawerProps = (Pick<
     (
         | {
               enableMiniVariant?: false;
-              miniVariantCollapsedWidth: never;
-              miniVariantOpenedWidth: never;
+              miniVariantCollapsedWidth?: never;
+              miniVariantOpenedWidth?: never;
           }
         | {
               enableMiniVariant: true;

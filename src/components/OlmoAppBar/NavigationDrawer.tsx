@@ -39,29 +39,25 @@ const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     });
 };
 
-interface NavigationDrawerProps extends Omit<ResponsiveDrawerProps, 'children'> {
-    onClose?: () => void;
+interface NavigationDrawerProps
+    extends Omit<
+        ResponsiveDrawerProps,
+        'children' | 'miniVariantCollapsedWidth' | 'miniVariantOpenedWidth'
+    > {
+    onClose: () => void;
+    onDrawerToggle: () => void;
 }
 
-export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): JSX.Element => {
+export const NavigationDrawer = ({
+    onClose,
+    onDrawerToggle,
+    open,
+    ...props
+}: NavigationDrawerProps): JSX.Element => {
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
-
-    const [open, setOpen] = useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-
-    const toggleDrawer = () => {
-        setOpen(!open);
-    };
 
     return (
         // <NavigationMiniDrawer Heading={<DesktopHeading />}>
@@ -111,7 +107,7 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
-            miniHeading={<TabletHeading toggleOpen={toggleDrawer} open={open} />}
+            miniHeading={<TabletHeading toggleOpen={onDrawerToggle} open={open} />}
             enableMiniVariant
             miniVariantCollapsedWidth={7}
             miniVariantOpenedWidth={45}
