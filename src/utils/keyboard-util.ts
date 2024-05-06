@@ -25,10 +25,6 @@ export const useKeyboardShortCut = ({
             }
         };
 
-        if (!isDrawerOpen && ref.current) {
-            ref.current.blur();
-        }
-
         if (ref.current && isDrawerOpen) {
             ref.current.focus();
             ref.current.addEventListener('keydown', onKeyDownHandler);
@@ -37,5 +33,5 @@ export const useKeyboardShortCut = ({
         return () => {
             ref.current?.removeEventListener('keydown', onKeyDownHandler);
         };
-    }, [onKeyPressed, ref, isDrawerOpen]);
+    }, [onKeyPressed, ref]);
 };
