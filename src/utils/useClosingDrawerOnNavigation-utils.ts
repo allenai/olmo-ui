@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigation } from 'react-router-dom';
 
 import { links } from '@/Links';
 
@@ -15,5 +15,5 @@ export const useCloseDrawerOnNavigation = ({
         if (location.pathname !== links.playground) {
             handleDrawerClose();
         }
-    }, []);
+    }, [handleDrawerClose, location.pathname]);
 };
