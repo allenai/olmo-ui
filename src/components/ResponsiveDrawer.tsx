@@ -5,7 +5,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { useDesktopOrUp } from './dolma/shared';
 
 export interface ResponsiveDrawerProps
-    extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
+    extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose' | 'onKeyDown'> {
     mobileHeading?: ReactNode;
     heading?: ReactNode;
 
@@ -15,6 +15,7 @@ export interface ResponsiveDrawerProps
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
+    onKeyDownHandler?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 const GlobalStyle = () => (
@@ -31,6 +32,7 @@ export const ResponsiveDrawer = ({
     children,
     open,
     onClose,
+    onKeyDownHandler,
     mobileHeading,
     heading,
     mobileDrawerSx,
@@ -49,10 +51,12 @@ export const ResponsiveDrawer = ({
                     open={open}
                     anchor={anchor}
                     onClose={onClose}
+                    onKeyDown={onKeyDownHandler}
                     sx={{
                         width: 'auto',
                         display: { xs: 'none', [drawerBreakpoint]: 'flex' },
                         overflow: isPersistentDrawerClosed ? 'hidden' : 'visible',
+                        outline: 'none',
 
                         ...desktopDrawerSx,
                     }}
@@ -65,7 +69,8 @@ export const ResponsiveDrawer = ({
                             borderRight: 'none',
                         },
                     }}
-                    data-testid="Drawer">
+                    data-testid="Drawer"
+                    tabIndex={0}>
                     {heading}
                     {children}
                 </Drawer>
@@ -76,6 +81,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     onClose={onClose}
                     disableScrollLock={false}
+                    onKeyDown={onKeyDownHandler}
                     PaperProps={{
                         sx: {
                             // This is intentionally not following the breakpoint. It looks nicer this way

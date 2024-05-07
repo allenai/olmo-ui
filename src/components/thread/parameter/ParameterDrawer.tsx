@@ -14,7 +14,7 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { KeyboardEventHandler, useEffect, useState } from 'react';
 
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
@@ -69,9 +69,19 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
         }
     };
 
+    const onKeyDownEscapeHandler: KeyboardEventHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ) => {
+        console.log(event);
+        if (event.key === 'Escape') {
+            handleDrawerClose();
+        }
+    };
+
     return (
         <ResponsiveDrawer
             onClose={handleDrawerClose}
+            onKeyDownHandler={onKeyDownEscapeHandler}
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
