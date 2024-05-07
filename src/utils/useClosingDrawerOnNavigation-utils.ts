@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { links } from '@/Links';
 
