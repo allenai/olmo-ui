@@ -96,9 +96,6 @@ export const HistoryDrawer = (): JSX.Element => {
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
-            onKeyDown={(e) => {
-                console.log(e);
-            }}
             heading={
                 <Box
                     sx={{
