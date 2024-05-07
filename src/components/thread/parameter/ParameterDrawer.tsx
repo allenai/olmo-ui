@@ -72,7 +72,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const onKeyDownEscapeHandler: KeyboardEventHandler = (
         event: React.KeyboardEvent<HTMLDivElement>
     ) => {
-        console.log(event);
         if (event.key === 'Escape') {
             handleDrawerClose();
         }
