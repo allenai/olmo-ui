@@ -12,7 +12,7 @@ export const useCloseDrawerOnNavigation = ({
 }: UseCloseDrawerOnNavigationProps) => {
     const location = useLocation();
     useEffect(() => {
-        if (location.pathname !== links.playground) {
+        if (location.pathname !== links.playground && !location.pathname.includes('thread')) {
             handleDrawerClose();
         }
     }, [handleDrawerClose, location.pathname]);
