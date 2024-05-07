@@ -56,8 +56,6 @@ export const ResponsiveDrawer = ({
                         width: 'auto',
                         display: { xs: 'none', [drawerBreakpoint]: 'flex' },
                         overflow: isPersistentDrawerClosed ? 'hidden' : 'visible',
-                        outline: 'none',
-
                         ...desktopDrawerSx,
                     }}
                     PaperProps={{
@@ -69,8 +67,7 @@ export const ResponsiveDrawer = ({
                             borderRight: 'none',
                         },
                     }}
-                    data-testid="Drawer"
-                    tabIndex={0}>
+                    data-testid="Drawer">
                     {heading}
                     {children}
                 </Drawer>
