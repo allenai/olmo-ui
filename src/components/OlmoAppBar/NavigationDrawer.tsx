@@ -1,5 +1,7 @@
 import { logos } from '@allenai/varnish2/components';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
@@ -8,10 +10,6 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
 import { UIMatch, useMatches } from 'react-router-dom';
-
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import { links } from '@/Links';
 
