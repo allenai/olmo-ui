@@ -10,7 +10,7 @@ import {
     ListItemText,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { createRef, useEffect, useState } from 'react';
+import { KeyboardEventHandler, createRef, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import { useAppContext } from '@/AppContext';
@@ -82,14 +82,7 @@ export const HistoryDrawer = (): JSX.Element => {
         delayInMs: 100,
     });
 
-    const drawerRef = createRef<HTMLDivElement>();
-
-    useKeyboardShortCut({
-        key: KeyBoardKey.ESC,
-        onKeyPressed: handleDrawerClose,
-        ref: drawerRef,
-        isDrawerOpen,
-    });
+    const handleDrawerKeyDown: KeyboardEventHandler = (event) => {};
 
     return (
         <ResponsiveDrawer
@@ -97,6 +90,9 @@ export const HistoryDrawer = (): JSX.Element => {
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
+            onKeyDown={(e) => {
+                console.log(e);
+            }}
             heading={
                 <Box
                     sx={{
