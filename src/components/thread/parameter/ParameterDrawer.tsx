@@ -26,9 +26,6 @@ import { DrawerId } from '@/slices/DrawerSlice';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
-const MAX_NEW_TOKEN_INFO =
-    'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
-
 const TEMPERATURE_INFO =
     'Temperature controls the degree of randomness. Lower temperatures are suitable for prompts that expect accuracy and reliability, while higher temperatures lead to more diverse or creative results. The model will become repetitive as the temperature approaches zero.';
 
@@ -111,22 +108,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                     <ListItem>
                         <NewModelSelect setParametersChanged={setParametersChanged} />
-                    </ListItem>
-                    <Divider />
-                    <ListItem>
-                        <NewInputSlider
-                            label="Max New Tokens"
-                            min={opts.max_tokens.min}
-                            max={opts.max_tokens.max}
-                            step={opts.max_tokens.step}
-                            initialValue={opts.max_tokens.default}
-                            onChange={(v) => {
-                                updateInferenceOpts({ max_tokens: v });
-                                setParametersChanged(true);
-                            }}
-                            dialogContent={MAX_NEW_TOKEN_INFO}
-                            dialogTitle="Max New Tokens"
-                        />
                     </ListItem>
                     <Divider />
                     <ListItem>
