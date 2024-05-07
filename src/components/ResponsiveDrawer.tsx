@@ -1,11 +1,11 @@
 import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
-import { ReactNode } from 'react';
+import { KeyboardEventHandler, ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { useDesktopOrUp } from './dolma/shared';
 
 export interface ResponsiveDrawerProps
-    extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> {
+    extends Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose' | 'onKeyDown'> {
     mobileHeading?: ReactNode;
     heading?: ReactNode;
 
@@ -51,6 +51,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     anchor={anchor}
                     onClose={onClose}
+                    onKeyDown={onKeyDown}
                     sx={{
                         width: 'auto',
                         display: { xs: 'none', [drawerBreakpoint]: 'flex' },
@@ -81,6 +82,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     onClose={onClose}
                     disableScrollLock={false}
+                    onKeyDown={onKeyDown}
                     PaperProps={{
                         sx: {
                             // This is intentionally not following the breakpoint. It looks nicer this way

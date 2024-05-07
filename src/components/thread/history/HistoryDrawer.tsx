@@ -82,14 +82,7 @@ export const HistoryDrawer = (): JSX.Element => {
         delayInMs: 100,
     });
 
-    const drawerRef = createRef<HTMLDivElement>();
-
-    useKeyboardShortCut({
-        key: KeyBoardKey.ESC,
-        onKeyPressed: handleDrawerClose,
-        ref: drawerRef,
-        isDrawerOpen,
-    });
+    const handleDrawerKeyDown: KeyboardEventHandler = (event) => {};
 
     return (
         <ResponsiveDrawer
@@ -97,6 +90,9 @@ export const HistoryDrawer = (): JSX.Element => {
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
+            onKeyDown={(e) => {
+                console.log(e);
+            }}
             heading={
                 <Box
                     sx={{
