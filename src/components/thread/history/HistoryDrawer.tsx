@@ -10,7 +10,7 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { createRef, useEffect, useState } from 'react';
+import { KeyboardEventHandler, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import { Message } from '@/api/Message';
@@ -18,7 +18,6 @@ import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
-import { KeyBoardKey, useKeyboardShortCut } from '@/utils/keyboard-util';
 
 import { HistoryDrawerSection } from './HistoryDrawerSection';
 
@@ -74,6 +73,14 @@ export const HistoryDrawer = (): JSX.Element => {
         }
     };
 
+    const onKeyDownEscapeHandler: KeyboardEventHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ) => {
+        if (event.key === 'Escape') {
+            handleDrawerClose();
+        }
+    };
+
     const [sentryRef, { rootRef }] = useInfiniteScroll({
         loading: allThreadInfo.loading,
         hasNextPage: hasMoreThreadsToFetch,
@@ -82,11 +89,10 @@ export const HistoryDrawer = (): JSX.Element => {
         delayInMs: 100,
     });
 
-    const handleDrawerKeyDown: KeyboardEventHandler = (event) => {};
-
     return (
         <ResponsiveDrawer
             onClose={handleDrawerClose}
+            onKeyDownHandler={onKeyDownEscapeHandler}
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
@@ -120,8 +126,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}
-            drawerRef={drawerRef}>
+            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'scroll' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection

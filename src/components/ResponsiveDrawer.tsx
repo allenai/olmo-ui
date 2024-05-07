@@ -1,5 +1,5 @@
 import { Breakpoint, Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
-import { KeyboardEventHandler, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { useDesktopOrUp } from './dolma/shared';
@@ -15,7 +15,7 @@ export interface ResponsiveDrawerProps
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
-    drawerRef?: React.RefObject<HTMLDivElement>;
+    onKeyDownHandler?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 const GlobalStyle = () => (
@@ -32,6 +32,7 @@ export const ResponsiveDrawer = ({
     children,
     open,
     onClose,
+    onKeyDownHandler,
     mobileHeading,
     heading,
     mobileDrawerSx,
@@ -39,7 +40,6 @@ export const ResponsiveDrawer = ({
     drawerBreakpoint = DESKTOP_LAYOUT_BREAKPOINT,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
-    drawerRef,
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
 
@@ -51,7 +51,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     anchor={anchor}
                     onClose={onClose}
-                    onKeyDown={onKeyDown}
+                    onKeyDown={onKeyDownHandler}
                     sx={{
                         width: 'auto',
                         display: { xs: 'none', [drawerBreakpoint]: 'flex' },
@@ -70,7 +70,6 @@ export const ResponsiveDrawer = ({
                         },
                     }}
                     data-testid="Drawer"
-                    ref={drawerRef}
                     tabIndex={0}>
                     {heading}
                     {children}
@@ -82,7 +81,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     onClose={onClose}
                     disableScrollLock={false}
-                    onKeyDown={onKeyDown}
+                    onKeyDown={onKeyDownHandler}
                     PaperProps={{
                         sx: {
                             // This is intentionally not following the breakpoint. It looks nicer this way
