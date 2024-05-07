@@ -1,13 +1,12 @@
-import { useState } from 'react';
-
-import styled from 'styled-components';
 import { Stack } from '@mui/material';
+import { useState } from 'react';
+import styled from 'styled-components';
 
-import { HideAndShowContainer, IconContainer, ResponseProps } from './Response';
+import { BranchIcon } from '../assets/BranchIcon';
 import { UserAvatar } from '../avatars/UserAvatar';
 import { TitleTypography } from '../ThreadAccordionView';
-import { BranchIcon } from '../assets/BranchIcon';
 import { ChatResponseContainer } from './ChatResponseContainer';
+import { HideAndShowContainer, IconContainer, ResponseProps } from './Response';
 
 export const UserResponseView = ({
     response,

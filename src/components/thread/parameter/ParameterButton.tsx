@@ -1,6 +1,7 @@
 import GearIcon from '@mui/icons-material/SettingsOutlined';
 
 import { useAppContext } from '@/AppContext';
+
 import { ResponsiveButton } from '../ResponsiveButton';
 import { PARAMETERS_DRAWER_ID } from './ParameterDrawer';
 

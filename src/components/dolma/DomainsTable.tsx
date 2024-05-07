@@ -1,3 +1,4 @@
+import { Grid } from '@mui/material';
 import {
     DataGrid,
     GridColDef,
@@ -5,7 +6,6 @@ import {
     GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { Chip } from '@nivo/tooltip';
-import { Grid } from '@mui/material';
 
 import { staticData } from '../../api/dolma/staticData';
 

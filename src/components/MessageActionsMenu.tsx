@@ -1,5 +1,4 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { Edit, Flag, ThumbDown, ThumbUp } from '@mui/icons-material';
 import {
     Button,
     Divider,
@@ -9,11 +8,12 @@ import {
     MenuItem,
     Typography,
 } from '@mui/material';
-import { Edit, ThumbUp, ThumbDown, Flag } from '@mui/icons-material';
+import * as React from 'react';
+import styled from 'styled-components';
 
 import { LabelRating } from '../api/Label';
-import { Role } from '../api/Role';
 import { Message } from '../api/Message';
+import { Role } from '../api/Role';
 
 interface ResponseContainerProps {
     children: JSX.Element | JSX.Element[];

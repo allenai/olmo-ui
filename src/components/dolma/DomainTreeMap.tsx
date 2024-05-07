@@ -1,7 +1,7 @@
 import { ResponsiveTreeMap } from '@nivo/treemap';
 
-import { ChartContainerSansLegend } from './sharedCharting';
 import { TreeData } from './DomainsTable';
+import { ChartContainerSansLegend } from './sharedCharting';
 
 interface Props {
     data: TreeData;

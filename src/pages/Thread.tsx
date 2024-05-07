@@ -1,14 +1,15 @@
+import { Alert, LinearProgress } from '@mui/material';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Alert, LinearProgress } from '@mui/material';
 
 import { Content } from '@/components/shared';
-import { MajorityScreen } from '../components/MajorityScreen';
-import { ThreadBodyView } from '../components/ThreadBodyView';
+
 import { useAppContext } from '../AppContext';
-import { StandardContainer } from '../components/StandardContainer';
 import { ContextMenu } from '../components/ContextMenu';
+import { MajorityScreen } from '../components/MajorityScreen';
+import { StandardContainer } from '../components/StandardContainer';
+import { ThreadBodyView } from '../components/ThreadBodyView';
 
 export const Thread = () => {
     const { id } = useParams();

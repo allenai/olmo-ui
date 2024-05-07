@@ -1,5 +1,5 @@
-import { Card, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Card, Typography } from '@mui/material';
 
 import { SearchBar } from '@/components/dolma/SearchBar';
 

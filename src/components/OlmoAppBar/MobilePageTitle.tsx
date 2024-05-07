@@ -1,7 +1,8 @@
 import { Typography } from '@mui/material';
 
-import { useRouteTitle } from './useRouteTitle';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+
+import { useRouteTitle } from './useRouteTitle';
 
 export const MobilePageTitle = (): JSX.Element => {
     const title = useRouteTitle();

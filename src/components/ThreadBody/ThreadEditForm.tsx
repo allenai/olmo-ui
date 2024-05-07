@@ -1,11 +1,9 @@
-import { Grid, IconButton, styled } from '@mui/material';
-import { Message, MessagePost } from 'src/api/Message';
 import { Check, Clear } from '@mui/icons-material';
-
+import { Grid, IconButton, styled } from '@mui/material';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import { Message, MessagePost } from 'src/api/Message';
 
 import { useAppContext } from '../../AppContext';
-
 import { MenuWrapperContainer } from '../MessageActionsMenu';
 
 interface ThreadEditFormProps {

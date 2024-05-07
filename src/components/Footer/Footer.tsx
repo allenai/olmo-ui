@@ -1,6 +1,7 @@
 import { Box, List, Stack } from '@mui/material';
 
 import { links } from '@/Links';
+
 import { FooterLink } from './FooterLink';
 
 export const Footer = () => {

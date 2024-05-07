@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
 import { LinearProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { staticData } from '../../api/dolma/staticData';
+import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { PieData, SourcesPieChart } from './SourcesPieChart';
 
 export const Sources = () => {

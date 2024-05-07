@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import { Role } from '../../api/Role';
 import { Message } from '../../api/Message';
-import { BranchMenu } from './BranchMenu';
-import { UserResponseView } from '../ResponseView/UserResponseView';
+import { Role } from '../../api/Role';
 import { LLMResponseView } from '../ResponseView/LLMResponseView';
+import { UserResponseView } from '../ResponseView/UserResponseView';
+import { BranchMenu } from './BranchMenu';
 
 interface ChatResponseViewProps {
     messages: Message[];

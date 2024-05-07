@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
 import { Typography, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
 import { ResponsiveBar } from '@nivo/bar';
-import { TableTooltip, Chip } from '@nivo/tooltip';
 import { useTheme } from '@nivo/core';
+import { Chip, TableTooltip } from '@nivo/tooltip';
+import { useEffect, useState } from 'react';
 
+import { staticData } from '../../api/dolma/staticData';
 import {
     ChartContainer,
     chartTheme,
-    legendItemHeight,
-    percentValueFormat,
     DistData,
+    legendItemHeight,
     MapDistData,
+    percentValueFormat,
 } from './sharedCharting';
-import { staticData } from '../../api/dolma/staticData';
 
 interface Props {
     data: DistData[];

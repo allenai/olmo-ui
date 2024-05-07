@@ -1,18 +1,19 @@
-import { FetchInfo, OlmoStateCreator } from '@/AppContext';
-import { links } from '@/Links';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     InferenceOpts,
-    Message,
-    MessagePost,
     isFinalMessage,
     isFirstMessage,
     isMessageChunk,
+    Message,
+    MessagePost,
     parseMessage,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
+import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
+import { links } from '@/Links';
 import { router } from '@/router';
+
 import { errorToAlert } from './AlertMessageSlice';
 
 const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {

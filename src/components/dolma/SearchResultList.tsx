@@ -1,17 +1,14 @@
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/material';
-
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-
+import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/material';
 import { Fragment } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { search } from '../../api/dolma/search';
+import { links } from '../../Links';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
-import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { MetaTags } from './MetaTags';
-
-import { links } from '../../Links';
 
 interface SearchResultListProps {
     response: search.Response;
@@ -23,7 +20,6 @@ export const SearchResultList = ({ response }: SearchResultListProps): JSX.Eleme
 
     return (
         <>
-            <MetaTags title={`${response.request.query} - Dolma Search Results`} />
             <Stack direction="column" gap={1.5} pt={2}>
                 {response.meta.total === 0 && <NoResults request={response.request.query} />}
                 {response.results.map((result, idx) => (

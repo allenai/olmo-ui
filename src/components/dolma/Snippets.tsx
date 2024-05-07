@@ -1,6 +1,5 @@
-import { Fragment } from 'react';
-
 import { styled } from '@mui/material';
+import { Fragment } from 'react';
 
 import { search } from '../../api/dolma/search';
 

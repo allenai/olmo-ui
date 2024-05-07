@@ -1,11 +1,11 @@
 import {
     InferenceOpts,
+    isFirstMessage,
+    isMessageStreamError,
     Message,
     MessageClient,
     MessagePost,
     MessageStreamPart,
-    isFirstMessage,
-    isMessageStreamError,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
 

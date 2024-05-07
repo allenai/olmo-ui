@@ -1,10 +1,10 @@
+import { Label } from '@/api/Label';
+import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
+import { Role } from '@/api/Role';
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 
-import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
 import { errorToAlert } from './AlertMessageSlice';
 import { messageClient } from './ThreadSlice';
-import { Role } from '@/api/Role';
-import { Label } from '@/api/Label';
 
 export interface SelectedThreadMessage {
     id: string;

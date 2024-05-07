@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import TuneIcon from '@mui/icons-material/Tune';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import {
     DataGrid,
@@ -7,17 +10,13 @@ import {
     GridValueGetterParams,
 } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
-import AddIcon from '@mui/icons-material/Add';
-import TuneIcon from '@mui/icons-material/Tune';
-
-import { useAppContext } from '../AppContext';
 import { PromptTemplate, PromptTemplatePost } from '../api/PromptTemplate';
+import { useAppContext } from '../AppContext';
 import { PromptTemplateEditor } from '../components/ModalEditors/PromptTemplateEditor';
-import { dateTimeFormat } from '../util';
 import { RemoteState } from '../contexts/util';
+import { dateTimeFormat } from '../util';
 
 export const PromptTemplates = ({ hideTitle }: { hideTitle?: boolean }) => {
     const userInfo = useAppContext((state) => state.userInfo);

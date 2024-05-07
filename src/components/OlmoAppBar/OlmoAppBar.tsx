@@ -3,7 +3,6 @@ import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/mater
 import { useState } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
-
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 

@@ -6,8 +6,8 @@ interface Props {
 }
 
 export const MetaTags = ({
-    title = "Dolma - AI2's Open Pretraining Dataset for AI Language Models",
-    description = "Dolma is a free and open pretraining dataset that you can explore for yourself. With 3 trillion tokens, it is the world's largest dataset of its kind.",
+    title = 'AI2 OLMo',
+    description = 'A state-of-the-art LLM and framework intentionally designed to provide access to data, training code, models, and evaluation code.',
 }: Props) => {
     return (
         <Helmet>

@@ -1,18 +1,17 @@
+import { Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import { Typography, Stack } from '@mui/material';
+import { useLocation, useParams } from 'react-router-dom';
 
-import { DocumentMeta } from '../components/dolma/DocumentMeta';
-import { Snippets } from '../components/dolma/Snippets';
-import { search } from '../api/dolma/search';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { MetaTags } from '../components/dolma/MetaTags';
 import { useAppContext } from '@/AppContext';
-
-import { NoPaddingContainer, SearchWrapper } from '@/components/dolma/shared';
-import { RemoteState } from '../contexts/util';
 import { RequestRemovalButton, ShareButton } from '@/components/dolma/DocumentButtons';
 import { SearchForm } from '@/components/dolma/SearchForm';
+import { NoPaddingContainer, SearchWrapper } from '@/components/dolma/shared';
+
+import { search } from '../api/dolma/search';
+import { DocumentMeta } from '../components/dolma/DocumentMeta';
+import { Snippets } from '../components/dolma/Snippets';
+import { RemoteState } from '../contexts/util';
 
 export const Document = () => {
     const getDocument = useAppContext((state) => state.getDocument);
@@ -58,13 +57,6 @@ export const Document = () => {
             )}
             {documentState === RemoteState.Loaded && documentDetails && (
                 <Stack pt={3.5}>
-                    <MetaTags
-                        title={
-                            documentDetails.title
-                                ? `Dolma Document - ${documentDetails.title}`
-                                : undefined
-                        }
-                    />
                     <DocumentMeta
                         dolmaId={documentDetails.dolma_id}
                         source={documentDetails.source}

@@ -2,10 +2,8 @@ import { MenuItem, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form-mui';
 
-import { useAppContext } from '../../AppContext';
-
 import { DefaultPromptTemplate } from '../../api/PromptTemplate';
-
+import { useAppContext } from '../../AppContext';
 import { Confirm } from '../Confirm';
 
 interface TemplateSelectProps {

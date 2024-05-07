@@ -1,9 +1,10 @@
 import { Stack } from '@mui/material';
 import { LoaderFunction } from 'react-router-dom';
 
-import { AppContextState, appContext, useAppContext } from '@/AppContext';
 import { Message } from '@/api/Message';
+import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { SelectedThreadMessage } from '@/slices/SelectedThreadSlice';
+
 import { ChatMessage } from './ChatMessage';
 import { MessageInteraction } from './MessageInteraction';
 
