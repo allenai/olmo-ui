@@ -15,5 +15,5 @@ export const useCloseDrawerOnNavigation = ({
         if (location.pathname !== links.playground) {
             handleDrawerClose();
         }
-    }, [location]);
+    }, []);
 };
