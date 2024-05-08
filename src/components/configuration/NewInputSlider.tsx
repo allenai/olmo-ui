@@ -4,7 +4,7 @@
 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, Grid, IconButton, Input, Slider, Typography } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { ResponsiveTooltip } from '../thread/ResponsiveTooltip';
 
@@ -36,12 +36,12 @@ export const NewInputSlider = ({
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
     const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
     const [showTooltip, setShowTooltip] = useState<boolean>(false);
-    const handleTooltipOpen = useCallback(() => {
+    const handleTooltipOpen = () => {
         setIsTooltipOpen(true);
-    }, []);
-    const handleTooltipClose = useCallback(() => {
+    };
+    const handleTooltipClose = () => {
         setIsTooltipOpen(false);
-    }, []);
+    };
 
     const firstUpdate = useRef(true);
     useEffect(() => {
@@ -97,9 +97,7 @@ export const NewInputSlider = ({
                                 aria-label={`More about ${dialogTitle}`}
                                 aria-expanded={isTooltipOpen}
                                 sx={{ color: 'inherit' }}
-                                onClick={() => {
-                                    handleTooltipOpen();
-                                }}>
+                                onClick={handleTooltipOpen}>
                                 <InfoOutlinedIcon />
                             </IconButton>
                         </ResponsiveTooltip>
