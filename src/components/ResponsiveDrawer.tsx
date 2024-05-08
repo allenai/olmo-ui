@@ -13,6 +13,8 @@ type BaseResponsiveDrawerProps = {
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
+
+    onKeyDownHandler?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 };
 
 type MiniVariantProps =
@@ -35,7 +37,7 @@ type MiniVariantProps =
           miniVariantExpandedWidth: number;
       };
 
-type ResponsiveDrawerProps = Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> &
+type ResponsiveDrawerProps = Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose' | 'onKeyDown'> &
     BaseResponsiveDrawerProps &
     MiniVariantProps;
 
@@ -53,6 +55,7 @@ export const ResponsiveDrawer = ({
     children,
     open,
     onClose,
+    onKeyDownHandler,
     mobileHeading,
     miniHeading,
     heading,
@@ -78,6 +81,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     anchor={anchor}
                     onClose={onClose}
+                    onKeyDown={onKeyDownHandler}
                     sx={{
                         width: 'auto',
                         overflow: isPersistentDrawerClosed ? 'hidden' : 'visible',
@@ -133,6 +137,7 @@ export const ResponsiveDrawer = ({
                     open={open}
                     onClose={onClose}
                     disableScrollLock={false}
+                    onKeyDown={onKeyDownHandler}
                     PaperProps={{
                         sx: {
                             // This is intentionally not following the breakpoint. It looks nicer this way
