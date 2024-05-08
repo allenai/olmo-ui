@@ -10,7 +10,7 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { useEffect, useState } from 'react';
+import { KeyboardEventHandler, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import { Message } from '@/api/Message';
@@ -73,6 +73,14 @@ export const HistoryDrawer = (): JSX.Element => {
         }
     };
 
+    const onKeyDownEscapeHandler: KeyboardEventHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ) => {
+        if (event.key === 'Escape') {
+            handleDrawerClose();
+        }
+    };
+
     const [sentryRef, { rootRef }] = useInfiniteScroll({
         loading: allThreadInfo.loading,
         hasNextPage: hasMoreThreadsToFetch,
@@ -84,6 +92,7 @@ export const HistoryDrawer = (): JSX.Element => {
     return (
         <ResponsiveDrawer
             onClose={handleDrawerClose}
+            onKeyDownHandler={onKeyDownEscapeHandler}
             open={isDrawerOpen}
             anchor="right"
             desktopDrawerVariant="persistent"
