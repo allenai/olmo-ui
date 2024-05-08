@@ -7,6 +7,8 @@ import { Box, Button, Grid, IconButton, Input, Slider, Tooltip, Typography } fro
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import { InfoButton } from './InfoButton';
+
 interface Props {
     label: string;
     step?: number;
@@ -114,13 +116,11 @@ export const NewInputSlider = ({
                             {label}
                         </Typography>
                         {!!dialogContent && !!dialogTitle && (
-                            <IconButton
-                                sx={{ color: 'inherit' }}
+                            <InfoButton
                                 onClick={() => {
                                     handleTooltipOpen();
-                                }}>
-                                <InfoOutlinedIcon />
-                            </IconButton>
+                                }}
+                            />
                         )}
                     </Grid>
                     <Grid item xs={8}>

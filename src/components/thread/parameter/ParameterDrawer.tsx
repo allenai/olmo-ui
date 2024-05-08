@@ -1,9 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
-    Autocomplete,
     AutocompleteChangeReason,
     Box,
-    Chip,
     Divider,
     IconButton,
     InputLabel,
@@ -11,19 +9,21 @@ import {
     ListItem,
     ListSubheader,
     Stack,
-    TextField,
     Typography,
 } from '@mui/material';
-import { KeyboardEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, KeyboardEventHandler, useEffect, useState } from 'react';
 
+import { InferenceOpts } from '@/api/Message';
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
-import { NewInputSlider } from '@/components/configuration/NewInputSlider';
 import { NewModelSelect } from '@/components/NewModelSelect';
 import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
+import { NewInputSlider } from '@/components/thread/parameter/NewInputSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
+
+import { StopWordsInput } from './StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -157,36 +157,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                     <Divider />
                     <ListItem>
-                        <Box sx={{ width: '100%' }}>
-                            <Autocomplete
-                                multiple
-                                options={inferenceOpts.stop ?? []}
-                                value={inferenceOpts.stop ?? []}
-                                freeSolo
-                                onChange={(event, value, reason) => {
-                                    handleOnChange(event, value, reason);
-                                }}
-                                renderTags={(stopWords: readonly string[], getTagProps) =>
-                                    stopWords.map((option: string, index: number) => (
-                                        // getTagProps already included a key but eslint doesnt know about it.
-                                        // eslint-disable-next-line react/jsx-key
-                                        <Chip label={option} {...getTagProps({ index })} />
-                                    ))
-                                }
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Stop Words"
-                                        placeholder="Enter Stop Word"
-                                        helperText={
-                                            <Typography variant="caption">
-                                                Press &quot;Enter&quot; to add a new word.
-                                            </Typography>
-                                        }
-                                    />
-                                )}
-                            />
-                        </Box>
+                        <StopWordsInput value={inferenceOpts.stop} onChange={handleOnChange} />
                     </ListItem>
                 </List>
             </Stack>
