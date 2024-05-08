@@ -5,6 +5,3 @@ export const biggerContainerQuery = (theme: Theme) =>
 
 export const smallerContainerQuery = (theme: Theme) =>
     `@container (max-width: ${theme.breakpoints.values.md}px)`;
-
-export const smallViewportQuery = (theme: Theme) =>
-    `@media only screen and (max-width: ${theme.breakpoints.values.sm}px)`;
