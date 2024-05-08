@@ -1,12 +1,15 @@
 import {
     Autocomplete,
     AutocompleteProps,
+    Box,
     Chip,
     FormControlLabel,
+    FormLabel,
     InputLabel,
     TextField,
     Typography,
 } from '@mui/material';
+import { Stack } from '@mui/system';
 
 import { InfoButton } from './InfoButton';
 
@@ -16,16 +19,19 @@ interface StopWordsInputProps {
 }
 export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) => {
     return (
-        <InputLabel sx={{ cursor: 'pointer', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="body1" component="span" paddingBlockEnd={2}>
-                Stop Words{' '}
+        <Box width={1}>
+            <Stack direction="row" alignItems="center" paddingBlockEnd={2}>
+                <Typography variant="body1" component="label" htmlFor="stop-words-input">
+                    Stop Words
+                </Typography>
                 <InfoButton
                     onClick={() => {
                         console.log('click');
                     }}
                 />
-            </Typography>
+            </Stack>
             <Autocomplete
+                id="stop-words-input"
                 fullWidth
                 multiple
                 value={value}
@@ -53,6 +59,6 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                     />
                 )}
             />
-        </InputLabel>
+        </Box>
     );
 };
