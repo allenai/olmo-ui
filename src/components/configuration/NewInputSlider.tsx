@@ -93,6 +93,9 @@ export const NewInputSlider = ({
                             isTooltipOpen={isTooltipOpen}
                             onTooltipClose={handleTooltipClose}>
                             <IconButton
+                                tabIndex={0}
+                                aria-label={`More about ${dialogTitle}`}
+                                aria-expanded={isTooltipOpen}
                                 sx={{ color: 'inherit' }}
                                 onClick={() => {
                                     handleTooltipOpen();

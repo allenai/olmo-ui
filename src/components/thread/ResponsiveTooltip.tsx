@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, Stack, Tooltip, Typography } from '@mui/material';
+import { useCallback } from 'react';
 
 import { useSmallLayoutOrUp } from '../dolma/shared';
-import { useCallback } from 'react';
 
 type ResponsiveTooltipProps = {
     isTooltipOpen: boolean;
@@ -43,7 +43,6 @@ export const ResponsiveTooltip = ({
             </Box>
             <Stack
                 direction="row"
-                justifyContent="flex-start"
                 alignItems="flex-start"
                 sx={{
                     marginTop: 0.5,
@@ -73,20 +72,17 @@ export const ResponsiveTooltip = ({
                         right: theme.spacing(2),
                     }),
                 },
-                popper: {
-                    anchorEl,
-                },
+                popper: { anchorEl },
             }}
             title={TooltipBox}>
             {children}
         </Tooltip>
     ) : (
         <>
+            {children}
             <Dialog
                 open={isTooltipOpen}
                 onClose={handleTooltipClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
                 PaperProps={{
                     sx: (theme) => ({
                         borderRadius: theme.spacing(1.5),
@@ -94,7 +90,6 @@ export const ResponsiveTooltip = ({
                 }}>
                 {TooltipBox}
             </Dialog>
-            {children}
         </>
     );
 };
