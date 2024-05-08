@@ -37,7 +37,10 @@ type MiniVariantProps =
           miniVariantExpandedWidth: number;
       };
 
-type ResponsiveDrawerProps = Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose' | 'onKeyDown'> &
+type ResponsiveDrawerProps = Pick<
+    DrawerProps,
+    'open' | 'anchor' | 'children' | 'onClose' | 'onKeyDown'
+> &
     BaseResponsiveDrawerProps &
     MiniVariantProps;
 
