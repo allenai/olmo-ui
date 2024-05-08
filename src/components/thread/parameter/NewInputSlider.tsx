@@ -25,10 +25,9 @@ export const NewInputSlider = ({
     step = 1,
     initialValue = 0,
     label,
-    dialogContent = '',
-    dialogTitle = '',
-    onChange,
-    id,
+    dialogContent,
+    dialogTitle,
+    onChange
 }: Props) => {
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
