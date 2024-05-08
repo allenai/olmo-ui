@@ -35,7 +35,6 @@ export const NewInputSlider = ({
     const boxRef = useRef<HTMLElement>();
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
     const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
-    const [showTooltip, setShowTooltip] = useState<boolean>(false);
     const handleTooltipOpen = () => {
         setIsTooltipOpen(true);
     };
@@ -52,14 +51,6 @@ export const NewInputSlider = ({
         }
         onChange && onChange(value);
     }, [value]);
-
-    useEffect(() => {
-        if (!dialogTitle || !dialogContent || !boxRef || !boxRef.current) {
-            setShowTooltip(false);
-            return;
-        }
-        setShowTooltip(true);
-    }, [dialogTitle, dialogContent, boxRef]);
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         // this component will only have 1 value
@@ -85,23 +76,21 @@ export const NewInputSlider = ({
                     <Typography id="input-slider" gutterBottom>
                         {label}
                     </Typography>
-                    {showTooltip && (
-                        <ResponsiveTooltip
-                            anchorEl={boxRef.current}
-                            dialogTitle={dialogTitle}
-                            dialogContent={dialogContent}
-                            isTooltipOpen={isTooltipOpen}
-                            onTooltipClose={handleTooltipClose}>
-                            <IconButton
-                                tabIndex={0}
-                                aria-label={`More about ${dialogTitle}`}
-                                aria-expanded={isTooltipOpen}
-                                sx={{ color: 'inherit' }}
-                                onClick={handleTooltipOpen}>
-                                <InfoOutlinedIcon />
-                            </IconButton>
-                        </ResponsiveTooltip>
-                    )}
+                    <ResponsiveTooltip
+                        anchorEl={boxRef.current}
+                        dialogTitle={dialogTitle}
+                        dialogContent={dialogContent}
+                        isTooltipOpen={isTooltipOpen}
+                        onTooltipClose={handleTooltipClose}>
+                        <IconButton
+                            tabIndex={0}
+                            aria-label={`More about ${dialogTitle}`}
+                            aria-expanded={isTooltipOpen}
+                            sx={{ color: 'inherit' }}
+                            onClick={handleTooltipOpen}>
+                            <InfoOutlinedIcon />
+                        </IconButton>
+                    </ResponsiveTooltip>
                 </Grid>
                 <Grid item xs={8}>
                     <Slider
