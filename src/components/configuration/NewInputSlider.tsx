@@ -3,9 +3,10 @@
  */
 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Button, Grid, IconButton, Input, Slider, Tooltip, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import { Box, Grid, IconButton, Input, Slider, Typography } from '@mui/material';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { ResponsiveTooltip } from '../thread/ResponsiveTooltip';
 
 interface Props {
     label: string;
@@ -24,24 +25,23 @@ export const NewInputSlider = ({
     step = 1,
     initialValue = 0,
     label,
-    dialogContent,
-    dialogTitle,
+    dialogContent = '',
+    dialogTitle = '',
     onChange,
 }: Props) => {
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
     };
-
+    const boxRef = useRef<HTMLElement>();
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
-
-    const [open, setOpen] = useState(false);
-
-    const handleTooltipOpen = () => {
-        setOpen(true);
-    };
-    const handleTooltipClose = () => {
-        setOpen(false);
-    };
+    const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
+    const [showTooltip, setShowTooltip] = useState<boolean>(false);
+    const handleTooltipOpen = useCallback(() => {
+        setIsTooltipOpen(true);
+    }, []);
+    const handleTooltipClose = useCallback(() => {
+        setIsTooltipOpen(false);
+    }, []);
 
     const firstUpdate = useRef(true);
     useEffect(() => {
@@ -52,6 +52,14 @@ export const NewInputSlider = ({
         }
         onChange && onChange(value);
     }, [value]);
+
+    useEffect(() => {
+        if (!dialogTitle || !dialogContent || !boxRef || !boxRef.current) {
+            setShowTooltip(false);
+            return;
+        }
+        setShowTooltip(true);
+    }, [dialogTitle, dialogContent, boxRef]);
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         // this component will only have 1 value
@@ -71,49 +79,19 @@ export const NewInputSlider = ({
     };
 
     return (
-        <Tooltip
-            disableHoverListener
-            onClose={handleTooltipClose}
-            open={open}
-            placement="left"
-            slotProps={{
-                popper: {
-                    modifiers: [
-                        {
-                            name: 'offset',
-                            options: {
-                                offset: [-60, 30],
-                            },
-                        },
-                    ],
-                },
-            }}
-            title={
-                <>
-                    <Box
-                        sx={{
-                            py: 1,
-                            px: 1.5,
-                        }}>
-                        <Typography variant="subtitle2">{dialogTitle}</Typography>
-                        <Typography variant="caption">{dialogContent}</Typography>
-                    </Box>
-                    <CloseButton onClick={handleTooltipClose}>Close</CloseButton>
-                </>
-            }>
-            <Box sx={{ width: '100%' }}>
-                <Grid container spacing={4} alignItems="center">
-                    <Grid
-                        item
-                        xs={12}
-                        display="flex"
-                        flexDirection="row"
-                        alignItems="center"
-                        gap={1}>
-                        <Typography id="input-slider" gutterBottom>
-                            {label}
-                        </Typography>
-                        {!!dialogContent && !!dialogTitle && (
+        <Box sx={{ width: '100%' }} ref={boxRef}>
+            <Grid container spacing={4} alignItems="center">
+                <Grid item xs={12} display="flex" flexDirection="row" alignItems="center" gap={1}>
+                    <Typography id="input-slider" gutterBottom>
+                        {label}
+                    </Typography>
+                    {showTooltip && (
+                        <ResponsiveTooltip
+                            anchorEl={boxRef.current}
+                            dialogTitle={dialogTitle}
+                            dialogContent={dialogContent}
+                            isTooltipOpen={isTooltipOpen}
+                            onTooltipClose={handleTooltipClose}>
                             <IconButton
                                 sx={{ color: 'inherit' }}
                                 onClick={() => {
@@ -121,39 +99,35 @@ export const NewInputSlider = ({
                                 }}>
                                 <InfoOutlinedIcon />
                             </IconButton>
-                        )}
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Slider
-                            value={value}
-                            onChange={handleSliderChange}
-                            aria-labelledby="input-slider"
-                            step={step}
-                            min={min}
-                            max={max}
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Input
-                            value={value}
-                            size="small"
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            inputProps={{
-                                step,
-                                min,
-                                max,
-                                type: 'number',
-                                'aria-labelledby': 'input-slider',
-                            }}
-                        />
-                    </Grid>
+                        </ResponsiveTooltip>
+                    )}
                 </Grid>
-            </Box>
-        </Tooltip>
+                <Grid item xs={8}>
+                    <Slider
+                        value={value}
+                        onChange={handleSliderChange}
+                        aria-labelledby="input-slider"
+                        step={step}
+                        min={min}
+                        max={max}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <Input
+                        value={value}
+                        size="small"
+                        onChange={handleInputChange}
+                        onBlur={handleBlur}
+                        inputProps={{
+                            step,
+                            min,
+                            max,
+                            type: 'number',
+                            'aria-labelledby': 'input-slider',
+                        }}
+                    />
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
-
-const CloseButton = styled(Button)`
-    padding-bottom: 8px;
-`;
