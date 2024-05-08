@@ -14,6 +14,8 @@ export interface ThreadSlice {
         limit?: number
     ) => Promise<FetchInfo<MessageList>>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
+    openThreadDeleteSnackBar: boolean;
+    setOpenThreadDeleteSnackbar: (openThreadDeleteSnackBar: boolean) => void;
 }
 
 export const messageClient = new MessageClient();
@@ -22,6 +24,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
     deletedThreadInfo: {},
     threads: [],
+    openThreadDeleteSnackBar: false,
     getAllThreads: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
             set((state) => ({
@@ -81,6 +84,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     );
                     state.threads.splice(threadIndexToRemove, 1);
                     get().deleteSelectedThread();
+                    state.openThreadDeleteSnackBar = true;
                 },
                 false,
                 'threadUpdate/finishDeleteThread'
@@ -103,5 +107,9 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
             );
         }
         return get().deletedThreadInfo;
+    },
+
+    setOpenThreadDeleteSnackbar: (openThreadDeleteSnackBar) => {
+        set({ openThreadDeleteSnackBar });
     },
 });
