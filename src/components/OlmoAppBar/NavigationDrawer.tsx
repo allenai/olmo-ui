@@ -9,11 +9,12 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
+import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { links } from '@/Links';
 
-import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
+import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
@@ -28,7 +29,7 @@ const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
 
 interface NavigationDrawerProps
     extends Omit<
-        ResponsiveDrawerProps,
+        ComponentProps<typeof ResponsiveDrawer>,
         'children' | 'miniVariantCollapsedWidth' | 'miniVariantOpenedWidth'
     > {
     onClose: () => void;

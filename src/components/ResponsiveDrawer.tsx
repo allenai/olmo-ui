@@ -4,10 +4,7 @@ import { ReactNode } from 'react';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { useDesktopOrUp, useIsOnlyBreakpoint } from './dolma/shared';
 
-export type ResponsiveDrawerProps = (Pick<
-    DrawerProps,
-    'open' | 'anchor' | 'children' | 'onClose'
-> & {
+type BaseResponsiveDrawerProps = {
     mobileHeading?: ReactNode;
     miniHeading?: ReactNode;
     heading?: ReactNode;
@@ -16,27 +13,31 @@ export type ResponsiveDrawerProps = (Pick<
 
     mobileDrawerSx?: SxProps<Theme>;
     desktopDrawerSx?: SxProps<Theme>;
-}) &
-    (
-        | {
-              enableMiniVariant?: false;
-              miniVariantCollapsedWidth?: never;
-              miniVariantExpandedWidth?: never;
-          }
-        | {
-              enableMiniVariant: true;
+};
 
-              /**
-               * This is a spacing token
-               */
-              miniVariantCollapsedWidth: number;
+type MiniVariantProps =
+    | {
+          enableMiniVariant?: false;
+          miniVariantCollapsedWidth?: never;
+          miniVariantExpandedWidth?: never;
+      }
+    | {
+          enableMiniVariant: true;
 
-              /**
-               * This is a spacing token
-               */
-              miniVariantExpandedWidth: number;
-          }
-    );
+          /**
+           * This is a spacing token
+           */
+          miniVariantCollapsedWidth: number;
+
+          /**
+           * This is a spacing token
+           */
+          miniVariantExpandedWidth: number;
+      };
+
+type ResponsiveDrawerProps = Pick<DrawerProps, 'open' | 'anchor' | 'children' | 'onClose'> &
+    BaseResponsiveDrawerProps &
+    MiniVariantProps;
 
 const GlobalStyle = () => (
     <GlobalStyles
