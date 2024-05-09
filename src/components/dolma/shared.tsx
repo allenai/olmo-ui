@@ -17,7 +17,7 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const ScrollToTopOnPageChange = () => {
     const location = useLocation();
@@ -156,4 +156,9 @@ export const useIsOnlyBreakpoint = (breakpoint: Breakpoint): boolean => {
 export const useDesktopOrUp = (): boolean => {
     const theme = useTheme();
     return useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
+};
+
+export const useSmallLayoutOrUp = (): boolean => {
+    const theme = useTheme();
+    return useMediaQuery(theme.breakpoints.up(SMALL_LAYOUT_BREAKPOINT));
 };
