@@ -1,19 +1,23 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { links } from '@/Links';
+import { useAppContext } from '@/AppContext';
 
 interface UseCloseDrawerOnNavigationProps {
     handleDrawerClose: () => void;
+    open?: boolean;
 }
 
 export const useCloseDrawerOnNavigation = ({
     handleDrawerClose,
 }: UseCloseDrawerOnNavigationProps) => {
     const location = useLocation();
+    const currentRoute = useAppContext((state) => state.currentRoute);
+    const setCurrentRoute = useAppContext((state) => state.setCurrentRoute);
     useEffect(() => {
-        if (location.pathname !== links.playground && !location.pathname.includes('thread')) {
+        if (currentRoute !== location.pathname) {
             handleDrawerClose();
+            setCurrentRoute(location.pathname);
         }
     }, [handleDrawerClose, location.pathname]);
 };

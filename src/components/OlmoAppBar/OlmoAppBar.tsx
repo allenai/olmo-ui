@@ -2,6 +2,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
+import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
+
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
@@ -17,6 +19,11 @@ export const OlmoAppBar = (): JSX.Element => {
     const handleDrawerClose = () => {
         setIsDrawerOpen(false);
     };
+
+    useCloseDrawerOnNavigation({
+        handleDrawerClose,
+        open: isDrawerOpen,
+    });
 
     return (
         <>
