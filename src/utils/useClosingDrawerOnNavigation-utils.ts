@@ -5,7 +5,6 @@ import { useAppContext } from '@/AppContext';
 
 interface UseCloseDrawerOnNavigationProps {
     handleDrawerClose: () => void;
-    open?: boolean;
 }
 
 export const useCloseDrawerOnNavigation = ({

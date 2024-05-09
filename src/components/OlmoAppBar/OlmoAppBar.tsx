@@ -22,7 +22,6 @@ export const OlmoAppBar = (): JSX.Element => {
 
     useCloseDrawerOnNavigation({
         handleDrawerClose,
-        open: isDrawerOpen,
     });
 
     return (
