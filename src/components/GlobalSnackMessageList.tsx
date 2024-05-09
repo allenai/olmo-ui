@@ -1,8 +1,10 @@
 /**
- * Single display for all errors/messages passed to the app context.
+ * Single display for all messages passed to the app context.
  */
 
 import { Alert, AlertTitle, Snackbar, SnackbarContent } from '@mui/material';
+
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { useAppContext } from '../AppContext';
 
@@ -27,7 +29,7 @@ export const GlobalSnackMessageList = () => {
                     open={isOpen}
                     autoHideDuration={AUTO_HIDE_DURATION}
                     onClose={handleClose(msg.id)}>
-                    {msg.type === 'Alert' ? (
+                    {msg.type === SnackMessageType.Alert ? (
                         <Alert
                             key={msg.id}
                             onClose={handleClose(msg.id)}

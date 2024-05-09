@@ -13,7 +13,12 @@ import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 import { links } from '@/Links';
 import { router } from '@/router';
 
-import { AlertMessageSeverity, errorToAlert, SnackMessage } from './SnackMessageSlice';
+import {
+    AlertMessageSeverity,
+    errorToAlert,
+    SnackMessage,
+    SnackMessageType,
+} from './SnackMessageSlice';
 
 const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
@@ -32,7 +37,7 @@ const findChildMessageById = (messageId: string, rootMessage: Message): Message 
 };
 
 const ABORT_ERROR_MESSAGE: SnackMessage = {
-    type: 'Alert',
+    type: SnackMessageType.Alert,
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
     title: 'Response was aborted',
     message: `You stopped OLMo from generating answers to your query`,

@@ -7,17 +7,22 @@ export enum AlertMessageSeverity {
     Warning = 'warning',
 }
 
+export enum SnackMessageType {
+    Alert = 'alert',
+    Brief = 'brief',
+}
+
 export type SnackMessage = {
     id: string;
     message: string;
 } & (
     | {
-          type: 'Alert';
+          type: SnackMessageType.Alert;
           title: string;
           severity: AlertMessageSeverity;
       }
     | {
-          type: 'Brief';
+          type: SnackMessageType.Brief;
           title?: never;
           severity?: never;
       }
@@ -25,7 +30,13 @@ export type SnackMessage = {
 
 export function errorToAlert(id: string, title: string, error: unknown): SnackMessage {
     const message = error instanceof Error ? `${error.message} (${error.name})` : `${error}`;
-    return { type: 'Alert', id, title, message, severity: AlertMessageSeverity.Error };
+    return {
+        type: SnackMessageType.Alert,
+        id,
+        title,
+        message,
+        severity: AlertMessageSeverity.Error,
+    };
 }
 
 export interface SnackMessageSlice {
