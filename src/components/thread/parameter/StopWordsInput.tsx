@@ -2,6 +2,8 @@ import { Autocomplete, AutocompleteProps, Box, Chip, TextField, Typography } fro
 import { Stack } from '@mui/system';
 import { useRef } from 'react';
 
+const STOP_WORDS_TOOLTIP_CONTENT =
+    'Stop words are a set of character sequences that stop the model from generating additional text. The output will not contain the stop word. Press Tab to add a new word.';
 
 interface StopWordsInputProps {
     value?: string[];
