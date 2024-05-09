@@ -13,8 +13,8 @@ interface Props {
     min?: number;
     max?: number;
     initialValue?: number;
-    dialogContent?: string;
-    dialogTitle?: string;
+    dialogContent: string;
+    dialogTitle: string;
     onChange?: (value: number) => void;
     id: string;
 }
@@ -27,7 +27,8 @@ export const NewInputSlider = ({
     label,
     dialogContent,
     dialogTitle,
-    onChange
+    onChange,
+    id,
 }: Props) => {
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
