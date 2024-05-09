@@ -14,7 +14,7 @@ export const useCloseDrawerOnNavigation = ({
     const currentRoute = useAppContext((state) => state.currentRoute);
     const setCurrentRoute = useAppContext((state) => state.setCurrentRoute);
     useEffect(() => {
-        if (currentRoute !== location.pathname) {
+        if (currentRoute !== location.pathname && !location.pathname.includes('thread')) {
             handleDrawerClose();
             setCurrentRoute(location.pathname);
         }
