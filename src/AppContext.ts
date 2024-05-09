@@ -11,7 +11,6 @@ import { createMetaSlice, MetaSlice } from './slices/MetaSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
 import { createPromptTemplateSlice, PromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { createRepromptSlice, RepromptSlice } from './slices/repromptSlice';
-import { createRouteSlice, RouteSlice } from './slices/RouteSlice';
 import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
 import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
@@ -38,7 +37,6 @@ export type AppContextState = LabelSlice &
     DrawerSlice &
     ThreadUpdateSlice &
     SelectedThreadSlice &
-    RouteSlice &
     DatasetExplorerSliceStates;
 
 export const appContext = createStore<AppContextState>()(
@@ -58,7 +56,6 @@ export const appContext = createStore<AppContextState>()(
             ...createDocumentSlice(...store),
             ...createThreadUpdateSlice(...store),
             ...createSelectedThreadSlice(...store),
-            ...createRouteSlice(...store),
         }))
     )
 );
