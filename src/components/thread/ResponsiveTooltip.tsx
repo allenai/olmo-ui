@@ -1,5 +1,4 @@
 import { Box, Button, Dialog, Stack, Tooltip, Typography } from '@mui/material';
-import { useCallback } from 'react';
 
 import { useSmallLayoutOrUp } from '../dolma/shared';
 
@@ -20,9 +19,9 @@ export const ResponsiveTooltip = ({
     children,
     anchorEl,
 }: ResponsiveTooltipProps): JSX.Element => {
-    const handleTooltipClose = useCallback(() => {
+    const handleTooltipClose = () => {
         onTooltipClose();
-    }, [onTooltipClose]);
+    };
 
     const TooltipBox = (
         <>
