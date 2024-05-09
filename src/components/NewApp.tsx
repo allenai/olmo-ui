@@ -1,4 +1,4 @@
-import { Container, Paper, styled } from '@mui/material';
+import { Container, Paper, PaperProps } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -81,19 +81,30 @@ export const NewApp = () => {
     );
 };
 
-const OuterContainer = styled(Paper)`
-    ${({ theme }) => theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)} {
-        display: grid;
+interface OuterContainerProps extends PaperProps {
+    isNavigationDrawerOpen?: boolean;
+}
 
-        grid-template-areas:
-            'nav app-bar side-drawer'
-            'nav content side-drawer';
+const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps) => {
+    return (
+        <Paper
+            sx={[
+                (theme) => ({
+                    height: '100vh',
+                    width: '100%',
 
-        grid-template-rows: auto 1fr;
-        grid-template-columns: auto 1fr auto;
-
-        grid-column-gap: ${({ theme }) => theme.spacing(8)};
-    }
-    height: 100vh;
-    width: 100%;
-`;
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        display: 'grid',
+                        gridTemplateAreas: `
+                            'nav app-bar side-drawer'
+                            'nav content side-drawer'`,
+                        gridTemplateRows: 'auto 1fr',
+                        gridTemplateColumns: 'auto 1fr auto',
+                        gap: theme.spacing(8),
+                    },
+                }),
+            ]}
+            {...rest}
+        />
+    );
+};

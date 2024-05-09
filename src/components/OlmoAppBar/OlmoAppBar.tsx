@@ -70,7 +70,11 @@ export const OlmoAppBar = (): JSX.Element => {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <NavigationDrawer open={isDrawerOpen} onClose={handleDrawerClose}></NavigationDrawer>
+            <NavigationDrawer
+                open={isDrawerOpen}
+                onClose={handleDrawerClose}
+                onDrawerToggle={handleDrawerToggle}
+            />
         </>
     );
 };

@@ -1,5 +1,6 @@
 import {
     Box,
+    Breakpoint,
     Card,
     CardProps,
     Container,
@@ -145,6 +146,11 @@ export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
             {isLoading && <LinearProgress sx={{ mt: 3 }} data-testid="search-progress-bar" />}
         </>
     );
+};
+
+export const useIsOnlyBreakpoint = (breakpoint: Breakpoint): boolean => {
+    const theme = useTheme();
+    return useMediaQuery(theme.breakpoints.only(breakpoint));
 };
 
 export const useDesktopOrUp = (): boolean => {
