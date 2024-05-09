@@ -11,9 +11,8 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { ChangeEventHandler, KeyboardEventHandler, useEffect, useState } from 'react';
+import { KeyboardEventHandler, useEffect, useState } from 'react';
 
-import { InferenceOpts } from '@/api/Message';
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
 import { NewModelSelect } from '@/components/NewModelSelect';
