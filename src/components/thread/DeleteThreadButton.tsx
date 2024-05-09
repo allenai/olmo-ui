@@ -72,7 +72,7 @@ export const DeleteThreadButton = () => {
             />
             <DeleteThreadDialog
                 open={openDialog}
-                setOpen={setOpenDialog}
+                onClose={setOpenDialog}
                 handleDeleteThread={handleDeleteThread}
             />
         </>

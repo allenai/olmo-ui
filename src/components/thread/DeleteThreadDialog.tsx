@@ -10,16 +10,16 @@ import {
 interface DeleteThreadDialogProps {
     handleDeleteThread: () => void;
     open: boolean;
-    setOpen: (open: boolean) => void;
+    onClose: (open: boolean) => void;
 }
 
 export const DeleteThreadDialog = ({
     handleDeleteThread,
     open,
-    setOpen,
+    onClose,
 }: DeleteThreadDialogProps) => {
     const handleClose = () => {
-        setOpen(false);
+        onClose(false);
     };
 
     return (
