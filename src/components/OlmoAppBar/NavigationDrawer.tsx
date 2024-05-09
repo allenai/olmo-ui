@@ -9,7 +9,7 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
-import { ComponentProps } from 'react';
+import { ComponentProps, useEffect } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { links } from '@/Links';
@@ -46,6 +46,11 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
+    useEffect(() => {
+        if (!location.pathname.includes('thread')) {
+            onClose();
+        }
+    }, [location.pathname]);
 
     return (
         <ResponsiveDrawer
