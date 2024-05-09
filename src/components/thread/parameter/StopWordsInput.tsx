@@ -1,33 +1,30 @@
-import {
-    Autocomplete,
-    AutocompleteProps,
-    Box,
-    Chip,
-    FormControlLabel,
-    FormLabel,
-    InputLabel,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Autocomplete, AutocompleteProps, Box, Chip, TextField, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
+import { useRef } from 'react';
 
-import { InfoButton } from './InfoButton';
+import { InfoButtonWithTooltip } from './InfoButtonWithTooltip';
+
+const STOP_WORDS_TOOLTIP_CONTENT =
+    'Stop words are a set of character sequences that stop the model from generating additional text. The output will not contain the stop word. Press Tab to add a new word.';
 
 interface StopWordsInputProps {
     value?: string[];
     onChange: AutocompleteProps<string, true, false, true>['onChange'];
 }
+
 export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) => {
+    const boxRef = useRef<HTMLElement>();
+
     return (
-        <Box width={1}>
+        <Box width={1} ref={boxRef}>
             <Stack direction="row" alignItems="center" paddingBlockEnd={2}>
                 <Typography variant="body1" component="label" htmlFor="stop-words-input">
                     Stop Words
                 </Typography>
-                <InfoButton
-                    onClick={() => {
-                        console.log('click');
-                    }}
+                <InfoButtonWithTooltip
+                    anchorElement={boxRef.current}
+                    tooltipTitle="Stop Words"
+                    tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
                 />
             </Stack>
             <Autocomplete

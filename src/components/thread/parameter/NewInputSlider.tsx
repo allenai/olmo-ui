@@ -2,12 +2,10 @@
  * A slider with a number control next to it.
  */
 
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Grid, IconButton, Input, Slider, Typography } from '@mui/material';
+import { Box, Grid, Input, Slider, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
-import { ResponsiveTooltip } from '../ResponsiveTooltip';
-import { InfoButton } from './InfoButton';
+import { InfoButtonWithTooltip } from './InfoButtonWithTooltip';
 
 interface Props {
     label: string;
@@ -35,13 +33,6 @@ export const NewInputSlider = ({
     };
     const boxRef = useRef<HTMLElement>();
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
-    const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
-    const handleTooltipOpen = () => {
-        setIsTooltipOpen(true);
-    };
-    const handleTooltipClose = () => {
-        setIsTooltipOpen(false);
-    };
 
     const firstUpdate = useRef(true);
     useEffect(() => {
@@ -77,21 +68,11 @@ export const NewInputSlider = ({
                     <Typography id="input-slider" gutterBottom>
                         {label}
                     </Typography>
-                    <ResponsiveTooltip
-                        anchorEl={boxRef.current}
-                        dialogTitle={dialogTitle}
-                        dialogContent={dialogContent}
-                        isTooltipOpen={isTooltipOpen}
-                        onTooltipClose={handleTooltipClose}>
-                        <IconButton
-                            tabIndex={0}
-                            aria-label={`More about ${dialogTitle}`}
-                            aria-expanded={isTooltipOpen}
-                            sx={{ color: 'inherit' }}
-                            onClick={handleTooltipOpen}>
-                            <InfoOutlinedIcon />
-                        </IconButton>
-                    </ResponsiveTooltip>
+                    <InfoButtonWithTooltip
+                        anchorElement={boxRef.current}
+                        tooltipTitle={dialogTitle}
+                        tooltipContent={dialogContent}
+                    />
                 </Grid>
                 <Grid item xs={8}>
                     <Slider
