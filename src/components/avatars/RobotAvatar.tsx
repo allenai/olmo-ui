@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import robotAvatarURL from '../assets/robot.svg';
 
 export const RobotAvatar = () => {
-    return <RobotStyledAvatar src={robotAvatarURL} alt="LLM Response" />;
+    return <RobotStyledAvatar src={robotAvatarURL} alt="A blue robot icon representing the LLM" />;
 };
 
 const RobotStyledAvatar = styled(Avatar)`
