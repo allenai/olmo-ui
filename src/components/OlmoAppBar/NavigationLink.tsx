@@ -23,7 +23,7 @@ export const NavigationLink = ({
                 alignItems="center"
                 selected={selected}
                 sx={{
-                    gap: (theme) => theme.spacing(1),
+                    gap: (theme) => theme.spacing(2),
                 }}
                 target={isExternalLink ? '_blank' : '_self'}
                 href={href}>
