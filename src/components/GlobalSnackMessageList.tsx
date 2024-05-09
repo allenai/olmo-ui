@@ -6,9 +6,9 @@ import { Alert, AlertTitle, Snackbar, SnackbarContent } from '@mui/material';
 
 import { useAppContext } from '../AppContext';
 
-const ALERT_HIDE_DURATION = 6000;
+const AUTO_HIDE_DURATION = 6000;
 
-export const GlobalAlertList = () => {
+export const GlobalSnackMessageList = () => {
     const snackMessages = useAppContext((state) => state.snackMessages);
     const deleteSnackMessage = useAppContext((state) => state.deleteSnackMessage);
     const isOpen = snackMessages.length > 0;
@@ -25,7 +25,7 @@ export const GlobalAlertList = () => {
                 <Snackbar
                     key={index}
                     open={isOpen}
-                    autoHideDuration={ALERT_HIDE_DURATION}
+                    autoHideDuration={AUTO_HIDE_DURATION}
                     onClose={handleClose(msg.id)}>
                     {msg.type === 'Alert' ? (
                         <Alert

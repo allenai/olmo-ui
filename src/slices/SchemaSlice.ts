@@ -3,7 +3,7 @@ import { OlmoStateCreator } from '@/AppContext';
 import { Schema, SchemaClient } from '../api/Schema';
 import { WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface SchemaSlice {
     schemaRemoteState?: RemoteState;

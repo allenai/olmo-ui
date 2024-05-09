@@ -13,7 +13,7 @@ import {
 } from '../api/Label';
 import { Message } from '../api/Message';
 import { RemoteState } from '../contexts/util';
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface LabelSlice {
     labelRemoteState?: RemoteState;

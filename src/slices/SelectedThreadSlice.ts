@@ -3,7 +3,7 @@ import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 import { messageClient } from './ThreadSlice';
 
 export interface SelectedThreadMessage {

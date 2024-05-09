@@ -1,7 +1,7 @@
 import { FetchInfo, OlmoStateCreator } from 'src/AppContext';
 
 import { Message, MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface ThreadSlice {
     allThreadInfo: Required<FetchInfo<MessageList>>;

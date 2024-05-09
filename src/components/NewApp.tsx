@@ -7,7 +7,7 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useAppContext } from '../AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { Footer } from './Footer/Footer';
-import { GlobalAlertList } from './GlobalAlertList';
+import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
@@ -46,7 +46,7 @@ export const NewApp = () => {
             {!isLoading && userInfo && schema ? (
                 <>
                     <OlmoAppBar />
-                    <GlobalAlertList />
+                    <GlobalSnackMessageList />
                     {showModal && <TermsAndConditionsModal />}
                     <Container
                         component="main"

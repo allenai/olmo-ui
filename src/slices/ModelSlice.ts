@@ -3,7 +3,7 @@ import { StateCreator } from 'zustand';
 import { ModelClient, ModelList } from '../api/Model';
 import { WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
-import { errorToAlert, SnackMessageSlice } from './AlertMessageSlice';
+import { errorToAlert, SnackMessageSlice } from './SnackMessageSlice';
 
 export interface ModelSlice {
     modelRemoteState?: RemoteState;

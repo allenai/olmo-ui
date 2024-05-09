@@ -3,7 +3,6 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 
-import { creatSnackMessageSlice, SnackMessageSlice } from './slices/AlertMessageSlice';
 import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
@@ -14,6 +13,7 @@ import { createRepromptSlice, RepromptSlice } from './slices/repromptSlice';
 import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
 import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
+import { creatSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';

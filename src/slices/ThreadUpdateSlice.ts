@@ -13,7 +13,7 @@ import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 import { links } from '@/Links';
 import { router } from '@/router';
 
-import { AlertMessageSeverity, errorToAlert, SnackMessage } from './AlertMessageSlice';
+import { AlertMessageSeverity, errorToAlert, SnackMessage } from './SnackMessageSlice';
 
 const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
