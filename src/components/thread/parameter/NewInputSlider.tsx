@@ -6,8 +6,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, Grid, IconButton, Input, Slider, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
-import { ResponsiveTooltip } from '../thread/ResponsiveTooltip';
-
+import { ResponsiveTooltip } from '../ResponsiveTooltip';
 import { InfoButton } from './InfoButton';
 
 interface Props {
