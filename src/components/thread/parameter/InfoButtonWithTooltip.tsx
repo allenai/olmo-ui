@@ -38,7 +38,16 @@ export const InfoButtonWithTooltip = ({
                 aria-label={`More about ${tooltipTitle}`}
                 aria-expanded={isTooltipOpen}
                 sx={{ color: 'inherit' }}
-                onClick={toggleTooltipOpen}>
+                onClick={toggleTooltipOpen}
+                onKeyDown={(event) => {
+                    // This is currently used in the parameters drawer that has ESC handling as well
+                    // we need to stop propagation so the drawer doesn't close when we  just want to close the tooltip
+                    event.stopPropagation();
+
+                    if (event.key === 'Escape') {
+                        handleTooltipClose();
+                    }
+                }}>
                 <InfoOutlinedIcon />
             </IconButton>
         </ResponsiveTooltip>
