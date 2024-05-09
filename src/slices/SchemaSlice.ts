@@ -17,7 +17,7 @@ export const createSchemaSlice: OlmoStateCreator<SchemaSlice> = (set, get) => ({
     schemaRemoteState: undefined,
     schema: null,
     getSchema: async () => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ schemaRemoteState: RemoteState.Loading });
         try {
             const schema = await schemaClient.getSchema();
@@ -27,7 +27,7 @@ export const createSchemaSlice: OlmoStateCreator<SchemaSlice> = (set, get) => ({
                 schemaRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting schema.`,

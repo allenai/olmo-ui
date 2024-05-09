@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 
-import { AlertMessageSlice, createAlertMessageSlice } from './slices/AlertMessageSlice';
+import { creatSnackMessageSlice, SnackMessageSlice } from './slices/AlertMessageSlice';
 import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
@@ -30,7 +30,7 @@ export type AppContextState = LabelSlice &
     PromptTemplateSlice &
     RepromptSlice &
     ThreadSlice &
-    AlertMessageSlice &
+    SnackMessageSlice &
     UserSlice &
     ModelSlice &
     SchemaSlice &
@@ -44,7 +44,7 @@ export const appContext = createStore<AppContextState>()(
         immer((...store) => ({
             ...createRepromptSlice(...store),
             ...createPromptTemplateSlice(...store),
-            ...createAlertMessageSlice(...store),
+            ...creatSnackMessageSlice(...store),
             ...createThreadSlice(...store),
             ...createLabelSlice(...store),
             ...createUserSlice(...store),

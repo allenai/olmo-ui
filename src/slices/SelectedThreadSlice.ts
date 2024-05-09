@@ -185,7 +185,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     'selectedThread/getSelectedThreadFinish'
                 );
             } catch (err) {
-                get().addAlertMessage(
+                get().addSnackMessage(
                     errorToAlert(
                         `fetch-${MessageApiUrl}-${threadId}-${new Date().getTime()}`.toLowerCase(),
                         `Error getting message ${threadId}.`,

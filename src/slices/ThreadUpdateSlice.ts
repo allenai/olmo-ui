@@ -10,11 +10,10 @@ import {
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
-import { AlertMessage, AlertMessageSeverity } from '@/components/GlobalAlertList';
 import { links } from '@/Links';
 import { router } from '@/router';
 
-import { errorToAlert } from './AlertMessageSlice';
+import { AlertMessageSeverity, errorToAlert, SnackMessage } from './AlertMessageSlice';
 
 const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
@@ -32,7 +31,8 @@ const findChildMessageById = (messageId: string, rootMessage: Message): Message 
     return null;
 };
 
-const ABORT_ERROR_MESSAGE: AlertMessage = {
+const ABORT_ERROR_MESSAGE: SnackMessage = {
+    type: 'Alert',
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
     title: 'Response was aborted',
     message: `You stopped OLMo from generating answers to your query`,
@@ -168,13 +168,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
             }
         } catch (err) {
-            const addAlertMessage = get().addAlertMessage;
+            const addSnackMessage = get().addSnackMessage;
 
             if (err instanceof Error && err.name === 'AbortError') {
-                addAlertMessage(ABORT_ERROR_MESSAGE);
+                addSnackMessage(ABORT_ERROR_MESSAGE);
             } else {
                 console.error(err);
-                addAlertMessage(
+                addSnackMessage(
                     errorToAlert(
                         `create-message-${new Date().getTime()}`.toLowerCase(),
                         'Unable to Submit Message',
@@ -357,13 +357,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 'threadUpdate/finishPostMessage'
             );
         } catch (err) {
-            const addAlertMessage = get().addAlertMessage;
+            const addSnackMessage = get().addSnackMessage;
 
             if (err instanceof Error && err.name === 'AbortError') {
-                addAlertMessage(ABORT_ERROR_MESSAGE);
+                addSnackMessage(ABORT_ERROR_MESSAGE);
             } else {
                 console.error(err);
-                addAlertMessage(
+                addSnackMessage(
                     errorToAlert(
                         `create-message-${new Date().getTime()}`.toLowerCase(),
                         'Unable to Submit Message',

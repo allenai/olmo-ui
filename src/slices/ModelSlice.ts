@@ -3,7 +3,7 @@ import { StateCreator } from 'zustand';
 import { ModelClient, ModelList } from '../api/Model';
 import { WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
-import { AlertMessageSlice, errorToAlert } from './AlertMessageSlice';
+import { errorToAlert, SnackMessageSlice } from './AlertMessageSlice';
 
 export interface ModelSlice {
     modelRemoteState?: RemoteState;
@@ -13,14 +13,14 @@ export interface ModelSlice {
 
 const modelClient = new ModelClient();
 
-export const createModelSlice: StateCreator<ModelSlice & AlertMessageSlice, [], [], ModelSlice> = (
+export const createModelSlice: StateCreator<ModelSlice & SnackMessageSlice, [], [], ModelSlice> = (
     set,
     get
 ) => ({
     modelRemoteState: undefined,
     models: [],
     getAllModels: async () => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ modelRemoteState: RemoteState.Loading });
         try {
             const models = await modelClient.getAllModels();
@@ -30,7 +30,7 @@ export const createModelSlice: StateCreator<ModelSlice & AlertMessageSlice, [], 
                 modelRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting models.`,

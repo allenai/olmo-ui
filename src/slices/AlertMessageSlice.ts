@@ -1,32 +1,53 @@
 import { OlmoStateCreator } from '@/AppContext';
 
-import { AlertMessage, AlertMessageSeverity } from '../components/GlobalAlertList';
-
-export interface AlertMessageSlice {
-    alertMessages: AlertMessage[];
-    addAlertMessage: (newAlertMessage: AlertMessage) => void;
-    deleteAlertMessage: (alertMessageId: string) => void;
+export enum AlertMessageSeverity {
+    Error = 'error',
+    Info = 'info',
+    Success = 'success',
+    Warning = 'warning',
 }
 
-export function errorToAlert(id: string, title: string, error: unknown): AlertMessage {
+export type SnackMessage = {
+    id: string;
+    message: string;
+} & (
+    | {
+          type: 'Alert';
+          title: string;
+          severity: AlertMessageSeverity;
+      }
+    | {
+          type: 'Brief';
+          title?: never;
+          severity?: never;
+      }
+);
+
+export function errorToAlert(id: string, title: string, error: unknown): SnackMessage {
     const message = error instanceof Error ? `${error.message} (${error.name})` : `${error}`;
-    return { id, title, message, severity: AlertMessageSeverity.Error };
+    return { type: 'Alert', id, title, message, severity: AlertMessageSeverity.Error };
 }
 
-export const createAlertMessageSlice: OlmoStateCreator<AlertMessageSlice> = (set) => ({
-    alertMessages: [],
+export interface SnackMessageSlice {
+    snackMessages: SnackMessage[];
+    addSnackMessage: (message: SnackMessage) => void;
+    deleteSnackMessage: (messageId: string) => void;
+}
+
+export const creatSnackMessageSlice: OlmoStateCreator<SnackMessageSlice> = (set) => ({
+    snackMessages: [],
     // adds a message to the list of messages to show.
     // we show all messages not dismissed by the user until a new page load.
-    addAlertMessage: (newAlertMessage) => {
+    addSnackMessage: (message: SnackMessage) => {
         set((state) => ({
-            alertMessages: [...state.alertMessages, newAlertMessage],
+            snackMessages: [...state.snackMessages, message],
         }));
     },
     // remove a message from the list.
     // this is usually accomplished by the user dismissing a message, but we can add logic to remove in other ways.
-    deleteAlertMessage: (alertMessageId) => {
+    deleteSnackMessage: (messageId: string) => {
         set((state) => ({
-            alertMessages: state.alertMessages.filter((m) => m.id !== alertMessageId),
+            snackMessages: state.snackMessages.filter((m) => m.id !== messageId),
         }));
     },
 });

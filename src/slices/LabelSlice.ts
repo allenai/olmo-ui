@@ -41,7 +41,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     allLabels: null,
 
     deleteLabel: async (labelId: string, message: Message): Promise<void> => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ labelRemoteState: RemoteState.Loading });
         try {
             await labelClient.deleteLabel(labelId);
@@ -51,7 +51,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
 
             set({ labelRemoteState: RemoteState.Loaded });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `delete-${LabelApiUrl}-${labelId}-${new Date().getTime()}`.toLowerCase(),
                     `Error deleting label. ${labelId}`,
@@ -63,7 +63,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     },
 
     postLabel: async (newLabel: CreateLabelRequest, message: Message): Promise<void> => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ labelRemoteState: RemoteState.Loading });
         try {
             const label = await labelClient.createLabel(newLabel);
@@ -76,7 +76,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
                 labelRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `post-${LabelApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error making new label.`,
@@ -94,7 +94,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
         newLabelRequest: CreateLabelRequest,
         currentLabel?: Label
     ): Promise<Label | undefined> => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         const continueAfterDelete = currentLabel?.rating !== newLabelRequest.rating;
         let returnLabel = currentLabel;
         set({ labelRemoteState: RemoteState.Loading });
@@ -112,7 +112,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
 
             set({ labelRemoteState: RemoteState.Loaded });
         } catch (error) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `change-${LabelApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error changing new label.`,
@@ -125,7 +125,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     },
 
     getAllLabels: async (offset: number = 0, limit: number = 10) => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ allLabelsRemoteState: RemoteState.Loading });
         try {
             const allLabels = await labelsClient.getAllLabels({
@@ -137,7 +137,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
                 allLabelsRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting labels.`,
@@ -149,7 +149,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     },
 
     getAllSortedLabels: async (fieldName: string, sort: GridSortDirection) => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ allLabelsRemoteState: RemoteState.Loading });
         try {
             const allLabels = await labelsClient.getAllLabels({
@@ -161,7 +161,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
                 allLabelsRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting labels.`,
@@ -173,7 +173,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
     },
 
     getAllFilteredLabels: async (creator?: string, message?: string, rating?: number) => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ allLabelsRemoteState: RemoteState.Loading });
         try {
             const allLabels = await labelsClient.getAllLabels({
@@ -189,7 +189,7 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
                 allLabelsRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `fetch-${LabelsApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting labels.`,
