@@ -1,5 +1,7 @@
 import { logos } from '@allenai/varnish2/components';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
@@ -7,11 +9,12 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
+import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { links } from '@/Links';
 
-import { ResponsiveDrawer, ResponsiveDrawerProps } from '../ResponsiveDrawer';
+import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
@@ -24,11 +27,21 @@ const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     });
 };
 
-interface NavigationDrawerProps extends Omit<ResponsiveDrawerProps, 'children'> {
-    onClose?: () => void;
+interface NavigationDrawerProps
+    extends Omit<
+        ComponentProps<typeof ResponsiveDrawer>,
+        'children' | 'miniVariantCollapsedWidth' | 'miniVariantOpenedWidth'
+    > {
+    onClose: () => void;
+    onDrawerToggle: () => void;
 }
 
-export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): JSX.Element => {
+export const NavigationDrawer = ({
+    onClose,
+    onDrawerToggle,
+    open,
+    ...props
+}: NavigationDrawerProps): JSX.Element => {
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
 
@@ -37,11 +50,16 @@ export const NavigationDrawer = ({ onClose, ...props }: NavigationDrawerProps): 
     return (
         <ResponsiveDrawer
             {...props}
+            open={open}
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
+            miniHeading={<TabletHeading toggleOpen={onDrawerToggle} open={open} />}
+            enableMiniVariant
+            miniVariantCollapsedWidth={7}
+            miniVariantExpandedWidth={45}
             desktopDrawerSx={{ gridArea: 'nav' }}>
-            <Box component="nav" sx={{ height: 1 }}>
+            <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
                     <NavigationLink
                         href={links.playground}
@@ -109,5 +127,33 @@ const DesktopHeading = (): JSX.Element => {
         <Link paddingInline={2} paddingBlock={4} href="https://allenai.org">
             <logos.AI2Logo />
         </Link>
+    );
+};
+
+interface TabletHeadingProps {
+    toggleOpen: () => void;
+    open?: boolean;
+}
+
+const TabletHeading = ({ toggleOpen, open }: TabletHeadingProps): JSX.Element => {
+    return (
+        <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            paddingInlineStart={1}
+            paddingInlineEnd={2}
+            paddingBlock={4}
+            gap={2}
+            flexWrap="nowrap">
+            <IconButton
+                onClick={toggleOpen}
+                title={`${open === true ? 'Collapse' : 'Expand'} navigation drawer`}>
+                {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+            <Link href="https://allenai.org" marginInlineStart="auto">
+                <logos.AI2Logo includeText={false} />
+            </Link>
+        </Stack>
     );
 };
