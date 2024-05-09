@@ -4,18 +4,18 @@ import { useState } from 'react';
 
 import { ResponsiveTooltip } from '../ResponsiveTooltip';
 
-interface InfoButtonWithTooltipProps {
+interface ParameterInfoButtonProps {
     anchorElement?: HTMLElement;
 
     tooltipTitle: string;
     tooltipContent: string;
 }
 
-export const InfoButtonWithTooltip = ({
+export const ParameterInfoButton = ({
     tooltipTitle,
     tooltipContent,
     anchorElement,
-}: InfoButtonWithTooltipProps) => {
+}: ParameterInfoButtonProps) => {
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
     const toggleTooltipOpen = () => {
@@ -35,7 +35,7 @@ export const InfoButtonWithTooltip = ({
             onTooltipClose={handleTooltipClose}>
             <IconButton
                 tabIndex={0}
-                aria-label={`More about ${tooltipTitle}`}
+                title={`More about ${tooltipTitle}`}
                 aria-expanded={isTooltipOpen}
                 sx={{ color: 'inherit' }}
                 onClick={toggleTooltipOpen}

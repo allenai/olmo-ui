@@ -5,7 +5,7 @@
 import { Box, Grid, Input, Slider, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
-import { InfoButtonWithTooltip } from './InfoButtonWithTooltip';
+import { ParameterInfoButton } from './ParameterInfoButton';
 
 interface Props {
     label: string;
@@ -68,7 +68,7 @@ export const NewInputSlider = ({
                     <Typography id="input-slider" gutterBottom>
                         {label}
                     </Typography>
-                    <InfoButtonWithTooltip
+                    <ParameterInfoButton
                         anchorElement={boxRef.current}
                         tooltipTitle={dialogTitle}
                         tooltipContent={dialogContent}
