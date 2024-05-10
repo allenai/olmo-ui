@@ -17,7 +17,7 @@ type ResponsiveTooltipProps = {
     dialogContent: string;
     children: JSX.Element;
     anchorEl?: HTMLElement;
-    id: string;
+    tooltipIdSuffix: string;
 };
 
 export const ResponsiveTooltip = ({
@@ -27,7 +27,7 @@ export const ResponsiveTooltip = ({
     dialogContent,
     children,
     anchorEl,
-    id,
+    tooltipIdSuffix,
 }: ResponsiveTooltipProps): JSX.Element => {
     const handleTooltipClose = () => {
         onTooltipClose();
@@ -35,8 +35,8 @@ export const ResponsiveTooltip = ({
 
     const isSmallLayoutOrUp = useSmallLayoutOrUp();
 
-    const tooltipLabelId = `tooltip-title-${id}`;
-    const tooltipContentId = `tooltip-content-${id}`;
+    const tooltipLabelId = `tooltip-title-${tooltipIdSuffix}`;
+    const tooltipContentId = `tooltip-content-${tooltipIdSuffix}`;
 
     const TooltipContent = (
         <>

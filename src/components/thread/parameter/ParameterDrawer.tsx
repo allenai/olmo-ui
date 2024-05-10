@@ -136,6 +136,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             }}
                             dialogContent={TEMPERATURE_INFO}
                             dialogTitle="Temperature"
+                            id="temperature"
                         />
                     </ListItem>
                     <Divider />
@@ -152,6 +153,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
+                            id="temperature"
                         />
                     </ListItem>
                     <Divider />

@@ -16,6 +16,7 @@ interface Props {
     dialogContent?: string;
     dialogTitle?: string;
     onChange?: (value: number) => void;
+    id: string;
 }
 
 export const NewInputSlider = ({
@@ -27,6 +28,7 @@ export const NewInputSlider = ({
     dialogContent = '',
     dialogTitle = '',
     onChange,
+    id,
 }: Props) => {
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
@@ -72,7 +74,7 @@ export const NewInputSlider = ({
                         anchorElement={boxRef.current}
                         tooltipTitle={dialogTitle}
                         tooltipContent={dialogContent}
-                        tooltipId="slider"
+                        tooltipIdSuffix={`${id}-description`}
                     />
                 </Grid>
                 <Grid item xs={8}>
