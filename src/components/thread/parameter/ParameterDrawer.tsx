@@ -15,14 +15,14 @@ import { KeyboardEventHandler, useEffect, useState } from 'react';
 
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
-import { NewModelSelect } from '@/components/NewModelSelect';
 import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
-import { ParameterSlider } from '@/components/thread/parameter/ParameterSlider';
+import { ModelSelectInput } from '@/components/thread/parameter/inputs/ModelSelectInput';
+import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { StopWordsInput } from './StopWordsInput';
+import { StopWordsInput } from './inputs/StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -120,7 +120,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                         <InputLabel>Model</InputLabel>
                     </ListItem>
                     <ListItem>
-                        <NewModelSelect setParametersChanged={setParametersChanged} />
+                        <ModelSelectInput onChange={setParametersChanged} />
                     </ListItem>
                     <Divider />
                     <ListItem>

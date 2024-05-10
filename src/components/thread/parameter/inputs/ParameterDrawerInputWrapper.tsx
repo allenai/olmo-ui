@@ -8,7 +8,7 @@ type PickedParameterInfoButtonProps = Pick<
     'tooltipContent' | 'tooltipTitle'
 >;
 
-interface ParameterDrawerInputWrapperProps extends PickedParameterInfoButtonProps {
+interface ParameterDrawerInputWrapperProps extends Partial<PickedParameterInfoButtonProps> {
     label: string;
     inputId: string;
     children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
@@ -25,6 +25,8 @@ export const ParameterDrawerInputWrapper = ({
 
     const inputLabelId = `${inputId}-label`;
 
+    const shouldShowInfoButton = tooltipTitle != null && tooltipContent != null;
+
     return (
         <Grid
             width={1}
@@ -39,13 +41,15 @@ export const ParameterDrawerInputWrapper = ({
                     {label}
                 </Typography>
             </Grid>
-            <Grid item>
-                <ParameterInfoButton
-                    anchorElement={containerRef.current}
-                    tooltipTitle={tooltipTitle}
-                    tooltipContent={tooltipContent}
-                />
-            </Grid>
+            {shouldShowInfoButton && (
+                <Grid item>
+                    <ParameterInfoButton
+                        anchorElement={containerRef.current}
+                        tooltipTitle={tooltipTitle}
+                        tooltipContent={tooltipContent}
+                    />
+                </Grid>
+            )}
             <Grid item xs={12}>
                 {children instanceof Function ? children({ inputLabelId }) : children}
             </Grid>

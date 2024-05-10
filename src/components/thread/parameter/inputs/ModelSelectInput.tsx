@@ -1,14 +1,15 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useEffect } from 'react';
 
-import { useAppContext } from '../AppContext';
+import { useAppContext } from '@/AppContext';
 
 interface ModelSelectProps {
     disabled?: boolean;
-    setParametersChanged: (parametersChanged: boolean) => void;
+    onChange: (event: SelectChangeEvent) => void;
+    id?: string;
 }
 
-export const NewModelSelect = ({ disabled, setParametersChanged }: ModelSelectProps) => {
+export const ModelSelectInput = ({ disabled, onChange }: ModelSelectProps) => {
     const models = useAppContext((state) => state.models);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
@@ -21,7 +22,7 @@ export const NewModelSelect = ({ disabled, setParametersChanged }: ModelSelectPr
 
     const handleOnChange = (event: SelectChangeEvent) => {
         setSelectedModel(event.target.value);
-        setParametersChanged(true);
+        onChange(event);
     };
 
     return (
@@ -29,7 +30,6 @@ export const NewModelSelect = ({ disabled, setParametersChanged }: ModelSelectPr
             name="model"
             disabled={disabled}
             value={selectedModel}
-            // this keeps the label a the top. it makes it look nicer since the models and templates can arrive at separate times
             sx={{
                 flex: '1 1 auto',
             }}
