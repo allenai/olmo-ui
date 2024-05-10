@@ -7,7 +7,7 @@ import {
     ThumbUp,
     ThumbUpOutlined,
 } from '@mui/icons-material';
-import { ButtonGroup, Stack } from '@mui/material';
+import { ButtonGroup, Snackbar, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
@@ -39,6 +39,7 @@ export const MessageInteraction = ({
     const [currentMessageLabel, setCurrentMessageLabel] = useState<Label | undefined>(
         messageLabels.filter((label) => label.creator === userInfo?.client).pop()
     );
+    const [copySnackbarOpen, setCopySnackbarOpen] = useState(false);
 
     const GoodIcon =
         currentMessageLabel?.rating === LabelRating.Positive ? ThumbUp : ThumbUpOutlined;
@@ -56,6 +57,7 @@ export const MessageInteraction = ({
 
     const copyMessage = useCallback(() => {
         navigator.clipboard.writeText(content);
+        setCopySnackbarOpen(true);
     }, [content]);
 
     if (role === Role.User) {
@@ -70,18 +72,21 @@ export const MessageInteraction = ({
                     startIcon={<GoodIcon />}
                     title="Good"
                     onClick={() => rateMessage(LabelRating.Positive)}
+                    aria-pressed={currentMessageLabel?.rating === LabelRating.Positive}
                 />
                 <ResponsiveButton
                     variant="outlined"
                     startIcon={<BadIcon />}
                     title="Bad"
                     onClick={() => rateMessage(LabelRating.Negative)}
+                    aria-pressed={currentMessageLabel?.rating === LabelRating.Negative}
                 />
                 <ResponsiveButton
                     variant="outlined"
                     startIcon={<FlagIcon />}
                     title="Inappropriate"
                     onClick={() => rateMessage(LabelRating.Flag)}
+                    aria-pressed={currentMessageLabel?.rating === LabelRating.Flag}
                 />
             </FeedbackButtonGroup>
             <ResponsiveButton
@@ -89,6 +94,14 @@ export const MessageInteraction = ({
                 startIcon={<ContentCopy />}
                 title="Copy"
                 onClick={copyMessage}
+            />
+            <Snackbar // TODO: convert to using AlertSlice once PR #396 gets merged.
+                open={copySnackbarOpen}
+                autoHideDuration={500}
+                onClose={() => {
+                    setCopySnackbarOpen(false);
+                }}
+                message="LLM Response Copied."
             />
         </Stack>
     );
