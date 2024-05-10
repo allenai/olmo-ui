@@ -10,9 +10,10 @@ const STOP_WORDS_TOOLTIP_CONTENT =
 interface StopWordsInputProps {
     value?: string[];
     onChange: AutocompleteProps<string, true, false, true>['onChange'];
+    id: string;
 }
 
-export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) => {
+export const StopWordsInput = ({ value = [], onChange, id }: StopWordsInputProps) => {
     const boxRef = useRef<HTMLElement>();
 
     return (
@@ -25,7 +26,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                     anchorElement={boxRef.current}
                     tooltipTitle="Stop Words"
                     tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
-                    tooltipIdSuffix="stop-words-description"
+                    tooltipIdSuffix={`${id}-description"`}
                 />
             </Stack>
             <Autocomplete

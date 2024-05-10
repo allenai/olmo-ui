@@ -158,7 +158,11 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                     <Divider />
                     <ListItem>
-                        <StopWordsInput value={inferenceOpts.stop} onChange={handleOnChange} />
+                        <StopWordsInput
+                            value={inferenceOpts.stop}
+                            onChange={handleOnChange}
+                            id="stop-words"
+                        />
                     </ListItem>
                 </List>
             </Stack>
