@@ -25,6 +25,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                     anchorElement={boxRef.current}
                     tooltipTitle="Stop Words"
                     tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
+                    tooltipId="stop-words"
                 />
             </Stack>
             <Autocomplete

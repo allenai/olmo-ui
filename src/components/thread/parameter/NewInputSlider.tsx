@@ -72,6 +72,7 @@ export const NewInputSlider = ({
                         anchorElement={boxRef.current}
                         tooltipTitle={dialogTitle}
                         tooltipContent={dialogContent}
+                        tooltipId="slider"
                     />
                 </Grid>
                 <Grid item xs={8}>

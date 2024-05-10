@@ -9,12 +9,14 @@ interface ParameterInfoButtonProps {
 
     tooltipTitle: string;
     tooltipContent: string;
+    tooltipId: string;
 }
 
 export const ParameterInfoButton = ({
     tooltipTitle,
     tooltipContent,
     anchorElement,
+    tooltipId,
 }: ParameterInfoButtonProps) => {
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
@@ -32,7 +34,8 @@ export const ParameterInfoButton = ({
             dialogTitle={tooltipTitle}
             dialogContent={tooltipContent}
             isTooltipOpen={isTooltipOpen}
-            onTooltipClose={handleTooltipClose}>
+            onTooltipClose={handleTooltipClose}
+            tooltipId={tooltipId}>
             <IconButton
                 tabIndex={0}
                 title={`More about ${tooltipTitle}`}
