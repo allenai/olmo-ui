@@ -46,6 +46,7 @@ export const ResponsiveTooltip = ({
                 margin={0}
                 id={tooltipLabelId}
                 sx={{
+                    // This is here instead of using the direct prop because it gets overridden as the prop and not here
                     paddingBlockEnd: 1,
                 }}>
                 {dialogTitle}
