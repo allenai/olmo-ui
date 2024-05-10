@@ -1,5 +1,5 @@
-import { Box, Grid, Stack, Typography } from '@mui/material';
-import { ComponentProps, PropsWithChildren, ReactNode, useRef } from 'react';
+import { Box, Grid, Typography } from '@mui/material';
+import { ComponentProps, ReactNode, useRef } from 'react';
 
 import { ParameterInfoButton } from './ParameterInfoButton';
 
@@ -8,11 +8,10 @@ type PickedParameterInfoButtonProps = Pick<
     'tooltipContent' | 'tooltipTitle'
 >;
 
-interface ParameterDrawerInputWrapperProps
-    extends PickedParameterInfoButtonProps,
-        PropsWithChildren {
+interface ParameterDrawerInputWrapperProps extends PickedParameterInfoButtonProps {
     label: string;
     inputId: string;
+    children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
 }
 
 export const ParameterDrawerInputWrapper = ({
@@ -23,6 +22,8 @@ export const ParameterDrawerInputWrapper = ({
     inputId,
 }: ParameterDrawerInputWrapperProps) => {
     const containerRef = useRef<HTMLElement>();
+
+    const inputLabelId = `${inputId}-label`;
 
     return (
         <Grid
@@ -46,7 +47,7 @@ export const ParameterDrawerInputWrapper = ({
                 />
             </Grid>
             <Grid item xs={12}>
-                {children}
+                {children instanceof Function ? children({ inputLabelId }) : children}
             </Grid>
         </Grid>
     );

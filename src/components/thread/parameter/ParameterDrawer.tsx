@@ -153,7 +153,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
-                            id="top_p"
+                            id="top-p"
                         />
                     </ListItem>
                     <Divider />
