@@ -2,6 +2,7 @@ import { Autocomplete, AutocompleteProps, Box, Chip, TextField, Typography } fro
 import { Stack } from '@mui/system';
 import { useRef } from 'react';
 
+import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 import { ParameterInfoButton } from './ParameterInfoButton';
 
 const STOP_WORDS_TOOLTIP_CONTENT =
@@ -17,18 +18,11 @@ export const StopWordsInput = ({ value = [], onChange, id }: StopWordsInputProps
     const boxRef = useRef<HTMLElement>();
 
     return (
-        <Box width={1} ref={boxRef}>
-            <Stack direction="row" alignItems="center" paddingBlockEnd={2}>
-                <Typography variant="body1" component="label" htmlFor="stop-words-input">
-                    Stop Words
-                </Typography>
-                <ParameterInfoButton
-                    anchorElement={boxRef.current}
-                    tooltipTitle="Stop Words"
-                    tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
-                    tooltipIdSuffix={`${id}-description"`}
-                />
-            </Stack>
+        <ParameterDrawerInputWrapper
+            inputId="stop-words-input"
+            label="Stop Words"
+            tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
+            tooltipTitle="Stop Words">
             <Autocomplete
                 id="stop-words-input"
                 fullWidth
@@ -58,6 +52,47 @@ export const StopWordsInput = ({ value = [], onChange, id }: StopWordsInputProps
                     />
                 )}
             />
-        </Box>
+        </ParameterDrawerInputWrapper>
+        // <Box width={1} ref={boxRef}>
+        //     <Stack direction="row" alignItems="center" paddingBlockEnd={2}>
+        //         <Typography variant="body1" component="label" htmlFor="stop-words-input">
+        //             Stop Words
+        //         </Typography>
+        //         <ParameterInfoButton
+        //             anchorElement={boxRef.current}
+        //             tooltipTitle="Stop Words"
+        //             tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
+        //         />
+        //     </Stack>
+        //     <Autocomplete
+        //         id="stop-words-input"
+        //         fullWidth
+        //         multiple
+        //         value={value}
+        //         freeSolo
+        //         options={value}
+        //         onChange={onChange}
+        //         renderTags={(stopWords: readonly string[], getTagProps) =>
+        //             stopWords.map((option: string, index: number) => {
+        //                 // It's encouraged to use a static key prop so we pull it out here
+        //                 const { key, ...tagProps } = getTagProps({ index });
+
+        //                 return <Chip label={option} key={key} {...tagProps} />;
+        //             })
+        //         }
+        //         renderInput={(params) => (
+        //             <TextField
+        //                 {...params}
+        //                 hiddenLabel
+        //                 placeholder="Enter Stop Word"
+        //                 helperText={
+        //                     <Typography variant="caption">
+        //                         Press &quot;Enter&quot; to add a new word.
+        //                     </Typography>
+        //                 }
+        //             />
+        //         )}
+        //     />
+        // </Box>
     );
 };

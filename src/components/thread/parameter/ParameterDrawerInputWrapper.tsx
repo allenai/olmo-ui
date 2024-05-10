@@ -1,0 +1,53 @@
+import { Box, Grid, Stack, Typography } from '@mui/material';
+import { ComponentProps, PropsWithChildren, ReactNode, useRef } from 'react';
+
+import { ParameterInfoButton } from './ParameterInfoButton';
+
+type PickedParameterInfoButtonProps = Pick<
+    ComponentProps<typeof ParameterInfoButton>,
+    'tooltipContent' | 'tooltipTitle'
+>;
+
+interface ParameterDrawerInputWrapperProps
+    extends PickedParameterInfoButtonProps,
+        PropsWithChildren {
+    label: string;
+    inputId: string;
+}
+
+export const ParameterDrawerInputWrapper = ({
+    tooltipContent,
+    tooltipTitle,
+    children,
+    label,
+    inputId,
+}: ParameterDrawerInputWrapperProps) => {
+    const containerRef = useRef<HTMLElement>();
+
+    return (
+        <Grid
+            width={1}
+            container
+            alignItems="center"
+            ref={containerRef}
+            // Grid didn't like getting passed a ref but Box is OK with it for some reason
+            component={Box}
+            rowSpacing={2}>
+            <Grid item>
+                <Typography variant="body1" component="label" htmlFor={inputId}>
+                    {label}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <ParameterInfoButton
+                    anchorElement={containerRef.current}
+                    tooltipTitle={tooltipTitle}
+                    tooltipContent={tooltipContent}
+                />
+            </Grid>
+            <Grid item xs={12}>
+                {children}
+            </Grid>
+        </Grid>
+    );
+};

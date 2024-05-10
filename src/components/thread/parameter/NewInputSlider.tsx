@@ -67,9 +67,7 @@ export const NewInputSlider = ({
         <Box sx={{ width: '100%' }} ref={boxRef}>
             <Grid container spacing={4} alignItems="center">
                 <Grid item xs={12} display="flex" flexDirection="row" alignItems="center" gap={1}>
-                    <Typography id="input-slider" gutterBottom>
-                        {label}
-                    </Typography>
+                    <Typography id="input-slider">{label}</Typography>
                     <ParameterInfoButton
                         anchorElement={boxRef.current}
                         tooltipTitle={dialogTitle}
