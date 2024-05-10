@@ -35,7 +35,7 @@ export const ParameterInfoButton = ({
             dialogContent={tooltipContent}
             isTooltipOpen={isTooltipOpen}
             onTooltipClose={handleTooltipClose}
-            tooltipId={tooltipId}>
+            id={tooltipId}>
             <IconButton
                 tabIndex={0}
                 title={`More about ${tooltipTitle}`}
