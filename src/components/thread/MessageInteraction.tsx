@@ -95,7 +95,7 @@ export const MessageInteraction = ({
                 title="Copy"
                 onClick={copyMessage}
             />
-            <Snackbar
+            <Snackbar // TODO: convert to using AlertSlice once PR #396 gets merged.
                 open={copySnackbarOpen}
                 autoHideDuration={500}
                 onClose={() => {
