@@ -2,7 +2,7 @@
  * A slider with a number control next to it.
  */
 
-import { Grid, Input, Slider } from '@mui/material';
+import { Box, Grid, Input, Slider, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
@@ -19,7 +19,7 @@ interface Props {
     id: string;
 }
 
-export const NewInputSlider = ({
+export const ParameterSlider = ({
     min = 0,
     max = 100,
     step = 1,
@@ -69,8 +69,10 @@ export const NewInputSlider = ({
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
             {({ inputLabelId }) => (
-                <Grid container spacing={4}>
-                    <Grid item xs={8}>
+                // The result of this ends up being pretty similar to MUI's Grid component
+                // I had trouble getting Grid to add a column gap so I used flex stuff instead
+                <Stack gap={3} flexWrap="wrap" direction="row">
+                    <Box flexGrow={2} flexShrink={1} flexBasis="12rem">
                         <Slider
                             value={value}
                             onChange={handleSliderChange}
@@ -79,8 +81,10 @@ export const NewInputSlider = ({
                             min={min}
                             max={max}
                         />
-                    </Grid>
-                    <Grid item xs={4}>
+                    </Box>
+                    {/* The basis here accounts for roughly three characters and a decimal point at the minimum width. 
+                    If we make a slider that needs more we'll need to change this basis or make it configurable */}
+                    <Box flexGrow={1} flexShrink={1} flexBasis="calc(4ch + 1rem)">
                         <Input
                             value={value}
                             size="small"
@@ -94,8 +98,8 @@ export const NewInputSlider = ({
                                 id,
                             }}
                         />
-                    </Grid>
-                </Grid>
+                    </Box>
+                </Stack>
             )}
         </ParameterDrawerInputWrapper>
     );

@@ -18,7 +18,7 @@ import { useAppContext } from '@/AppContext';
 import { NewModelSelect } from '@/components/NewModelSelect';
 import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
-import { NewInputSlider } from '@/components/thread/parameter/NewInputSlider';
+import { ParameterSlider } from '@/components/thread/parameter/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
@@ -124,7 +124,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                     <Divider />
                     <ListItem>
-                        <NewInputSlider
+                        <ParameterSlider
                             label="Temperature"
                             min={opts.temperature.min}
                             max={opts.temperature.max}
@@ -141,7 +141,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                     <Divider />
                     <ListItem>
-                        <NewInputSlider
+                        <ParameterSlider
                             label="Top P"
                             min={opts.top_p.min}
                             max={opts.top_p.max}
