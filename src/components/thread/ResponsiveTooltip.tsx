@@ -1,4 +1,12 @@
-import { Box, Button, Dialog, Stack, Tooltip, Typography } from '@mui/material';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Tooltip,
+} from '@mui/material';
 
 import { useSmallLayoutOrUp } from '../dolma/shared';
 
@@ -9,6 +17,7 @@ type ResponsiveTooltipProps = {
     dialogContent: string;
     children: JSX.Element;
     anchorEl?: HTMLElement;
+    tooltipIdSuffix: string;
 };
 
 export const ResponsiveTooltip = ({
@@ -18,49 +27,47 @@ export const ResponsiveTooltip = ({
     dialogContent,
     children,
     anchorEl,
+    tooltipIdSuffix,
 }: ResponsiveTooltipProps): JSX.Element => {
     const handleTooltipClose = () => {
         onTooltipClose();
     };
 
-    const TooltipBox = (
+    const isSmallLayoutOrUp = useSmallLayoutOrUp();
+
+    const tooltipLabelId = `tooltip-title-${tooltipIdSuffix}`;
+    const tooltipContentId = `tooltip-content-${tooltipIdSuffix}`;
+
+    const TooltipContent = (
         <>
-            <Box
+            <DialogTitle
+                variant={isSmallLayoutOrUp ? 'subtitle2' : 'h6'}
+                component="p"
+                margin={0}
+                id={tooltipLabelId}
                 sx={{
-                    py: 1.5,
-                    px: 2,
+                    // This is here instead of using the direct prop because it gets overridden as the prop and not here
+                    paddingBlockEnd: 1,
                 }}>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        marginTop: 0,
-                        marginBottom: 0.75,
-                    }}>
-                    {dialogTitle}
-                </Typography>
-                <Typography variant="body1">{dialogContent}</Typography>
-            </Box>
-            <Stack
-                direction="row"
-                alignItems="flex-start"
-                sx={{
-                    marginTop: 0.5,
-                    marginBottom: 1,
-                }}>
+                {dialogTitle}
+            </DialogTitle>
+            <DialogContent sx={{ paddingBlockEnd: 0 }}>
+                <DialogContentText id={tooltipContentId}>{dialogContent}</DialogContentText>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: 'flex-start' }} disableSpacing>
                 <Button onClick={handleTooltipClose} size="small">
                     Close
                 </Button>
-            </Stack>
+            </DialogActions>
         </>
     );
 
-    return useSmallLayoutOrUp() ? (
+    return isSmallLayoutOrUp ? (
         <Tooltip
             disableHoverListener
             onClose={handleTooltipClose}
             open={isTooltipOpen}
             placement="left"
-            slot="tooltip"
             slotProps={{
                 tooltip: {
                     sx: (theme) => ({
@@ -73,7 +80,7 @@ export const ResponsiveTooltip = ({
                 },
                 popper: { anchorEl },
             }}
-            title={TooltipBox}>
+            title={TooltipContent}>
             {children}
         </Tooltip>
     ) : (
@@ -82,12 +89,14 @@ export const ResponsiveTooltip = ({
             <Dialog
                 open={isTooltipOpen}
                 onClose={handleTooltipClose}
+                aria-labelledby={tooltipLabelId}
+                aria-describedby={tooltipContentId}
                 PaperProps={{
                     sx: (theme) => ({
                         borderRadius: theme.spacing(1.5),
                     }),
                 }}>
-                {TooltipBox}
+                {TooltipContent}
             </Dialog>
         </>
     );
