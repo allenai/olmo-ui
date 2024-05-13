@@ -1,7 +1,6 @@
 import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
 import { alpha, ThemeOptions } from '@mui/material';
-import { minHeight } from '@mui/system';
 import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
