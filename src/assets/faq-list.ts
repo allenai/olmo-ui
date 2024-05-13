@@ -15,7 +15,7 @@ export const faqs: FAQCategory[] = [
             {
                 summary: 'What is AI2 OLMo?',
                 content:
-                    'AI2’s Open Language Model (OLMo) is a Large Language Model (LLM) framework intentionally designed to provide access to data, training code, models, and evaluation code necessary to advance the science of generative AI. Through open research, we aim to empower academics and researchers to study the science of language models collectively.\n\nThe OLMo framework is designed to aid researchers in training and experimenting with large language models. The OLMo artifacts are available for direct download on [Hugging Face](https: //huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778) and [GitHub](https://github.com/allenai/OLMo).',
+                    'AI2’s Open Language Model (OLMo) is a Large Language Model (LLM) framework intentionally designed to provide access to data, training code, models, and evaluation code necessary to advance the science of generative AI. Through open research, we aim to empower academics and researchers to study the science of language models collectively.\n\nThe OLMo framework is designed to aid researchers in training and experimenting with large language models. The OLMo artifacts are available for direct download on [Hugging Face](https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778) and [GitHub](https://github.com/allenai/OLMo).',
             },
             {
                 summary: 'What can I use OLMo Playground for?',
@@ -30,7 +30,7 @@ export const faqs: FAQCategory[] = [
             {
                 summary: 'How are results generated and ranked in the Dataset Explorer?',
                 content:
-                    'The Dataset Explorer retrieves results by matching your query to words in the documents. For example, a search for the query `dataset explorer` will retrieve documents that contain the word `dataset,` the word `explorer`, or both words.  Documents that contain both terms will be ranked higher.\n\nSearch results are ordered based on the [BM25 scoring algorithm](https: //en.wikipedia.org/wiki/Okapi_BM25), which generally gives a higher score to documents that contain the query terms more often. Common terms contribute less to the score, while rare ones contribute more. For example, since the term `the` occurs frequently throughout the dataset, it will not contribute much to the overall document ranking. BM25 also adjusts for document length variations and prevents one term from dominating others.\n\nPro tip: Use quotation marks around your term to search for an exact match to your search phrase.',
+                    'The Dataset Explorer retrieves results by matching your query to words in the documents. For example, a search for the query `dataset explorer` will retrieve documents that contain the word `dataset`, the word `explorer`, or both words.  Documents that contain both terms will be ranked higher.\n\nSearch results are ordered based on the [BM25 scoring algorithm](https://en.wikipedia.org/wiki/Okapi_BM25), which generally gives a higher score to documents that contain the query terms more often. Common terms contribute less to the score, while rare ones contribute more. For example, since the term `the` occurs frequently throughout the dataset, it will not contribute much to the overall document ranking. BM25 also adjusts for document length variations and prevents one term from dominating others.\n\nPro tip: Use quotation marks around your term to search for an exact match to your search phrase.',
             },
             {
                 summary: 'What type of data is used to train OLMo?',
@@ -61,7 +61,7 @@ export const faqs: FAQCategory[] = [
                 summary:
                     'I found some potentially objectionable content in the Data Explorer. How can I report it for review?',
                 content:
-                    "You can request a review of any document from Dolma by selecting the 'Flag for Review' button and providing an explanation for why the content should be reviewed. Your feedback helps us understand how to improve the presentation of results.\n\nTo understand the AI2 Dolma dataset design principles, read our [Dolma blog post](https: //blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64) published in August 2023.",
+                    "You can request a review of any document from Dolma by selecting the 'Flag for Review' button and providing an explanation for why the content should be reviewed. Your feedback helps us understand how to improve the presentation of results.\n\nTo understand the AI2 Dolma dataset design principles, read our [Dolma blog post](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64) published in August 2023.",
             },
             {
                 summary:
