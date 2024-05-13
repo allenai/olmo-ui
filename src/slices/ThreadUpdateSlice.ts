@@ -362,7 +362,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 'threadUpdate/finishPostMessage'
             );
         } catch (err) {
-            const addSnackMessage = get().addSnackMessage;
+            const { addSnackMessage } = get();
 
             if (err instanceof Error && err.name === 'AbortError') {
                 addSnackMessage(ABORT_ERROR_MESSAGE);
