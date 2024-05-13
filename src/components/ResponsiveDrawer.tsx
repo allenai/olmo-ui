@@ -20,8 +20,8 @@ type BaseResponsiveDrawerProps = {
 type MiniVariantProps =
     | {
           enableMiniVariant?: false;
-          //   miniVariantCollapsedWidth?: never;
-          //   miniVariantExpandedWidth?: never;
+          miniVariantCollapsedWidth?: never;
+          miniVariantExpandedWidth?: never;
       }
     | {
           enableMiniVariant: true;
