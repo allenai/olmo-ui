@@ -1,12 +1,11 @@
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { Snackbar, SnackbarContent } from '@mui/material';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
+import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton } from './ResponsiveButton';
@@ -26,8 +25,7 @@ export const DeleteThreadButton = () => {
     const isPastThirtyDays = useAppContext((state) =>
         isAfterThirtyDays(state.selectedThreadInfo.data?.created)
     );
-    const setOpenThreadDeleteSnackbar = useAppContext((state) => state.setOpenThreadDeleteSnackbar);
-    const openThreadDeleteSnackbar = useAppContext((state) => state.openThreadDeleteSnackBar);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -36,27 +34,19 @@ export const DeleteThreadButton = () => {
             deleteThread(selectedThreadId);
             setOpenDialog(false);
             nav(links.playground);
+            addSnackMessage({
+                id: `thread-delete-${new Date().getTime()}`.toLowerCase(),
+                type: SnackMessageType.Alert,
+                message: 'Thread Deleted',
+                title: 'Info',
+                severity: AlertMessageSeverity.Info,
+            });
         }
     };
 
     const handleOnClick = () => {
         setOpenDialog(true);
     };
-
-    const handleClose = useDebouncedCallback((_event: React.SyntheticEvent | Event) => {
-        setOpenThreadDeleteSnackbar(false);
-    }, 5000);
-
-    if (openThreadDeleteSnackbar && !selectedThreadId) {
-        return (
-            <Snackbar open={openThreadDeleteSnackbar} onClose={handleClose} autoHideDuration={6000}>
-                <SnackbarContent
-                    message="Thread Delete"
-                    sx={{ backgroundColor: (theme) => theme.palette.primary.main }}
-                />
-            </Snackbar>
-        );
-    }
 
     if (isPastThirtyDays || !selectedThreadId) {
         return null;
