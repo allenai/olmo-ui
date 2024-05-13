@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
-import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton } from './ResponsiveButton';
@@ -36,10 +36,8 @@ export const DeleteThreadButton = () => {
             nav(links.playground);
             addSnackMessage({
                 id: `thread-delete-${new Date().getTime()}`.toLowerCase(),
-                type: SnackMessageType.Alert,
+                type: SnackMessageType.Brief,
                 message: 'Thread Deleted',
-                title: 'Info',
-                severity: AlertMessageSeverity.Info,
             });
         }
     };
