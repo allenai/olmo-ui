@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 
 import { useAppContext } from '@/AppContext';
 
+import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
+
 interface ModelSelectProps {
     disabled?: boolean;
     onChange: (event: SelectChangeEvent) => void;
@@ -26,21 +28,24 @@ export const ModelSelectInput = ({ disabled, onChange }: ModelSelectProps) => {
     };
 
     return (
-        <Select
-            name="model"
-            disabled={disabled}
-            value={selectedModel}
-            sx={{
-                flex: '1 1 auto',
-            }}
-            onChange={handleOnChange}>
-            {models.map((model) => {
-                return (
-                    <MenuItem key={model.id} value={model.id}>
-                        {model.name}
-                    </MenuItem>
-                );
-            })}
-        </Select>
+        <ParameterDrawerInputWrapper label="Model" inputId="model">
+            <Select
+                name="model"
+                id="model"
+                disabled={disabled}
+                value={selectedModel}
+                sx={{
+                    flex: '1 1 auto',
+                }}
+                onChange={handleOnChange}>
+                {models.map((model) => {
+                    return (
+                        <MenuItem key={model.id} value={model.id}>
+                            {model.name}
+                        </MenuItem>
+                    );
+                })}
+            </Select>
+        </ParameterDrawerInputWrapper>
     );
 };

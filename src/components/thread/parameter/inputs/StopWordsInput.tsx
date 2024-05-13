@@ -1,5 +1,4 @@
 import { Autocomplete, AutocompleteProps, Chip, TextField, Typography } from '@mui/material';
-import { useRef } from 'react';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 

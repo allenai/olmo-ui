@@ -117,9 +117,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             <Stack component="nav" direction="column" justifyContent="space-between" height="1">
                 <List>
                     <ListItem>
-                        <InputLabel>Model</InputLabel>
-                    </ListItem>
-                    <ListItem>
                         <ModelSelectInput
                             onChange={() => {
                                 setParametersChanged(true);

@@ -35,7 +35,8 @@ export const ParameterDrawerInputWrapper = ({
             ref={containerRef}
             // Grid didn't like getting passed a ref but Box is OK with it for some reason
             component={Box}
-            rowSpacing={2}>
+            rowSpacing={2}
+            paddingBlockEnd={1}>
             <Grid item>
                 <Typography variant="body1" component="label" htmlFor={inputId}>
                     {label}
@@ -47,6 +48,7 @@ export const ParameterDrawerInputWrapper = ({
                         anchorElement={containerRef.current}
                         tooltipTitle={tooltipTitle}
                         tooltipContent={tooltipContent}
+                        tooltipIdSuffix={`${inputId}-description`}
                     />
                 </Grid>
             )}
