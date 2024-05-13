@@ -45,7 +45,7 @@ export interface SnackMessageSlice {
     deleteSnackMessage: (messageId: string) => void;
 }
 
-export const creatSnackMessageSlice: OlmoStateCreator<SnackMessageSlice> = (set) => ({
+export const createSnackMessageSlice: OlmoStateCreator<SnackMessageSlice> = (set) => ({
     snackMessages: [],
     // adds a message to the list of messages to show.
     // we show all messages not dismissed by the user until a new page load.

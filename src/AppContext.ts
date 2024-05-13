@@ -13,7 +13,7 @@ import { createRepromptSlice, RepromptSlice } from './slices/repromptSlice';
 import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
 import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
-import { creatSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
+import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
@@ -44,7 +44,7 @@ export const appContext = createStore<AppContextState>()(
         immer((...store) => ({
             ...createRepromptSlice(...store),
             ...createPromptTemplateSlice(...store),
-            ...creatSnackMessageSlice(...store),
+            ...createSnackMessageSlice(...store),
             ...createThreadSlice(...store),
             ...createLabelSlice(...store),
             ...createUserSlice(...store),
