@@ -38,23 +38,21 @@ export const ParameterDrawerInputWrapper = ({
             width={1}
             alignItems="center"
             ref={containerRef}
-            py={1}>
+            paddingY={1}>
             <Typography variant="body1" component="label" htmlFor={inputId}>
                 {label}
             </Typography>
             {shouldShowInfoButton && (
-                <Grid item>
-                    <ParameterInfoButton
-                        anchorElement={containerRef.current}
-                        tooltipTitle={tooltipTitle}
-                        tooltipContent={tooltipContent}
-                        tooltipIdSuffix={`${inputId}-description`}
-                    />
-                </Grid>
+                <ParameterInfoButton
+                    anchorElement={containerRef.current}
+                    tooltipTitle={tooltipTitle}
+                    tooltipContent={tooltipContent}
+                    tooltipIdSuffix={`${inputId}-description`}
+                />
             )}
-            <Grid item xs={12} sx={{ gridArea: 'input' }}>
+            <Box sx={{ gridArea: 'input' }}>
                 {children instanceof Function ? children({ inputLabelId }) : children}
-            </Grid>
+            </Box>
         </Box>
     );
 };

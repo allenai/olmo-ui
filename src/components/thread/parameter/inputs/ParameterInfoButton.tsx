@@ -40,7 +40,7 @@ export const ParameterInfoButton = ({
                 tabIndex={0}
                 title={`More about ${tooltipTitle}`}
                 aria-expanded={isTooltipOpen}
-                sx={{ color: 'inherit' }}
+                sx={{ color: 'inherit', justifySelf: 'start' }}
                 onClick={toggleTooltipOpen}
                 onKeyDown={(event) => {
                     // This is currently used in the parameters drawer that has ESC handling as well
