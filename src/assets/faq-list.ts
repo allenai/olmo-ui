@@ -150,4 +150,4 @@ export const faqs: FAQCategory[] = [
             },
         ],
     },
-];
+] as const;
