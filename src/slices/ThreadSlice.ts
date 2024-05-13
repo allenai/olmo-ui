@@ -1,7 +1,7 @@
 import { FetchInfo, OlmoStateCreator } from 'src/AppContext';
 
 import { Message, MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface ThreadSlice {
     allThreadInfo: Required<FetchInfo<MessageList>>;
@@ -45,7 +45,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     ),
             }));
         } catch (err) {
-            get().addAlertMessage(
+            get().addSnackMessage(
                 errorToAlert(
                     `fetch-${MessagesApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting threads.`,
@@ -86,7 +86,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                 'threadUpdate/finishDeleteThread'
             );
         } catch (err) {
-            get().addAlertMessage(
+            get().addSnackMessage(
                 errorToAlert(
                     `delete-${MessageApiUrl}-${threadId}-${new Date().getTime()}`.toLowerCase(),
                     `Error deleting message ${threadId}.`,
