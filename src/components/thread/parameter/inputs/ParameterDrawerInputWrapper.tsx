@@ -29,6 +29,7 @@ export const ParameterDrawerInputWrapper = ({
 
     return (
         <Box
+            // MUI's Grid component had some weird stuff going on with top padding so we're using CSS grid here instead
             display="grid"
             gridTemplateAreas={`"label info-button"
                                 "input input"`}
@@ -39,7 +40,7 @@ export const ParameterDrawerInputWrapper = ({
             alignItems="center"
             ref={containerRef}
             paddingY={1}>
-            <Typography variant="body1" component="label" htmlFor={inputId}>
+            <Typography variant="body1" component="label" htmlFor={inputId} id={inputLabelId}>
                 {label}
             </Typography>
             {shouldShowInfoButton && (

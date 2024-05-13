@@ -113,7 +113,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack component="nav" direction="column" justifyContent="space-between" height="1">
+            <Stack direction="column">
                 <List>
                     <ListItem>
                         <ModelSelectInput

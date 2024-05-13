@@ -2,7 +2,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
 
-import { ResponsiveTooltip } from '../../ResponsiveTooltip';
+import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 
 interface ParameterInfoButtonProps {
     anchorElement?: HTMLElement;

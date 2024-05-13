@@ -29,21 +29,23 @@ export const ModelSelectInput = ({ disabled, onChange }: ModelSelectProps) => {
 
     return (
         <ParameterDrawerInputWrapper label="Model" inputId="model">
-            <Select
-                name="model"
-                id="model"
-                disabled={disabled}
-                value={selectedModel}
-                fullWidth
-                onChange={handleOnChange}>
-                {models.map((model) => {
-                    return (
-                        <MenuItem key={model.id} value={model.id}>
-                            {model.name}
-                        </MenuItem>
-                    );
-                })}
-            </Select>
+            {({ inputLabelId }) => (
+                <Select
+                    name="model"
+                    labelId={inputLabelId}
+                    disabled={disabled}
+                    value={selectedModel}
+                    fullWidth
+                    onChange={handleOnChange}>
+                    {models.map((model) => {
+                        return (
+                            <MenuItem key={model.id} value={model.id}>
+                                {model.name}
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
+            )}
         </ParameterDrawerInputWrapper>
     );
 };
