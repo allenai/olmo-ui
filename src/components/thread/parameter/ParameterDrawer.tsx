@@ -120,7 +120,11 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                         <InputLabel>Model</InputLabel>
                     </ListItem>
                     <ListItem>
-                        <ModelSelectInput onChange={setParametersChanged} />
+                        <ModelSelectInput
+                            onChange={() => {
+                                setParametersChanged(true);
+                            }}
+                        />
                     </ListItem>
                     <Divider />
                     <ListItem>
