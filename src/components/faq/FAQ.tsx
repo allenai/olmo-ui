@@ -12,6 +12,7 @@ interface FAQProps extends PropsWithChildren {
 export const FAQ = ({ summary, children }: FAQProps) => {
     const location = useLocation();
     const faqId = createFAQId(summary);
+    const faqContentId = faqId + '-content';
 
     const isLinkedFAQ = location.hash === `#${faqId}`;
 
@@ -24,13 +25,18 @@ export const FAQ = ({ summary, children }: FAQProps) => {
                     display: 'none',
                 },
             }}
-            defaultExpanded={isLinkedFAQ}>
-            <AccordionSummary id={faqId} expandIcon={<ExpandMore />}>
-                <Typography variant="body1" fontWeight="bold">
+            defaultExpanded={isLinkedFAQ}
+            role="region"
+            aria-labelledby={faqId}>
+            <Typography variant="body1" fontWeight="bold" component="h3">
+                <AccordionSummary
+                    id={faqId}
+                    expandIcon={<ExpandMore />}
+                    aria-controls={faqContentId}>
                     {summary}
-                </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+                </AccordionSummary>
+            </Typography>
+            <AccordionDetails id={faqContentId}>
                 <Typography variant="body1">{children}</Typography>
             </AccordionDetails>
         </Accordion>
