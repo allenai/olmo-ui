@@ -28,20 +28,20 @@ export const ParameterDrawerInputWrapper = ({
     const shouldShowInfoButton = tooltipTitle != null && tooltipContent != null;
 
     return (
-        <Grid
+        <Box
+            display="grid"
+            gridTemplateAreas={`"label info-button"
+                                "input input"`}
+            gridTemplateColumns="auto 1fr"
+            rowGap={2}
+            columnGap={1}
             width={1}
-            container
             alignItems="center"
             ref={containerRef}
-            // Grid didn't like getting passed a ref but Box is OK with it for some reason
-            component={Box}
-            rowSpacing={2}
-            paddingBlockEnd={1}>
-            <Grid item>
-                <Typography variant="body1" component="label" htmlFor={inputId}>
-                    {label}
-                </Typography>
-            </Grid>
+            py={1}>
+            <Typography variant="body1" component="label" htmlFor={inputId}>
+                {label}
+            </Typography>
             {shouldShowInfoButton && (
                 <Grid item>
                     <ParameterInfoButton
@@ -52,9 +52,9 @@ export const ParameterDrawerInputWrapper = ({
                     />
                 </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ gridArea: 'input' }}>
                 {children instanceof Function ? children({ inputLabelId }) : children}
             </Grid>
-        </Grid>
+        </Box>
     );
 };

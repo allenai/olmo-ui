@@ -2,7 +2,7 @@
  * A slider with a number control next to it.
  */
 
-import { Box, Grid, Input, Slider, Stack } from '@mui/material';
+import { Box, Input, Slider, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';

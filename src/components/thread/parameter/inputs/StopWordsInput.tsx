@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteProps, Chip, TextField, Typography } from '@mui/material';
+import { Autocomplete, AutocompleteProps, Chip, TextField } from '@mui/material';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
@@ -38,12 +38,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                     <TextField
                         {...params}
                         hiddenLabel
-                        placeholder="Enter Stop Word"
-                        helperText={
-                            <Typography variant="caption">
-                                Press &quot;Enter&quot; to add a new word.
-                            </Typography>
-                        }
+                        helperText='Press "Enter" to add a new word.'
                     />
                 )}
             />

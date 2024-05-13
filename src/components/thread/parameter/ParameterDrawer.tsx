@@ -4,7 +4,6 @@ import {
     Box,
     Divider,
     IconButton,
-    InputLabel,
     List,
     ListItem,
     ListSubheader,

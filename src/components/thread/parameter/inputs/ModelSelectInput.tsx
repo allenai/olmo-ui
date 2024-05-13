@@ -34,9 +34,7 @@ export const ModelSelectInput = ({ disabled, onChange }: ModelSelectProps) => {
                 id="model"
                 disabled={disabled}
                 value={selectedModel}
-                sx={{
-                    flex: '1 1 auto',
-                }}
+                fullWidth
                 onChange={handleOnChange}>
                 {models.map((model) => {
                     return (
