@@ -1,6 +1,7 @@
 import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
 import { alpha, ThemeOptions } from '@mui/material';
+import { minHeight } from '@mui/system';
 import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
@@ -105,6 +106,34 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                     '&.Mui-selected': {
                         backgroundColor: alpha(theme.palette.primary.main, 0.08),
                         color: theme.palette.text.primary,
+                    },
+                }),
+            },
+        },
+        MuiAccordion: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    backgroundColor: theme.palette.background.default,
+                    '&.Mui-expanded': {
+                        margin: 0,
+                    },
+                }),
+            },
+        },
+        MuiAccordionSummary: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    color: theme.palette.primary.main,
+                    '.MuiAccordionSummary-expandIconWrapper': {
+                        color: 'inherit',
+                    },
+
+                    '&.Mui-expanded': {
+                        // This is the default min height before it gets bigger from expanding
+                        minHeight: 48,
+                        '.MuiAccordionSummary-content': {
+                            margin: 0,
+                        },
                     },
                 }),
             },

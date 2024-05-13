@@ -6,14 +6,13 @@ import {
     Container,
     Grid,
     IconButton,
-    LinearProgress,
     Paper,
     PaperProps,
     Snackbar,
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -133,20 +132,6 @@ export function CopyToClipboardButton({
         </Box>
     );
 }
-
-interface SearchWrapperProps extends PropsWithChildren {
-    isLoading?: boolean;
-}
-
-export const SearchWrapper = ({ isLoading, children }: SearchWrapperProps) => {
-    const Wrapper = useDesktopOrUp() ? ElevatedPaper : NoPaddingContainer;
-    return (
-        <>
-            <Wrapper>{children}</Wrapper>
-            {isLoading && <LinearProgress sx={{ mt: 3 }} data-testid="search-progress-bar" />}
-        </>
-    );
-};
 
 export const useIsOnlyBreakpoint = (breakpoint: Breakpoint): boolean => {
     const theme = useTheme();
