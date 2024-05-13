@@ -37,7 +37,9 @@ export const FAQ = ({ summary, children }: FAQProps) => {
                 </AccordionSummary>
             </Typography>
             <AccordionDetails id={faqContentId}>
-                <Typography variant="body1">{children}</Typography>
+                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                    {children}
+                </Typography>
             </AccordionDetails>
         </Accordion>
     );

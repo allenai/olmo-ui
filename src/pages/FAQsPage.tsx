@@ -1,4 +1,4 @@
-import { Link } from '@mui/material';
+import { Link, Typography } from '@mui/material';
 import Markdown from 'react-markdown';
 
 import { faqs } from '@/assets/faq-list';
@@ -10,7 +10,7 @@ const FAQMarkdown = ({ children }: { children: string }) => {
     return (
         <Markdown
             components={{
-                p: ({ children }) => <>{children}</>,
+                p: ({ children }) => <Typography variant="body1">{children}</Typography>,
                 // The ref types don't match for some reason
                 a: ({ ref, ...props }) => <Link {...props} target="_blank" />,
             }}>
