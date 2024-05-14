@@ -1,20 +1,36 @@
+import { Link, Typography } from '@mui/material';
+import Markdown from 'react-markdown';
+
+import { faqs } from '@/assets/faq-list';
 import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';
 import { FAQ } from '@/components/faq/FAQ';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 
+const FAQMarkdown = ({ children }: { children: string }) => {
+    return (
+        <Markdown
+            components={{
+                p: ({ children }) => <Typography variant="body1">{children}</Typography>,
+                // The ref types don't match for some reason
+                a: ({ ref, ...props }) => <Link {...props} target="_blank" />,
+            }}>
+            {children}
+        </Markdown>
+    );
+};
+
 export const FAQsPage = () => {
     return (
         <PageContentWrapper>
-            <FAQCategory categoryName="Example">
-                <FAQ summary="How should an FAQ look?">This is an example FAQ</FAQ>
-                <FAQ summary="What about a second FAQ...">Example 2</FAQ>
-            </FAQCategory>
-            <FAQCategory categoryName="Example2">
-                <FAQ summary="How should an FAQ look in the second category?">
-                    This is an example FAQ
-                </FAQ>
-                <FAQ summary="What about a second FAQ in the second category...">Example 2</FAQ>
-            </FAQCategory>
+            {faqs.map((faqCategory) => (
+                <FAQCategory categoryName={faqCategory.category} key={faqCategory.category}>
+                    {faqCategory.questions.map((question) => (
+                        <FAQ question={question.question} key={question.question}>
+                            <FAQMarkdown>{question.answer}</FAQMarkdown>
+                        </FAQ>
+                    ))}
+                </FAQCategory>
+            ))}
         </PageContentWrapper>
     );
 };
