@@ -1,26 +1,15 @@
-import { Button, Link, Stack, TextField, Typography } from '@mui/material';
-import { ComponentProps, useEffect, useMemo } from 'react';
-import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
-import Markdown from 'react-markdown';
+import { Button, Stack, TextField } from '@mui/material';
+import { useEffect, useMemo } from 'react';
 import { Form, useSearchParams } from 'react-router-dom';
 
 import { faqs } from '@/assets/faq-list';
 import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';
-import { FAQ } from '@/components/faq/FAQ';
 import { FAQCategory } from '@/components/faq/FAQCategory';
-
-const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
-    p: ({ children }) => <Typography variant="body1">{children}</Typography>,
-    // The ref types don't match for some reason
-    a: ({ ref, ...props }) => <Link {...props} target="_blank" />,
-};
-const FAQMarkdown = ({ children }: { children: string }) => {
-    return <Markdown components={markdownComponents}>{children}</Markdown>;
-};
+import { NoResults } from '@/components/NoResults';
 
 const SEARCH_FIELD_NAME = 'search';
 
-export const FAQsPage = () => {
+export const FAQsPage = (): JSX.Element => {
     const [searchParams, setSearchParams] = useSearchParams();
     const search = searchParams.get(SEARCH_FIELD_NAME);
 
@@ -42,12 +31,16 @@ export const FAQsPage = () => {
         const filtered = faqs.map((category) => ({
             category: category.category,
             questions: category.questions.filter(
-                (question) => question.answer.includes(search) || question.question.includes(search)
+                (question) => question.question.includes(search) || question.answer.includes(search)
             ),
         }));
 
         return filtered;
     }, [search]);
+
+    const hasNoQuestionsToDisplay = filteredFAQs.every(
+        (category) => category.questions.length === 0
+    );
 
     return (
         <PageContentWrapper>
@@ -66,15 +59,17 @@ export const FAQsPage = () => {
                     </Button>
                 </Stack>
             </Form>
-            {filteredFAQs.map((faqCategory) => (
-                <FAQCategory categoryName={faqCategory.category} key={faqCategory.category}>
-                    {faqCategory.questions.map((question) => (
-                        <FAQ question={question.question} key={question.question}>
-                            <FAQMarkdown>{question.answer}</FAQMarkdown>
-                        </FAQ>
-                    ))}
-                </FAQCategory>
-            ))}
+            {hasNoQuestionsToDisplay && search != null ? (
+                <NoResults request={search} />
+            ) : (
+                filteredFAQs.map((faqCategory) => (
+                    <FAQCategory
+                        categoryName={faqCategory.category}
+                        questions={faqCategory.questions}
+                        key={faqCategory.category}
+                    />
+                ))
+            )}
         </PageContentWrapper>
     );
 };
