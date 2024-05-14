@@ -16,10 +16,10 @@ import { KeyboardEventHandler, useEffect, useState } from 'react';
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
 import { NewModelSelect } from '@/components/NewModelSelect';
-import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { NewInputSlider } from '@/components/thread/parameter/NewInputSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { StopWordsInput } from './StopWordsInput';
@@ -41,6 +41,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const [parametersChanged, setParametersChanged] = useState(false);
     const handleDrawerClose = () => {
         setParametersChanged(false);
@@ -80,6 +81,17 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     useCloseDrawerOnNavigation({
         handleDrawerClose,
     });
+
+    useEffect(() => {
+        if (parametersChanged) {
+            addSnackMessage({
+                id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                type: SnackMessageType.Brief,
+                message: 'Parameters Saved',
+            });
+            setParametersChanged(false);
+        }
+    }, [addSnackMessage, parametersChanged]);
 
     return (
         <ResponsiveDrawer
@@ -166,10 +178,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                 </List>
             </Stack>
-            <ParameterSnackBar
-                parametersChanged={parametersChanged}
-                setParametersChanged={setParametersChanged}
-            />
         </ResponsiveDrawer>
     );
 };
