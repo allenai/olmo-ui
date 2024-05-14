@@ -16,6 +16,7 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
 
+    const postMessageInfo = useAppContext((state) => state.postMessageInfo);
     const lastMessageId = useAppContext((state) => {
         const messagesToShow = getSelectedMessagesToShow(state);
 
@@ -54,7 +55,11 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
                 />
-                <Button type="submit" variant="contained" data-testid="Submit Prompt Button">
+                <Button
+                    type="submit"
+                    variant="contained"
+                    data-testid="Submit Prompt Button"
+                    disabled={postMessageInfo.loading}>
                     Submit
                 </Button>
             </Stack>
