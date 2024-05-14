@@ -66,10 +66,10 @@ export const faqs: FAQCategory[] = [
                 question: 'Does OLMo support other languages outside of English?',
                 answer: 'Currently, OLMo only supports the English language. ',
             },
-            {
-                question: 'How can I contact support?',
-                answer: 'If you can’t find an answer to your question on this page, you can contact support by reaching out to our Discord community [ link to be inserted when available]. Our dedicated team is ready to assist with technical issues, account inquiries, and general questions about OLMo and its framework.',
-            },
+            // {
+            //     question: 'How can I contact support?',
+            //     answer: 'If you can’t find an answer to your question on this page, you can contact support by reaching out to our Discord community [ link to be inserted when available]. Our dedicated team is ready to assist with technical issues, account inquiries, and general questions about OLMo and its framework.',
+            // },
         ],
     },
     {
@@ -114,7 +114,7 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How can I request to delete my chat history?',
-                answer: 'You can request data deletion via the deletion function in the interactions threads interface. If you have difficulties or other concerns, contact us via our Discord community [link to be inserted when available]. We will guide you through the process and ensure your data is promptly removed in accordance with our Terms and Conditions of Use, privacy and data retention policies.',
+                answer: 'You can request data deletion via the deletion function in the interactions threads interface. We will guide you through the process and ensure your data is promptly removed in accordance with our Terms and Conditions of Use, privacy and data retention policies.',
             },
             {
                 question: 'Will AI2 claim copyright over the outputs I generate with OLMo?',
