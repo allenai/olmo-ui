@@ -6,12 +6,12 @@ import { useLocation } from 'react-router-dom';
 import { createFAQId } from './createFAQId';
 
 interface FAQProps extends PropsWithChildren {
-    summary: string;
+    question: string;
 }
 
-export const FAQ = ({ summary, children }: FAQProps) => {
+export const FAQ = ({ question, children }: FAQProps) => {
     const location = useLocation();
-    const faqId = createFAQId(summary);
+    const faqId = createFAQId(question);
     const faqContentId = faqId + '-content';
 
     const isLinkedFAQ = location.hash === `#${faqId}`;
@@ -33,7 +33,7 @@ export const FAQ = ({ summary, children }: FAQProps) => {
                     id={faqId}
                     expandIcon={<ExpandMore />}
                     aria-controls={faqContentId}>
-                    {summary}
+                    {question}
                 </AccordionSummary>
             </Typography>
             <AccordionDetails id={faqContentId}>

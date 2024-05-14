@@ -25,8 +25,8 @@ export const FAQsPage = () => {
             {faqs.map((faqCategory) => (
                 <FAQCategory categoryName={faqCategory.category} key={faqCategory.category}>
                     {faqCategory.questions.map((question) => (
-                        <FAQ summary={question.summary} key={question.summary}>
-                            <FAQMarkdown>{question.content}</FAQMarkdown>
+                        <FAQ question={question.question} key={question.question}>
+                            <FAQMarkdown>{question.answer}</FAQMarkdown>
                         </FAQ>
                     ))}
                 </FAQCategory>
