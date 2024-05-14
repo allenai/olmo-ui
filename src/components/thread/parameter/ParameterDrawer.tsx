@@ -43,7 +43,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const handleDrawerClose = () => {
-        setParametersChanged(false);
         closeDrawer(PARAMETERS_DRAWER_ID);
     };
 
