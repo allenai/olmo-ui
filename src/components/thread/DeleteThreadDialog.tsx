@@ -28,7 +28,9 @@ export const DeleteThreadDialog = ({
                     maxWidth: '312px',
                 },
             }}>
-            <DialogTitle>Delete this thread?</DialogTitle>
+            <DialogTitle sx={{ marginBottom: '7px', marginTop: '7px' }}>
+                Delete this thread?
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText>This action cannot be undone</DialogContentText>
             </DialogContent>
