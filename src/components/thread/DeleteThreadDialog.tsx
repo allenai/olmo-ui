@@ -26,6 +26,7 @@ export const DeleteThreadDialog = ({
                 sx: {
                     width: '100%',
                     maxWidth: '312px',
+                    borderRadius: '10px',
                 },
             }}>
             <DialogTitle sx={{ marginBottom: '7px', marginTop: '7px' }}>
