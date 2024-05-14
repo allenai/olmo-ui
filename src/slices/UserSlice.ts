@@ -2,7 +2,7 @@ import { OlmoStateCreator } from '@/AppContext';
 
 import { User, UserClient, WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface UserSlice {
     userRemoteState?: RemoteState;
@@ -16,7 +16,7 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
     userRemoteState: undefined,
     userInfo: null,
     getUserInfo: async () => {
-        const { addAlertMessage } = get();
+        const { addSnackMessage } = get();
         set({ userRemoteState: RemoteState.Loading });
         try {
             const user = await userClient.whoAmI();
@@ -28,7 +28,7 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
 
             return user;
         } catch (err) {
-            addAlertMessage(
+            addSnackMessage(
                 errorToAlert(
                     `fetch-${WhoamiApiUrl}-${new Date().getTime()}`.toLowerCase(),
                     `Error getting user.`,

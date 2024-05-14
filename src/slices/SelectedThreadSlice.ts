@@ -3,7 +3,7 @@ import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 
-import { errorToAlert } from './AlertMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 import { messageClient } from './ThreadSlice';
 
 export interface SelectedThreadMessage {
@@ -185,7 +185,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     'selectedThread/getSelectedThreadFinish'
                 );
             } catch (err) {
-                get().addAlertMessage(
+                get().addSnackMessage(
                     errorToAlert(
                         `fetch-${MessageApiUrl}-${threadId}-${new Date().getTime()}`.toLowerCase(),
                         `Error getting message ${threadId}.`,

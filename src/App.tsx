@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link, LinkProps, Outlet } from 'react-router-dom';
 
 import { useAppContext } from './AppContext';
-import { GlobalAlertList } from './components/GlobalAlertList';
+import { GlobalSnackMessageList } from './components/GlobalSnackMessageList';
 import { OlmoLogo } from './components/logos/OlmoLogo';
 import { OlmoBanner } from './components/OlmoBanner';
 import { WallpaperCircle } from './components/WallpaperCircle';
@@ -106,7 +106,7 @@ export const App = () => {
                         endSlot={<HeaderEndSlot client={userInfo.client} />}
                     />
                     <Content main>
-                        <GlobalAlertList />
+                        <GlobalSnackMessageList />
                         <Outlet />
                     </Content>
                     <BottomBanner>
