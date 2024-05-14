@@ -60,7 +60,7 @@ export const FAQsPage = (): JSX.Element => {
                 </Stack>
             </Form>
             {hasNoQuestionsToDisplay && search != null ? (
-                <NoResults request={search} />
+                <NoResults request={search} resultsType="FAQ" />
             ) : (
                 filteredFAQs.map((faqCategory) => (
                     <FAQCategory
