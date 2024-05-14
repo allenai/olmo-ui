@@ -51,6 +51,7 @@ export const FAQsPage = () => {
                         name={SEARCH_FIELD_NAME}
                         fullWidth
                         defaultValue={search}
+                        size="small"
                     />
                     <Button type="submit" variant="contained">
                         Search
