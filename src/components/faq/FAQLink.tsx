@@ -1,7 +1,11 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+
+import { useAppContext } from '@/AppContext';
+
+import { CATEGORY_DRAWER_ID } from './FAQDrawer';
 
 interface FAQLinkProps {
     content: string;
@@ -10,6 +14,11 @@ interface FAQLinkProps {
 export const FAQLink = ({ content, id }: FAQLinkProps) => {
     const { hash } = useLocation();
     const [isSelected, setIsSelected] = useState(false);
+    const closeDrawer = useAppContext((state) => state.closeDrawer);
+
+    const handleDrawerClose = () => {
+        closeDrawer(CATEGORY_DRAWER_ID);
+    };
 
     useEffect(() => {
         const hashValue = hash.slice(1, hash.length);
@@ -25,7 +34,8 @@ export const FAQLink = ({ content, id }: FAQLinkProps) => {
                     gap: (theme) => theme.spacing(1),
                 }}
                 component="a"
-                href={'#' + id}>
+                href={'#' + id}
+                onClick={handleDrawerClose}>
                 <ListItemText
                     primaryTypographyProps={{
                         variant: 'caption',

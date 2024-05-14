@@ -12,10 +12,10 @@ export const FAQCategoryLinks = () => {
                 borderRadius: '5px',
                 borderStyle: 'solid',
                 borderWidth: 1,
-                padding: '25px',
+                padding: '27px',
                 borderColor: (theme) => theme.palette.primary.main,
             }}>
-            <Typography variant="body1" fontWeight="bold" component="h3">
+            <Typography variant="body1" fontWeight="bold" component="h2">
                 Categories
             </Typography>
             {faqs.map((faqCategory) => (
