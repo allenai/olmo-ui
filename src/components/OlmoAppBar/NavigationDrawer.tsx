@@ -1,4 +1,6 @@
 import { logos } from '@allenai/varnish2/components';
+import { useAuth0 } from '@auth0/auth0-react';
+import { LoginOutlined as LoginIcon } from '@mui/icons-material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -16,6 +18,26 @@ import { links } from '@/Links';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
+
+const LoginLink = () => {
+    const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+    if (isAuthenticated) {
+        return (
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            <NavigationLink icon={<LogoutIcon />} onClick={() => logout()}>
+                Log Out
+            </NavigationLink>
+        );
+    }
+
+    return (
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        <NavigationLink icon={<LoginIcon />} onClick={() => loginWithRedirect()}>
+            Log In
+        </NavigationLink>
+    );
+};
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -51,6 +73,8 @@ export const NavigationDrawer = ({
             onClose();
         }
     }, [location.pathname]);
+
+    const auth = useAuth0();
 
     return (
         <ResponsiveDrawer
@@ -101,9 +125,7 @@ export const NavigationDrawer = ({
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
                         FAQ
                     </NavigationLink>
-                    <NavigationLink icon={<LogoutIcon />} href={links.logOut}>
-                        Log Out
-                    </NavigationLink>
+                    <LoginLink />
                 </Stack>
             </Box>
         </ResponsiveDrawer>

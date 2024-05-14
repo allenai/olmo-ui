@@ -9,6 +9,7 @@ const webpack = require('webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const path = require('path');
 
@@ -84,6 +85,10 @@ module.exports = (env) => ({
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
             IS_UI_REFRESH_ENABLED: 'true',
+        }),
+        new Dotenv({
+            path: './.env.local',
+            ignoreStub: true,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],

@@ -1,6 +1,7 @@
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
+import { Auth0Provider } from '@auth0/auth0-react';
 import { ThemeOptions } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
@@ -29,14 +30,19 @@ export const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps)
     const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
 
     return (
-        <FeatureToggleProvider>
-            <ScrollToTopOnPageChange />
-            <ThemeProvider theme={combinedTheme}>
-                <VarnishApp layout="left-aligned" theme={combinedTheme}>
-                    <GlobalStyle />
-                    {children}
-                </VarnishApp>
-            </ThemeProvider>
-        </FeatureToggleProvider>
+        <Auth0Provider
+            domain={process.env.AUTH0_DOMAIN as string}
+            clientId={process.env.AUTH0_CLIENT_ID as string}
+            authorizationParams={{ redirect_uri: window.location.origin }}>
+            <FeatureToggleProvider>
+                <ScrollToTopOnPageChange />
+                <ThemeProvider theme={combinedTheme}>
+                    <VarnishApp layout="left-aligned" theme={combinedTheme}>
+                        <GlobalStyle />
+                        {children}
+                    </VarnishApp>
+                </ThemeProvider>
+            </FeatureToggleProvider>
+        </Auth0Provider>
     );
 };
