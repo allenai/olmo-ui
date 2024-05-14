@@ -27,7 +27,7 @@ export const DeleteThreadButton = () => {
     );
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
 
     const handleDeleteThread = () => {
         if (selectedThreadId) {
@@ -60,7 +60,9 @@ export const DeleteThreadButton = () => {
             />
             <DeleteThreadDialog
                 open={openDialog}
-                onClose={setOpenDialog}
+                onCancel={() => {
+                    setOpenDialog(false);
+                }}
                 handleDeleteThread={handleDeleteThread}
             />
         </>

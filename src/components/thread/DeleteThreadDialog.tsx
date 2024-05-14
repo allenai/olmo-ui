@@ -10,20 +10,16 @@ import {
 interface DeleteThreadDialogProps {
     handleDeleteThread: () => void;
     open: boolean;
-    onClose: (open: boolean) => void;
+    onCancel: () => void;
 }
 
 export const DeleteThreadDialog = ({
     handleDeleteThread,
     open,
-    onClose,
+    onCancel,
 }: DeleteThreadDialogProps) => {
-    const handleClose = () => {
-        onClose(false);
-    };
-
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={onCancel}>
             <DialogTitle>Delete this thread?</DialogTitle>
             <DialogContent>
                 <DialogContentText>This action cannot be undone</DialogContentText>
@@ -35,7 +31,7 @@ export const DeleteThreadDialog = ({
                     sx={{ color: (theme) => theme.palette.error.main }}>
                     Delete Thread
                 </Button>
-                <Button variant="text" onClick={handleClose}>
+                <Button variant="text" onClick={onCancel}>
                     Cancel
                 </Button>
             </DialogActions>
