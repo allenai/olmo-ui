@@ -41,7 +41,7 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
     const icon = variant === Role.User ? null : <RobotAvatar />;
 
     return (
-        <Stack direction="row" gap={1} alignItems="start">
+        <Stack direction="row" gap={1} alignItems="start" aria-live="assertive">
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
