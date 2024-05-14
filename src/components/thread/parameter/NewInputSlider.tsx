@@ -5,6 +5,9 @@
 import { Box, Grid, Input, Slider, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
+import { useAppContext } from '@/AppContext';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
+
 import { ParameterInfoButton } from './ParameterInfoButton';
 
 interface Props {
@@ -30,6 +33,8 @@ export const NewInputSlider = ({
     onChange,
     id,
 }: Props) => {
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
     };
@@ -50,10 +55,20 @@ export const NewInputSlider = ({
         // this component will only have 1 value
         // if we add a second, we should rework this
         setValue(Array.isArray(newValue) ? newValue[0] : newValue);
+        addSnackMessage({
+            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'Parameters Saved',
+        });
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(Number(event.target.value));
+        addSnackMessage({
+            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'Parameters Saved',
+        });
     };
 
     const handleBlur = () => {
