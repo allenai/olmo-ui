@@ -100,7 +100,7 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                             'nav content side-drawer'`,
                         gridTemplateRows: 'auto 1fr',
                         gridTemplateColumns: 'auto 1fr auto',
-                        gap: theme.spacing(8),
+                        columnGap: theme.spacing(8),
                     },
                 }),
             ]}
