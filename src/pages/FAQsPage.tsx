@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import { Button, Stack, TextField } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { Form, useSearchParams } from 'react-router-dom';
+=======
+import { Grid, Link, Stack, Typography } from '@mui/material';
+import Markdown from 'react-markdown';
+>>>>>>> WIP
 
 import { faqs } from '@/assets/faq-list';
 import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';

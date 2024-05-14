@@ -1,15 +1,12 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Divider, IconButton, List, ListItem, ListSubheader, Typography } from '@mui/material';
+import { Divider, IconButton, ListSubheader, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 
 import { useAppContext } from '@/AppContext';
-import { faqs } from '@/assets/faq-list';
-import { FAQMarkdown } from '@/pages/FAQsPage';
 import { DrawerId } from '@/slices/DrawerSlice';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
-import { FAQ } from './FAQ';
-import { FAQCategory } from './FAQCategory';
+import { FAQCategorySection } from './FAQCategorySection';
 
 export const CATEGORY_DRAWER_ID: DrawerId = 'category';
 
@@ -47,7 +44,7 @@ export const FAQDrawer = () => {
                         <IconButton
                             onClick={handleDrawerClose}
                             sx={{ color: 'inherit' }}
-                            data-testid="Close History Drawer">
+                            data-testid="Close Categories Drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>
@@ -56,24 +53,7 @@ export const FAQDrawer = () => {
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column" sx={{ overflowY: 'scroll' }}>
-                <List>
-                    {faqs.map((faqCategory, index) => (
-                        <>
-                            <ListItem>
-                                <FAQCategory
-                                    categoryName={faqCategory.category}
-                                    key={faqCategory.category}>
-                                    {faqCategory.questions.map((question) => (
-                                        <FAQ question={question.question} key={question.question}>
-                                            <FAQMarkdown>{question.answer}</FAQMarkdown>
-                                        </FAQ>
-                                    ))}
-                                </FAQCategory>
-                            </ListItem>
-                            {index !== faqs.length - 1 && <Divider />}
-                        </>
-                    ))}
-                </List>
+                <FAQCategorySection />
             </Stack>
         </ResponsiveDrawer>
     );
