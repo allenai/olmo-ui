@@ -9,7 +9,6 @@ export const Footer = () => {
         <Box component="footer" paddingBlockStart={6}>
             <Stack direction="row" flexWrap="wrap" gap={1} component={List}>
                 <FooterLink href={links.feedbackForm}>Give Feedback</FooterLink>
-                <FooterLink href={links.dataPolicy}>Data Policy</FooterLink>
             </Stack>
         </Box>
     );
