@@ -109,5 +109,33 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                 }),
             },
         },
+        MuiAccordion: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    backgroundColor: theme.palette.background.default,
+                    '&.Mui-expanded': {
+                        margin: 0,
+                    },
+                }),
+            },
+        },
+        MuiAccordionSummary: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    color: theme.palette.primary.main,
+                    '.MuiAccordionSummary-expandIconWrapper': {
+                        color: 'inherit',
+                    },
+
+                    '&.Mui-expanded': {
+                        // This is the default min height before it gets bigger from expanding
+                        minHeight: 48,
+                        '.MuiAccordionSummary-content': {
+                            margin: 0,
+                        },
+                    },
+                }),
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>);
