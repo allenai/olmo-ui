@@ -19,7 +19,15 @@ export const DeleteThreadDialog = ({
     onCancel,
 }: DeleteThreadDialogProps) => {
     return (
-        <Dialog open={open} onClose={onCancel}>
+        <Dialog
+            open={open}
+            onClose={onCancel}
+            PaperProps={{
+                sx: {
+                    width: '100%',
+                    maxWidth: '312px',
+                },
+            }}>
             <DialogTitle>Delete this thread?</DialogTitle>
             <DialogContent>
                 <DialogContentText>This action cannot be undone</DialogContentText>
