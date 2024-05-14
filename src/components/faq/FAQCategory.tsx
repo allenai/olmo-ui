@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 import type { FAQ as FAQType } from '@/assets/faq-list';
 
@@ -10,7 +11,7 @@ interface FAQCategoryProps {
     questions: FAQType[];
 }
 
-export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): JSX.Element => {
+export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): ReactNode => {
     if (questions.length === 0) {
         return null;
     }
