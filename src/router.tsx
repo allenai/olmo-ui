@@ -2,6 +2,13 @@ import { withAuthenticationRequired, WithAuthenticationRequiredOptions } from '@
 import { ComponentType, PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
+import {
+    loginAction,
+    loginLoader,
+    loginResultLoader,
+    logoutAction,
+    requireAuthorizationLoader,
+} from './api/auth0';
 import { App } from './App';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -112,6 +119,14 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 export const uiRefreshRoutes: RouteObject[] = [
     {
+        path: links.login,
+        action: loginAction,
+        loader: loginLoader,
+        element: <div>Login</div>,
+    },
+    { path: links.logout, action: logoutAction },
+    { path: links.loginResult, loader: loginResultLoader },
+    {
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground - OLMo" />
@@ -174,6 +189,7 @@ export const uiRefreshRoutes: RouteObject[] = [
                 handle: {
                     title: 'Dataset Explorer',
                 },
+                loader: requireAuthorizationLoader,
             },
             {
                 path: links.search,
