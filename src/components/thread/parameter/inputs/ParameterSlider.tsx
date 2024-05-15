@@ -3,8 +3,7 @@
  */
 
 import { Box, Input, Slider, Stack } from '@mui/material';
-import { neNP } from '@mui/material/locale';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
