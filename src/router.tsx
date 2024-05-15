@@ -12,6 +12,7 @@ import { Admin } from './pages/Admin';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
+import { FAQsPage } from './pages/FAQsPage';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
 import { PromptTemplates } from './pages/PromptTemplates';
@@ -182,6 +183,17 @@ export const uiRefreshRoutes: RouteObject[] = [
                 ),
                 handle: {
                     title: 'Prompt Templates',
+                },
+            },
+            {
+                path: links.faqs,
+                element: (
+                    <OlmoPage>
+                        <FAQsPage />
+                    </OlmoPage>
+                ),
+                handle: {
+                    title: 'Frequently Asked Questions',
                 },
             },
             {

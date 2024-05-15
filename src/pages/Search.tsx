@@ -1,11 +1,13 @@
 import { Typography } from '@mui/material';
 import { defer, LoaderFunction, useLocation } from 'react-router-dom';
 
+import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';
+
 import { search } from '../api/dolma/search';
 import { appContext, useAppContext } from '../AppContext';
 import { SearchForm } from '../components/dolma/SearchForm';
 import { SearchResultList } from '../components/dolma/SearchResultList';
-import { NoPaddingContainer, SearchWrapper } from '../components/dolma/shared';
+import { NoPaddingContainer } from '../components/dolma/shared';
 import { RemoteState } from '../contexts/util';
 
 export const searchPageLoader: LoaderFunction = ({ request }) => {
@@ -29,7 +31,7 @@ export const Search = () => {
 
     return (
         <>
-            <SearchWrapper isLoading={searchState === RemoteState.Loading}>
+            <PageContentWrapper isLoading={searchState === RemoteState.Loading}>
                 <SearchForm
                     showTooltip={false}
                     defaultValue={request.query}
@@ -42,7 +44,7 @@ export const Search = () => {
                 {searchState === RemoteState.Loaded && response && (
                     <SearchResultList response={response} />
                 )}
-            </SearchWrapper>
+            </PageContentWrapper>
         </>
     );
 };

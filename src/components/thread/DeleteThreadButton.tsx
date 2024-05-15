@@ -1,10 +1,13 @@
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
+import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton } from './ResponsiveButton';
 
 const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
@@ -22,12 +25,25 @@ export const DeleteThreadButton = () => {
     const isPastThirtyDays = useAppContext((state) =>
         isAfterThirtyDays(state.selectedThreadInfo.data?.created)
     );
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
 
     const handleDeleteThread = () => {
         if (selectedThreadId) {
             deleteThread(selectedThreadId);
+            setOpenDialog(false);
             nav(links.playground);
+            addSnackMessage({
+                id: `thread-delete-${new Date().getTime()}`.toLowerCase(),
+                type: SnackMessageType.Brief,
+                message: 'Thread Deleted',
+            });
         }
+    };
+
+    const handleOnClick = () => {
+        setOpenDialog(true);
     };
 
     if (isPastThirtyDays || !selectedThreadId) {
@@ -35,11 +51,20 @@ export const DeleteThreadButton = () => {
     }
 
     return (
-        <ResponsiveButton
-            variant="outlined"
-            startIcon={<DeleteOutlinedIcon />}
-            title="Delete Thread"
-            onClick={handleDeleteThread}
-        />
+        <>
+            <ResponsiveButton
+                variant="outlined"
+                startIcon={<DeleteOutlinedIcon />}
+                title="Delete Thread"
+                onClick={handleOnClick}
+            />
+            <DeleteThreadDialog
+                open={openDialog}
+                onCancel={() => {
+                    setOpenDialog(false);
+                }}
+                handleDeleteThread={handleDeleteThread}
+            />
+        </>
     );
 };
