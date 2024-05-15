@@ -1,13 +1,21 @@
 import { Box, Typography } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { ReactNode } from 'react';
+
+import type { FAQ as FAQType } from '@/assets/faq-list';
 
 import { createFAQId } from './createFAQId';
+import { FAQ } from './FAQ';
 
-interface FAQCategoryProps extends PropsWithChildren {
+interface FAQCategoryProps {
     categoryName: string;
+    questions: FAQType[];
 }
 
-export const FAQCategory = ({ categoryName, children }: FAQCategoryProps) => {
+export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): ReactNode => {
+    if (questions.length === 0) {
+        return null;
+    }
+
     return (
         <Box
             id={createFAQId(categoryName)}
@@ -24,7 +32,13 @@ export const FAQCategory = ({ categoryName, children }: FAQCategoryProps) => {
             <Typography variant="h5" component="h2" margin={0} marginBlockEnd={1}>
                 {categoryName}
             </Typography>
-            {children}
+            {questions.map((question) => (
+                <FAQ
+                    question={question.question}
+                    answer={question.answer}
+                    key={categoryName + question.question}
+                />
+            ))}
         </Box>
     );
 };

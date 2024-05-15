@@ -7,6 +7,7 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { search } from '../../api/dolma/search';
 import { links } from '../../Links';
+import { NoResults } from '../NoResults';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
 
@@ -103,25 +104,3 @@ export function documentURL(id: string, query?: string) {
     const qs = query ? `?${new URLSearchParams({ query }).toString()}` : '';
     return links.document(id) + qs;
 }
-
-const NoResults = ({ request }: { request: string }) => (
-    <Box sx={{ p: 4, borderRadius: '12px', backgroundColor: (theme) => theme.color.N2.hex }}>
-        <Typography
-            variant="h6"
-            sx={{ mt: 0, mb: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Your Search - &quot;{request}&quot; - did not match any results.
-        </Typography>
-        <Typography variant="body1">Suggestions</Typography>
-        <Typography component="ul" variant="body1">
-            <Typography component="li" variant="body1">
-                Check spelling of keywords.
-            </Typography>
-            <Typography component="li" variant="body1">
-                Try different keywords.
-            </Typography>
-            <Typography component="li" variant="body1">
-                Try more general keywords.
-            </Typography>
-        </Typography>
-    </Box>
-);
