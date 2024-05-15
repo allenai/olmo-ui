@@ -5,8 +5,9 @@ import { useLocation, useParams } from 'react-router-dom';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { RequestRemovalButton, ShareButton } from '@/components/dolma/DocumentButtons';
+import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';
 import { SearchForm } from '@/components/dolma/SearchForm';
-import { NoPaddingContainer, SearchWrapper } from '@/components/dolma/shared';
+import { NoPaddingContainer } from '@/components/dolma/shared';
 
 import { search } from '../api/dolma/search';
 import { DocumentMeta } from '../components/dolma/DocumentMeta';
@@ -45,13 +46,13 @@ export const Document = () => {
 
     return (
         <>
-            <SearchWrapper isLoading={documentState === RemoteState.Loading}>
+            <PageContentWrapper isLoading={documentState === RemoteState.Loading}>
                 <SearchForm
                     defaultValue={query}
                     noCardOnDesktop={true}
                     disabled={documentState === RemoteState.Loading}
                 />
-            </SearchWrapper>
+            </PageContentWrapper>
             {documentState === RemoteState.Error && (
                 <DocumentError message={documentError?.message ?? 'Unexpected Error'} />
             )}

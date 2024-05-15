@@ -10,7 +10,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { KeyboardEventHandler, useEffect, useState } from 'react';
+import { KeyboardEventHandler, useEffect } from 'react';
 
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
@@ -19,6 +19,7 @@ import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { ModelSelectInput } from '@/components/thread/parameter/inputs/ModelSelectInput';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { StopWordsInput } from './inputs/StopWordsInput';
@@ -40,9 +41,8 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const [parametersChanged, setParametersChanged] = useState(false);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const handleDrawerClose = () => {
-        setParametersChanged(false);
         closeDrawer(PARAMETERS_DRAWER_ID);
     };
 
@@ -62,7 +62,11 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
                 updateInferenceOpts({ stop: uniqueStopWords });
-                setParametersChanged(true);
+                addSnackMessage({
+                    id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                    type: SnackMessageType.Brief,
+                    message: 'Parameters Saved',
+                });
                 break;
             }
         }
@@ -132,7 +136,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             initialValue={opts.temperature.default}
                             onChange={(v) => {
                                 updateInferenceOpts({ temperature: v });
-                                setParametersChanged(true);
                             }}
                             dialogContent={TEMPERATURE_INFO}
                             dialogTitle="Temperature"
@@ -149,7 +152,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             initialValue={opts.top_p.default}
                             onChange={(v) => {
                                 updateInferenceOpts({ top_p: v });
-                                setParametersChanged(true);
                             }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
@@ -166,10 +168,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                 </List>
             </Stack>
-            <ParameterSnackBar
-                parametersChanged={parametersChanged}
-                setParametersChanged={setParametersChanged}
-            />
         </ResponsiveDrawer>
     );
 };

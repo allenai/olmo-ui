@@ -1,0 +1,36 @@
+import { Link, Typography } from '@mui/material';
+import Markdown from 'react-markdown';
+
+import { faqs } from '@/assets/faq-list';
+import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';
+import { FAQ } from '@/components/faq/FAQ';
+import { FAQCategory } from '@/components/faq/FAQCategory';
+
+const FAQMarkdown = ({ children }: { children: string }) => {
+    return (
+        <Markdown
+            components={{
+                p: ({ children }) => <Typography variant="body1">{children}</Typography>,
+                // The ref types don't match for some reason
+                a: ({ ref, ...props }) => <Link {...props} target="_blank" />,
+            }}>
+            {children}
+        </Markdown>
+    );
+};
+
+export const FAQsPage = () => {
+    return (
+        <PageContentWrapper>
+            {faqs.map((faqCategory) => (
+                <FAQCategory categoryName={faqCategory.category} key={faqCategory.category}>
+                    {faqCategory.questions.map((question) => (
+                        <FAQ question={question.question} key={question.question}>
+                            <FAQMarkdown>{question.answer}</FAQMarkdown>
+                        </FAQ>
+                    ))}
+                </FAQCategory>
+            ))}
+        </PageContentWrapper>
+    );
+};
