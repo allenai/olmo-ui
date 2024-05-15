@@ -1,4 +1,5 @@
-import { PropsWithChildren } from 'react';
+import { withAuthenticationRequired, WithAuthenticationRequiredOptions } from '@auth0/auth0-react';
+import { ComponentType, PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
 import { App } from './App';
@@ -23,6 +24,15 @@ import {
     resetSelectedThreadLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
+
+interface ProtectedRouteProps extends WithAuthenticationRequiredOptions {
+    component: ComponentType<object>;
+}
+
+const ProtectedRoute = ({ component, ...args }: ProtectedRouteProps) => {
+    const Component = withAuthenticationRequired(component, args);
+    return <Component />;
+};
 
 const routes = [
     {
@@ -102,7 +112,6 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 export const uiRefreshRoutes: RouteObject[] = [
     {
-        path: '/',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground - OLMo" />
@@ -154,9 +163,13 @@ export const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.datasetExplorer,
                 element: (
-                    <DolmaPage>
-                        <DolmaExplorer />
-                    </DolmaPage>
+                    <ProtectedRoute
+                        component={() => (
+                            <DolmaPage>
+                                <DolmaExplorer />
+                            </DolmaPage>
+                        )}
+                    />
                 ),
                 handle: {
                     title: 'Dataset Explorer',
