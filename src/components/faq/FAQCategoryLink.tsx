@@ -7,17 +7,18 @@ import { useAppContext } from '@/AppContext';
 
 import { CATEGORY_DRAWER_ID } from './FAQDrawer';
 
-interface FAQLinkProps {
+interface FAQCategoryLinkProps {
     content: string;
     id: string;
 }
-export const FAQLink = ({ content, id }: FAQLinkProps) => {
+export const FAQCategoryLink = ({ content, id }: FAQCategoryLinkProps) => {
     const { hash } = useLocation();
     const [isSelected, setIsSelected] = useState(false);
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const handleDrawerClose = () => {
         closeDrawer(CATEGORY_DRAWER_ID);
+        document.querySelector<HTMLLinkElement>(id)?.scrollIntoView();
     };
 
     useEffect(() => {

@@ -3,7 +3,7 @@ import { Divider, List } from '@mui/material';
 import { faqs } from '@/assets/faq-list';
 
 import { createFAQId } from './createFAQId';
-import { FAQLink } from './FAQLink';
+import { FAQCategoryLink } from './FAQCategoryLink';
 
 export const FAQCategorySection = () => {
     return (
@@ -11,7 +11,7 @@ export const FAQCategorySection = () => {
             <List>
                 {faqs.map((faqCategory, index) => (
                     <>
-                        <FAQLink
+                        <FAQCategoryLink
                             content={faqCategory.category}
                             id={createFAQId(faqCategory.category)}
                         />

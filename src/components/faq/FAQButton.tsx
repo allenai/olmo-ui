@@ -1,8 +1,8 @@
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { Button } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 
-import { ResponsiveButton } from '../thread/ResponsiveButton';
 import { CATEGORY_DRAWER_ID } from './FAQDrawer';
 
 export const FAQButton = () => {
@@ -11,17 +11,15 @@ export const FAQButton = () => {
         toggleDrawer(CATEGORY_DRAWER_ID);
     };
 
-    const isCategoryDrawerOpen = useAppContext(
-        (state) => state.currentOpenDrawer === CATEGORY_DRAWER_ID
-    );
-
     return (
-        <ResponsiveButton
-            variant={isCategoryDrawerOpen ? 'contained' : 'outlined'}
-            color="secondary"
+        <Button
+            size="small"
+            component="label"
+            role={undefined}
+            variant="outlined"
             startIcon={<FilterListIcon />}
-            title="Categories"
-            onClick={toggleCategoryDrawer}
-        />
+            onClick={toggleCategoryDrawer}>
+            Categories
+        </Button>
     );
 };
