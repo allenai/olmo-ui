@@ -3,7 +3,11 @@
  */
 
 import { Box, Input, Slider, Stack } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { neNP } from '@mui/material/locale';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { useAppContext } from '@/AppContext';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
@@ -34,25 +38,36 @@ export const ParameterSlider = ({
         return Math.min(Math.max(val, min), max);
     };
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
-    const firstUpdate = useRef(true);
-    useEffect(() => {
-        // Don't trigger onChange() on initial render.
-        if (firstUpdate.current) {
-            firstUpdate.current = false;
-            return;
-        }
-        onChange && onChange(value);
-    }, [value]);
+    const handleChange = useCallback(
+        (value: number) => {
+            if (onChange != null) {
+                onChange(value);
+            }
+
+            addSnackMessage({
+                id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                type: SnackMessageType.Brief,
+                message: 'Parameters Saved',
+            });
+        },
+        [onChange, addSnackMessage]
+    );
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         // this component will only have 1 value
         // if we add a second, we should rework this
-        setValue(Array.isArray(newValue) ? newValue[0] : newValue);
+        const value = Array.isArray(newValue) ? newValue[0] : newValue;
+
+        setValue(value);
+        handleChange(value);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(Number(event.target.value));
+        const value = Number(event.target.value);
+        setValue(value);
+        handleChange(value);
     };
 
     const handleBlur = () => {
