@@ -15,7 +15,6 @@ export const FAQButton = () => {
         <Button
             size="small"
             component="label"
-            role={undefined}
             variant="outlined"
             startIcon={<FilterListIcon />}
             onClick={toggleCategoryDrawer}>
