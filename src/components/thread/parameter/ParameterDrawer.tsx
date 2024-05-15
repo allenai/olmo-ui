@@ -14,7 +14,6 @@ import { KeyboardEventHandler, useEffect } from 'react';
 
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
-import { ParameterSnackBar } from '@/components/ParameterSnackBar';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { ModelSelectInput } from '@/components/thread/parameter/inputs/ModelSelectInput';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
@@ -120,11 +119,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             <Stack direction="column">
                 <List>
                     <ListItem>
-                        <ModelSelectInput
-                            onChange={() => {
-                                setParametersChanged(true);
-                            }}
-                        />
+                        <ModelSelectInput />
                     </ListItem>
                     <Divider />
                     <ListItem>

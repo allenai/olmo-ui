@@ -8,7 +8,7 @@ import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
 interface ModelSelectProps {
     disabled?: boolean;
-    onChange: (event: SelectChangeEvent) => void;
+    onChange?: (event: SelectChangeEvent) => void;
     id?: string;
 }
 
@@ -26,7 +26,11 @@ export const ModelSelectInput = ({ disabled, onChange }: ModelSelectProps) => {
 
     const handleOnChange = (event: SelectChangeEvent) => {
         setSelectedModel(event.target.value);
-        onChange(event);
+
+        if (onChange) {
+            onChange(event);
+        }
+
         addSnackMessage({
             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
             type: SnackMessageType.Brief,
