@@ -1,20 +1,15 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, IconButton, Typography } from '@mui/material';
-import { ComponentProps, ReactNode, useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 
 import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 
-import { ParameterInfoButton } from './ParameterInfoButton';
-
-type PickedParameterInfoButtonProps = Pick<
-    ComponentProps<typeof ParameterInfoButton>,
-    'tooltipContent' | 'tooltipTitle'
->;
-
-interface ParameterDrawerInputWrapperProps extends Partial<PickedParameterInfoButtonProps> {
+interface ParameterDrawerInputWrapperProps {
     label: string;
     inputId: string;
     children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
+    tooltipContent?: string;
+    tooltipTitle?: string;
 }
 
 export const ParameterDrawerInputWrapper = ({
