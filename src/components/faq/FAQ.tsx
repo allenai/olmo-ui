@@ -1,15 +1,23 @@
 import { ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Link, Typography } from '@mui/material';
+import { ComponentProps } from 'react';
+import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 
 import { createFAQId } from './createFAQId';
 
-interface FAQProps extends PropsWithChildren {
+const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
+    p: ({ children }) => <Typography variant="body1">{children}</Typography>,
+    // The ref types don't match for some reason
+    a: ({ ref, ...props }) => <Link {...props} target="_blank" />,
+};
+
+interface FAQProps {
     question: string;
+    answer: string;
 }
 
-export const FAQ = ({ question, children }: FAQProps) => {
+export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
     const location = useLocation();
     const faqId = createFAQId(question);
     const faqContentId = faqId + '-content';
@@ -38,7 +46,7 @@ export const FAQ = ({ question, children }: FAQProps) => {
             </Typography>
             <AccordionDetails id={faqContentId}>
                 <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {children}
+                    <Markdown components={markdownComponents}>{answer}</Markdown>
                 </Typography>
             </AccordionDetails>
         </Accordion>
