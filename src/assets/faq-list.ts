@@ -85,7 +85,7 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How can I delete my account?',
-                answer: 'Your account is linked to your Google account. You can remove the authorization via security settings in your Google account. Please note that removing the authorization does not delete your chat history from our database.',
+                answer: 'Your account is linked to your Google account. You can remove the authorization via security settings in your Google account. Please note that removing the authorization does not delete your prompt history from our database.',
             },
         ],
     },
@@ -102,18 +102,18 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How can I opt out of my data being used for model improvement?',
-                answer: 'We currently do not provide a way to opt out. However, you can delete your chat history within 30 days via the deletion function in the interactions threads interface. Deleted messages will be removed from our database.',
+                answer: 'We currently do not provide a way to opt out. However, you can delete your prompt history within 30 days via the deletion function in the interactions threads interface. Deleted messages will be removed from our database.',
             },
             {
-                question: 'How long does AI2 retain my chat history and personal information?',
-                answer: 'We retain chat history and personal information for a period necessary to fulfill the purposes outlined in our [Privacy Policy](https://allenai.org/privacy-policy), after which it is securely deleted.',
+                question: 'How long does AI2 retain my prompt history and personal information?',
+                answer: 'We retain prompt history and personal information for a period necessary to fulfill the purposes outlined in our [Privacy Policy](https://allenai.org/privacy-policy), after which it is securely deleted.',
             },
             {
-                question: 'Is my personal data and chat history shared with third parties?',
+                question: 'Is my personal data and prompt history shared with third parties?',
                 answer: 'We may share aggregated and anonymized data with the AI research community to empower more research that is critical for the next generation of safe and trustworthy AI. Please refrain from sending confidential information to the OLMo Playground. Details may be found in our [Privacy Policy](https://allenai.org/privacy-policy).',
             },
             {
-                question: 'How can I request to delete my chat history?',
+                question: 'How can I request to delete my prompt history?',
                 answer: 'You can request data deletion via the deletion function in the interactions threads interface. We will guide you through the process and ensure your data is promptly removed in accordance with our Terms and Conditions of Use, privacy and data retention policies.',
             },
             {

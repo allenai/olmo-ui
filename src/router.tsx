@@ -85,7 +85,7 @@ const routes = [
 const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <>
-            <MetaTags title="AI2 OLMo - Playground" />
+            <MetaTags title="AI2 Playground - OLMo" />
             {children}
         </>
     );
@@ -94,7 +94,7 @@ const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
 const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <>
-            <MetaTags title="AI2 OLMo - Dataset Explorer" />
+            <MetaTags title="AI2 Playground - Dataset Explorer" />
             {children}
         </>
     );
@@ -105,7 +105,7 @@ export const uiRefreshRoutes: RouteObject[] = [
         path: '/',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
-                <MetaTags title="AI2 OLMo - Playground" />
+                <MetaTags title="AI2 Playground - OLMo" />
                 <NewApp />
             </VarnishedApp>
         ),
@@ -129,13 +129,13 @@ export const uiRefreshRoutes: RouteObject[] = [
                             </OlmoPage>
                         ),
                         handle: {
-                            title: 'Playground',
+                            title: 'OLMo Playground',
                         },
                         loader: selectedThreadLoader,
                     },
                 ],
                 handle: {
-                    title: 'Playground',
+                    title: 'OLMo Playground',
                 },
                 loader: resetSelectedThreadLoader,
                 shouldRevalidate: handleRevalidation,
@@ -173,17 +173,6 @@ export const uiRefreshRoutes: RouteObject[] = [
                     title: 'Dataset Explorer',
                 },
                 loader: searchPageLoader,
-            },
-            {
-                path: links.promptTemplates,
-                element: (
-                    <OlmoPage>
-                        <PromptTemplates />
-                    </OlmoPage>
-                ),
-                handle: {
-                    title: 'Prompt Templates',
-                },
             },
             {
                 path: links.faqs,
