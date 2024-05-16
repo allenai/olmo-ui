@@ -1,6 +1,5 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
@@ -13,7 +12,7 @@ interface FAQCategoryLinkProps {
 }
 export const FAQCategoryLink = ({ content, id }: FAQCategoryLinkProps) => {
     const { hash } = useLocation();
-    const [isSelected, setIsSelected] = useState(false);
+    const hashValue = hash.slice(1, hash.length);
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const handleDrawerClose = () => {
@@ -21,16 +20,11 @@ export const FAQCategoryLink = ({ content, id }: FAQCategoryLinkProps) => {
         document.querySelector<HTMLLinkElement>(id)?.scrollIntoView();
     };
 
-    useEffect(() => {
-        const hashValue = hash.slice(1, hash.length);
-        setIsSelected(hashValue === id);
-    }, [hash]);
-
     return (
         <ListItem disableGutters>
             <ListItemButton
                 alignItems="center"
-                selected={isSelected}
+                selected={hashValue === id}
                 sx={{
                     gap: (theme) => theme.spacing(1),
                 }}
