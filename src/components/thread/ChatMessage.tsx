@@ -64,10 +64,8 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
             )}
             {/* This gets the latest LLM response to alert screen readers */}
             {announceToScreenReader &&
-                postMessageInfo.loading !== undefined &&
                 !postMessageInfo.loading &&
-                postMessageInfo.data !== undefined &&
-                postMessageInfo.data.children !== undefined && (
+                postMessageInfo.data?.children !== undefined && (
                     <ScreenReaderAnnouncer
                         level="assertive"
                         content={postMessageInfo.data.children[0].content}
