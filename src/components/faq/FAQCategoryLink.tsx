@@ -17,7 +17,6 @@ export const FAQCategoryLink = ({ content, id }: FAQCategoryLinkProps) => {
 
     const handleDrawerClose = () => {
         closeDrawer(CATEGORY_DRAWER_ID);
-        document.querySelector<HTMLLinkElement>(id)?.scrollIntoView();
     };
 
     return (
