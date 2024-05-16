@@ -3,7 +3,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { Button, Snackbar } from '@mui/material';
 import { useState } from 'react';
 
-const takeDownFormUrl = 'https://forms.gle/hGoEs8PJszcmxmh56';
+import { links } from '@/Links';
 
 // TODO: Combine this with ShareThreadButton once page layouts/container querys are consistent
 export const ShareButton = ({ url, onClick }: { url: string; onClick?: () => void }) => {
@@ -48,8 +48,8 @@ export const RequestRemovalButton = () => {
                 variant="outlined"
                 startIcon={<RemoveCircleOutlineIcon />}
                 target="_blank"
-                href={takeDownFormUrl}>
-                Request Removal
+                href={links.feedbackForm}>
+                Flag for Review
             </Button>
         </>
     );
