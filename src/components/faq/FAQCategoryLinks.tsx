@@ -10,7 +10,7 @@ export const FAQCategoryLinks = () => {
             sx={{
                 borderColor: (theme) => theme.palette.primary.main,
                 backgroundColor: 'transparent',
-                padding: '10px',
+                padding: (theme) => theme.spacing(1),
             }}>
             <CardContent>
                 <Typography variant="body1" fontWeight="bold" component="h2">
@@ -19,7 +19,7 @@ export const FAQCategoryLinks = () => {
                 <Stack>
                     {faqs.map((faqCategory) => (
                         <Link
-                            sx={{ paddingTop: '5px' }}
+                            sx={{ paddingTop: (theme) => theme.spacing(1) }}
                             href={'#' + createFAQId(faqCategory.category)}
                             key={faqCategory.category}
                             component="a">
