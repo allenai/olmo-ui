@@ -1,9 +1,9 @@
-interface FAQ {
+export interface FAQ {
     question: string;
     answer: string;
 }
 
-interface FAQCategory {
+export interface FAQCategory {
     category: string;
     questions: FAQ[];
 }
