@@ -22,28 +22,6 @@ export const GlobalStyle = createGlobalStyle`
     }
 `;
 
-// https://github.com/auth0/auth0-react/blob/main/EXAMPLES.md#protecting-a-route-in-a-react-router-dom-v6-app
-interface Auth0ProviderWithRedirecCallbackProps
-    extends PropsWithChildren,
-        ComponentProps<typeof Auth0Provider> {}
-
-const Auth0ProviderWithRedirectCallback = ({
-    children,
-    ...props
-}: Auth0ProviderWithRedirecCallbackProps) => {
-    const navigate = useNavigate();
-
-    return (
-        <Auth0Provider
-            onRedirectCallback={(appState) => {
-                navigate((appState && appState.returnTo) || window.location.pathname);
-            }}
-            {...props}>
-            {children}
-        </Auth0Provider>
-    );
-};
-
 interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
@@ -52,19 +30,14 @@ export const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps)
     const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
 
     return (
-        <Auth0ProviderWithRedirectCallback
-            domain={process.env.AUTH0_DOMAIN as string}
-            clientId={process.env.AUTH0_CLIENT_ID as string}
-            authorizationParams={{ redirect_uri: window.location.origin }}>
-            <FeatureToggleProvider>
-                <ScrollToTopOnPageChange />
-                <ThemeProvider theme={combinedTheme}>
-                    <VarnishApp layout="left-aligned" theme={combinedTheme}>
-                        <GlobalStyle />
-                        {children}
-                    </VarnishApp>
-                </ThemeProvider>
-            </FeatureToggleProvider>
-        </Auth0ProviderWithRedirectCallback>
+        <FeatureToggleProvider>
+            <ScrollToTopOnPageChange />
+            <ThemeProvider theme={combinedTheme}>
+                <VarnishApp layout="left-aligned" theme={combinedTheme}>
+                    <GlobalStyle />
+                    {children}
+                </VarnishApp>
+            </ThemeProvider>
+        </FeatureToggleProvider>
     );
 };

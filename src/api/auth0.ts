@@ -1,5 +1,5 @@
-import { Auth0Client as Auth0ClientClass, createAuth0Client } from '@auth0/auth0-spa-js';
-import { ActionFunction, LoaderFunction, redirect } from 'react-router-dom';
+import { Auth0Client as Auth0ClientClass, createAuth0Client, User } from '@auth0/auth0-spa-js';
+import { ActionFunction, LoaderFunction, redirect, useRouteLoaderData } from 'react-router-dom';
 
 import { links } from '@/Links';
 
@@ -31,10 +31,9 @@ class Auth0Client {
         return client.isAuthenticated();
     };
 
-    username = async () => {
+    getUserInfo = async () => {
         const client = await this.#getClient();
-        const user = await client.getUser();
-        return user?.name || null;
+        return await client.getUser();
     };
 
     login = async (redirectTo: string) => {
@@ -72,7 +71,8 @@ export const requireAuthorizationLoader: LoaderFunction = async ({ request }) =>
         const searchParams = new URLSearchParams();
         searchParams.set('from', new URL(request.url).pathname);
 
-        return redirect(links.login + '?' + searchParams.toString());
+        const redirectTo = new URL(request.url).pathname;
+        return redirect(links.login(redirectTo));
     }
 
     return null;
@@ -111,7 +111,25 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
     return null;
 };
 
-export const logoutAction = async () => {
+export const logoutAction: ActionFunction = async () => {
     await auth0Client.logout();
     return redirect('/');
+};
+
+interface UserAuthInfo {
+    userInfo?: User;
+    isAuthenticated: boolean;
+}
+
+export const userAuthInfoLoader: LoaderFunction = async () => {
+    const userInfo = await auth0Client.getUserInfo();
+    const isAuthenticated = await auth0Client.isAuthenticated();
+
+    return { userInfo, isAuthenticated } as UserAuthInfo;
+};
+
+export const useUserAuthInfo = (): UserAuthInfo => {
+    const { userInfo, isAuthenticated } = useRouteLoaderData('root') as UserAuthInfo;
+
+    return { userInfo, isAuthenticated };
 };

@@ -12,28 +12,30 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
 import { ComponentProps, useEffect } from 'react';
-import { UIMatch, useMatches } from 'react-router-dom';
+import { Form, UIMatch, useMatches } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth0';
 import { links } from '@/Links';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
 const LoginLink = () => {
-    const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+    const { userInfo } = useUserAuthInfo();
+    const isAuthenticated = userInfo != null;
 
     if (isAuthenticated) {
         return (
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            <NavigationLink icon={<LogoutIcon />} onClick={() => logout()}>
+            <NavigationLink icon={<LogoutIcon />} href={links.logout}>
                 Log Out
             </NavigationLink>
         );
     }
 
+    const redirectSearchParams = new URLSearchParams();
+    redirectSearchParams.set('redirectTo', window.location.href);
     return (
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        <NavigationLink icon={<LoginIcon />} onClick={() => loginWithRedirect()}>
+        <NavigationLink icon={<LoginIcon />} href={links.login(window.location.href)}>
             Log In
         </NavigationLink>
     );
@@ -73,8 +75,6 @@ export const NavigationDrawer = ({
             onClose();
         }
     }, [location.pathname]);
-
-    const auth = useAuth0();
 
     return (
         <ResponsiveDrawer

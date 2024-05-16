@@ -7,13 +7,13 @@ type NavigationLinkProps = PropsWithChildren & {
     icon: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
-} & ({ href: string; onClick?: never } | { href?: never; onClick: MouseEventHandler });
+    href: string;
+};
 
 export const NavigationLink = ({
     icon,
     children,
     href,
-    onClick,
     selected,
     isExternalLink,
 }: NavigationLinkProps) => {
@@ -27,8 +27,7 @@ export const NavigationLink = ({
                     gap: (theme) => theme.spacing(2),
                 }}
                 target={isExternalLink ? '_blank' : '_self'}
-                href={href}
-                onClick={onClick}>
+                href={href}>
                 <Icon>{icon}</Icon>
                 <ListItemText
                     primaryTypographyProps={{ variant: 'h6', color: 'inherit', sx: { margin: 0 } }}>

@@ -8,6 +8,7 @@ import {
     loginResultLoader,
     logoutAction,
     requireAuthorizationLoader,
+    userAuthInfoLoader,
 } from './api/auth0';
 import { App } from './App';
 import { MetaTags } from './components/MetaTags';
@@ -119,14 +120,9 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 export const uiRefreshRoutes: RouteObject[] = [
     {
-        path: links.login,
-        action: loginAction,
-        loader: loginLoader,
-        element: <div>Login</div>,
-    },
-    { path: links.logout, action: logoutAction },
-    { path: links.loginResult, loader: loginResultLoader },
-    {
+        id: 'root',
+        path: '/',
+        loader: userAuthInfoLoader,
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground - OLMo" />
@@ -135,6 +131,13 @@ export const uiRefreshRoutes: RouteObject[] = [
         ),
         errorElement: <ErrorPage />,
         children: [
+            {
+                path: links.login(),
+                action: loginAction,
+                loader: loginLoader,
+            },
+            { path: links.logout, action: logoutAction, loader: logoutAction },
+            { path: links.loginResult, loader: loginResultLoader },
             {
                 path: links.playground,
                 element: <UIRefreshThreadPage />,
