@@ -70,7 +70,7 @@ export const NavigationDrawer = ({
                         href={links.playground}
                         icon={<ChatBubbleIcon />}
                         selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                        Playground
+                        OLMo Playground
                     </NavigationLink>
                     <NavigationLink
                         href={links.ourModels}
