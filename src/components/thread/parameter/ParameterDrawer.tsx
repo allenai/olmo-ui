@@ -4,7 +4,6 @@ import {
     Box,
     Divider,
     IconButton,
-    InputLabel,
     List,
     ListItem,
     ListSubheader,
@@ -15,14 +14,14 @@ import { KeyboardEventHandler, useEffect } from 'react';
 
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
-import { NewModelSelect } from '@/components/NewModelSelect';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
-import { NewInputSlider } from '@/components/thread/parameter/NewInputSlider';
+import { ModelSelectInput } from '@/components/thread/parameter/inputs/ModelSelectInput';
+import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { StopWordsInput } from './StopWordsInput';
+import { StopWordsInput } from './inputs/StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -117,17 +116,14 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack component="nav" direction="column" justifyContent="space-between" height="1">
+            <Stack direction="column">
                 <List>
                     <ListItem>
-                        <InputLabel>Model</InputLabel>
-                    </ListItem>
-                    <ListItem>
-                        <NewModelSelect />
+                        <ModelSelectInput />
                     </ListItem>
                     <Divider />
                     <ListItem>
-                        <NewInputSlider
+                        <ParameterSlider
                             label="Temperature"
                             min={opts.temperature.min}
                             max={opts.temperature.max}
@@ -143,7 +139,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     </ListItem>
                     <Divider />
                     <ListItem>
-                        <NewInputSlider
+                        <ParameterSlider
                             label="Top P"
                             min={opts.top_p.min}
                             max={opts.top_p.max}
@@ -154,7 +150,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             }}
                             dialogContent={TOP_P_INFO}
                             dialogTitle="Top P"
-                            id="top_p"
+                            id="top-p"
                         />
                     </ListItem>
                     <Divider />

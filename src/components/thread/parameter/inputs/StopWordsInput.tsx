@@ -1,8 +1,6 @@
-import { Autocomplete, AutocompleteProps, Box, Chip, TextField, Typography } from '@mui/material';
-import { Stack } from '@mui/system';
-import { useRef } from 'react';
+import { Autocomplete, AutocompleteProps, Chip, TextField } from '@mui/material';
 
-import { ParameterInfoButton } from './ParameterInfoButton';
+import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
 const STOP_WORDS_TOOLTIP_CONTENT =
     'Stop words are a set of character sequences that stop the model from generating additional text. The output will not contain the stop word. Press Tab to add a new word.';
@@ -13,22 +11,13 @@ interface StopWordsInputProps {
     id: string;
 }
 
-export const StopWordsInput = ({ value = [], onChange, id }: StopWordsInputProps) => {
-    const boxRef = useRef<HTMLElement>();
-
+export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) => {
     return (
-        <Box width={1} ref={boxRef}>
-            <Stack direction="row" alignItems="center" paddingBlockEnd={2}>
-                <Typography variant="body1" component="label" htmlFor="stop-words-input">
-                    Stop Words
-                </Typography>
-                <ParameterInfoButton
-                    anchorElement={boxRef.current}
-                    tooltipTitle="Stop Words"
-                    tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
-                    tooltipIdSuffix={`${id}-description"`}
-                />
-            </Stack>
+        <ParameterDrawerInputWrapper
+            inputId="stop-words-input"
+            label="Stop Words"
+            tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
+            tooltipTitle="Stop Words">
             <Autocomplete
                 id="stop-words-input"
                 fullWidth
@@ -49,15 +38,10 @@ export const StopWordsInput = ({ value = [], onChange, id }: StopWordsInputProps
                     <TextField
                         {...params}
                         hiddenLabel
-                        placeholder="Enter Stop Word"
-                        helperText={
-                            <Typography variant="caption">
-                                Press &quot;Enter&quot; to add a new word.
-                            </Typography>
-                        }
+                        helperText='Press "Enter" to add a new word.'
                     />
                 )}
             />
-        </Box>
+        </ParameterDrawerInputWrapper>
     );
 };
