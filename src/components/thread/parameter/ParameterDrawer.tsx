@@ -15,7 +15,6 @@ import { KeyboardEventHandler, useEffect } from 'react';
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
-import { ModelSelectInput } from '@/components/thread/parameter/inputs/ModelSelectInput';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -118,10 +117,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column">
                 <List>
-                    <ListItem>
-                        <ModelSelectInput />
-                    </ListItem>
-                    <Divider />
                     <ListItem>
                         <ParameterSlider
                             label="Temperature"
