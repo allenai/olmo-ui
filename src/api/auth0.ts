@@ -20,6 +20,7 @@ class Auth0Client {
             this.#auth0Client = await createAuth0Client({
                 domain: AUTH0_DOMAIN,
                 clientId: AUTH0_CLIENT_ID,
+                // if we set up a custom auth0 domain we can get rid of useRefreshTokens and cacheLocation
                 useRefreshTokens: true,
                 cacheLocation: 'localstorage',
             });
