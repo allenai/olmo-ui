@@ -150,5 +150,3 @@ export const useUserAuthInfo = (): UserAuthInfo => {
 
     return { userInfo, isAuthenticated };
 };
-
-window.auth = auth0Client;

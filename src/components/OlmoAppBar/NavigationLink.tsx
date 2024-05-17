@@ -1,7 +1,7 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 type NavigationLinkProps = PropsWithChildren & {
     icon: ReactNode;

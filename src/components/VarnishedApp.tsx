@@ -1,10 +1,9 @@
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
-import { Auth0Provider } from '@auth0/auth0-react';
 import { ThemeOptions } from '@mui/material';
-import { ComponentProps, PropsWithChildren } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { PropsWithChildren } from 'react';
+import { Link } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
