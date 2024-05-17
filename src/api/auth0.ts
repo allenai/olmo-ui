@@ -21,6 +21,7 @@ class Auth0Client {
                 domain: AUTH0_DOMAIN,
                 clientId: AUTH0_CLIENT_ID,
                 useRefreshTokens: true,
+                cacheLocation: 'localstorage',
             });
         }
 
@@ -148,3 +149,5 @@ export const useUserAuthInfo = (): UserAuthInfo => {
 
     return { userInfo, isAuthenticated };
 };
+
+window.auth = auth0Client;
