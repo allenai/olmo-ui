@@ -1,5 +1,4 @@
 import { logos } from '@allenai/varnish2/components';
-import { useAuth0 } from '@auth0/auth0-react';
 import { LoginOutlined as LoginIcon } from '@mui/icons-material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -12,7 +11,7 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
 import { ComponentProps, useEffect } from 'react';
-import { Form, UIMatch, useMatches } from 'react-router-dom';
+import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth0';
 import { links } from '@/Links';

@@ -20,24 +20,38 @@ class Auth0Client {
             this.#auth0Client = await createAuth0Client({
                 domain: AUTH0_DOMAIN,
                 clientId: AUTH0_CLIENT_ID,
+                useRefreshTokens: true,
             });
         }
 
         return this.#auth0Client;
     };
 
+    getToken = async () => {
+        const client = await this.#getClient();
+
+        if (await client.isAuthenticated()) {
+            return client.getTokenSilently();
+        }
+
+        return undefined;
+    };
+
     isAuthenticated = async () => {
         const client = await this.#getClient();
+
         return client.isAuthenticated();
     };
 
     getUserInfo = async () => {
         const client = await this.#getClient();
+
         return await client.getUser();
     };
 
     login = async (redirectTo: string) => {
         const client = await this.#getClient();
+
         await client.loginWithRedirect({
             authorizationParams: {
                 redirect_uri:
@@ -58,6 +72,7 @@ class Auth0Client {
 
     logout = async () => {
         const client = await this.#getClient();
+
         await client.logout();
     };
 }
