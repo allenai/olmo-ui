@@ -381,20 +381,29 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 'threadUpdate/finishPostMessage'
             );
         } catch (err) {
-            const { addSnackMessage } = get();
+            let snackMessage = errorToAlert(
+                `create-message-${new Date().getTime()}`.toLowerCase(),
+                'Unable to Submit Message',
+                err
+            );
 
-            if (err instanceof Error && err.name === 'AbortError') {
-                addSnackMessage(ABORT_ERROR_MESSAGE);
-            } else {
-                console.error(err);
-                addSnackMessage(
-                    errorToAlert(
+            if (err instanceof MessageStreamError) {
+                if (err.finishReason === MessageStreamErrorReason.LENGTH) {
+                    snackMessage = errorToAlert(
                         `create-message-${new Date().getTime()}`.toLowerCase(),
-                        'Unable to Submit Message',
+                        'Maximum Thread Length',
                         err
-                    )
-                );
+                    );
+
+                    get().setMessageLimitReached(err.messageId, true);
+                }
+            } else if (err instanceof Error) {
+                if (err.name === 'AbortError') {
+                    snackMessage = ABORT_ERROR_MESSAGE;
+                }
             }
+
+            get().addSnackMessage(snackMessage);
 
             set(
                 (state) => {
