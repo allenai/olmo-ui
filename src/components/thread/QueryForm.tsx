@@ -16,10 +16,13 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
     const isLimitReached = useAppContext((state) => {
+        // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
         const viewingMessageIds = getSelectedMessagesToShow(state);
-        const isLimitReached = viewingMessageIds.reduce((prevResult, messageId) => {
-            return prevResult || state.selectedThreadMessagesById[messageId].isLimitReached;
-        }, false);
+        const isLimitReached = viewingMessageIds.reduce(
+            (prevResult, messageId) =>
+                prevResult || state.selectedThreadMessagesById[messageId].isLimitReached,
+            false
+        );
 
         return isLimitReached;
     });
