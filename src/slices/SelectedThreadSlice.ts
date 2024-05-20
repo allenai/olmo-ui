@@ -1,5 +1,5 @@
 import { Label } from '@/api/Label';
-import { Message, MessageApiUrl, MessagePost } from '@/api/Message';
+import { Message, MessageApiUrl, MessagePost, MessageStreamErrorReason } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 
@@ -13,6 +13,7 @@ export interface SelectedThreadMessage {
     content: string;
     role: Role;
     labels: Label[];
+    isLimitReached: boolean;
     parent?: string;
 }
 
@@ -25,6 +26,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         content: message.content,
         role: message.role,
         labels: message.labels,
+        isLimitReached: message.finish_reason === MessageStreamErrorReason.LENGTH,
         parent: message.parent ?? undefined,
     };
 };
@@ -49,6 +51,7 @@ export interface SelectedThreadSlice {
     selectedThreadMessagesById: Record<string, SelectedThreadMessage>;
     addContentToMessage: (messageId: string, content: string) => void;
     addChildToSelectedThread: (message: Message) => void;
+    setMessageLimitReached: (messageId: string, isLimitReached: boolean) => void;
     getSelectedThread: (
         threadId: string,
         checkExistingThreads?: boolean
@@ -99,6 +102,16 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         );
     },
 
+    setMessageLimitReached: (messageId: string, isLimitReached: boolean) => {
+        set(
+            (state) => {
+                state.selectedThreadMessagesById[messageId].isLimitReached = isLimitReached;
+            },
+            false,
+            'selectedThread/setMessageLimitReached'
+        );
+    },
+
     addChildToSelectedThread: (message: Message) => {
         const mappedMessages = mapMessages(message);
 
@@ -131,6 +144,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             content: rootMessage.content,
             role: rootMessage.role,
             labels: rootMessage.labels,
+            isLimitReached: rootMessage.finish_reason === MessageStreamErrorReason.LENGTH,
         };
 
         const mappedMessages = mapMessages(rootMessage);

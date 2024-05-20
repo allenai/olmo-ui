@@ -6,6 +6,8 @@ import {
     isMessageChunk,
     Message,
     MessagePost,
+    MessageStreamError,
+    MessageStreamErrorReason,
     parseMessage,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
@@ -128,7 +130,15 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     },
 
     streamPrompt: async (newMessage: MessagePost) => {
-        const { inferenceOpts, addContentToMessage, addChildToSelectedThread } = get();
+        const {
+            inferenceOpts,
+            addContentToMessage,
+            addChildToSelectedThread,
+            addSnackMessage,
+            handleFinalMessage,
+            setSelectedThread,
+            setMessageLimitReached,
+        } = get();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
 
@@ -157,7 +167,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     const parsedMessage = parseMessage(message);
 
                     if (isCreatingNewThread) {
-                        get().setSelectedThread(parsedMessage);
+                        setSelectedThread(parsedMessage);
                         await router.navigate(links.thread(parsedMessage.id));
                     } else {
                         addChildToSelectedThread(parsedMessage);
@@ -169,24 +179,33 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 if (isFinalMessage(message)) {
-                    get().handleFinalMessage(parseMessage(message), isCreatingNewThread);
+                    handleFinalMessage(parseMessage(message), isCreatingNewThread);
                 }
             }
         } catch (err) {
-            const addSnackMessage = get().addSnackMessage;
+            let snackMessage = errorToAlert(
+                `create-message-${new Date().getTime()}`.toLowerCase(),
+                'Unable to Submit Message',
+                err
+            );
 
-            if (err instanceof Error && err.name === 'AbortError') {
-                addSnackMessage(ABORT_ERROR_MESSAGE);
-            } else {
-                console.error(err);
-                addSnackMessage(
-                    errorToAlert(
+            if (err instanceof MessageStreamError) {
+                if (err.finishReason === MessageStreamErrorReason.LENGTH) {
+                    snackMessage = errorToAlert(
                         `create-message-${new Date().getTime()}`.toLowerCase(),
-                        'Unable to Submit Message',
+                        'Maximum Thread Length',
                         err
-                    )
-                );
+                    );
+
+                    setMessageLimitReached(err.messageId, true);
+                }
+            } else if (err instanceof Error) {
+                if (err.name === 'AbortError') {
+                    snackMessage = ABORT_ERROR_MESSAGE;
+                }
             }
+
+            addSnackMessage(snackMessage);
 
             set(
                 (state) => {

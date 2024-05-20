@@ -44,6 +44,7 @@ export interface Message {
     completion?: string;
     logprobs?: Logprob[];
     model_type?: string;
+    finish_reason?: string;
     opts: InferenceOpts;
     original?: string | null;
     parent?: string;
@@ -77,9 +78,49 @@ export interface MessageChunk {
     content: string;
 }
 
-export interface MessageStreamError {
-    message: string;
+export interface MessageStreamErrorType {
+    message: string; // This stores the message ID
     error: string;
+    reason: string;
+}
+
+export enum MessageStreamErrorReason {
+    LENGTH = 'length',
+    UNCLOSED_STREAM = 'unclosed stream',
+    STOP = 'stop',
+    ABORTED = 'aborted',
+    FINALIZATION = 'finalization failure',
+    GRPC = 'grpc inference failed',
+    UNKNOWN = 'unkown',
+}
+
+export class MessageStreamError extends Error {
+    messageId: string;
+    finishReason: MessageStreamErrorReason;
+    constructor(messageId: string, finishReason: string, message: string) {
+        super(message);
+        this.messageId = messageId;
+        this.finishReason = MessageStreamError.mapFinishReason(finishReason);
+    }
+
+    static mapFinishReason(finishReason: string): MessageStreamErrorReason {
+        switch (finishReason) {
+            case 'length':
+                return MessageStreamErrorReason.LENGTH;
+            case 'unclosed stream':
+                return MessageStreamErrorReason.UNCLOSED_STREAM;
+            case 'stop':
+                return MessageStreamErrorReason.STOP;
+            case 'aborted':
+                return MessageStreamErrorReason.ABORTED;
+            case 'finalization failure':
+                return MessageStreamErrorReason.FINALIZATION;
+            case 'grpc inference failed':
+                return MessageStreamErrorReason.GRPC;
+            default:
+                return MessageStreamErrorReason.UNKNOWN;
+        }
+    }
 }
 
 export interface FirstMessage extends JSONMessage {
@@ -91,7 +132,7 @@ export interface FinalMessage extends JSONMessage {
     children: JSONMessage[];
 }
 
-export type MessageStreamPart = JSONMessage | MessageChunk | MessageStreamError;
+export type MessageStreamPart = JSONMessage | MessageChunk | MessageStreamErrorType;
 
 export const isMessageWithMetadata = (message: MessageStreamPart): message is JSONMessage => {
     return 'id' in message;
@@ -109,7 +150,9 @@ export const isMessageChunk = (message: MessageStreamPart): message is MessageCh
     return 'content' in message && !isMessageWithMetadata(message);
 };
 
-export const isMessageStreamError = (message: MessageStreamPart): message is MessageStreamError => {
+export const isMessageStreamError = (
+    message: MessageStreamPart
+): message is MessageStreamErrorType => {
     return 'error' in message;
 };
 

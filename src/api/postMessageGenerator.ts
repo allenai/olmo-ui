@@ -5,6 +5,7 @@ import {
     Message,
     MessageClient,
     MessagePost,
+    MessageStreamError,
     MessageStreamPart,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
@@ -37,7 +38,11 @@ export const postMessageGenerator = async function* (
 
         // A MessageStreamError could be encountered at any point.
         if (isMessageStreamError(part.value)) {
-            throw new Error(`streaming response failed: ${part.value.error}`);
+            throw new MessageStreamError(
+                part.value.message,
+                part.value.reason,
+                `streaming response failed: ${part.value.error}`
+            );
         }
 
         // The first part should always be a full response
