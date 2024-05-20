@@ -83,7 +83,11 @@ export const NavigationDrawer = ({
                     <NavigationLink
                         href={links.datasetExplorer}
                         icon={<ExploreIcon />}
-                        selected={curriedDoesMatchPath(links.datasetExplorer)}>
+                        selected={
+                            curriedDoesMatchPath(links.datasetExplorer) ||
+                            curriedDoesMatchPath(links.search) ||
+                            curriedDoesMatchPath(links.document(''))
+                        }>
                         Dataset Explorer
                     </NavigationLink>
                     <NavigationLink
