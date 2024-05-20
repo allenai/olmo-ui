@@ -20,6 +20,10 @@ class Auth0Client {
             this.#auth0Client = await createAuth0Client({
                 domain: AUTH0_DOMAIN,
                 clientId: AUTH0_CLIENT_ID,
+                authorizationParams: {
+                    // This isn't noted in the docs but it's needed if you want to use the token on the API end
+                    audience: process.env.AUTH0_OLMO_API_AUDIENCE,
+                },
                 // if we set up a custom auth0 domain we can get rid of useRefreshTokens and cacheLocation
                 useRefreshTokens: true,
                 cacheLocation: 'localstorage',
