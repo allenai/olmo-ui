@@ -104,22 +104,11 @@ export class MessageStreamError extends Error {
     }
 
     static mapFinishReason(finishReason: string): MessageStreamErrorReason {
-        switch (finishReason) {
-            case 'length':
-                return MessageStreamErrorReason.LENGTH;
-            case 'unclosed stream':
-                return MessageStreamErrorReason.UNCLOSED_STREAM;
-            case 'stop':
-                return MessageStreamErrorReason.STOP;
-            case 'aborted':
-                return MessageStreamErrorReason.ABORTED;
-            case 'finalization failure':
-                return MessageStreamErrorReason.FINALIZATION;
-            case 'grpc inference failed':
-                return MessageStreamErrorReason.GRPC;
-            default:
-                return MessageStreamErrorReason.UNKNOWN;
+        if (Object.keys(MessageStreamErrorReason).includes(finishReason)) {
+            return finishReason as MessageStreamErrorReason;
         }
+
+        return MessageStreamErrorReason.UNKNOWN;
     }
 }
 
