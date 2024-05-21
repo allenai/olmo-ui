@@ -31,9 +31,7 @@ export abstract class ClientBase {
         standardHeaders.set('Content-Type', 'application/json');
 
         const token = await auth0Client.getToken();
-        console.log('token', token);
         if (token) {
-            console.log('has token');
             standardHeaders.set('Authorization', `Bearer ${token}`);
         }
 
