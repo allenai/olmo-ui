@@ -104,7 +104,11 @@ export class MessageStreamError extends Error {
     }
 
     static mapFinishReason(finishReason: string): MessageStreamErrorReason {
-        if (Object.values(MessageStreamErrorReason).includes(finishReason)) {
+        if (
+            Object.values(MessageStreamErrorReason).some(
+                (reason) => (reason as string) === finishReason
+            )
+        ) {
             return finishReason as MessageStreamErrorReason;
         }
 
