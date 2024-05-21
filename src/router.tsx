@@ -120,9 +120,25 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 export const uiRefreshRoutes: RouteObject[] = [
     {
+        path: links.login(),
+        action: loginAction,
+        loader: loginLoader,
+    },
+    { path: links.logout, action: logoutAction, loader: logoutAction },
+    { path: links.loginResult, loader: loginResultLoader },
+    {
         id: 'root',
         path: '/',
-        loader: userAuthInfoLoader,
+        loader: async (loaderProps) => {
+            const requireAuthorizationResult = await requireAuthorizationLoader(loaderProps);
+
+            if (requireAuthorizationResult != null) {
+                return requireAuthorizationResult;
+            }
+
+            const userAuthInfo = await userAuthInfoLoader(loaderProps);
+            return userAuthInfo;
+        },
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground - OLMo" />
@@ -131,13 +147,6 @@ export const uiRefreshRoutes: RouteObject[] = [
         ),
         errorElement: <ErrorPage />,
         children: [
-            {
-                path: links.login(),
-                action: loginAction,
-                loader: loginLoader,
-            },
-            { path: links.logout, action: logoutAction, loader: logoutAction },
-            { path: links.loginResult, loader: loginResultLoader },
             {
                 path: links.playground,
                 element: <UIRefreshThreadPage />,
