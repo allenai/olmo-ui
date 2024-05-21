@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 
 import { MessagePost } from '@/api/Message';
@@ -15,8 +15,18 @@ interface QueryFormProps {
 export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
+    const isLimitReached = useAppContext((state) => {
+        // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
+        const viewingMessageIds = getSelectedMessagesToShow(state);
+        const isLimitReached = viewingMessageIds.some(
+            (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
+        );
 
-    const postMessageInfo = useAppContext((state) => state.postMessageInfo);
+        return isLimitReached;
+    });
+
+    const isSelectedThreadLoading = useAppContext((state) => state.postMessageInfo.loading);
+
     const lastMessageId = useAppContext((state) => {
         const messagesToShow = getSelectedMessagesToShow(state);
 
@@ -55,13 +65,20 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
                 />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    data-testid="Submit Prompt Button"
-                    disabled={postMessageInfo.loading}>
-                    Submit
-                </Button>
+                <Stack direction="row" gap={2} alignItems="center">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        data-testid="Submit Prompt Button"
+                        disabled={isSelectedThreadLoading || isLimitReached}>
+                        Submit
+                    </Button>
+                    {isLimitReached && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            You have reached maximum thread length. Please start a new thread.
+                        </Typography>
+                    )}
+                </Stack>
             </Stack>
         </FormContainer>
     );

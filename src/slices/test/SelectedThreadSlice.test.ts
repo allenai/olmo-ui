@@ -17,6 +17,7 @@ describe('SelectedThreadSlice', () => {
             content: thread.content,
             role: thread.role,
             labels: [],
+            isLimitReached: false,
             parent: undefined,
         };
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(
@@ -30,6 +31,7 @@ describe('SelectedThreadSlice', () => {
             role: Role.LLM,
             selectedChildId: undefined,
             labels: [],
+            isLimitReached: false,
             parent: 'msg_W1O3Y8E0J4',
         };
         expect(appContext.getState().selectedThreadMessagesById.msg_X2T9X3L5M0).toEqual(
@@ -60,6 +62,7 @@ const thread: Message = parseMessage({
                                             labels: [],
                                             logprobs: [],
                                             model_type: 'chat',
+                                            finish_reason: undefined,
                                             opts: {
                                                 logprobs: undefined,
                                                 max_tokens: 2048,
@@ -87,6 +90,7 @@ const thread: Message = parseMessage({
                                     labels: [],
                                     logprobs: undefined,
                                     model_type: undefined,
+                                    finish_reason: undefined,
                                     opts: {
                                         logprobs: undefined,
                                         max_tokens: 2048,
@@ -124,6 +128,7 @@ const thread: Message = parseMessage({
                             ],
                             logprobs: [],
                             model_type: 'chat',
+                            finish_reason: undefined,
                             opts: {
                                 logprobs: undefined,
                                 max_tokens: 2048,
@@ -151,6 +156,7 @@ const thread: Message = parseMessage({
                     labels: [],
                     logprobs: undefined,
                     model_type: undefined,
+                    finish_reason: undefined,
                     opts: {
                         logprobs: undefined,
                         max_tokens: 2048,
@@ -189,6 +195,7 @@ const thread: Message = parseMessage({
             ],
             logprobs: [],
             model_type: 'chat',
+            finish_reason: undefined,
             opts: {
                 logprobs: undefined,
                 max_tokens: 2048,
@@ -217,6 +224,7 @@ const thread: Message = parseMessage({
     labels: [],
     logprobs: undefined,
     model_type: undefined,
+    finish_reason: undefined,
     opts: {
         logprobs: undefined,
         max_tokens: 2048,
