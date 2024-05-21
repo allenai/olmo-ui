@@ -4,6 +4,7 @@
 
 import { Box, Input, Slider, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -38,6 +39,13 @@ export const ParameterSlider = ({
     };
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const addSnackMessageDebounce = useDebouncedCallback(() => {
+        addSnackMessage({
+            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'Parameters Saved',
+        });
+    }, 800);
 
     const handleChange = useCallback(
         (value: number) => {
@@ -45,11 +53,7 @@ export const ParameterSlider = ({
                 onChange(value);
             }
 
-            addSnackMessage({
-                id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-                type: SnackMessageType.Brief,
-                message: 'Parameters Saved',
-            });
+            addSnackMessageDebounce();
         },
         [onChange, addSnackMessage]
     );

@@ -11,6 +11,7 @@ import {
     Typography,
 } from '@mui/material';
 import { KeyboardEventHandler, useEffect } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
@@ -40,6 +41,13 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const getAllModels = useAppContext((state) => state.getAllModels);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const addSnackMessageDebounce = useDebouncedCallback(() => {
+        addSnackMessage({
+            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'Parameters Saved',
+        });
+    }, 800);
     const handleDrawerClose = () => {
         closeDrawer(PARAMETERS_DRAWER_ID);
     };
@@ -60,11 +68,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             default: {
                 const uniqueStopWords = Array.from(new Set(value).values());
                 updateInferenceOpts({ stop: uniqueStopWords });
-                addSnackMessage({
-                    id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-                    type: SnackMessageType.Brief,
-                    message: 'Parameters Saved',
-                });
+                addSnackMessageDebounce();
                 break;
             }
         }
