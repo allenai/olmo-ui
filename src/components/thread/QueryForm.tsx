@@ -65,7 +65,7 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
                 />
-                <Stack direction="row" gap={2} alignItems="start">
+                <Stack direction="row" gap={2} alignItems="center">
                     <Button
                         type="submit"
                         variant="contained"
@@ -74,10 +74,7 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                         Submit
                     </Button>
                     {isLimitReached && (
-                        <Typography
-                            variant="subtitle2"
-                            color={(theme) => theme.palette.error.main}
-                            sx={{ marginTop: '5px' }}>
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You have reached maximum thread length. Please start a new thread.
                         </Typography>
                     )}
