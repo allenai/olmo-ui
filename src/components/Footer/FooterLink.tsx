@@ -8,7 +8,13 @@ interface FooterLinkProps extends PropsWithChildren {
 export const FooterLink = ({ href, children }: FooterLinkProps): JSX.Element => {
     return (
         <ListItem sx={{ width: 'auto' }} disablePadding>
-            <ListItemText primaryTypographyProps={{ component: Link, href, variant: 'button' }}>
+            <ListItemText
+                primaryTypographyProps={{
+                    component: Link,
+                    href,
+                    variant: 'button',
+                    target: '_blank',
+                }}>
                 {children}
             </ListItemText>
         </ListItem>
