@@ -219,7 +219,7 @@ const Section3: TermsAndConditionsSection = {
         </>
     ),
     acknowledgement:
-        'I understand that OLMo may produce unintended, inappropriate, or offensive results.',
+        'I understand that my queries and inputs will be used for future research and development.',
     submitButtonText: "Let's Go!",
 };
 
