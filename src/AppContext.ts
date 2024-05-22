@@ -9,7 +9,6 @@ import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
 import { createMetaSlice, MetaSlice } from './slices/MetaSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
 import { createPromptTemplateSlice, PromptTemplateSlice } from './slices/PromptTemplateSlice';
-import { createRepromptSlice, RepromptSlice } from './slices/repromptSlice';
 import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
 import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
@@ -28,7 +27,6 @@ type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
 
 export type AppContextState = LabelSlice &
     PromptTemplateSlice &
-    RepromptSlice &
     ThreadSlice &
     SnackMessageSlice &
     UserSlice &
@@ -42,7 +40,6 @@ export type AppContextState = LabelSlice &
 export const appContext = createStore<AppContextState>()(
     devtools(
         immer((...store) => ({
-            ...createRepromptSlice(...store),
             ...createPromptTemplateSlice(...store),
             ...createSnackMessageSlice(...store),
             ...createThreadSlice(...store),
