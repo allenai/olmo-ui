@@ -25,6 +25,7 @@ module.exports = {
                 '@typescript-eslint/no-unsafe-call': 'warn',
                 '@typescript-eslint/no-unsafe-member-access': 'warn',
                 '@typescript-eslint/no-unnecessary-condition': 'warn',
+                // This interferes with simple-import-sort so it's disabled!
                 'import/order': 'off',
             },
         },
