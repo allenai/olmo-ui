@@ -1,16 +1,35 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+import { useEffect } from 'react';
+import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import { MessagePost } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 
-import { useNewQueryFormHandling } from '../NewQuery/NewQueryForm';
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 
 interface QueryFormProps {
     onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
     variant: 'new' | 'response';
 }
+
+const useNewQueryFormHandling = () => {
+    const models = useAppContext((state) => state.models);
+
+    const formContext = useForm({
+        defaultValues: {
+            model: models.length > 0 ? models[0].id : '',
+            content: '',
+            private: false,
+        },
+    });
+
+    useEffect(() => {
+        if (models.length > 0) {
+            formContext.reset({ model: models[0].id });
+        }
+    }, [models]);
+    return formContext;
+};
 
 export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
