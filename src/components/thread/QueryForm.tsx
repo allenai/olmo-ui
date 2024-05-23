@@ -45,10 +45,8 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
             request.parent = lastMessageId;
         }
 
-        if (data.content.trim().length !== 0) {
-            await onSubmit(request);
-            formContext.reset();
-        }
+        await onSubmit(request);
+        formContext.reset();
     };
 
     return (
