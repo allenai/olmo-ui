@@ -1,5 +1,4 @@
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,20 +9,12 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton } from './ResponsiveButton';
 
-const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
-    const targetDate = dayjs(selectedThreadDate).add(29, 'days').format('YYYY-MM-DD');
-
-    const isAfterThirtyDays = dayjs().isAfter(targetDate, 'day');
-
-    return isAfterThirtyDays;
-};
-
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
-    const isPastThirtyDays = useAppContext((state) =>
-        isAfterThirtyDays(state.selectedThreadInfo.data?.created)
+    const isPastThirtyDays = useAppContext(
+        (state) => state.selectedThreadMessagesById[state.selectedThreadRootId].isOver30Days
     );
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
