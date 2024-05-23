@@ -33,7 +33,7 @@ class Auth0Client {
         return this.#auth0Client;
     };
 
-    getToken = async () => {
+    getToken = async (): Promise<string | undefined> => {
         const client = await this.#getClient();
 
         if (await client.isAuthenticated()) {
@@ -43,19 +43,19 @@ class Auth0Client {
         return undefined;
     };
 
-    isAuthenticated = async () => {
+    isAuthenticated = async (): Promise<boolean> => {
         const client = await this.#getClient();
 
         return client.isAuthenticated();
     };
 
-    getUserInfo = async () => {
+    getUserInfo = async (): Promise<User | undefined> => {
         const client = await this.#getClient();
 
         return await client.getUser();
     };
 
-    login = async (redirectTo: string) => {
+    login = async (redirectTo: string): Promise<void> => {
         const client = await this.#getClient();
 
         await client.loginWithRedirect({
@@ -68,7 +68,7 @@ class Auth0Client {
         });
     };
 
-    handleLoginRedirect = async () => {
+    handleLoginRedirect = async (): Promise<void> => {
         const query = window.location.search;
         if (query.includes('code=') && query.includes('state=')) {
             const client = await this.#getClient();
@@ -76,7 +76,7 @@ class Auth0Client {
         }
     };
 
-    logout = async () => {
+    logout = async (): Promise<void> => {
         const client = await this.#getClient();
 
         await client.logout();
