@@ -46,9 +46,7 @@ export const SearchBar = ({
     }, [getMeta, meta]);
 
     const submitSearch = (formData: { queryText: string }) => {
-        if (formData.queryText.length > 0) {
-            nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
-        }
+        nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
     };
 
     return (
