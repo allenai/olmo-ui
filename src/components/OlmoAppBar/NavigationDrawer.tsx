@@ -19,6 +19,8 @@ import { links } from '@/Links';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
+// We'll be using this soon, i figured we could keep it around
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
 
