@@ -3,12 +3,12 @@ import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 
-type NavigationLinkProps = PropsWithChildren & {
+interface NavigationLinkProps extends PropsWithChildren {
     icon: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
     href: string;
-};
+}
 
 export const NavigationLink = ({
     icon,

@@ -19,7 +19,7 @@ import { links } from '@/Links';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
-const LoginLink = () => {
+const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
 
     if (isAuthenticated) {
@@ -123,7 +123,9 @@ export const NavigationDrawer = ({
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
                         FAQ
                     </NavigationLink>
-                    <LoginLink />
+                    <NavigationLink icon={<LogoutIcon />} href={links.playground}>
+                        Log Out
+                    </NavigationLink>
                 </Stack>
             </Box>
         </ResponsiveDrawer>

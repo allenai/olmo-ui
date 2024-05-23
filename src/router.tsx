@@ -1,5 +1,4 @@
-import { withAuthenticationRequired, WithAuthenticationRequiredOptions } from '@auth0/auth0-react';
-import { ComponentType, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
 import {
@@ -32,15 +31,6 @@ import {
     resetSelectedThreadLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-
-interface ProtectedRouteProps extends WithAuthenticationRequiredOptions {
-    component: ComponentType<object>;
-}
-
-const ProtectedRoute = ({ component, ...args }: ProtectedRouteProps) => {
-    const Component = withAuthenticationRequired(component, args);
-    return <Component />;
-};
 
 const routes = [
     {
@@ -190,13 +180,9 @@ export const uiRefreshRoutes: RouteObject[] = [
             {
                 path: links.datasetExplorer,
                 element: (
-                    <ProtectedRoute
-                        component={() => (
-                            <DolmaPage>
-                                <DolmaExplorer />
-                            </DolmaPage>
-                        )}
-                    />
+                    <DolmaPage>
+                        <DolmaExplorer />
+                    </DolmaPage>
                 ),
                 handle: {
                     title: 'Dataset Explorer',
