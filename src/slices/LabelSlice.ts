@@ -121,7 +121,8 @@ export const createLabelSlice: OlmoStateCreator<LabelSlice> = (set, get) => ({
             );
             set({ labelRemoteState: RemoteState.Error });
         }
-        return Promise.resolve(returnLabel);
+
+        return returnLabel;
     },
 
     getAllLabels: async (offset: number = 0, limit: number = 10) => {
