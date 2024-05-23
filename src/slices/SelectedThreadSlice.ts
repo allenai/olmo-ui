@@ -57,7 +57,6 @@ export interface SelectedThreadSlice {
         checkExistingThreads?: boolean
     ) => Promise<FetchInfo<Message>>;
     // ------
-    pathToLastMessageInThread: string[];
     deleteSelectedThread: () => void;
     setSelectedThread: (rootMessage: Message) => void;
     resetSelectedThreadState: () => void;
@@ -65,7 +64,6 @@ export interface SelectedThreadSlice {
 
 const initialState = {
     selectedThreadInfo: {},
-    pathToLastMessageInThread: [],
     selectedThreadRootId: '',
     selectedThreadMessages: [],
     selectedThreadMessagesById: {},
@@ -209,20 +207,16 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         }
 
         if (selectedThread != null) {
-            const pathToLastMessageInThread: string[] = [];
             let message: Message | undefined = selectedThread;
 
             // This is only getting the first message's ID
             while (message != null) {
-                pathToLastMessageInThread.push(message.id);
-
                 message = message.children?.[0];
             }
             get().setSelectedThread(selectedThread);
             set(
                 (state) => {
                     state.selectedThreadInfo.data = selectedThread;
-                    state.pathToLastMessageInThread = pathToLastMessageInThread;
                     state.selectedThreadInfo.error = false;
                     state.selectedThreadInfo.loading = false;
                 },

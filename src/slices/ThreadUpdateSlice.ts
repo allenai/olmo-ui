@@ -1,4 +1,3 @@
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     InferenceOpts,
     isFinalMessage,
