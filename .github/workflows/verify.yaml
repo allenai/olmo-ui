@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: lts/*
           cache: 'yarn'
+        env:
+          AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
       - run: yarn install --frozen-lockfile
       - run: yarn test
 

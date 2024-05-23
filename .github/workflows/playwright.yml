@@ -28,6 +28,7 @@ jobs:
       run: yarn test:e2e
       env:
         NODE_ENV: test 
+        AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:
