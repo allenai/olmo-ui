@@ -33,13 +33,13 @@ export const HistoryDrawer = (): JSX.Element => {
     const userInfo = useAppContext((state) => state.userInfo);
     const getMessageList = useAppContext((state) => state.getMessageList);
     const messageListRemoteState = useAppContext((state) => state.messageListRemoteState);
-    const threads = useAppContext((state) => state.threads);
+    const allThreads = useAppContext((state) => state.allThreads);
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
     };
     const hasMoreThreadsToFetch = useAppContext((state) => {
         const totalThreadsOnServer = state.messageList.meta.total;
-        const loadedThreadCount = state.threads.length;
+        const loadedThreadCount = state.allThreads.length;
 
         return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
     });
@@ -58,7 +58,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const threadsFromThisWeek: Message[] = [];
     const threadsOlderThanAWeek: Message[] = [];
 
-    threads.forEach((m) => {
+    allThreads.forEach((m) => {
         if (isCurrentDay(m.created)) {
             threadsFromToday.push(m);
         } else if (isPastWeek(m.created)) {

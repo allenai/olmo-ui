@@ -9,7 +9,7 @@ export interface ThreadSlice {
     messageList: MessageList;
     messageListRemoteState?: RemoteState;
     deletedThreadInfo: FetchInfo<void>;
-    threads: Message[];
+    allThreads: Message[];
     getMessageList: (offset: number, creator?: string, limit?: number) => Promise<MessageList>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
 }
@@ -20,7 +20,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     messageList: { messages: [], meta: { total: 0 } },
     messageListRemoteState: undefined,
     deletedThreadInfo: {},
-    threads: [],
+    allThreads: [],
 
     getMessageList: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
@@ -31,7 +31,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
             set((state) => ({
                 messageListRemoteState: RemoteState.Loaded,
                 GlobalSnackMessageList: { messages, meta },
-                threads: state.threads
+                allThreads: state.allThreads
                     .concat(messages)
                     .filter(
                         (message, index, threadList) =>
@@ -69,10 +69,10 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                 (state) => {
                     state.deletedThreadInfo.loading = false;
                     state.messageList.messages.filter((m) => m.id !== threadId);
-                    const threadIndexToRemove = state.threads.findIndex(
+                    const threadIndexToRemove = state.allThreads.findIndex(
                         (thread) => thread.id === threadId
                     );
-                    state.threads.splice(threadIndexToRemove, 1);
+                    state.allThreads.splice(threadIndexToRemove, 1);
                     get().deleteSelectedThread();
                 },
                 false,

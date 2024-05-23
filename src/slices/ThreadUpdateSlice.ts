@@ -78,9 +78,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         set(
             (state) => {
                 if (isCreatingNewThread) {
-                    state.threads.unshift(finalMessage);
+                    state.allThreads.unshift(finalMessage);
                 } else {
-                    const rootMessage = state.threads.find(
+                    const rootMessage = state.allThreads.find(
                         (thread) => thread.id === finalMessage.root
                     );
 
