@@ -164,13 +164,13 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
     },
 
     getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {
-        let selectedThread: Message | null = null;
+        let originalMessage: Message | null = null;
 
         if (checkExistingThreads) {
-            selectedThread = get().threads.find((message) => message.id === threadId) || null;
+            originalMessage = get().threads.find((message) => message.id === threadId) || null;
         }
 
-        if (selectedThread == null) {
+        if (originalMessage == null) {
             try {
                 set(
                     { selectedThreadRemoteState: RemoteState.Loading },
@@ -178,13 +178,13 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     'selectedThread/getSelectedThreadStart'
                 );
 
-                const localSelectedThread = await messageClient.getMessage(threadId);
-                selectedThread = localSelectedThread;
-                get().setSelectedThread(localSelectedThread);
+                const latestMessage = await messageClient.getMessage(threadId);
+                originalMessage = latestMessage;
+                get().setSelectedThread(latestMessage);
                 set(
                     (state) => {
                         if (checkExistingThreads) {
-                            state.allThreadInfo.data.messages.push(localSelectedThread);
+                            state.messageList.messages.push(latestMessage);
                         }
                     },
                     false,
@@ -206,8 +206,8 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             }
         }
 
-        if (selectedThread != null) {
-            get().setSelectedThread(selectedThread);
+        if (originalMessage != null) {
+            get().setSelectedThread(originalMessage);
             set(
                 { selectedThreadRemoteState: RemoteState.Loaded },
                 false,

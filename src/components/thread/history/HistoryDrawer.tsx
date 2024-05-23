@@ -16,6 +16,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
+import { RemoteState } from '@/contexts/util';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
@@ -31,13 +32,13 @@ export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const userInfo = useAppContext((state) => state.userInfo);
     const getAllThreads = useAppContext((state) => state.getAllThreads);
-    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
+    const messageListRemoteState = useAppContext((state) => state.messageListRemoteState);
     const threads = useAppContext((state) => state.threads);
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
     };
     const hasMoreThreadsToFetch = useAppContext((state) => {
-        const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
+        const totalThreadsOnServer = state.messageList.meta.total;
         const loadedThreadCount = state.threads.length;
 
         return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
@@ -68,7 +69,7 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     const handleScroll = () => {
-        if (!allThreadInfo.loading) {
+        if (messageListRemoteState !== RemoteState.Loading) {
             getAllThreads(offset + PAGE_SIZE, creator, LIMIT);
             setOffSet(offset + PAGE_SIZE);
         }
@@ -83,10 +84,10 @@ export const HistoryDrawer = (): JSX.Element => {
     };
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: allThreadInfo.loading,
+        loading: messageListRemoteState === RemoteState.Loading,
         hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        disabled: allThreadInfo.error,
+        disabled: messageListRemoteState === RemoteState.Error,
         delayInMs: 100,
     });
 
@@ -141,7 +142,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     threads={threadsOlderThanAWeek}
                     hasDivider
                 />
-                {(hasMoreThreadsToFetch || allThreadInfo.loading) && (
+                {(hasMoreThreadsToFetch || messageListRemoteState === RemoteState.Loading) && (
                     <ListItem ref={sentryRef}>
                         <ListItemText
                             sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}

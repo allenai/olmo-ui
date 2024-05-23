@@ -1,40 +1,36 @@
 import { FetchInfo, OlmoStateCreator } from 'src/AppContext';
 
+import { RemoteState } from '@/contexts/util';
+
 import { Message, MessageApiUrl, MessageClient, MessageList, MessagesApiUrl } from '../api/Message';
 import { errorToAlert } from './SnackMessageSlice';
 
 export interface ThreadSlice {
-    allThreadInfo: Required<FetchInfo<MessageList>>;
+    messageList: MessageList;
+    messageListRemoteState?: RemoteState;
     deletedThreadInfo: FetchInfo<void>;
     threads: Message[];
-    getAllThreads: (
-        offset: number,
-        creator?: string,
-        limit?: number
-    ) => Promise<FetchInfo<MessageList>>;
+    getAllThreads: (offset: number, creator?: string, limit?: number) => Promise<MessageList>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
 }
 
 export const messageClient = new MessageClient();
 
 export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
-    allThreadInfo: { data: { messages: [], meta: { total: 0 } }, loading: false, error: false },
+    messageList: { messages: [], meta: { total: 0 } },
+    messageListRemoteState: undefined,
     deletedThreadInfo: {},
     threads: [],
+
     getAllThreads: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
-            set((state) => ({
-                allThreadInfo: { ...state.allThreadInfo, loading: true, error: false },
-            }));
+            set({ messageListRemoteState: RemoteState.Loading });
 
             const { messages, meta } = await messageClient.getAllThreads(offset, creator, limit);
 
             set((state) => ({
-                allThreadInfo: {
-                    ...state.allThreadInfo,
-                    data: { messages, meta },
-                    loading: false,
-                },
+                messageListRemoteState: RemoteState.Loaded,
+                GlobalSnackMessageList: { messages, meta },
                 threads: state.threads
                     .concat(messages)
                     .filter(
@@ -51,11 +47,9 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     err
                 )
             );
-            set((state) => ({
-                allThreadInfo: { ...state.allThreadInfo, error: true, loading: false },
-            }));
+            set({ messageListRemoteState: RemoteState.Error });
         }
-        return get().allThreadInfo;
+        return get().messageList;
     },
 
     deleteThread: async (threadId: string) => {
@@ -74,7 +68,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
             set(
                 (state) => {
                     state.deletedThreadInfo.loading = false;
-                    state.allThreadInfo.data.messages.filter((m) => m.id !== threadId);
+                    state.messageList.messages.filter((m) => m.id !== threadId);
                     const threadIndexToRemove = state.threads.findIndex(
                         (thread) => thread.id === threadId
                     );
