@@ -12,12 +12,13 @@ describe('SelectedThreadSlice', () => {
 
         const expectedMessage = {
             id: thread.id,
-            children: thread.children ? thread.children.map((childMessage) => childMessage.id) : [],
+            childIds: thread.children ? thread.children.map((childMessage) => childMessage.id) : [],
             selectedChildId: thread.children?.[0].id ?? '',
             content: thread.content,
             role: thread.role,
             labels: [],
             isLimitReached: false,
+            isOver30Days: true,
             parent: undefined,
         };
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(
@@ -25,13 +26,14 @@ describe('SelectedThreadSlice', () => {
         );
 
         const expectedLastChild = {
-            children: [],
+            childIds: [],
             content: 'One.',
             id: 'msg_X2T9X3L5M0',
             role: Role.LLM,
             selectedChildId: undefined,
             labels: [],
             isLimitReached: false,
+            isOver30Days: true,
             parent: 'msg_W1O3Y8E0J4',
         };
         expect(appContext.getState().selectedThreadMessagesById.msg_X2T9X3L5M0).toEqual(
