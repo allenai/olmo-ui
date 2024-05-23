@@ -56,8 +56,6 @@ export interface ThreadUpdateSlice {
         newMessage: MessagePost,
         parentMessageId?: string
     ) => Promise<FetchInfo<Message>>;
-    // selectedModel: string;
-    // setSelectedModel: (selectedModel: string) => void;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
 
@@ -66,11 +64,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     ongoingThreadId: null,
     inferenceOpts: {},
     postMessageInfo: {},
-
-    selectedModel: '',
-    setSelectedModel: (model: string) => {
-        set({ selectedModel: model });
-    },
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
