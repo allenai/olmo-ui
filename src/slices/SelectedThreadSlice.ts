@@ -1,5 +1,5 @@
 import { Label } from '@/api/Label';
-import { Message, MessageApiUrl, MessagePost, MessageStreamErrorReason } from '@/api/Message';
+import { Message, MessageApiUrl, MessageStreamErrorReason } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { FetchInfo, OlmoStateCreator } from '@/AppContext';
 
@@ -52,13 +52,13 @@ export interface SelectedThreadSlice {
     addContentToMessage: (messageId: string, content: string) => void;
     addChildToSelectedThread: (message: Message) => void;
     setMessageLimitReached: (messageId: string, isLimitReached: boolean) => void;
+    setSelectedThread: (rootMessage: Message) => void;
     getSelectedThread: (
         threadId: string,
         checkExistingThreads?: boolean
     ) => Promise<FetchInfo<Message>>;
     // ------
     deleteSelectedThread: () => void;
-    setSelectedThread: (rootMessage: Message) => void;
     resetSelectedThreadState: () => void;
 }
 
