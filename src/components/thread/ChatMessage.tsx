@@ -3,6 +3,7 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
 import { RobotAvatar } from '../avatars/RobotAvatar';
@@ -39,17 +40,20 @@ interface ChatMessageProps extends PropsWithChildren {
 }
 
 export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.Element => {
-    const postMessageInfo = useAppContext((state) => state.postMessageInfo);
+    const finalMessage = useAppContext((state) => state.finalMessage);
+    const isChatMessageLoading = useAppContext(
+        (state) => state.streamPromptRemoteState === RemoteState.Loading
+    );
     const [announceToScreenReader, setAnnounceToScreenReader] = useState(false);
 
     useEffect(() => {
         // this prevents reading out of the last-generated LLM response
         // in the case that a screen-reader user switches to an old thread from their history
         // after a new prompt
-        if (postMessageInfo.loading) {
+        if (isChatMessageLoading) {
             setAnnounceToScreenReader(true);
         }
-    }, [postMessageInfo.loading]);
+    }, [isChatMessageLoading]);
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? null : <RobotAvatar />;
@@ -59,16 +63,16 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
-            {postMessageInfo.loading && (
+            {isChatMessageLoading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
             {/* This gets the latest LLM response to alert screen readers */}
             {announceToScreenReader &&
-                !postMessageInfo.loading &&
-                postMessageInfo.data?.children !== undefined && (
+                !isChatMessageLoading &&
+                finalMessage?.children !== undefined && (
                     <ScreenReaderAnnouncer
                         level="assertive"
-                        content={postMessageInfo.data.children[0].content}
+                        content={finalMessage.children[0].content}
                     />
                 )}
             <MessageComponent>{children}</MessageComponent>

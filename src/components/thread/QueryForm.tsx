@@ -4,6 +4,7 @@ import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import { MessagePost } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 
@@ -44,7 +45,9 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
         return isLimitReached;
     });
 
-    const isSelectedThreadLoading = useAppContext((state) => state.postMessageInfo.loading);
+    const isSelectedThreadLoading = useAppContext(
+        (state) => state.streamPromptRemoteState === RemoteState.Loading
+    );
 
     const lastMessageId = useAppContext((state) => {
         const messagesToShow = getSelectedMessagesToShow(state);

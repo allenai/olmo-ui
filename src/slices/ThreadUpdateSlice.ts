@@ -10,7 +10,8 @@ import {
     parseMessage,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
-import { FetchInfo, OlmoStateCreator } from '@/AppContext';
+import { OlmoStateCreator } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { router } from '@/router';
 
@@ -47,22 +48,18 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
-    ongoingThreadId: string | null;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
-    postMessageInfo: FetchInfo<Message>;
-    streamPrompt: (
-        newMessage: MessagePost,
-        parentMessageId?: string
-    ) => Promise<FetchInfo<Message>>;
+    streamPromptRemoteState?: RemoteState;
+    streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
+    finalMessage?: Message;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
-    ongoingThreadId: null,
     inferenceOpts: {},
-    postMessageInfo: {},
+    streamPromptRemoteState: undefined,
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
@@ -105,10 +102,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 state.abortController = null;
-                state.ongoingThreadId = null;
-                state.postMessageInfo.loading = false;
-                state.postMessageInfo.data = finalMessage;
-                state.postMessageInfo.error = false;
+                state.streamPromptRemoteState = RemoteState.Loaded;
+                state.finalMessage = finalMessage;
             },
             false,
             'threadUpdate/finishCreateNewThread'
@@ -131,8 +126,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         set(
             (state) => {
                 state.abortController = abortController;
-                state.postMessageInfo.loading = true;
-                state.postMessageInfo.error = false;
+                state.streamPromptRemoteState = RemoteState.Loading;
             },
             false,
             'threadUpdate/startCreateNewThread'
@@ -196,15 +190,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             set(
                 (state) => {
                     state.abortController = null;
-                    state.ongoingThreadId = null;
-                    state.postMessageInfo.loading = false;
-                    state.postMessageInfo.error = true;
+                    state.streamPromptRemoteState = RemoteState.Error;
                 },
                 false,
                 'threadUpdate/errorCreateNewThread'
             );
         }
-
-        return get().postMessageInfo;
     },
 });
