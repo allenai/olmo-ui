@@ -64,6 +64,8 @@ export const SearchBar = ({
                     placeholder={placeholder}
                     fullWidth
                     disabled={disabled}
+                    required
+                    validation={{ pattern: /[^\s]+/ }}
                 />
                 <Stack
                     direction="row"
