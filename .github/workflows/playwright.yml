@@ -11,6 +11,7 @@ on:
     branches: [ main ]
 jobs:
   test:
+    environment: CI
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
