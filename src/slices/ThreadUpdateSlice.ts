@@ -56,14 +56,14 @@ export interface ThreadUpdateSlice {
         newMessage: MessagePost,
         parentMessageId?: string
     ) => Promise<FetchInfo<Message>>;
-    postMessage: (
-        newMessage: MessagePost,
-        parentMessage?: Pick<Message, 'id' | 'children'>,
-        shouldSetSelectedThread?: boolean,
-        messagePath?: string[]
-    ) => Promise<FetchInfo<Message>>;
-    selectedModel: string;
-    setSelectedModel: (selectedModel: string) => void;
+    // postMessage: (
+    //     newMessage: MessagePost,
+    //     parentMessage?: Pick<Message, 'id' | 'children'>,
+    //     shouldSetSelectedThread?: boolean,
+    //     messagePath?: string[]
+    // ) => Promise<FetchInfo<Message>>;
+    // selectedModel: string;
+    // setSelectedModel: (selectedModel: string) => void;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
 
@@ -305,7 +305,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                                 : null;
 
                             // Expand the thread so that the response is visible as it's streamed to the client.(only applied to the pre-refresh UI)
-                            state.expandedThreadID = msg.root;
+                            // state.expandedThreadID = msg.root;
 
                             // since ThreadDisplay redirects when the id in selectedThreadInfo.data changes we only want to redirect if it's a new thread and not a followup
                             if (shouldSetSelectedThread && messagePath.length === 0) {

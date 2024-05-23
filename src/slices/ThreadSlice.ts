@@ -6,7 +6,6 @@ import { errorToAlert } from './SnackMessageSlice';
 export interface ThreadSlice {
     allThreadInfo: Required<FetchInfo<MessageList>>;
     deletedThreadInfo: FetchInfo<void>;
-    expandedThreadID?: string;
     threads: Message[];
     getAllThreads: (
         offset: number,
