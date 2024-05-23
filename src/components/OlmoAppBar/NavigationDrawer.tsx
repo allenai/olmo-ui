@@ -20,8 +20,7 @@ import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
 const LoginLink = () => {
-    const { userInfo } = useUserAuthInfo();
-    const isAuthenticated = userInfo != null;
+    const { isAuthenticated } = useUserAuthInfo();
 
     if (isAuthenticated) {
         return (
