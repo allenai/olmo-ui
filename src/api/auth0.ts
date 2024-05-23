@@ -85,7 +85,20 @@ class Auth0Client {
 
 export const auth0Client = new Auth0Client();
 
-export const requireAuthorizationLoader: LoaderFunction = async ({ request }) => {
+interface UserAuthInfo {
+    userInfo?: User;
+    isAuthenticated: boolean;
+}
+
+const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
+    const userInfo = await auth0Client.getUserInfo();
+    const isAuthenticated = await auth0Client.isAuthenticated();
+
+    return { userInfo, isAuthenticated };
+};
+
+export const requireAuthorizationLoader: LoaderFunction = async (props) => {
+    const { request } = props;
     const isAuthenticated = await auth0Client.isAuthenticated();
 
     if (!isAuthenticated) {
@@ -96,7 +109,8 @@ export const requireAuthorizationLoader: LoaderFunction = async ({ request }) =>
         return redirect(links.login(redirectTo));
     }
 
-    return null;
+    const userAuthInfo = await getUserAuthInfo();
+    return userAuthInfo;
 };
 
 export const loginAction: ActionFunction = async ({ request }) => {
@@ -137,16 +151,8 @@ export const logoutAction: ActionFunction = async () => {
     return redirect('/');
 };
 
-interface UserAuthInfo {
-    userInfo?: User;
-    isAuthenticated: boolean;
-}
-
 export const userAuthInfoLoader: LoaderFunction = async () => {
-    const userInfo = await auth0Client.getUserInfo();
-    const isAuthenticated = await auth0Client.isAuthenticated();
-
-    return { userInfo, isAuthenticated } as UserAuthInfo;
+    return getUserAuthInfo();
 };
 
 export const useUserAuthInfo = (): UserAuthInfo => {
