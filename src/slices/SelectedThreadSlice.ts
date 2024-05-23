@@ -207,12 +207,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         }
 
         if (selectedThread != null) {
-            let message: Message | undefined = selectedThread;
-
-            // This is only getting the first message's ID
-            while (message != null) {
-                message = message.children?.[0];
-            }
             get().setSelectedThread(selectedThread);
             set(
                 { selectedThreadRemoteState: RemoteState.Loaded },
