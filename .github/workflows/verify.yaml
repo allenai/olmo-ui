@@ -14,7 +14,6 @@ jobs:
   unit-test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    environment: CI
     steps:
       - uses: actions/checkout@v4
       - name: Test using Node.js
@@ -30,7 +29,6 @@ jobs:
   build:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    environment: CI
     steps:
       - uses: actions/checkout@v4
       - name: Test using Node.js
@@ -44,7 +42,6 @@ jobs:
   lint:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    environment: CI
     steps:
       - uses: actions/checkout@v4
       - name: Test using Node.js
