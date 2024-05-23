@@ -17,12 +17,6 @@ import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
 
-export type FetchInfo<T> = {
-    data?: T;
-    loading?: boolean;
-    error?: boolean;
-};
-
 type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
 
 export type AppContextState = LabelSlice &
