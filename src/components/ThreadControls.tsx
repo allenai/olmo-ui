@@ -24,7 +24,9 @@ interface ThreadControlProps {
 export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProps) => {
     const userInfo = useAppContext((state) => state.userInfo);
     const deleteThread = useAppContext((state) => state.deleteThread);
-    const deletedThreadInfo = useAppContext((state) => state.deletedThreadInfo);
+    const isDeletingThread = useAppContext(
+        (state) => state.deleteThreadRemoteState === RemoteState.Loading
+    );
     const postLabel = useAppContext((state) => state.postLabel);
     const deleteLabel = useAppContext((state) => state.deleteLabel);
     const labelRemoteState = useAppContext((state) => state.labelRemoteState);
@@ -95,7 +97,7 @@ export const ThreadControls = ({ rootMessage, threadCreator }: ThreadControlProp
             {currentClient === threadCreator && (
                 <ThreadActionButton
                     variant="text"
-                    disabled={deletedThreadInfo.loading}
+                    disabled={isDeletingThread}
                     onClick={() => deleteThread(rootMessage.id)}
                     startIcon={<Delete />}>
                     <Typography>Delete</Typography>

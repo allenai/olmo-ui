@@ -1,4 +1,4 @@
-import { FetchInfo, OlmoStateCreator } from 'src/AppContext';
+import { OlmoStateCreator } from 'src/AppContext';
 
 import { RemoteState } from '@/contexts/util';
 
@@ -8,19 +8,19 @@ import { errorToAlert } from './SnackMessageSlice';
 export interface ThreadSlice {
     messageList: MessageList;
     messageListRemoteState?: RemoteState;
-    deletedThreadInfo: FetchInfo<void>;
     allThreads: Message[];
     getMessageList: (offset: number, creator?: string, limit?: number) => Promise<MessageList>;
-    deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
+    deleteThreadRemoteState?: RemoteState;
+    deleteThread: (threadId: string) => Promise<void>;
 }
 
 export const messageClient = new MessageClient();
 
 export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     messageList: { messages: [], meta: { total: 0 } },
-    messageListRemoteState: undefined,
-    deletedThreadInfo: {},
     allThreads: [],
+    messageListRemoteState: undefined,
+    deleteThreadRemoteState: undefined,
 
     getMessageList: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
@@ -55,10 +55,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     deleteThread: async (threadId: string) => {
         try {
             set(
-                (state) => {
-                    state.deletedThreadInfo.loading = true;
-                    state.deletedThreadInfo.error = false;
-                },
+                { deleteThreadRemoteState: RemoteState.Loading },
                 false,
                 'threadUpdate/startDeleteThread'
             );
@@ -67,7 +64,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
 
             set(
                 (state) => {
-                    state.deletedThreadInfo.loading = false;
+                    state.deleteThreadRemoteState = RemoteState.Loaded;
                     state.messageList.messages.filter((m) => m.id !== threadId);
                     const threadIndexToRemove = state.allThreads.findIndex(
                         (thread) => thread.id === threadId
@@ -87,14 +84,10 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                 )
             );
             set(
-                (state) => {
-                    state.deletedThreadInfo.loading = false;
-                    state.deletedThreadInfo.error = true;
-                },
+                { deleteThreadRemoteState: RemoteState.Error },
                 false,
                 'threadUpdate/errorDeleteThread'
             );
         }
-        return get().deletedThreadInfo;
     },
 });
