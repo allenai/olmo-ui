@@ -10,7 +10,7 @@ export interface ThreadSlice {
     messageListRemoteState?: RemoteState;
     deletedThreadInfo: FetchInfo<void>;
     threads: Message[];
-    getAllThreads: (offset: number, creator?: string, limit?: number) => Promise<MessageList>;
+    getMessageList: (offset: number, creator?: string, limit?: number) => Promise<MessageList>;
     deleteThread: (threadId: string) => Promise<FetchInfo<void>>;
 }
 
@@ -22,7 +22,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     deletedThreadInfo: {},
     threads: [],
 
-    getAllThreads: async (offset: number = 0, creator?: string, limit?: number) => {
+    getMessageList: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
             set({ messageListRemoteState: RemoteState.Loading });
 

@@ -31,7 +31,7 @@ export const HISTORY_DRAWER_ID: DrawerId = 'history';
 export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const userInfo = useAppContext((state) => state.userInfo);
-    const getAllThreads = useAppContext((state) => state.getAllThreads);
+    const getMessageList = useAppContext((state) => state.getMessageList);
     const messageListRemoteState = useAppContext((state) => state.messageListRemoteState);
     const threads = useAppContext((state) => state.threads);
     const handleDrawerClose = () => {
@@ -50,7 +50,7 @@ export const HistoryDrawer = (): JSX.Element => {
 
     useEffect(() => {
         if (creator) {
-            getAllThreads(offset, creator, LIMIT);
+            getMessageList(offset, creator, LIMIT);
         }
     }, [creator]);
 
@@ -70,7 +70,7 @@ export const HistoryDrawer = (): JSX.Element => {
 
     const handleScroll = () => {
         if (messageListRemoteState !== RemoteState.Loading) {
-            getAllThreads(offset + PAGE_SIZE, creator, LIMIT);
+            getMessageList(offset + PAGE_SIZE, creator, LIMIT);
             setOffSet(offset + PAGE_SIZE);
         }
     };
