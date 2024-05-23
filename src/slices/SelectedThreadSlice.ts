@@ -11,7 +11,7 @@ import { messageClient } from './ThreadSlice';
 
 export interface SelectedThreadMessage {
     id: string;
-    children: string[]; // array of children ids
+    childIds: string[];
     selectedChildId?: string;
     content: string;
     role: Role;
@@ -31,7 +31,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
     const mappedChildren = message.children?.map((child) => child.id) ?? [];
     return {
         id: message.id,
-        children: mappedChildren,
+        childIds: mappedChildren,
         selectedChildId: mappedChildren[0],
         content: message.content,
         role: message.role,
@@ -68,7 +68,6 @@ export interface SelectedThreadSlice {
         threadId: string,
         checkExistingThreads?: boolean
     ) => Promise<SelectedThreadMessage>;
-    // ------
     deleteSelectedThread: () => void;
     resetSelectedThreadState: () => void;
 }
@@ -119,7 +118,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                         state.selectedThreadMessagesById[message.id] = message;
                     });
 
-                    state.selectedThreadMessagesById[message.parent].children.push(
+                    state.selectedThreadMessagesById[message.parent].childIds.push(
                         mappedMessages[0].id
                     );
                     state.selectedThreadMessagesById[message.parent].selectedChildId =
@@ -134,7 +133,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
     setSelectedThread: (rootMessage: Message) => {
         const selectedThreadMessage: SelectedThreadMessage = {
             id: rootMessage.id,
-            children: rootMessage.children
+            childIds: rootMessage.children
                 ? rootMessage.children.map((childMessage) => childMessage.id)
                 : [],
             selectedChildId: rootMessage.children?.[0].id ?? '',
