@@ -15,6 +15,9 @@ interface QueryFormProps {
 export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
+    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
+    const userInfo = useAppContext((state) => state.userInfo);
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
         const viewingMessageIds = getSelectedMessagesToShow(state);
@@ -48,6 +51,12 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
         await onSubmit(request);
         formContext.reset();
     };
+
+    const isTheCreator = selectedThreadInfo.data?.creator === userInfo?.client;
+    console.log(isTheCreator);
+    if (selectedThreadRootId.length !== 0 && !isTheCreator) {
+        return <></>;
+    }
 
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
