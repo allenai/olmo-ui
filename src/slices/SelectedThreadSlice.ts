@@ -58,7 +58,6 @@ export interface SelectedThreadSlice {
     ) => Promise<FetchInfo<Message>>;
     // ------
     pathToLastMessageInThread: string[];
-    postToExistingThread: (newMessage: MessagePost) => Promise<FetchInfo<Message>>;
     deleteSelectedThread: () => void;
     setSelectedThread: (rootMessage: Message) => void;
     resetSelectedThreadState: () => void;
@@ -74,17 +73,6 @@ const initialState = {
 
 export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
     ...initialState,
-    postToExistingThread: async (newMessage: MessagePost) => {
-        const pathToLastMessageInThread = get().pathToLastMessageInThread;
-        const parentMessageId = pathToLastMessageInThread[pathToLastMessageInThread.length - 1];
-
-        return get().postMessage(
-            newMessage,
-            { id: parentMessageId },
-            true,
-            pathToLastMessageInThread
-        );
-    },
 
     deleteSelectedThread: () => {
         set((state) => {
