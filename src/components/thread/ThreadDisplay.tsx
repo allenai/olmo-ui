@@ -3,7 +3,7 @@ import { LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
-import { SelectedThreadMessage } from '@/slices/SelectedThreadSlice';
+import { SelectedThreadMessage } from '@/slices/SelectedThreadMessage';
 
 import { ChatMessage } from './ChatMessage';
 import { MessageInteraction } from './MessageInteraction';
