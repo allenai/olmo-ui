@@ -47,7 +47,7 @@ Disclaimer: below is the instruction on how to set up verify commit using gpg pl
 #### Getting env variables
 The build will fail if you don't have the `AUTH0_CLIENT_ID` defined in your environment. 
 
-1. Create a .env.local file 
+1. Create a .env.local file in the root `olmo-ui` directory
     ```
     touch .env.local
     ```
