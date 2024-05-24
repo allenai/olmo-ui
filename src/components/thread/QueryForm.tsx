@@ -53,7 +53,6 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     };
 
     const isTheCreator = selectedThreadInfo.data?.creator === userInfo?.client;
-    console.log(isTheCreator);
     if (selectedThreadRootId.length !== 0 && !isTheCreator) {
         return <></>;
     }
