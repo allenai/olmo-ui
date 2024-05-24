@@ -19,7 +19,6 @@ describe('SelectedThreadSlice', () => {
             labels: [],
             isLimitReached: false,
             parent: undefined,
-            creator: thread.creator,
         };
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(
             expectedMessage
@@ -34,7 +33,6 @@ describe('SelectedThreadSlice', () => {
             labels: [],
             isLimitReached: false,
             parent: 'msg_W1O3Y8E0J4',
-            creator: 'murphy@allenai.org',
         };
         expect(appContext.getState().selectedThreadMessagesById.msg_X2T9X3L5M0).toEqual(
             expectedLastChild

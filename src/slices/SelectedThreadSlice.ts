@@ -15,7 +15,6 @@ export interface SelectedThreadMessage {
     labels: Label[];
     isLimitReached: boolean;
     parent?: string;
-    creator: string;
 }
 
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
@@ -29,7 +28,6 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         labels: message.labels,
         isLimitReached: message.finish_reason === MessageStreamErrorReason.LENGTH,
         parent: message.parent ?? undefined,
-        creator: message.creator,
     };
 };
 
@@ -147,7 +145,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             role: rootMessage.role,
             labels: rootMessage.labels,
             isLimitReached: rootMessage.finish_reason === MessageStreamErrorReason.LENGTH,
-            creator: rootMessage.creator,
         };
 
         const mappedMessages = mapMessages(rootMessage);
