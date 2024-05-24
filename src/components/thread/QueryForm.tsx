@@ -34,10 +34,9 @@ const useNewQueryFormHandling = () => {
 export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
+    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const canEditThread = useAppContext(
-        (state) =>
-            state.selectedThreadInfo.data?.creator === state.userInfo?.client &&
-            state.selectedThreadRootId.length !== 0
+        (state) => state.selectedThreadInfo.data?.creator === state.userInfo?.client
     );
 
     const isLimitReached = useAppContext((state) => {
@@ -86,19 +85,21 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     }}
                     fullWidth
                     multiline
-                    required
-                    validation={{ pattern: /[^\s]+/ }}
                     minRows={variant === 'new' ? 6 : 4}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
-                    disabled={!canEditThread}
+                    disabled={selectedThreadRootId.length !== 0 && !canEditThread}
                 />
                 <Stack direction="row" gap={2} alignItems="center">
                     <Button
                         type="submit"
                         variant="contained"
                         data-testid="Submit Prompt Button"
-                        disabled={isSelectedThreadLoading || isLimitReached || !canEditThread}>
+                        disabled={
+                            isSelectedThreadLoading ||
+                            isLimitReached ||
+                            (selectedThreadRootId.length !== 0 && !canEditThread)
+                        }>
                         Submit
                     </Button>
                     {isLimitReached && (
@@ -106,7 +107,7 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                             You have reached maximum thread length. Please start a new thread.
                         </Typography>
                     )}
-                    {!canEditThread && (
+                    {selectedThreadRootId.length !== 0 && !canEditThread && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You cannot add new messages to this thread because you&apos;re not the
                             creator. To send messages, please create a new thread.
