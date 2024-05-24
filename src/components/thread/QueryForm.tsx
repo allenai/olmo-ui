@@ -16,8 +16,10 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
     const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
-    const userInfo = useAppContext((state) => state.userInfo);
+    const canEditThread = useAppContext(
+        (state) => state.selectedThreadInfo.data?.creator === state.userInfo?.client
+    );
+
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
         const viewingMessageIds = getSelectedMessagesToShow(state);
@@ -52,12 +54,6 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
         formContext.reset();
     };
 
-    const isTheCreator = selectedThreadInfo.data?.creator === userInfo?.client;
-
-    if (selectedThreadRootId.length !== 0 && !isTheCreator) {
-        return <></>;
-    }
-
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
             <Stack gap={1.5} alignItems="flex-start">
@@ -73,18 +69,29 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     minRows={variant === 'new' ? 6 : 4}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
+                    disabled={selectedThreadRootId.length !== 0 && !canEditThread}
                 />
                 <Stack direction="row" gap={2} alignItems="center">
                     <Button
                         type="submit"
                         variant="contained"
                         data-testid="Submit Prompt Button"
-                        disabled={isSelectedThreadLoading || isLimitReached}>
+                        disabled={
+                            isSelectedThreadLoading ||
+                            isLimitReached ||
+                            (selectedThreadRootId.length !== 0 && !canEditThread)
+                        }>
                         Submit
                     </Button>
                     {isLimitReached && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You have reached maximum thread length. Please start a new thread.
+                        </Typography>
+                    )}
+                    {selectedThreadRootId.length !== 0 && !canEditThread && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            You cannot add new messages to this thread because you&apos;re not the
+                            creator. To send messages, please create a new thread.
                         </Typography>
                     )}
                 </Stack>
