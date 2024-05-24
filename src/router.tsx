@@ -37,7 +37,7 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
     );
 };
 
-export const uiRefreshRoutes: RouteObject[] = [
+export const routes: RouteObject[] = [
     {
         path: '/',
         element: (
@@ -137,4 +137,4 @@ export const uiRefreshRoutes: RouteObject[] = [
     },
 ];
 
-export const router = createBrowserRouter(uiRefreshRoutes);
+export const router = createBrowserRouter(routes);
