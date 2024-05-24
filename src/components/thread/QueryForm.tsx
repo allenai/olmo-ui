@@ -83,6 +83,8 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     }}
                     fullWidth
                     multiline
+                    required
+                    validation={{ pattern: /[^\s]+/ }}
                     minRows={variant === 'new' ? 6 : 4}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"

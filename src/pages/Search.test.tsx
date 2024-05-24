@@ -5,11 +5,11 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
-import { uiRefreshRoutes } from '@/router';
+import { routes } from '@/router';
 
 describe('Dataset Explorer Search', () => {
     it('should load search results when a query set in the URL', async () => {
-        const router = createMemoryRouter(uiRefreshRoutes, {
+        const router = createMemoryRouter(routes, {
             initialEntries: [{ pathname: links.search, search: '?query=Seattle' }],
         });
         render(<RouterProvider router={router} />);
@@ -24,7 +24,7 @@ describe('Dataset Explorer Search', () => {
     // Having trouble getting this test to work, it loads the whole time for some reason
     it.skip('should load results when the query is submitted in the text box', async () => {
         const user = userEvent.setup();
-        const router = createMemoryRouter(uiRefreshRoutes, {
+        const router = createMemoryRouter(routes, {
             initialEntries: [links.search],
         });
         render(<RouterProvider router={router} />);
