@@ -15,7 +15,7 @@ interface QueryFormProps {
 export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
-    const selectedThreadInfo = useAppContext((state) => state.selectedThreadInfo);
+    const selectedThreadMessagesById = useAppContext((state) => state.selectedThreadMessagesById);
     const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const userInfo = useAppContext((state) => state.userInfo);
     const isLimitReached = useAppContext((state) => {
@@ -52,9 +52,12 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
         formContext.reset();
     };
 
-    const isTheCreator = selectedThreadInfo.data?.creator === userInfo?.client;
-    if (selectedThreadRootId.length !== 0 && !isTheCreator) {
-        return <></>;
+    if (selectedThreadRootId.length !== 0) {
+        const isTheCreator =
+            selectedThreadMessagesById[selectedThreadRootId].creator === userInfo?.client;
+        if (!isTheCreator) {
+            return <></>;
+        }
     }
 
     return (
