@@ -159,6 +159,8 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     newSelectedThreadsById[message.id] = message;
                 });
                 state.selectedThreadMessagesById = newSelectedThreadsById;
+                state.selectedThreadInfo.data = rootMessage;
+                state.selectedThreadInfo.loading = false;
             },
             false,
             'selectedThread/setSelectedThread'
