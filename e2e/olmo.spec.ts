@@ -1,19 +1,5 @@
 import { expect, test } from './playwright-utils';
 
-test('can prompt', async ({ page }) => {
-    await page.goto('/?isUIRefreshEnabled=false');
-    await page.waitForLoadState('networkidle');
-    expect(await page.getByPlaceholder('Follow Up').count()).toEqual(0);
-
-    await page.getByTestId('Prompt').fill('Can you tell me a friday joke?');
-
-    await page.getByRole('button', { name: 'Prompt' }).click();
-    await page.waitForLoadState('networkidle');
-
-    // This will ensure there's only one visible as long as strict mode is enabled
-    await expect(page.getByPlaceholder('Follow Up')).toBeVisible();
-});
-
 test('can send prompt in Olmo Playground', async ({ page }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';
 
