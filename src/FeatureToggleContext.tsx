@@ -3,14 +3,12 @@ import * as React from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
-    isUIRefreshEnabled = 'isUIRefreshEnabled',
 }
 
 type FeatureToggles = Record<FeatureToggle, boolean>;
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
-    [FeatureToggle.isUIRefreshEnabled]: true,
 };
 
 const localStorageKey = 'feature-toggles';

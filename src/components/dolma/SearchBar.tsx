@@ -46,9 +46,7 @@ export const SearchBar = ({
     }, [getMeta, meta]);
 
     const submitSearch = (formData: { queryText: string }) => {
-        if (formData.queryText.length > 0) {
-            nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
-        }
+        nav(`${links.search}?${search.toQueryString({ query: formData.queryText })}`);
     };
 
     return (
@@ -64,6 +62,8 @@ export const SearchBar = ({
                     placeholder={placeholder}
                     fullWidth
                     disabled={disabled}
+                    required
+                    validation={{ pattern: /[^\s]+/ }}
                 />
                 <Stack
                     direction="row"
