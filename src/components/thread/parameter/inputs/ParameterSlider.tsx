@@ -39,6 +39,10 @@ export const ParameterSlider = ({
     };
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const canUseSlider = useAppContext(
+        (state) => state.selectedThreadInfo.data?.creator === state.userInfo?.client
+    );
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const addSnackMessageDebounce = useDebouncedCallback(() => {
         addSnackMessage({
             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
@@ -98,6 +102,7 @@ export const ParameterSlider = ({
                             step={step}
                             min={min}
                             max={max}
+                            disabled={selectedThreadId.length !== 0 && !canUseSlider}
                         />
                     </Box>
                     {/* The basis here accounts for roughly three characters and a decimal point at the minimum width. 
@@ -115,6 +120,7 @@ export const ParameterSlider = ({
                                 type: 'number',
                                 id,
                             }}
+                            disabled={selectedThreadId.length !== 0 && !canUseSlider}
                         />
                     </Box>
                 </Stack>
