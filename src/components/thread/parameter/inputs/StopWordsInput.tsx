@@ -1,7 +1,5 @@
 import { Autocomplete, AutocompleteProps, Chip, TextField } from '@mui/material';
 
-import { useAppContext } from '@/AppContext';
-
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
 const STOP_WORDS_TOOLTIP_CONTENT =
@@ -14,10 +12,6 @@ interface StopWordsInputProps {
 }
 
 export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) => {
-    const canUseStopWords = useAppContext(
-        (state) => state.selectedThreadInfo.data?.creator === state.userInfo?.client
-    );
-    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     return (
         <ParameterDrawerInputWrapper
             inputId="stop-words-input"
@@ -47,7 +41,6 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                         helperText='Press "Enter" to add a new word.'
                     />
                 )}
-                disabled={selectedThreadId.length !== 0 && !canUseStopWords}
             />
         </ParameterDrawerInputWrapper>
     );
