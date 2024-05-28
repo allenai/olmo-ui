@@ -40,7 +40,6 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
               state.selectedThreadRootId.length !== 0
             : true
     );
-    console.log(`canEditThread: ${canEditThread}`);
 
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
