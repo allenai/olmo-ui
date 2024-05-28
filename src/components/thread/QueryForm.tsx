@@ -109,8 +109,8 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                     )}
                     {selectedThreadRootId.length !== 0 && !canEditThread && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
-                            You cannot add new messages to this thread because you&apos;re not the
-                            creator. To send messages, please create a new thread.
+                            You cannot add a prompt because you are not the thread creator. Please
+                            submit your prompt in a new thread.
                         </Typography>
                     )}
                 </Stack>
