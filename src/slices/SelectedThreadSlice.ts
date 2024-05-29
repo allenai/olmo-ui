@@ -1,8 +1,8 @@
 import { Message, MessageApiUrl, MessageStreamErrorReason } from '@/api/Message';
+import { isOver30Days, mapMessages, SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
-import { isOver30Days, mapMessages, SelectedThreadMessage } from './SelectedThreadMessage';
 import { errorToAlert } from './SnackMessageSlice';
 import { messageClient } from './ThreadSlice';
 
