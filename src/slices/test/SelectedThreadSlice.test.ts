@@ -18,7 +18,7 @@ describe('SelectedThreadSlice', () => {
             role: thread.role,
             labels: [],
             isLimitReached: false,
-            isOver30Days: true,
+            isOlderThan30Days: true,
             parent: undefined,
         };
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(
@@ -33,7 +33,7 @@ describe('SelectedThreadSlice', () => {
             selectedChildId: undefined,
             labels: [],
             isLimitReached: false,
-            isOver30Days: true,
+            isOlderThan30Days: true,
             parent: 'msg_W1O3Y8E0J4',
         };
         expect(appContext.getState().selectedThreadMessagesById.msg_X2T9X3L5M0).toEqual(

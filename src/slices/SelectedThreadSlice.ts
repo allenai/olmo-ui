@@ -1,5 +1,5 @@
 import { Message, MessageApiUrl, MessageStreamErrorReason } from '@/api/Message';
-import { isOver30Days, mapMessages, SelectedThreadMessage } from '@/api/SelectedThreadMessage';
+import { isOlderThan30Days, mapMessages, SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
@@ -92,7 +92,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             role: rootMessage.role,
             labels: rootMessage.labels,
             isLimitReached: rootMessage.finish_reason === MessageStreamErrorReason.LENGTH,
-            isOver30Days: isOver30Days(rootMessage.created),
+            isOlderThan30Days: isOlderThan30Days(rootMessage.created),
         };
 
         const mappedMessages = mapMessages(rootMessage);

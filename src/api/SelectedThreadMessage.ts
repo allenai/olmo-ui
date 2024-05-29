@@ -12,11 +12,11 @@ export interface SelectedThreadMessage {
     role: Role;
     labels: Label[];
     isLimitReached: boolean;
-    isOver30Days: boolean;
+    isOlderThan30Days: boolean;
     parent?: string;
 }
 
-export const isOver30Days = (createdDate: Date) => {
+export const isOlderThan30Days = (createdDate: Date) => {
     const targetDate = dayjs(createdDate).add(29, 'days').format('YYYY-MM-DD');
 
     return dayjs().isAfter(targetDate, 'day');
@@ -32,7 +32,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         role: message.role,
         labels: message.labels,
         isLimitReached: message.finish_reason === MessageStreamErrorReason.LENGTH,
-        isOver30Days: isOver30Days(message.created),
+        isOlderThan30Days: isOlderThan30Days(message.created),
         parent: message.parent ?? undefined,
     };
 };

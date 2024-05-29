@@ -15,7 +15,7 @@ export const DeleteThreadButton = () => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const isPastThirtyDays = useAppContext(
         (state) =>
-            state.selectedThreadMessagesById[state.selectedThreadRootId].isOver30Days || false
+            state.selectedThreadMessagesById[state.selectedThreadRootId].isOlderThan30Days || false
     );
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
