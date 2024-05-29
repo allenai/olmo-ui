@@ -128,13 +128,13 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     'selectedThread/getSelectedThreadStart'
                 );
 
-                const latestMessage = await messageClient.getMessage(threadId);
-                originalMessage = latestMessage;
-                get().setSelectedThread(latestMessage);
+                const remoteMessage = await messageClient.getMessage(threadId);
+                originalMessage = remoteMessage;
+                get().setSelectedThread(remoteMessage);
                 set(
                     (state) => {
                         if (checkExistingThreads) {
-                            state.messageList.messages.push(latestMessage);
+                            state.messageList.messages.push(remoteMessage);
                         }
                     },
                     false,
