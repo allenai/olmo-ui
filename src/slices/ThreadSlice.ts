@@ -7,10 +7,10 @@ import { errorToAlert } from './SnackMessageSlice';
 
 export interface ThreadSlice {
     messageList: MessageList;
-    messageListRemoteState?: RemoteState;
+    messageListState?: RemoteState;
     allThreads: Message[];
     getMessageList: (offset: number, creator?: string, limit?: number) => Promise<MessageList>;
-    deleteThreadRemoteState?: RemoteState;
+    deleteThreadState?: RemoteState;
     deleteThread: (threadId: string) => Promise<void>;
 }
 
@@ -19,17 +19,17 @@ export const messageClient = new MessageClient();
 export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     messageList: { messages: [], meta: { total: 0 } },
     allThreads: [],
-    messageListRemoteState: undefined,
-    deleteThreadRemoteState: undefined,
+    messageListState: undefined,
+    deleteThreadState: undefined,
 
     getMessageList: async (offset: number = 0, creator?: string, limit?: number) => {
         try {
-            set({ messageListRemoteState: RemoteState.Loading });
+            set({ messageListState: RemoteState.Loading });
 
             const { messages, meta } = await messageClient.getAllThreads(offset, creator, limit);
 
             set((state) => ({
-                messageListRemoteState: RemoteState.Loaded,
+                messageListState: RemoteState.Loaded,
                 GlobalSnackMessageList: { messages, meta },
                 allThreads: state.allThreads
                     .concat(messages)
@@ -47,7 +47,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     err
                 )
             );
-            set({ messageListRemoteState: RemoteState.Error });
+            set({ messageListState: RemoteState.Error });
         }
         return get().messageList;
     },
@@ -55,7 +55,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
     deleteThread: async (threadId: string) => {
         try {
             set(
-                { deleteThreadRemoteState: RemoteState.Loading },
+                { deleteThreadState: RemoteState.Loading },
                 false,
                 'threadUpdate/startDeleteThread'
             );
@@ -64,7 +64,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
 
             set(
                 (state) => {
-                    state.deleteThreadRemoteState = RemoteState.Loaded;
+                    state.deleteThreadState = RemoteState.Loaded;
                     state.messageList.messages.filter((m) => m.id !== threadId);
                     const threadIndexToRemove = state.allThreads.findIndex(
                         (thread) => thread.id === threadId
@@ -83,11 +83,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
                     err
                 )
             );
-            set(
-                { deleteThreadRemoteState: RemoteState.Error },
-                false,
-                'threadUpdate/errorDeleteThread'
-            );
+            set({ deleteThreadState: RemoteState.Error }, false, 'threadUpdate/errorDeleteThread');
         }
     },
 });

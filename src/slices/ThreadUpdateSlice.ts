@@ -50,7 +50,7 @@ export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
-    streamPromptRemoteState?: RemoteState;
+    streamPromptState?: RemoteState;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     finalMessage?: Message;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
@@ -59,7 +59,7 @@ export interface ThreadUpdateSlice {
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
     inferenceOpts: {},
-    streamPromptRemoteState: undefined,
+    streamPromptState: undefined,
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
@@ -102,7 +102,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 state.abortController = null;
-                state.streamPromptRemoteState = RemoteState.Loaded;
+                state.streamPromptState = RemoteState.Loaded;
                 state.finalMessage = finalMessage;
             },
             false,
@@ -126,7 +126,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         set(
             (state) => {
                 state.abortController = abortController;
-                state.streamPromptRemoteState = RemoteState.Loading;
+                state.streamPromptState = RemoteState.Loading;
             },
             false,
             'threadUpdate/startCreateNewThread'
@@ -190,7 +190,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             set(
                 (state) => {
                     state.abortController = null;
-                    state.streamPromptRemoteState = RemoteState.Error;
+                    state.streamPromptState = RemoteState.Error;
                 },
                 false,
                 'threadUpdate/errorCreateNewThread'

@@ -46,7 +46,7 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
     });
 
     const isSelectedThreadLoading = useAppContext(
-        (state) => state.streamPromptRemoteState === RemoteState.Loading
+        (state) => state.streamPromptState === RemoteState.Loading
     );
 
     const lastMessageId = useAppContext((state) => {

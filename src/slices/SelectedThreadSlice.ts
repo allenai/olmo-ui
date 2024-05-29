@@ -7,7 +7,7 @@ import { errorToAlert } from './SnackMessageSlice';
 import { messageClient } from './ThreadSlice';
 
 export interface SelectedThreadSlice {
-    selectedThreadRemoteState?: RemoteState;
+    selectedThreadState?: RemoteState;
     selectedThreadRootId: string;
     selectedThreadMessages: string[]; // array of every message id in the thread, including root and branches
     selectedThreadMessagesById: Record<string, SelectedThreadMessage>;
@@ -24,7 +24,7 @@ export interface SelectedThreadSlice {
 }
 
 const initialState = {
-    selectedThreadRemoteState: undefined,
+    selectedThreadState: undefined,
     selectedThreadRootId: '',
     selectedThreadMessages: [],
     selectedThreadMessagesById: {},
@@ -35,7 +35,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
     deleteSelectedThread: () => {
         set((state) => {
-            return { ...state, selectedThreadRemoteState: undefined };
+            return { ...state, selectedThreadState: undefined };
         });
     },
 
@@ -123,7 +123,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         if (originalMessage == null) {
             try {
                 set(
-                    { selectedThreadRemoteState: RemoteState.Loading },
+                    { selectedThreadState: RemoteState.Loading },
                     false,
                     'selectedThread/getSelectedThreadStart'
                 );
@@ -149,7 +149,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     )
                 );
                 set(
-                    { selectedThreadRemoteState: RemoteState.Error },
+                    { selectedThreadState: RemoteState.Error },
                     false,
                     'selectedThread/getSelectedThreadError'
                 );
@@ -159,7 +159,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
         if (originalMessage != null) {
             get().setSelectedThread(originalMessage);
             set(
-                { selectedThreadRemoteState: RemoteState.Loaded },
+                { selectedThreadState: RemoteState.Loaded },
                 false,
                 'selectedThread/setSelectedThread'
             );

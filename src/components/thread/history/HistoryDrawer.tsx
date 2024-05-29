@@ -32,7 +32,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const userInfo = useAppContext((state) => state.userInfo);
     const getMessageList = useAppContext((state) => state.getMessageList);
-    const messageListRemoteState = useAppContext((state) => state.messageListRemoteState);
+    const messageListState = useAppContext((state) => state.messageListState);
     const allThreads = useAppContext((state) => state.allThreads);
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
@@ -69,7 +69,7 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     const handleScroll = () => {
-        if (messageListRemoteState !== RemoteState.Loading) {
+        if (messageListState !== RemoteState.Loading) {
             getMessageList(offset + PAGE_SIZE, creator, LIMIT);
             setOffSet(offset + PAGE_SIZE);
         }
@@ -84,10 +84,10 @@ export const HistoryDrawer = (): JSX.Element => {
     };
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: messageListRemoteState === RemoteState.Loading,
+        loading: messageListState === RemoteState.Loading,
         hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        disabled: messageListRemoteState === RemoteState.Error,
+        disabled: messageListState === RemoteState.Error,
         delayInMs: 100,
     });
 
@@ -142,7 +142,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     threads={threadsOlderThanAWeek}
                     hasDivider
                 />
-                {(hasMoreThreadsToFetch || messageListRemoteState === RemoteState.Loading) && (
+                {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
                     <ListItem ref={sentryRef}>
                         <ListItemText
                             sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}

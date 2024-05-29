@@ -42,7 +42,7 @@ interface ChatMessageProps extends PropsWithChildren {
 export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.Element => {
     const finalMessage = useAppContext((state) => state.finalMessage);
     const isChatMessageLoading = useAppContext(
-        (state) => state.streamPromptRemoteState === RemoteState.Loading
+        (state) => state.streamPromptState === RemoteState.Loading
     );
     const [announceToScreenReader, setAnnounceToScreenReader] = useState(false);
 
