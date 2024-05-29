@@ -3,5 +3,21 @@
     "contact": "sams",
     "team": "oe-adoption",
     "replicas": { "prod": 2 },
-    "customDomains": [ "olmo.allen.ai" ]
+    "customDomains": [ "olmo.allen.ai" ],
+    "login": "ai2",
+    "login_allowed_emails": [
+        "danielle.killick@archetype.co",
+        "megan.ferries@archetype.co",
+        "coraima.sanchez@archteype.co",
+        "kristie.larmier@archetype.co",
+        "cailin.brashear@archetype.co",
+        "chase.fitzgerald@archetype.co",
+        "sarah.keneipp@archetype.co",
+        "nadine.kawash@archetype.co",
+        "tom.evans@archetype.co",
+        "laura.kopp@archetype.co",
+        "jemma.adams@archetype.co",
+        "sarah.kerley@archetype.co",
+        "sam.evans-perryman@archetype.co"
+    ]
 }
