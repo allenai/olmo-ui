@@ -49,6 +49,7 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     ongoingThreadId: string | null;
+    streamingMessageId?: string;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     postMessageInfo: FetchInfo<Message>;
@@ -172,6 +173,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     } else {
                         addChildToSelectedThread(parsedMessage);
                     }
+
+                    // store the message id that olmo is generating reponse
+                    // the first chunk in the message will have no content
+                    const streamingMessage = (parsedMessage.children || []).find(
+                        (childMessage) => childMessage.content.length === 0
+                    );
+                    set({ streamingMessageId: streamingMessage?.id || '' });
                 }
 
                 if (isMessageChunk(message)) {

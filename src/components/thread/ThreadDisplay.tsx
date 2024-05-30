@@ -20,7 +20,9 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
     return (
         <>
-            <ChatMessage role={role}>{content}</ChatMessage>
+            <ChatMessage role={role} messageId={messageId}>
+                {content}
+            </ChatMessage>
             <MessageInteraction
                 role={role}
                 content={content}

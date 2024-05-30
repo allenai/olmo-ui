@@ -11,6 +11,20 @@ const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',
 };
 
+const streamingMessageStyle: SxProps = {
+    '&::after': {
+        borderRadius: 5,
+        bgcolor: 'primary.dark',
+        content: '""',
+        display: 'inline-block',
+        height: 16,
+        width: 16,
+        position: 'relative',
+        left: 3,
+        top: 3,
+    },
+};
+
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <Typography fontWeight="bold" sx={sharedMessageStyle}>
@@ -19,7 +33,19 @@ const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     );
 };
 
-const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
+interface LLMMessageProps extends PropsWithChildren {
+    messageId: string;
+}
+
+const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
+    const messageStyle = useAppContext((state) => {
+        const showBlueDot =
+            state.streamingMessageId === messageId && !!state.postMessageInfo.loading;
+        return showBlueDot
+            ? { ...sharedMessageStyle, ...streamingMessageStyle }
+            : sharedMessageStyle;
+    });
+
     return (
         <Paper
             variant="outlined"
@@ -29,16 +55,20 @@ const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
                 backgroundColor: (theme) => theme.palette.background.paper,
                 padding: 2,
             }}>
-            <Typography sx={sharedMessageStyle}>{children}</Typography>
+            <Typography sx={messageStyle}>{children}</Typography>
         </Paper>
     );
 };
 
-interface ChatMessageProps extends PropsWithChildren {
+interface ChatMessageProps extends LLMMessageProps {
     role: Role;
 }
 
-export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.Element => {
+export const ChatMessage = ({
+    role: variant,
+    messageId,
+    children,
+}: ChatMessageProps): JSX.Element => {
     const postMessageInfo = useAppContext((state) => state.postMessageInfo);
     const [announceToScreenReader, setAnnounceToScreenReader] = useState(false);
 
@@ -71,7 +101,7 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
                         content={postMessageInfo.data.children[0].content}
                     />
                 )}
-            <MessageComponent>{children}</MessageComponent>
+            <MessageComponent messageId={messageId}>{children}</MessageComponent>
         </Stack>
     );
 };
