@@ -121,7 +121,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         <IconButton
                             onClick={handleDrawerClose}
                             sx={{ color: 'inherit' }}
-                            data-testid="Close History Drawer">
+                            aria-label="Close History Drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>
