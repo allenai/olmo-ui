@@ -49,7 +49,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     );
 
     const onAbort = useCallback(
-        (event: MouseEvent) => {
+        (event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             abortController?.abort();
         },
