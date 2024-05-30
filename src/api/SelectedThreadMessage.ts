@@ -11,6 +11,7 @@ export interface SelectedThreadMessage {
     content: string;
     role: Role;
     labels: Label[];
+    creator: string;
     isLimitReached: boolean;
     isOlderThan30Days: boolean;
     parent?: string;
@@ -31,6 +32,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         content: message.content,
         role: message.role,
         labels: message.labels,
+        creator: message.creator,
         isLimitReached: message.finish_reason === MessageStreamErrorReason.LENGTH,
         isOlderThan30Days: isOlderThan30Days(message.created),
         parent: message.parent ?? undefined,
