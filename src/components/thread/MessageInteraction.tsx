@@ -36,23 +36,19 @@ export const MessageInteraction = ({
 
     // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
-    const [currentMessageLabel, setCurrentMessageLabel] = useState<Label | undefined>(
+    const [currentLabel, setCurrentLabel] = useState<Label | undefined>(
         messageLabels.filter((label) => label.creator === userInfo?.client).pop()
     );
     const [copySnackbarOpen, setCopySnackbarOpen] = useState(false);
 
-    const GoodIcon =
-        currentMessageLabel?.rating === LabelRating.Positive ? ThumbUp : ThumbUpOutlined;
-    const BadIcon =
-        currentMessageLabel?.rating === LabelRating.Negative ? ThumbDown : ThumbDownOutlined;
-    const FlagIcon = currentMessageLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
+    const GoodIcon = currentLabel?.rating === LabelRating.Positive ? ThumbUp : ThumbUpOutlined;
+    const BadIcon = currentLabel?.rating === LabelRating.Negative ? ThumbDown : ThumbDownOutlined;
+    const FlagIcon = currentLabel?.rating === LabelRating.Flag ? Flag : FlagOutlined;
 
-    const rateMessage = async (newRating: LabelRating) => {
-        updateLabel({ rating: newRating, message: messageId }, currentMessageLabel).then(
-            (newLabel) => {
-                setCurrentMessageLabel(newLabel);
-            }
-        );
+    const rateMessage = (newRating: LabelRating) => {
+        updateLabel({ rating: newRating, message: messageId }, currentLabel).then((newLabel) => {
+            setCurrentLabel(newLabel);
+        });
     };
 
     const copyMessage = useCallback(() => {
@@ -71,22 +67,28 @@ export const MessageInteraction = ({
                     variant="outlined"
                     startIcon={<GoodIcon />}
                     title="Good"
-                    onClick={() => rateMessage(LabelRating.Positive)}
-                    aria-pressed={currentMessageLabel?.rating === LabelRating.Positive}
+                    onClick={() => {
+                        rateMessage(LabelRating.Positive);
+                    }}
+                    aria-pressed={currentLabel?.rating === LabelRating.Positive}
                 />
                 <ResponsiveButton
                     variant="outlined"
                     startIcon={<BadIcon />}
                     title="Bad"
-                    onClick={() => rateMessage(LabelRating.Negative)}
-                    aria-pressed={currentMessageLabel?.rating === LabelRating.Negative}
+                    onClick={() => {
+                        rateMessage(LabelRating.Negative);
+                    }}
+                    aria-pressed={currentLabel?.rating === LabelRating.Negative}
                 />
                 <ResponsiveButton
                     variant="outlined"
                     startIcon={<FlagIcon />}
                     title="Inappropriate"
-                    onClick={() => rateMessage(LabelRating.Flag)}
-                    aria-pressed={currentMessageLabel?.rating === LabelRating.Flag}
+                    onClick={() => {
+                        rateMessage(LabelRating.Flag);
+                    }}
+                    aria-pressed={currentLabel?.rating === LabelRating.Flag}
                 />
             </FeedbackButtonGroup>
             <ResponsiveButton
