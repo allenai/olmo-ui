@@ -1,5 +1,5 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import PauseCircleIcon from '@mui/icons-material/PauseCircle';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
@@ -48,9 +48,13 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
         (state) => state.ongoingThreadId?.length !== 0 && !!abortController
     );
 
-    const onAbort = useCallback(() => {
-        abortController?.abort();
-    }, [abortController]);
+    const onAbort = useCallback(
+        (event: MouseEvent) => {
+            event.preventDefault();
+            abortController?.abort();
+        },
+        [abortController]
+    );
 
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
@@ -106,8 +110,12 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                         endAdornment: (
                             <InputAdornment position="end">
                                 {canPauseThread ? (
-                                    <IconButton data-testid="Pause Thread" onClick={onAbort}>
-                                        <PauseCircleIcon />
+                                    <IconButton
+                                        data-testid="Pause Thread"
+                                        onClick={(event) => {
+                                            onAbort(event);
+                                        }}>
+                                        <PauseCircleOutlineIcon />
                                     </IconButton>
                                 ) : (
                                     <IconButton
