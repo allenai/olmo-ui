@@ -70,7 +70,7 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
 
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {
-        await getSelectedThread(params.id, true);
+        await getSelectedThread(params.id);
     }
 
     return null;
