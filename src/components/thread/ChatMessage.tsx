@@ -1,5 +1,5 @@
 import { Box, Paper, Stack, SxProps, Typography } from '@mui/material';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
@@ -37,23 +37,24 @@ const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
 
 interface ChatMessageProps extends PropsWithChildren {
     role: Role;
+    messageId: string;
 }
 
-export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.Element => {
-    const finalMessage = useAppContext((state) => state.finalMessage);
-    const isChatMessageLoading = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading
-    );
-    const [announceToScreenReader, setAnnounceToScreenReader] = useState(false);
-
-    useEffect(() => {
-        // this prevents reading out of the last-generated LLM response
-        // in the case that a screen-reader user switches to an old thread from their history
-        // after a new prompt
-        if (isChatMessageLoading) {
-            setAnnounceToScreenReader(true);
+export const ChatMessage = ({
+    role: variant,
+    messageId,
+    children,
+}: ChatMessageProps): JSX.Element => {
+    const streamPromptState = useAppContext((state) => state.streamPromptState);
+    const finalMessageContent = useAppContext((state) => {
+        if (
+            state.streamingMessageId !== messageId ||
+            state.streamPromptState !== RemoteState.Loaded
+        ) {
+            return null;
         }
-    }, [isChatMessageLoading]);
+        return state.selectedThreadMessagesById[messageId].content || null;
+    });
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? null : <RobotAvatar />;
@@ -63,18 +64,13 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
-            {isChatMessageLoading && (
+            {streamPromptState === RemoteState.Loading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
             {/* This gets the latest LLM response to alert screen readers */}
-            {announceToScreenReader &&
-                !isChatMessageLoading &&
-                finalMessage?.children !== undefined && (
-                    <ScreenReaderAnnouncer
-                        level="assertive"
-                        content={finalMessage.children[0].content}
-                    />
-                )}
+            {!!finalMessageContent && (
+                <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
+            )}
             <MessageComponent>{children}</MessageComponent>
         </Stack>
     );

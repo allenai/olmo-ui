@@ -22,7 +22,7 @@ import {
     SnackMessageType,
 } from './SnackMessageSlice';
 
-const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
+export const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
         if (childMessage.id === messageId) {
             return childMessage;
@@ -48,16 +48,17 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
+    streamingMessageId: string;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     streamPromptState?: RemoteState;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
-    finalMessage?: Message;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
+    streamingMessageId: '',
     inferenceOpts: {},
     streamPromptState: undefined,
 
@@ -68,13 +69,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     },
 
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => {
-        if (isCreatingNewThread) {
-            get().setSelectedThread(finalMessage);
-        }
-
         set(
             (state) => {
                 if (isCreatingNewThread) {
+                    state.setSelectedThread(finalMessage);
                     state.allThreads.unshift(finalMessage);
                 } else {
                     const rootMessage = state.allThreads.find(
@@ -103,7 +101,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 state.abortController = null;
                 state.streamPromptState = RemoteState.Loaded;
-                state.finalMessage = finalMessage;
             },
             false,
             'threadUpdate/finishCreateNewThread'
@@ -152,6 +149,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     } else {
                         addChildToSelectedThread(parsedMessage);
                     }
+
+                    // store the message id that olmo is generating reponse
+                    // the first chunk in the message will have no content
+                    const streamingMessage = (parsedMessage.children || []).find(
+                        (childMessage) => childMessage.content.length === 0
+                    );
+                    set({ streamingMessageId: streamingMessage?.id || '' });
                 }
 
                 if (isMessageChunk(message)) {
