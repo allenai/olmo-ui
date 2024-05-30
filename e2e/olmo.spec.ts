@@ -19,7 +19,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.getByRole('button', { name: 'History' }).click();
     await expect(page.getByText('Today')).toBeVisible();
     await expect(page.getByRole('link', { name: 'User message' })).toBeVisible();
-    await page.getByRole('button', { name: 'Close History Drawer' }).click();
+    await page.getByRole('button', { name: 'close drawer' }).click();
 
     // Send a second message in the thread
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
@@ -35,13 +35,13 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     // Look at another thread
     await page.getByRole('button', { name: 'History' }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
-    await page.getByRole('button', { name: 'Close History Drawer' }).click();
+    await page.getByRole('button', { name: 'close drawer' }).click();
     await expect(page.getByText('Ether')).toBeVisible();
 
     // Go back to the first thread and make sure it's still showing all the messages
     await page.getByRole('button', { name: 'History' }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'User message' }).click();
-    await page.getByRole('button', { name: 'Close History Drawer' }).click();
+    await page.getByRole('button', { name: 'close drawer' }).click();
     await expect(page.getByText('This is the first response.')).toBeVisible();
     await expect(page.getByText('This is the second response.')).toBeVisible();
 });
