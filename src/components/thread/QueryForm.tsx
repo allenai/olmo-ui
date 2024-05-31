@@ -1,5 +1,7 @@
-import { Button, Stack, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
+import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import { MessagePost } from '@/api/Message';
@@ -31,7 +33,7 @@ const useNewQueryFormHandling = () => {
     return formContext;
 };
 
-export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element => {
+export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
     const canEditThread = useAppContext((state) =>
@@ -39,6 +41,19 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
             ? state.selectedThreadInfo.data.creator === state.userInfo?.client &&
               state.selectedThreadRootId.length !== 0
             : true
+    );
+
+    const abortController = useAppContext((state) => state.abortController);
+    const canPauseThread = useAppContext(
+        (state) => state.ongoingThreadId?.length !== 0 && !!abortController
+    );
+
+    const onAbort = useCallback(
+        (event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            abortController?.abort();
+        },
+        [abortController]
     );
 
     const isLimitReached = useAppContext((state) => {
@@ -86,20 +101,39 @@ export const QueryForm = ({ onSubmit, variant }: QueryFormProps): JSX.Element =>
                         shrink: true,
                     }}
                     fullWidth
-                    multiline
-                    minRows={variant === 'new' ? 6 : 4}
+                    required
+                    validation={{ pattern: /[^\s]+/ }}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
                     disabled={!canEditThread}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                {canPauseThread ? (
+                                    <IconButton
+                                        data-testid="Pause Thread"
+                                        onClick={(event) => {
+                                            onAbort(event);
+                                        }}>
+                                        <StopCircleOutlinedIcon fontSize="large" />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton
+                                        type="submit"
+                                        data-testid="Submit Prompt Button"
+                                        disabled={
+                                            isSelectedThreadLoading ||
+                                            isLimitReached ||
+                                            !canEditThread
+                                        }>
+                                        <ArrowCircleUpIcon fontSize="large" />
+                                    </IconButton>
+                                )}
+                            </InputAdornment>
+                        ),
+                    }}
                 />
                 <Stack direction="row" gap={2} alignItems="center">
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        data-testid="Submit Prompt Button"
-                        disabled={isSelectedThreadLoading || isLimitReached || !canEditThread}>
-                        Submit
-                    </Button>
                     {isLimitReached && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You have reached maximum thread length. Please start a new thread.
