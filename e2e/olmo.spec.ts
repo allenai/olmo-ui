@@ -1,3 +1,8 @@
+import {
+    firstThreadMessageId,
+    secondThreadMessageId,
+} from '@/mocks/handlers/messageStreamHandlers';
+
 import { expect, test } from './playwright-utils';
 
 test('can send prompt in Olmo Playground', async ({ page }) => {
@@ -7,7 +12,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('Can you tell me a friday joke?');
+    await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
     await page.getByTestId('Submit Prompt Button').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
@@ -19,7 +24,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.getByRole('button', { name: 'History' }).click();
     await expect(page.getByText('Today')).toBeVisible();
     await expect(page.getByRole('link', { name: 'User message' })).toBeVisible();
-    await page.getByTestId('Close History Drawer').click();
+    await page.getByRole('button', { name: 'close drawer' }).click();
 
     // Send a second message in the thread
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
@@ -31,19 +36,26 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await expect(page.getByText('This is the first response.')).toBeVisible();
     await expect(page.getByText('This is the second response.')).toBeVisible();
     expect(page.url()).toContain(selectedThreadId);
+});
 
-    // Look at another thread
+test('can load threads from history drawer', async ({ page }) => {
+    // Check the first existing thread
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'History' }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
-    await page.getByTestId('Close History Drawer').click();
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'close drawer' }).click();
     await expect(page.getByText('Ether')).toBeVisible();
+    expect(page.url()).toContain(firstThreadMessageId);
 
-    // Go back to the first thread and make sure it's still showing all the messages
+    // Check the second existing thread
     await page.getByRole('button', { name: 'History' }).click();
-    await page.getByTestId('Drawer').getByRole('link', { name: 'User message' }).click();
-    await page.getByTestId('Close History Drawer').click();
-    await expect(page.getByText('This is the first response.')).toBeVisible();
-    await expect(page.getByText('This is the second response.')).toBeVisible();
+    await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'close drawer' }).click();
+    await expect(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkayOkay')).toBeVisible();
+    expect(page.url()).toContain(secondThreadMessageId);
 });
 
 test('can search pretraining documents in DataSet Explorer', async ({ page }) => {
