@@ -48,7 +48,6 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
-    ongoingThreadId: string | null;
     streamingMessageId?: string;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
@@ -70,7 +69,6 @@ export interface ThreadUpdateSlice {
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
-    ongoingThreadId: null,
     inferenceOpts: {},
     postMessageInfo: {},
 
@@ -120,7 +118,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 state.abortController = null;
-                state.ongoingThreadId = null;
                 state.postMessageInfo.loading = false;
                 state.postMessageInfo.data = finalMessage;
                 state.postMessageInfo.error = false;
@@ -166,11 +163,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             for await (const message of messageChunks) {
                 if (isFirstMessage(message)) {
                     const parsedMessage = parseMessage(message);
-                    set((state) => {
-                        state.ongoingThreadId = parsedMessage.children?.length
-                            ? parsedMessage.children[0].id
-                            : null;
-                    });
                     if (isCreatingNewThread) {
                         setSelectedThread(parsedMessage);
                         await router.navigate(links.thread(parsedMessage.id));
@@ -222,7 +214,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             set(
                 (state) => {
                     state.abortController = null;
-                    state.ongoingThreadId = null;
                     state.postMessageInfo.loading = false;
                     state.postMessageInfo.error = true;
                 },
@@ -312,9 +303,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     set(
                         (state) => {
                             branch(state).unshift(msg);
-                            state.ongoingThreadId = msg.children?.length
-                                ? msg.children[0].id
-                                : null;
 
                             // Expand the thread so that the response is visible as it's streamed to the client.(only applied to the pre-refresh UI)
                             state.expandedThreadID = msg.root;
@@ -384,7 +372,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             set(
                 (state) => {
                     state.abortController = null;
-                    state.ongoingThreadId = null;
                     state.postMessageInfo.loading = false;
                     state.postMessageInfo.data = branch(state)[0];
                     state.postMessageInfo.error = false;
@@ -420,7 +407,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             set(
                 (state) => {
                     state.abortController = null;
-                    state.ongoingThreadId = null;
                     state.postMessageInfo.loading = false;
                     state.postMessageInfo.error = true;
                 },

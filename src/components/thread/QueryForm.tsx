@@ -45,7 +45,8 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
 
     const abortController = useAppContext((state) => state.abortController);
     const canPauseThread = useAppContext(
-        (state) => state.ongoingThreadId?.length !== 0 && !!abortController
+        (state) =>
+            !!abortController && !!state.streamingMessageId && !!state.postMessageInfo.loading
     );
 
     const onAbort = useCallback(
@@ -110,11 +111,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                         endAdornment: (
                             <InputAdornment position="end">
                                 {canPauseThread ? (
-                                    <IconButton
-                                        data-testid="Pause Thread"
-                                        onClick={(event) => {
-                                            onAbort(event);
-                                        }}>
+                                    <IconButton data-testid="Pause Thread" onClick={onAbort}>
                                         <StopCircleOutlinedIcon fontSize="large" />
                                     </IconButton>
                                 ) : (
