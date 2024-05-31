@@ -1,5 +1,5 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
@@ -115,7 +115,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                                         onClick={(event) => {
                                             onAbort(event);
                                         }}>
-                                        <PauseCircleOutlineIcon />
+                                        <StopCircleOutlinedIcon />
                                     </IconButton>
                                 ) : (
                                     <IconButton
