@@ -115,7 +115,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                                         onClick={(event) => {
                                             onAbort(event);
                                         }}>
-                                        <StopCircleOutlinedIcon />
+                                        <StopCircleOutlinedIcon fontSize="large" />
                                     </IconButton>
                                 ) : (
                                     <IconButton
@@ -126,7 +126,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                                             isLimitReached ||
                                             !canEditThread
                                         }>
-                                        <ArrowCircleUpIcon />
+                                        <ArrowCircleUpIcon fontSize="large" />
                                     </IconButton>
                                 )}
                             </InputAdornment>
