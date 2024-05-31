@@ -11,7 +11,7 @@ const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',
 };
 
-const streamingMessageStyle: SxProps = {
+const streamingMessageIndicatorStyle: SxProps = {
     '&::after': {
         borderRadius: 5,
         bgcolor: 'primary.dark',
@@ -42,7 +42,7 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
         const showBlueDot =
             state.streamingMessageId === messageId && !!state.postMessageInfo.loading;
         return showBlueDot
-            ? { ...sharedMessageStyle, ...streamingMessageStyle }
+            ? { ...sharedMessageStyle, ...streamingMessageIndicatorStyle }
             : sharedMessageStyle;
     });
 
