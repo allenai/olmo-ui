@@ -22,12 +22,17 @@
   resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-1.2.0.tgz#dd80174efba499da0f8bd419d2f6e384ee59b53c"
   integrity sha512-Rbkua9zS673S+2bar9QadVk7QJwszR8tPNVC6v1r+2WfrTZLsPC90Zkg4lnwsAWpf47LX4Gii/pLHjFQRhklng==
 
-"@allenai/varnish2@1.2.1":
+"@allenai/varnish-theme@^1.2.1":
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-1.2.1.tgz#1ec33d7758af7fea13b76eedcb9b9fa6b06653ae"
-  integrity sha512-BaDI9puaZwWYwPXP9mS+8VwvdbeUWSBokrxR6mdZESk2b0lhQ/hnK0zQ+YHMNHmH6XwTe+JbY4MBs5GZMsqClw==
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-1.2.1.tgz#c2dfa676c65c59ffdec27b0e9edc3b1b77d7dd81"
+  integrity sha512-z3FjvjYrSNa5KiJPrs7FXK5cQkGlYNXRl2TA5vMzqZ4ZtcILNUZMVLNHFwCyILUmlnX8LCVPZIdUl0BAE/T0CA==
+
+"@allenai/varnish2@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-1.2.2.tgz#650f440def8b433647dff33de309338b995a6fd9"
+  integrity sha512-wlS/3IqJWfA73N5SCtdiKvTswHs45ul5+0F5W2Zj1N2lQbjXumK4NpGeEzCiDQ/d5QRAXnntcnarRUWClslUIA==
   dependencies:
-    "@allenai/varnish-theme" "^1.2.0"
+    "@allenai/varnish-theme" "^1.2.1"
     react-markdown "^9.0.1"
     remark-gfm "^4.0.0"
 

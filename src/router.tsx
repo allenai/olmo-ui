@@ -8,86 +8,23 @@ import {
     logoutAction,
     // requireAuthorizationLoader,
 } from './api/auth0';
-import { App } from './App';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
-import { Admin } from './pages/Admin';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
-import { PromptTemplates } from './pages/PromptTemplates';
 import { Search, searchPageLoader } from './pages/Search';
-import { Thread } from './pages/Thread';
 import {
     handleRevalidation,
     resetSelectedThreadLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-
-const routes = [
-    {
-        path: '/',
-        element: (
-            <VarnishedApp>
-                <App />
-            </VarnishedApp>
-        ),
-        errorElement: <ErrorPage />,
-        children: [
-            {
-                path: '/',
-                element: <Home />,
-            },
-            {
-                path: '/document/:id',
-                element: <Document />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/dolma',
-                element: <DolmaExplorer />,
-                errorElement: <ErrorPage />,
-            },
-            {
-                path: '/search',
-                element: <Search />,
-                errorElement: <ErrorPage />,
-                loader: searchPageLoader,
-            },
-            {
-                path: '/thread/:id',
-                element: <Thread />,
-            },
-            {
-                path: '/prompttemplates',
-                element: <PromptTemplates />,
-            },
-            {
-                path: '/prompt-templates',
-                element: <PromptTemplates />,
-            },
-            {
-                path: '/admin',
-                element: <Admin />,
-            },
-            {
-                path: '/*',
-                element: (
-                    <VarnishedApp>
-                        <NotFound />
-                    </VarnishedApp>
-                ),
-            },
-        ],
-    },
-];
 
 const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
@@ -107,7 +44,7 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
     );
 };
 
-export const uiRefreshRoutes: RouteObject[] = [
+export const routes: RouteObject[] = [
     {
         path: links.login(),
         action: loginAction,
@@ -215,6 +152,4 @@ export const uiRefreshRoutes: RouteObject[] = [
     },
 ];
 
-const searchParams = new URL(window.location.href).searchParams;
-const isUIRefreshEnabled = searchParams.get('isUIRefreshEnabled') !== 'false';
-export const router = createBrowserRouter(isUIRefreshEnabled ? uiRefreshRoutes : routes);
+export const router = createBrowserRouter(routes);
