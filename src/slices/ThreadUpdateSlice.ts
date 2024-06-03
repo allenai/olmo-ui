@@ -175,7 +175,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     const streamingMessage = (parsedMessage.children || []).find(
                         (childMessage) => childMessage.content.length === 0
                     );
-                    set({ streamingMessageId: streamingMessage?.id || '' });
+                    set({ streamingMessageId: streamingMessage?.id });
                 }
 
                 if (isMessageChunk(message)) {
