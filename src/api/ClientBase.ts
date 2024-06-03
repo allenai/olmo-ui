@@ -1,4 +1,3 @@
-import { auth0Client } from './auth0';
 import { error } from './error';
 
 export abstract class ClientBase {
