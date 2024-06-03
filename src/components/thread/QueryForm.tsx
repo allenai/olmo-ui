@@ -102,6 +102,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                     }}
                     fullWidth
                     required
+                    multiline
                     validation={{ pattern: /[^\s]+/ }}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
