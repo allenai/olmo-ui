@@ -1,7 +1,13 @@
 import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
-import { loginAction, loginLoader, loginResultLoader, logoutAction } from './api/auth0';
+import {
+    loginAction,
+    loginLoader,
+    loginResultLoader,
+    logoutAction,
+    // requireAuthorizationLoader,
+} from './api/auth0';
 import { App } from './App';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
