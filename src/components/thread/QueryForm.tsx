@@ -1,7 +1,7 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import { MessagePost } from '@/api/Message';
@@ -90,6 +90,13 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
         formContext.reset();
     };
 
+    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            await formContext.handleSubmit(handleSubmit)();
+        }
+    };
+
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
             <Stack gap={1.5} alignItems="flex-start">
@@ -101,12 +108,13 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                         shrink: true,
                     }}
                     fullWidth
-                    required
                     multiline
+                    required
                     validation={{ pattern: /[^\s]+/ }}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
                     disabled={!canEditThread}
+                    onKeyDown={handleOnKeyDown}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
