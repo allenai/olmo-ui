@@ -25,6 +25,23 @@ export abstract class ClientBase {
         }
     };
 
+    private createStandardHeaders = async (headers?: HeadersInit) => {
+        const standardHeaders = new Headers(headers);
+        standardHeaders.set('Content-Type', 'application/json');
+
+        // TODO: put this back when we start handling auth0 login again.
+        // Theres ocassaionally a problem with getToken failing if someone isn't logged in
+        // const token = await auth0Client.getToken().catch((error: unknown) => {
+        //     console.error('Error getting token: ', error);
+        //     return undefined;
+        // });
+        // if (token) {
+        //     standardHeaders.set('Authorization', `Bearer ${token}`);
+        // }
+
+        return standardHeaders;
+    };
+
     /**
      * Your standard JS fetch but with OLMO UI error, auth, and type handling. Accepts the same parameters as normal fetch
      * @returns The JSON response body of the response typed as the type you passed in
@@ -33,17 +50,16 @@ export abstract class ClientBase {
         url: Parameters<typeof fetch>[0],
         opts: Parameters<typeof fetch>[1] = {}
     ): Promise<T> => {
-        const clonedOpts = { ...opts };
+        const fetchOptions = { ...opts };
 
-        const headers = new Headers(opts.headers);
-        headers.set('Content-Type', 'application/json');
-        clonedOpts.headers = headers;
+        const standardHeaders = await this.createStandardHeaders(opts.headers);
+        fetchOptions.headers = standardHeaders;
 
         if (!('credentials' in opts)) {
-            clonedOpts.credentials = 'include';
+            fetchOptions.credentials = 'include';
         }
 
-        const response = await fetch(url, clonedOpts);
+        const response = await fetch(url, fetchOptions);
         return this.unpack<T>(response);
     };
 

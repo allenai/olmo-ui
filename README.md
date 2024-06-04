@@ -4,7 +4,7 @@ https://olmo.allen.ai
 
 ## Contributing
 
-## Github setup
+### Github setup
 Olmo-Ui repo requires verify commit so it won't allow you to merge. If you run into the issue, here is the step below that you need to do to set it up
 Disclaimer: below is the instruction on how to set up verify commit using gpg please refer to docs for ssh-specific info(https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key#telling-git-about-your-ssh-key)
 1. Install gnupg
@@ -41,8 +41,23 @@ Disclaimer: below is the instruction on how to set up verify commit using gpg pl
     ```
     export GPG_TTY=$(tty)
     ```
+
 ### Getting Started
 
+#### Getting env variables
+The build will fail if you don't have the `AUTH0_CLIENT_ID` defined in your environment. 
+
+1. Create a .env.local file in the root `olmo-ui` directory
+    ```
+    touch .env.local
+    ```
+
+2. Get the Auth0 secrets from https://marina.apps.allenai.org/a/olmo-ui/s/auth0 and copy them into .env.local. The result will look like this:
+    ```
+    AUTH0_CLIENT_ID=<the secret client id>
+    ```
+
+#### Forwarding the API
 The UI depends on the [API](https://github.com/allenai/olmo-api). You'll need to forward a local port
 to the production API to get things working.
 
