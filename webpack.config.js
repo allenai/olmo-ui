@@ -88,7 +88,7 @@ module.exports = (env) => ({
             ENABLE_MOCKING: false,
             IS_UI_REFRESH_ENABLED: 'true',
             AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
-            AUTH0_CLIENT_ID: undefined,
+            AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
