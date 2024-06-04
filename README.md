@@ -44,19 +44,6 @@ Disclaimer: below is the instruction on how to set up verify commit using gpg pl
 
 ### Getting Started
 
-#### Getting env variables
-The build will fail if you don't have the `AUTH0_CLIENT_ID` defined in your environment. 
-
-1. Create a .env.local file in the root `olmo-ui` directory
-    ```
-    touch .env.local
-    ```
-
-2. Get the Auth0 secrets from https://marina.apps.allenai.org/a/olmo-ui/s/auth0 and copy them into .env.local. The result will look like this:
-    ```
-    AUTH0_CLIENT_ID=<the secret client id>
-    ```
-
 #### Forwarding the API
 The UI depends on the [API](https://github.com/allenai/olmo-api). You'll need to forward a local port
 to the production API to get things working.

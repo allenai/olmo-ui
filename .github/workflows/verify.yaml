@@ -36,8 +36,6 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - run: yarn build
-        env:
-          AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
 
   lint:
     timeout-minutes: 10

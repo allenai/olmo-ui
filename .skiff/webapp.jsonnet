@@ -423,16 +423,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
                                 {
                                     name: 'IS_UI_REFRESH_ENABLED',
                                     value: if env == 'refresh' then 'true' else 'false'
-                                },
-                                {
-                                    name: "AUTH0_CLIENT_ID",
-                                    valueFrom: {
-                                        secretKeyRef: {
-                                            name: "auth0",
-                                            key: "AUTH0_CLIENT_ID"
-                                        }
-                                    }
-                                }, 
+                                }
                             ],
                             resources: {
                                 requests: {
