@@ -6,7 +6,7 @@ import {
     loginLoader,
     loginResultLoader,
     logoutAction,
-    // requireAuthorizationLoader,
+    requireAuthorizationLoader,
 } from './api/auth0';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -62,6 +62,7 @@ export const routes: RouteObject[] = [
             </VarnishedApp>
         ),
         errorElement: <ErrorPage />,
+        loader: requireAuthorizationLoader,
         children: [
             {
                 path: links.playground,
