@@ -40,9 +40,9 @@ interface LLMMessageProps extends PropsWithChildren {
 
 const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
     const messageStyle = useAppContext((state) => {
-        const showBlueDot =
+        const shouldShowBlueDot =
             state.streamingMessageId === messageId && !!state.postMessageInfo.loading;
-        return showBlueDot
+        return shouldShowBlueDot
             ? { ...sharedMessageStyle, ...streamingMessageIndicatorStyle }
             : sharedMessageStyle;
     });
