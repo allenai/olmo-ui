@@ -5,6 +5,8 @@ import { SetupServerApi } from 'msw/node';
 vi.mock('zustand');
 vi.stubEnv('LLMX_API_URL', 'http://localhost:8080');
 vi.stubEnv('DOLMA_API_URL', '/api');
+vi.stubEnv('AUTH0_CLIENT_ID', 'client_id');
+vi.stubEnv('AUTH0_DOMAIN', 'domain');
 
 let server: SetupServerApi;
 

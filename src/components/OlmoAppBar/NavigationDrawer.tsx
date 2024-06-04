@@ -1,4 +1,5 @@
 import { logos } from '@allenai/varnish2/components';
+import { LoginOutlined as LoginIcon } from '@mui/icons-material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -12,10 +13,33 @@ import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/ma
 import { ComponentProps, useEffect } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth0';
 import { links } from '@/Links';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
+
+// We'll be using this soon, i figured we could keep it around
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Auth0LoginLink = () => {
+    const { isAuthenticated } = useUserAuthInfo();
+
+    if (isAuthenticated) {
+        return (
+            <NavigationLink icon={<LogoutIcon />} href={links.logout}>
+                Log Out
+            </NavigationLink>
+        );
+    }
+
+    const redirectSearchParams = new URLSearchParams();
+    redirectSearchParams.set('redirectTo', window.location.href);
+    return (
+        <NavigationLink icon={<LoginIcon />} href={links.login(window.location.href)}>
+            Log In
+        </NavigationLink>
+    );
+};
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -101,7 +125,7 @@ export const NavigationDrawer = ({
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
                         FAQ
                     </NavigationLink>
-                    <NavigationLink icon={<LogoutIcon />} href={links.logOut}>
+                    <NavigationLink icon={<LogoutIcon />} href={links.playground}>
                         Log Out
                     </NavigationLink>
                 </Stack>

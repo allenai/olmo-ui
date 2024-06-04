@@ -1,6 +1,13 @@
 import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
+import {
+    loginAction,
+    loginLoader,
+    loginResultLoader,
+    logoutAction,
+    // requireAuthorizationLoader,
+} from './api/auth0';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
@@ -39,6 +46,14 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 export const routes: RouteObject[] = [
     {
+        path: links.login(),
+        action: loginAction,
+        loader: loginLoader,
+    },
+    { path: links.logout, action: logoutAction, loader: logoutAction },
+    { path: links.loginResult, loader: loginResultLoader },
+    {
+        id: 'root',
         path: '/',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>

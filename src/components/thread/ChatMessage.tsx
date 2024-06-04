@@ -9,6 +9,7 @@ import { RobotAvatar } from '../avatars/RobotAvatar';
 
 const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',
+    wordBreak: 'break-word',
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
@@ -89,6 +90,7 @@ export const ChatMessage = ({
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
+            <MessageComponent messageId={messageId}>{children}</MessageComponent>
             {postMessageInfo.loading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
@@ -101,7 +103,6 @@ export const ChatMessage = ({
                         content={postMessageInfo.data.children[0].content}
                     />
                 )}
-            <MessageComponent messageId={messageId}>{children}</MessageComponent>
         </Stack>
     );
 };
