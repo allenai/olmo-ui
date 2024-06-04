@@ -59,6 +59,7 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
+            <MessageComponent>{children}</MessageComponent>
             {postMessageInfo.loading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
@@ -71,7 +72,6 @@ export const ChatMessage = ({ role: variant, children }: ChatMessageProps): JSX.
                         content={postMessageInfo.data.children[0].content}
                     />
                 )}
-            <MessageComponent>{children}</MessageComponent>
         </Stack>
     );
 };
