@@ -9,6 +9,7 @@ import { RobotAvatar } from '../avatars/RobotAvatar';
 
 const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',
+    wordBreak: 'break-word',
 };
 
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
