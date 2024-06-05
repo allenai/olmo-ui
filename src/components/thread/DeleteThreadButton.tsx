@@ -15,12 +15,14 @@ export const DeleteThreadButton = () => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const isPastThirtyDays = useAppContext(
         (state) =>
-            state.selectedThreadMessagesById[state.selectedThreadRootId].isOlderThan30Days || false
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.selectedThreadMessagesById[state.selectedThreadRootId]?.isOlderThan30Days || false
     );
     const canUseDeleteButton = useAppContext(
         (state) =>
-            state.selectedThreadInfo.data?.creator === state.userInfo?.client &&
-            state.selectedThreadRootId.length !== 0
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.selectedThreadMessagesById[state.selectedThreadRootId]?.creator ===
+            state.userInfo?.client
     );
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 

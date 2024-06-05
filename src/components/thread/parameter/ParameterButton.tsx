@@ -8,9 +8,10 @@ import { PARAMETERS_DRAWER_ID } from './ParameterDrawer';
 export const ParameterButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const canUseParameterButton = useAppContext((state) =>
-        state.selectedThreadInfo.data
-            ? state.selectedThreadInfo.data.creator === state.userInfo?.client &&
-              state.selectedThreadRootId.length !== 0
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        state.selectedThreadMessagesById[state.selectedThreadRootId]
+            ? state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
+              state.userInfo?.client
             : true
     );
     const toggleParametersDrawer = () => {
