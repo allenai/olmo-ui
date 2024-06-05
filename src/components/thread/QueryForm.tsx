@@ -48,7 +48,10 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
 
     const abortController = useAppContext((state) => state.abortController);
     const canPauseThread = useAppContext(
-        (state) => state.ongoingThreadId?.length !== 0 && !!abortController
+        (state) =>
+            !!state.streamingMessageId &&
+            state.streamPromptState === RemoteState.Loading &&
+            !!abortController
     );
 
     const onAbort = useCallback(
