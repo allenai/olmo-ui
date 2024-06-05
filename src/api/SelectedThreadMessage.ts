@@ -1,8 +1,7 @@
-import dayjs from 'dayjs';
-
 import { Label } from '@/api/Label';
 import { Message, MessageStreamErrorReason } from '@/api/Message';
 import { Role } from '@/api/Role';
+import { isOlderThan30Days } from '@/utils/date-utils';
 
 export interface SelectedThreadMessage {
     id: string;
@@ -16,12 +15,6 @@ export interface SelectedThreadMessage {
     isOlderThan30Days: boolean;
     parent?: string;
 }
-
-export const isOlderThan30Days = (createdDate: Date) => {
-    const targetDate = dayjs(createdDate).add(29, 'days').format('YYYY-MM-DD');
-
-    return dayjs().isAfter(targetDate, 'day');
-};
 
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
     const mappedChildren = message.children?.map((child) => child.id) ?? [];
