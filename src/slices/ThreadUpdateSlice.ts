@@ -142,7 +142,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             for await (const message of messageChunks) {
                 if (isFirstMessage(message)) {
                     const parsedMessage = parseMessage(message);
-
+                    set((state) => {
+                        state.ongoingThreadId = parsedMessage.children?.length
+                            ? parsedMessage.children[0].id
+                            : null;
+                    });
                     if (isCreatingNewThread) {
                         setSelectedThread(parsedMessage);
                         await router.navigate(links.thread(parsedMessage.id));

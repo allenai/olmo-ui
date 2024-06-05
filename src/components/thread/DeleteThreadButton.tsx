@@ -17,6 +17,11 @@ export const DeleteThreadButton = () => {
         (state) =>
             state.selectedThreadMessagesById[state.selectedThreadRootId].isOlderThan30Days || false
     );
+    const canUseDeleteButton = useAppContext(
+        (state) =>
+            state.selectedThreadInfo.data?.creator === state.userInfo?.client &&
+            state.selectedThreadRootId.length !== 0
+    );
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -49,6 +54,7 @@ export const DeleteThreadButton = () => {
                 startIcon={<DeleteOutlinedIcon />}
                 title="Delete Thread"
                 onClick={handleOnClick}
+                disabled={!canUseDeleteButton}
             />
             <DeleteThreadDialog
                 open={openDialog}

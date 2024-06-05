@@ -10,6 +10,7 @@ import { RobotAvatar } from '../avatars/RobotAvatar';
 
 const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',
+    wordBreak: 'break-word',
 };
 
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
@@ -64,6 +65,7 @@ export const ChatMessage = ({
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
+            <MessageComponent>{children}</MessageComponent>
             {streamPromptState === RemoteState.Loading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
@@ -71,7 +73,6 @@ export const ChatMessage = ({
             {!!finalMessageContent && (
                 <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
             )}
-            <MessageComponent>{children}</MessageComponent>
         </Stack>
     );
 };

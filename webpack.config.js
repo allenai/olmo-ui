@@ -9,6 +9,9 @@ const webpack = require('webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: ['.env', '.env.local'] });
 
 const path = require('path');
 
@@ -84,6 +87,9 @@ module.exports = (env) => ({
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
             IS_UI_REFRESH_ENABLED: 'true',
+            AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
+            AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
+            AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],
