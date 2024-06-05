@@ -16,6 +16,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
+import { RemoteState } from '@/contexts/util';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
@@ -30,15 +31,15 @@ export const HISTORY_DRAWER_ID: DrawerId = 'history';
 export const HistoryDrawer = (): JSX.Element => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const userInfo = useAppContext((state) => state.userInfo);
-    const getAllThreads = useAppContext((state) => state.getAllThreads);
-    const allThreadInfo = useAppContext((state) => state.allThreadInfo);
-    const threads = useAppContext((state) => state.threads);
+    const getMessageList = useAppContext((state) => state.getMessageList);
+    const messageListState = useAppContext((state) => state.messageListState);
+    const allThreads = useAppContext((state) => state.allThreads);
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
     };
     const hasMoreThreadsToFetch = useAppContext((state) => {
-        const totalThreadsOnServer = state.allThreadInfo.data.meta.total;
-        const loadedThreadCount = state.threads.length;
+        const totalThreadsOnServer = state.messageList.meta.total;
+        const loadedThreadCount = state.allThreads.length;
 
         return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
     });
@@ -49,7 +50,7 @@ export const HistoryDrawer = (): JSX.Element => {
 
     useEffect(() => {
         if (creator) {
-            getAllThreads(offset, creator, LIMIT);
+            getMessageList(offset, creator, LIMIT);
         }
     }, [creator]);
 
@@ -57,7 +58,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const threadsFromThisWeek: Message[] = [];
     const threadsOlderThanAWeek: Message[] = [];
 
-    threads.forEach((m) => {
+    allThreads.forEach((m) => {
         if (isCurrentDay(m.created)) {
             threadsFromToday.push(m);
         } else if (isPastWeek(m.created)) {
@@ -68,8 +69,8 @@ export const HistoryDrawer = (): JSX.Element => {
     });
 
     const handleScroll = () => {
-        if (!allThreadInfo.loading) {
-            getAllThreads(offset + PAGE_SIZE, creator, LIMIT);
+        if (messageListState !== RemoteState.Loading) {
+            getMessageList(offset + PAGE_SIZE, creator, LIMIT);
             setOffSet(offset + PAGE_SIZE);
         }
     };
@@ -83,10 +84,10 @@ export const HistoryDrawer = (): JSX.Element => {
     };
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: allThreadInfo.loading,
+        loading: messageListState === RemoteState.Loading,
         hasNextPage: hasMoreThreadsToFetch,
         onLoadMore: handleScroll,
-        disabled: allThreadInfo.error,
+        disabled: messageListState === RemoteState.Error,
         delayInMs: 100,
     });
 
@@ -141,7 +142,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     threads={threadsOlderThanAWeek}
                     hasDivider
                 />
-                {(hasMoreThreadsToFetch || allThreadInfo.loading) && (
+                {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
                     <ListItem ref={sentryRef}>
                         <ListItemText
                             sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}

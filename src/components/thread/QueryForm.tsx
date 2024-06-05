@@ -6,6 +6,7 @@ import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 
 import { MessagePost } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 
@@ -36,16 +37,21 @@ const useNewQueryFormHandling = () => {
 export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
-    const canEditThread = useAppContext((state) =>
-        state.selectedThreadInfo.data
-            ? state.selectedThreadInfo.data.creator === state.userInfo?.client &&
-              state.selectedThreadRootId.length !== 0
-            : true
-    );
+    const canEditThread = useAppContext((state) => {
+        // check for new thread & thread creator
+        return (
+            state.selectedThreadRootId === '' ||
+            state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
+                state.userInfo?.client
+        );
+    });
 
     const abortController = useAppContext((state) => state.abortController);
     const canPauseThread = useAppContext(
-        (state) => state.ongoingThreadId?.length !== 0 && !!abortController
+        (state) =>
+            !!state.streamingMessageId &&
+            state.streamPromptState === RemoteState.Loading &&
+            !!abortController
     );
 
     const onAbort = useCallback(
@@ -66,7 +72,9 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
         return isLimitReached;
     });
 
-    const isSelectedThreadLoading = useAppContext((state) => state.postMessageInfo.loading);
+    const isSelectedThreadLoading = useAppContext(
+        (state) => state.streamPromptState === RemoteState.Loading
+    );
 
     const lastMessageId = useAppContext((state) => {
         const messagesToShow = getSelectedMessagesToShow(state);
