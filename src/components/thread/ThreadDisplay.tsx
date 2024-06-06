@@ -6,6 +6,7 @@ import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
 import { ChatMessage } from './ChatMessage';
+import { MarkdownRenderer } from './MarkDownWithSyntax';
 import { MessageInteraction } from './MessageInteraction';
 
 interface MessageViewProps {
@@ -21,7 +22,7 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     return (
         <>
             <ChatMessage role={role} messageId={messageId}>
-                {content}
+                <MarkdownRenderer>{content}</MarkdownRenderer>
             </ChatMessage>
             <MessageInteraction
                 role={role}
