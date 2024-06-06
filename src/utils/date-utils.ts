@@ -22,3 +22,9 @@ export const isPastWeek = (date: Date): boolean => {
 
     return differenceInDays <= 7;
 };
+
+export const isOlderThan30Days = (createdDate: Date) => {
+    const targetDate = dayjs(createdDate).add(29, 'days').format('YYYY-MM-DD');
+
+    return dayjs().isAfter(targetDate, 'day');
+};

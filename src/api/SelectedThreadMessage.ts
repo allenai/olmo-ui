@@ -1,0 +1,47 @@
+import { Label } from '@/api/Label';
+import { Message, MessageStreamErrorReason } from '@/api/Message';
+import { Role } from '@/api/Role';
+import { isOlderThan30Days } from '@/utils/date-utils';
+
+export interface SelectedThreadMessage {
+    id: string;
+    childIds: string[];
+    selectedChildId?: string;
+    content: string;
+    role: Role;
+    labels: Label[];
+    creator: string;
+    isLimitReached: boolean;
+    isOlderThan30Days: boolean;
+    parent?: string;
+}
+
+const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
+    const mappedChildren = message.children?.map((child) => child.id) ?? [];
+    return {
+        id: message.id,
+        childIds: mappedChildren,
+        selectedChildId: mappedChildren[0],
+        content: message.content,
+        role: message.role,
+        labels: message.labels,
+        creator: message.creator,
+        isLimitReached: message.finish_reason === MessageStreamErrorReason.LENGTH,
+        isOlderThan30Days: isOlderThan30Days(message.created),
+        parent: message.parent ?? undefined,
+    };
+};
+
+export const mapMessages = (
+    message: Message,
+    messageList: SelectedThreadMessage[] = []
+): SelectedThreadMessage[] => {
+    const mappedMessage = mapMessageToSelectedThreadMessage(message);
+    messageList.push(mappedMessage);
+
+    message.children?.forEach((childMessage) => {
+        mapMessages(childMessage, messageList);
+    });
+
+    return messageList;
+};

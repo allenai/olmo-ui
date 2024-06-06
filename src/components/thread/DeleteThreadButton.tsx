@@ -1,5 +1,4 @@
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,25 +9,20 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton } from './ResponsiveButton';
 
-const isAfterThirtyDays = (selectedThreadDate: Date | undefined) => {
-    const targetDate = dayjs(selectedThreadDate).add(29, 'days').format('YYYY-MM-DD');
-
-    const isAfterThirtyDays = dayjs().isAfter(targetDate, 'day');
-
-    return isAfterThirtyDays;
-};
-
 export const DeleteThreadButton = () => {
     const nav = useNavigate();
     const deleteThread = useAppContext((state) => state.deleteThread);
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
-    const isPastThirtyDays = useAppContext((state) =>
-        isAfterThirtyDays(state.selectedThreadInfo.data?.created)
+    const isPastThirtyDays = useAppContext(
+        (state) =>
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.selectedThreadMessagesById[state.selectedThreadRootId]?.isOlderThan30Days || false
     );
     const canUseDeleteButton = useAppContext(
         (state) =>
-            state.selectedThreadInfo.data?.creator === state.userInfo?.client &&
-            state.selectedThreadRootId.length !== 0
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.selectedThreadMessagesById[state.selectedThreadRootId]?.creator ===
+            state.userInfo?.client
     );
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 

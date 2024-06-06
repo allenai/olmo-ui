@@ -1,8 +1,9 @@
 import { Box, Paper, Stack, SxProps, Typography } from '@mui/material';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
 import { RobotAvatar } from '../avatars/RobotAvatar';
@@ -10,20 +11,6 @@ import { RobotAvatar } from '../avatars/RobotAvatar';
 const sharedMessageStyle: SxProps = {
     whiteSpace: 'preserve',
     wordBreak: 'break-word',
-};
-
-const streamingMessageIndicatorStyle: SxProps = {
-    '&::after': {
-        borderRadius: 5,
-        bgcolor: 'primary.dark',
-        content: '""',
-        display: 'inline-block',
-        height: '1em',
-        width: '1em',
-        position: 'relative',
-        left: 3,
-        top: 3,
-    },
 };
 
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
@@ -34,19 +21,7 @@ const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     );
 };
 
-interface LLMMessageProps extends PropsWithChildren {
-    messageId: string;
-}
-
-const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
-    const messageStyle = useAppContext((state) => {
-        const shouldShowBlueDot =
-            state.streamingMessageId === messageId && !!state.postMessageInfo.loading;
-        return shouldShowBlueDot
-            ? { ...sharedMessageStyle, ...streamingMessageIndicatorStyle }
-            : sharedMessageStyle;
-    });
-
+const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <Paper
             variant="outlined"
@@ -56,13 +31,14 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
                 backgroundColor: (theme) => theme.palette.background.paper,
                 padding: 2,
             }}>
-            <Typography sx={messageStyle}>{children}</Typography>
+            <Typography sx={sharedMessageStyle}>{children}</Typography>
         </Paper>
     );
 };
 
-interface ChatMessageProps extends LLMMessageProps {
+interface ChatMessageProps extends PropsWithChildren {
     role: Role;
+    messageId: string;
 }
 
 export const ChatMessage = ({
@@ -70,17 +46,16 @@ export const ChatMessage = ({
     messageId,
     children,
 }: ChatMessageProps): JSX.Element => {
-    const postMessageInfo = useAppContext((state) => state.postMessageInfo);
-    const [announceToScreenReader, setAnnounceToScreenReader] = useState(false);
-
-    useEffect(() => {
-        // this prevents reading out of the last-generated LLM response
-        // in the case that a screen-reader user switches to an old thread from their history
-        // after a new prompt
-        if (postMessageInfo.loading) {
-            setAnnounceToScreenReader(true);
+    const streamPromptState = useAppContext((state) => state.streamPromptState);
+    const finalMessageContent = useAppContext((state) => {
+        if (
+            state.streamingMessageId !== messageId ||
+            state.streamPromptState !== RemoteState.Loaded
+        ) {
+            return null;
         }
-    }, [postMessageInfo.loading]);
+        return state.selectedThreadMessagesById[messageId].content || null;
+    });
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? null : <RobotAvatar />;
@@ -90,19 +65,14 @@ export const ChatMessage = ({
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
-            <MessageComponent messageId={messageId}>{children}</MessageComponent>
-            {postMessageInfo.loading && (
+            <MessageComponent>{children}</MessageComponent>
+            {streamPromptState === RemoteState.Loading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
             {/* This gets the latest LLM response to alert screen readers */}
-            {announceToScreenReader &&
-                !postMessageInfo.loading &&
-                postMessageInfo.data?.children !== undefined && (
-                    <ScreenReaderAnnouncer
-                        level="assertive"
-                        content={postMessageInfo.data.children[0].content}
-                    />
-                )}
+            {!!finalMessageContent && (
+                <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
+            )}
         </Stack>
     );
 };
