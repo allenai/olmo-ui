@@ -15,6 +15,7 @@ import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 
 import { ResponsiveButton } from './ResponsiveButton';
 
@@ -33,7 +34,11 @@ export const MessageInteraction = ({
 }: MessageInteractionProps): JSX.Element | null => {
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
-
+    const isUpdatingLLMMessage = useAppContext(
+        (state) =>
+            state.streamingMessageId === messageId &&
+            state.streamPromptState === RemoteState.Loading
+    );
     // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
     const [currentLabel, setCurrentLabel] = useState<Label | undefined>(
@@ -56,7 +61,7 @@ export const MessageInteraction = ({
         setCopySnackbarOpen(true);
     }, [content]);
 
-    if (role === Role.User) {
+    if (role === Role.User || isUpdatingLLMMessage) {
         return null;
     }
 

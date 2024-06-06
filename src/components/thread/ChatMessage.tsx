@@ -13,6 +13,20 @@ const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
 };
 
+const streamingMessageIndicatorStyle: SxProps = {
+    '&::after': {
+        borderRadius: 5,
+        bgcolor: 'primary.dark',
+        content: '""',
+        display: 'inline-block',
+        height: '1em',
+        width: '1em',
+        position: 'relative',
+        left: 3,
+        top: 3,
+    },
+};
+
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <Typography fontWeight="bold" sx={sharedMessageStyle}>
@@ -21,7 +35,19 @@ const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     );
 };
 
-const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
+interface LLMMessageProps extends PropsWithChildren {
+    messageId: string;
+}
+
+const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
+    const messageStyle = useAppContext((state) => {
+        const shouldShowStreamingIndicator =
+            state.streamingMessageId === messageId &&
+            state.streamPromptState === RemoteState.Loading;
+
+        return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
+    });
+
     return (
         <Paper
             variant="outlined"
@@ -31,7 +57,7 @@ const LLMMessage = ({ children }: PropsWithChildren): JSX.Element => {
                 backgroundColor: (theme) => theme.palette.background.paper,
                 padding: 2,
             }}>
-            <Typography sx={sharedMessageStyle}>{children}</Typography>
+            <Typography sx={messageStyle}>{children}</Typography>
         </Paper>
     );
 };
@@ -65,7 +91,7 @@ export const ChatMessage = ({
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
-            <MessageComponent>{children}</MessageComponent>
+            <MessageComponent messageId={messageId}>{children}</MessageComponent>
             {streamPromptState === RemoteState.Loading && (
                 <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
             )}
