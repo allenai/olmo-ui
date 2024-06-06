@@ -41,12 +41,11 @@ interface LLMMessageProps extends PropsWithChildren {
 
 const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
     const messageStyle = useAppContext((state) => {
-        const shouldShowBlueDot =
+        const shouldShowStreamingIndicator =
             state.streamingMessageId === messageId &&
             state.streamPromptState === RemoteState.Loading;
-        return shouldShowBlueDot
-            ? { ...sharedMessageStyle, ...streamingMessageIndicatorStyle }
-            : sharedMessageStyle;
+
+        return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
     });
 
     return (
@@ -63,7 +62,7 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
     );
 };
 
-interface ChatMessageProps extends LLMMessageProps {
+interface ChatMessageProps extends PropsWithChildren {
     role: Role;
     messageId: string;
 }
