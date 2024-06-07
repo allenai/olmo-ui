@@ -2,6 +2,7 @@ import { Container, Paper, PaperProps } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { ConsentBanner } from '@/analytics/consent/ConsentBanner';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 import { useAppContext } from '../AppContext';
@@ -76,6 +77,7 @@ export const NewApp = () => {
                         <MobilePageTitle />
                         <Outlet />
                         <Footer />
+                        <ConsentBanner />
                     </Container>
                 </>
             ) : null}

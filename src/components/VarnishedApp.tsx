@@ -6,6 +6,8 @@ import { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 
+import { ConsentBanner } from '@/analytics/consent/ConsentBanner';
+
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { olmoTheme } from '../olmoTheme';
 import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';

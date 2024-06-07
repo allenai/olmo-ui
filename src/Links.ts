@@ -25,4 +25,5 @@ export const links = {
     search: '/search',
     promptTemplates: '/prompt-templates',
     admin: '/admin',
+    privacyPolicy: 'https://allenai.org/privacy-policy',
 } as const;
