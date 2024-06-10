@@ -1,4 +1,4 @@
-import { Link, Typography } from '@mui/material';
+import { CardContent, Link, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 
@@ -12,12 +12,15 @@ const DOLMA_CONTENT =
 export const DolmaCard = () => {
     return (
         <ResponsiveCard>
-            <Typography variant="h1" align="center">
-                {DOLMA_TITLE}
-            </Typography>
-            <Typography variant="h5" align="center">
-                {DOLMA_CONTENT} <Link href={links.ourDatasets}>Hugging Face </Link>under license.
-            </Typography>
+            <CardContent sx={{ padding: (theme) => theme.spacing(4, 2) }}>
+                <Typography variant="h1" align="center">
+                    {DOLMA_TITLE}
+                </Typography>
+                <Typography variant="h5" align="center">
+                    {DOLMA_CONTENT} <Link href={links.ourDatasets}>Hugging Face </Link>under
+                    license.
+                </Typography>
+            </CardContent>
         </ResponsiveCard>
     );
 };
