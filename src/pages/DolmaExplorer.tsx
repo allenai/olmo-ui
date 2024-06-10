@@ -1,5 +1,4 @@
-import { Container } from '@mui/material';
-import styled from 'styled-components';
+import { Stack } from '@mui/material';
 
 import { DolmaCard } from '@/components/DolmaCard';
 
@@ -8,14 +7,10 @@ import { SearchForm } from '../components/dolma/SearchForm';
 
 export const DolmaExplorer = () => (
     <>
-        <CenterAlignedContainer>
+        <Stack sx={{ textAlign: 'center' }} spacing={2}>
             <DolmaCard />
             <SearchForm />
             <NewSearchPlaceholder />
-        </CenterAlignedContainer>
+        </Stack>
     </>
 );
-
-const CenterAlignedContainer = styled(Container)`
-    text-align: center;
-`;

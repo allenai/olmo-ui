@@ -3,11 +3,11 @@ import { PropsWithChildren } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
-import { useDesktopOrUp } from '../dolma/shared';
+import { useDesktopOrUp } from './dolma/shared';
 
 interface ThreadPageCardProps extends PropsWithChildren {}
 
-export const ThreadCard = ({ children }: ThreadPageCardProps): JSX.Element => {
+export const ResponsiveCard = ({ children }: ThreadPageCardProps): JSX.Element => {
     const isDesktopOrUp = useDesktopOrUp();
 
     return (
