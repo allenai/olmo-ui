@@ -2,9 +2,9 @@ import { Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
+import { ResponsiveCard } from '@/components/ResponsiveCard';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
-import { ThreadCard } from '@/components/thread/ThreadCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { links } from '@/Links';
 
@@ -24,10 +24,10 @@ export const UIRefreshThreadPage = () => {
             }}>
             <ThreadPageControls />
 
-            <ThreadCard>
+            <ResponsiveCard>
                 <Outlet />
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
-            </ThreadCard>
+            </ResponsiveCard>
 
             <SearchDatasetCard />
 
