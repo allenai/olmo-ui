@@ -6,14 +6,18 @@ import { useDesktopOrUp } from './dolma/shared';
 
 interface DolmaInformationCardProps {
     linkText: string;
+    linkUrl: string;
     title: string;
     buttonText: string;
+    buttonUrl: string;
 }
 
 export const DolmaInformationCard = ({
     linkText,
+    linkUrl,
     title,
     buttonText,
+    buttonUrl,
 }: DolmaInformationCardProps) => {
     const isDesktopOrUp = useDesktopOrUp();
 
@@ -47,7 +51,7 @@ export const DolmaInformationCard = ({
                     sx={{
                         padding: 0,
                     }}>
-                    <Link href="#" sx={{ color: (theme) => theme.palette.primary.light }}>
+                    <Link href={linkUrl} sx={{ color: (theme) => theme.palette.primary.light }}>
                         {linkText}
                     </Link>
                 </CardActions>
@@ -63,7 +67,7 @@ export const DolmaInformationCard = ({
                     sx={{
                         padding: 0,
                     }}>
-                    <Button size="small" variant="contained">
+                    <Button size="small" variant="contained" component={Link} href={buttonUrl}>
                         {buttonText}
                     </Button>
                 </CardActions>

@@ -29,15 +29,19 @@ export const DolmaCard = () => {
                     <Grid item xs={6} sx={{ display: 'flex' }}>
                         <DolmaInformationCard
                             linkText="Learn More"
+                            linkUrl="#"
                             title="How was Dolma Created?"
                             buttonText="Read the Blog"
+                            buttonUrl="#"
                         />
                     </Grid>
                     <Grid item xs={6} sx={{ display: 'flex' }}>
                         <DolmaInformationCard
                             linkText="Research"
+                            linkUrl="#"
                             title="Access the Dataset on Hugging Face"
                             buttonText="Get Started"
+                            buttonUrl="#"
                         />
                     </Grid>
                 </Grid>
@@ -45,13 +49,17 @@ export const DolmaCard = () => {
                 <Stack spacing={2}>
                     <DolmaInformationCard
                         linkText="Learn More"
+                        linkUrl="#"
                         title="How was Dolma Created?"
                         buttonText="Read the Blog"
+                        buttonUrl="#"
                     />
                     <DolmaInformationCard
                         linkText="Research"
+                        linkUrl="#"
                         title="Access the Dataset on Hugging Face"
                         buttonText="Get Started"
+                        buttonUrl="#"
                     />
                 </Stack>
             )}
