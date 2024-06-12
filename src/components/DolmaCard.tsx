@@ -32,7 +32,7 @@ export const DolmaCard = () => {
                             linkUrl="#"
                             title="How was Dolma Created?"
                             buttonText="Read the Blog"
-                            buttonUrl="#"
+                            buttonUrl={links.ourDatasets}
                         />
                     </Grid>
                     <Grid item xs={6} sx={{ display: 'flex' }}>
@@ -41,7 +41,7 @@ export const DolmaCard = () => {
                             linkUrl="#"
                             title="Access the Dataset on Hugging Face"
                             buttonText="Get Started"
-                            buttonUrl="#"
+                            buttonUrl={links.ourDatasets}
                         />
                     </Grid>
                 </Grid>
@@ -52,14 +52,14 @@ export const DolmaCard = () => {
                         linkUrl="#"
                         title="How was Dolma Created?"
                         buttonText="Read the Blog"
-                        buttonUrl="#"
+                        buttonUrl={links.ourDatasets}
                     />
                     <DolmaInformationCard
                         linkText="Research"
                         linkUrl="#"
                         title="Access the Dataset on Hugging Face"
                         buttonText="Get Started"
-                        buttonUrl="#"
+                        buttonUrl={links.ourDatasets}
                     />
                 </Stack>
             )}

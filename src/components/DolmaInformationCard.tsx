@@ -51,7 +51,11 @@ export const DolmaInformationCard = ({
                     sx={{
                         padding: 0,
                     }}>
-                    <Link href={linkUrl} sx={{ color: (theme) => theme.palette.primary.light }}>
+                    <Link
+                        href={linkUrl}
+                        sx={{ color: (theme) => theme.palette.primary.light }}
+                        target="_blank"
+                        rel="noopener noreferrer">
                         {linkText}
                     </Link>
                 </CardActions>
@@ -67,7 +71,13 @@ export const DolmaInformationCard = ({
                     sx={{
                         padding: 0,
                     }}>
-                    <Button size="small" variant="contained" component={Link} href={buttonUrl}>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        component={Link}
+                        href={buttonUrl}
+                        target="_blank"
+                        rel="noopener noreferrer">
                         {buttonText}
                     </Button>
                 </CardActions>
