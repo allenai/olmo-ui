@@ -31,7 +31,6 @@ export const DolmaInformationCard = ({
                 [theme.breakpoints.down(SMALL_LAYOUT_BREAKPOINT)]: {
                     padding: 3,
                     borderRadius: '0px',
-                    border: '0px',
                 },
             })}
             variant={isDesktopOrUp ? 'elevation' : 'outlined'}>
@@ -54,10 +53,9 @@ export const DolmaInformationCard = ({
                 </CardActions>
                 <Typography
                     variant="h4"
-                    component="div"
                     sx={{
                         color: (theme) => theme.palette.primary.contrastText,
-                        marginY: 0,
+                        marginY: 1,
                     }}>
                     {title}
                 </Typography>
