@@ -34,6 +34,7 @@ class Source(StrEnum):
     OpenWebMath = "proof-pile-2_open-web-math"
 
 
+
 # The maximum number of words to return when delivering body text. This is important to enforce
 # to avoid regurgitating copyrighted content.
 MaxWords = 150
