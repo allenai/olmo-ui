@@ -77,7 +77,12 @@ export const NewApp = () => {
                         <MobilePageTitle />
                         <Outlet />
                         <Footer />
-                        <ConsentBanner />
+                        <ConsentBanner
+                            sx={{
+                                position: 'absolute',
+                                bottom: 2,
+                            }}
+                        />
                     </Container>
                 </>
             ) : null}

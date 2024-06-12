@@ -9,10 +9,13 @@ export type TagManagerConsentType =
     | 'personalization_storage'
     | 'security_storage';
 
+function gtag(...args: unknown[]) {
+    window.dataLayer?.push(args);
+}
+
+const GOOGLE_CONSENT_KEY = 'google_consent';
+
 export const useGTMConsent = () => {
-    function gtag(...args: unknown[]) {
-        window.dataLayer?.push(args);
-    }
     useEffectOnce(() => {
         // adapted from https://developers.google.com/tag-platform/security/guides/consent?consentmode=basic
         window.dataLayer = window.dataLayer ?? [];
@@ -38,6 +41,13 @@ export const useGTMConsent = () => {
         );
 
         gtag('consent', 'update', mappedConsent);
+        localStorage.setItem(GOOGLE_CONSENT_KEY, JSON.stringify(mappedConsent));
+
+        const gtmScript = document.createElement('script');
+        gtmScript.async = true;
+        gtmScript.src = `https://www.googletagmanager.com/gtm.js?id=${process.env.GOOGLE_TAG_MANAGER_CONTAINER_ID}`;
+
+        document.head.insertBefore(gtmScript, document.head.childNodes[0]);
     };
 
     return { setGTMConsent };

@@ -1,4 +1,4 @@
-import { Alert, Button, Stack } from '@mui/material';
+import { Alert, Button, Stack, SxProps, Theme } from '@mui/material';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -6,7 +6,11 @@ import { links } from '@/Links';
 
 import { ConsentModal } from './ConsentModal';
 
-export const ConsentBanner = (): JSX.Element => {
+interface ConsentBannerProps {
+    sx?: SxProps<Theme>;
+}
+
+export const ConsentBanner = ({ sx }: ConsentBannerProps): JSX.Element => {
     const [isConsentModalOpen, setIsConsentModalOpen] = useState(false);
 
     return (
@@ -14,8 +18,17 @@ export const ConsentBanner = (): JSX.Element => {
             <Alert
                 severity="info"
                 icon={false}
+                sx={[
+                    {
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                    },
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    ...(Array.isArray(sx) ? sx : [sx]),
+                ]}
                 action={
-                    <Stack direction="row" gap={1}>
+                    <Stack direction="row" gap={1} flexWrap="wrap">
                         <Button
                             variant="outlined"
                             onClick={() => {

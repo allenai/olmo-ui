@@ -90,6 +90,7 @@ module.exports = (env) => ({
             AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
             AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
+            GOOGLE_TAG_MANAGER_CONTAINER_ID: 'GTM-MT269NK2',
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],
