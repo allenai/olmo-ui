@@ -1,10 +1,15 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 
-import { SearchForm } from '@/components/dolma/SearchForm';
 import { TabPanel } from '@/components/TabPanel';
 
-const tabs = [{ label: 'Search Dataset', component: <SearchForm /> }];
+import { SearchDataSet } from './SearchDataSet';
+import { SourcesAndDomains } from './SourcesAndDomains';
+
+const tabs = [
+    { label: 'Search Dataset', component: <SearchDataSet /> },
+    { label: 'Sources And Domains', component: <SourcesAndDomains /> },
+];
 
 export const DolmaTabs = () => {
     const [tabNumber, setTabNumber] = useState<number>(0);
@@ -20,7 +25,7 @@ export const DolmaTabs = () => {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box>
                 <Tabs value={tabNumber} onChange={handleTabChange} aria-label="custom tabs">
                     {tabs.map((tab, index) => (
                         <Tab key={index} label={tab.label} {...a11yProps(index)} />
