@@ -1,16 +1,20 @@
-from dataclasses import dataclass, field, asdict
-from . import config
-from enum import StrEnum
+import re
+import typing as t
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from enum import StrEnum
+
+import bs4
+import elasticsearch8 as es8
 from uniseg import wordbreak
 
-import typing as t
-import elasticsearch8 as es8
-import re
-import bs4
+from . import config
+
 
 class IndexName(StrEnum):
     Docs = "docs_v1.5_2023-11-02"
+    Docs_v1_7 = "docs_v1.7_2024-06-04"
+
 
 class Source(StrEnum):
     Gutenberg = "gutenberg"
@@ -20,13 +24,24 @@ class Source(StrEnum):
     S2 = "s2"
     Reddit = "reddit"
     Stack = "stack-dedup"
+    Stackexchange = "redpajama/stackexchange"
+    Megawika = "megawika"
+    Arxiv = "redpajama/arxiv"
+    Flan = "flan_v2"
+    Starcoder = "starcoder"
+    Falcon = "falcon-refinedweb/data"
+    AlgebraicStack = "proof-pile-2_algebraic-stack"
+    OpenWebMath = "proof-pile-2_open-web-math"
+
 
 # The maximum number of words to return when delivering body text. This is important to enforce
 # to avoid regurgitating copyrighted content.
 MaxWords = 150
 
+
 def is_word(s: str) -> bool:
     return re.match(r"^\w+$", s) is not None
+
 
 @dataclass
 class Span:
@@ -34,11 +49,18 @@ class Span:
     words: int
     highlight: bool = False
 
+
 def is_text(e: bs4.PageElement) -> bool:
     return isinstance(e, bs4.element.NavigableString)
 
+
 def is_highlight(e: bs4.PageElement) -> bool:
-    return isinstance(e, bs4.element.Tag) and e.name == "em" and e.get("data-dolma-highlight") == "true"
+    return (
+        isinstance(e, bs4.element.Tag)
+        and e.name == "em"
+        and e.get("data-dolma-highlight") == "true"
+    )
+
 
 @dataclass
 class Snippet:
@@ -63,10 +85,10 @@ class Snippet:
         i = len(self.spans) - 1
         while i > -1:
             if self.spans[i].text.strip() == "":
-                i-=1
+                i -= 1
                 continue
             break
-        return Snippet(self.spans[:i+1])
+        return Snippet(self.spans[: i + 1])
 
     @classmethod
     def from_body_text(cls, body: str) -> t.Self:
@@ -109,7 +131,9 @@ class Snippet:
                         text += w
                     spans.append(Span(text, words, highlight=True))
                 else:
-                    raise RuntimeError(f"Unexpected highlight element: {type(element)}: {element}")
+                    raise RuntimeError(
+                        f"Unexpected highlight element: {type(element)}: {element}"
+                    )
 
             running_total = sum([s.words() for s in snippets])
             remaining = MaxWords - running_total
@@ -118,6 +142,7 @@ class Snippet:
                 snippets.append(snippet)
 
         return snippets
+
 
 @dataclass
 class Document:
@@ -140,8 +165,16 @@ class Document:
     def from_mapping(cls, hit: t.Mapping[str, t.Any]) -> t.Self:
         src = hit["_source"]
         source = Source(src["source"])
-        added = datetime.fromisoformat(src["added"]) if src.get("added") is not None else None
-        created = datetime.fromisoformat(src["created"]) if src.get("created") is not None else None
+        added = (
+            datetime.fromisoformat(src["added"])
+            if src.get("added") is not None
+            else None
+        )
+        created = (
+            datetime.fromisoformat(src["created"])
+            if src.get("created") is not None
+            else None
+        )
 
         # The full archive path is something like
         # "s3://ai2-llm/pretraining-data/sources/olmo-mix/v1_5/documents/pes2o/pes2o_v2-0001.json.gz"
@@ -158,10 +191,18 @@ class Document:
         snippets = [Snippet.from_body_text(src["text"]).strip()]
 
         # TODO: set text for clients that should have access
-        fields={ **src, "source": source, "added": added, "created": created, "archive": sanitized_archive,
-                 "snippets": snippets, "text": None }
+        fields = {
+            **src,
+            "source": source,
+            "added": added,
+            "created": created,
+            "archive": sanitized_archive,
+            "snippets": snippets,
+            "text": None,
+        }
 
         return cls(**fields)
+
 
 @dataclass
 class SearchResult(Document):
@@ -179,30 +220,36 @@ class SearchResult(Document):
         else:
             snippets = d.snippets
 
-        return cls(**{ **asdict(d), "score": hit["_score"], "snippets": snippets })
+        return cls(**{**asdict(d), "score": hit["_score"], "snippets": snippets})
+
 
 @dataclass
 class SearchMeta:
     took_ms: int
     total: int
-    overflow: bool # if true, there are > 10k results
+    overflow: bool  # if true, there are > 10k results
+
 
 @dataclass
 class Filters:
     sources: list[Source] = field(default_factory=list)
     ids: list[str] = field(default_factory=list)
 
+
 class MatchType(StrEnum):
     """
     Dictates how the query should be matched against the documents.
     See https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#query-dsl-bool-query
     """
+
     Must = "must"
     Should = "should"
+
 
 class SnippetType(StrEnum):
     Short = "short"
     Long = "long"
+
 
 @dataclass
 class SearchRequest:
@@ -214,14 +261,17 @@ class SearchRequest:
     no_aggs: bool
     snippet: SnippetType
 
+
 @dataclass
 class SourceAggregation:
     source: Source
     count: int
 
+
 @dataclass
 class Aggregations:
     sources: list[SourceAggregation]
+
 
 @dataclass
 class SearchResults:
@@ -230,27 +280,30 @@ class SearchResults:
     results: list[SearchResult]
     aggregations: t.Optional[Aggregations] = None
 
+
 @dataclass
 class IndexMeta:
     # The number of documents in the index
     count: int
 
+
 class Client:
     def __init__(self, c: config.Elastic):
         self.config = c
-        self.es = es8.Elasticsearch(hosts=[c.endpoint], api_key=c.api_key, timeout=c.timeouts.all)
+        self.es = es8.Elasticsearch(
+            hosts=[c.endpoint], api_key=c.api_key_1_7, timeout=c.timeouts.all
+        )
 
-    def search_query(self, text: str, filters: Filters, match: MatchType = MatchType.Must) -> t.Mapping[str, t.Any]:
+    def search_query(
+        self, text: str, filters: Filters, match: MatchType = MatchType.Must
+    ) -> t.Mapping[str, t.Any]:
         # See:
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
         query: t.Mapping[str, t.Any] = {
             "bool": {
                 match: {
-                    "simple_query_string": {
-                        "query": text,
-                        "fields": ["text"]
-                    },
+                    "simple_query_string": {"query": text, "fields": ["text"]},
                 },
             }
         }
@@ -260,31 +313,29 @@ class Client:
         if len(filters.sources) > 0:
             tf["source"] = filters.sources
         if len(tf.keys()) > 0:
-            query["bool"]["filter"] = { "terms": tf }
+            query["bool"]["filter"] = {"terms": tf}
         return query
 
     def search(self, q: SearchRequest) -> SearchResults:
         query = self.search_query(q.query, q.filters, q.match)
         res = self.es.search(
-            index=IndexName.Docs,
+            index=IndexName.Docs_v1_7,
             query=query,
             highlight={
                 "fields": {
-                        "text": {
-                            "fragment_size": 150 * 4 if q.snippet == SnippetType.Long else 150 * 2,
-                            "number_of_fragments": 5 if q.snippet == SnippetType.Long else 1,
-                            "pre_tags": ['<em data-dolma-highlight="true">'],
-                            "post_tags": ['</em>']
-                        }
-                }
-            },
-            aggs={
-                "sources": {
-                    "terms": {
-                        "field": "source"
+                    "text": {
+                        "fragment_size": 150 * 4
+                        if q.snippet == SnippetType.Long
+                        else 150 * 2,
+                        "number_of_fragments": 5
+                        if q.snippet == SnippetType.Long
+                        else 1,
+                        "pre_tags": ['<em data-dolma-highlight="true">'],
+                        "post_tags": ["</em>"],
                     }
                 }
-            } if not q.no_aggs else None,
+            },
+            aggs={"sources": {"terms": {"field": "source"}}} if not q.no_aggs else None,
             size=q.size,
             from_=q.offset,
             timeout=f"{self.config.timeouts.search}s",
@@ -293,8 +344,11 @@ class Client:
         # The "relation" attribute indicates if there's more than 10k results, which Elasticsearch's
         # default maximum result set size.
         # See: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-your-data.html#track-total-hits
-        meta = SearchMeta(took_ms=res["took"], total=res["hits"]["total"]["value"],
-                          overflow=res["hits"]["total"]["relation"] == "gte")
+        meta = SearchMeta(
+            took_ms=res["took"],
+            total=res["hits"]["total"]["value"],
+            overflow=res["hits"]["total"]["relation"] == "gte",
+        )
         results = [SearchResult.from_hit(hit) for hit in res["hits"]["hits"]]
 
         aggregations = None
@@ -309,11 +363,10 @@ class Client:
 
     def document(self, id: str) -> t.Optional[Document]:
         try:
-            d = self.es.get(index=IndexName.Docs, id=id)
-            return Document.from_mapping(d) # type: ignore
+            d = self.es.get(index=IndexName.Docs_v1_7, id=id)
+            return Document.from_mapping(d)  # type: ignore
         except es8.exceptions.NotFoundError:
             return None
 
     def meta(self) -> IndexMeta:
-        return IndexMeta(self.es.count(index=IndexName.Docs).get("count", 0))
-
+        return IndexMeta(self.es.count(index=IndexName.Docs_v1_7).get("count", 0))
