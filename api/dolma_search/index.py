@@ -24,8 +24,14 @@ class Source(StrEnum):
     S2 = "s2"
     Reddit = "reddit"
     Stack = "stack-dedup"
-    StackExchange = "redpajama/stackexchange"
+    Stackexchange = "redpajama/stackexchange"
+    Megawika = "megawika"
+    Arxiv = "redpajama/arxiv"
+    Flan = "flan_v2"
     Starcoder = "starcoder"
+    Falcon = "falcon-refinedweb/data"
+    AlgebraicStack = "proof-pile-2_algebraic-stack"
+    OpenWebMath = "proof-pile-2_open-web-math"
 
 
 # The maximum number of words to return when delivering body text. This is important to enforce
