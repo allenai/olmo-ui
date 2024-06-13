@@ -24,6 +24,8 @@ class Source(StrEnum):
     S2 = "s2"
     Reddit = "reddit"
     Stack = "stack-dedup"
+    StackExchange = "redpajama/stackexchange"
+    Starcoder = "starcoder"
 
 
 # The maximum number of words to return when delivering body text. This is important to enforce
@@ -283,7 +285,7 @@ class Client:
     def __init__(self, c: config.Elastic):
         self.config = c
         self.es = es8.Elasticsearch(
-            hosts=[c.endpoint], api_key=c.api_key, timeout=c.timeouts.all
+            hosts=[c.endpoint], api_key=c.api_key_1_7, timeout=c.timeouts.all
         )
 
     def search_query(
