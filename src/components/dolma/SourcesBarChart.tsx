@@ -1,4 +1,8 @@
+import { LinearProgress } from '@mui/material';
 import { BarCustomLayerProps, ResponsiveBar } from '@nivo/bar';
+import { LoaderFunction, useLoaderData, useNavigation } from 'react-router-dom';
+
+import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
 import { staticData } from '../../api/dolma/staticData';
 import { ChartContainerSansLegend } from './sharedCharting';
@@ -10,12 +14,14 @@ export interface BarData {
     color: string;
 }
 
-interface Props {
-    data: BarData[];
-    sourceMap: staticData.Sources;
-}
+export const SourcesBarChart = () => {
+    const sourcesData = useLoaderData() as BarData[] | undefined;
+    const navigation = useNavigation();
 
-export const SourcesBarChart = ({ data }: Props) => {
+    const isLoading = navigation.state === 'loading';
+
+    const data = sourcesData || [];
+
     // Calculate the total sum of all data values
     const totalSum = data.reduce((acc, item) => acc + item.value, 0);
 
@@ -29,6 +35,10 @@ export const SourcesBarChart = ({ data }: Props) => {
 
     // Calculate tick values for the left axis
     const tickValues = [0, totalSum / 4, (totalSum * 2) / 4, (totalSum * 3) / 4, totalSum];
+
+    if (isLoading) {
+        return <LinearProgress />;
+    }
 
     return (
         <ChartContainerSansLegend>
@@ -78,4 +88,42 @@ export const SourcesBarChart = ({ data }: Props) => {
             />
         </ChartContainerSansLegend>
     );
+};
+
+export const SourcesBarChartLoader: LoaderFunction = async (): Promise<Response> => {
+    try {
+        const api = new StaticDataClient();
+
+        const sources = await api.getSources();
+
+        const newSources = Object.fromEntries(
+            Object.entries(sources).filter(([_k, v]) =>
+                v.staticData.includes(staticData.StaticDataType.SourceCounts)
+            )
+        );
+
+        const newData: BarData[] = [];
+        const data = await api.getSourceCounts();
+        Object.entries(data).forEach(([k, v]) => {
+            if (newSources[k]) {
+                newData.push({
+                    id: k,
+                    label: newSources[k].label,
+                    value: v,
+                    color: newSources[k].color,
+                });
+            }
+        });
+
+        return new Response(JSON.stringify(newData), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    } catch (error) {
+        console.error('Error in SourcesBarChartLoader:', error);
+        return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
 };

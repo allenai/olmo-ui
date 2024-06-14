@@ -1,9 +1,9 @@
-import { SourcesForBarChart } from './SourcesForBarChart';
+import { SourcesBarChart } from './SourcesBarChart';
 
 export const SourcesAndDomains = () => {
     return (
         <>
-            <SourcesForBarChart />
+            <SourcesBarChart />
         </>
     );
 };

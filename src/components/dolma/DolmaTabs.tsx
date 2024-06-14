@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 
 import { TabPanel } from '@/components/TabPanel';
 
+import { DocumentLengthWrapper } from '../DocumentLengthWrapper';
 import { SearchDataSet } from './SearchDataSet';
 import { SourcesAndDomains } from './SourcesAndDomains';
 
 const tabs = [
     { label: 'Search Dataset', component: <SearchDataSet /> },
     { label: 'Sources And Domains', component: <SourcesAndDomains /> },
+    { label: 'Document Length', component: <DocumentLengthWrapper /> },
 ];
 
 export const DolmaTabs = () => {
@@ -26,7 +28,10 @@ export const DolmaTabs = () => {
     return (
         <Box sx={{ width: '100%' }}>
             <Box>
-                <Tabs value={tabNumber} onChange={handleTabChange} aria-label="custom tabs">
+                <Tabs
+                    value={tabNumber}
+                    onChange={handleTabChange}
+                    aria-label="Dataset Explorer Pages">
                     {tabs.map((tab, index) => (
                         <Tab key={index} label={tab.label} {...a11yProps(index)} />
                     ))}
