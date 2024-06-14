@@ -9,4 +9,7 @@ export default defineConfig({
         setupFiles: ['./vitest-setup.ts'],
         exclude: [...configDefaults.exclude, 'e2e/*'],
     },
+    ssr: {
+        noExternal: [/^d3.*$/, /^@nivo.*$/],
+    },
 });
