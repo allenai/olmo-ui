@@ -3,14 +3,12 @@ import React, { useState } from 'react';
 
 import { TabPanel } from '@/components/TabPanel';
 
-import { DocumentLengthWrapper } from '../DocumentLengthWrapper';
 import { SearchDataSet } from './SearchDataSet';
 import { SourcesAndDomains } from './SourcesAndDomains';
 
 const tabs = [
     { label: 'Search Dataset', component: <SearchDataSet /> },
     { label: 'Sources And Domains', component: <SourcesAndDomains /> },
-    { label: 'Document Length', component: <DocumentLengthWrapper /> },
 ];
 
 export const DolmaTabs = () => {
