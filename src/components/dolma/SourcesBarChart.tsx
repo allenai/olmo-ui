@@ -61,10 +61,12 @@ export const SourcesBarChart = () => {
                         width: '90%',
                     },
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        width: '60%',
+                        width: '55%',
                     },
                 })}>
-                <Typography variant="h3">Sources</Typography>
+                <Typography variant="h3" sx={{ marginBottom: '-36px' }}>
+                    Sources
+                </Typography>
                 <ChartContainerSansLegend>
                     <ResponsiveBar
                         data={sourcesData.map((item) => ({ ...item }))}
