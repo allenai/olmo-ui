@@ -9,7 +9,7 @@ export default defineConfig({
         setupFiles: ['./vitest-setup.ts'],
         exclude: [...configDefaults.exclude, 'e2e/*'],
     },
-    // we are facing issue with nivo import so we are using this to resolve it
+    // we are facing issue with nivo import that make unit test won't run so we are using this to resolve it
     // Ref: https://github.com/plouc/nivo/issues/2310
     resolve: {
         mainFields: ['module', 'browser', 'jsnext:main', 'jsnext'],
