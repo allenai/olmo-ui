@@ -35,6 +35,8 @@ export const SourcesBarChart = () => {
     };
 
     // Calculate tick values for the left axis
+    // This creates an array with the tick values, ensuring that the tick values are evenly distributed from 0 to totalSum value of all sources.
+    // This array then will be used to display in % for the left axis value
     const tickValues = [0, totalSum / 4, (totalSum * 2) / 4, (totalSum * 3) / 4, totalSum];
 
     if (isLoading) {
