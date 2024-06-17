@@ -2,9 +2,9 @@ import { LinearProgress, Typography } from '@mui/material';
 import { BarCustomLayerProps, ResponsiveBar } from '@nivo/bar';
 import { LoaderFunction, useLoaderData, useNavigation } from 'react-router-dom';
 
+import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
-import { staticData } from '../../api/dolma/staticData';
 import { ResponsiveCard } from '../ResponsiveCard';
 import { ChartContainerSansLegend } from './sharedCharting';
 
