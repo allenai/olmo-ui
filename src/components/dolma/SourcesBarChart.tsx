@@ -1,10 +1,11 @@
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, Typography } from '@mui/material';
 import { BarCustomLayerProps, ResponsiveBar } from '@nivo/bar';
 import { LoaderFunction, useLoaderData, useNavigation } from 'react-router-dom';
 
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
 import { staticData } from '../../api/dolma/staticData';
+import { ResponsiveCard } from '../ResponsiveCard';
 import { ChartContainerSansLegend } from './sharedCharting';
 
 export interface BarData {
@@ -41,52 +42,57 @@ export const SourcesBarChart = () => {
     }
 
     return (
-        <ChartContainerSansLegend>
-            <ResponsiveBar
-                data={data.map((item) => ({ ...item }))}
-                keys={['value']}
-                indexBy="label"
-                label={({ data }) => formatValueAsPercentage(data.value)}
-                labelSkipWidth={12}
-                labelSkipHeight={12}
-                padding={0.5}
-                innerPadding={4}
-                colors={({ data }) => data.color}
-                margin={{ top: 50, right: 30, bottom: 100, left: 110 }}
-                groupMode="grouped"
-                axisLeft={{
-                    tickValues,
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legend: '% of Documents in Dataset',
-                    legendPosition: 'middle',
-                    legendOffset: -50,
-                    format: formatValueAsPercentage,
-                }}
-                axisBottom={{
-                    tickSize: 0,
-                    tickPadding: 15,
-                    tickRotation: 40.75,
-                    legend: 'Sources',
-                    legendPosition: 'middle',
-                    legendOffset: 60,
-                    truncateTickAt: 0,
-                }}
-                enableGridX={false}
-                enableGridY={false}
-                enableLabel={true}
-                layers={[
-                    'grid',
-                    'axes',
-                    'bars',
-                    'markers',
-                    'legends',
-                    'annotations',
-                    customLeftAxisLayer,
-                ]}
-            />
-        </ChartContainerSansLegend>
+        <ResponsiveCard>
+            <>
+                <Typography variant="h3">Sources</Typography>
+                <ChartContainerSansLegend>
+                    <ResponsiveBar
+                        data={data.map((item) => ({ ...item }))}
+                        keys={['value']}
+                        indexBy="label"
+                        label={({ data }) => formatValueAsPercentage(data.value)}
+                        labelSkipWidth={12}
+                        labelSkipHeight={12}
+                        padding={0.5}
+                        innerPadding={4}
+                        colors={({ data }) => data.color}
+                        margin={{ top: 50, right: 30, bottom: 100, left: 110 }}
+                        groupMode="grouped"
+                        axisLeft={{
+                            tickValues,
+                            tickSize: 5,
+                            tickPadding: 5,
+                            tickRotation: 0,
+                            legend: '% of Documents in Dataset',
+                            legendPosition: 'middle',
+                            legendOffset: -50,
+                            format: formatValueAsPercentage,
+                        }}
+                        axisBottom={{
+                            tickSize: 0,
+                            tickPadding: 15,
+                            tickRotation: 40.75,
+                            legend: 'Sources',
+                            legendPosition: 'middle',
+                            legendOffset: 60,
+                            truncateTickAt: 0,
+                        }}
+                        enableGridX={false}
+                        enableGridY={false}
+                        enableLabel={true}
+                        layers={[
+                            'grid',
+                            'axes',
+                            'bars',
+                            'markers',
+                            'legends',
+                            'annotations',
+                            customLeftAxisLayer,
+                        ]}
+                    />
+                </ChartContainerSansLegend>{' '}
+            </>
+        </ResponsiveCard>
     );
 };
 
