@@ -1,9 +1,10 @@
-import { LinearProgress, Typography } from '@mui/material';
+import { Box, LinearProgress, Typography } from '@mui/material';
 import { BarCustomLayerProps, ResponsiveBar } from '@nivo/bar';
 import { LoaderFunction, useLoaderData, useNavigation } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
+import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { ResponsiveCard } from '../ResponsiveCard';
 import { ChartContainerSansLegend } from './sharedCharting';
@@ -16,19 +17,19 @@ export interface BarData {
 }
 
 export const SourcesBarChart = () => {
-    const sourcesData = useLoaderData() as BarData[] | undefined;
+    const sourcesData = (useLoaderData() || []) as BarData[];
     const navigation = useNavigation();
 
     const isLoading = navigation.state === 'loading';
 
-    const data = sourcesData || [];
-
     // Calculate the total sum of all data values
-    const totalSum = data.reduce((acc, item) => acc + item.value, 0);
+    const totalSum = sourcesData.reduce((acc, item) => acc + item.value, 0);
 
     // Custom tick format function to display percentages
-    const formatValueAsPercentage = (value: number) => `${Math.round((value / totalSum) * 100)}%`;
-
+    const formatValueAsPercentage = (value: number) => {
+        const percentage = (value / totalSum) * 100;
+        return `${percentage.toFixed(2)}%`;
+    };
     // Custom layer to draw the left axis line
     const customLeftAxisLayer = ({ innerHeight }: BarCustomLayerProps<BarData>) => {
         return <line x1={0} y1={0} x2={0} y2={innerHeight} stroke="#000000" strokeWidth={1} />;
@@ -45,18 +46,34 @@ export const SourcesBarChart = () => {
 
     return (
         <ResponsiveCard>
-            <>
+            <Box
+                sx={(theme) => ({
+                    width: '100%',
+                    maxWidth: '100%',
+                    margin: '0 auto',
+                    [theme.breakpoints.down(SMALL_LAYOUT_BREAKPOINT)]: {
+                        width: '100%',
+                    },
+                    [theme.breakpoints.up(SMALL_LAYOUT_BREAKPOINT)]: {
+                        width: '100%',
+                    },
+                    [theme.breakpoints.up('md')]: {
+                        width: '90%',
+                    },
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        width: '60%',
+                    },
+                })}>
                 <Typography variant="h3">Sources</Typography>
                 <ChartContainerSansLegend>
                     <ResponsiveBar
-                        data={data.map((item) => ({ ...item }))}
+                        data={sourcesData.map((item) => ({ ...item }))}
                         keys={['value']}
                         indexBy="label"
                         label={({ data }) => formatValueAsPercentage(data.value)}
-                        labelSkipWidth={12}
-                        labelSkipHeight={12}
-                        padding={0.5}
-                        innerPadding={4}
+                        labelSkipWidth={0}
+                        labelSkipHeight={0}
+                        padding={0.1}
                         colors={({ data }) => data.color}
                         margin={{ top: 50, right: 30, bottom: 100, left: 110 }}
                         groupMode="grouped"
@@ -67,7 +84,7 @@ export const SourcesBarChart = () => {
                             tickRotation: 0,
                             legend: '% of Documents in Dataset',
                             legendPosition: 'middle',
-                            legendOffset: -50,
+                            legendOffset: -70,
                             format: formatValueAsPercentage,
                         }}
                         axisBottom={{
@@ -76,12 +93,15 @@ export const SourcesBarChart = () => {
                             tickRotation: 40.75,
                             legend: 'Sources',
                             legendPosition: 'middle',
-                            legendOffset: 60,
+                            legendOffset: 80,
                             truncateTickAt: 0,
+                            format: (value) => value, // Ensure all labels are shown
                         }}
                         enableGridX={false}
                         enableGridY={false}
                         enableLabel={true}
+                        minValue={0}
+                        maxValue="auto"
                         layers={[
                             'grid',
                             'axes',
@@ -91,9 +111,11 @@ export const SourcesBarChart = () => {
                             'annotations',
                             customLeftAxisLayer,
                         ]}
+                        // Add accessibility attributes
+                        aria-label="Bar Chart representing sources data"
                     />
-                </ChartContainerSansLegend>{' '}
-            </>
+                </ChartContainerSansLegend>
+            </Box>
         </ResponsiveCard>
     );
 };

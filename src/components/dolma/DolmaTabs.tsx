@@ -1,15 +1,8 @@
-import { Box, Tab, Tabs } from '@mui/material';
-import React, { useState } from 'react';
-
-import { TabPanel } from '@/components/TabPanel';
+import { Box, Stack, Tab, Tabs } from '@mui/material';
+import { useState } from 'react';
 
 import { SearchDataSet } from './SearchDataSet';
-import { SourcesAndDomains } from './SourcesAndDomains';
-
-const tabs = [
-    { label: 'Search Dataset', component: <SearchDataSet /> },
-    { label: 'Sources And Domains', component: <SourcesAndDomains /> },
-];
+import { SourcesBarChart } from './SourcesBarChart';
 
 export const DolmaTabs = () => {
     const [tabNumber, setTabNumber] = useState<number>(0);
@@ -18,28 +11,43 @@ export const DolmaTabs = () => {
         setTabNumber(newTabNumber);
     };
 
-    const a11yProps = (index: number) => ({
-        id: `tab-${index}`,
-        'aria-controls': `tabpanel-${index}`,
-    });
+    const handleTabClick = (event: React.MouseEvent<HTMLDivElement>, tabId: string) => {
+        event.preventDefault(); // Prevent default anchor behavior
+        const element = document.getElementById(tabId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Box>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
                     aria-label="Dataset Explorer Pages">
-                    {tabs.map((tab, index) => (
-                        <Tab key={index} label={tab.label} {...a11yProps(index)} />
-                    ))}
+                    <Tab
+                        label="Search Dataset"
+                        onClick={(event) => {
+                            handleTabClick(event, 'search-dataset');
+                        }}
+                    />
+                    <Tab
+                        label="Sources and Domains"
+                        onClick={(event) => {
+                            handleTabClick(event, 'sources-and-domains');
+                        }}
+                    />
                 </Tabs>
             </Box>
-            {tabs.map((tab, index) => (
-                <TabPanel key={index} value={tabNumber} index={index}>
-                    {tab.component}
-                </TabPanel>
-            ))}
+            <Stack gap={2}>
+                <Box id="search-dataset">
+                    <SearchDataSet />
+                </Box>
+                <Box id="sources-and-domains">
+                    <SourcesBarChart />
+                </Box>
+            </Stack>
         </Box>
     );
 };
