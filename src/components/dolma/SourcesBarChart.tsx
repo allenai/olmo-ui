@@ -71,7 +71,7 @@ export const SourcesBarChart = () => {
                         width: '55%',
                     },
                 })}>
-                <Typography variant="h3" sx={{ marginBottom: '-36px' }}>
+                <Typography variant="h3" sx={{ marginBottom: (theme) => theme.spacing(-4) }}>
                     Sources
                 </Typography>
                 <ChartContainerSansLegend>
