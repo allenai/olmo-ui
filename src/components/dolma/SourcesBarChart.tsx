@@ -1,10 +1,12 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { BarCustomLayerProps, ResponsiveBar } from '@nivo/bar';
 import { LoaderFunction, useLoaderData, useNavigation } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
+import { formatValueAsPercentage } from '@/util';
 
 import { ResponsiveCard } from '../ResponsiveCard';
 import { ChartContainerSansLegend } from './sharedCharting';
@@ -19,20 +21,25 @@ export interface BarData {
 export const SourcesBarChart = () => {
     const sourcesData = (useLoaderData() || []) as BarData[];
     const navigation = useNavigation();
+    const theme = useTheme(); // Access the Material-UI theme
 
     const isLoading = navigation.state === 'loading';
 
     // Calculate the total sum of all data values
     const totalSum = sourcesData.reduce((acc, item) => acc + item.value, 0);
 
-    // Custom tick format function to display percentages
-    const formatValueAsPercentage = (value: number) => {
-        const percentage = (value / totalSum) * 100;
-        return `${percentage.toFixed(2)}%`;
-    };
     // Custom layer to draw the left axis line
     const customLeftAxisLayer = ({ innerHeight }: BarCustomLayerProps<BarData>) => {
-        return <line x1={0} y1={0} x2={0} y2={innerHeight} stroke="#000000" strokeWidth={1} />;
+        return (
+            <line
+                x1={0}
+                y1={0}
+                x2={0}
+                y2={innerHeight}
+                stroke={theme.palette.text.primary}
+                strokeWidth={1}
+            />
+        );
     };
 
     // Calculate tick values for the left axis
@@ -72,7 +79,7 @@ export const SourcesBarChart = () => {
                         data={sourcesData.map((item) => ({ ...item }))}
                         keys={['value']}
                         indexBy="label"
-                        label={({ data }) => formatValueAsPercentage(data.value)}
+                        label={({ data }) => formatValueAsPercentage(data.value, totalSum)}
                         labelSkipWidth={0}
                         labelSkipHeight={0}
                         padding={0.1}
@@ -87,7 +94,7 @@ export const SourcesBarChart = () => {
                             legend: '% of Documents in Dataset',
                             legendPosition: 'middle',
                             legendOffset: -70,
-                            format: formatValueAsPercentage,
+                            format: (value) => formatValueAsPercentage(value as number, totalSum),
                         }}
                         axisBottom={{
                             tickSize: 0,
