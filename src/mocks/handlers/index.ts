@@ -40,6 +40,10 @@ export const handlers = [
         return HttpResponse.json(fakeSourceCount);
     }),
 
+    http.get(`${process.env.DOLMA_API_URL}/v1/meta`, () => {
+        return HttpResponse.json(fakeCount);
+    }),
+
     http.get(`${process.env.DOLMA_API_URL}/v1/search`, ({ request }) => {
         const searchParams = new URL(request.url).searchParams;
         const query = searchParams.get('query');
@@ -214,4 +218,8 @@ const fakeSourceCount: staticData.SourceCounts = {
     s2: 36921191,
     wikipedia: 6023854,
     gutenberg: 54489,
+};
+
+const fakeCount = {
+    count: 3103760832,
 };
