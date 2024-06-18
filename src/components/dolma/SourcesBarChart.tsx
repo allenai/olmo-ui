@@ -104,7 +104,7 @@ export const SourcesBarChart = () => {
                             legendPosition: 'middle',
                             legendOffset: 80,
                             truncateTickAt: 0,
-                            format: (value) => value, // Ensure all labels are shown
+                            format: (value) => value,
                         }}
                         enableGridX={false}
                         enableGridY={false}
@@ -120,8 +120,6 @@ export const SourcesBarChart = () => {
                             'annotations',
                             customLeftAxisLayer,
                         ]}
-                        // Add accessibility attributes
-                        aria-label="Bar Chart representing sources data"
                     />
                 </ChartContainerSansLegend>
             </Box>
