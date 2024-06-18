@@ -12,7 +12,7 @@ export const DolmaTabs = () => {
     };
 
     const handleTabClick = (event: React.MouseEvent<HTMLDivElement>, tabId: string) => {
-        event.preventDefault(); // Prevent default anchor behavior
+        event.preventDefault();
         const element = document.getElementById(tabId);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
