@@ -21,7 +21,15 @@ export const DolmaTabs = () => {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box
+                sx={{
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1000,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                    background: (theme) => theme.color2.N1.hex,
+                }}>
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
