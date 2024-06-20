@@ -1,14 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
-import {
-    loginAction,
-    loginLoader,
-    loginResultLoader,
-    logoutAction,
-    // requireAuthorizationLoader,
-} from './api/auth0';
-import { SourcesBarChartLoader } from './components/dolma/SourcesBarChart';
+import { loginAction, loginLoader, loginResultLoader, logoutAction } from './api/auth0';
+import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
@@ -114,7 +108,7 @@ export const routes: RouteObject[] = [
                 handle: {
                     title: 'Dataset Explorer',
                 },
-                loader: SourcesBarChartLoader,
+                loader: DolmaDataLoader,
             },
             {
                 path: links.search,

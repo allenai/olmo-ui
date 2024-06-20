@@ -1,8 +1,13 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
+import { LoaderFunction } from 'react-router-dom';
 
+import { staticData } from '@/api/dolma/staticData';
+import { StaticDataClient } from '@/api/dolma/StaticDataClient';
+
+import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchDataSet } from './SearchDataSet';
-import { SourcesBarChart } from './SourcesBarChart';
+import { BarData, SourcesBarChart } from './SourcesBarChart';
 
 export const DolmaTabs = () => {
     const [tabNumber, setTabNumber] = useState<number>(0);
@@ -52,10 +57,67 @@ export const DolmaTabs = () => {
                 <Box id="search-dataset">
                     <SearchDataSet />
                 </Box>
-                <Box id="sources-and-domains">
+                <Stack id="sources-and-domains" spacing={3}>
                     <SourcesBarChart />
-                </Box>
+                    <DomainsTable />
+                </Stack>
             </Stack>
         </Box>
     );
+};
+
+export interface DolmaResponse {
+    barData: BarData[];
+    domainData: DomainData[];
+}
+
+export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
+    try {
+        const api = new StaticDataClient();
+
+        const sources = await api.getSources();
+        const domains = await api.getDomains();
+        const newSources = Object.fromEntries(
+            Object.entries(sources).filter(([_k, v]) =>
+                v.staticData.includes(staticData.StaticDataType.SourceCounts)
+            )
+        );
+
+        const barData: BarData[] = [];
+        const sourceCounts = await api.getSourceCounts();
+        Object.entries(sourceCounts).forEach(([k, v]) => {
+            if (newSources[k]) {
+                barData.push({
+                    id: k,
+                    label: newSources[k].label,
+                    value: v,
+                    color: newSources[k].color,
+                });
+            }
+        });
+
+        const domainData: DomainData[] = [];
+        Object.entries(domains).forEach(([sourceKey, domainCountPairs]) => {
+            Object.entries(domainCountPairs).forEach(([domain, count]) => {
+                domainData.push({
+                    source: sources[sourceKey].label,
+                    domain,
+                    docCount: count,
+                });
+            });
+        });
+
+        const dolmaResponse: DolmaResponse = { barData, domainData };
+
+        return new Response(JSON.stringify(dolmaResponse), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    } catch (error) {
+        console.error('Error in SourcesBarChartLoader:', error);
+        return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
 };

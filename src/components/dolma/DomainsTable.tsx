@@ -2,6 +2,8 @@ import { Link, Paper, Typography } from '@mui/material';
 import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useLoaderData } from 'react-router-dom';
 
+import { DolmaResponse } from './DolmaTabs';
+
 export interface DomainData {
     source: string;
     domain: string;
@@ -16,7 +18,7 @@ export interface TreeData {
 }
 
 export const DomainsTable = () => {
-    const domainData = (useLoaderData() || []) as DomainData[];
+    const domainData = (useLoaderData() as DolmaResponse).domainData;
 
     const columns: GridColDef<DomainData>[] = [
         {
