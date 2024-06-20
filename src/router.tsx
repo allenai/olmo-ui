@@ -8,7 +8,7 @@ import {
     logoutAction,
     // requireAuthorizationLoader,
 } from './api/auth0';
-import { domainsLoader } from './components/dolma/Domains';
+import { SourcesBarChartLoader } from './components/dolma/SourcesBarChart';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
@@ -114,7 +114,7 @@ export const routes: RouteObject[] = [
                 handle: {
                     title: 'Dataset Explorer',
                 },
-                loader: domainsLoader,
+                loader: SourcesBarChartLoader,
             },
             {
                 path: links.search,

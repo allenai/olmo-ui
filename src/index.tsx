@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import { VarnishedApp } from './components/VarnishedApp';
-import { router } from './router';
 
 const enableMocking = async () => {
     if (process.env.NODE_ENV === 'production' || process.env.ENABLE_MOCKING !== 'true') {
@@ -21,7 +20,12 @@ if (!container) {
 }
 
 const root = createRoot(container);
-enableMocking().then(() => {
+enableMocking().then(async () => {
+    // We need to intiate the router in one place.
+    // If we import it directly it starts fetching things before MSW has a chance to initialize.
+    // Dynamically importing it gives us the best of both worlds here
+    const { router } = await import('./router');
+
     root.render(
         <RouterProvider
             router={router}
