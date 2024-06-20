@@ -29,7 +29,7 @@ export const DolmaTabs = () => {
             <Box
                 sx={{
                     position: 'sticky',
-                    top: 0,
+                    top: (theme) => theme.spacing(-4),
                     zIndex: 1000,
                     borderBottom: 1,
                     borderColor: 'divider',
