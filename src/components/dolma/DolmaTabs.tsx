@@ -5,10 +5,12 @@ import { json, LoaderFunction } from 'react-router-dom';
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
+import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchDataSet } from './SearchDataSet';
 import { useDesktopOrUp } from './shared';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
+import { WordDist } from './WordDist';
 
 export const DolmaTabs = () => {
     const isDesktopOrUp = useDesktopOrUp();
@@ -59,6 +61,12 @@ export const DolmaTabs = () => {
                             handleTabClick(event, 'domains');
                         }}
                     />
+                    <Tab
+                        label="Document Length"
+                        onClick={(event) => {
+                            handleTabClick(event, 'document-length');
+                        }}
+                    />
                 </Tabs>
             </Box>
             <Stack gap={2}>
@@ -70,6 +78,11 @@ export const DolmaTabs = () => {
                 </Box>
                 <Box id="domains">
                     <DomainsTable />
+                </Box>
+                <Box id="document-length">
+                    <ResponsiveCard>
+                        <WordDist />
+                    </ResponsiveCard>
                 </Box>
             </Stack>
         </Box>
