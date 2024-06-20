@@ -1,13 +1,6 @@
-import { Grid } from '@mui/material';
-import {
-    DataGrid,
-    GridColDef,
-    GridRenderCellParams,
-    GridValueGetterParams,
-} from '@mui/x-data-grid';
-import { Chip } from '@nivo/tooltip';
-
-import { staticData } from '../../api/dolma/staticData';
+import { Link, Paper, Typography } from '@mui/material';
+import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { useLoaderData } from 'react-router-dom';
 
 export interface DomainData {
     source: string;
@@ -22,47 +15,44 @@ export interface TreeData {
     children?: TreeData[];
 }
 
-interface Props {
-    domains: DomainData[];
-    sources: staticData.Sources;
-    loading?: boolean;
-}
+export const DomainsTable = () => {
+    const domainData = (useLoaderData() || []) as DomainData[];
 
-export const DomainsTable = ({ domains, sources, loading }: Props) => {
     const columns: GridColDef<DomainData>[] = [
         {
             field: 'domain',
             headerName: 'Domain',
             minWidth: 150,
-            flex: 2,
+            flex: 3,
+            renderCell: (params: GridRenderCellParams) => {
+                return (
+                    <Link
+                        href={`http://${params.value}`}
+                        target="_blank"
+                        underline="none"
+                        rel="noopener">
+                        <Typography
+                            sx={() => ({
+                                fontWeight: 700,
+                            })}>
+                            {params.value}
+                        </Typography>
+                    </Link>
+                );
+            },
         },
         {
             field: 'source',
             headerName: 'Source',
-            valueGetter: (params: GridValueGetterParams<DomainData>) => sources[params.value].label,
-            renderCell: (params: GridRenderCellParams<DomainData>) => (
-                <Grid
-                    container
-                    sx={{ alignItems: 'center' }}
-                    wrap="nowrap"
-                    direction="row"
-                    columnGap={1}>
-                    <Grid item>
-                        <Chip color={sources[params.row.source].color} />
-                    </Grid>
-                    <Grid item>{params.value}</Grid>
-                </Grid>
-            ),
             minWidth: 150,
-            flex: 1,
-            type: 'singleSelect',
-            valueOptions: Object.values(sources).map((s) => s.label),
+            flex: 2,
         },
         {
             field: 'docCount',
             headerName: 'Documents',
+            align: 'left',
+            headerAlign: 'left',
             sortComparator: (a: number, b: number) => a - b,
-            renderCell: (params: GridRenderCellParams<DomainData>) => params.value.toLocaleString(),
             minWidth: 150,
             flex: 1,
             type: 'number',
@@ -70,11 +60,27 @@ export const DomainsTable = ({ domains, sources, loading }: Props) => {
     ];
 
     return (
-        <>
+        <Paper
+            elevation={2}
+            sx={(theme) => ({
+                background: theme.palette.background.default,
+                borderRadius: theme.spacing(1.5),
+                padding: theme.spacing(4),
+            })}>
+            <Typography
+                variant="h3"
+                sx={(theme) => ({
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(2),
+                })}>
+                Domains
+            </Typography>
             <DataGrid
-                loading={loading}
+                loading={false}
                 getRowId={(row) => `${row.source}-${row.domain}`}
-                rows={domains}
+                rows={domainData}
+                columnHeaderHeight={32}
+                rowHeight={32}
                 columns={columns}
                 initialState={{
                     sorting: {
@@ -86,9 +92,18 @@ export const DomainsTable = ({ domains, sources, loading }: Props) => {
                         },
                     },
                 }}
-                pageSizeOptions={[10, 25, 50, 100]}
+                pageSizeOptions={[10, 25, 50]}
                 disableRowSelectionOnClick
+                sx={(theme) => ({
+                    border: 0,
+                    [`& .${gridClasses.withBorderColor}`]: {
+                        border: 0,
+                    },
+                    [`& .${gridClasses.row}:nth-of-type(odd) `]: {
+                        bgcolor: theme.palette.background.paper,
+                    },
+                })}
             />
-        </>
+        </Paper>
     );
 };

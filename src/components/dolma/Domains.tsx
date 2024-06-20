@@ -1,38 +1,34 @@
-import { useEffect, useState } from 'react';
+import { LoaderFunction } from 'react-router-dom';
 
-import { staticData } from '../../api/dolma/staticData';
 import { StaticDataClient } from '../../api/dolma/StaticDataClient';
-import { DomainData, DomainsTable } from './DomainsTable';
+import { DomainData } from './DomainsTable';
 
-export const Domains = () => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [sources, setSources] = useState<staticData.Sources>({});
-    const [domainData, setDomainData] = useState<DomainData[]>([]);
+export const domainsLoader: LoaderFunction = async (): Promise<Response> => {
+    try {
+        const api = new StaticDataClient();
 
-    const api = new StaticDataClient();
-
-    useEffect(() => {
-        setLoading(true);
-        api.getSources().then((s) => {
-            setSources(
-                Object.fromEntries(
-                    Object.entries(s).filter(([_k, v]) =>
-                        v.staticData.includes(staticData.StaticDataType.Domains)
-                    )
-                )
-            );
-            api.getDomains().then((data) => {
-                const newData: DomainData[] = [];
-                Object.entries(data).forEach(([kSource, vSource]) => {
-                    Object.entries(vSource).forEach(([kDomain, vDomain]) => {
-                        newData.push({ source: kSource, domain: kDomain, docCount: vDomain });
-                    });
+        const sources = await api.getSources();
+        const domains = await api.getDomains();
+        const domainData: DomainData[] = [];
+        Object.entries(domains).forEach(([sourceKey, domainCountPairs]) => {
+            Object.entries(domainCountPairs).forEach(([domain, count]) => {
+                domainData.push({
+                    source: sources[sourceKey].label,
+                    domain,
+                    docCount: count,
                 });
-                setDomainData(newData);
-                setLoading(false);
             });
         });
-    }, []);
 
-    return <DomainsTable sources={sources} domains={domainData} loading={loading} />;
+        return new Response(JSON.stringify(domainData), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    } catch (error) {
+        console.error('Error in DomainsLoader:', error);
+        return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
 };
