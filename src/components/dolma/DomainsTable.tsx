@@ -1,5 +1,6 @@
-import { Link, Paper, Typography } from '@mui/material';
+import { Link, Pagination, Paper, Typography } from '@mui/material';
 import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { DolmaResponse } from './DolmaTabs';
@@ -19,7 +20,10 @@ export interface TreeData {
 
 export const DomainsTable = () => {
     const domainData = (useLoaderData() as DolmaResponse).domainData;
-
+    const [page, setPage] = React.useState<number>(1);
+    const onPageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
     const columns: GridColDef<DomainData>[] = [
         {
             field: 'domain',
@@ -84,17 +88,26 @@ export const DomainsTable = () => {
                 columnHeaderHeight={32}
                 rowHeight={32}
                 columns={columns}
+                slots={{
+                    pagination: () => (
+                        <Pagination
+                            count={Math.ceil(domainData.length / 10)}
+                            page={page}
+                            onChange={onPageChange}
+                            showFirstButton
+                            showLastButton
+                        />
+                    ),
+                }}
+                paginationModel={{
+                    page: page - 1, // this is index
+                    pageSize: 10,
+                }}
                 initialState={{
                     sorting: {
                         sortModel: [{ field: 'docCount', sort: 'desc' }],
                     },
-                    pagination: {
-                        paginationModel: {
-                            pageSize: 10,
-                        },
-                    },
                 }}
-                pageSizeOptions={[10, 25, 50]}
                 disableRowSelectionOnClick
                 sx={(theme) => ({
                     border: 0,
@@ -103,6 +116,9 @@ export const DomainsTable = () => {
                     },
                     [`& .${gridClasses.row}:nth-of-type(odd) `]: {
                         bgcolor: theme.palette.background.paper,
+                    },
+                    [`& .${gridClasses.footerContainer}`]: {
+                        justifyContent: 'flex-start',
                     },
                 })}
             />
