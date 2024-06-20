@@ -18,6 +18,9 @@ export interface BarData {
     color: string;
 }
 
+const barChartAriaLabel =
+    'A bar chart with 7 bars shows the sources of data contained in Dolma. Common Crawl makes up the majority with 80.13% or x documents in the dataset. Reddit is 7.53% with x documents. C4 is 7.27% of the dataset with x documents. Stack Dedup is 4.21% with x documents. Semantic Scholar (pes2o) makes up 0.74% of the dataset with x documents. Wikipedia is 0.12% with x documents. Gutenberg makes up less than one hundredth of a percent of the overall dataset with x documents.';
+
 export const SourcesBarChart = () => {
     const sourcesData = (useLoaderData() || []) as BarData[];
     const navigation = useNavigation();
@@ -120,6 +123,7 @@ export const SourcesBarChart = () => {
                             'annotations',
                             customLeftAxisLayer,
                         ]}
+                        ariaLabel={barChartAriaLabel}
                     />
                 </ChartContainerSansLegend>
             </Box>
