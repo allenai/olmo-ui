@@ -27,11 +27,14 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                 options={value}
                 onChange={onChange}
                 renderTags={(stopWords: readonly string[], getTagProps) =>
-                    stopWords.map((option: string, index: number) => {
+                    stopWords.map((word: string, index: number) => {
+                        // Show special characters '\n' & '\t' in text on UI
+                        const visibleWords = word.replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+
                         // It's encouraged to use a static key prop so we pull it out here
                         const { key, ...tagProps } = getTagProps({ index });
 
-                        return <Chip label={option} key={key} {...tagProps} />;
+                        return <Chip label={visibleWords} key={key} {...tagProps} />;
                     })
                 }
                 renderInput={(params) => (

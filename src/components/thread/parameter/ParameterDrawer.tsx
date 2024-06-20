@@ -66,7 +66,12 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     ) => {
         switch (reason) {
             default: {
-                const uniqueStopWords = Array.from(new Set(value).values());
+                const uniqueStopWords = Array.from(
+                    new Set(
+                        value.map((val) => val.replace(/\\n/g, '\n').replace(/\\t/g, '\t'))
+                    ).values()
+                );
+
                 updateInferenceOpts({ stop: uniqueStopWords });
                 addSnackMessageDebounce();
                 break;
