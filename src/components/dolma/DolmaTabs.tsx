@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { json, LoaderFunction } from 'react-router-dom';
 
@@ -81,6 +81,7 @@ export const DolmaTabs = () => {
                 </Box>
                 <Box id="document-length">
                     <ResponsiveCard>
+                        <Typography variant="h3">Document Length</Typography>
                         <WordDist />
                     </ResponsiveCard>
                 </Box>

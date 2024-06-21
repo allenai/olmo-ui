@@ -44,7 +44,6 @@ export const DistChart = ({ data, mapData, sourceMap, categoryLabel }: Props) =>
         <ChartContainer
             $legendHeight={sourceCount * legendItemHeight}
             $legendOnRight={greaterThanSm}>
-            <Typography variant="h3">Document Length</Typography>
             <ResponsiveBar
                 theme={chartTheme}
                 keys={orderedSources.map(([k, _v]) => k)}
