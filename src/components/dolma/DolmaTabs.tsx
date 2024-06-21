@@ -1,14 +1,17 @@
-import { Box, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { json, LoaderFunction } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
+import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchDataSet } from './SearchDataSet';
 import { useDesktopOrUp } from './shared';
+import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
+import { WordDist } from './WordDist';
 
 export const DolmaTabs = () => {
     const isDesktopOrUp = useDesktopOrUp();
@@ -59,6 +62,12 @@ export const DolmaTabs = () => {
                             handleTabClick(event, 'domains');
                         }}
                     />
+                    <Tab
+                        label="Document Length"
+                        onClick={(event) => {
+                            handleTabClick(event, 'document-length');
+                        }}
+                    />
                 </Tabs>
             </Box>
             <Stack gap={2}>
@@ -71,14 +80,26 @@ export const DolmaTabs = () => {
                 <Box id="domains">
                     <DomainsTable />
                 </Box>
+                <Box id="document-length">
+                    <ResponsiveCard>
+                        <Typography variant="h3">Document Length</Typography>
+                        <WordDist />
+                    </ResponsiveCard>
+                </Box>
             </Stack>
         </Box>
     );
 };
 
+interface DocumentLengthData {
+    distData: DistData[];
+    mapDistData: MapDistData;
+    sources: staticData.Sources;
+}
 export interface DolmaResponse {
     barData: BarData[];
     domainData: DomainData[];
+    documentLengthData: DocumentLengthData;
 }
 
 export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
@@ -87,6 +108,8 @@ export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
 
         const sources = await api.getSources();
         const domains = await api.getDomains();
+        const words = await api.getWords();
+
         const newSources = Object.fromEntries(
             Object.entries(sources).filter(([_k, v]) =>
                 v.staticData.includes(staticData.StaticDataType.SourceCounts)
@@ -117,7 +140,19 @@ export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
             });
         });
 
-        const dolmaResponse: DolmaResponse = { barData, domainData };
+        const [distData, mapDistData] = getDistAndMapDistData(words, (n: number) =>
+            n.toLocaleString()
+        );
+
+        const dolmaResponse: DolmaResponse = {
+            barData,
+            domainData,
+            documentLengthData: {
+                distData,
+                mapDistData,
+                sources: newSources,
+            },
+        };
 
         return json(dolmaResponse, { status: 200 });
     } catch (error) {

@@ -1,42 +1,18 @@
 import { LinearProgress } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useLoaderData, useNavigation } from 'react-router-dom';
 
-import { staticData } from '../../api/dolma/staticData';
-import { StaticDataClient } from '../../api/dolma/StaticDataClient';
 import { DistChart } from './DistChart';
-import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
+import { DolmaResponse } from './DolmaTabs';
 
 export const WordDist = () => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [sources, setSources] = useState<staticData.Sources>();
-    const [distData, setDistData] = useState<DistData[]>([]);
-    const [mapDistData, setMapDistData] = useState<MapDistData>({});
+    const { distData, mapDistData, sources } = (useLoaderData() as DolmaResponse)
+        .documentLengthData;
 
-    const api = new StaticDataClient();
+    const navigation = useNavigation();
 
-    useEffect(() => {
-        setLoading(true);
-        api.getSources().then((s) => {
-            setSources(
-                Object.fromEntries(
-                    Object.entries(s).filter(([_k, v]) =>
-                        v.staticData.includes(staticData.StaticDataType.Words)
-                    )
-                )
-            );
-            api.getWords().then((words) => {
-                const [chartDistData, chartMapDistData] = getDistAndMapDistData(
-                    words,
-                    (n: number) => n.toLocaleString()
-                );
-                setDistData(chartDistData);
-                setMapDistData(chartMapDistData);
-                setLoading(false);
-            });
-        });
-    }, []);
+    const isLoading = navigation.state === 'loading';
 
-    if (loading || !sources || !distData || !distData.length) {
+    if (isLoading || !distData || !distData.length) {
         return <LinearProgress />;
     }
 
