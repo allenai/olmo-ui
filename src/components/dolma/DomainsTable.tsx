@@ -1,9 +1,10 @@
-import { Link, Pagination, Paper, Stack, Typography } from '@mui/material';
+import { Pagination, Paper, Stack, Typography } from '@mui/material';
 import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { DolmaResponse } from './DolmaTabs';
+import { DomainLink } from './DomainLink';
 import { useSmallLayoutOrUp } from './shared';
 
 export interface DomainData {
@@ -26,16 +27,6 @@ export const DomainsTable = () => {
     const onPageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
-    const renderDomainLink = (link: string) => (
-        <Link href={`http://${link}`} target="_blank" underline="none" rel="noopener">
-            <Typography
-                sx={() => ({
-                    fontWeight: 700,
-                })}>
-                {link}
-            </Typography>
-        </Link>
-    );
 
     const columns: GridColDef<DomainData>[] = [
         {
@@ -43,7 +34,9 @@ export const DomainsTable = () => {
             headerName: 'Domain',
             minWidth: 150,
             flex: 3,
-            renderCell: (params: GridRenderCellParams) => renderDomainLink(params.value as string),
+            renderCell: (params: GridRenderCellParams) => (
+                <DomainLink link={params.value as string} />
+            ),
         },
         {
             field: 'source',
@@ -69,7 +62,7 @@ export const DomainsTable = () => {
             flex: 3,
             renderCell: (params: GridRenderCellParams) => (
                 <Stack alignItems="flex-start">
-                    {renderDomainLink(params.value as string)}
+                    <DomainLink link={params.value as string} />
                     <Typography>{params.row.source}</Typography>
                 </Stack>
             ),

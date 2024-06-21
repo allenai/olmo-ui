@@ -1,6 +1,6 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-import { LoaderFunction } from 'react-router-dom';
+import { json, LoaderFunction } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
@@ -48,9 +48,15 @@ export const DolmaTabs = () => {
                         }}
                     />
                     <Tab
-                        label="Sources and Domains"
+                        label="Sources"
                         onClick={(event) => {
-                            handleTabClick(event, 'sources-and-domains');
+                            handleTabClick(event, 'sources');
+                        }}
+                    />
+                    <Tab
+                        label="Domains"
+                        onClick={(event) => {
+                            handleTabClick(event, 'domains');
                         }}
                     />
                 </Tabs>
@@ -59,10 +65,12 @@ export const DolmaTabs = () => {
                 <Box id="search-dataset">
                     <SearchDataSet />
                 </Box>
-                <Stack id="sources-and-domains" spacing={3}>
+                <Box id="sources">
                     <SourcesBarChart />
+                </Box>
+                <Box id="domains">
                     <DomainsTable />
-                </Stack>
+                </Box>
             </Stack>
         </Box>
     );
@@ -111,15 +119,9 @@ export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
 
         const dolmaResponse: DolmaResponse = { barData, domainData };
 
-        return new Response(JSON.stringify(dolmaResponse), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return json(dolmaResponse, { status: 200 });
     } catch (error) {
-        console.error('Error in SourcesBarChartLoader:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        console.error('Error in DolmaDataLoader:', error);
+        return json({ error: 'Internal Server Error' }, { status: 500 });
     }
 };
