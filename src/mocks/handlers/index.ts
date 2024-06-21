@@ -40,6 +40,10 @@ export const handlers = [
         return HttpResponse.json(fakeSourceCount);
     }),
 
+    http.get(`${process.env.DOLMA_API_URL}/static/domains/data.json`, () => {
+        return HttpResponse.json(fakeDomains);
+    }),
+
     http.get(`${process.env.DOLMA_API_URL}/v1/meta`, () => {
         return HttpResponse.json(fakeCount);
     }),
@@ -222,4 +226,22 @@ const fakeSourceCount: staticData.SourceCounts = {
 
 const fakeCount = {
     count: 3103760832,
+};
+
+const fakeDomains: staticData.DomainsBySource = {
+    wikipedia: {
+        'en.wikipedia.org': 5829258,
+        'simple.wikipedia.org': 125612,
+        'en.wikibooks.org': 68614,
+        'simple.wikibooks.org': 370,
+    },
+    s2: {
+        'semanticscholar.org': 36921191,
+    },
+    reddit: {
+        'reddit.com': 330967530,
+    },
+    'stack-dedup': {
+        'github.com': 210879754,
+    },
 };
