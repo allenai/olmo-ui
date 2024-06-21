@@ -1,10 +1,17 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
+import { json, LoaderFunction } from 'react-router-dom';
 
+import { staticData } from '@/api/dolma/staticData';
+import { StaticDataClient } from '@/api/dolma/StaticDataClient';
+
+import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchDataSet } from './SearchDataSet';
-import { SourcesBarChart } from './SourcesBarChart';
+import { useDesktopOrUp } from './shared';
+import { BarData, SourcesBarChart } from './SourcesBarChart';
 
 export const DolmaTabs = () => {
+    const isDesktopOrUp = useDesktopOrUp();
     const [tabNumber, setTabNumber] = useState<number>(0);
 
     const handleTabChange = (_event: React.SyntheticEvent, newTabNumber: number) => {
@@ -24,7 +31,7 @@ export const DolmaTabs = () => {
             <Box
                 sx={{
                     position: 'sticky',
-                    top: 0,
+                    top: (theme) => (isDesktopOrUp ? theme.spacing(-4) : 0),
                     zIndex: 1000,
                     borderBottom: 1,
                     borderColor: 'divider',
@@ -41,9 +48,15 @@ export const DolmaTabs = () => {
                         }}
                     />
                     <Tab
-                        label="Sources and Domains"
+                        label="Sources"
                         onClick={(event) => {
-                            handleTabClick(event, 'sources-and-domains');
+                            handleTabClick(event, 'sources');
+                        }}
+                    />
+                    <Tab
+                        label="Domains"
+                        onClick={(event) => {
+                            handleTabClick(event, 'domains');
                         }}
                     />
                 </Tabs>
@@ -52,10 +65,63 @@ export const DolmaTabs = () => {
                 <Box id="search-dataset">
                     <SearchDataSet />
                 </Box>
-                <Box id="sources-and-domains">
+                <Box id="sources">
                     <SourcesBarChart />
+                </Box>
+                <Box id="domains">
+                    <DomainsTable />
                 </Box>
             </Stack>
         </Box>
     );
+};
+
+export interface DolmaResponse {
+    barData: BarData[];
+    domainData: DomainData[];
+}
+
+export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
+    try {
+        const api = new StaticDataClient();
+
+        const sources = await api.getSources();
+        const domains = await api.getDomains();
+        const newSources = Object.fromEntries(
+            Object.entries(sources).filter(([_k, v]) =>
+                v.staticData.includes(staticData.StaticDataType.SourceCounts)
+            )
+        );
+
+        const barData: BarData[] = [];
+        const sourceCounts = await api.getSourceCounts();
+        Object.entries(sourceCounts).forEach(([k, v]) => {
+            if (newSources[k]) {
+                barData.push({
+                    id: k,
+                    label: newSources[k].label,
+                    value: v,
+                    color: newSources[k].color,
+                });
+            }
+        });
+
+        const domainData: DomainData[] = [];
+        Object.entries(domains).forEach(([sourceKey, domainCountPairs]) => {
+            Object.entries(domainCountPairs).forEach(([domain, count]) => {
+                domainData.push({
+                    source: sources[sourceKey].label,
+                    domain,
+                    docCount: count,
+                });
+            });
+        });
+
+        const dolmaResponse: DolmaResponse = { barData, domainData };
+
+        return json(dolmaResponse, { status: 200 });
+    } catch (error) {
+        console.error('Error in DolmaDataLoader:', error);
+        return json({ error: 'Internal Server Error' }, { status: 500 });
+    }
 };

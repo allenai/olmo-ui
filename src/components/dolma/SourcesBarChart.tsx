@@ -1,14 +1,13 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { BarCustomLayerProps, ResponsiveBar } from '@nivo/bar';
-import { LoaderFunction, useLoaderData, useNavigation } from 'react-router-dom';
+import { useLoaderData, useNavigation } from 'react-router-dom';
 
-import { staticData } from '@/api/dolma/staticData';
-import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 import { formatValueAsPercentage } from '@/util';
 
 import { ResponsiveCard } from '../ResponsiveCard';
+import { DolmaResponse } from './DolmaTabs';
 import { ChartContainerSansLegend } from './sharedCharting';
 
 export interface BarData {
@@ -22,7 +21,7 @@ const barChartAriaLabel =
     'A bar chart with 7 bars shows the sources of data contained in Dolma. Common Crawl makes up the majority with 80.13% or x documents in the dataset. Reddit is 7.53% with x documents. C4 is 7.27% of the dataset with x documents. Stack Dedup is 4.21% with x documents. Semantic Scholar (pes2o) makes up 0.74% of the dataset with x documents. Wikipedia is 0.12% with x documents. Gutenberg makes up less than one hundredth of a percent of the overall dataset with x documents.';
 
 export const SourcesBarChart = () => {
-    const sourcesData = (useLoaderData() || []) as BarData[];
+    const sourcesData = (useLoaderData() as DolmaResponse).barData;
     const navigation = useNavigation();
     const theme = useTheme(); // Access the Material-UI theme
 
@@ -129,42 +128,4 @@ export const SourcesBarChart = () => {
             </Box>
         </ResponsiveCard>
     );
-};
-
-export const SourcesBarChartLoader: LoaderFunction = async (): Promise<Response> => {
-    try {
-        const api = new StaticDataClient();
-
-        const sources = await api.getSources();
-
-        const newSources = Object.fromEntries(
-            Object.entries(sources).filter(([_k, v]) =>
-                v.staticData.includes(staticData.StaticDataType.SourceCounts)
-            )
-        );
-
-        const newData: BarData[] = [];
-        const data = await api.getSourceCounts();
-        Object.entries(data).forEach(([k, v]) => {
-            if (newSources[k]) {
-                newData.push({
-                    id: k,
-                    label: newSources[k].label,
-                    value: v,
-                    color: newSources[k].color,
-                });
-            }
-        });
-
-        return new Response(JSON.stringify(newData), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    } catch (error) {
-        console.error('Error in SourcesBarChartLoader:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    }
 };
