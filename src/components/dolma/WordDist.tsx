@@ -5,7 +5,8 @@ import { DistChart } from './DistChart';
 import { DolmaResponse } from './DolmaTabs';
 
 export const WordDist = () => {
-    const { distData, mapDistData, sources } = useLoaderData() as DolmaResponse;
+    const { distData, mapDistData, sources } = (useLoaderData() as DolmaResponse)
+        .documentLengthData;
 
     const navigation = useNavigation();
 

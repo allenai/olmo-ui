@@ -91,12 +91,15 @@ export const DolmaTabs = () => {
     );
 };
 
-export interface DolmaResponse {
-    barData: BarData[];
-    domainData: DomainData[];
+interface DocumentLengthData {
     distData: DistData[];
     mapDistData: MapDistData;
     sources: staticData.Sources;
+}
+export interface DolmaResponse {
+    barData: BarData[];
+    domainData: DomainData[];
+    documentLengthData: DocumentLengthData;
 }
 
 export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
@@ -144,9 +147,11 @@ export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
         const dolmaResponse: DolmaResponse = {
             barData,
             domainData,
-            distData,
-            mapDistData,
-            sources: newSources,
+            documentLengthData: {
+                distData,
+                mapDistData,
+                sources: newSources,
+            },
         };
 
         return json(dolmaResponse, { status: 200 });
