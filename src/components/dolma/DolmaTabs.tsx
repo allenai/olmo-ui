@@ -7,9 +7,11 @@ import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchDataSet } from './SearchDataSet';
+import { useDesktopOrUp } from './shared';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 
 export const DolmaTabs = () => {
+    const isDesktopOrUp = useDesktopOrUp();
     const [tabNumber, setTabNumber] = useState<number>(0);
 
     const handleTabChange = (_event: React.SyntheticEvent, newTabNumber: number) => {
@@ -29,7 +31,7 @@ export const DolmaTabs = () => {
             <Box
                 sx={{
                     position: 'sticky',
-                    top: (theme) => theme.spacing(-4),
+                    top: (theme) => (isDesktopOrUp ? theme.spacing(-4) : 0),
                     zIndex: 1000,
                     borderBottom: 1,
                     borderColor: 'divider',

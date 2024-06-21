@@ -1,9 +1,10 @@
-import { Link, Pagination, Paper, Typography } from '@mui/material';
+import { Link, Pagination, Paper, Stack, Typography } from '@mui/material';
 import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { DolmaResponse } from './DolmaTabs';
+import { useSmallLayoutOrUp } from './shared';
 
 export interface DomainData {
     source: string;
@@ -20,32 +21,29 @@ export interface TreeData {
 
 export const DomainsTable = () => {
     const domainData = (useLoaderData() as DolmaResponse).domainData;
+    const isSmallLayoutOrUp = useSmallLayoutOrUp();
     const [page, setPage] = React.useState<number>(1);
     const onPageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
+    const renderDomainLink = (link: string) => (
+        <Link href={`http://${link}`} target="_blank" underline="none" rel="noopener">
+            <Typography
+                sx={() => ({
+                    fontWeight: 700,
+                })}>
+                {link}
+            </Typography>
+        </Link>
+    );
+
     const columns: GridColDef<DomainData>[] = [
         {
             field: 'domain',
             headerName: 'Domain',
             minWidth: 150,
             flex: 3,
-            renderCell: (params: GridRenderCellParams) => {
-                return (
-                    <Link
-                        href={`http://${params.value}`}
-                        target="_blank"
-                        underline="none"
-                        rel="noopener">
-                        <Typography
-                            sx={() => ({
-                                fontWeight: 700,
-                            })}>
-                            {params.value}
-                        </Typography>
-                    </Link>
-                );
-            },
+            renderCell: (params: GridRenderCellParams) => renderDomainLink(params.value as string),
         },
         {
             field: 'source',
@@ -65,13 +63,44 @@ export const DomainsTable = () => {
         },
     ];
 
+    const narrowColumns: GridColDef<DomainData>[] = [
+        {
+            field: 'domain',
+            flex: 3,
+            renderCell: (params: GridRenderCellParams) => (
+                <Stack alignItems="flex-start">
+                    {renderDomainLink(params.value as string)}
+                    <Typography>{params.row.source}</Typography>
+                </Stack>
+            ),
+        },
+        {
+            field: 'docCount',
+            align: 'right',
+            sortComparator: (a: number, b: number) => a - b,
+            flex: 1,
+            type: 'number',
+        },
+    ];
+
+    const dataGridConfig = isSmallLayoutOrUp
+        ? {
+              columns,
+              columnHeaderHeight: 32,
+              rowHeight: 32,
+          }
+        : {
+              columns: narrowColumns,
+              columnHeaderHeight: 0,
+          };
+
     return (
         <Paper
-            elevation={2}
+            elevation={isSmallLayoutOrUp ? 2 : 0}
             sx={(theme) => ({
                 background: theme.palette.background.default,
-                borderRadius: theme.spacing(1.5),
-                padding: theme.spacing(4),
+                borderRadius: isSmallLayoutOrUp ? theme.spacing(1.5) : 0,
+                padding: isSmallLayoutOrUp ? theme.spacing(4) : 0,
             })}>
             <Typography
                 variant="h3"
@@ -82,17 +111,15 @@ export const DomainsTable = () => {
                 Domains
             </Typography>
             <DataGrid
-                loading={false}
+                {...dataGridConfig}
                 getRowId={(row) => `${row.source}-${row.domain}`}
                 rows={domainData}
-                columnHeaderHeight={32}
-                rowHeight={32}
-                columns={columns}
                 slots={{
                     pagination: () => (
                         <Pagination
                             count={Math.ceil(domainData.length / 10)}
                             page={page}
+                            size={isSmallLayoutOrUp ? 'medium' : 'small'}
                             onChange={onPageChange}
                             showFirstButton
                             showLastButton
