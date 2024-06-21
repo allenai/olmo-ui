@@ -9,6 +9,7 @@ import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchDataSet } from './SearchDataSet';
 import { useDesktopOrUp } from './shared';
+import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
 
@@ -93,6 +94,9 @@ export const DolmaTabs = () => {
 export interface DolmaResponse {
     barData: BarData[];
     domainData: DomainData[];
+    distData: DistData[];
+    mapDistData: MapDistData;
+    sources: staticData.Sources;
 }
 
 export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
@@ -101,6 +105,8 @@ export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
 
         const sources = await api.getSources();
         const domains = await api.getDomains();
+        const words = await api.getWords();
+
         const newSources = Object.fromEntries(
             Object.entries(sources).filter(([_k, v]) =>
                 v.staticData.includes(staticData.StaticDataType.SourceCounts)
@@ -131,7 +137,17 @@ export const DolmaDataLoader: LoaderFunction = async (): Promise<Response> => {
             });
         });
 
-        const dolmaResponse: DolmaResponse = { barData, domainData };
+        const [distData, mapDistData] = getDistAndMapDistData(words, (n: number) =>
+            n.toLocaleString()
+        );
+
+        const dolmaResponse: DolmaResponse = {
+            barData,
+            domainData,
+            distData,
+            mapDistData,
+            sources: newSources,
+        };
 
         return json(dolmaResponse, { status: 200 });
     } catch (error) {
