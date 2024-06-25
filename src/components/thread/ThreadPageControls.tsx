@@ -1,6 +1,6 @@
 import PlusIcon from '@mui/icons-material/Add';
 import { alpha, ButtonGroup, Card, Stack, Typography } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
@@ -12,7 +12,9 @@ import { ResponsiveButton } from './ResponsiveButton';
 import { ShareThreadButton } from './ShareThreadButton';
 
 const ThreadButtons = (): JSX.Element => {
-    const location = useLocation();
+    const playgroundRoute = useMatch({
+        path: '/',
+    });
 
     const NewThreadButton = () => (
         <ResponsiveButton
@@ -21,7 +23,7 @@ const ThreadButtons = (): JSX.Element => {
             smallerVariant="outlined"
             biggerVariant="outlined"
             href={links.playground}
-            disabled={location.pathname === links.playground}
+            disabled={playgroundRoute?.pathname === links.playground}
         />
     );
 
