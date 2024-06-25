@@ -13,7 +13,7 @@ import { ShareThreadButton } from './ShareThreadButton';
 
 const ThreadButtons = (): JSX.Element => {
     const playgroundRoute = useMatch({
-        path: '/',
+        path: links.playground,
     });
 
     const NewThreadButton = () => (
