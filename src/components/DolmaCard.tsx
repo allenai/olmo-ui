@@ -1,4 +1,4 @@
-import { Box, CardContent, Link, Stack, Typography } from '@mui/material';
+import { CardContent, Link, Stack, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 
