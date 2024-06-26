@@ -1,4 +1,4 @@
-import { CardContent, Grid, Link, Stack, Typography } from '@mui/material';
+import { CardContent, Grid, Link, Stack, styled, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 
@@ -25,7 +25,7 @@ export const DolmaCard = () => {
                 </CardContent>
             </ResponsiveCard>
             {isDesktopOrUp ? (
-                <Grid container spacing={2} sx={{ display: 'flex' }}>
+                <StyledGrid container spacing={2} sx={{ display: 'flex' }}>
                     <Grid item xs={6} sx={{ display: 'flex' }}>
                         <DolmaInformationCard
                             linkText="Learn More"
@@ -44,7 +44,7 @@ export const DolmaCard = () => {
                             buttonUrl={links.ourDatasets}
                         />
                     </Grid>
-                </Grid>
+                </StyledGrid>
             ) : (
                 <Stack spacing={2}>
                     <DolmaInformationCard
@@ -66,3 +66,10 @@ export const DolmaCard = () => {
         </>
     );
 };
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+    '& > .MuiGrid-item': {
+        margin: 0,
+        padding: theme.spacing(1),
+    },
+}));
