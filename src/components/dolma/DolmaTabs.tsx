@@ -1,5 +1,5 @@
 import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { json, LoaderFunction } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
@@ -16,10 +16,44 @@ import { WordDist } from './WordDist';
 export const DolmaTabs = () => {
     const isDesktopOrUp = useDesktopOrUp();
     const [tabNumber, setTabNumber] = useState<number>(0);
+    const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]); // Ref to hold tab content references
 
     const handleTabChange = (_event: React.SyntheticEvent, newTabNumber: number) => {
         setTabNumber(newTabNumber);
     };
+
+    useEffect(() => {
+        const observerOptions = {
+            root: null, // observe within the viewport
+            rootMargin: '0px',
+            threshold: 0.5, // Adjust threshold as needed
+        };
+
+        const callback: IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+                console.log(entry.target.id, entry.isIntersecting, entry.intersectionRatio); // Log entry details for debugging
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
+                    const tabId = entry.target.id;
+                    const tabIndex = tabContentRefs.current.findIndex((ref) => ref?.id === tabId);
+                    if (tabIndex !== -1) {
+                        setTabNumber(tabIndex); // Update tabNumber to reflect visible tab
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(callback, observerOptions);
+
+        tabContentRefs.current.forEach((tabContentRefs) => {
+            if (tabContentRefs) {
+                observer.observe(tabContentRefs);
+            }
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [tabContentRefs.current]); // Include tabsRef.current in the dependency array
 
     const handleTabClick = (event: React.MouseEvent<HTMLDivElement>, tabId: string) => {
         event.preventDefault();
@@ -35,9 +69,8 @@ export const DolmaTabs = () => {
                 sx={{
                     position: 'sticky',
                     top: (theme) => (isDesktopOrUp ? theme.spacing(-4) : 0),
+                    marginBottom: (theme) => theme.spacing(2),
                     zIndex: 1000,
-                    borderBottom: 1,
-                    borderColor: 'divider',
                     background: (theme) => theme.color2.N1.hex,
                 }}>
                 <Tabs
@@ -71,16 +104,32 @@ export const DolmaTabs = () => {
                 </Tabs>
             </Box>
             <Stack gap={2}>
-                <Box id="search-dataset">
+                <Box
+                    id="search-dataset"
+                    ref={(element: HTMLDivElement) => {
+                        if (element) tabContentRefs.current[0] = element;
+                    }}>
                     <SearchDataSet />
                 </Box>
-                <Box id="sources">
+                <Box
+                    id="sources"
+                    ref={(element: HTMLDivElement) => {
+                        if (element) tabContentRefs.current[1] = element;
+                    }}>
                     <SourcesBarChart />
                 </Box>
-                <Box id="domains">
+                <Box
+                    id="domains"
+                    ref={(element: HTMLDivElement) => {
+                        if (element) tabContentRefs.current[2] = element;
+                    }}>
                     <DomainsTable />
                 </Box>
-                <Box id="document-length">
+                <Box
+                    id="document-length"
+                    ref={(element: HTMLDivElement) => {
+                        if (element) tabContentRefs.current[3] = element;
+                    }}>
                     <ResponsiveCard>
                         <Typography variant="h3">Document Length</Typography>
                         <WordDist />
