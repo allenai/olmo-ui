@@ -16,7 +16,7 @@ import { WordDist } from './WordDist';
 export const DolmaTabs = () => {
     const isDesktopOrUp = useDesktopOrUp();
     const [tabNumber, setTabNumber] = useState<number>(0);
-    const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]); // Ref to hold tab content references
+    const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]);
 
     const handleTabChange = (_event: React.SyntheticEvent, newTabNumber: number) => {
         setTabNumber(newTabNumber);
@@ -24,19 +24,18 @@ export const DolmaTabs = () => {
 
     useEffect(() => {
         const observerOptions = {
-            root: null, // observe within the viewport
+            root: null,
             rootMargin: '0px',
-            threshold: 0.5, // Adjust threshold as needed
+            threshold: 0.5,
         };
 
         const callback: IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
             entries.forEach((entry) => {
-                console.log(entry.target.id, entry.isIntersecting, entry.intersectionRatio); // Log entry details for debugging
                 if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
                     const tabId = entry.target.id;
                     const tabIndex = tabContentRefs.current.findIndex((ref) => ref?.id === tabId);
                     if (tabIndex !== -1) {
-                        setTabNumber(tabIndex); // Update tabNumber to reflect visible tab
+                        setTabNumber(tabIndex);
                     }
                 }
             });
@@ -53,7 +52,7 @@ export const DolmaTabs = () => {
         return () => {
             observer.disconnect();
         };
-    }, [tabContentRefs.current]); // Include tabsRef.current in the dependency array
+    }, [tabContentRefs.current]);
 
     const handleTabClick = (event: React.MouseEvent<HTMLDivElement>, tabId: string) => {
         event.preventDefault();
@@ -107,28 +106,28 @@ export const DolmaTabs = () => {
                 <Box
                     id="search-dataset"
                     ref={(element: HTMLDivElement) => {
-                        if (element) tabContentRefs.current[0] = element;
+                        tabContentRefs.current[0] = element;
                     }}>
                     <SearchDataSet />
                 </Box>
                 <Box
                     id="sources"
                     ref={(element: HTMLDivElement) => {
-                        if (element) tabContentRefs.current[1] = element;
+                        tabContentRefs.current[1] = element;
                     }}>
                     <SourcesBarChart />
                 </Box>
                 <Box
                     id="domains"
                     ref={(element: HTMLDivElement) => {
-                        if (element) tabContentRefs.current[2] = element;
+                        tabContentRefs.current[2] = element;
                     }}>
                     <DomainsTable />
                 </Box>
                 <Box
                     id="document-length"
                     ref={(element: HTMLDivElement) => {
-                        if (element) tabContentRefs.current[3] = element;
+                        tabContentRefs.current[3] = element;
                     }}>
                     <ResponsiveCard>
                         <Typography variant="h3">Document Length</Typography>
