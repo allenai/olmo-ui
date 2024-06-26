@@ -68,8 +68,9 @@ export const DolmaCard = () => {
 };
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
+    width: '100%',
+    margin: 0,
     '& > .MuiGrid-item': {
-        margin: 0,
         padding: theme.spacing(1),
     },
 }));
