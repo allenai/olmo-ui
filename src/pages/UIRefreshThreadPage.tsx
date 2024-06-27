@@ -10,9 +10,7 @@ import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
-    const playgroundRoute = useMatch({
-        path: links.playground,
-    });
+    const threadPageMatch = useMatch(links.thread(':id'));
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         streamPrompt(data);
@@ -32,7 +30,7 @@ export const UIRefreshThreadPage = () => {
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
             </ResponsiveCard>
 
-            {playgroundRoute?.pathname !== links.playground && <SearchDatasetCard />}
+            {threadPageMatch && <SearchDatasetCard />}
 
             <Typography variant="caption">
                 OLMo is experimental and can make mistakes. Consider fact-checking your results.
