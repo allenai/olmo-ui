@@ -30,6 +30,7 @@ export const createThreadSlice: OlmoStateCreator<ThreadSlice> = (set, get) => ({
 
             set((state) => ({
                 messageListState: RemoteState.Loaded,
+                messageList: { messages, meta },
                 GlobalSnackMessageList: { messages, meta },
                 allThreads: state.allThreads
                     .concat(messages)
