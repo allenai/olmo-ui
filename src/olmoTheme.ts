@@ -137,5 +137,10 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                 }),
             },
         },
+        MuiStack: {
+            defaultProps: {
+                useFlexGap: true,
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>);
