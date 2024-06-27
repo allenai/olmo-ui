@@ -2,8 +2,6 @@ import { Button, Card, CardActions, CardContent, Link, Typography } from '@mui/m
 
 import { SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
-import { useDesktopOrUp } from './dolma/shared';
-
 interface DolmaInformationCardProps {
     linkText: string;
     linkUrl: string;
@@ -14,30 +12,26 @@ interface DolmaInformationCardProps {
 
 export const DolmaInformationCard = ({
     linkText,
-    linkUrl,
     title,
     buttonText,
     buttonUrl,
 }: DolmaInformationCardProps) => {
-    const isDesktopOrUp = useDesktopOrUp();
-
     return (
         <Card
+            variant="outlined"
             sx={(theme) => ({
                 background: (theme) => theme.palette.primary.dark,
-                padding: (theme) => theme.spacing(4),
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
                 textAlign: 'left',
-                flex: 1,
+                flex: '1 0 21rem',
                 justifyContent: 'space-between',
+
                 [theme.breakpoints.down(SMALL_LAYOUT_BREAKPOINT)]: {
-                    padding: 3,
                     borderRadius: '0px',
                 },
-            })}
-            variant={isDesktopOrUp ? 'elevation' : 'outlined'}>
+            })}>
             <CardContent
                 sx={{
                     flex: 1,
@@ -45,34 +39,22 @@ export const DolmaInformationCard = ({
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     alignItems: 'flex-start',
-                    padding: 0,
+                    padding: 4,
                 }}>
-                <CardActions
-                    sx={{
-                        padding: 0,
-                    }}>
-                    <Link
-                        href={linkUrl}
-                        sx={{ color: (theme) => theme.palette.primary.light }}
-                        target="_blank"
-                        rel="noopener noreferrer">
-                        {linkText}
-                    </Link>
-                </CardActions>
+                <Typography variant="body1" color="primary.light">
+                    {linkText}
+                </Typography>
                 <Typography
-                    variant="h4"
+                    variant="h5"
                     sx={{
                         color: (theme) => theme.palette.primary.contrastText,
                         marginY: 1,
                     }}>
                     {title}
                 </Typography>
-                <CardActions
-                    sx={{
-                        padding: 0,
-                    }}>
+                <CardActions sx={{ padding: 1.5, paddingInlineStart: 0 }}>
                     <Button
-                        size="small"
+                        size="medium"
                         variant="contained"
                         component={Link}
                         href={buttonUrl}

@@ -1,14 +1,11 @@
-import { CardContent, Grid, Link, Stack, Typography } from '@mui/material';
+import { CardContent, Link, Stack, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 
-import { useDesktopOrUp } from './dolma/shared';
 import { DolmaInformationCard } from './DolmaInformationCard';
 import { ResponsiveCard } from './ResponsiveCard';
 
 export const DolmaCard = () => {
-    const isDesktopOrUp = useDesktopOrUp();
-
     return (
         <>
             <ResponsiveCard>
@@ -24,45 +21,22 @@ export const DolmaCard = () => {
                     </Typography>
                 </CardContent>
             </ResponsiveCard>
-            {isDesktopOrUp ? (
-                <Grid container spacing={2} sx={{ display: 'flex' }}>
-                    <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <DolmaInformationCard
-                            linkText="Learn More"
-                            linkUrl="#"
-                            title="How was Dolma Created?"
-                            buttonText="Read the Blog"
-                            buttonUrl={links.ourDatasets}
-                        />
-                    </Grid>
-                    <Grid item xs={6} sx={{ display: 'flex' }}>
-                        <DolmaInformationCard
-                            linkText="Research"
-                            linkUrl="#"
-                            title="Access the Dataset on Hugging Face"
-                            buttonText="Get Started"
-                            buttonUrl={links.ourDatasets}
-                        />
-                    </Grid>
-                </Grid>
-            ) : (
-                <Stack spacing={2}>
-                    <DolmaInformationCard
-                        linkText="Learn More"
-                        linkUrl="#"
-                        title="How was Dolma Created?"
-                        buttonText="Read the Blog"
-                        buttonUrl={links.ourDatasets}
-                    />
-                    <DolmaInformationCard
-                        linkText="Research"
-                        linkUrl="#"
-                        title="Access the Dataset on Hugging Face"
-                        buttonText="Get Started"
-                        buttonUrl={links.ourDatasets}
-                    />
-                </Stack>
-            )}
+            <Stack direction="row" flexWrap="wrap" sx={{ columnGap: 4, rowGap: 2 }}>
+                <DolmaInformationCard
+                    linkText="Learn More"
+                    linkUrl="#"
+                    title="How was Dolma Created?"
+                    buttonText="Read the Blog"
+                    buttonUrl={links.ourDatasets}
+                />
+                <DolmaInformationCard
+                    linkText="Research"
+                    linkUrl="#"
+                    title="Access the Dataset on Hugging Face"
+                    buttonText="Get Started"
+                    buttonUrl={links.ourDatasets}
+                />
+            </Stack>
         </>
     );
 };
