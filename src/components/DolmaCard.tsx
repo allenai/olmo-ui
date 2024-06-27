@@ -37,7 +37,7 @@ export const DolmaCard = () => {
                     linkUrl="#"
                     title="How was Dolma Created?"
                     buttonText="Read the Blog"
-                    buttonUrl={links.dolmaBlob}
+                    buttonUrl={links.dolmaBlog}
                 />
                 <DolmaInformationCard
                     linkText="Research"
