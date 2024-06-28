@@ -1,5 +1,9 @@
 import { Box } from '@mui/material';
+import { useMatch } from 'react-router-dom';
 
+import { links } from '@/Links';
+
+import { NewSearchPlaceholder } from './NewSearchPlaceholder';
 import { SearchBar } from './SearchBar';
 import { ElevatedCard, useDesktopOrUp } from './shared';
 
@@ -16,10 +20,12 @@ export const SearchForm = ({
 }) => {
     const isDesktop = useDesktopOrUp();
     const Wrapper = noCardOnDesktop && isDesktop ? Box : ElevatedCard;
+    const dolmaRouteMatch = useMatch(links.datasetExplorer);
 
     return (
         <Wrapper>
             <SearchBar defaultValue={defaultValue} disabled={disabled} showTooltip={showTooltip} />
+            {dolmaRouteMatch && <NewSearchPlaceholder />}
         </Wrapper>
     );
 };
