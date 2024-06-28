@@ -14,10 +14,20 @@ export const DolmaCard = () => {
                         Dolma is proven, trusted, and fully open.
                     </Typography>
                     <Typography variant="h5" align="center">
-                        Dolma 1.7-7B is a dataset of 2.05 trillion tokens from a diverse mix of web
-                        content, academic publications, code, books, and encyclopedic materials. It
-                        is openly available for download on{' '}
-                        <Link href={links.ourDatasets}>Hugging Face </Link>under license.
+                        <Link href={links.dolma7B} target="_blank">
+                            Dolma 1.7-7B
+                        </Link>{' '}
+                        is a dataset of 2.05 trillion tokens from a diverse mix of web content,
+                        academic publications, code, books, and encyclopedic materials. It is openly
+                        available for download on{' '}
+                        <Link href={links.ourDatasets} target="_blank">
+                            Hugging Face{' '}
+                        </Link>{' '}
+                        under the{' '}
+                        <Link href={links.odc} target="_blank">
+                            ODC-By
+                        </Link>{' '}
+                        license.
                     </Typography>
                 </CardContent>
             </ResponsiveCard>
@@ -27,7 +37,7 @@ export const DolmaCard = () => {
                     linkUrl="#"
                     title="How was Dolma Created?"
                     buttonText="Read the Blog"
-                    buttonUrl={links.ourDatasets}
+                    buttonUrl={links.dolmaBlog}
                 />
                 <DolmaInformationCard
                     linkText="Research"

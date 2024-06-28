@@ -7,7 +7,7 @@ import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 
 import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
-import { SearchDataSet } from './SearchDataSet';
+import { SearchForm } from './SearchForm';
 import { useDesktopOrUp } from './shared';
 import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
@@ -108,7 +108,7 @@ export const DolmaTabs = () => {
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[0] = element;
                     }}>
-                    <SearchDataSet />
+                    <SearchForm />
                 </Box>
                 <Box
                     id="sources"
