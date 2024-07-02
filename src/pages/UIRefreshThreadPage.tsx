@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction, useMatch } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
 import { ResponsiveCard } from '@/components/ResponsiveCard';
@@ -10,6 +10,7 @@ import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
+    const threadPageMatch = useMatch(links.thread(':id'));
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         streamPrompt(data);
@@ -29,7 +30,7 @@ export const UIRefreshThreadPage = () => {
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
             </ResponsiveCard>
 
-            <SearchDatasetCard />
+            {threadPageMatch && <SearchDatasetCard />}
 
             <Typography variant="caption">
                 OLMo is experimental and can make mistakes. Consider fact-checking your results.
