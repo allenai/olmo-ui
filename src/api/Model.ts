@@ -6,7 +6,7 @@ export interface Model {
     description: string;
     id: string;
     name: string;
-    model_type?: string;
+    host: string;
 }
 
 export type ModelList = Model[];

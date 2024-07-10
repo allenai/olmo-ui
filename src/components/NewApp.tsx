@@ -1,10 +1,10 @@
 import { Container, Paper, PaperProps } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { LoaderFunction, Outlet } from 'react-router-dom';
 
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 
-import { useAppContext } from '../AppContext';
+import { appContext, useAppContext } from '../AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { useDesktopOrUp } from './dolma/shared';
 import { FAQDrawer } from './faq/FAQDrawer';
@@ -112,4 +112,14 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
             {...rest}
         />
     );
+};
+
+export const appLoader: LoaderFunction = async () => {
+    const { models, getAllModels } = appContext.getState();
+
+    if (models.length === 0) {
+        await getAllModels();
+    }
+
+    return null;
 };

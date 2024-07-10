@@ -110,6 +110,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     streamPrompt: async (newMessage: MessagePost) => {
         const {
             inferenceOpts,
+            selectedModel,
             addContentToMessage,
             addChildToSelectedThread,
             addSnackMessage,
@@ -119,6 +120,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         } = get();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
+
+        const promptMessage = selectedModel
+            ? { ...newMessage, model: selectedModel.id, host: selectedModel.host }
+            : newMessage;
 
         set(
             (state) => {
@@ -131,10 +136,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
         try {
             const messageChunks = postMessageGenerator(
-                newMessage,
+                promptMessage,
                 inferenceOpts,
                 abortController,
-                newMessage.parent
+                promptMessage.parent
             );
 
             // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.

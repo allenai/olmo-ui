@@ -4,7 +4,7 @@ import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 import { loginAction, loginLoader, loginResultLoader, logoutAction } from './api/auth0';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
-import { NewApp } from './components/NewApp';
+import { appLoader, NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
@@ -57,6 +57,7 @@ export const routes: RouteObject[] = [
             </VarnishedApp>
         ),
         errorElement: <ErrorPage />,
+        loader: appLoader,
         children: [
             {
                 path: links.playground,
