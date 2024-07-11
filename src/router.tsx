@@ -4,7 +4,7 @@ import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 import { loginAction, loginLoader, loginResultLoader, logoutAction } from './api/auth0';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
-import { appLoader, NewApp } from './components/NewApp';
+import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
@@ -17,7 +17,7 @@ import { NotFound } from './pages/NotFound';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
-    resetSelectedThreadLoader,
+    playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
 
@@ -57,7 +57,6 @@ export const routes: RouteObject[] = [
             </VarnishedApp>
         ),
         errorElement: <ErrorPage />,
-        loader: appLoader,
         children: [
             {
                 path: links.playground,
@@ -85,7 +84,7 @@ export const routes: RouteObject[] = [
                 handle: {
                     title: 'OLMo Playground',
                 },
-                loader: resetSelectedThreadLoader,
+                loader: playgroundLoader,
                 shouldRevalidate: handleRevalidation,
             },
             {

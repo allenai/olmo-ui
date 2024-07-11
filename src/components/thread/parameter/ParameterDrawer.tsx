@@ -25,6 +25,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { ParameterDrawerInputWrapper } from './inputs/ParameterDrawerInputWrapper';
 import { StopWordsInput } from './inputs/StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -138,19 +139,21 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                             gap: 1.5,
                             marginBottom: 2,
                         }}>
-                        <Typography variant="body1">Model</Typography>
-                        <Select
-                            sx={{ width: '100%' }}
-                            size="small"
-                            onChange={onModelChange}
-                            input={<OutlinedInput />}
-                            value={(selectedModel && selectedModel.id) || ''}>
-                            {models.map((model) => (
-                                <MenuItem key={model.name} value={model.id}>
-                                    {model.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                        <ParameterDrawerInputWrapper label="Model" inputId="model-select">
+                            <Select
+                                id="model-select"
+                                sx={{ width: '100%' }}
+                                size="small"
+                                onChange={onModelChange}
+                                input={<OutlinedInput />}
+                                value={(selectedModel && selectedModel.id) || ''}>
+                                {models.map((model) => (
+                                    <MenuItem key={model.name} value={model.id}>
+                                        {model.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </ParameterDrawerInputWrapper>
                     </ListItem>
                     <Divider />
                     <ListItem>
