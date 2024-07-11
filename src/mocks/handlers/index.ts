@@ -53,13 +53,15 @@ const fakeModelsResponse: ModelList = [
         description: "AI2's 7B model trained on the Dolma dataset and fine-tuned for chat.",
         id: 'olmo-7b-chat',
         model_type: 'chat',
+        host: 'togetherai',
         name: 'OLMo 7B - Chat',
     },
     {
-        description: "AI2's 7B model trained on the Dolma dataset.",
-        id: 'olmo-7b-base',
-        model_type: 'base',
-        name: 'OLMo 7B - Base',
+        description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
+        id: 'tulu2',
+        model_type: 'chat',
+        host: 'inferd',
+        name: 'Tulu2.5',
     },
 ];
 const fakePromptsResponse: JSONPromptTemplateList = [
