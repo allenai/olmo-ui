@@ -44,9 +44,7 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const inferenceOpts = useAppContext((state) => state.inferenceOpts);
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
-    const models = useAppContext((state) =>
-        state.models.filter((model) => model.model_type === 'chat')
-    );
+    const models = useAppContext((state) => state.models);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);

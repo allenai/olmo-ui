@@ -8,6 +8,7 @@ export interface Model {
     name: string;
     host: string;
     model_type: string;
+    is_deprecated: boolean;
 }
 
 export type ModelList = Model[];

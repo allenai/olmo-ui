@@ -26,7 +26,10 @@ export const createModelSlice: StateCreator<ModelSlice & SnackMessageSlice, [], 
         const { addSnackMessage } = get();
         set({ modelRemoteState: RemoteState.Loading });
         try {
-            const models = await modelClient.getAllModels();
+            // Only display available chat models
+            const models = (await modelClient.getAllModels()).filter(
+                (model) => model.model_type === 'chat' && !model.is_deprecated
+            );
 
             set({
                 models,
