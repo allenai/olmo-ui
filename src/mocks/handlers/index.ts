@@ -55,6 +55,7 @@ const fakeModelsResponse: ModelList = [
         model_type: 'chat',
         host: 'togetherai',
         name: 'OLMo 7B - Chat',
+        is_deprecated: true,
     },
     {
         description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
@@ -62,6 +63,7 @@ const fakeModelsResponse: ModelList = [
         model_type: 'chat',
         host: 'inferd',
         name: 'Tulu2.5',
+        is_deprecated: false,
     },
 ];
 const fakePromptsResponse: JSONPromptTemplateList = [
