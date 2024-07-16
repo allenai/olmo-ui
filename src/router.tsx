@@ -17,7 +17,7 @@ import { NotFound } from './pages/NotFound';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
-    resetSelectedThreadLoader,
+    playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
 
@@ -84,7 +84,7 @@ export const routes: RouteObject[] = [
                 handle: {
                     title: 'OLMo Playground',
                 },
-                loader: resetSelectedThreadLoader,
+                loader: playgroundLoader,
                 shouldRevalidate: handleRevalidation,
             },
             {

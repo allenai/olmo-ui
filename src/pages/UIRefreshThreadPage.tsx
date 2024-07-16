@@ -39,11 +39,17 @@ export const UIRefreshThreadPage = () => {
     );
 };
 
-export const resetSelectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const { resetSelectedThreadState } = appContext.getState();
+export const playgroundLoader: LoaderFunction = async ({ params }) => {
+    const { models, getAllModels, resetSelectedThreadState } = appContext.getState();
+
+    if (models.length === 0) {
+        await getAllModels();
+    }
+
     if (params.id === undefined) {
         resetSelectedThreadState();
     }
+
     return null;
 };
 

@@ -7,10 +7,14 @@ import {
     List,
     ListItem,
     ListSubheader,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    SelectChangeEvent,
     Stack,
     Typography,
 } from '@mui/material';
-import { KeyboardEventHandler, useEffect } from 'react';
+import { KeyboardEventHandler } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { Schema } from '@/api/Schema';
@@ -21,6 +25,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { ParameterDrawerInputWrapper } from './inputs/ParameterDrawerInputWrapper';
 import { StopWordsInput } from './inputs/StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -38,7 +43,9 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const closeDrawer = useAppContext((state) => state.closeDrawer);
     const inferenceOpts = useAppContext((state) => state.inferenceOpts);
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-    const getAllModels = useAppContext((state) => state.getAllModels);
+    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
+    const models = useAppContext((state) => state.models);
+    const selectedModel = useAppContext((state) => state.selectedModel);
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const addSnackMessageDebounce = useDebouncedCallback(() => {
@@ -51,11 +58,6 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     const handleDrawerClose = () => {
         closeDrawer(PARAMETERS_DRAWER_ID);
     };
-
-    useEffect(() => {
-        // on load fetch data
-        getAllModels();
-    }, []);
 
     const opts = schemaData.Message.InferenceOpts;
 
@@ -90,6 +92,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
     useCloseDrawerOnNavigation({
         handleDrawerClose,
     });
+
+    const onModelChange = (event: SelectChangeEvent) => {
+        setSelectedModel(event.target.value);
+    };
 
     return (
         <ResponsiveDrawer
@@ -126,6 +132,30 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
             desktopDrawerSx={{ gridArea: 'side-drawer' }}>
             <Stack direction="column">
                 <List>
+                    <ListItem
+                        sx={{
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            gap: 1.5,
+                            marginBottom: 2,
+                        }}>
+                        <ParameterDrawerInputWrapper label="Model" inputId="model-select">
+                            <Select
+                                id="model-select"
+                                sx={{ width: '100%' }}
+                                size="small"
+                                onChange={onModelChange}
+                                input={<OutlinedInput />}
+                                value={(selectedModel && selectedModel.id) || ''}>
+                                {models.map((model) => (
+                                    <MenuItem key={model.name} value={model.id}>
+                                        {model.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </ParameterDrawerInputWrapper>
+                    </ListItem>
+                    <Divider />
                     <ListItem>
                         <ParameterSlider
                             label="Temperature"

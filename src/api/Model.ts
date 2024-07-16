@@ -6,7 +6,9 @@ export interface Model {
     description: string;
     id: string;
     name: string;
-    model_type?: string;
+    host: string;
+    model_type: string;
+    is_deprecated: boolean;
 }
 
 export type ModelList = Model[];
