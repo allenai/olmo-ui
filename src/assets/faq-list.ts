@@ -13,16 +13,16 @@ export const faqs: FAQCategory[] = [
         category: 'General',
         questions: [
             {
-                question: 'What is AI2 OLMo?',
-                answer: 'AI2’s Open Language Model (OLMo) is a Large Language Model (LLM) framework intentionally designed to provide access to data, training code, models, and evaluation code necessary to advance the science of generative AI. Through open research, we aim to empower academics and researchers to study the science of language models collectively.\n\nThe OLMo framework is designed to aid researchers in training and experimenting with large language models. The OLMo artifacts are available for direct download on [Hugging Face](https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778) and [GitHub](https://github.com/allenai/OLMo).',
+                question: 'What is Ai2 OLMo?',
+                answer: 'Ai2’s Open Language Model (OLMo) is a Large Language Model (LLM) framework intentionally designed to provide access to data, training code, models, and evaluation code necessary to advance the science of generative AI. Through open research, we aim to empower academics and researchers to study the science of language models collectively.\n\nThe OLMo framework is designed to aid researchers in training and experimenting with large language models. The OLMo artifacts are available for direct download on [Hugging Face](https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778) and [GitHub](https://github.com/allenai/OLMo).',
             },
             {
                 question: 'What can I use OLMo Playground for?',
-                answer: "The OLMo Playground allows you to interact with AI2’s large language models in a user-friendly interface. You can use it to test LLM capabilities and generate text based on prompts. It's a valuable tool for educational purposes, research experiments, and developing a deeper understanding of LLMs' behavior and potential applications.",
+                answer: "The OLMo Playground allows you to interact with Ai2’s large language models in a user-friendly interface. You can use it to test LLM capabilities and generate text based on prompts. It's a valuable tool for educational purposes, research experiments, and developing a deeper understanding of LLMs' behavior and potential applications.",
             },
             {
-                question: 'What is the AI2 Dataset Explorer?',
-                answer: "The Dataset Explorer is an interactive part of the OLMo Platform that allows you to delve into the datasets used to train our LLMs. It provides insights into the diversity and composition of the data, enabling exploration of the types of information that contribute to the model. We hope the transparency can foster trust and understanding of the model's foundational elements. Currently, this tool indexes Dolma version 1.0. ",
+                question: 'What is the Ai2 Dataset Explorer?',
+                answer: "The Dataset Explorer is an interactive part of the Playground that allows you to delve into the dataset used to train the OLMo LLM. It provides insights into the diversity and composition of the data, enabling exploration of the types of information that contribute to the model. We hope the transparency can foster trust and understanding of the model's foundational elements. Currently, this tool indexes Dolma version 1.7.",
             },
             {
                 question: 'How are results generated and ranked in the Dataset Explorer?',
@@ -30,11 +30,11 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'What type of data is used to train OLMo?',
-                answer: 'OLMo is built on the [AI2 Dolma dataset](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64), an open dataset of 3 trillion tokens from a diverse mix of web content, academic publications, code, books, and encyclopedic materials. It is generally available for download from the Hugging Face Hub and is the largest open dataset to date for LLM training. For more technical details on the model, read our [Getting Started with OLMo technical blog](https://blog.allenai.org/olmo-open-language-model-87ccfc95f580).',
+                answer: 'OLMo is built on the [Ai2 Dolma dataset](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64), an open dataset of 3 trillion tokens from a diverse mix of web content, academic publications, code, books, and encyclopedic materials. It is generally available for download from the Hugging Face Hub and is the largest open dataset to date for LLM training. For more technical details on the model, read our [Getting Started with OLMo technical blog](https://blog.allenai.org/olmo-open-language-model-87ccfc95f580).',
             },
             {
                 question: "How up-to-date is OLMo's training data?",
-                answer: 'The [OLMo-7B-Instruct](https://huggingface.co/allenai/OLMo-7B-Instruct) model is trained on data collected up until March 2023. Its training data only includes events or publications before that date.',
+                answer: 'The OLMo-1.7-7B-Instruct model, which is an updated version of the [OLMo-7B-Instruct](https://huggingface.co/allenai/OLMo-7B-Instruct) model, is trained on the [Dolma 1.7 dataset](https://huggingface.co/datasets/allenai/dolma) which consists of data collected up until March 2023. Its training data only includes events or publications before that date.',
             },
             {
                 question: 'How accurate and reliable is OLMo-generated content?',
@@ -45,18 +45,18 @@ export const faqs: FAQCategory[] = [
                 answer: 'Yes, like any large language model trained on mostly[ unfiltered internet data](https://arxiv.org/abs/2104.08758), OLMo reflects existing biases and can generate [toxic](https://spectrum.ieee.org/open-ais-powerful-text-generating-tool-is-ready-for-business), [unethical](https://arxiv.org/abs/2009.06807), and [harmful content](https://aclanthology.org/D19-1339/). We have tried to mitigate this when designing OLMo, but it still contains biases. Please be mindful of OLMo’s research-driven purpose and use your judgment when using OLMo-generated content. We are committed to supporting research and education in this area by providing open tools and fostering a future where LLMs are less biased.',
             },
             {
-                question: 'How will AI2 mitigate harmful bias and other negative effects of OLMo?',
+                question: 'How will Ai2 mitigate harmful bias and other negative effects of OLMo?',
                 answer: 'We understand that OLMo, like other LLMs, can produce biased content and has the risk of being misused. However, we believe that by opening up our framework and data, we can empower researchers and AI practitioners to gain deeper insights into the science of LLMs, which is critical to building the next generation of safe and trustworthy AI. Instead of building the most accurate or safe LLM, we are focused on fostering research around all areas of LLM development, including safety and accuracy.',
             },
             {
                 question:
                     'I found some potentially objectionable content in the Data Explorer. How can I report it for review?',
-                answer: "You can request a review of any document from Dolma by selecting the 'Flag for Review' button and providing an explanation for why the content should be reviewed. Your feedback helps us understand how to improve the presentation of results.\n\nTo understand the AI2 Dolma dataset design principles, read our [Dolma blog post](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64) published in August 2023.",
+                answer: "You can request a review of any document from Dolma by selecting the 'Flag for Review' button and providing an explanation for why the content should be reviewed. Your feedback helps us understand how to improve the presentation of results.\n\nTo understand the Ai2 Dolma dataset design principles, read our [Dolma blog post](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64) published in August 2023.",
             },
             {
                 question:
                     'How does the OLMo and the dataset(s) address/comply with copyright issues/laws?',
-                answer: 'Starting with our OLMo project, AI2 has worked to implement “Fair Use by Design” into the development process for AI artifacts. This means we identified decision points where we could modify training data to transform it in a manner that we believe would meet the criteria for the fair use exception to copyright infringement.\n\nSimply put, the overarching principle is that our AI artifacts and anything they generate should not compete with the original source material or negatively affect the value of the copyrighted work to the greatest extent reasonably possible while still remaining useful for scientific research.',
+                answer: 'Starting with our OLMo project, Ai2 has worked to implement “Fair Use by Design” into the development process for AI artifacts. This means we identified decision points where we could modify training data to transform it in a manner that we believe would meet the criteria for the fair use exception to copyright infringement.\n\nSimply put, the overarching principle is that our AI artifacts and anything they generate should not compete with the original source material or negatively affect the value of the copyrighted work to the greatest extent reasonably possible while still remaining useful for scientific research.',
             },
             {
                 question: 'Which countries and territories have access to OLMo?',
@@ -93,7 +93,7 @@ export const faqs: FAQCategory[] = [
         category: 'Data & Privacy',
         questions: [
             {
-                question: 'What data does AI2 collect about me?',
+                question: 'What data does Ai2 collect about me?',
                 answer: 'We collect data necessary to improve your experience and the performance of OLMo as described in our general [Terms and Conditions of Use and Privacy Policy](https://allenai.org/terms). This includes interaction data with the model, such as queries and responses, to refine and enhance OLMo’s capabilities. ',
             },
             {
@@ -105,7 +105,7 @@ export const faqs: FAQCategory[] = [
                 answer: 'We currently do not provide a way to opt out. However, you can delete your prompt history within 30 days via the deletion function in the interactions threads interface. Deleted messages will be removed from our database.',
             },
             {
-                question: 'How long does AI2 retain my prompt history and personal information?',
+                question: 'How long does Ai2 retain my prompt history and personal information?',
                 answer: 'We retain prompt history and personal information for a period necessary to fulfill the purposes outlined in our [Privacy Policy](https://allenai.org/privacy-policy), after which it is securely deleted.',
             },
             {
@@ -114,15 +114,15 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How can I request to delete my prompt history?',
-                answer: 'You can request data deletion via the deletion function in the interactions threads interface. We will guide you through the process and ensure your data is promptly removed in accordance with our Terms and Conditions of Use, privacy and data retention policies.',
+                answer: "You can use the 'Delete Thread' button to delete your prompt and the generated response. Click the 'History' button to view your historical prompts and use the 'Delete Thread' button to delete threads that are <=30 days old. Threads that are >30 days old cannot be deleted via the Playground and will be retained for a period necessary to fulfill the purposes outlined in our [Privacy Policy](https://allenai.org/privacy-policy)",
             },
             {
-                question: 'Will AI2 claim copyright over the outputs I generate with OLMo?',
+                question: 'Will Ai2 claim copyright over the outputs I generate with OLMo?',
                 answer: 'No, we do not claim copyright over the outputs generated by OLMo.',
             },
             {
                 question:
-                    "What are AI2's policies regarding sharing and publication of OLMo-generated content?",
+                    "What are Ai2's policies regarding sharing and publication of OLMo-generated content?",
                 answer: 'We encourage users to review our [Terms and Conditions of Use](https://allenai.org/terms) for detailed guidelines on our preferred approach to sharing and publication.',
             },
         ],
