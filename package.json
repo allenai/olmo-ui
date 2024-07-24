@@ -54,6 +54,7 @@
     "react-is": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.20.0",
+    "remark-mark-highlight": "^0.1.0",
     "styled-components": "^5.3.5",
     "zustand": "^4.5.2"
   },

@@ -19,14 +19,17 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         content,
         labels: messageLabels,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
+
+    const modifiedContent = content.replace('Ether', '==Ether==');
+
     return (
         <>
             <ChatMessage role={role} messageId={messageId}>
-                <MarkdownRenderer>{content}</MarkdownRenderer>
+                <MarkdownRenderer>{modifiedContent}</MarkdownRenderer>
             </ChatMessage>
             <MessageInteraction
                 role={role}
-                content={content}
+                content={modifiedContent}
                 messageLabels={messageLabels}
                 messageId={messageId}
             />

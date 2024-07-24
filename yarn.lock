@@ -7201,6 +7201,11 @@ remark-gfm@^4.0.0:
     remark-stringify "^11.0.0"
     unified "^11.0.0"
 
+remark-mark-highlight@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/remark-mark-highlight/-/remark-mark-highlight-0.1.0.tgz#9a359d6808b8cbf9ed01e46799d69e3cf3bb637f"
+  integrity sha512-jy8IruVlIzZYDRcFkhN7HLfcyHnNfcvZJW4qHv2Ri1akULFyWvlE2onlM0Nx5L2xLsPV9HKnIVgkN3LAZLWcqA==
+
 remark-parse@^11.0.0:
   version "11.0.0"
   resolved "https://registry.npmjs.org/remark-parse/-/remark-parse-11.0.0.tgz"
