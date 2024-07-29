@@ -1,4 +1,11 @@
-import { Stack, Typography } from '@mui/material';
+import {
+    MenuItem,
+    OutlinedInput,
+    Select,
+    SelectChangeEvent,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction, useMatch } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -10,10 +17,17 @@ import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
+    const models = useAppContext((state) => state.models);
+    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
+    const selectedModel = useAppContext((state) => state.selectedModel);
     const threadPageMatch = useMatch(links.thread(':id'));
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         streamPrompt(data);
+    };
+
+    const onModelChange = (event: SelectChangeEvent) => {
+        setSelectedModel(event.target.value);
     };
 
     return (
@@ -24,6 +38,20 @@ export const UIRefreshThreadPage = () => {
                 containerType: 'inline-size',
             }}>
             <ThreadPageControls />
+
+            <Select
+                id="model-select"
+                sx={{ width: { xs: '75%', md: '35%' } }}
+                size="small"
+                onChange={onModelChange}
+                input={<OutlinedInput />}
+                value={(selectedModel && selectedModel.id) || ''}>
+                {models.map((model) => (
+                    <MenuItem key={model.name} value={model.id}>
+                        {model.name}
+                    </MenuItem>
+                ))}
+            </Select>
 
             <ResponsiveCard>
                 <Outlet />
