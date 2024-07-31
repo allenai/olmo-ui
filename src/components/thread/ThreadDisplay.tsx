@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { LoaderFunction } from 'react-router-dom';
+import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
@@ -69,11 +69,20 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const { getSelectedThread, selectedThreadRootId } = appContext.getState();
+    const { getSelectedThread, selectedThreadRootId, getAttributionsForMessage } =
+        appContext.getState();
 
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {
-        await getSelectedThread(params.id);
+        const selectedThread = await getSelectedThread(params.id);
+        const attributionsPromise = await getAttributionsForMessage(
+            selectedThread.childIds[selectedThread.childIds.length - 1]
+        );
+
+        return defer({
+            selectedThread,
+            attributions: attributionsPromise,
+        });
     }
 
     return null;
