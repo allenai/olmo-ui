@@ -5,6 +5,7 @@ import { Message } from '@/api/Message';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
+import { AttributionDrawerContent } from '../attribution/AttributionDrawer';
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './MarkDownWithSyntax';
 import { MessageInteraction } from './MessageInteraction';
@@ -64,6 +65,7 @@ export const ThreadDisplay = (): JSX.Element => {
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
+            <AttributionDrawerContent />
         </Stack>
     );
 };
