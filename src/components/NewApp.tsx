@@ -13,6 +13,7 @@ import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
+import { AttributionDrawer } from './thread/attribution/AttributionDrawer';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 
@@ -80,6 +81,7 @@ export const NewApp = () => {
                 </>
             ) : null}
             <HistoryDrawer />
+            <AttributionDrawer />
             {schema && <ParameterDrawer schemaData={schema} />}
             {!isDesktop && <FAQDrawer />}
         </OuterContainer>

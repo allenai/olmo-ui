@@ -1,6 +1,6 @@
 import { OlmoStateCreator } from '@/AppContext';
 
-export type DrawerId = 'history' | 'parameters' | 'category';
+export type DrawerId = 'history' | 'parameters' | 'category' | 'attribution';
 
 export interface DrawerSlice {
     currentOpenDrawer: DrawerId | null;

@@ -5,6 +5,7 @@ import { useMatch } from 'react-router-dom';
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 
+import { AttributionButton } from './attribution/AttributionButton';
 import { DeleteThreadButton } from './DeleteThreadButton';
 import { HistoryButton } from './history/HistoryButton';
 import { ParameterButton } from './parameter/ParameterButton';
@@ -43,6 +44,7 @@ const ThreadButtons = (): JSX.Element => {
                 <ShareThreadButton />
                 <ParameterButton />
                 <HistoryButton />
+                <AttributionButton />
             </Stack>
 
             {/* Small screens */}
@@ -59,6 +61,7 @@ const ThreadButtons = (): JSX.Element => {
                 <ShareThreadButton />
                 <ParameterButton />
                 <HistoryButton />
+                <AttributionButton />
             </ButtonGroup>
         </>
     );
