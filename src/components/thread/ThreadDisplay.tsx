@@ -75,7 +75,7 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {
         const selectedThread = await getSelectedThread(params.id);
-        const attributionsPromise = await getAttributionsForMessage(
+        const attributionsPromise = getAttributionsForMessage(
             selectedThread.childIds[selectedThread.childIds.length - 1]
         );
 
