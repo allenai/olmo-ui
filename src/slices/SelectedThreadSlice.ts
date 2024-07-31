@@ -36,7 +36,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
     deleteSelectedThread: () => {
         set((state) => {
-            return { ...state, selectedThreadState: undefined };
+            return { ...state, selectedThreadState: undefined
         });
     },
 
