@@ -20,7 +20,7 @@ export const AttributionButton = () => {
             variant={isAttributionDrawerOpen ? 'contained' : 'outlined'}
             color="secondary"
             startIcon={<ArticleIcon />}
-            title="History"
+            title="Attribution"
             onClick={toggleHistoryDrawer}
         />
     );

@@ -1,14 +1,16 @@
-import { ButtonBase, Card, CardActionArea, CardContent, Stack, Typography } from '@mui/material';
+import { Card, CardActionArea, CardContent, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 
 interface AttributionDocumentCardProps {
-    title: string;
+    title?: string;
     text: string;
     source: string;
     documentIndex: string;
     // href: string;
 }
+
+const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
 
 export const AttributionDocumentCard = ({
     title,
@@ -23,26 +25,29 @@ export const AttributionDocumentCard = ({
     const setSelectedDocument = useAppContext((state) => state.setSelectedDocument);
 
     return (
-        <Card
-            sx={{
-                borderLeft: (theme) => `${theme.spacing(0.5)} solid transparent`,
-
-                '&:hover': {
-                    borderColor: (theme) => theme.palette.primary.light,
-                },
-
-                '&[data-selected-document=true]': {
-                    borderColor: (theme) => theme.palette.primary.main,
-                },
-            }}
-            data-selected-document={isSelected}>
+        <Card>
             <CardActionArea
                 onClick={() => {
                     setSelectedDocument(documentIndex);
                 }}>
-                <CardContent component={Stack} direction="column" gap={1}>
-                    <Typography variant="h6" margin={0}>
-                        {title}
+                <CardContent
+                    component={Stack}
+                    direction="column"
+                    gap={1}
+                    sx={{
+                        borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
+
+                        '&:hover': {
+                            borderColor: (theme) => theme.palette.primary.light,
+                        },
+
+                        '&[data-selected-document=true]': {
+                            borderColor: (theme) => theme.palette.primary.main,
+                        },
+                    }}
+                    data-selected-document={isSelected}>
+                    <Typography variant="h6" component="h2" margin={0}>
+                        {title ?? MISSING_DOCUMENT_TITLE_TEXT}
                     </Typography>
                     <Typography variant="body1">&quot;{text}&quot;...</Typography>
                     <Typography variant="subtitle1" fontWeight="bold" component="span">
