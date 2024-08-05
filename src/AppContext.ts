@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 
+import { AttributionSlice, createAttributionSlice } from './slices/AttributionSlice';
 import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
@@ -29,7 +30,8 @@ export type AppContextState = LabelSlice &
     DrawerSlice &
     ThreadUpdateSlice &
     SelectedThreadSlice &
-    DatasetExplorerSliceStates;
+    DatasetExplorerSliceStates &
+    AttributionSlice;
 
 export const appContext = createStore<AppContextState>()(
     devtools(
@@ -47,6 +49,7 @@ export const appContext = createStore<AppContextState>()(
             ...createDocumentSlice(...store),
             ...createThreadUpdateSlice(...store),
             ...createSelectedThreadSlice(...store),
+            ...createAttributionSlice(...store),
         }))
     )
 );
