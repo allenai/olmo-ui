@@ -11,6 +11,7 @@ services:
       # makes debugging easier.
       - PYTHONUNBUFFERED=1
       - LOG_LEVEL=DEBUG
+      - IS_ATTRIBUTION_ENABLED=true
     ports:
       - 8001:8000
   ui:

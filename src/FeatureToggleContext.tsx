@@ -3,12 +3,14 @@ import * as React from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
+    attribution = 'attribution',
 }
 
 type FeatureToggles = Record<FeatureToggle, boolean>;
 
 const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
+    [FeatureToggle.attribution]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -67,7 +69,7 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         const query = new URL(window.location.href).searchParams;
         const queryToggles = parseToggles(Object.fromEntries(query));
 
-        const envToggles = parseToggles({ isUIRefreshEnabled: process.env.IS_UI_REFRESH_ENABLED });
+        const envToggles = parseToggles({ attribution: process.env.IS_ATTRIBUTION_ENABLED });
 
         const toggles = {
             ...initialToggles,

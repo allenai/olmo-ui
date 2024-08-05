@@ -86,7 +86,7 @@ module.exports = (env) => ({
             LLMX_API_URL: 'http://localhost:8080',
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
-            IS_UI_REFRESH_ENABLED: 'true',
+            IS_ATTRIBUTION_ENABLED: 'true',
             AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
             AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
