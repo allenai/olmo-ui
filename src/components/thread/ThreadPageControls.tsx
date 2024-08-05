@@ -2,6 +2,7 @@ import PlusIcon from '@mui/icons-material/Add';
 import { alpha, ButtonGroup, Card, Stack, Typography } from '@mui/material';
 import { useMatch } from 'react-router-dom';
 
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 
@@ -12,12 +13,12 @@ import { ParameterButton } from './parameter/ParameterButton';
 import { ResponsiveButton } from './ResponsiveButton';
 import { ShareThreadButton } from './ShareThreadButton';
 
-const ThreadButtons = (): JSX.Element => {
+const NewThreadButton = () => {
     const playgroundRoute = useMatch({
         path: links.playground,
     });
 
-    const NewThreadButton = () => (
+    return (
         <ResponsiveButton
             startIcon={<PlusIcon />}
             title="New Thread"
@@ -27,6 +28,10 @@ const ThreadButtons = (): JSX.Element => {
             disabled={playgroundRoute?.pathname === links.playground}
         />
     );
+};
+
+const ThreadButtonGroup = (): JSX.Element => {
+    const featureToggles = useFeatureToggles();
 
     return (
         <>
@@ -44,7 +49,7 @@ const ThreadButtons = (): JSX.Element => {
                 <ShareThreadButton />
                 <ParameterButton />
                 <HistoryButton />
-                <AttributionButton />
+                {featureToggles.attribution && <AttributionButton />}
             </Stack>
 
             {/* Small screens */}
@@ -61,7 +66,7 @@ const ThreadButtons = (): JSX.Element => {
                 <ShareThreadButton />
                 <ParameterButton />
                 <HistoryButton />
-                <AttributionButton />
+                {featureToggles.attribution && <AttributionButton />}
             </ButtonGroup>
         </>
     );
@@ -99,7 +104,7 @@ export const ThreadPageControls = (): JSX.Element => {
                 Thread
             </Typography>
 
-            <ThreadButtons />
+            <ThreadButtonGroup />
         </Card>
     );
 };

@@ -18,7 +18,6 @@ export const AttributionButton = () => {
     return (
         <ResponsiveButton
             variant={isAttributionDrawerOpen ? 'contained' : 'outlined'}
-            color="secondary"
             startIcon={<ArticleIcon />}
             title="Attribution"
             onClick={toggleHistoryDrawer}
