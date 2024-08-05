@@ -5,7 +5,6 @@ import { Message } from '@/api/Message';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
-import { AttributionDrawer } from './attribution/AttributionDrawer';
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { markedContentSelector } from './marked-content-selector';
