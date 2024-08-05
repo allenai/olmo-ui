@@ -46,9 +46,9 @@ export const AttributionDocumentCard = ({
                 onMouseEnter={() => {
                     setPreviewDocument();
                 }}
-                onMouseLeave={() => {
-                    unsetPreviewDocument();
-                }}
+                // onMouseLeave={() => {
+                //     unsetPreviewDocument();
+                // }}
                 onFocus={() => {
                     setPreviewDocument();
                 }}
