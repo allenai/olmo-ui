@@ -5,9 +5,9 @@ import { Message } from '@/api/Message';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
-import { AttributionDrawer } from './attribution/AttributionDrawer';
 import { ChatMessage } from './ChatMessage';
-import { MarkdownRenderer } from './MarkDownWithSyntax';
+import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
+import { markedContentSelector } from './marked-content-selector';
 import { MessageInteraction } from './MessageInteraction';
 
 interface MessageViewProps {
@@ -20,10 +20,13 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         content,
         labels: messageLabels,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
+
+    const contentWithMarks = useAppContext(markedContentSelector(messageId));
+
     return (
         <>
             <ChatMessage role={role} messageId={messageId}>
-                <MarkdownRenderer>{content}</MarkdownRenderer>
+                <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
             </ChatMessage>
             <MessageInteraction
                 role={role}
@@ -70,12 +73,13 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const { getSelectedThread, selectedThreadRootId, getAttributionsForMessage } =
+    const { getSelectedThread, selectedThreadRootId, getAttributionsForMessage, resetAttribution } =
         appContext.getState();
 
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {
         const selectedThread = await getSelectedThread(params.id);
+        resetAttribution();
         const attributionsPromise = getAttributionsForMessage(
             selectedThread.childIds[selectedThread.childIds.length - 1]
         );
