@@ -172,7 +172,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 if (isFinalMessage(message)) {
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
-                    await getAttributionsForMessage(message.id);
+                    await getAttributionsForMessage(
+                        message.children[message.children.length - 1].id
+                    );
                 }
             }
         } catch (err) {
