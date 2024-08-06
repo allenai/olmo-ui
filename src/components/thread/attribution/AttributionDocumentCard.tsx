@@ -22,13 +22,38 @@ export const AttributionDocumentCard = ({
         (state) => state.attribution.selectedDocumentIndex === documentIndex
     );
 
-    const setSelectedDocument = useAppContext((state) => state.setSelectedDocument);
+    const setSelectedDocument = useAppContext((state) => () => {
+        state.setSelectedDocument(documentIndex);
+    });
+
+    const isPreviewed = useAppContext(
+        (state) => state.attribution.previewDocumentIndex === documentIndex
+    );
+
+    const setPreviewDocument = useAppContext((state) => () => {
+        state.setPreviewDocument(documentIndex);
+    });
+    const unsetPreviewDocument = useAppContext((state) => () => {
+        state.unsetPreviewDocument(documentIndex);
+    });
 
     return (
         <Card>
             <CardActionArea
                 onClick={() => {
-                    setSelectedDocument(documentIndex);
+                    setSelectedDocument();
+                }}
+                onMouseEnter={() => {
+                    setPreviewDocument();
+                }}
+                onMouseLeave={() => {
+                    unsetPreviewDocument();
+                }}
+                onFocus={() => {
+                    setPreviewDocument();
+                }}
+                onBlur={() => {
+                    unsetPreviewDocument();
                 }}>
                 <CardContent
                     component={Stack}
@@ -37,15 +62,16 @@ export const AttributionDocumentCard = ({
                     sx={{
                         borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
 
-                        '&:hover': {
+                        '&[data-previewed-document="true"]': {
                             borderColor: (theme) => theme.palette.primary.light,
                         },
 
-                        '&[data-selected-document=true]': {
+                        '&[data-selected-document="true"]': {
                             borderColor: (theme) => theme.palette.primary.main,
                         },
                     }}
-                    data-selected-document={isSelected}>
+                    data-selected-document={isSelected}
+                    data-previewed-document={isPreviewed}>
                     <Typography variant="h6" component="h2" margin={0}>
                         {title ?? MISSING_DOCUMENT_TITLE_TEXT}
                     </Typography>

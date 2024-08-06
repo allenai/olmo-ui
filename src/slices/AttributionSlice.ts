@@ -12,6 +12,8 @@ interface AttributionState {
 interface AttributionActions {
     addDocument: (document: Document) => void;
     setSelectedDocument: (documentIndex: string) => void;
+    setPreviewDocument: (previewDocumentIndex: string) => void;
+    unsetPreviewDocument: (previewDocumentIndex: string) => void;
     resetAttribution: () => void;
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
 }
@@ -58,6 +60,18 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             },
             false,
             'attribution/setPreviewDocument'
+        );
+    },
+
+    unsetPreviewDocument: (previewDocumentIndex) => {
+        set(
+            (state) => {
+                if (state.attribution.previewDocumentIndex === previewDocumentIndex) {
+                    state.attribution.previewDocumentIndex = null;
+                }
+            },
+            false,
+            'attribution/unsetPreviewDocument'
         );
     },
 
