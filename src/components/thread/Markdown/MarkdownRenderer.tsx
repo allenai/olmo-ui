@@ -1,9 +1,8 @@
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkDirective from 'remark-directive';
-import remarkDirectiveHighlight from 'remark-directive-rehype';
+import remarkDirectiveRehype from 'remark-directive-rehype';
 import remarkGfm from 'remark-gfm';
-import remarkParse from 'remark-parse';
 
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
 
@@ -16,7 +15,7 @@ interface MarkdownRendererProps {
 export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
     return (
         <Markdown
-            remarkPlugins={[remarkParse, remarkGfm, remarkDirective, remarkDirectiveHighlight]}
+            remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
             rehypePlugins={[rehypeRaw]}
             components={{
                 code: CodeBlock,
