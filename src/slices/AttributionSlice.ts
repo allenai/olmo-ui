@@ -4,6 +4,7 @@ import { OlmoStateCreator } from '@/AppContext';
 interface AttributionState {
     attribution: {
         selectedDocumentIndex: string | null;
+        previewDocumentIndex: string | null;
         documents: Record<string, Document>;
     };
 }
@@ -20,6 +21,7 @@ export type AttributionSlice = AttributionState & AttributionActions;
 const initialAttributionState: AttributionState = {
     attribution: {
         selectedDocumentIndex: null,
+        previewDocumentIndex: null,
         documents: {},
     },
 };
@@ -46,6 +48,16 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             },
             false,
             'attribution/setSelectedDocument'
+        );
+    },
+
+    setPreviewDocument: (previewDocumentIndex: string) => {
+        set(
+            (state) => {
+                state.attribution.previewDocumentIndex = previewDocumentIndex;
+            },
+            false,
+            'attribution/setPreviewDocument'
         );
     },
 

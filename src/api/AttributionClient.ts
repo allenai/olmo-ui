@@ -2,7 +2,7 @@ import { ClientBase } from './ClientBase';
 
 export interface Document {
     text: string;
-    correspondingSpans: string[];
+    corresponding_spans: string[];
     index: string;
     source: string;
     title: string;
