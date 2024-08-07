@@ -21,6 +21,25 @@ import {
     AttributionDocumentCardSkeleton,
 } from './AttributionDocumentCard';
 
+const NoDocumentsCard = (): JSX.Element => {
+    const isThereASelectedThread = useAppContext((state) => Boolean(state.selectedThreadRootId));
+
+    const message = isThereASelectedThread ? (
+        <>
+            There are no documents that can be attributed to this response. This will happen often
+            on short responses.
+        </>
+    ) : (
+        <>Start a new thread or select an existing one to see response attributions.</>
+    );
+
+    return (
+        <Card>
+            <CardContent>{message}</CardContent>
+        </Card>
+    );
+};
+
 export const AttributionDrawerDocumentList = (): JSX.Element => {
     const documents = useAppContext((state) => state.attribution.documents);
     const attributionDocumentLoadingState = useAppContext(
@@ -48,6 +67,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 </CardContent>
             </Card>
         );
+    }
+
+    if (Object.values(documents).length === 0) {
+        return <NoDocumentsCard />;
     }
 
     return (
