@@ -2,6 +2,7 @@ import { Stack } from '@mui/material';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
+import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
@@ -79,10 +80,15 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {
         const selectedThread = await getSelectedThread(params.id);
+
+        const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
+        const lastResponseId = selectedThreadMessages
+            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
+            .at(-1);
+
         resetAttribution();
-        const attributionsPromise = getAttributionsForMessage(
-            selectedThread.childIds[selectedThread.childIds.length - 1]
-        );
+        const attributionsPromise =
+            lastResponseId != null ? getAttributionsForMessage(lastResponseId) : undefined;
 
         return defer({
             selectedThread,
