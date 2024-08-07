@@ -1,15 +1,54 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import {
+    Box,
+    Card,
+    CardContent,
+    Divider,
+    IconButton,
+    ListSubheader,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../../ResponsiveDrawer';
-import { AttributionDocumentCard } from './AttributionDocumentCard';
+import {
+    AttributionDocumentCard,
+    AttributionDocumentCardSkeleton,
+} from './AttributionDocumentCard';
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
     const documents = useAppContext((state) => state.attribution.documents);
+    const attributionDocumentLoadingState = useAppContext(
+        (state) => state.attribution.loadingState
+    );
+
+    if (attributionDocumentLoadingState === RemoteState.Loading) {
+        return (
+            <>
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+            </>
+        );
+    }
+
+    if (attributionDocumentLoadingState === RemoteState.Error) {
+        return (
+            <Card>
+                <CardContent>
+                    Something went wrong when getting documents that can be attributed to this
+                    response. Please try another response.
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <>

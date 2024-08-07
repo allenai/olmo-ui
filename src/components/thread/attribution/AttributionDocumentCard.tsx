@@ -1,6 +1,78 @@
-import { Card, CardActionArea, CardContent, Stack, Typography } from '@mui/material';
+import { Card, CardActionArea, CardContent, Skeleton, Stack, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
+
+interface AttributionDocumentCardBaseProps {
+    title: ReactNode;
+    text: ReactNode;
+    source: ReactNode;
+    // href: string;
+    setSelectedDocument?: () => void;
+    setPreviewDocument?: () => void;
+    unsetPreviewDocument?: () => void;
+    isSelected?: boolean;
+    isPreviewed?: boolean;
+}
+
+const AttributionDocumentCardBase = ({
+    setSelectedDocument,
+    setPreviewDocument,
+    unsetPreviewDocument,
+    isSelected,
+    isPreviewed,
+    title,
+    text,
+    source,
+}: AttributionDocumentCardBaseProps) => {
+    return (
+        <Card>
+            <CardActionArea
+                disabled={setSelectedDocument == null}
+                onClick={() => {
+                    setSelectedDocument?.();
+                }}
+                onMouseEnter={() => {
+                    setPreviewDocument?.();
+                }}
+                onMouseLeave={() => {
+                    unsetPreviewDocument?.();
+                }}
+                onFocus={() => {
+                    setPreviewDocument?.();
+                }}
+                onBlur={() => {
+                    unsetPreviewDocument?.();
+                }}>
+                <CardContent
+                    component={Stack}
+                    direction="column"
+                    gap={1}
+                    sx={{
+                        borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
+
+                        '&[data-previewed-document="true"]': {
+                            borderColor: (theme) => theme.palette.primary.light,
+                        },
+
+                        '&[data-selected-document="true"]': {
+                            borderColor: (theme) => theme.palette.primary.main,
+                        },
+                    }}
+                    data-selected-document={isSelected}
+                    data-previewed-document={isPreviewed}>
+                    <Typography variant="h6" component="h2" margin={0}>
+                        {title}
+                    </Typography>
+                    <Typography variant="body1">{text}</Typography>
+                    <Typography variant="subtitle1" fontWeight="bold" component="span">
+                        {source}
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
+        </Card>
+    );
+};
 
 interface AttributionDocumentCardProps {
     title?: string;
@@ -38,49 +110,33 @@ export const AttributionDocumentCard = ({
     });
 
     return (
-        <Card>
-            <CardActionArea
-                onClick={() => {
-                    setSelectedDocument();
-                }}
-                onMouseEnter={() => {
-                    setPreviewDocument();
-                }}
-                onMouseLeave={() => {
-                    unsetPreviewDocument();
-                }}
-                onFocus={() => {
-                    setPreviewDocument();
-                }}
-                onBlur={() => {
-                    unsetPreviewDocument();
-                }}>
-                <CardContent
-                    component={Stack}
-                    direction="column"
-                    gap={1}
-                    sx={{
-                        borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
+        <AttributionDocumentCardBase
+            title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
+            text={`"${text}"...`}
+            source={`Source: ${source}`}
+            isSelected={isSelected}
+            setSelectedDocument={setSelectedDocument}
+            isPreviewed={isPreviewed}
+            setPreviewDocument={setPreviewDocument}
+            unsetPreviewDocument={unsetPreviewDocument}
+        />
+    );
+};
 
-                        '&[data-previewed-document="true"]': {
-                            borderColor: (theme) => theme.palette.primary.light,
-                        },
-
-                        '&[data-selected-document="true"]': {
-                            borderColor: (theme) => theme.palette.primary.main,
-                        },
-                    }}
-                    data-selected-document={isSelected}
-                    data-previewed-document={isPreviewed}>
-                    <Typography variant="h6" component="h2" margin={0}>
-                        {title ?? MISSING_DOCUMENT_TITLE_TEXT}
-                    </Typography>
-                    <Typography variant="body1">&quot;{text}&quot;...</Typography>
-                    <Typography variant="subtitle1" fontWeight="bold" component="span">
-                        Source: {source}
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
-        </Card>
+export const AttributionDocumentCardSkeleton = (): JSX.Element => {
+    return (
+        <AttributionDocumentCardBase
+            title={<Skeleton />}
+            text={
+                <>
+                    <Skeleton />
+                    <Skeleton />
+                    <Skeleton />
+                    <Skeleton />
+                    <Skeleton />
+                </>
+            }
+            source={<Skeleton />}
+        />
     );
 };

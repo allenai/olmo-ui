@@ -142,5 +142,10 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
                 useFlexGap: true,
             },
         },
+        MuiSkeleton: {
+            defaultProps: {
+                animation: 'wave',
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>);

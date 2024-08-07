@@ -1,11 +1,13 @@
 import { AttributionClient, Document } from '@/api/AttributionClient';
 import { OlmoStateCreator } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 
 interface AttributionState {
     attribution: {
         selectedDocumentIndex: string | null;
         previewDocumentIndex: string | null;
         documents: Record<string, Document>;
+        loadingState: RemoteState | null;
     };
 }
 
@@ -25,6 +27,7 @@ const initialAttributionState: AttributionState = {
         selectedDocumentIndex: null,
         previewDocumentIndex: null,
         documents: {},
+        loadingState: null,
     },
 };
 
@@ -80,16 +83,40 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     },
 
     getAttributionsForMessage: async (messageId: string): Promise<AttributionState> => {
-        const message = get().selectedThreadMessagesById[messageId];
-
-        const attributionDocuments = await attributionClient.getAttributionDocuments(
-            message.content,
-            'olmo-7b-chat'
+        set(
+            (state) => {
+                state.attribution.loadingState = RemoteState.Loading;
+            },
+            false,
+            'attribution/startGetAttributionsForMessage'
         );
 
-        Object.values(attributionDocuments).forEach((document) => {
-            get().addDocument(document);
-        });
+        const message = get().selectedThreadMessagesById[messageId];
+
+        try {
+            const attributionDocuments = await attributionClient.getAttributionDocuments(
+                message.content,
+                'olmo-7b-chat'
+            );
+
+            Object.values(attributionDocuments).forEach((document) => {
+                get().addDocument(document);
+            });
+
+            set(
+                (state) => {
+                    state.attribution.loadingState = RemoteState.Loaded;
+                },
+                false,
+                'attribution/finishGetAttributionsForMessage'
+            );
+        } catch {
+            set(
+                (state) => (state.attribution.loadingState = RemoteState.Error),
+                false,
+                'attribution/errorGetAttributionsForMessage'
+            );
+        }
 
         return { attribution: get().attribution };
     },
