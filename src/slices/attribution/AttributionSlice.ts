@@ -3,7 +3,7 @@ import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {
-    documents: Partial<Record<string, Document>>;
+    documents: { [documentIndex: string]: Document | undefined };
     loadingState: RemoteState | null;
 }
 
@@ -11,7 +11,9 @@ interface AttributionState {
     attribution: {
         selectedDocumentIndex: string | null;
         previewDocumentIndex: string | null;
-        documentsByMessageId: Partial<Record<string, MessageWithAttributionDocuments>>;
+        attributionsByMessageId: {
+            [messageId: string]: MessageWithAttributionDocuments | undefined;
+        };
         selectedMessageId: string | null;
     };
 }
@@ -32,7 +34,7 @@ const initialAttributionState: AttributionState = {
     attribution: {
         selectedDocumentIndex: null,
         previewDocumentIndex: null,
-        documentsByMessageId: {},
+        attributionsByMessageId: {},
         selectedMessageId: null,
     },
 };
@@ -45,15 +47,15 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     addDocument: (document: Document, messageId: string) => {
         set(
             (state) => {
-                if (state.attribution.documentsByMessageId[messageId] == null) {
-                    state.attribution.documentsByMessageId[messageId] = {
+                if (state.attribution.attributionsByMessageId[messageId] == null) {
+                    state.attribution.attributionsByMessageId[messageId] = {
                         loadingState: null,
                         documents: {
                             [document.index]: document,
                         },
                     };
                 } else {
-                    state.attribution.documentsByMessageId[messageId].documents[document.index] =
+                    state.attribution.attributionsByMessageId[messageId].documents[document.index] =
                         document;
                 }
             },
@@ -118,18 +120,23 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         const message = get().selectedThreadMessagesById[messageId];
         get().setSelectedMessage(messageId);
 
-        const cachedMessages = get().attribution.documentsByMessageId[messageId]?.documents;
+        const messageDocumentsLoadingState =
+            get().attribution.attributionsByMessageId[messageId]?.loadingState;
 
-        if (cachedMessages == null || Object.keys(cachedMessages).length === 0) {
+        // If a request is in-flight or finished we don't need to fetch again
+        if (
+            messageDocumentsLoadingState !== RemoteState.Loading &&
+            messageDocumentsLoadingState !== RemoteState.Loaded
+        ) {
             set(
                 (state) => {
-                    if (state.attribution.documentsByMessageId[messageId] == null) {
-                        state.attribution.documentsByMessageId[messageId] = {
+                    if (state.attribution.attributionsByMessageId[messageId] == null) {
+                        state.attribution.attributionsByMessageId[messageId] = {
                             documents: {},
                             loadingState: RemoteState.Loading,
                         };
                     } else {
-                        state.attribution.documentsByMessageId[messageId].loadingState =
+                        state.attribution.attributionsByMessageId[messageId].loadingState =
                             RemoteState.Loading;
                     }
                 },
@@ -149,8 +156,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
                 set(
                     (state) => {
+                        // Since we create the object above this _should_ be safe.
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        state.attribution.documentsByMessageId[messageId]!.loadingState =
+                        state.attribution.attributionsByMessageId[messageId]!.loadingState =
                             RemoteState.Loaded;
                     },
                     false,
@@ -159,8 +167,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             } catch {
                 set(
                     (state) => {
+                        // Since we create the object above this _should_ be safe.
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        state.attribution.documentsByMessageId[messageId]!.loadingState =
+                        state.attribution.attributionsByMessageId[messageId]!.loadingState =
                             RemoteState.Error;
                     },
                     false,

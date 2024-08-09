@@ -13,7 +13,7 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import { documentsForMessageSelector } from '@/slices/attribution/attribution-selectors';
+import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../../ResponsiveDrawer';
@@ -42,18 +42,11 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const documentsForMessage = useAppContext(documentsForMessageSelector);
+    const documentsForMessage = useAppContext(messageAttributionsSelector);
 
+    // NoDocumentsCard is doing double duty for us here. Generally documentsForMessage _should_ only be null if there's no selected thread.
     if (documentsForMessage == null) {
-        return (
-            <>
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-            </>
-        );
+        return <NoDocumentsCard />;
     }
 
     const { documents, loadingState } = documentsForMessage;
