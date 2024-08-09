@@ -1,5 +1,5 @@
 import { AppContextState } from '@/AppContext';
-import { documentsForMessageSelector } from '@/slices/AttributionSlice';
+import { documentsForMessageSelector } from '@/slices/documentsForMessageSelector';
 
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {

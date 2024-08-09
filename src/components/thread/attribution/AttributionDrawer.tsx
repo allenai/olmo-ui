@@ -13,7 +13,7 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import { documentsForMessageSelector } from '@/slices/AttributionSlice';
+import { documentsForMessageSelector } from '@/slices/attribution/attribution-selectors';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../../ResponsiveDrawer';
@@ -42,15 +42,9 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const documents = useAppContext(documentsForMessageSelector);
-    const attributionDocumentLoadingState = useAppContext(
-        (state) => state.attribution.loadingState
-    );
+    const documentsForMessage = useAppContext(documentsForMessageSelector);
 
-    if (
-        Object.values(documents).length === 0 &&
-        attributionDocumentLoadingState === RemoteState.Loading
-    ) {
+    if (documentsForMessage == null) {
         return (
             <>
                 <AttributionDocumentCardSkeleton />
@@ -62,10 +56,21 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (
-        Object.values(documents).length === 0 &&
-        attributionDocumentLoadingState === RemoteState.Error
-    ) {
+    const { documents, loadingState } = documentsForMessage;
+
+    if (loadingState === RemoteState.Loading) {
+        return (
+            <>
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+                <AttributionDocumentCardSkeleton />
+            </>
+        );
+    }
+
+    if (loadingState === RemoteState.Error) {
         return (
             <Card>
                 <CardContent>
@@ -76,21 +81,27 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (Object.values(documents).length === 0) {
+    if (Object.keys(documents).length === 0) {
         return <NoDocumentsCard />;
     }
 
     return (
         <>
-            {Object.values(documents).map((document) => (
-                <AttributionDocumentCard
-                    key={document.index}
-                    documentIndex={document.index}
-                    title={document.title}
-                    text={document.text}
-                    source={document.source}
-                />
-            ))}
+            {Object.values(documents).map((document) => {
+                if (document == null) {
+                    return null;
+                }
+
+                return (
+                    <AttributionDocumentCard
+                        key={document.index}
+                        documentIndex={document.index}
+                        title={document.title}
+                        text={document.text}
+                        source={document.source}
+                    />
+                );
+            })}
         </>
     );
 };

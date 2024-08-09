@@ -1,22 +1,17 @@
 import { AttributionClient, Document } from '@/api/AttributionClient';
 import { OlmoStateCreator } from '@/AppContext';
-import { type AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
-export const documentsForMessageSelector = (state: AppContextState) => {
-    if (state.attribution.selectedMessageId != null) {
-        return state.attribution.documentsByMessageId[state.attribution.selectedMessageId] ?? {};
-    }
-
-    return {};
-};
+export interface MessageWithAttributionDocuments {
+    documents: Partial<Record<string, Document>>;
+    loadingState: RemoteState | null;
+}
 
 interface AttributionState {
     attribution: {
         selectedDocumentIndex: string | null;
         previewDocumentIndex: string | null;
-        documentsByMessageId: Record<string, Record<string, Document | undefined> | undefined>;
-        loadingState: RemoteState | null;
+        documentsByMessageId: Partial<Record<string, MessageWithAttributionDocuments>>;
         selectedMessageId: string | null;
     };
 }
@@ -38,7 +33,6 @@ const initialAttributionState: AttributionState = {
         selectedDocumentIndex: null,
         previewDocumentIndex: null,
         documentsByMessageId: {},
-        loadingState: null,
         selectedMessageId: null,
     },
 };
@@ -53,10 +47,14 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             (state) => {
                 if (state.attribution.documentsByMessageId[messageId] == null) {
                     state.attribution.documentsByMessageId[messageId] = {
-                        [document.index]: document,
+                        loadingState: null,
+                        documents: {
+                            [document.index]: document,
+                        },
                     };
                 } else {
-                    state.attribution.documentsByMessageId[messageId][document.index] = document;
+                    state.attribution.documentsByMessageId[messageId].documents[document.index] =
+                        document;
                 }
             },
             false,
@@ -117,20 +115,28 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     },
 
     getAttributionsForMessage: async (messageId: string): Promise<AttributionState> => {
-        set(
-            (state) => {
-                state.attribution.loadingState = RemoteState.Loading;
-            },
-            false,
-            'attribution/startGetAttributionsForMessage'
-        );
-
         const message = get().selectedThreadMessagesById[messageId];
         get().setSelectedMessage(messageId);
 
-        const cachedMessages = get().attribution.documentsByMessageId[messageId];
+        const cachedMessages = get().attribution.documentsByMessageId[messageId]?.documents;
 
         if (cachedMessages == null || Object.keys(cachedMessages).length === 0) {
+            set(
+                (state) => {
+                    if (state.attribution.documentsByMessageId[messageId] == null) {
+                        state.attribution.documentsByMessageId[messageId] = {
+                            documents: {},
+                            loadingState: RemoteState.Loading,
+                        };
+                    } else {
+                        state.attribution.documentsByMessageId[messageId].loadingState =
+                            RemoteState.Loading;
+                    }
+                },
+                false,
+                'attribution/startGetAttributionsForMessage'
+            );
+
             try {
                 const attributionDocuments = await attributionClient.getAttributionDocuments(
                     message.content,
@@ -143,14 +149,20 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
                 set(
                     (state) => {
-                        state.attribution.loadingState = RemoteState.Loaded;
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        state.attribution.documentsByMessageId[messageId]!.loadingState =
+                            RemoteState.Loaded;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
                 );
             } catch {
                 set(
-                    (state) => (state.attribution.loadingState = RemoteState.Error),
+                    (state) => {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        state.attribution.documentsByMessageId[messageId]!.loadingState =
+                            RemoteState.Error;
+                    },
                     false,
                     'attribution/errorGetAttributionsForMessage'
                 );
