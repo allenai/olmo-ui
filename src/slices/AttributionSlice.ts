@@ -1,22 +1,33 @@
 import { AttributionClient, Document } from '@/api/AttributionClient';
 import { OlmoStateCreator } from '@/AppContext';
+import { type AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+
+export const documentsForMessageSelector = (state: AppContextState) => {
+    if (state.attribution.selectedMessageId != null) {
+        return state.attribution.documentsByMessageId[state.attribution.selectedMessageId] ?? {};
+    }
+
+    return {};
+};
 
 interface AttributionState {
     attribution: {
         selectedDocumentIndex: string | null;
         previewDocumentIndex: string | null;
-        documents: Record<string, Document>;
+        documentsByMessageId: Record<string, Record<string, Document | undefined> | undefined>;
         loadingState: RemoteState | null;
+        selectedMessageId: string | null;
     };
 }
 
 interface AttributionActions {
-    addDocument: (document: Document) => void;
+    addDocument: (document: Document, messageId: string) => void;
     setSelectedDocument: (documentIndex: string) => void;
     setPreviewDocument: (previewDocumentIndex: string) => void;
     unsetPreviewDocument: (previewDocumentIndex: string) => void;
     resetAttribution: () => void;
+    setSelectedMessage: (messageId: string) => void;
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
 }
 
@@ -26,8 +37,9 @@ const initialAttributionState: AttributionState = {
     attribution: {
         selectedDocumentIndex: null,
         previewDocumentIndex: null,
-        documents: {},
+        documentsByMessageId: {},
         loadingState: null,
+        selectedMessageId: null,
     },
 };
 
@@ -36,10 +48,16 @@ const attributionClient = new AttributionClient();
 export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, get) => ({
     ...initialAttributionState,
 
-    addDocument: (document: Document) => {
+    addDocument: (document: Document, messageId: string) => {
         set(
             (state) => {
-                state.attribution.documents[document.index] = document;
+                if (state.attribution.documentsByMessageId[messageId] == null) {
+                    state.attribution.documentsByMessageId[messageId] = {
+                        [document.index]: document,
+                    };
+                } else {
+                    state.attribution.documentsByMessageId[messageId][document.index] = document;
+                }
             },
             false,
             'attribution/addDocument'
@@ -79,7 +97,23 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     },
 
     resetAttribution: () => {
-        set(initialAttributionState, false, 'attribution/resetAttribution');
+        set(
+            (state) => {
+                state.attribution.selectedMessageId = null;
+            },
+            false,
+            'attribution/resetAttribution'
+        );
+    },
+
+    setSelectedMessage: (messageId: string) => {
+        set(
+            (state) => {
+                state.attribution.selectedMessageId = messageId;
+            },
+            false,
+            'attribution/setSelectedMessage'
+        );
     },
 
     getAttributionsForMessage: async (messageId: string): Promise<AttributionState> => {
@@ -92,30 +126,35 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
 
         const message = get().selectedThreadMessagesById[messageId];
+        get().setSelectedMessage(messageId);
 
-        try {
-            const attributionDocuments = await attributionClient.getAttributionDocuments(
-                message.content,
-                'olmo-7b-chat'
-            );
+        const cachedMessages = get().attribution.documentsByMessageId[messageId];
 
-            Object.values(attributionDocuments).forEach((document) => {
-                get().addDocument(document);
-            });
+        if (cachedMessages == null || Object.keys(cachedMessages).length === 0) {
+            try {
+                const attributionDocuments = await attributionClient.getAttributionDocuments(
+                    message.content,
+                    'olmo-7b-chat'
+                );
 
-            set(
-                (state) => {
-                    state.attribution.loadingState = RemoteState.Loaded;
-                },
-                false,
-                'attribution/finishGetAttributionsForMessage'
-            );
-        } catch {
-            set(
-                (state) => (state.attribution.loadingState = RemoteState.Error),
-                false,
-                'attribution/errorGetAttributionsForMessage'
-            );
+                Object.values(attributionDocuments).forEach((document) => {
+                    get().addDocument(document, messageId);
+                });
+
+                set(
+                    (state) => {
+                        state.attribution.loadingState = RemoteState.Loaded;
+                    },
+                    false,
+                    'attribution/finishGetAttributionsForMessage'
+                );
+            } catch {
+                set(
+                    (state) => (state.attribution.loadingState = RemoteState.Error),
+                    false,
+                    'attribution/errorGetAttributionsForMessage'
+                );
+            }
         }
 
         return { attribution: get().attribution };

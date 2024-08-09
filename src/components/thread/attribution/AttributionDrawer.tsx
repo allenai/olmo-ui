@@ -13,6 +13,7 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { documentsForMessageSelector } from '@/slices/AttributionSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../../ResponsiveDrawer';
@@ -41,12 +42,15 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const documents = useAppContext((state) => state.attribution.documents);
+    const documents = useAppContext(documentsForMessageSelector);
     const attributionDocumentLoadingState = useAppContext(
         (state) => state.attribution.loadingState
     );
 
-    if (attributionDocumentLoadingState === RemoteState.Loading) {
+    if (
+        Object.values(documents).length === 0 &&
+        attributionDocumentLoadingState === RemoteState.Loading
+    ) {
         return (
             <>
                 <AttributionDocumentCardSkeleton />
@@ -58,7 +62,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (attributionDocumentLoadingState === RemoteState.Error) {
+    if (
+        Object.values(documents).length === 0 &&
+        attributionDocumentLoadingState === RemoteState.Error
+    ) {
         return (
             <Card>
                 <CardContent>

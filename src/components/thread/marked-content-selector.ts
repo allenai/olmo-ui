@@ -1,11 +1,13 @@
 import { AppContextState } from '@/AppContext';
+import { documentsForMessageSelector } from '@/slices/AttributionSlice';
 
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
         return [];
     }
 
-    return state.attribution.documents[state.attribution.selectedDocumentIndex].corresponding_spans;
+    const documents = documentsForMessageSelector(state);
+    return documents[state.attribution.selectedDocumentIndex]?.corresponding_spans ?? [];
 };
 
 const previewCorrespondingSpansSelector = (state: AppContextState) => {
@@ -13,7 +15,8 @@ const previewCorrespondingSpansSelector = (state: AppContextState) => {
         return [];
     }
 
-    return state.attribution.documents[state.attribution.previewDocumentIndex].corresponding_spans;
+    const documents = documentsForMessageSelector(state);
+    return documents[state.attribution.previewDocumentIndex]?.corresponding_spans ?? [];
 };
 
 export const markedContentSelector = (messageId: string) => (state: AppContextState) => {
