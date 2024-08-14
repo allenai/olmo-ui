@@ -27,9 +27,10 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
     const selectedSpans = selectedCorrespondingSpansSelector(state);
 
     selectedSpans.forEach((span) => {
+        // TODO: We're going to have potential issues here with nested spans, need to figure out how to fix that
         contentWithMarks = contentWithMarks.replaceAll(
             span,
-            `:attribution-highlight[${span}]{variant="selected"}`
+            `:attribution-highlight[${span}]{variant="selected" span="${span}"}`
         );
     });
 
@@ -41,7 +42,7 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
     previewSpansThatArentSelected.forEach((span) => {
         contentWithMarks = contentWithMarks.replaceAll(
             span,
-            `:attribution-highlight[${span}]{variant="preview"}`
+            `:attribution-highlight[${span}]{variant="preview" span=${span}}`
         );
     });
 
