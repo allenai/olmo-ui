@@ -2,6 +2,7 @@ import { styled } from '@mui/material';
 import { MouseEventHandler, PropsWithChildren } from 'react';
 
 import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 
 export interface AttributionHighlightProps extends PropsWithChildren {
     span: string;
@@ -13,6 +14,7 @@ export const AttributionHighlight = ({
     variant,
     children,
 }: AttributionHighlightProps): JSX.Element => {
+    const featureToggles = useFeatureToggles();
     const setSelectedSpan = useAppContext((state) => state.setSelectedSpan);
 
     const handleClick = () => {
@@ -20,7 +22,10 @@ export const AttributionHighlight = ({
     };
 
     return (
-        <AttributionHighlightButton variant={variant} onClick={handleClick}>
+        <AttributionHighlightButton
+            variant={variant}
+            onClick={handleClick}
+            disabled={!featureToggles.attributionSpanFirst}>
             {children}
         </AttributionHighlightButton>
     );
@@ -29,17 +34,19 @@ export const AttributionHighlight = ({
 interface AttributionHighlightButtonProps {
     variant: 'selected' | 'preview';
     onClick?: MouseEventHandler;
+    disabled?: boolean;
 }
 
 const AttributionHighlightButton = styled('button', {
     shouldForwardProp: (prop) => prop !== 'variant' && prop !== 'sx',
-})<AttributionHighlightButtonProps>(({ theme, variant, onClick }) => ({
+})<AttributionHighlightButtonProps>(({ theme, variant, onClick, disabled }) => ({
     padding: 0,
     margin: 0,
     fontFamily: 'inherit',
     fontSize: 'inherit',
+    color: 'inherit',
     border: 0,
-    cursor: onClick != null ? 'pointer' : undefined,
+    cursor: onClick != null && !disabled ? 'pointer' : undefined,
 
     backgroundColor:
         variant === 'selected' ? theme.palette.primary.light : theme.palette.secondary.light,
