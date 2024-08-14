@@ -1,6 +1,7 @@
 import { AppContextState } from '@/AppContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
+import { type AttributionHighlightVariant } from './attribution/AttributionHighlight';
 import { createSpanReplacementRegex } from './span-replacement-regex';
 
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
@@ -21,6 +22,15 @@ const previewCorrespondingSpansSelector = (state: AppContextState) => {
     return documents?.[state.attribution.previewDocumentIndex]?.corresponding_spans ?? [];
 };
 
+type AttributionHighlightString =
+    `:attribution-highlight[${string}]{variant="${AttributionHighlightVariant}" span="${string}"}`;
+const getAttributionHighlightString = (
+    spanKey: string,
+    span: string,
+    variant: AttributionHighlightVariant
+): AttributionHighlightString =>
+    `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
+
 export const markedContentSelector = (messageId: string) => (state: AppContextState) => {
     const content = state.selectedThreadMessagesById[messageId].content;
 
@@ -31,7 +41,7 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
     selectedSpans.forEach((span) => {
         contentWithMarks = contentWithMarks.replaceAll(
             createSpanReplacementRegex(span),
-            `:attribution-highlight[${span}]{variant="selected" span="${span}"}`
+            getAttributionHighlightString(span, span, 'selected')
         );
     });
 
@@ -43,9 +53,26 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
     previewSpansThatArentSelected.forEach((span) => {
         contentWithMarks = contentWithMarks.replaceAll(
             createSpanReplacementRegex(span),
-            `:attribution-highlight[${span}]{variant="preview" span="${span}"}`
+            getAttributionHighlightString(span, span, 'preview')
         );
     });
 
     return contentWithMarks;
+};
+
+export const markedContentSelectorForAllSpans = (messageId: string) => (state: AppContextState) => {
+    const content = state.selectedThreadMessagesById[messageId].content;
+
+    const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
+
+    Object.entries(spans).reduce((acc, [spanKey, span]) => {
+        if (span?.text) {
+            return acc.replaceAll(
+                createSpanReplacementRegex(span.text),
+                getAttributionHighlightString(spanKey, span.text, 'default')
+            );
+        } else {
+            return acc;
+        }
+    }, content);
 };
