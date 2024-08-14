@@ -74,12 +74,8 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const {
-        getSelectedThread,
-        selectedThreadRootId,
-        getAttributionsForMessage,
-        setSelectedMessage,
-    } = appContext.getState();
+    const { getSelectedThread, selectedThreadRootId, getAttributionsForMessage, selectMessage } =
+        appContext.getState();
 
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {
@@ -91,7 +87,7 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
             .at(-1);
 
         if (lastResponseId != null) {
-            setSelectedMessage(lastResponseId);
+            selectMessage(lastResponseId);
         }
 
         const attributionsPromise =

@@ -118,7 +118,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             setSelectedThread,
             setMessageLimitReached,
             getAttributionsForMessage,
-            setSelectedMessage,
+            selectMessage,
             resetAttribution,
         } = get();
         const abortController = new AbortController();
@@ -180,7 +180,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                         throw new Error('A final message without children was received');
                     }
 
-                    setSelectedMessage(finalMessageId);
+                    selectMessage(finalMessageId);
                     await getAttributionsForMessage(finalMessageId);
                 }
             }

@@ -20,11 +20,11 @@ interface AttributionState {
 
 interface AttributionActions {
     addDocument: (document: Document, messageId: string) => void;
-    setSelectedDocument: (documentIndex: string) => void;
-    setPreviewDocument: (previewDocumentIndex: string) => void;
-    unsetPreviewDocument: (previewDocumentIndex: string) => void;
+    selectDocument: (documentIndex: string) => void;
+    previewDocument: (previewDocumentIndex: string) => void;
+    stopPreviewingDocument: (previewDocumentIndex: string) => void;
     resetAttribution: () => void;
-    setSelectedMessage: (messageId: string) => void;
+    selectMessage: (messageId: string) => void;
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
 }
 
@@ -64,27 +64,27 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
-    setSelectedDocument: (documentIndex: string) => {
+    selectDocument: (documentIndex: string) => {
         set(
             (state) => {
                 state.attribution.selectedDocumentIndex = documentIndex;
             },
             false,
-            'attribution/setSelectedDocument'
+            'attribution/selectDocument'
         );
     },
 
-    setPreviewDocument: (previewDocumentIndex: string) => {
+    previewDocument: (previewDocumentIndex: string) => {
         set(
             (state) => {
                 state.attribution.previewDocumentIndex = previewDocumentIndex;
             },
             false,
-            'attribution/setPreviewDocument'
+            'attribution/previewDocument'
         );
     },
 
-    unsetPreviewDocument: (previewDocumentIndex) => {
+    stopPreviewingDocument: (previewDocumentIndex: string) => {
         set(
             (state) => {
                 if (state.attribution.previewDocumentIndex === previewDocumentIndex) {
@@ -92,7 +92,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 }
             },
             false,
-            'attribution/unsetPreviewDocument'
+            'attribution/stopPreviewingDocument'
         );
     },
 
@@ -106,19 +106,19 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
-    setSelectedMessage: (messageId: string) => {
+    selectMessage: (messageId: string) => {
         set(
             (state) => {
                 state.attribution.selectedMessageId = messageId;
             },
             false,
-            'attribution/setSelectedMessage'
+            'attribution/selectMessage'
         );
     },
 
     getAttributionsForMessage: async (messageId: string): Promise<AttributionState> => {
         const message = get().selectedThreadMessagesById[messageId];
-        get().setSelectedMessage(messageId);
+        get().selectMessage(messageId);
 
         const messageDocumentsLoadingState =
             get().attribution.attributionsByMessageId[messageId]?.loadingState;
