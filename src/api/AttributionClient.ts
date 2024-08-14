@@ -8,14 +8,19 @@ export interface Document {
     title: string;
 }
 
-const AttributionApiUrl = '/v3/attribution';
+interface AttributionResponse {
+    documents: Record<string, Document>;
+    spans: Record<string, string[]>;
+}
+
+const AttributionApiUrl = '/v3/attribution?includeSpansInRoot=true';
 
 export class AttributionClient extends ClientBase {
     getAttributionDocuments = async (
         modelResponse: string,
         modelId: string,
         maxDocuments: number = 10
-    ): Promise<Record<string, Document>> => {
+    ): Promise<AttributionResponse> => {
         const url = this.createURL(AttributionApiUrl);
 
         const request = {

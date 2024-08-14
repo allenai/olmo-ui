@@ -150,7 +150,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     'olmo-7b-chat'
                 );
 
-                Object.values(attributionDocuments).forEach((document) => {
+                Object.values(attributionDocuments.documents).forEach((document) => {
                     get().addDocument(document, messageId);
                 });
 
