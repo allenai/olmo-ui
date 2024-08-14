@@ -5,14 +5,18 @@ import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTempl
 import { Schema, SchemaApiUrl } from '@/api/Schema';
 import { WhoamiApiUrl } from '@/api/User';
 
+import { attributionHandlers } from './attributionHandlers';
 import { datasetDocumentResponse } from './datasetDocumentResponse';
 import { datasetSearchResponse } from './datasetSearchResponse';
 import { dolmaHandlers } from './dolmaHandlers';
+import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
     ...dolmaHandlers,
+    ...attributionHandlers,
+    ...messageHandlers,
 
     http.get(`${process.env.LLMX_API_URL}${SchemaApiUrl}`, () => {
         return HttpResponse.json(fakeSchemaResponse);

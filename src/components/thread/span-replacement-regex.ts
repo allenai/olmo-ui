@@ -9,7 +9,7 @@ export const createSpanReplacementRegex = (spanToReplace: string) => {
     // See the regex101 site for an explanation for this regex: https://regex101.com/r/5qvnY7/1
     return new RegExp(
         // String.raw is needed to prevent JS from escaping things automatically
-        String.raw`(?<![${bannedStringsInFront}])\b${spanToReplace}\b(?![ws]*[${bannedStringsBehind}])`,
+        String.raw`(?<![${bannedStringsInFront}])${spanToReplace}(?![ws]*[${bannedStringsBehind}])`,
         'g'
     );
 };
