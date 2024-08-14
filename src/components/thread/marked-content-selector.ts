@@ -1,6 +1,8 @@
 import { AppContextState } from '@/AppContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
+import { createSpanReplacementRegex } from './span-replacement-regex';
+
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
         return [];
@@ -27,9 +29,8 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
     const selectedSpans = selectedCorrespondingSpansSelector(state);
 
     selectedSpans.forEach((span) => {
-        // TODO: We're going to have potential issues here with nested spans, need to figure out how to fix that
         contentWithMarks = contentWithMarks.replaceAll(
-            span,
+            createSpanReplacementRegex(span),
             `:attribution-highlight[${span}]{variant="selected" span="${span}"}`
         );
     });
@@ -41,8 +42,8 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
 
     previewSpansThatArentSelected.forEach((span) => {
         contentWithMarks = contentWithMarks.replaceAll(
-            span,
-            `:attribution-highlight[${span}]{variant="preview" span=${span}}`
+            createSpanReplacementRegex(span),
+            `:attribution-highlight[${span}]{variant="preview" span="${span}"}`
         );
     });
 
