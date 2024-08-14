@@ -24,6 +24,7 @@ export const AttributionHighlight = ({
     return (
         <AttributionHighlightButton
             variant={variant}
+            aria-label={'Show documents related to this span'}
             onClick={handleClick}
             disabled={!featureToggles.attributionSpanFirst}>
             {children}
