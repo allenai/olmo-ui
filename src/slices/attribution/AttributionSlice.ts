@@ -27,7 +27,7 @@ interface AttributionActions {
     resetAttribution: () => void;
     selectMessage: (messageId: string) => void;
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
-    setSelectedSpan: (span: string) => void;
+    selectSpan: (span: string) => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -185,13 +185,13 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         return { attribution: get().attribution };
     },
 
-    setSelectedSpan: (span: string) => {
+    selectSpan: (span: string) => {
         set(
             (state) => {
                 state.attribution.selectedSpan = span;
             },
             false,
-            'attribution/setSelectedSpan'
+            'attribution/selectSpan'
         );
     },
 });

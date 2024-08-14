@@ -15,7 +15,7 @@ export const AttributionHighlight = ({
     children,
 }: AttributionHighlightProps): JSX.Element => {
     const featureToggles = useFeatureToggles();
-    const setSelectedSpan = useAppContext((state) => state.setSelectedSpan);
+    const setSelectedSpan = useAppContext((state) => state.selectSpan);
 
     const handleClick = () => {
         setSelectedSpan(span);
