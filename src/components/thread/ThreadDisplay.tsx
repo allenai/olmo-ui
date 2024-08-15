@@ -8,7 +8,7 @@ import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
-import { markedContentSelector } from './marked-content-selector';
+import { markedContentSelectorForAllSpans } from './marked-content-selector';
 import { MessageInteraction } from './MessageInteraction';
 
 interface MessageViewProps {
@@ -22,7 +22,7 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         labels: messageLabels,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
-    const contentWithMarks = useAppContext(markedContentSelector(messageId));
+    const contentWithMarks = useAppContext(markedContentSelectorForAllSpans(messageId));
 
     return (
         <>
