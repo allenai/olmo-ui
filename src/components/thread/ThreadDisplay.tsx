@@ -7,9 +7,12 @@ import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
+import {
+    markedContentSelector,
+    markedContentSelectorForAllSpans,
+} from './attribution/marked-content-selector';
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
-import { markedContentSelector, markedContentSelectorForAllSpans } from './marked-content-selector';
 import { MessageInteraction } from './MessageInteraction';
 
 interface MessageViewProps {

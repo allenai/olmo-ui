@@ -13,7 +13,6 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../../ResponsiveDrawer';
@@ -21,6 +20,7 @@ import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
 } from './AttributionDocumentCard';
+import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
 
 const NoDocumentsCard = (): JSX.Element => {
     const isThereASelectedThread = useAppContext((state) => Boolean(state.selectedThreadRootId));
@@ -42,7 +42,7 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const attributionForMessage = useAppContext(messageAttributionsSelector);
+    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
 
     const { documents, loadingState } = attributionForMessage;
 
@@ -76,10 +76,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     return (
         <>
             {documents.map((document) => {
-                if (document == null) {
-                    return null;
-                }
-
                 return (
                     <AttributionDocumentCard
                         key={document.index}
