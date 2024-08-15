@@ -31,48 +31,52 @@ const getAttributionHighlightString = (
 ): AttributionHighlightString =>
     `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
 
-export const markedContentSelector = (messageId: string) => (state: AppContextState) => {
-    const content = state.selectedThreadMessagesById[messageId].content;
+export const markedContentSelector =
+    (messageId: string) =>
+    (state: AppContextState): string => {
+        const content = state.selectedThreadMessagesById[messageId].content;
 
-    let contentWithMarks = content;
+        let contentWithMarks = content;
 
-    const selectedSpans = selectedCorrespondingSpansSelector(state);
+        const selectedSpans = selectedCorrespondingSpansSelector(state);
 
-    selectedSpans.forEach((span) => {
-        contentWithMarks = contentWithMarks.replaceAll(
-            createSpanReplacementRegex(span),
-            getAttributionHighlightString(span, span, 'selected')
-        );
-    });
-
-    const previewSpans = previewCorrespondingSpansSelector(state);
-    const previewSpansThatArentSelected = previewSpans.filter(
-        (previewSpan) => !selectedSpans.includes(previewSpan)
-    );
-
-    previewSpansThatArentSelected.forEach((span) => {
-        contentWithMarks = contentWithMarks.replaceAll(
-            createSpanReplacementRegex(span),
-            getAttributionHighlightString(span, span, 'preview')
-        );
-    });
-
-    return contentWithMarks;
-};
-
-export const markedContentSelectorForAllSpans = (messageId: string) => (state: AppContextState) => {
-    const content = state.selectedThreadMessagesById[messageId].content;
-
-    const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
-
-    Object.entries(spans).reduce((acc, [spanKey, span]) => {
-        if (span?.text) {
-            return acc.replaceAll(
-                createSpanReplacementRegex(span.text),
-                getAttributionHighlightString(spanKey, span.text, 'default')
+        selectedSpans.forEach((span) => {
+            contentWithMarks = contentWithMarks.replaceAll(
+                createSpanReplacementRegex(span),
+                getAttributionHighlightString(span, span, 'selected')
             );
-        } else {
-            return acc;
-        }
-    }, content);
-};
+        });
+
+        const previewSpans = previewCorrespondingSpansSelector(state);
+        const previewSpansThatArentSelected = previewSpans.filter(
+            (previewSpan) => !selectedSpans.includes(previewSpan)
+        );
+
+        previewSpansThatArentSelected.forEach((span) => {
+            contentWithMarks = contentWithMarks.replaceAll(
+                createSpanReplacementRegex(span),
+                getAttributionHighlightString(span, span, 'preview')
+            );
+        });
+
+        return contentWithMarks;
+    };
+
+export const markedContentSelectorForAllSpans =
+    (messageId: string) =>
+    (state: AppContextState): string => {
+        const content = state.selectedThreadMessagesById[messageId].content;
+
+        const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
+
+        return Object.entries(spans).reduce((acc, [spanKey, span]) => {
+            if (span?.text) {
+                return acc.replaceAll(
+                    createSpanReplacementRegex(span.text),
+                    getAttributionHighlightString(spanKey, span.text, 'default')
+                );
+            } else {
+                return acc;
+            }
+        }, content);
+    };
