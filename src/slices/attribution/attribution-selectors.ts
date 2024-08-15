@@ -1,13 +1,41 @@
+import { Document } from '@/api/AttributionClient';
 import type { AppContextState } from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 
-import { MessageWithAttributionDocuments } from './AttributionSlice';
+interface MessageAttributionsFromSelector {
+    documents: (Document | undefined)[];
+    loadingState: RemoteState | null;
+}
 
 export const messageAttributionsSelector = (
     state: AppContextState
-): MessageWithAttributionDocuments | undefined => {
+): MessageAttributionsFromSelector => {
     if (state.attribution.selectedMessageId != null) {
-        return state.attribution.attributionsByMessageId[state.attribution.selectedMessageId];
+        const attributions =
+            state.attribution.attributionsByMessageId[state.attribution.selectedMessageId];
+
+        if (state.attribution.selectedSpanId != null) {
+            const selectedSpan = attributions?.spans[state.attribution.selectedSpanId];
+
+            const documents =
+                selectedSpan?.documents
+                    .map((documentIndex) => attributions?.documents[documentIndex])
+                    .filter(Boolean) ?? [];
+
+            return {
+                documents,
+                loadingState: attributions?.loadingState ?? null,
+            };
+        }
+
+        return {
+            documents: Object.values(attributions?.documents ?? {}),
+            loadingState: attributions?.loadingState ?? null,
+        };
     }
 
-    return undefined;
+    return {
+        documents: [],
+        loadingState: null,
+    };
 };

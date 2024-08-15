@@ -18,7 +18,7 @@ interface AttributionState {
             [messageId: string]: MessageWithAttributionDocuments | undefined;
         };
         selectedMessageId: string | null;
-        selectedSpan: string | null;
+        selectedSpanId: string | null;
     };
 }
 
@@ -40,7 +40,7 @@ const initialAttributionState: AttributionState = {
         previewDocumentIndex: null,
         attributionsByMessageId: {},
         selectedMessageId: null,
-        selectedSpan: null,
+        selectedSpanId: null,
     },
 };
 
@@ -97,7 +97,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set(
             (state) => {
                 state.attribution.selectedMessageId = null;
-                state.attribution.selectedSpan = null;
+                state.attribution.selectedSpanId = null;
             },
             false,
             'attribution/resetAttribution'
@@ -170,7 +170,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     selectSpan: (span: string) => {
         set(
             (state) => {
-                state.attribution.selectedSpan = span;
+                state.attribution.selectedSpanId = span;
             },
             false,
             'attribution/selectSpan'

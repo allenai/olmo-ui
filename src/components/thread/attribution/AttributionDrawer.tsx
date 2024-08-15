@@ -42,14 +42,9 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const documentsForMessage = useAppContext(messageAttributionsSelector);
+    const attributionForMessage = useAppContext(messageAttributionsSelector);
 
-    // NoDocumentsCard is doing double duty for us here. Generally documentsForMessage _should_ only be null if there's no selected thread.
-    if (documentsForMessage == null) {
-        return <NoDocumentsCard />;
-    }
-
-    const { documents, loadingState } = documentsForMessage;
+    const { documents, loadingState } = attributionForMessage;
 
     if (loadingState === RemoteState.Loading) {
         return (
@@ -74,13 +69,13 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (Object.keys(documents).length === 0) {
+    if (documents.length === 0) {
         return <NoDocumentsCard />;
     }
 
     return (
         <>
-            {Object.values(documents).map((document) => {
+            {documents.map((document) => {
                 if (document == null) {
                     return null;
                 }
