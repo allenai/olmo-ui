@@ -5,12 +5,8 @@ import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
-import { useFeatureToggles } from '@/FeatureToggleContext';
 
-import {
-    markedContentSelector,
-    markedContentSelectorForAllSpans,
-} from './attribution/marked-content-selector';
+import { useSpanHighlighting } from './attribution/marked-content-selector';
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
@@ -26,12 +22,7 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         labels: messageLabels,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
-    const featureToggles = useFeatureToggles();
-    const highlightSelector = featureToggles.attributionSpanFirst
-        ? markedContentSelectorForAllSpans
-        : markedContentSelector;
-
-    const contentWithMarks = useAppContext(highlightSelector(messageId));
+    const contentWithMarks = useSpanHighlighting(messageId);
 
     return (
         <>

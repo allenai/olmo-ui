@@ -1,4 +1,5 @@
-import { AppContextState } from '@/AppContext';
+import { AppContextState, useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { createSpanReplacementRegex } from '../span-replacement-regex';
@@ -80,3 +81,21 @@ export const markedContentSelectorForAllSpans =
             }
         }, content);
     };
+
+export const useSpanHighlighting = (messageId: string) => {
+    const { attribution, attributionSpanFirst } = useFeatureToggles();
+
+    const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
+
+    if (!attribution) {
+        return content;
+    }
+
+    const highlightSelector = attributionSpanFirst
+        ? markedContentSelectorForAllSpans
+        : markedContentSelector;
+
+    const contentWithMarks = useAppContext(highlightSelector(messageId));
+
+    return contentWithMarks;
+};
