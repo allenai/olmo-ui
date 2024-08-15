@@ -77,9 +77,9 @@ export const playgroundLoader: LoaderFunction = async ({ params }) => {
 
     if (params.id === undefined) {
         resetSelectedThreadState();
+        resetAttribution();
     }
 
-    resetAttribution();
     return null;
 };
 
