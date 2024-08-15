@@ -1,7 +1,4 @@
-import {
-    firstThreadMessageId,
-    secondThreadMessageId,
-} from '@/mocks/handlers/messageStreamHandlers';
+import { firstThreadMessageId, secondThreadMessageId } from '@/mocks/handlers/messageHandlers';
 
 import { expect, test } from './playwright-utils';
 
