@@ -13,6 +13,7 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../../ResponsiveDrawer';
@@ -41,12 +42,16 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const documents = useAppContext((state) => state.attribution.documents);
-    const attributionDocumentLoadingState = useAppContext(
-        (state) => state.attribution.loadingState
-    );
+    const documentsForMessage = useAppContext(messageAttributionsSelector);
 
-    if (attributionDocumentLoadingState === RemoteState.Loading) {
+    // NoDocumentsCard is doing double duty for us here. Generally documentsForMessage _should_ only be null if there's no selected thread.
+    if (documentsForMessage == null) {
+        return <NoDocumentsCard />;
+    }
+
+    const { documents, loadingState } = documentsForMessage;
+
+    if (loadingState === RemoteState.Loading) {
         return (
             <>
                 <AttributionDocumentCardSkeleton />
@@ -58,7 +63,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (attributionDocumentLoadingState === RemoteState.Error) {
+    if (loadingState === RemoteState.Error) {
         return (
             <Card>
                 <CardContent>
@@ -69,21 +74,27 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (Object.values(documents).length === 0) {
+    if (Object.keys(documents).length === 0) {
         return <NoDocumentsCard />;
     }
 
     return (
         <>
-            {Object.values(documents).map((document) => (
-                <AttributionDocumentCard
-                    key={document.index}
-                    documentIndex={document.index}
-                    title={document.title}
-                    text={document.text}
-                    source={document.source}
-                />
-            ))}
+            {Object.values(documents).map((document) => {
+                if (document == null) {
+                    return null;
+                }
+
+                return (
+                    <AttributionDocumentCard
+                        key={document.index}
+                        documentIndex={document.index}
+                        title={document.title}
+                        text={document.text}
+                        source={document.source}
+                    />
+                );
+            })}
         </>
     );
 };

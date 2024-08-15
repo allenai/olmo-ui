@@ -95,7 +95,7 @@ export const AttributionDocumentCard = ({
     );
 
     const setSelectedDocument = useAppContext((state) => () => {
-        state.setSelectedDocument(documentIndex);
+        state.selectDocument(documentIndex);
     });
 
     const isPreviewed = useAppContext(
@@ -103,10 +103,10 @@ export const AttributionDocumentCard = ({
     );
 
     const setPreviewDocument = useAppContext((state) => () => {
-        state.setPreviewDocument(documentIndex);
+        state.previewDocument(documentIndex);
     });
     const unsetPreviewDocument = useAppContext((state) => () => {
-        state.unsetPreviewDocument(documentIndex);
+        state.stopPreviewingDocument(documentIndex);
     });
 
     return (
