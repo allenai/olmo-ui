@@ -1,6 +1,8 @@
 import { AppContextState } from '@/AppContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
+import { createSpanReplacementRegex } from './span-replacement-regex';
+
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
         return [];
@@ -28,8 +30,8 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
 
     selectedSpans.forEach((span) => {
         contentWithMarks = contentWithMarks.replaceAll(
-            span,
-            `:attribution-highlight[${span}]{variant="selected"}`
+            createSpanReplacementRegex(span),
+            `:attribution-highlight[${span}]{variant="selected" span="${span}"}`
         );
     });
 
@@ -40,8 +42,8 @@ export const markedContentSelector = (messageId: string) => (state: AppContextSt
 
     previewSpansThatArentSelected.forEach((span) => {
         contentWithMarks = contentWithMarks.replaceAll(
-            span,
-            `:attribution-highlight[${span}]{variant="preview"}`
+            createSpanReplacementRegex(span),
+            `:attribution-highlight[${span}]{variant="preview" span="${span}"}`
         );
     });
 
