@@ -4,9 +4,10 @@ import { MouseEventHandler, PropsWithChildren } from 'react';
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
+export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 export interface AttributionHighlightProps extends PropsWithChildren {
     span: string;
-    variant: 'selected' | 'preview';
+    variant: AttributionHighlightVariant;
 }
 
 export const AttributionHighlight = ({
@@ -15,10 +16,10 @@ export const AttributionHighlight = ({
     children,
 }: AttributionHighlightProps): JSX.Element => {
     const featureToggles = useFeatureToggles();
-    const setSelectedSpan = useAppContext((state) => state.selectSpan);
+    const selectSpan = useAppContext((state) => state.selectSpan);
 
     const handleClick = () => {
-        setSelectedSpan(span);
+        selectSpan(span);
     };
 
     return (
@@ -33,7 +34,7 @@ export const AttributionHighlight = ({
 };
 
 interface AttributionHighlightButtonProps {
-    variant: 'selected' | 'preview';
+    variant: AttributionHighlightVariant;
     onClick?: MouseEventHandler;
     disabled?: boolean;
 }

@@ -8,9 +8,14 @@ export interface Document {
     title: string;
 }
 
+export interface AttributionSpan {
+    text: string;
+    documents: number[];
+}
+
 interface AttributionResponse {
-    documents: Record<string, Document>;
-    spans: Record<string, string[]>;
+    documents: { [documentIndex: string]: Document };
+    spans: { [span: string]: AttributionSpan };
 }
 
 const AttributionApiUrl = '/v3/attribution?includeSpansInRoot=true';
