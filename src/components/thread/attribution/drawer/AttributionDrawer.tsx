@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Button, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
