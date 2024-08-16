@@ -13,16 +13,22 @@ interface AttributionHighlightButtonProps extends PropsWithChildren {
 
 const AttributionHighlightButton = ({
     variant,
-    spanId: span,
+    spanId,
     children,
 }: AttributionHighlightButtonProps) => {
     const featureToggles = useFeatureToggles();
     const selectSpan = useAppContext((state) => state.selectSpan);
+    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
+    const isSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId === spanId);
 
     const isDisabled = !featureToggles.attributionSpanFirst;
-    const handleClick = () => {
+    const toggleSelectedSpan = () => {
         if (!isDisabled) {
-            selectSpan(span);
+            if (isSelectedSpan) {
+                resetSelectedSpan();
+            } else {
+                selectSpan(spanId);
+            }
         }
     };
 
@@ -31,7 +37,7 @@ const AttributionHighlightButton = ({
             component="mark"
             role="button"
             aria-label="Show documents related to this span"
-            onClick={handleClick}
+            onClick={toggleSelectedSpan}
             tabIndex={0}
             sx={() => {
                 const isPrimaryVariant = variant === 'selected' || variant === 'default';
