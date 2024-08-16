@@ -1,35 +1,10 @@
-import { Box, styled } from '@mui/material';
-import { MouseEventHandler, PropsWithChildren } from 'react';
+import { Box } from '@mui/material';
+import { PropsWithChildren } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
-export interface AttributionHighlightProps extends PropsWithChildren {
-    span: string;
-    variant: AttributionHighlightVariant;
-}
-
-export const AttributionHighlight = ({
-    span,
-    variant,
-    children,
-}: AttributionHighlightProps): JSX.Element => {
-    const shouldShowHighlight = useAppContext(
-        (state) =>
-            state.attribution.selectedSpanId == null || state.attribution.selectedSpanId === span
-    );
-
-    if (!shouldShowHighlight) {
-        return <>{children}</>;
-    }
-
-    return (
-        <AttributionHighlightButton variant={variant} spanId={span}>
-            {children}
-        </AttributionHighlightButton>
-    );
-};
 
 interface AttributionHighlightButtonProps extends PropsWithChildren {
     variant: AttributionHighlightVariant;
@@ -73,5 +48,31 @@ const AttributionHighlightButton = ({
             }}>
             {children}
         </Box>
+    );
+};
+
+export interface AttributionHighlightProps extends PropsWithChildren {
+    span: string;
+    variant: AttributionHighlightVariant;
+}
+
+export const AttributionHighlight = ({
+    span,
+    variant,
+    children,
+}: AttributionHighlightProps): JSX.Element => {
+    const shouldShowHighlight = useAppContext(
+        (state) =>
+            state.attribution.selectedSpanId == null || state.attribution.selectedSpanId === span
+    );
+
+    if (!shouldShowHighlight) {
+        return <>{children}</>;
+    }
+
+    return (
+        <AttributionHighlightButton variant={variant} spanId={span}>
+            {children}
+        </AttributionHighlightButton>
     );
 };
