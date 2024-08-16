@@ -1,4 +1,4 @@
-import { styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { MouseEventHandler, PropsWithChildren } from 'react';
 
 import { useAppContext } from '@/AppContext';
@@ -15,8 +15,6 @@ export const AttributionHighlight = ({
     variant,
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const featureToggles = useFeatureToggles();
-    const selectSpan = useAppContext((state) => state.selectSpan);
     const shouldShowHighlight = useAppContext(
         (state) =>
             state.attribution.selectedSpanId == null || state.attribution.selectedSpanId === span
@@ -26,38 +24,54 @@ export const AttributionHighlight = ({
         return <>{children}</>;
     }
 
-    const handleClick = () => {
-        selectSpan(span);
-    };
-
     return (
-        <AttributionHighlightButton
-            variant={variant}
-            aria-label={'Show documents related to this span'}
-            onClick={handleClick}
-            disabled={!featureToggles.attributionSpanFirst}>
+        <AttributionHighlightButton variant={variant} spanId={span}>
             {children}
         </AttributionHighlightButton>
     );
 };
 
-interface AttributionHighlightButtonProps {
+interface AttributionHighlightButtonProps extends PropsWithChildren {
     variant: AttributionHighlightVariant;
-    onClick?: MouseEventHandler;
-    disabled?: boolean;
+    spanId: string;
 }
 
-const AttributionHighlightButton = styled('button', {
-    shouldForwardProp: (prop) => prop !== 'variant' && prop !== 'sx',
-})<AttributionHighlightButtonProps>(({ theme, variant, onClick, disabled }) => ({
-    padding: 0,
-    margin: 0,
-    fontFamily: 'inherit',
-    fontSize: 'inherit',
-    color: 'inherit',
-    border: 0,
-    cursor: onClick != null && !disabled ? 'pointer' : undefined,
+const AttributionHighlightButton = ({
+    variant,
+    spanId: span,
+    children,
+}: AttributionHighlightButtonProps) => {
+    const featureToggles = useFeatureToggles();
+    const selectSpan = useAppContext((state) => state.selectSpan);
 
-    backgroundColor:
-        variant === 'selected' ? theme.palette.primary.light : theme.palette.secondary.light,
-}));
+    const isDisabled = !featureToggles.attributionSpanFirst;
+    const handleClick = () => {
+        if (!isDisabled) {
+            selectSpan(span);
+        }
+    };
+
+    return (
+        <Box
+            component="mark"
+            role="button"
+            aria-label="Show documents related to this span"
+            onClick={handleClick}
+            tabIndex={0}
+            sx={{
+                cursor: !isDisabled ? 'pointer' : undefined,
+
+                backgroundColor: (theme) =>
+                    variant === 'selected' || variant === 'default'
+                        ? theme.palette.primary.main
+                        : theme.palette.secondary.main,
+
+                color: (theme) =>
+                    variant === 'selected' || variant === 'default'
+                        ? theme.palette.primary.contrastText
+                        : theme.palette.secondary.contrastText,
+            }}>
+            {children}
+        </Box>
+    );
+};
