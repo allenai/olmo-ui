@@ -162,14 +162,14 @@ export const AttributionDrawer = () => {
                     Select a document from this list to highlight which parts of the model’s
                     response have an exact text match in the training data
                 </Typography>
-                <SelectedSpanButton />
+                <ShowAllSpansAndDocumentsButton />
                 <AttributionDrawerDocumentList />
             </Stack>
         </ResponsiveDrawer>
     );
 };
 
-const SelectedSpanButton = (): JSX.Element | null => {
+const ShowAllSpansAndDocumentsButton = (): JSX.Element | null => {
     const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
     const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
 
@@ -184,9 +184,8 @@ const SelectedSpanButton = (): JSX.Element | null => {
                 resetSelectedSpan();
             }}
             size="medium"
-            fullWidth={false}
-            endIcon={<CloseIcon />}>
-            1 span selected
+            fullWidth={false}>
+            Show all spans and documents
         </Button>
     );
 };
