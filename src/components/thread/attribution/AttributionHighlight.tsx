@@ -17,6 +17,14 @@ export const AttributionHighlight = ({
 }: AttributionHighlightProps): JSX.Element => {
     const featureToggles = useFeatureToggles();
     const selectSpan = useAppContext((state) => state.selectSpan);
+    const shouldShowHighlight = useAppContext(
+        (state) =>
+            state.attribution.selectedSpanId == null || state.attribution.selectedSpanId === span
+    );
+
+    if (!shouldShowHighlight) {
+        return <>{children}</>;
+    }
 
     const handleClick = () => {
         selectSpan(span);
