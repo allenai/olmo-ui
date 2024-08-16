@@ -7,7 +7,7 @@ import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
-import { ShowAllSpansAndDocumentsButton } from './ShowAllSpansAndDocumentsButton';
+import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
@@ -79,7 +79,7 @@ export const AttributionDrawer = () => {
                     Select a document from this list to highlight which parts of the model’s
                     response have an exact text match in the training data
                 </Typography>
-                <ShowAllSpansAndDocumentsButton />
+                <ClearSelectedSpanButton />
                 <AttributionDrawerDocumentList />
             </Stack>
         </ResponsiveDrawer>

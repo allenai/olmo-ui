@@ -1,8 +1,9 @@
+import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 
-export const ShowAllSpansAndDocumentsButton = (): JSX.Element | null => {
+export const ClearSelectedSpanButton = (): JSX.Element | null => {
     const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
     const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
 
@@ -17,8 +18,11 @@ export const ShowAllSpansAndDocumentsButton = (): JSX.Element | null => {
                 resetSelectedSpan();
             }}
             size="medium"
-            fullWidth={false}>
-            Show all spans and documents
+            endIcon={<CloseIcon />}
+            sx={{
+                width: 'fit-content',
+            }}>
+            Clear selection
         </Button>
     );
 };
