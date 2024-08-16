@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
     Box,
+    Button,
     Card,
     CardContent,
     Divider,
@@ -75,6 +76,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     return (
         <>
+            <MatchingDocumentsText documentCount={documents.length} />
             {documents.map((document) => {
                 return (
                     <AttributionDocumentCard
@@ -160,8 +162,48 @@ export const AttributionDrawer = () => {
                     Select a document from this list to highlight which parts of the model’s
                     response have an exact text match in the training data
                 </Typography>
+                <SelectedSpanButton />
                 <AttributionDrawerDocumentList />
             </Stack>
         </ResponsiveDrawer>
+    );
+};
+
+const SelectedSpanButton = (): JSX.Element | null => {
+    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
+    const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
+
+    if (!hasSelectedSpan) {
+        return null;
+    }
+
+    return (
+        <Button
+            variant="contained"
+            onClick={() => {
+                resetSelectedSpan();
+            }}
+            size="medium"
+            fullWidth={false}
+            endIcon={<CloseIcon />}>
+            1 span selected
+        </Button>
+    );
+};
+
+interface MatchingDocumentsTextProps {
+    documentCount: number;
+}
+const MatchingDocumentsText = ({
+    documentCount,
+}: MatchingDocumentsTextProps): JSX.Element | null => {
+    const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
+
+    if (!hasSelectedSpan) {
+        return null;
+    }
+
+    return (
+        <Typography variant="body1">{documentCount} documents matching selected span</Typography>
     );
 };
