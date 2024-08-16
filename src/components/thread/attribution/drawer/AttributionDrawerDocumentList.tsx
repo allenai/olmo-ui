@@ -21,8 +21,12 @@ const MatchingDocumentsText = ({
         return null;
     }
 
+    const documentsText = documentCount === 1 ? 'document' : 'documents';
+
     return (
-        <Typography variant="body1">{documentCount} documents matching selected span</Typography>
+        <Typography variant="body1">
+            {documentCount} {documentsText} matching selected span
+        </Typography>
     );
 };
 
