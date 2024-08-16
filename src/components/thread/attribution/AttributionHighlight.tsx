@@ -21,9 +21,9 @@ const AttributionHighlightButton = ({
     const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
     const isSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId === spanId);
 
-    const isDisabled = !featureToggles.attributionSpanFirst;
+    const isEnabled = featureToggles.attributionSpanFirst;
     const toggleSelectedSpan = () => {
-        if (!isDisabled) {
+        if (isEnabled) {
             if (isSelectedSpan) {
                 resetSelectedSpan();
             } else {
@@ -43,7 +43,7 @@ const AttributionHighlightButton = ({
                 const isPrimaryVariant = variant === 'selected' || variant === 'default';
 
                 return {
-                    cursor: !isDisabled ? 'pointer' : undefined,
+                    cursor: isEnabled ? 'pointer' : undefined,
 
                     backgroundColor: (theme) =>
                         isPrimaryVariant
