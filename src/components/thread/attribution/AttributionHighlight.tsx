@@ -33,18 +33,31 @@ const AttributionHighlightButton = ({
             aria-label="Show documents related to this span"
             onClick={handleClick}
             tabIndex={0}
-            sx={{
-                cursor: !isDisabled ? 'pointer' : undefined,
+            sx={() => {
+                const isPrimaryVariant = variant === 'selected' || variant === 'default';
 
-                backgroundColor: (theme) =>
-                    variant === 'selected' || variant === 'default'
-                        ? theme.palette.primary.main
-                        : theme.palette.secondary.main,
+                return {
+                    cursor: !isDisabled ? 'pointer' : undefined,
 
-                color: (theme) =>
-                    variant === 'selected' || variant === 'default'
-                        ? theme.palette.primary.contrastText
-                        : theme.palette.secondary.contrastText,
+                    backgroundColor: (theme) =>
+                        isPrimaryVariant
+                            ? theme.palette.primary.main
+                            : theme.palette.secondary.main,
+
+                    color: (theme) =>
+                        isPrimaryVariant
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.secondary.contrastText,
+
+                    ':focus-visible': {
+                        outlineStyle: 'solid',
+                        outlineWidth: 2,
+                        outlineColor: (theme) =>
+                            isPrimaryVariant
+                                ? theme.palette.primary.dark
+                                : theme.palette.secondary.dark,
+                    },
+                };
             }}>
             {children}
         </Box>
