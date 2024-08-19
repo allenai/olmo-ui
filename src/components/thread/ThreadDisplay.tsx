@@ -5,11 +5,10 @@ import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
-import { useFeatureToggles } from '@/FeatureToggleContext';
 
+import { useSpanHighlighting } from './attribution/marked-content-selector';
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
-import { markedContentSelector, markedContentSelectorForAllSpans } from './marked-content-selector';
 import { MessageInteraction } from './MessageInteraction';
 
 interface MessageViewProps {
@@ -23,12 +22,7 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         labels: messageLabels,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
-    const featureToggles = useFeatureToggles();
-    const highlightSelector = featureToggles.attributionSpanFirst
-        ? markedContentSelectorForAllSpans
-        : markedContentSelector;
-
-    const contentWithMarks = useAppContext(highlightSelector(messageId));
+    const contentWithMarks = useSpanHighlighting(messageId);
 
     return (
         <>
@@ -71,7 +65,7 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        <Stack gap={2} direction="column">
+        <Stack gap={2} direction="column" data-testid="thread-display">
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
@@ -80,8 +74,15 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const { getSelectedThread, selectedThreadRootId, getAttributionsForMessage, selectMessage } =
-        appContext.getState();
+    const {
+        getSelectedThread,
+        selectedThreadRootId,
+        getAttributionsForMessage,
+        selectMessage,
+        resetAttribution,
+    } = appContext.getState();
+
+    resetAttribution();
 
     // Always gets the latest state of the selectedThread
     if (params.id != null && params.id !== selectedThreadRootId) {

@@ -51,7 +51,9 @@ test('can load threads from history drawer', async ({ page }) => {
     await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'close drawer' }).click();
-    await expect(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkayOkay')).toBeVisible();
+    await expect(
+        page.getByTestId('thread-display').getByText('Second existing message')
+    ).toBeVisible();
     expect(page.url()).toContain(secondThreadMessageId);
 });
 

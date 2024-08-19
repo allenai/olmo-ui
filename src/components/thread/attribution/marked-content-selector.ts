@@ -1,8 +1,9 @@
-import { AppContextState } from '@/AppContext';
+import { AppContextState, useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { type AttributionHighlightVariant } from './attribution/AttributionHighlight';
-import { createSpanReplacementRegex } from './span-replacement-regex';
+import { createSpanReplacementRegex } from '../span-replacement-regex';
+import { type AttributionHighlightVariant } from './AttributionHighlight';
 
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
@@ -31,7 +32,7 @@ const getAttributionHighlightString = (
 ): AttributionHighlightString =>
     `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
 
-export const markedContentSelector =
+export const documentFirstMarkedContentSelector =
     (messageId: string) =>
     (state: AppContextState): string => {
         const content = state.selectedThreadMessagesById[messageId].content;
@@ -62,7 +63,7 @@ export const markedContentSelector =
         return contentWithMarks;
     };
 
-export const markedContentSelectorForAllSpans =
+export const spanFirstMarkedContentSelector =
     (messageId: string) =>
     (state: AppContextState): string => {
         const content = state.selectedThreadMessagesById[messageId].content;
@@ -80,3 +81,21 @@ export const markedContentSelectorForAllSpans =
             }
         }, content);
     };
+
+export const useSpanHighlighting = (messageId: string) => {
+    const { attribution, attributionSpanFirst } = useFeatureToggles();
+
+    const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
+
+    if (!attribution) {
+        return content;
+    }
+
+    const highlightSelector = attributionSpanFirst
+        ? spanFirstMarkedContentSelector
+        : documentFirstMarkedContentSelector;
+
+    const contentWithMarks = useAppContext(highlightSelector(messageId));
+
+    return contentWithMarks;
+};
