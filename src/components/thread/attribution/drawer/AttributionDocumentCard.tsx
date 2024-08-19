@@ -111,7 +111,7 @@ export const AttributionDocumentCard = ({
         state.stopPreviewingDocument(documentIndex);
     });
 
-    const boldedText = (): ReactNode => {
+    const renderBoldText = (): ReactNode => {
         if (matchesSpan.length === 0) {
             return text;
         }
@@ -138,7 +138,7 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
-            text={boldedText()}
+            text={renderBoldText()}
             source={`Source: ${source}`}
             isSelected={isSelected}
             setSelectedDocument={setSelectedDocument}
