@@ -32,7 +32,7 @@ const getAttributionHighlightString = (
 ): AttributionHighlightString =>
     `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
 
-export const markedContentSelector =
+export const documentFirstMarkedContentSelector =
     (messageId: string) =>
     (state: AppContextState): string => {
         const content = state.selectedThreadMessagesById[messageId].content;
@@ -63,7 +63,7 @@ export const markedContentSelector =
         return contentWithMarks;
     };
 
-export const markedContentSelectorForAllSpans =
+export const spanFirstMarkedContentSelector =
     (messageId: string) =>
     (state: AppContextState): string => {
         const content = state.selectedThreadMessagesById[messageId].content;
@@ -92,8 +92,8 @@ export const useSpanHighlighting = (messageId: string) => {
     }
 
     const highlightSelector = attributionSpanFirst
-        ? markedContentSelectorForAllSpans
-        : markedContentSelector;
+        ? spanFirstMarkedContentSelector
+        : documentFirstMarkedContentSelector;
 
     const contentWithMarks = useAppContext(highlightSelector(messageId));
 

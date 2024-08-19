@@ -13,7 +13,7 @@ import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
-import { AttributionDrawer } from './thread/attribution/AttributionDrawer';
+import { AttributionDrawer } from './thread/attribution/drawer/AttributionDrawer';
 import { HistoryDrawer } from './thread/history/HistoryDrawer';
 import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 

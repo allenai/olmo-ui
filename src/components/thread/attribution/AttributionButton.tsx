@@ -3,7 +3,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { useAppContext } from '@/AppContext';
 
 import { ResponsiveButton } from '../ResponsiveButton';
-import { ATTRIBUTION_DRAWER_ID } from './AttributionDrawer';
+import { ATTRIBUTION_DRAWER_ID } from './drawer/AttributionDrawer';
 
 export const AttributionButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);

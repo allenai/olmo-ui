@@ -1,94 +1,13 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-    Box,
-    Card,
-    CardContent,
-    Divider,
-    IconButton,
-    ListSubheader,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
+import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { ResponsiveDrawer } from '../../ResponsiveDrawer';
-import {
-    AttributionDocumentCard,
-    AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard';
-import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
-
-const NoDocumentsCard = (): JSX.Element => {
-    const isThereASelectedThread = useAppContext((state) => Boolean(state.selectedThreadRootId));
-
-    const message = isThereASelectedThread ? (
-        <>
-            There are no documents that can be attributed to this response. This will happen often
-            on short responses.
-        </>
-    ) : (
-        <>Start a new thread or select an existing one to see response attributions.</>
-    );
-
-    return (
-        <Card>
-            <CardContent>{message}</CardContent>
-        </Card>
-    );
-};
-
-export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
-
-    const { documents, loadingState } = attributionForMessage;
-
-    if (loadingState === RemoteState.Loading) {
-        return (
-            <>
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-            </>
-        );
-    }
-
-    if (loadingState === RemoteState.Error) {
-        return (
-            <Card>
-                <CardContent>
-                    Something went wrong when getting documents that can be attributed to this
-                    response. Please try another response.
-                </CardContent>
-            </Card>
-        );
-    }
-
-    if (documents.length === 0) {
-        return <NoDocumentsCard />;
-    }
-
-    return (
-        <>
-            {documents.map((document) => {
-                return (
-                    <AttributionDocumentCard
-                        key={document.index}
-                        documentIndex={document.index}
-                        title={document.title}
-                        text={document.text}
-                        source={document.source}
-                    />
-                );
-            })}
-        </>
-    );
-};
+import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
+import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
@@ -160,6 +79,7 @@ export const AttributionDrawer = () => {
                     Select a document from this list to highlight which parts of the model’s
                     response have an exact text match in the training data
                 </Typography>
+                <ClearSelectedSpanButton />
                 <AttributionDrawerDocumentList />
             </Stack>
         </ResponsiveDrawer>
