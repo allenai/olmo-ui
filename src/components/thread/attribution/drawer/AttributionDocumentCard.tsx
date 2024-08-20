@@ -3,6 +3,8 @@ import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 
+import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
+
 interface AttributionDocumentCardBaseProps {
     title: ReactNode;
     text: ReactNode;
@@ -94,6 +96,17 @@ export const AttributionDocumentCard = ({
         (state) => state.attribution.selectedDocumentIndex === documentIndex
     );
 
+    const spans = useAppContext((state) => {
+        const selectedMessageId = state.attribution.selectedMessageId;
+
+        if (selectedMessageId != null) {
+            const documents =
+                state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
+
+            return documents[documentIndex]?.corresponding_spans;
+        }
+    });
+
     const setSelectedDocument = useAppContext((state) => () => {
         state.selectDocument(documentIndex);
     });
@@ -112,7 +125,7 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
-            text={`"${text}"...`}
+            text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
             source={`Source: ${source}`}
             isSelected={isSelected}
             setSelectedDocument={setSelectedDocument}
