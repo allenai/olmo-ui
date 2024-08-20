@@ -51,7 +51,6 @@ const NoDocumentsCard = (): JSX.Element => {
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
-    const attributions = useAppContext((state) => state.attribution);
 
     const { documents, loadingState } = attributionForMessage;
 
@@ -90,18 +89,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
             */}
             <MatchingDocumentsText documentCount={documents.length} />
             {documents.map((document) => {
-                const matchesSpan: string[] = [];
-                if (attributions.selectedMessageId !== null) {
-                    const spans =
-                        attributions.attributionsByMessageId[attributions.selectedMessageId]?.spans;
-                    if (spans) {
-                        document.corresponding_spans.forEach((span) => {
-                            if (spans[span]?.text) {
-                                matchesSpan.push(spans[span]?.text);
-                            }
-                        });
-                    }
-                }
                 return (
                     <AttributionDocumentCard
                         key={document.index}
@@ -109,7 +96,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                         title={document.title}
                         text={document.text}
                         source={document.source}
-                        matchesSpan={matchesSpan}
                     />
                 );
             })}

@@ -1,0 +1,31 @@
+interface BoldTextForDocumentAttributionProps {
+    correspondingSpans: string[] | undefined;
+    text: string;
+}
+
+export const BoldTextForDocumentAttribution = ({
+    correspondingSpans,
+    text,
+}: BoldTextForDocumentAttributionProps) => {
+    if (!correspondingSpans) {
+        return text;
+    }
+
+    // Create a regex pattern that matches all substrings
+    const regexPattern = new RegExp(`(${correspondingSpans.join('|')})`, 'gi');
+
+    // Split the text based on the substrings
+    const splitTextSegments = text.split(regexPattern);
+
+    return (
+        <>
+            {splitTextSegments.map((segment, index) => {
+                // Check if the segment matches any of the substrings exactly
+                const isExactMatch = correspondingSpans.some(
+                    (substring) => substring.toLowerCase() === segment.toLowerCase()
+                );
+                return isExactMatch ? <strong key={index}>{segment}</strong> : segment;
+            })}
+        </>
+    );
+};
