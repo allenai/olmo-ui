@@ -3,6 +3,7 @@ import { ClientBase } from './ClientBase';
 export interface Document {
     text: string;
     corresponding_spans: string[];
+    corresponding_span_texts: string[];
     index: string;
     source: string;
     title: string;
@@ -11,6 +12,10 @@ export interface Document {
 export interface AttributionSpan {
     text: string;
     documents: number[];
+}
+
+export interface TopLevelAttributionSpan extends AttributionSpan {
+    nested_spans: AttributionSpan[];
 }
 
 interface AttributionResponse {

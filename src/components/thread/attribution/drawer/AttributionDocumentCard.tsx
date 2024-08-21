@@ -1,13 +1,12 @@
 import { Card, CardActionArea, CardContent, Skeleton, Stack, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
 
-interface AttributionDocumentCardBaseProps {
+interface AttributionDocumentCardBaseProps extends PropsWithChildren {
     title: ReactNode;
-    text: ReactNode;
     source: ReactNode;
     // href: string;
     setSelectedDocument?: () => void;
@@ -24,7 +23,7 @@ const AttributionDocumentCardBase = ({
     isSelected,
     isPreviewed,
     title,
-    text,
+    children,
     source,
 }: AttributionDocumentCardBaseProps) => {
     return (
@@ -66,7 +65,7 @@ const AttributionDocumentCardBase = ({
                     <Typography variant="h6" component="h2" margin={0}>
                         {title}
                     </Typography>
-                    <Typography variant="body1">{text}</Typography>
+                    <Typography variant="body1">{children}</Typography>
                     <Typography variant="subtitle1" fontWeight="bold" component="span">
                         {source}
                     </Typography>
@@ -103,7 +102,7 @@ export const AttributionDocumentCard = ({
             const documents =
                 state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
 
-            return documents[documentIndex]?.corresponding_spans;
+            return documents[documentIndex]?.corresponding_span_texts;
         }
     });
 
@@ -125,31 +124,25 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
-            text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
             source={`Source: ${source}`}
             isSelected={isSelected}
             setSelectedDocument={setSelectedDocument}
             isPreviewed={isPreviewed}
             setPreviewDocument={setPreviewDocument}
-            unsetPreviewDocument={unsetPreviewDocument}
-        />
+            unsetPreviewDocument={unsetPreviewDocument}>
+            <BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />
+        </AttributionDocumentCardBase>
     );
 };
 
 export const AttributionDocumentCardSkeleton = (): JSX.Element => {
     return (
-        <AttributionDocumentCardBase
-            title={<Skeleton />}
-            text={
-                <>
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                </>
-            }
-            source={<Skeleton />}
-        />
+        <AttributionDocumentCardBase title={<Skeleton />} source={<Skeleton />}>
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+        </AttributionDocumentCardBase>
     );
 };
