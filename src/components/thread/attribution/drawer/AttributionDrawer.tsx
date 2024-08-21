@@ -1,21 +1,34 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import { KeyboardEventHandler } from 'react';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Box, Button, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { KeyboardEventHandler, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
+import { RemoteState } from '@/contexts/util';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
+import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
+    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
+    const toggleHighlight = useAppContext((state) => state.toggleHighlight);
+
+    const { loadingState } = attributionForMessage;
+    const [isVisible, setIsVisible] = useState(true);
+
     const isDrawerOpen = useAppContext(
         (state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID
     );
+
+    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
+    const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
 
     const handleDrawerClose = () => {
         closeDrawer(ATTRIBUTION_DRAWER_ID);
@@ -31,6 +44,14 @@ export const AttributionDrawer = () => {
         if (event.key === 'Escape') {
             handleDrawerClose();
         }
+    };
+
+    const handleToggle = () => {
+        if (hasSelectedSpan) {
+            resetSelectedSpan();
+        }
+        toggleHighlight();
+        setIsVisible(!isVisible);
     };
 
     return (
@@ -79,6 +100,20 @@ export const AttributionDrawer = () => {
                     Select a document from this list to highlight which parts of the model’s
                     response have an exact text match in the training data
                 </Typography>
+                {loadingState === RemoteState.Loaded && (
+                    <Button
+                        variant="text"
+                        startIcon={
+                            isVisible ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />
+                        }
+                        onClick={handleToggle}
+                        sx={{
+                            justifyContent: 'flex-start',
+                            color: (theme) => theme.palette.text.primary,
+                        }}>
+                        {isVisible ? 'Hide Highlights' : 'Show Highlights'}
+                    </Button>
+                )}
                 <ClearSelectedSpanButton />
                 <AttributionDrawerDocumentList />
             </Stack>
