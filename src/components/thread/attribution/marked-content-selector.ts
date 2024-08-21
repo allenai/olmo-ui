@@ -2,8 +2,8 @@ import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { createSpanReplacementRegex } from '../span-replacement-regex';
 import { type AttributionHighlightVariant } from './AttributionHighlight';
+import { createSpanReplacementRegex } from './span-replacement-regex';
 
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
