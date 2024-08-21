@@ -33,26 +33,31 @@ export type AppContextState = LabelSlice &
     DatasetExplorerSliceStates &
     AttributionSlice;
 
-export const appContext = createStore<AppContextState>()(
-    devtools(
-        immer((...store) => ({
-            ...createPromptTemplateSlice(...store),
-            ...createSnackMessageSlice(...store),
-            ...createThreadSlice(...store),
-            ...createLabelSlice(...store),
-            ...createUserSlice(...store),
-            ...createModelSlice(...store),
-            ...createSchemaSlice(...store),
-            ...createDrawerSlice(...store),
-            ...createSearchSlice(...store),
-            ...createMetaSlice(...store),
-            ...createDocumentSlice(...store),
-            ...createThreadUpdateSlice(...store),
-            ...createSelectedThreadSlice(...store),
-            ...createAttributionSlice(...store),
-        }))
-    )
-);
+export const createAppContext = (initialState?: Partial<AppContextState>) => {
+    return createStore<AppContextState>()(
+        devtools(
+            immer((...store) => ({
+                ...createPromptTemplateSlice(...store),
+                ...createSnackMessageSlice(...store),
+                ...createThreadSlice(...store),
+                ...createLabelSlice(...store),
+                ...createUserSlice(...store),
+                ...createModelSlice(...store),
+                ...createSchemaSlice(...store),
+                ...createDrawerSlice(...store),
+                ...createSearchSlice(...store),
+                ...createMetaSlice(...store),
+                ...createDocumentSlice(...store),
+                ...createThreadUpdateSlice(...store),
+                ...createSelectedThreadSlice(...store),
+                ...createAttributionSlice(...store),
+                ...initialState,
+            }))
+        )
+    );
+};
+
+export const appContext = createAppContext();
 
 type SelectorType<TSelectorReturnValue> = Parameters<
     typeof useStore<typeof appContext, TSelectorReturnValue>

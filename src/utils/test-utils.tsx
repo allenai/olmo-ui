@@ -15,7 +15,7 @@ const VarnishAppWrapper = ({ children }: PropsWithChildren) => {
     const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
 
     return (
-        <FeatureToggleProvider>
+        <FeatureToggleProvider featureToggles={{ logToggles: false }}>
             <ThemeProvider theme={theme}>
                 <VarnishApp>{children}</VarnishApp>
             </ThemeProvider>

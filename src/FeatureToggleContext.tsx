@@ -50,16 +50,19 @@ const parseToggles = (toggles: Record<string, FTValue>): FeatureToggles => {
 };
 
 export interface FeatureToggleProps extends React.PropsWithChildren {
-    featureToggles?: FeatureToggles;
+    featureToggles?: Partial<FeatureToggles>;
 }
 
 const Ctx = createContext<FeatureToggles>(defaultFeatureToggles);
 
 export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
     children,
-    featureToggles: initialToggles = defaultFeatureToggles,
+    featureToggles: initialToggles = {} as Partial<FeatureToggles>,
 }) => {
-    const [featureToggles, setFeatureToggles] = useState(initialToggles);
+    const [featureToggles, setFeatureToggles] = useState({
+        ...initialToggles,
+        ...defaultFeatureToggles,
+    });
 
     useEffect(() => {
         // grab from local storage if we have any
