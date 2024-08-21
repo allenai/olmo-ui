@@ -11,7 +11,7 @@ const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     }
 
     const documents = messageAttributionsSelector(state)?.documents;
-    return documents?.[state.attribution.selectedDocumentIndex]?.corresponding_spans ?? [];
+    return documents?.[state.attribution.selectedDocumentIndex]?.corresponding_span_texts ?? [];
 };
 
 const previewCorrespondingSpansSelector = (state: AppContextState) => {
@@ -20,7 +20,7 @@ const previewCorrespondingSpansSelector = (state: AppContextState) => {
     }
 
     const documents = messageAttributionsSelector(state)?.documents;
-    return documents?.[state.attribution.previewDocumentIndex]?.corresponding_spans ?? [];
+    return documents?.[state.attribution.previewDocumentIndex]?.corresponding_span_texts ?? [];
 };
 
 type AttributionHighlightString =
