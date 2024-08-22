@@ -6,7 +6,6 @@ import { useStore } from 'zustand';
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import { FeatureToggleProvider } from '@/FeatureToggleContext';
 
 import { ThreadDisplay } from './ThreadDisplay';
 

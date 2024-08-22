@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
-    FeatureToggleProvider,
     FeatureToggles,
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
