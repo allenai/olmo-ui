@@ -60,8 +60,8 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
     featureToggles: initialToggles = {} as Partial<FeatureToggles>,
 }) => {
     const [featureToggles, setFeatureToggles] = useState({
-        ...initialToggles,
         ...defaultFeatureToggles,
+        ...initialToggles,
     });
 
     useEffect(() => {
