@@ -4,27 +4,55 @@ import { getRouterOverriddenTheme } from '@allenai/varnish2';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { render, RenderOptions } from '@testing-library/react';
-import { PropsWithChildren, ReactNode } from 'react';
+import { ComponentProps, PropsWithChildren, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { FeatureToggleProvider } from 'src/FeatureToggleContext';
+import {
+    defaultFeatureToggles,
+    FeatureToggleContext,
+    FeatureToggleProvider,
+} from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
 import { olmoTheme } from '../olmoTheme';
 
-const VarnishAppWrapper = ({ children }: PropsWithChildren) => {
-    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
-
+const FakeFeatureToggleProvider = ({
+    children,
+    featureToggles = { logToggles: false },
+}: ComponentProps<typeof FeatureToggleProvider>) => {
     return (
-        <FeatureToggleProvider featureToggles={{ logToggles: false }}>
-            <ThemeProvider theme={theme}>
-                <VarnishApp>{children}</VarnishApp>
-            </ThemeProvider>
-        </FeatureToggleProvider>
+        <FeatureToggleContext.Provider
+            value={{
+                ...defaultFeatureToggles,
+                ...featureToggles,
+            }}>
+            {children}
+        </FeatureToggleContext.Provider>
     );
 };
 
-const customRender = (ui: ReactNode, options?: Omit<RenderOptions, 'wrapper'>) =>
-    render(ui, { wrapper: VarnishAppWrapper, ...options });
+interface WrapperProps extends PropsWithChildren {
+    featureToggles?: ComponentProps<typeof FeatureToggleProvider>['featureToggles'];
+}
+const TestWrapper = ({ children, featureToggles = { logToggles: false } }: WrapperProps) => {
+    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
+
+    return (
+        <FakeFeatureToggleProvider featureToggles={featureToggles}>
+            <ThemeProvider theme={theme}>
+                <VarnishApp>{children}</VarnishApp>
+            </ThemeProvider>
+        </FakeFeatureToggleProvider>
+    );
+};
+
+interface CustomRenderOptions extends RenderOptions {
+    wrapperProps: WrapperProps;
+}
+const customRender = (ui: ReactNode, options?: CustomRenderOptions) =>
+    render(ui, {
+        wrapper: (props?: WrapperProps) => <TestWrapper {...props} {...options?.wrapperProps} />,
+        ...options,
+    });
 
 // re-export everything - we overwrite render with our customRender so we're ignoring import/export here
 // eslint-disable-next-line import/export

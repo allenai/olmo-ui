@@ -9,7 +9,7 @@ export enum FeatureToggle {
 
 type FeatureToggles = Record<FeatureToggle, boolean>;
 
-const defaultFeatureToggles: FeatureToggles = {
+export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
     [FeatureToggle.attribution]: false,
     [FeatureToggle.attributionSpanFirst]: false,
@@ -53,7 +53,7 @@ export interface FeatureToggleProps extends React.PropsWithChildren {
     featureToggles?: Partial<FeatureToggles>;
 }
 
-const Ctx = createContext<FeatureToggles>(defaultFeatureToggles);
+export const FeatureToggleContext = createContext<FeatureToggles>(defaultFeatureToggles);
 
 export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
     children,
@@ -94,11 +94,15 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         if (toggles.logToggles) {
             console.table(toggles);
         }
-    }, []);
+    }, [initialToggles]);
 
-    return <Ctx.Provider value={featureToggles}>{children}</Ctx.Provider>;
+    return (
+        <FeatureToggleContext.Provider value={featureToggles}>
+            {children}
+        </FeatureToggleContext.Provider>
+    );
 };
 
 export function useFeatureToggles() {
-    return React.useContext(Ctx);
+    return React.useContext(FeatureToggleContext);
 }
