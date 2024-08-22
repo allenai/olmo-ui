@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import { KeyboardEventHandler, useState } from 'react';
+import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
@@ -17,18 +17,15 @@ export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
+    const handleToggle = useAppContext((state) => state.handleToggle);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
-    const toggleHighlight = useAppContext((state) => state.toggleHighlight);
+    const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
 
     const { loadingState } = attributionForMessage;
-    const [isVisible, setIsVisible] = useState(true);
 
     const isDrawerOpen = useAppContext(
         (state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID
     );
-
-    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
-    const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
 
     const handleDrawerClose = () => {
         closeDrawer(ATTRIBUTION_DRAWER_ID);
@@ -44,14 +41,6 @@ export const AttributionDrawer = () => {
         if (event.key === 'Escape') {
             handleDrawerClose();
         }
-    };
-
-    const handleToggle = () => {
-        if (hasSelectedSpan) {
-            resetSelectedSpan();
-        }
-        toggleHighlight();
-        setIsVisible(!isVisible);
     };
 
     return (
@@ -104,14 +93,18 @@ export const AttributionDrawer = () => {
                     <Button
                         variant="text"
                         startIcon={
-                            isVisible ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />
+                            isAllHighlightVisible ? (
+                                <VisibilityOffOutlinedIcon />
+                            ) : (
+                                <VisibilityOutlinedIcon />
+                            )
                         }
                         onClick={handleToggle}
                         sx={{
                             justifyContent: 'flex-start',
                             color: (theme) => theme.palette.text.primary,
                         }}>
-                        {isVisible ? 'Hide Highlights' : 'Show Highlights'}
+                        {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
                     </Button>
                 )}
                 <ClearSelectedSpanButton />

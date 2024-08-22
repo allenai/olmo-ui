@@ -4,7 +4,6 @@ import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
 import remarkGfm from 'remark-gfm';
 
-import { useAppContext } from '@/AppContext';
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
 
 import { CodeBlock } from '../CodeBlock';
@@ -14,7 +13,6 @@ interface MarkdownRendererProps {
 }
 
 export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
-    const shouldShowAllHighlight = useAppContext((state) => state.shouldShowAllHighlight);
     return (
         <Markdown
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
@@ -22,7 +20,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
             components={{
                 code: CodeBlock,
                 // @ts-expect-error - We add attribution-highlight as a custom element
-                'attribution-highlight': shouldShowAllHighlight ? AttributionHighlight : 'span',
+                'attribution-highlight': AttributionHighlight,
             }}>
             {markdown}
         </Markdown>
