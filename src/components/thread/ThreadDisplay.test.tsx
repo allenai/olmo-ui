@@ -35,6 +35,10 @@ const useFakeAppContext = (selector: (state: appContext.AppContextState) => unkn
 };
 
 describe('ThreadDisplay', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it('should highlight spans that contain special markdown characters', () => {
         vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
