@@ -23,7 +23,6 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
     const contentWithMarks = useSpanHighlighting(messageId);
-    // const contentWithMarks = content;
 
     return (
         <>

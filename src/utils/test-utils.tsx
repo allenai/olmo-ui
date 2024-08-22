@@ -10,6 +10,7 @@ import {
     defaultFeatureToggles,
     FeatureToggleContext,
     FeatureToggleProvider,
+    FeatureToggles,
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
@@ -18,7 +19,9 @@ import { olmoTheme } from '../olmoTheme';
 const FakeFeatureToggleProvider = ({
     children,
     featureToggles = { logToggles: false },
-}: ComponentProps<typeof FeatureToggleProvider>) => {
+}: PropsWithChildren<{
+    featureToggles?: Partial<FeatureToggles>;
+}>) => {
     return (
         <FeatureToggleContext.Provider
             value={{
@@ -31,7 +34,7 @@ const FakeFeatureToggleProvider = ({
 };
 
 interface WrapperProps extends PropsWithChildren {
-    featureToggles?: ComponentProps<typeof FeatureToggleProvider>['featureToggles'];
+    featureToggles?: ComponentProps<typeof FakeFeatureToggleProvider>['featureToggles'];
 }
 const TestWrapper = ({ children, featureToggles = { logToggles: false } }: WrapperProps) => {
     const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));

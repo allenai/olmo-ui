@@ -1,5 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
-import * as React from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
@@ -7,7 +6,7 @@ export enum FeatureToggle {
     attributionSpanFirst = 'attributionSpanFirst',
 }
 
-type FeatureToggles = Record<FeatureToggle, boolean>;
+export type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
@@ -49,20 +48,17 @@ const parseToggles = (toggles: Record<string, FTValue>): FeatureToggles => {
     return ret;
 };
 
-export interface FeatureToggleProps extends React.PropsWithChildren {
-    featureToggles?: Partial<FeatureToggles>;
+export interface FeatureToggleProps extends PropsWithChildren {
+    featureToggles?: FeatureToggles;
 }
 
 export const FeatureToggleContext = createContext<FeatureToggles>(defaultFeatureToggles);
 
-export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
+export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
     children,
-    featureToggles: initialToggles = {} as Partial<FeatureToggles>,
+    featureToggles: initialToggles = defaultFeatureToggles,
 }) => {
-    const [featureToggles, setFeatureToggles] = useState({
-        ...defaultFeatureToggles,
-        ...initialToggles,
-    });
+    const [featureToggles, setFeatureToggles] = useState(initialToggles);
 
     useEffect(() => {
         // grab from local storage if we have any
@@ -94,7 +90,7 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         if (toggles.logToggles) {
             console.table(toggles);
         }
-    }, [initialToggles]);
+    }, []);
 
     return (
         <FeatureToggleContext.Provider value={featureToggles}>
@@ -104,5 +100,5 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
 };
 
 export function useFeatureToggles() {
-    return React.useContext(FeatureToggleContext);
+    return useContext(FeatureToggleContext);
 }
