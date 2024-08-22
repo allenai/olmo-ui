@@ -82,7 +82,7 @@ export const AttributionHighlight = ({
 }: AttributionHighlightProps): JSX.Element => {
     const shouldShowHighlight = useAppContext(
         (state) =>
-            state.shouldShowAllHighlight &&
+            state.isAllHighlightVisible &&
             (state.attribution.selectedSpanId == null || state.attribution.selectedSpanId === span)
     );
 
