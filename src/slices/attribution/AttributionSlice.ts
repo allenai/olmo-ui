@@ -20,6 +20,7 @@ interface AttributionState {
         selectedMessageId: string | null;
         selectedSpanId: string | null;
     };
+    isAllHighlightVisible: boolean;
 }
 
 interface AttributionActions {
@@ -31,6 +32,7 @@ interface AttributionActions {
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
     selectSpan: (span: string) => void;
     resetSelectedSpan: () => void;
+    toggleHighlightVisibility: () => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -43,6 +45,7 @@ const initialAttributionState: AttributionState = {
         selectedMessageId: null,
         selectedSpanId: null,
     },
+    isAllHighlightVisible: true,
 };
 
 const attributionClient = new AttributionClient();
@@ -165,7 +168,10 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             }
         }
 
-        return { attribution: get().attribution };
+        return {
+            attribution: get().attribution,
+            isAllHighlightVisible: get().isAllHighlightVisible,
+        };
     },
 
     selectSpan: (span: string) => {
@@ -185,6 +191,20 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             },
             false,
             'attribution/resetSelectedSpan'
+        );
+    },
+
+    toggleHighlightVisibility: () => {
+        const { attribution, resetSelectedSpan } = get();
+        if (attribution.selectedSpanId != null) {
+            resetSelectedSpan();
+        }
+        set(
+            (state) => {
+                state.isAllHighlightVisible = !state.isAllHighlightVisible;
+            },
+            false,
+            'attribution/toggleHighlightVisibility'
         );
     },
 });
