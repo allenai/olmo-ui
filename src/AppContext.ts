@@ -1,3 +1,5 @@
+import deepmerge from 'deepmerge';
+import { DeepPartial } from 'react-hook-form';
 import { StateCreator, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -33,26 +35,36 @@ export type AppContextState = LabelSlice &
     DatasetExplorerSliceStates &
     AttributionSlice;
 
-export const appContext = createStore<AppContextState>()(
-    devtools(
-        immer((...store) => ({
-            ...createPromptTemplateSlice(...store),
-            ...createSnackMessageSlice(...store),
-            ...createThreadSlice(...store),
-            ...createLabelSlice(...store),
-            ...createUserSlice(...store),
-            ...createModelSlice(...store),
-            ...createSchemaSlice(...store),
-            ...createDrawerSlice(...store),
-            ...createSearchSlice(...store),
-            ...createMetaSlice(...store),
-            ...createDocumentSlice(...store),
-            ...createThreadUpdateSlice(...store),
-            ...createSelectedThreadSlice(...store),
-            ...createAttributionSlice(...store),
-        }))
-    )
-);
+export const createAppContext = (initialState?: DeepPartial<AppContextState>) => {
+    return createStore<AppContextState>()(
+        devtools(
+            immer((...store) =>
+                deepmerge(
+                    {
+                        ...createPromptTemplateSlice(...store),
+                        ...createSnackMessageSlice(...store),
+                        ...createThreadSlice(...store),
+                        ...createLabelSlice(...store),
+                        ...createUserSlice(...store),
+                        ...createModelSlice(...store),
+                        ...createSchemaSlice(...store),
+                        ...createDrawerSlice(...store),
+                        ...createSearchSlice(...store),
+                        ...createMetaSlice(...store),
+                        ...createDocumentSlice(...store),
+                        ...createThreadUpdateSlice(...store),
+                        ...createSelectedThreadSlice(...store),
+                        ...createAttributionSlice(...store),
+                    } satisfies AppContextState,
+                    // this is a bad cast but i just want to make TS happy rn
+                    (initialState as AppContextState | undefined) ?? {}
+                )
+            )
+        )
+    );
+};
+
+export const appContext = createAppContext();
 
 type SelectorType<TSelectorReturnValue> = Parameters<
     typeof useStore<typeof appContext, TSelectorReturnValue>

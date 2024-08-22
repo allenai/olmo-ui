@@ -1,5 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
-import * as React from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
@@ -7,9 +6,9 @@ export enum FeatureToggle {
     attributionSpanFirst = 'attributionSpanFirst',
 }
 
-type FeatureToggles = Record<FeatureToggle, boolean>;
+export type FeatureToggles = Record<FeatureToggle, boolean>;
 
-const defaultFeatureToggles: FeatureToggles = {
+export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
     [FeatureToggle.attribution]: false,
     [FeatureToggle.attributionSpanFirst]: false,
@@ -49,13 +48,13 @@ const parseToggles = (toggles: Record<string, FTValue>): FeatureToggles => {
     return ret;
 };
 
-export interface FeatureToggleProps extends React.PropsWithChildren {
+export interface FeatureToggleProps extends PropsWithChildren {
     featureToggles?: FeatureToggles;
 }
 
-const Ctx = createContext<FeatureToggles>(defaultFeatureToggles);
+export const FeatureToggleContext = createContext<FeatureToggles>(defaultFeatureToggles);
 
-export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
+export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
     children,
     featureToggles: initialToggles = defaultFeatureToggles,
 }) => {
@@ -93,9 +92,13 @@ export const FeatureToggleProvider: React.FC<FeatureToggleProps> = ({
         }
     }, []);
 
-    return <Ctx.Provider value={featureToggles}>{children}</Ctx.Provider>;
+    return (
+        <FeatureToggleContext.Provider value={featureToggles}>
+            {children}
+        </FeatureToggleContext.Provider>
+    );
 };
 
 export function useFeatureToggles() {
-    return React.useContext(Ctx);
+    return useContext(FeatureToggleContext);
 }

@@ -1,3 +1,5 @@
+import { escapeRegExp } from '@/utils/escape-reg-exp';
+
 interface BoldTextForDocumentAttributionProps {
     correspondingSpans: string[] | undefined;
     text: string;
@@ -12,7 +14,7 @@ export const BoldTextForDocumentAttribution = ({
     }
 
     // Create a regex pattern that matches all substrings
-    const regexPattern = new RegExp(`(${correspondingSpans.join('|')})`, 'gi');
+    const regexPattern = new RegExp(`(${correspondingSpans.map(escapeRegExp).join('|')})`, 'gi');
 
     // Split the text based on the substrings
     const splitTextSegments = text.split(regexPattern);

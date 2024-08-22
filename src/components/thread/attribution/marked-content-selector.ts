@@ -2,8 +2,8 @@ import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { createSpanReplacementRegex } from '../span-replacement-regex';
 import { type AttributionHighlightVariant } from './AttributionHighlight';
+import { createSpanReplacementRegex } from './span-replacement-regex';
 
 const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
@@ -85,17 +85,17 @@ export const spanFirstMarkedContentSelector =
 export const useSpanHighlighting = (messageId: string) => {
     const { attribution, attributionSpanFirst } = useFeatureToggles();
 
-    const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
-
-    if (!attribution) {
-        return content;
-    }
-
     const highlightSelector = attributionSpanFirst
         ? spanFirstMarkedContentSelector
         : documentFirstMarkedContentSelector;
 
-    const contentWithMarks = useAppContext(highlightSelector(messageId));
+    const contentWithMarks = useAppContext((state) => {
+        if (!attribution) {
+            return state.selectedThreadMessagesById[messageId].content;
+        }
+
+        return highlightSelector(messageId)(state);
+    });
 
     return contentWithMarks;
 };
