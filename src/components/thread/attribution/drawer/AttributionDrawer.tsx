@@ -17,7 +17,7 @@ export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
-    const handleToggle = useAppContext((state) => state.handleToggle);
+    const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
     const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
 
@@ -89,24 +89,23 @@ export const AttributionDrawer = () => {
                     Select a document from this list to highlight which parts of the model’s
                     response have an exact text match in the training data
                 </Typography>
-                {loadingState === RemoteState.Loaded && (
-                    <Button
-                        variant="text"
-                        startIcon={
-                            isAllHighlightVisible ? (
-                                <VisibilityOffOutlinedIcon />
-                            ) : (
-                                <VisibilityOutlinedIcon />
-                            )
-                        }
-                        onClick={handleToggle}
-                        sx={{
-                            justifyContent: 'flex-start',
-                            color: (theme) => theme.palette.text.primary,
-                        }}>
-                        {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
-                    </Button>
-                )}
+                <Button
+                    variant="text"
+                    disabled={loadingState === RemoteState.Loading}
+                    startIcon={
+                        isAllHighlightVisible ? (
+                            <VisibilityOffOutlinedIcon />
+                        ) : (
+                            <VisibilityOutlinedIcon />
+                        )
+                    }
+                    onClick={toggleHighlightVisibility}
+                    sx={{
+                        justifyContent: 'flex-start',
+                        color: (theme) => theme.palette.text.primary,
+                    }}>
+                    {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
+                </Button>
                 <ClearSelectedSpanButton />
                 <AttributionDrawerDocumentList />
             </Stack>

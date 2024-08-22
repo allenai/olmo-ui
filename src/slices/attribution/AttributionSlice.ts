@@ -32,7 +32,7 @@ interface AttributionActions {
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
     selectSpan: (span: string) => void;
     resetSelectedSpan: () => void;
-    handleToggle: () => void;
+    toggleHighlightVisibility: () => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -194,7 +194,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
-    handleToggle: () => {
+    toggleHighlightVisibility: () => {
         const { attribution, resetSelectedSpan } = get();
         if (attribution.selectedSpanId != null) {
             resetSelectedSpan();
@@ -204,7 +204,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 state.isAllHighlightVisible = !state.isAllHighlightVisible;
             },
             false,
-            'attribution/handleToggle'
+            'attribution/toggleHighlightVisibility'
         );
     },
 });
