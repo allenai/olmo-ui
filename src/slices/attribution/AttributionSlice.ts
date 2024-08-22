@@ -1,12 +1,12 @@
 import { Draft } from 'immer';
 
-import { AttributionClient, AttributionSpan, Document } from '@/api/AttributionClient';
+import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {
     documents: { [documentIndex: string]: Document | undefined };
-    spans: { [span: string]: AttributionSpan | undefined };
+    spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
 }
 

@@ -2,7 +2,8 @@ import { ClientBase } from './ClientBase';
 
 export interface Document {
     text: string;
-    corresponding_spans: string[];
+    corresponding_spans: number[];
+    corresponding_span_texts: string[];
     index: string;
     source: string;
     title: string;
@@ -13,9 +14,13 @@ export interface AttributionSpan {
     documents: number[];
 }
 
+export interface TopLevelAttributionSpan extends AttributionSpan {
+    nested_spans: AttributionSpan[];
+}
+
 interface AttributionResponse {
     documents: { [documentIndex: string]: Document };
-    spans: { [span: string]: AttributionSpan };
+    spans: { [span: string]: TopLevelAttributionSpan };
 }
 
 const AttributionApiUrl = '/v3/attribution?includeSpansInRoot=true';

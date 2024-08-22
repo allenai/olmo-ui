@@ -103,7 +103,7 @@ export const AttributionDocumentCard = ({
             const documents =
                 state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
 
-            return documents[documentIndex]?.corresponding_spans;
+            return documents[documentIndex]?.corresponding_span_texts;
         }
     });
 
