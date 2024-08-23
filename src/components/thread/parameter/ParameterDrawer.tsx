@@ -110,7 +110,10 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                                 Parameters
                             </Typography>
                         </ListSubheader>
-                        <IconButton onClick={handleDrawerClose} sx={{ color: 'inherit' }}>
+                        <IconButton
+                            onClick={handleDrawerClose}
+                            sx={{ color: 'inherit' }}
+                            aria-label="close parameters drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>

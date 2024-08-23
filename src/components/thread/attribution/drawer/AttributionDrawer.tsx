@@ -72,7 +72,7 @@ export const AttributionDrawer = () => {
                         <IconButton
                             onClick={handleDrawerClose}
                             sx={{ color: 'inherit' }}
-                            aria-label="close drawer">
+                            aria-label="close attribution drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>
