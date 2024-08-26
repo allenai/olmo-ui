@@ -153,18 +153,16 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         const orderedDocumentIds: number[] = attributionResponse.spans.flatMap(
                             (span) => [
                                 ...span.documents,
-                                ...span.nested_spans.flatMap((nestedSpan) => nestedSpan.documents),
                             ]
                         );
 
-                        const uniqueOrderedDocumentIds = Array.from(new Set(orderedDocumentIds));
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;
                         });
                         attributionResponse.documents.forEach((document) => {
                             attributions.documents[document.index] = document;
                         });
-                        state.orderedDocumentIds = uniqueOrderedDocumentIds;
+                        state.orderedDocumentIds = orderedDocumentIds;
                         attributions.loadingState = RemoteState.Loaded;
                     },
                     false,

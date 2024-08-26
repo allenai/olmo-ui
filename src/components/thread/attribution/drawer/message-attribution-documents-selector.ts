@@ -34,16 +34,11 @@ export const messageAttributionDocumentsSelector = (
         (document) => document != null
     );
 
-    const documentMap: { [index: string]: Document } = {};
-    documents.forEach((doc) => {
-        documentMap[doc.index] = doc;
-    });
-
     const orderedDocuments: Document[] = state.orderedDocumentIds
         .map((docId) => {
-            return documentMap[docId.toString()];
+            return attributions?.documents[docId.toString()];
         })
-        .filter(Boolean);
+        .filter((doc) => doc !== undefined);
 
     return {
         documents: orderedDocuments,

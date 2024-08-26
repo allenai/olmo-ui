@@ -28,11 +28,16 @@ const fakeAttributionResponse = {
             ],
             text: 'OkayOkayOkayOkayOkayOkayOkayOkay',
         },
-        // Our nested handling isn't set up correctly rn, need to look into that before uncommenting this
-        // OkayOkay: {
-        //     documents: [2132419687],
-        //     text: 'OkayOkay',
-        // },
+        {
+            documents: [2132419687],
+            nested_spans: [
+                {
+                    documents: [2132419686],
+                    text: 'OkayOkay',
+                },
+            ],
+            text: 'OkayOkay',
+        },
     ],
 };
 
