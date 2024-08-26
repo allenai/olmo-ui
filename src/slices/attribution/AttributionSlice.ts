@@ -150,16 +150,20 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
-                        const orderedDocumentIds: number[] = [];
-                        for (const span of Object.values(attributionResponse.spans)) {
-                            orderedDocumentIds.push(...span.documents);
-                            for (const nestedSpan of span.nested_spans) {
-                                orderedDocumentIds.push(...nestedSpan.documents);
-                            }
-                        }
+                        const orderedDocumentIds: number[] = attributionResponse.spans.flatMap(
+                            (span) => [
+                                ...span.documents,
+                                ...span.nested_spans.flatMap((nestedSpan) => nestedSpan.documents),
+                            ]
+                        );
+
                         const uniqueOrderedDocumentIds = Array.from(new Set(orderedDocumentIds));
-                        attributions.spans = attributionResponse.spans;
-                        attributions.documents = attributionResponse.documents;
+                        attributionResponse.spans.forEach((span, index) => {
+                            attributions.spans[index] = span;
+                        });
+                        attributionResponse.documents.forEach((document) => {
+                            attributions.documents[document.index] = document;
+                        });
                         state.orderedDocumentIds = uniqueOrderedDocumentIds;
                         attributions.loadingState = RemoteState.Loaded;
                     },
