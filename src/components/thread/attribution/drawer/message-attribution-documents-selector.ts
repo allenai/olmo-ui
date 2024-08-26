@@ -30,18 +30,14 @@ export const messageAttributionDocumentsSelector = (
         };
     }
 
-    const documents = Object.values(attributions?.documents ?? {}).filter(
-        (document) => document != null
-    );
-
-    const orderedDocuments: Document[] = state.orderedDocumentIds
+    const documents: Document[] = state.orderedDocumentIds
         .map((docId) => {
             return attributions?.documents[docId.toString()];
         })
         .filter((doc) => doc !== undefined);
 
     return {
-        documents: orderedDocuments,
+        documents,
         loadingState: attributions?.loadingState ?? null,
     };
 };

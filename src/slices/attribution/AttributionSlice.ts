@@ -151,9 +151,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                         const orderedDocumentIds: number[] = attributionResponse.spans.flatMap(
-                            (span) => [
-                                ...span.documents,
-                            ]
+                            (span) => [...span.documents]
                         );
 
                         attributionResponse.spans.forEach((span, index) => {
