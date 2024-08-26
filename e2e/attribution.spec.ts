@@ -9,7 +9,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Attribution' }).click();
     await expect(page.getByTestId('attribution-drawer').getByText('Untitled Document')).toHaveCount(
-        2
+        1
     );
     await page
         .getByRole('button', { name: 'Show documents related to this span' })
