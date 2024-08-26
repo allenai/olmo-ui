@@ -19,11 +19,11 @@ export interface TopLevelAttributionSpan extends AttributionSpan {
 }
 
 interface AttributionResponse {
-    documents: { [documentIndex: string]: Document };
-    spans: { [span: string]: TopLevelAttributionSpan };
+    documents: Document[];
+    spans: TopLevelAttributionSpan[];
 }
 
-const AttributionApiUrl = '/v3/attribution?includeSpansInRoot=true';
+const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';
 
 export class AttributionClient extends ClientBase {
     getAttributionDocuments = async (
