@@ -15,25 +15,31 @@ export const CodeBlock = ({ inline, className, children = '', ...props }: CodeBl
     const match = /language-(\w+)/.exec(className || '');
 
     const attributionHighlights = Array.from(children.matchAll(attributionHighlightRegex));
-    console.log(attributionHighlights);
 
     const childrenWithoutAttributionHighlights = children.replaceAll(
         attributionHighlightRegex,
         '$1'
     );
 
-    return !inline && match ? (
-        <SyntaxHighlighter
-            style={dracula}
-            PreTag="div"
-            language={match[1]}
-            {...props}
-            wrapLongLines>
-            {childrenWithoutAttributionHighlights.replace(/\n$/, '')}
-        </SyntaxHighlighter>
-    ) : (
-        <code className={className} {...props}>
-            {children}
-        </code>
+    return (
+        <button
+            onClick={() => {
+                console.log(attributionHighlights.map((highlight) => highlight.groups?.spanId));
+            }}>
+            {!inline && match ? (
+                <SyntaxHighlighter
+                    style={dracula}
+                    PreTag="div"
+                    language={match[1]}
+                    {...props}
+                    wrapLongLines>
+                    {childrenWithoutAttributionHighlights.replace(/\n$/, '')}
+                </SyntaxHighlighter>
+            ) : (
+                <code className={className} {...props}>
+                    {children}
+                </code>
+            )}
+        </button>
     );
 };
