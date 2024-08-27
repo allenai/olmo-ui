@@ -11,6 +11,8 @@ interface CodeBlockProps extends PropsWithChildren {
     node?: unknown;
 }
 
+// This regex is used to pull the text and span ID out of attribution highlight directives
+// If you're using .match you can use .groups.spanText or .groups.spanId to get the respective values
 const attributionHighlightRegex =
     /:attribution-highlight\[(?<spanText>.*)\]{variant=".*" span="(?<spanId>.*)"}/gm;
 
