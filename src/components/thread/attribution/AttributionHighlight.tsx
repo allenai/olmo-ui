@@ -3,47 +3,94 @@ import { PropsWithChildren } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
+import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 
-interface AttributionHighlightButtonProps extends PropsWithChildren {
-    variant: AttributionHighlightVariant;
-    spanId: string;
-}
-
-const AttributionHighlightButton = ({
-    variant,
-    spanId,
-    children,
-}: AttributionHighlightButtonProps) => {
+export const useAttributionHighlights = (spanIds: string | string[]) => {
     const featureToggles = useFeatureToggles();
-    const selectSpan = useAppContext((state) => state.selectSpans);
-    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpans);
-    const isSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId === spanId);
+    const selectSpans = useAppContext((state) => state.selectSpans);
+    const resetSelectedSpans = useAppContext((state) => state.resetSelectedSpans);
 
-    const isEnabled = featureToggles.attributionSpanFirst;
-    const toggleSelectedSpan = () => {
-        if (isEnabled) {
+    const isSelectedSpan = useAppContext((state) => {
+        const isSpanIdSelected = (spanId: string) =>
+            state.attribution.selectedSpanIds.includes(spanId);
+
+        if (Array.isArray(spanIds)) {
+            return spanIds.some(isSpanIdSelected);
+        } else {
+            return isSpanIdSelected(spanIds);
+        }
+    });
+
+    const isAttributionSpanFirstEnabled = featureToggles.attributionSpanFirst;
+
+    const toggleSelectedSpans = () => {
+        if (isAttributionSpanFirstEnabled) {
             if (isSelectedSpan) {
-                resetSelectedSpan();
+                resetSelectedSpans();
             } else {
-                selectSpan(spanId);
+                selectSpans(spanIds);
             }
         }
     };
+
+    const shouldShowHighlight = useAppContext((state) => {
+        if (!state.isAllHighlightVisible) {
+            return false;
+        }
+
+        const hasSelectedSpans = hasSelectedSpansSelector(state);
+        // If there aren't any selected spans we want to show all highlights
+        if (!hasSelectedSpans) {
+            return true;
+        }
+
+        // If there are selected spans and this is one of them, show the highlight
+        if (isSelectedSpan) {
+            return true;
+        }
+    });
+
+    return {
+        shouldShowHighlight,
+        isAttributionSpanFirstEnabled,
+        toggleSelectedSpans,
+    };
+};
+
+export interface AttributionHighlightProps extends PropsWithChildren {
+    span: string;
+    variant: AttributionHighlightVariant;
+}
+
+export const AttributionHighlight = ({
+    span,
+    variant,
+    children,
+}: AttributionHighlightProps): JSX.Element => {
+    const { isAttributionSpanFirstEnabled, toggleSelectedSpans, shouldShowHighlight } =
+        useAttributionHighlights(span);
+
+    if (!shouldShowHighlight) {
+        return <>{children}</>;
+    }
 
     return (
         <Box
             component="mark"
             role="button"
             aria-label="Show documents related to this span"
-            onClick={toggleSelectedSpan}
+            onClick={() => {
+                console.log('toggle');
+                toggleSelectedSpans();
+            }}
             tabIndex={0}
             sx={() => {
                 const isPrimaryVariant = variant === 'selected' || variant === 'default';
 
                 return {
-                    cursor: isEnabled ? 'pointer' : undefined,
+                    cursor: isAttributionSpanFirstEnabled ? 'pointer' : undefined,
 
                     backgroundColor: (theme) =>
                         isPrimaryVariant
@@ -67,32 +114,5 @@ const AttributionHighlightButton = ({
             }}>
             {children}
         </Box>
-    );
-};
-
-export interface AttributionHighlightProps extends PropsWithChildren {
-    span: string;
-    variant: AttributionHighlightVariant;
-}
-
-export const AttributionHighlight = ({
-    span,
-    variant,
-    children,
-}: AttributionHighlightProps): JSX.Element => {
-    const shouldShowHighlight = useAppContext(
-        (state) =>
-            state.isAllHighlightVisible &&
-            (state.attribution.selectedSpanId == null || state.attribution.selectedSpanId === span)
-    );
-
-    if (!shouldShowHighlight) {
-        return <>{children}</>;
-    }
-
-    return (
-        <AttributionHighlightButton variant={variant} spanId={span}>
-            {children}
-        </AttributionHighlightButton>
     );
 };

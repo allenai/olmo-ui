@@ -2,6 +2,7 @@ import { Card, CardContent, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
 
 import {
     AttributionDocumentCard,
@@ -15,7 +16,7 @@ interface MatchingDocumentsTextProps {
 const MatchingDocumentsText = ({
     documentCount,
 }: MatchingDocumentsTextProps): JSX.Element | null => {
-    const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
+    const hasSelectedSpan = useAppContext(hasSelectedSpansSelector);
 
     if (!hasSelectedSpan) {
         return null;
