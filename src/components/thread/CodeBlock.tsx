@@ -1,21 +1,26 @@
-import { Box } from '@mui/material';
-import { Fragment, PropsWithChildren, useEffect } from 'react';
+import { Button } from '@mui/material';
+import { PropsWithChildren } from 'react';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-
-import { useAppContext } from '@/AppContext';
 
 import { useAttributionHighlights } from './attribution/AttributionHighlight';
 
 interface CodeBlockProps extends PropsWithChildren {
     inline?: boolean;
     className?: string;
+    node?: unknown;
 }
 
 const attributionHighlightRegex =
     /:attribution-highlight\[(?<spanText>.*)\]{variant=".*" span="(?<spanId>.*)"}/gm;
 
-export const CodeBlock = ({ inline, className, children = '', ...props }: CodeBlockProps) => {
+export const CodeBlock = ({
+    inline,
+    className,
+    children = '',
+    node: _node,
+    ...props
+}: CodeBlockProps) => {
     const match = /language-(\w+)/.exec(className || '');
 
     const spansInsideThisCodeBlock =
@@ -25,42 +30,45 @@ export const CodeBlock = ({ inline, className, children = '', ...props }: CodeBl
                   .filter((spanId) => spanId != null)
             : [];
 
-    const { toggleSelectedSpans, shouldShowHighlight } =
-        useAttributionHighlights(spansInsideThisCodeBlock);
+    const { toggleSelectedSpans } = useAttributionHighlights(spansInsideThisCodeBlock);
 
     if (typeof children === 'string') {
-        const childrenWithoutAttributionHighlights = children.replaceAll(
-            attributionHighlightRegex,
-            '$1'
-        );
+        const childrenWithoutAttributionHighlights = children
+            // the attributionHighlightRegex uses a capture group, $1 gets replaced with that capture group
+            .replaceAll(attributionHighlightRegex, '$1')
+            .replace(/\n$/, '');
 
-        const Wrapper = spansInsideThisCodeBlock.length > 0 && shouldShowHighlight ? Box : Fragment;
-
-        return (
-            <Wrapper
-                component="mark"
-                onClick={() => {
-                    toggleSelectedSpans();
-                }}
-                role="button"
-                aria-label="Show documents related to spans inside this code block"
-                sx={{ cursor: 'pointer' }}>
-                {!inline && match ? (
+        if (inline || !match) {
+            return (
+                <code className={className} {...props}>
+                    {childrenWithoutAttributionHighlights}
+                </code>
+            );
+        } else {
+            return (
+                <>
                     <SyntaxHighlighter
                         style={dracula}
                         PreTag="div"
                         language={match[1]}
                         {...props}
                         wrapLongLines>
-                        {childrenWithoutAttributionHighlights.replace(/\n$/, '')}
+                        {childrenWithoutAttributionHighlights}
                     </SyntaxHighlighter>
-                ) : (
-                    <code className={className} {...props}>
-                        {children}
-                    </code>
-                )}
-            </Wrapper>
-        );
+                    {spansInsideThisCodeBlock.length > 0 && (
+                        <Button
+                            fullWidth
+                            variant="text"
+                            onClick={() => {
+                                toggleSelectedSpans();
+                            }}>
+                            Click this text to show documents related to spans inside the code block
+                            above
+                        </Button>
+                    )}
+                </>
+            );
+        }
     }
 
     return (

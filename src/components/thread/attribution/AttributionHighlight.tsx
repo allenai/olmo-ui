@@ -60,13 +60,13 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 };
 
 export interface AttributionHighlightProps extends PropsWithChildren {
-    span: string;
-    variant: AttributionHighlightVariant;
+    span: string | string[];
+    variant?: AttributionHighlightVariant;
 }
 
 export const AttributionHighlight = ({
     span,
-    variant,
+    variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
     const { isAttributionSpanFirstEnabled, toggleSelectedSpans, shouldShowHighlight } =
