@@ -197,7 +197,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 } else {
                     state.attribution.selectedSpanIds = [spanIds];
                 }
-                
+
                 state.currentOpenDrawer = 'attribution';
             },
             false,
