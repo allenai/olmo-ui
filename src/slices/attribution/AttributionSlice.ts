@@ -1,7 +1,9 @@
+import varnishTokens from '@allenai/varnish-theme';
 import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {
@@ -34,6 +36,7 @@ interface AttributionActions {
     selectSpan: (span: string) => void;
     resetSelectedSpan: () => void;
     toggleHighlightVisibility: () => void;
+    openAttributionForNewThread: () => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -216,6 +219,24 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             },
             false,
             'attribution/toggleHighlightVisibility'
+        );
+    },
+
+    openAttributionForNewThread: () => {
+        get().resetAttribution();
+        set(
+            (state) => {
+                if (
+                    window.matchMedia(
+                        `(min-width: ${varnishTokens.breakpoint[DESKTOP_LAYOUT_BREAKPOINT].value})`
+                    ).matches &&
+                    state.currentOpenDrawer == null
+                ) {
+                    state.currentOpenDrawer = 'attribution';
+                }
+            },
+            false,
+            'attribution/openAttributionForNewThread'
         );
     },
 });

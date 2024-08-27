@@ -21,7 +21,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.getByRole('button', { name: 'History' }).click();
     await expect(page.getByText('Today')).toBeVisible();
     await expect(page.getByRole('link', { name: 'User message' })).toBeVisible();
-    await page.getByRole('button', { name: 'close drawer' }).click();
+    await page.getByRole('button', { name: 'close history drawer' }).click();
 
     // Send a second message in the thread
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
@@ -42,15 +42,15 @@ test('can load threads from history drawer', async ({ page }) => {
     await page.getByRole('button', { name: 'History' }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
     await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'close drawer' }).click();
+    await page.getByRole('button', { name: 'close history drawer' }).click();
     await expect(page.getByText('Ether')).toBeVisible();
     expect(page.url()).toContain(firstThreadMessageId);
 
     // Check the second existing thread
-    await page.getByRole('button', { name: 'History' }).click();
+    await page.getByRole('button', { name: 'History', exact: true }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
     await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'close drawer' }).click();
+    await page.getByRole('button', { name: 'close history drawer' }).click();
     await expect(
         page.getByTestId('thread-display').getByText('Second existing message')
     ).toBeVisible();
