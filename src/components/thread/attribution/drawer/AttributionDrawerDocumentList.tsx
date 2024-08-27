@@ -54,7 +54,11 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     const { documents, loadingState } = attributionForMessage;
 
-    if (loadingState === RemoteState.Loading) {
+    const isPromptLoading = useAppContext(
+        (state) => state.streamPromptState === RemoteState.Loading
+    );
+
+    if (isPromptLoading || loadingState === RemoteState.Loading) {
         return (
             <>
                 <AttributionDocumentCardSkeleton />
