@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import { useAppContext } from '@/AppContext';
 
 export const ClearSelectedSpanButton = (): JSX.Element | null => {
-    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
+    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpans);
     const hasSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId != null);
 
     if (!hasSelectedSpan) {

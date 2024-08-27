@@ -17,8 +17,8 @@ const AttributionHighlightButton = ({
     children,
 }: AttributionHighlightButtonProps) => {
     const featureToggles = useFeatureToggles();
-    const selectSpan = useAppContext((state) => state.selectSpan);
-    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpan);
+    const selectSpan = useAppContext((state) => state.selectSpans);
+    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpans);
     const isSelectedSpan = useAppContext((state) => state.attribution.selectedSpanId === spanId);
 
     const isEnabled = featureToggles.attributionSpanFirst;
