@@ -192,6 +192,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set(
             (state) => {
                 state.attribution.selectedSpanId = span;
+                state.currentOpenDrawer = 'attribution';
             },
             false,
             'attribution/selectSpan'
