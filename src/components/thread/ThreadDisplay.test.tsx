@@ -65,7 +65,7 @@ describe('ThreadDisplay', () => {
                         llmMessage: {
                             id: 'llmMessage',
                             childIds: [],
-                            content: '(parens) [braces] .dot *star |pipe \\backslash',
+                            content: '(parens) [braces] .dot *star |pipe \\backslash "quotes"',
                             role: Role.LLM,
                             labels: [],
                             creator: 'currentUser',
@@ -105,6 +105,10 @@ describe('ThreadDisplay', () => {
                                         documents: [0],
                                         text: '\\backslash',
                                     },
+                                    6: {
+                                        documents: [0],
+                                        text: '"quotes"',
+                                    },
                                 },
                             },
                         },
@@ -129,5 +133,6 @@ describe('ThreadDisplay', () => {
         expect.soft(screen.getByText('*star')).toHaveRole('button');
         expect.soft(screen.getByText('|pipe')).toHaveRole('button');
         expect.soft(screen.getByText('\\backslash')).toHaveRole('button');
+        expect.soft(screen.getByText('"quotes"')).toHaveRole('button');
     });
 });
