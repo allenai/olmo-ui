@@ -64,8 +64,7 @@ export const CodeBlock = ({
                             onClick={() => {
                                 toggleSelectedSpans();
                             }}>
-                            Click this text to show documents related to spans inside the code block
-                            above
+                            Show documents related to this code block
                         </Button>
                     )}
                 </>
