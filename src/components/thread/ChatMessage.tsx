@@ -9,7 +9,6 @@ import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 import { RobotAvatar } from '../avatars/RobotAvatar';
 
 const sharedMessageStyle: SxProps = {
-    whiteSpace: 'preserve',
     wordBreak: 'break-word',
 };
 
