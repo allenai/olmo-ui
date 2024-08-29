@@ -20,7 +20,7 @@ interface AttributionState {
             [messageId: string]: MessageWithAttributionDocuments | undefined;
         };
         selectedMessageId: string | null;
-        selectedSpanId: string | null;
+        selectedSpanIds: string[];
     };
     orderedDocumentIds: number[];
     isAllHighlightVisible: boolean;
@@ -33,8 +33,8 @@ interface AttributionActions {
     resetAttribution: () => void;
     selectMessage: (messageId: string) => void;
     getAttributionsForMessage: (messageId: string) => Promise<AttributionState>;
-    selectSpan: (span: string) => void;
-    resetSelectedSpan: () => void;
+    selectSpans: (span: string | string[]) => void;
+    resetSelectedSpans: () => void;
     toggleHighlightVisibility: () => void;
     openAttributionForNewThread: () => void;
 }
@@ -47,7 +47,7 @@ const initialAttributionState: AttributionState = {
         previewDocumentIndex: null,
         attributionsByMessageId: {},
         selectedMessageId: null,
-        selectedSpanId: null,
+        selectedSpanIds: [],
     },
     isAllHighlightVisible: true,
     orderedDocumentIds: [],
@@ -106,7 +106,8 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set(
             (state) => {
                 state.attribution.selectedMessageId = null;
-                state.attribution.selectedSpanId = null;
+                state.attribution.selectedSpanIds =
+                    initialAttributionState.attribution.selectedSpanIds;
             },
             false,
             'attribution/resetAttribution'
@@ -153,9 +154,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
-                        const orderedDocumentIds: number[] = attributionResponse.spans.flatMap(
-                            (span) => [...span.documents]
-                        );
+                        const orderedDocumentIds = attributionResponse.spans.flatMap((span) => [
+                            ...span.documents,
+                        ]);
 
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;
@@ -188,10 +189,15 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         };
     },
 
-    selectSpan: (span: string) => {
+    selectSpans: (spanIds: string | string[]) => {
         set(
             (state) => {
-                state.attribution.selectedSpanId = span;
+                if (Array.isArray(spanIds)) {
+                    state.attribution.selectedSpanIds = spanIds;
+                } else {
+                    state.attribution.selectedSpanIds = [spanIds];
+                }
+
                 state.currentOpenDrawer = 'attribution';
             },
             false,
@@ -199,10 +205,11 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
-    resetSelectedSpan: () => {
+    resetSelectedSpans: () => {
         set(
             (state) => {
-                state.attribution.selectedSpanId = null;
+                state.attribution.selectedSpanIds =
+                    initialAttributionState.attribution.selectedSpanIds;
             },
             false,
             'attribution/resetSelectedSpan'
@@ -210,9 +217,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     },
 
     toggleHighlightVisibility: () => {
-        const { attribution, resetSelectedSpan } = get();
-        if (attribution.selectedSpanId != null) {
-            resetSelectedSpan();
+        const { attribution, resetSelectedSpans } = get();
+        if (attribution.selectedSpanIds.length > 0) {
+            resetSelectedSpans();
         }
         set(
             (state) => {

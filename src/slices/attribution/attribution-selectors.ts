@@ -11,3 +11,6 @@ export const messageAttributionsSelector = (
 
     return undefined;
 };
+
+export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
+    state.attribution.selectedSpanIds.length > 0;
