@@ -20,6 +20,7 @@ export default `HighlightStressTest
 + list item with a space after +
 
 > quote with > in the span
+
 > quote with a space after >
 
 1. numbered list with 1. in the span

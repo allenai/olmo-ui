@@ -70,7 +70,7 @@ export const spanFirstMarkedContentSelector =
 
         const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
 
-        return Object.entries(spans).reduce((acc, [spanKey, span]) => {
+        const intermediate = Object.entries(spans).reduce((acc, [spanKey, span]) => {
             if (span?.text) {
                 return acc.replaceAll(
                     createSpanReplacementRegex(span.text),
@@ -80,6 +80,16 @@ export const spanFirstMarkedContentSelector =
                 return acc;
             }
         }, content);
+
+        return intermediate
+            .replaceAll(
+                /^((?:[*+>]|(?:#+)|(?:\d.))):attribution-highlight/gm,
+                '$1 :attribution-highlight'
+            )
+            .replaceAll(
+                /^:attribution-highlight\[((?:[*+>]|(?:#+)|(?:\d.)))/gm,
+                '$1 :attribution-highlight['
+            );
     };
 
 export const useSpanHighlighting = (messageId: string) => {
