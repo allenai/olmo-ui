@@ -10,8 +10,8 @@ export type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
-    [FeatureToggle.attribution]: false,
-    [FeatureToggle.attributionSpanFirst]: false,
+    [FeatureToggle.attribution]: true,
+    [FeatureToggle.attributionSpanFirst]: true,
 };
 
 const localStorageKey = 'feature-toggles';
