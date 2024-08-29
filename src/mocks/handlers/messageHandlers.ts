@@ -3,6 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
+import highlightStressTestMessage from './highlightStressTestMessage';
 import { newMessageId } from './messageStreamHandlers';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -93,6 +94,50 @@ const fakeSecondThreadResponse = {
     labels: [],
 };
 
+const highlightStressTestMessageId = 'highlightstresstest';
+const highlightStressTestResponse = {
+    id: highlightStressTestMessageId,
+    content: 'Highlight stress test',
+    snippet: 'Highlight stress test',
+    creator: 'murphy@allenai.org',
+    role: Role.User,
+    opts: {
+        max_tokens: 2048,
+        temperature: 1,
+        n: 1,
+        top_p: 1,
+    },
+    root: highlightStressTestMessageId,
+    created: '2024-08-20T22:34:03.342086+00:00',
+    children: [
+        {
+            id: 'msg_V6Y0U4H4O9',
+            content: highlightStressTestMessage,
+            snippet: 'HighlightStressTest',
+            creator: 'murphy@allenai.org',
+            role: Role.LLM,
+            opts: {
+                max_tokens: 2048,
+                temperature: 1,
+                n: 1,
+                top_p: 1,
+            },
+            root: highlightStressTestMessageId,
+            created: '2024-08-20T22:34:03.342086+00:00',
+            parent: highlightStressTestMessageId,
+            logprobs: [],
+            completion: 'cpl_R5T5K6B4D9',
+            final: true,
+            private: false,
+            model_type: 'chat',
+            labels: [],
+        },
+    ],
+    final: true,
+    private: false,
+    labels: [],
+};
+
 const fakeGetAllThreadsResponse: MessagesResponse = {
     messages: [fakeFirstThreadResponse, fakeSecondThreadResponse],
     meta: { limit: 10, offset: 0, total: 2 },
@@ -113,5 +158,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/${secondThreadMessageId}`, () => {
         return HttpResponse.json(fakeSecondThreadResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/${highlightStressTestMessageId}`, () => {
+        return HttpResponse.json(highlightStressTestResponse);
     }),
 ];
