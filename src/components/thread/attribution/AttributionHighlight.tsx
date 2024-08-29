@@ -82,7 +82,6 @@ export const AttributionHighlight = ({
             role="button"
             aria-label="Show documents related to this span"
             onClick={() => {
-                console.log('toggle');
                 toggleSelectedSpans();
             }}
             tabIndex={0}

@@ -1,5 +1,7 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
+import highlightStressTestResponse from './highlightStressTestResponse.json';
+
 const fakeAttributionResponse = {
     documents: [
         {
@@ -47,6 +49,13 @@ export const attributionHandlers = [
 
         if (requestBody.model_response === 'OkayOkayOkayOkayOkayOkayOkayOkayOkay') {
             return new HttpResponse(JSON.stringify(fakeAttributionResponse));
+        }
+
+        if (
+            typeof requestBody.model_response === 'string' &&
+            requestBody.model_response.startsWith('HighlightStressTest')
+        ) {
+            return new HttpResponse(JSON.stringify(highlightStressTestResponse));
         }
 
         return passthrough();

@@ -1,0 +1,145 @@
+{
+    "spans": [
+        {
+            "text": "# H1 with # inside the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " H1 with a space after #",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "##### H5 with # inside the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "H5 with a space after #",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "[link with link stuff inside the span](#link)",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "* list item with * in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " list item with a space after *",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "- list item with - in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " list item with a space after -",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "+ list item with + in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " list item with a space after +",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "> quote with > in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " quote with a space after >",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "1. numbered list with 1. in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "1. second in list",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " list item with a space after 1.",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "    code block with four spaces in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "code block with a span in it",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "`code span with tick in the span`",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": " code span with a space after tick in the span`",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "*emphasis with * in the span*",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "emphasis with a space after * in the span*",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "**emphasis with ** in the span**",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "emphasis with a space after ** in the span**",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "_italics with _ in the span_",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "italics with a space after _ in the span_",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "__italics with __ in the span__",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "italics with a space after _ in the span__",
+            "documents": [],
+            "nested_spans": []
+        }
+    ],
+    "documents": []
+}
