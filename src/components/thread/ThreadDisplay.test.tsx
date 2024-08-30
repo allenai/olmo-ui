@@ -38,7 +38,7 @@ describe('ThreadDisplay', () => {
         vi.restoreAllMocks();
     });
 
-    it('should highlight spans that contain special markdown characters', () => {
+    it('should highlight spans that contain special regex characters', () => {
         vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
@@ -130,7 +130,8 @@ describe('ThreadDisplay', () => {
         expect.soft(screen.getByText('(parens)')).toHaveRole('button');
         expect.soft(screen.getByText('[braces]')).toHaveRole('button');
         expect.soft(screen.getByText('.dot')).toHaveRole('button');
-        expect.soft(screen.getByText('*star')).toHaveRole('button');
+        expect.soft(screen.getByText('star')).toHaveRole('button');
+        expect.soft(screen.getByText('star').parentElement?.textContent).toEqual('*');
         expect.soft(screen.getByText('|pipe')).toHaveRole('button');
         expect.soft(screen.getByText('\\backslash')).toHaveRole('button');
         expect.soft(screen.getByText('"quotes"')).toHaveRole('button');

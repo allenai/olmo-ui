@@ -114,6 +114,15 @@ const testStrings = [
         testString: 'span with both [ braces ] in it',
         expectedResult: 'span with both [ braces ] in it',
     },
+    {
+        testString: 'span with both [ braces ] in it',
+        expectedResult: 'span with both [ braces ] in it',
+    },
+
+    {
+        testString: 'span with reversed ] braces [ in it',
+        expectedResult: 'span with reversed \\] braces \\[ in it',
+    },
 ];
 
 describe('removeMarkdownCharactersFromStartAndEndOfSpan', () => {

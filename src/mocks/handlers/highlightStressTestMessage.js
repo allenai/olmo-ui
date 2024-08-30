@@ -72,4 +72,6 @@ span with opening brace in it [
 
 span with closing brace in it ]
 
-span with both [ braces ] in it`;
+span with both [ braces ] in it
+
+span with reversed ] braces [ in it`;
