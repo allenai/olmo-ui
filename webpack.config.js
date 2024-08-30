@@ -14,7 +14,6 @@ const dotenv = require('dotenv');
 dotenv.config({ path: ['.env', '.env.local'] });
 
 const path = require('path');
-const { truncateSync } = require('fs');
 
 const Extensions = ['.tsx', '.ts', '.js', '.jsx'];
 
