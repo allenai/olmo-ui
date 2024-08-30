@@ -46,7 +46,9 @@ second line of a code block
 
 *emphasis with * in the span*
 
-*emphasis with a space after * in the span*
+*emphasis * with the emphasis starting in the span*
+
+*emphasis * with the emphasis ending in the span*
 
 **emphasis with ** in the span**
 

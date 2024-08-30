@@ -106,7 +106,12 @@
             "nested_spans": []
         },
         {
-            "text": "emphasis with a space after * in the span*",
+            "text": "*emphasis * with the emphasis starting in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "emphasis * with the emphasis ending in the span*",
             "documents": [],
             "nested_spans": []
         },

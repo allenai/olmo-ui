@@ -92,12 +92,12 @@ export const spanFirstMarkedContentSelector =
         const final = intermediate
             // things that need spaces after them
             .replaceAll(
-                /^([*+\->]{1}|(?:#+)|(?:\d\.)):attribution-highlight/gm,
+                /^([*+\->]|(?:#+)|(?:\d\.)):attribution-highlight(?!.*\b\*)/gm,
                 '$1 :attribution-highlight'
             )
             // markdown inside the highlight
             .replaceAll(
-                /^:attribution-highlight\[([*+\->]{1}|(?:#+)|(?:\d\.))/gm,
+                /^:attribution-highlight\[([*+\->]|(?:#+)|(?:\d\.))/gm,
                 '$1 :attribution-highlight['
             )
             // the four spaces code block needs special handling, we don't want an extra space
