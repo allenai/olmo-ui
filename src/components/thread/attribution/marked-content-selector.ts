@@ -77,44 +77,43 @@ export const spanFirstMarkedContentSelector =
 
         const intermediate = Object.entries(spans).reduce((acc, [spanKey, span]) => {
             if (span?.text) {
+                const escapedText = span.text
+                    .replaceAll(/^(?:[+\->`]|#+|\d\.|\*+|_+)\s*|(?<!\s)(?:\*+|_+|`)$/gm, '')
+                    .trim();
                 return acc.replaceAll(
-                    createSpanReplacementRegex(span.text),
-                    getAttributionHighlightString(spanKey, span.text, 'default')
+                    createSpanReplacementRegex(escapedText),
+                    getAttributionHighlightString(spanKey, escapedText, 'default')
                 );
             } else {
                 return acc;
             }
         }, content);
 
-        // TODO: handle inline code blocks, adding ` to the [] didn't work
-        // also the four spaces thing isn't working
-        // also ** emphasis isn't working, it's making a list
-        const final = intermediate
-            // things that need spaces after them
-            .replaceAll(
-                /^([*+\->]|(?:#+)|(?:\d\.)):attribution-highlight(?!.*\b\*)/gm,
-                '$1 :attribution-highlight'
-            )
-            // markdown inside the highlight
-            .replaceAll(
-                /^:attribution-highlight\[([*+\->]|(?:#+)|(?:\d\.))/gm,
-                '$1 :attribution-highlight['
-            )
-            // the four spaces code block needs special handling, we don't want an extra space
-            .replaceAll(/^:attribution-highlight\[( {4,})/gm, '$1:attribution-highlight[')
-            // single tick inline code at the end of the span
-            .replaceAll(
-                /(?<=`):attribution-highlight\[(.*)`\]\{(.*?)\}/gm,
-                ':attribution-highlight[$1]{$2}`'
-            );
+        // const final = intermediate
+        //     // things that need spaces after them
+        //     .replaceAll(
+        //         /^([*+\->]|(?:#+)|(?:\d\.)):attribution-highlight(?!.*\b\*)/gm,
+        //         '$1 :attribution-highlight'
+        //     )
+        //     // markdown inside the highlight
+        //     .replaceAll(
+        //         /^:attribution-highlight\[([*+\->]|(?:#+)|(?:\d\.))/gm,
+        //         '$1 :attribution-highlight['
+        //     )
+        //     // the four spaces code block needs special handling, we don't want an extra space
+        //     .replaceAll(/^:attribution-highlight\[( {4,})/gm, '$1:attribution-highlight[')
+        //     // single tick inline code at the end of the span
+        //     .replaceAll(
+        //         /(?<=`):attribution-highlight\[(.*)`\]\{(.*?)\}/gm,
+        //         ':attribution-highlight[$1]{$2}`'
+        //     );
 
         console.log({
             content,
             intermediate,
-            final,
         });
 
-        return final;
+        return intermediate;
     };
 
 export const useSpanHighlighting = (messageId: string) => {
