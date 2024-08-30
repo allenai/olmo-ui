@@ -27,11 +27,13 @@ export default `HighlightStressTest
 1. second in list
 1. list item with a space after 1.
 
-    code block with four spaces in the span
-
 \`\`\`js
 code block with a span in it
+second line of a code block
 \`\`\`
+
+    code block with four spaces in the span
+    second line of a code block
 
 \`code span with tick in the span\`
 \` code span with a space after tick in the span\`

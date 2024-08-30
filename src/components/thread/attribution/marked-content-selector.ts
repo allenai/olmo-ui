@@ -84,15 +84,23 @@ export const spanFirstMarkedContentSelector =
         // TODO: handle inline code blocks, adding ` to the [] didn't work
         // also the four spaces thing isn't working
         // also ** emphasis isn't working, it's making a list
-        return intermediate
+        const final = intermediate
             .replaceAll(
-                /^((?:[*+>]|(?:#+)|(?:\d.)|(?: {4,}))):attribution-highlight/gm,
+                /^((?:[*+>-]|(?:#+)|(?:\d\.)|(?: {4,}))):attribution-highlight/gm,
                 '$1 :attribution-highlight'
             )
             .replaceAll(
-                /^:attribution-highlight\[((?:[*+>]|(?:#+)|(?:\d.)|(?: {4,})))/gm,
+                /^:attribution-highlight\[([*+->]|(?:#+)|(?:\d\.)|(?: {4,}))/gm,
                 '$1 :attribution-highlight['
             );
+
+        console.log({
+            content,
+            intermediate,
+            final,
+        });
+
+        return final;
     };
 
 export const useSpanHighlighting = (messageId: string) => {
