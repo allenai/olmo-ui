@@ -24,10 +24,12 @@ export const spanFirstMarkedContentSelector =
 
         const intermediate = Object.entries(spans).reduce((acc, [spanKey, span]) => {
             if (span?.text) {
-                const escapedText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
+                const escapedSpanText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
+                const spanDisplayText = escapeBraces(escapedSpanText);
+
                 return acc.replaceAll(
-                    createSpanReplacementRegex(escapedText),
-                    getAttributionHighlightString(spanKey, escapeBraces(escapedText), 'default')
+                    createSpanReplacementRegex(escapedSpanText),
+                    getAttributionHighlightString(spanKey, spanDisplayText, 'default')
                 );
             } else {
                 return acc;
