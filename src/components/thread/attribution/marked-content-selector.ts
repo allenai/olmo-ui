@@ -102,7 +102,7 @@ export const spanFirstMarkedContentSelector =
             )
             // single tick inline code at the end of the span
             .replaceAll(
-                /(?<=`):attribution-highlight\[(.*)`\]\{.*?\}/gm,
+                /(?<=`):attribution-highlight\[(.*)`\]\{(.*?)\}/gm,
                 ':attribution-highlight[$1]{$2}`'
             );
 
