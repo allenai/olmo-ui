@@ -6,7 +6,7 @@ import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
-import { useSpanHighlighting } from './attribution/marked-content-selector';
+import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
