@@ -96,6 +96,11 @@
             "nested_spans": []
         },
         {
+            "text": "`code span entirely contained inside a highlight`",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
             "text": "*emphasis with * in the span*",
             "documents": [],
             "nested_spans": []
@@ -132,6 +137,21 @@
         },
         {
             "text": "italics with a space after _ in the span__",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "span with opening brace in it [",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "span with closing brace in it ]",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "span with both [ braces ] in it",
             "documents": [],
             "nested_spans": []
         }

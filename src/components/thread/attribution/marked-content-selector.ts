@@ -23,14 +23,19 @@ const previewCorrespondingSpansSelector = (state: AppContextState) => {
     return documents?.[state.attribution.previewDocumentIndex]?.corresponding_span_texts ?? [];
 };
 
+const escapeBraces = (string: string) => {
+    return string.replaceAll(/(\[|\])/g, '\\$1');
+};
+
 type AttributionHighlightString =
     `:attribution-highlight[${string}]{variant="${AttributionHighlightVariant}" span="${string}"}`;
+
 const getAttributionHighlightString = (
     spanKey: string,
     span: string,
     variant: AttributionHighlightVariant
 ): AttributionHighlightString =>
-    `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
+    `:attribution-highlight[${escapeBraces(span)}]{variant="${variant}" span="${spanKey}"}`;
 
 export const documentFirstMarkedContentSelector =
     (messageId: string) =>
@@ -85,13 +90,20 @@ export const spanFirstMarkedContentSelector =
         // also the four spaces thing isn't working
         // also ** emphasis isn't working, it's making a list
         const final = intermediate
+            // things that need spaces after them
             .replaceAll(
                 /^([*+\->]|(?:#+)|(?:\d\.)|(?: {4})):attribution-highlight/gm,
                 '$1 :attribution-highlight'
             )
+            // markdown inside the highlight
             .replaceAll(
                 /^:attribution-highlight\[([*+\->]|(?:#+)|(?:\d\.)|(?: {4,}))/gm,
                 '$1 :attribution-highlight['
+            )
+            // single tick inline code at the end of the span
+            .replaceAll(
+                /(?<=`):attribution-highlight\[(.*)`\]\{.*?\}/gm,
+                ':attribution-highlight[$1]{$2}`'
             );
 
         console.log({
