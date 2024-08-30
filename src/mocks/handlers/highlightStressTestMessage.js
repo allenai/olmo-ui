@@ -50,15 +50,21 @@ second line of a code block
 
 **emphasis with ** in the span**
 
-**emphasis with a space after ** in the span**
+**emphasis ** with the emphasis starting in the span**
+
+**emphasis ** with the emphasis ending in the span**
 
 _italics with _ in the span_
 
-_italics with a space after _ in the span_
+_italics _ with the italics starting in the span_
+
+_italics with the italics ending in the span_
 
 __italics with __ in the span__
 
-__italics with a space after _ in the span__
+__italics __ with the italics starting in the span__
+
+__italics __ with the italics ending in the span__
 
 span with opening brace in it [ 
 

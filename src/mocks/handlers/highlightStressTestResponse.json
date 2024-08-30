@@ -116,7 +116,12 @@
             "nested_spans": []
         },
         {
-            "text": "emphasis with a space after ** in the span**",
+            "text": "**emphasis ** with the emphasis starting in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "emphasis ** with the emphasis ending in the span**",
             "documents": [],
             "nested_spans": []
         },
@@ -126,7 +131,12 @@
             "nested_spans": []
         },
         {
-            "text": "italics with a space after _ in the span_",
+            "text": "_italics _ with the italics starting in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "italics _ with the italics ending in the span_",
             "documents": [],
             "nested_spans": []
         },
@@ -136,7 +146,12 @@
             "nested_spans": []
         },
         {
-            "text": "italics with a space after _ in the span__",
+            "text": "__italics __ with the italics starting in the span",
+            "documents": [],
+            "nested_spans": []
+        },
+        {
+            "text": "italics __ with the italics ending in the span__",
             "documents": [],
             "nested_spans": []
         },
