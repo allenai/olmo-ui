@@ -179,6 +179,11 @@
             "text": "span with reversed ] braces [ in it",
             "documents": [],
             "nested_spans": []
+        },
+        {
+            "text": "*span that starts with a * but shouldn't get changed",
+            "documents": [],
+            "nested_spans": []
         }
     ],
     "documents": []

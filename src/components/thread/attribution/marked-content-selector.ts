@@ -39,7 +39,8 @@ const checkForBalancedBraces = (string: string) => {
 
     return openingBracesCount === closingBracesCount;
 };
-const escapeBraces = (string: string) => {
+
+export const escapeBraces = (string: string) => {
     const shouldEscapeBraces = !checkForBalancedBraces(string);
     // the markdown renderer can handle matched braces in our highlights but not unmatched ones.
     // checking for balanced braces lets us get around that
@@ -58,7 +59,7 @@ const getAttributionHighlightString = (
     span: string,
     variant: AttributionHighlightVariant
 ): AttributionHighlightString =>
-    `:attribution-highlight[${escapeBraces(span)}]{variant="${variant}" span="${spanKey}"}`;
+    `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
 
 export const documentFirstMarkedContentSelector =
     (messageId: string) =>
@@ -114,7 +115,7 @@ export const spanFirstMarkedContentSelector =
                 const escapedText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
                 return acc.replaceAll(
                     createSpanReplacementRegex(escapedText),
-                    getAttributionHighlightString(spanKey, escapedText, 'default')
+                    getAttributionHighlightString(spanKey, escapeBraces(escapedText), 'default')
                 );
             } else {
                 return acc;

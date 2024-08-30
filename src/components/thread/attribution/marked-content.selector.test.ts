@@ -1,4 +1,7 @@
-import { removeMarkdownCharactersFromStartAndEndOfSpan } from './marked-content-selector';
+import {
+    escapeBraces,
+    removeMarkdownCharactersFromStartAndEndOfSpan,
+} from './marked-content-selector';
 
 const testStrings = [
     { testString: '# H1 with # inside the span', expectedResult: 'H1 with # inside the span' },
@@ -114,15 +117,12 @@ const testStrings = [
         testString: 'span with both [ braces ] in it',
         expectedResult: 'span with both [ braces ] in it',
     },
-    {
-        testString: 'span with both [ braces ] in it',
-        expectedResult: 'span with both [ braces ] in it',
-    },
 
-    {
-        testString: 'span with reversed ] braces [ in it',
-        expectedResult: 'span with reversed \\] braces \\[ in it',
-    },
+    // This is hard and kinda niche, not gonna worry about it rn
+    // {
+    //     testString: "*span that starts with a * but shouldn't get changed",
+    //     expectedResult: "*span that starts with a * but shouldn't get changed",
+    // },
 ];
 
 describe('removeMarkdownCharactersFromStartAndEndOfSpan', () => {
@@ -134,4 +134,16 @@ describe('removeMarkdownCharactersFromStartAndEndOfSpan', () => {
             expect(result).toEqual(expectedResult);
         }
     );
+});
+
+describe('escapeBraces', () => {
+    it('should escape if there are unbalanced braces', () => {
+        expect.soft(escapeBraces('][')).toEqual('\\]\\[');
+        expect.soft(escapeBraces(']')).toEqual('\\]');
+        expect.soft(escapeBraces('[')).toEqual('\\[');
+    });
+
+    it('should not escape if the braces are balanced', () => {
+        expect.soft(escapeBraces('[[]]')).toEqual('[[]]');
+    });
 });
