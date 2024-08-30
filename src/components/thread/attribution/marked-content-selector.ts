@@ -68,6 +68,17 @@ export const documentFirstMarkedContentSelector =
         return contentWithMarks;
     };
 
+export const removeMarkdownCharactersFromStartAndEndOfSpan = (spanText: string): string => {
+    /**
+     * https://regex101.com/r/5S3uuh
+     * This regex checks for markdown characters inside of spans
+     * At the start of a string, it looks for things like headings (any number of #) and list symbols (-, +, *, or 1.).
+     * At the start and end of a string it looks for markdown symbols that can wrap something. This includes things like emphasis (any number of *, any number of _) and code blocks (`)
+     * We also trim after doing the regex matching to make sure there's spaces before and after the highlight as needed
+     */
+    return spanText.replaceAll(/^(?:[+\->`]|#+|\d\.|\*+|_+)\s*|(?<!\s)(?:\*+|_+|`)$/gm, '').trim();
+};
+
 export const spanFirstMarkedContentSelector =
     (messageId: string) =>
     (state: AppContextState): string => {
@@ -77,9 +88,7 @@ export const spanFirstMarkedContentSelector =
 
         const intermediate = Object.entries(spans).reduce((acc, [spanKey, span]) => {
             if (span?.text) {
-                const escapedText = span.text
-                    .replaceAll(/^(?:[+\->`]|#+|\d\.|\*+|_+)\s*|(?<!\s)(?:\*+|_+|`)$/gm, '')
-                    .trim();
+                const escapedText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
                 return acc.replaceAll(
                     createSpanReplacementRegex(escapedText),
                     getAttributionHighlightString(spanKey, escapedText, 'default')
@@ -88,31 +97,6 @@ export const spanFirstMarkedContentSelector =
                 return acc;
             }
         }, content);
-
-        // const final = intermediate
-        //     // things that need spaces after them
-        //     .replaceAll(
-        //         /^([*+\->]|(?:#+)|(?:\d\.)):attribution-highlight(?!.*\b\*)/gm,
-        //         '$1 :attribution-highlight'
-        //     )
-        //     // markdown inside the highlight
-        //     .replaceAll(
-        //         /^:attribution-highlight\[([*+\->]|(?:#+)|(?:\d\.))/gm,
-        //         '$1 :attribution-highlight['
-        //     )
-        //     // the four spaces code block needs special handling, we don't want an extra space
-        //     .replaceAll(/^:attribution-highlight\[( {4,})/gm, '$1:attribution-highlight[')
-        //     // single tick inline code at the end of the span
-        //     .replaceAll(
-        //         /(?<=`):attribution-highlight\[(.*)`\]\{(.*?)\}/gm,
-        //         ':attribution-highlight[$1]{$2}`'
-        //     );
-
-        console.log({
-            content,
-            intermediate,
-        });
-
         return intermediate;
     };
 

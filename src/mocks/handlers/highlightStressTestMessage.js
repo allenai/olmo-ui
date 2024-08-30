@@ -60,7 +60,7 @@ _italics with _ in the span_
 
 _italics _ with the italics starting in the span_
 
-_italics with the italics ending in the span_
+_italics _ with the italics ending in the span_
 
 __italics with __ in the span__
 
