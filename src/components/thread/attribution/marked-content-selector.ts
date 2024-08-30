@@ -86,11 +86,11 @@ export const spanFirstMarkedContentSelector =
         // also ** emphasis isn't working, it's making a list
         const final = intermediate
             .replaceAll(
-                /^((?:[*+>-]|(?:#+)|(?:\d\.)|(?: {4,}))):attribution-highlight/gm,
+                /^([*+\->]|(?:#+)|(?:\d\.)|(?: {4})):attribution-highlight/gm,
                 '$1 :attribution-highlight'
             )
             .replaceAll(
-                /^:attribution-highlight\[([*+->]|(?:#+)|(?:\d\.)|(?: {4,}))/gm,
+                /^:attribution-highlight\[([*+\->]|(?:#+)|(?:\d\.)|(?: {4,}))/gm,
                 '$1 :attribution-highlight['
             );
 

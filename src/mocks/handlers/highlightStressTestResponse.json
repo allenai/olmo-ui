@@ -71,11 +71,6 @@
             "nested_spans": []
         },
         {
-            "text": "1. second in list",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
             "text": " list item with a space after 1.",
             "documents": [],
             "nested_spans": []
