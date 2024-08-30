@@ -14,6 +14,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: ['.env', '.env.local'] });
 
 const path = require('path');
+const { truncateSync } = require('fs');
 
 const Extensions = ['.tsx', '.ts', '.js', '.jsx'];
 
@@ -86,11 +87,11 @@ module.exports = (env) => ({
             LLMX_API_URL: 'http://localhost:8080',
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
-            IS_ATTRIBUTION_ENABLED: false,
+            IS_ATTRIBUTION_ENABLED: true,
             AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
             AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
-            IS_ATTRIBUTION_SPAN_FIRST_ENABLED: false,
+            IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ],
