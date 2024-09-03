@@ -1,5 +1,6 @@
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
 import remarkGfm from 'remark-gfm';
@@ -16,7 +17,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
     return (
         <Markdown
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
-            rehypePlugins={[rehypeRaw]}
+            rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]}
             components={{
                 code: CodeBlock,
                 // @ts-expect-error - We add attribution-highlight as a custom element
