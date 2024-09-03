@@ -46,8 +46,10 @@ export const messageAttributionDocumentsSelector = (
         })
         .filter((doc) => doc !== undefined);
 
+    const filteredDocuments = Array.from(new Map(documents.map(doc => [doc.index, doc])).values());
+
     return {
-        documents,
+        documents: filteredDocuments,
         loadingState: attributions?.loadingState ?? null,
     };
 };
