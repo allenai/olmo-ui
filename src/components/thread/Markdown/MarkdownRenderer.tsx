@@ -13,11 +13,16 @@ interface MarkdownRendererProps {
     children: string;
 }
 
+const extendedSchema = {
+    ...defaultSchema,
+    tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight'],
+};
+
 export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
     return (
         <Markdown
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
-            rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]}
+            rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
                 code: CodeBlock,
                 // @ts-expect-error - We add attribution-highlight as a custom element
