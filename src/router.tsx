@@ -1,7 +1,14 @@
 import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
-import { loginAction, loginLoader, loginResultLoader, logoutAction } from './api/auth0';
+import {
+    loginAction,
+    loginLoader,
+    loginResultLoader,
+    logoutAction,
+    requireAuthorizationLoader,
+    userAuthInfoLoader,
+} from './api/auth0';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -50,6 +57,16 @@ export const routes: RouteObject[] = [
     {
         id: 'root',
         path: '/',
+        loader: async (loaderProps) => {
+            const requireAuthorizationResult = await requireAuthorizationLoader(loaderProps);
+
+            if (requireAuthorizationResult != null) {
+                return requireAuthorizationResult;
+            }
+
+            const userAuthInfo = await userAuthInfoLoader(loaderProps);
+            return userAuthInfo;
+        },
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground - OLMo" />

@@ -1,3 +1,4 @@
+import { auth0Client } from './auth0';
 import { error } from './error';
 
 export abstract class ClientBase {
@@ -30,14 +31,15 @@ export abstract class ClientBase {
         standardHeaders.set('Content-Type', 'application/json');
 
         // TODO: put this back when we start handling auth0 login again.
-        // Theres ocassaionally a problem with getToken failing if someone isn't logged in
-        // const token = await auth0Client.getToken().catch((error: unknown) => {
-        //     console.error('Error getting token: ', error);
-        //     return undefined;
-        // });
-        // if (token) {
-        //     standardHeaders.set('Authorization', `Bearer ${token}`);
-        // }
+        // Theres occasionally a problem with getToken failing if someone isn't logged in
+        const token = await auth0Client.getToken().catch((error: unknown) => {
+            console.error('Error getting token: ', error);
+            return undefined;
+        });
+
+        if (token) {
+            standardHeaders.set('Authorization', `Bearer ${token}`);
+        }
 
         return standardHeaders;
     };
