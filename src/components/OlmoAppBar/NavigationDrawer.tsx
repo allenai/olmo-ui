@@ -13,7 +13,7 @@ import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/ma
 import { ComponentProps, useEffect } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
-import { useUserAuthInfo } from '@/api/auth0';
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { links } from '@/Links';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
@@ -125,7 +125,7 @@ export const NavigationDrawer = ({
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
                         FAQ
                     </NavigationLink>
-                    <NavigationLink icon={<LogoutIcon />} href={links.playground}>
+                    <NavigationLink icon={<LogoutIcon />} href={links.logout}>
                         Log Out
                     </NavigationLink>
                 </Stack>

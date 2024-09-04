@@ -1,4 +1,5 @@
-import { auth0Client, createLoginRedirectURL } from './auth0';
+import { createLoginRedirectURL } from './auth/auth-utils';
+import { auth0Client } from './auth/auth0Client';
 import { error } from './error';
 
 export abstract class ClientBase {

@@ -8,7 +8,7 @@ import {
     logoutAction,
     requireAuthorizationLoader,
     userAuthInfoLoader,
-} from './api/auth0';
+} from './api/auth/auth-loaders';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
