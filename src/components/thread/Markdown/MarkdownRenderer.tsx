@@ -18,16 +18,9 @@ const extendedSchema = {
     tagNames: [...(defaultSchema.tagNames || []), 'attribution-highlight'],
     attributes: {
         ...defaultSchema.attributes,
-        '*': [
-            ...(defaultSchema.attributes?.['*'] || []),
-            'style', // Allow inline styles on all elements
-        ],
+        '*': [...(defaultSchema.attributes?.['*'] || []), 'style'],
         span: [...(defaultSchema.attributes?.span || []), 'className'],
-        div: [
-            ...(defaultSchema.attributes?.div || []),
-            'className', // Allow className on <div>
-            'style', // Allow style attribute on <div>
-        ],
+        div: [...(defaultSchema.attributes?.div || []), 'className', 'style'],
         code: [
             ...(defaultSchema.attributes?.code || []),
             ['className', 'language-js', 'language-css', 'language-md'],
