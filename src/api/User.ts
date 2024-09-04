@@ -23,19 +23,12 @@ export class UserClient extends ClientBase {
                 termsAcceptedDate: dateTime,
             };
 
-            const response = await fetch(url, {
+            const response = await this.fetch(url, {
                 method: 'PUT',
                 body: JSON.stringify(request),
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
             });
-
-            if (!response.ok) {
-                throw new Error(`PUT ${url.toString()}: ${response.status} ${response.statusText}`);
-            }
-            if (!response.body) {
-                throw new Error(`PUT ${url.toString()}: missing response body`);
-            }
 
             return response;
         } catch (e: unknown) {
