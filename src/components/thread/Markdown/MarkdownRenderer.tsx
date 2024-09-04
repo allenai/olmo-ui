@@ -21,10 +21,7 @@ const extendedSchema = {
         '*': [...(defaultSchema.attributes?.['*'] || []), 'style'],
         span: [...(defaultSchema.attributes?.span || []), 'className'],
         div: [...(defaultSchema.attributes?.div || []), 'className', 'style'],
-        code: [
-            ...(defaultSchema.attributes?.code || []),
-            ['className', 'language-js', 'language-css', 'language-md'],
-        ],
+        code: [...(defaultSchema.attributes?.code || []), 'className'],
     },
 };
 
