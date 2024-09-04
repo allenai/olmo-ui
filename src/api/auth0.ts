@@ -97,16 +97,23 @@ const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     return { userInfo, isAuthenticated };
 };
 
+export const createLoginRedirectURL = (urlToRedirectToAfterLogin: string) => {
+    const searchParams = new URLSearchParams();
+    const redirectPathname = new URL(urlToRedirectToAfterLogin).pathname;
+
+    searchParams.set('from', redirectPathname);
+
+    return links.login(redirectPathname);
+};
+
 export const requireAuthorizationLoader: LoaderFunction = async (props) => {
     const { request } = props;
     const isAuthenticated = await auth0Client.isAuthenticated();
 
     if (!isAuthenticated) {
-        const searchParams = new URLSearchParams();
-        searchParams.set('from', new URL(request.url).pathname);
+        const loginURL = createLoginRedirectURL(request.url);
 
-        const redirectTo = new URL(request.url).pathname;
-        return redirect(links.login(redirectTo));
+        return redirect(loginURL);
     }
 
     const userAuthInfo = await getUserAuthInfo();

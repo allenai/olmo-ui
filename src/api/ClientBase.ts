@@ -1,16 +1,11 @@
-import { auth0Client } from './auth0';
+import { auth0Client, createLoginRedirectURL } from './auth0';
 import { error } from './error';
 
 export abstract class ClientBase {
     constructor(readonly origin = process.env.LLMX_API_URL) {}
 
     protected login(dest: string = document.location.toString()) {
-        const url = this.createURL('/v3/login/skiff');
-        if (dest) {
-            url.searchParams.set('dest', dest);
-        }
-
-        document.location = url.toString();
+        document.location = createLoginRedirectURL(dest);
     }
 
     protected unpack = async <T>(response: Response): Promise<T> => {
