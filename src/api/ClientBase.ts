@@ -26,7 +26,7 @@ export abstract class ClientBase {
         }
     };
 
-    private createStandardHeaders = async (headers?: HeadersInit) => {
+    protected createStandardHeaders = async (headers?: HeadersInit) => {
         const standardHeaders = new Headers(headers);
         standardHeaders.set('Content-Type', 'application/json');
 
