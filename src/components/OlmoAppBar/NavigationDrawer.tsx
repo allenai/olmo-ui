@@ -19,8 +19,6 @@ import { links } from '@/Links';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
-// We'll be using this soon, i figured we could keep it around
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
 
@@ -32,8 +30,6 @@ const Auth0LoginLink = () => {
         );
     }
 
-    const redirectSearchParams = new URLSearchParams();
-    redirectSearchParams.set('redirectTo', window.location.href);
     return (
         <NavigationLink icon={<LoginIcon />} href={links.login(window.location.href)}>
             Log In
@@ -125,9 +121,7 @@ export const NavigationDrawer = ({
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
                         FAQ
                     </NavigationLink>
-                    <NavigationLink icon={<LogoutIcon />} href={links.logout}>
-                        Log Out
-                    </NavigationLink>
+                    <Auth0LoginLink />
                 </Stack>
             </Box>
         </ResponsiveDrawer>
