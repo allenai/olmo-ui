@@ -76,7 +76,11 @@ class Auth0Client {
     logout = async (): Promise<void> => {
         const client = await this.#getClient();
 
-        await client.logout();
+        await client.logout({
+            logoutParams: {
+                returnTo: window.location.origin,
+            },
+        });
     };
 }
 
