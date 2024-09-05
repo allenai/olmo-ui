@@ -113,7 +113,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
         if (location.pathname === links.playground) {
             formContext.setFocus('content');
         }
-    }, [location]);
+    }, [location.pathname, formContext]);
 
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
