@@ -2,7 +2,6 @@ import PlusIcon from '@mui/icons-material/Add';
 import { alpha, ButtonGroup, Card, Stack, Typography } from '@mui/material';
 import { useMatch } from 'react-router-dom';
 
-import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
@@ -19,12 +18,6 @@ const NewThreadButton = () => {
         path: links.playground,
     });
 
-    const setIsCreatingNewThread = useAppContext((state) => state.setIsCreatingNewThread);
-
-    const handleClick = () => {
-        setIsCreatingNewThread(true);
-    };
-
     return (
         <ResponsiveButton
             startIcon={<PlusIcon />}
@@ -33,7 +26,6 @@ const NewThreadButton = () => {
             biggerVariant="outlined"
             href={links.playground}
             disabled={playgroundRoute?.pathname === links.playground}
-            onClick={handleClick}
         />
     );
 };

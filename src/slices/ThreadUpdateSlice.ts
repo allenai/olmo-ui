@@ -50,12 +50,10 @@ export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string;
     inferenceOpts: InferenceOpts;
-    isCreatingNewThread: boolean;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     streamPromptState?: RemoteState;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
-    setIsCreatingNewThread: (isCreatingNewThread: boolean) => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
@@ -63,7 +61,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     streamingMessageId: '',
     inferenceOpts: {},
     streamPromptState: undefined,
-    isCreatingNewThread: false,
 
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
         set((state) => ({
@@ -221,15 +218,5 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 'threadUpdate/errorCreateNewThread'
             );
         }
-    },
-
-    setIsCreatingNewThread: (isCreatingNewThread: boolean) => {
-        set(
-            (state) => {
-                state.isCreatingNewThread = isCreatingNewThread;
-            },
-            false,
-            'newThread/setIsCreatingNewThread'
-        );
     },
 });

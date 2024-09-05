@@ -3,10 +3,12 @@ import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import { useLocation } from 'react-router-dom';
 
 import { MessagePost } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 
@@ -37,7 +39,8 @@ const useNewQueryFormHandling = () => {
 export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
-    const isCreatingNewThread = useAppContext((state) => state.isCreatingNewThread);
+    const location = useLocation();
+
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
         return (
@@ -107,10 +110,10 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     };
 
     useEffect(() => {
-        if (isCreatingNewThread) {
+        if (location.pathname === links.playground) {
             formContext.setFocus('content');
         }
-    }, [isCreatingNewThread]);
+    }, [location]);
 
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
