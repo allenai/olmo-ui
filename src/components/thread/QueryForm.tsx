@@ -37,6 +37,7 @@ const useNewQueryFormHandling = () => {
 export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
+    const isCreatingNewThread = useAppContext((state) => state.isCreatingNewThread);
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
         return (
@@ -104,6 +105,12 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
             await formContext.handleSubmit(handleSubmit)();
         }
     };
+
+    useEffect(() => {
+        if (isCreatingNewThread) {
+            formContext.setFocus('content');
+        }
+    }, [isCreatingNewThread]);
 
     return (
         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
