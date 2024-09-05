@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
 dotenv.config({
-    path: `./.env${envSuffix}`,
+    path: ['./.env.local', `./.env${envSuffix}`],
 });
 
 /**
@@ -42,18 +42,33 @@ export default defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
+            name: 'setup',
+            testMatch: 'e2e/auth-setup.ts',
+            use: {
+                // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
+                bypassCSP: true,
+                launchOptions: { args: ['--disable-web-security'] },
+            },
+        },
+        {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
+            use: {
+                ...devices['Desktop Chrome'],
+                storageState: 'e2e/.auth/storageState.json',
+            },
+            dependencies: ['setup'],
         },
 
         {
             name: 'firefox',
-            use: { ...devices['Desktop Firefox'] },
+            use: { ...devices['Desktop Firefox'], storageState: 'e2e/.auth/storageState.json' },
+            dependencies: ['setup'],
         },
 
         {
             name: 'webkit',
-            use: { ...devices['Desktop Safari'] },
+            use: { ...devices['Desktop Safari'], storageState: 'e2e/.auth/storageState.json' },
+            dependencies: ['setup'],
         },
 
         /* Test against mobile viewports. */

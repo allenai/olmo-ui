@@ -27,6 +27,8 @@ jobs:
       run: yarn test:e2e
       env:
         NODE_ENV: test 
+        E2E_TEST_USER: ${{ env.E2E_TEST_USER }}
+        E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:

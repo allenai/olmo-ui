@@ -51,9 +51,10 @@ export const routes: RouteObject[] = [
         path: links.login(),
         action: loginAction,
         loader: loginLoader,
+        errorElement: <ErrorPage />,
     },
-    { path: links.logout, action: logoutAction, loader: logoutAction },
-    { path: links.loginResult, loader: loginResultLoader },
+    { path: links.logout, action: logoutAction, loader: logoutAction, errorElement: <ErrorPage /> },
+    { path: links.loginResult, loader: loginResultLoader, errorElement: <ErrorPage /> },
     {
         id: 'root',
         path: '/',

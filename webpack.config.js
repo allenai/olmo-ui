@@ -11,7 +11,7 @@ const ReactRefreshTypeScript = require('react-refresh-typescript');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: ['.env', '.env.local'] });
+dotenv.config({ path: ['.env.local', '.env'] });
 
 const path = require('path');
 
