@@ -14,75 +14,12 @@ export const olmoTheme = {
         O6: new Color('Orange6', '#FFF1BD', undefined, true),
         O7: new Color('Orange7', '#F4D35E', undefined, true),
     },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: ({ ownerState }) => ({
-                    ...(ownerState.variant === 'contained' && {
-                        backgroundColor: varnishTheme.color.B4.value,
-                    }),
-                    ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
-                        color: varnishTheme.color.B4.value,
-                    }),
-                    '&.Mui-disabled': {
-                        background: 'transparent',
-                        color: varnishTheme.color.N3.value,
-                    },
-                }),
-            },
-        },
-        MuiIconButton: {
-            styleOverrides: {
-                root: {
-                    color: varnishTheme.color.B4.value,
-                    borderColor: varnishTheme.color.B4.value,
-                },
-            },
-        },
-        MuiChip: {
-            styleOverrides: {
-                root: {
-                    color: varnishTheme.color.B4.value,
-                    borderColor: varnishTheme.color.B4.value,
-                },
-            },
-        },
-        MuiTooltip: {
-            styleOverrides: {
-                tooltip: ({ theme }) => ({
-                    backgroundColor: theme.palette.common.white,
-                    color: theme.palette.text.primary,
-                    boxShadow: theme.shadows[1],
-                    fontSize: 12,
-                }),
-            },
-        },
-    },
+    components: {},
 } satisfies ThemeOptions;
 
 export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
     components: {
-        MuiButton: {
-            styleOverrides: {
-                root: ({ theme, ownerState }) => ({
-                    // We may be able to get rid of these overrides when we remove old olmo
-                    ...(ownerState.variant === 'contained' && {
-                        backgroundColor: theme.palette.primary.main,
-                    }),
-                    ...((ownerState.variant === 'text' || ownerState.variant === 'outlined') && {
-                        color: theme.palette.primary.main,
-                    }),
-                }),
-            },
-        },
-        MuiCard: {
-            styleOverrides: {
-                root: ({ theme }) =>
-                    theme.unstable_sx({
-                        borderRadius: 3,
-                    }),
-            },
-        },
+        MuiButton: {},
         MuiListItemButton: {
             styleOverrides: {
                 root: ({ theme }) => ({
