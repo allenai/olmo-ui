@@ -45,6 +45,7 @@ export namespace search {
         snippets: Snippet[];
         word_count: number;
         archive: string;
+        isDocumentBad: boolean;
         metadata?: Record<string, unknown>;
         url?: string;
         domain?: string;
