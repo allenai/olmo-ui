@@ -16,15 +16,10 @@ import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
-    const streamPrompt = useAppContext((state) => state.streamPrompt);
     const models = useAppContext((state) => state.models);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const threadPageMatch = useMatch(links.thread(':id'));
-
-    const handlePromptSubmission = (data: { content: string; parent?: string }) => {
-        streamPrompt(data);
-    };
 
     const onModelChange = (event: SelectChangeEvent) => {
         setSelectedModel(event.target.value);
@@ -55,7 +50,7 @@ export const UIRefreshThreadPage = () => {
 
             <ResponsiveCard>
                 <Outlet />
-                <QueryForm onSubmit={handlePromptSubmission} variant="new" />
+                <QueryForm />
             </ResponsiveCard>
 
             {threadPageMatch && <SearchDatasetCard />}

@@ -225,6 +225,12 @@ export class MessageClient extends ClientBase {
         }
 
         if (!response.ok) {
+            if (response.status === 400) {
+                const body = (await response.json()) as { code: number; message: string };
+
+                throw new StreamBadRequestError(response.status, body.message);
+            }
+
             throw new Error(`POST ${url}: ${response.status} ${response.statusText}`);
         }
         if (!response.body) {
@@ -233,4 +239,17 @@ export class MessageClient extends ClientBase {
 
         return response.body;
     };
+}
+
+export class StreamBadRequestError extends Error {
+    status: number;
+    description: string | undefined;
+
+    constructor(status: number, description?: string) {
+        super(`Received a Bad Request (${status}) response from the API: ${description}`);
+
+        this.name = 'StreamBadRequestError';
+        this.status = status;
+        this.description = description;
+    }
 }
