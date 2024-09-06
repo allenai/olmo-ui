@@ -1,4 +1,3 @@
-import varnishTheme from '@allenai/varnish-theme';
 import { Color } from '@allenai/varnish2/theme';
 import { alpha, ThemeOptions } from '@mui/material';
 import deepmerge from 'deepmerge';
