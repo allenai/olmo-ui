@@ -64,7 +64,7 @@ const AttributionDocumentCardBase = ({
                     data-selected-document={isSelected}
                     data-previewed-document={isPreviewed}>
                     <Typography
-                        variant="h6"
+                        variant="body1"
                         fontWeight="bold"
                         component="h4"
                         margin={0}
