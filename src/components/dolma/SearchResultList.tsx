@@ -1,15 +1,5 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import {
-    Box,
-    Button,
-    Divider,
-    IconButton,
-    Pagination,
-    Paper,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/material';
 import { Fragment, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
@@ -20,6 +10,7 @@ import { links } from '../../Links';
 import { NoResults } from '../NoResults';
 import { DocumentMeta } from './DocumentMeta';
 import { Snippets } from './Snippets';
+import { ToxicContentWarning } from './ToxicContentWarning';
 
 interface SearchResultListProps {
     response: search.Response;
@@ -30,10 +21,11 @@ export const SearchResultList = ({ response }: SearchResultListProps): JSX.Eleme
     const showPagination = Math.ceil(response.meta.total / response.request.size) > 1;
     const [revealedDocuments, setRevealedDocuments] = useState<Record<string, boolean>>({});
 
+    // Function to handle the reveal action
     const handleReveal = (id: string) => {
         setRevealedDocuments((prev) => ({
             ...prev,
-            [id]: !prev[id],
+            [id]: !prev[id], // Toggle between true and false
         }));
     };
 
@@ -81,94 +73,12 @@ export const SearchResultList = ({ response }: SearchResultListProps): JSX.Eleme
                                 <Snippets document={result} lineLimit={4} />
                             </Box>
                             {result.isDocumentBad && (
-                                <Paper
-                                    elevation={revealedDocuments[result.id] ? 0 : 3}
-                                    sx={{
-                                        width: '100%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: revealedDocuments[result.id]
-                                            ? 'flex-start'
-                                            : 'space-between',
-                                        p: 2,
-                                        bgcolor: 'white',
-                                        border: revealedDocuments[result.id]
-                                            ? 'none'
-                                            : '1px solid white',
-                                        borderRadius: '8px',
-                                        zIndex: revealedDocuments[result.id] ? 0 : 10,
-                                        position: revealedDocuments[result.id]
-                                            ? 'static'
-                                            : 'absolute',
-                                        top: revealedDocuments[result.id] ? 'auto' : '50%',
-                                        left: revealedDocuments[result.id] ? 'auto' : '50%',
-                                        transform: revealedDocuments[result.id]
-                                            ? 'none'
-                                            : 'translate(-50%, -50%)',
-                                        marginLeft: revealedDocuments[result.id] ? '-17px' : '0px',
-                                    }}>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 2,
-                                            flexWrap: 'wrap',
-                                        }}>
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 1,
-                                            }}>
-                                            <WarningAmberIcon
-                                                sx={(theme) => ({
-                                                    mr: 1,
-                                                    color: theme.palette.error.dark,
-                                                })}
-                                            />
-                                            <Typography
-                                                sx={(theme) => ({
-                                                    color: theme.palette.error.dark,
-                                                })}>
-                                                Caution
-                                            </Typography>
-                                        </Box>
-
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 1,
-                                            }}>
-                                            <Typography>
-                                                May contain inappropriate language
-                                            </Typography>
-                                            <InfoOutlinedIcon />
-                                        </Box>
-                                    </Box>
-
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            ml: 'auto',
-                                            mr: revealedDocuments[result.id] ? '-22px' : '0px',
-                                        }}>
-                                        <Button
-                                            variant="contained"
-                                            sx={(theme) => ({
-                                                bgcolor: theme.palette.error.dark,
-                                                '&:hover': {
-                                                    bgcolor: theme.palette.error.dark,
-                                                },
-                                            })}
-                                            onClick={() => {
-                                                handleReveal(result.id);
-                                            }}>
-                                            {revealedDocuments[result.id] ? 'Conceal' : 'Reveal'}
-                                        </Button>
-                                    </Box>
-                                </Paper>
+                                <ToxicContentWarning
+                                    isRevealed={revealedDocuments[result.id]}
+                                    onReveal={() => {
+                                        handleReveal(result.id);
+                                    }}
+                                />
                             )}
                         </Box>
                         {response.results.length - 1 !== idx && (
