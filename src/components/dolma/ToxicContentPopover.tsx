@@ -81,7 +81,7 @@ export const ToxicContentPopover = () => {
                             padding: 0,
                             alignSelf: 'flex-start',
                             '&:hover': {
-                                borderRadius: '16px', // Border radius on hover
+                                borderRadius: '16px',
                             },
                         }}>
                         Close
