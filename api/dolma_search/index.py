@@ -201,8 +201,6 @@ class Document:
         with open('/api/dolma_search/static/bad_words/really_bad_words.txt', 'r') as file:
             really_bad_words = set(file.read().splitlines())
         
-        is_document_bad = False
-
         if title_content and text_content:
             combined_content = title_content + ' ' + text_content
             sanitized_content = re.sub(r'[^\w\s]', ' ', combined_content)
@@ -211,8 +209,8 @@ class Document:
             if unique_words & really_bad_words:
                 is_document_bad = True
             else:
-                nsft_matches = unique_words & nsfw_wordlist
-                is_document_bad = len(nsft_matches) >= 2
+                nsfw_matches = unique_words & nsfw_wordlist
+                is_document_bad = len(nsfw_matches) >= 2
 
         # TODO: set text for clients that should have access
         fields = {
