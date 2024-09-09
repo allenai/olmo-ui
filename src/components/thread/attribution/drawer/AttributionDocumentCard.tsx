@@ -81,7 +81,8 @@ const AttributionDocumentCardBase = ({
                         {title}
                     </Typography>
                     <Typography variant="body1">{text}</Typography>
-                    <Typography variant="body2" component="span">
+                    {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
+                    <Typography variant="body2" fontWeight={600} component="span">
                         {source}
                     </Typography>
                 </CardContent>
