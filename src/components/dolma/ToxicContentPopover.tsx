@@ -1,93 +1,48 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Button, IconButton, Link, Popover, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useState } from 'react';
 
-import { links } from '@/Links';
+import { ResponsiveTooltip } from '../thread/ResponsiveTooltip';
 
-export const ToxicContentPopover = () => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const TOOLTIP_TITLE = 'Toxicity Filter';
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+const TOOLTIP_CONTENT =
+    "To minimize the risk of encountering documents with disturbing content while exploring the dataset, we've implemented a simple filter that scans document previews for offensive language. You have the option to reveal the blurred text if you choose to do so. Please note that our filter only detects specific toxic or offensive words. You might still encounter potentially harmful content if it doesn't contain any bad word.";
+
+interface ToxicContentPopoverProps {
+    anchorEl: HTMLElement | undefined;
+}
+
+export const ToxicContentPopover = ({ anchorEl }: ToxicContentPopoverProps) => {
+    const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+    const toggleTooltipOpen = () => {
+        setIsTooltipOpen(!isTooltipOpen);
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleTooltipClose = () => {
+        setIsTooltipOpen(false);
     };
-
-    const open = Boolean(anchorEl);
-    const id = open ? 'toxic-content-popover' : undefined;
 
     return (
         <>
             {/* TODO: we need to figure out the right color for the info icon we just inherit from text for now */}
-            <IconButton onClick={handleClick} sx={{ color: 'inherit' }}>
-                <InfoOutlinedIcon />
-            </IconButton>
-            <Popover
-                id={id}
-                open={open}
+            <ResponsiveTooltip
                 anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                slotProps={{
-                    paper: {
-                        sx: {
-                            borderRadius: '16px',
-                        },
-                    },
-                }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        width: '312px',
-                        padding: '12px 16px 4px 16px',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        justifyContent: 'flex-start',
-                        gap: '8px',
-                    }}>
-                    <Typography variant="subtitle2">Toxicity Filter</Typography>
-                    <Typography>
-                        We have blurred this area of the results because it may contain offensive
-                        language. If you would like to learn more about this, check out our{' '}
-                        <Link
-                            href={links.faqs}
-                            target="_blank"
-                            sx={{ color: (theme) => theme.palette.primary.dark }}>
-                            FAQs page
-                        </Link>
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        width: '100%',
-                        padding: '0px 8px',
-                        gap: '8px',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        marginTop: '8px',
-                        marginBottom: '16px',
-                    }}>
-                    <Button
-                        variant="text"
-                        onClick={handleClose}
-                        sx={{
-                            color: (theme) => theme.palette.primary.dark,
-                            padding: 0,
-                            alignSelf: 'flex-start',
-                            '&:hover': {
-                                borderRadius: '16px',
-                            },
-                        }}>
-                        Close
-                    </Button>
-                </Box>
-            </Popover>
+                dialogTitle={TOOLTIP_TITLE}
+                dialogContent={TOOLTIP_CONTENT}
+                isTooltipOpen={isTooltipOpen}
+                onTooltipClose={handleTooltipClose}
+                placement="right-end"
+                tooltipIdSuffix="toxic-content-description">
+                <IconButton
+                    tabIndex={0}
+                    aria-expanded={isTooltipOpen}
+                    sx={{ color: 'inherit', justifySelf: 'start' }}
+                    onClick={toggleTooltipOpen}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </ResponsiveTooltip>
         </>
     );
 };
