@@ -136,7 +136,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
             labels: labels,
             annotations: annotations + allenAITLS.ingressAnnotations + util.getAuthAnnotations(config, '.allen.ai') + {
                 'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
-                'nginx.ingress.kubernetes.io/configuration-snippet': 'proxy_set_header Request-Id $request_id; proxy_set_header Request-URI $uri;'
+                'nginx.ingress.kubernetes.io/configuration-snippet': 'proxy_set_header Request-Id $request_id;'
             }
         },
         spec: {
@@ -231,7 +231,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
             labels: labels,
             annotations: annotations + apiAnnotations + allenAITLS.ingressAnnotations + util.getAuthAnnotations(config, '.allen.ai') + {
                 'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
-                'nginx.ingress.kubernetes.io/configuration-snippet': 'proxy_set_header Request-Id $request_id; proxy_set_header Request-URI $uri;'
+                'nginx.ingress.kubernetes.io/configuration-snippet': 'proxy_set_header Request-Id $request_id;'
             }
         },
         spec: {
