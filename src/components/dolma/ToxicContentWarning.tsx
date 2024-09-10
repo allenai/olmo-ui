@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { useRef } from 'react';
 
 import { BlurContentWarning } from './BlurContentWarning';
-import { InlineContentWarning } from './InlineCOntentWarning';
+import { InlineContentWarning } from './InlineContentWarning';
 import { ToxicContentPopover } from './ToxicContentPopover';
 
 interface ToxicContentWarningProps {
