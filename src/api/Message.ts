@@ -215,7 +215,7 @@ export class MessageClient extends ClientBase {
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify(request),
-            headers: { 'Content-Type': 'application/json' },
+            headers: await this.createStandardHeaders(),
             credentials: 'include',
             signal: abortController.signal,
         });
@@ -225,10 +225,10 @@ export class MessageClient extends ClientBase {
         }
 
         if (!response.ok) {
-            throw new Error(`POST ${url}: ${response.status} ${response.statusText}`);
+            throw new Error(`POST ${url.toString()}: ${response.status} ${response.statusText}`);
         }
         if (!response.body) {
-            throw new Error(`POST ${url}: missing response body`);
+            throw new Error(`POST ${url.toString()}: missing response body`);
         }
 
         return response.body;

@@ -42,11 +42,8 @@ export const TermsAndConditionsModal = () => {
     const handleSubmit = useCallback(async () => {
         if (activeStep + 1 === sections.length) {
             const userClient: UserClient = new UserClient();
-            const response = await userClient.acceptTermsAndConditions();
-            if (response?.ok) {
-                setOpen(false); // close modal
-            }
-            return;
+            await userClient.acceptTermsAndConditions();
+            setOpen(false);
         }
         setActiveStep(activeStep + 1);
         formContext.reset();

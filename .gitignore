@@ -20,3 +20,4 @@ api/config*.json
 api/service_account.json
 
 .env.local
+e2e/.auth/storageState.json
