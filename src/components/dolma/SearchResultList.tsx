@@ -70,7 +70,14 @@ export const SearchResultList = ({ response }: SearchResultListProps): JSX.Eleme
                                         {result.title}
                                     </Typography>
                                 </Link>
-                                <Snippets document={result} lineLimit={4} />
+                                <Box
+                                    aria-hidden={
+                                        result.isDocumentBad && !revealedDocuments[result.id]
+                                            ? 'true'
+                                            : 'false'
+                                    }>
+                                    <Snippets document={result} lineLimit={4} />
+                                </Box>
                             </Box>
                             {result.isDocumentBad && (
                                 <ToxicContentWarning

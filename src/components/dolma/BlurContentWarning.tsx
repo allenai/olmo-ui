@@ -1,12 +1,11 @@
 import { Box, Button, Paper } from '@mui/material';
 
-export const BlurContentWarning = ({
-    onReveal,
-    content,
-}: {
+interface BlurContentWarningProps {
     onReveal: () => void;
-    content: React.ReactNode;
-}) => {
+    children: React.ReactNode;
+}
+
+export const BlurContentWarning = ({ onReveal, children }: BlurContentWarningProps) => {
     return (
         <Paper
             elevation={3}
@@ -23,8 +22,7 @@ export const BlurContentWarning = ({
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
             }}>
-            {content}
-
+            {children}
             <Box
                 sx={{
                     display: 'flex',

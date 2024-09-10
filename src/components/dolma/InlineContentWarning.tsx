@@ -1,15 +1,14 @@
 import { Box, Button } from '@mui/material';
 
-export const InlineContentWarning = ({
-    onReveal,
-    content,
-}: {
+interface InlineContentWarningProps {
     onReveal: () => void;
-    content: React.ReactNode;
-}) => {
+    children: React.ReactNode;
+}
+
+export const InlineContentWarning = ({ onReveal, children }: InlineContentWarningProps) => {
     return (
         <Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }}>
-            {content}
+            {children}
             <Box
                 sx={{
                     display: 'flex',

@@ -16,45 +16,45 @@ export const ToxicContentWarning = ({ isRevealed, onReveal }: ToxicContentWarnin
 
     const Wrapper = isRevealed ? InlineContentWarning : BlurContentWarning;
 
-    const content = (
-        <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                flexWrap: 'wrap',
-            }}>
+    return (
+        <Wrapper onReveal={onReveal}>
             <Box
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1,
+                    gap: 2,
+                    flexWrap: 'wrap',
                 }}>
-                <WarningAmberIcon
-                    sx={(theme) => ({
-                        mr: 1,
-                        color: theme.palette.error.dark,
-                    })}
-                />
-                <Typography
-                    sx={(theme) => ({
-                        color: theme.palette.error.dark,
-                    })}>
-                    Caution
-                </Typography>
-            </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                    }}>
+                    <WarningAmberIcon
+                        sx={(theme) => ({
+                            mr: 1,
+                            color: theme.palette.error.dark,
+                        })}
+                    />
+                    <Typography
+                        sx={(theme) => ({
+                            color: theme.palette.error.dark,
+                        })}>
+                        Caution
+                    </Typography>
+                </Box>
 
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                }}>
-                <Typography ref={containerRef}>May contain inappropriate language</Typography>
-                <ToxicContentPopover anchorEl={containerRef.current ?? undefined} />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                    }}>
+                    <Typography ref={containerRef}>May contain inappropriate language</Typography>
+                    <ToxicContentPopover anchorEl={containerRef.current ?? undefined} />
+                </Box>
             </Box>
-        </Box>
+        </Wrapper>
     );
-
-    return <Wrapper onReveal={onReveal} content={content} />;
 };
