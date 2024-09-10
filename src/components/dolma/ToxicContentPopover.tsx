@@ -33,7 +33,7 @@ export const ToxicContentPopover = ({ anchorEl }: ToxicContentPopoverProps) => {
                 dialogContent={TOOLTIP_CONTENT}
                 isTooltipOpen={isTooltipOpen}
                 onTooltipClose={handleTooltipClose}
-                placement="right-end"
+                placement="right"
                 tooltipIdSuffix="toxic-content-description">
                 <IconButton
                     tabIndex={0}

@@ -1,6 +1,6 @@
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Box, Typography } from '@mui/material';
-import { useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import { BlurContentWarning } from './BlurContentWarning';
 import { InlineContentWarning } from './InlineContentWarning';
@@ -13,8 +13,15 @@ interface ToxicContentWarningProps {
 
 export const ToxicContentWarning = ({ isRevealed, onReveal }: ToxicContentWarningProps) => {
     const containerRef = useRef<HTMLElement | null>(null);
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>(undefined);
 
     const Wrapper = isRevealed ? InlineContentWarning : BlurContentWarning;
+
+    useLayoutEffect(() => {
+        if (containerRef.current) {
+            setAnchorEl(containerRef.current);
+        }
+    }, [isRevealed]); // Re-run when isRevealed changes
 
     return (
         <Wrapper onReveal={onReveal}>
@@ -52,7 +59,7 @@ export const ToxicContentWarning = ({ isRevealed, onReveal }: ToxicContentWarnin
                         gap: 1,
                     }}>
                     <Typography ref={containerRef}>May contain inappropriate language</Typography>
-                    <ToxicContentPopover anchorEl={containerRef.current ?? undefined} />
+                    <ToxicContentPopover anchorEl={anchorEl} />
                 </Box>
             </Box>
         </Wrapper>
