@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 
 interface InlineContentWarningProps {
     onReveal: () => void;
@@ -7,12 +7,12 @@ interface InlineContentWarningProps {
 
 export const InlineContentWarning = ({ onReveal, children }: InlineContentWarningProps) => {
     return (
-        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+        <Stack direction="row" alignItems="center" width="100%" spacing={2}>
             {children}
-            <Box
+            <Stack
+                direction="row"
+                alignItems="center"
                 sx={{
-                    display: 'flex',
-                    alignItems: 'center',
                     ml: 'auto',
                 }}>
                 <Button
@@ -26,7 +26,7 @@ export const InlineContentWarning = ({ onReveal, children }: InlineContentWarnin
                     onClick={onReveal}>
                     Conceal
                 </Button>
-            </Box>
-        </Box>
+            </Stack>
+        </Stack>
     );
 };
