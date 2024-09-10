@@ -11,7 +11,7 @@ const ReactRefreshTypeScript = require('react-refresh-typescript');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: ['.env', '.env.local'] });
+dotenv.config({ path: ['.env.local', '.env'] });
 
 const path = require('path');
 
@@ -87,8 +87,8 @@ module.exports = (env) => ({
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
             IS_ATTRIBUTION_ENABLED: true,
-            AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
-            AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
+            AUTH0_DOMAIN: 'allenai-public.us.auth0.com',
+            AUTH0_CLIENT_ID: 'CmIxLlwn0miZ8kaQgDAK37pG0L6vrQEm',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
         }),

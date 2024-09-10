@@ -6,8 +6,8 @@ export class StaticDataClient extends ClientBase {
 
     #getData = async <TResponse>(filePath: string): Promise<TResponse> => {
         const url = `${this.staticFilePath}${filePath}`;
-        const response = await fetch(url);
-        return this.unpack<TResponse>(response);
+        const response = await this.fetch<TResponse>(url);
+        return response;
     };
 
     getSources = async (): Promise<staticData.Sources> => {
