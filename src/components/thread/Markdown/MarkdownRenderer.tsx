@@ -1,3 +1,4 @@
+import { Box, Typography } from '@mui/material';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
@@ -27,15 +28,22 @@ const extendedSchema = {
 
 export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) => {
     return (
-        <Markdown
+        // @ts-expect-error - We add attribution-highlight as a custom element
+        <Box
+            component={Markdown}
+            sx={{
+                '& p': {
+                    margin: 0,
+                    marginBlockEnd: '1em',
+                },
+            }}
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
                 code: CodeBlock,
-                // @ts-expect-error - We add attribution-highlight as a custom element
                 'attribution-highlight': AttributionHighlight,
             }}>
             {markdown}
-        </Markdown>
+        </Box>
     );
 };

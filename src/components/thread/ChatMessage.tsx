@@ -11,6 +11,7 @@ import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
+    paddingInlineEnd: 2,
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
@@ -76,7 +77,7 @@ export const ChatMessage = ({
     const icon = variant === Role.User ? <UserAvatar /> : <RobotAvatar />;
 
     return (
-        <Stack direction="row" gap={1} alignItems="start">
+        <Stack direction="row" gap={3} alignItems="start">
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>

@@ -67,7 +67,7 @@ export const MessageInteraction = ({
 
     return (
         <Stack direction="row" gap={2} alignItems="start">
-            <FeedbackButtonGroup variant="outlined" aria-label="Thread feedback buttons">
+            <ButtonGroup variant="outlined" aria-label="Thread feedback buttons">
                 <ResponsiveButton
                     variant="outlined"
                     startIcon={<GoodIcon />}
@@ -95,7 +95,7 @@ export const MessageInteraction = ({
                     }}
                     aria-pressed={currentLabel?.rating === LabelRating.Flag}
                 />
-            </FeedbackButtonGroup>
+            </ButtonGroup>
             <ResponsiveButton
                 variant="outlined"
                 startIcon={<ContentCopy />}
@@ -113,9 +113,3 @@ export const MessageInteraction = ({
         </Stack>
     );
 };
-
-const FeedbackButtonGroup = styled(ButtonGroup)`
-    && {
-        margin-left: ${({ theme }) => theme.spacing(4.5)};
-    }
-`;

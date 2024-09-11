@@ -28,13 +28,14 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         <>
             <ChatMessage role={role} messageId={messageId}>
                 <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+
+                <MessageInteraction
+                    role={role}
+                    content={content}
+                    messageLabels={messageLabels}
+                    messageId={messageId}
+                />
             </ChatMessage>
-            <MessageInteraction
-                role={role}
-                content={content}
-                messageLabels={messageLabels}
-                messageId={messageId}
-            />
         </>
     );
 };
