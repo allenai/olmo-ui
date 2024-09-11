@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
     loginAction,
@@ -48,120 +48,126 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 export const routes: RouteObject[] = [
     {
-        path: links.login(),
-        action: loginAction,
-        loader: loginLoader,
-        errorElement: <ErrorPage />,
-    },
-    { path: links.logout, action: logoutAction, loader: logoutAction, errorElement: <ErrorPage /> },
-    { path: links.loginResult, loader: loginResultLoader, errorElement: <ErrorPage /> },
-    {
         id: 'root',
-        path: '/',
-        loader: async (loaderProps) => {
-            const requireAuthorizationResult = await requireAuthorizationLoader(loaderProps);
-
-            if (requireAuthorizationResult != null) {
-                return requireAuthorizationResult;
-            }
-
-            const userAuthInfo = await userAuthInfoLoader(loaderProps);
-            return userAuthInfo;
-        },
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground - OLMo" />
-                <NewApp />
+                <Outlet />
             </VarnishedApp>
         ),
         errorElement: <ErrorPage />,
         children: [
             {
-                path: links.playground,
-                element: <UIRefreshThreadPage />,
+                id: 'auth-root',
+                path: '/',
+                loader: async (loaderProps) => {
+                    const requireAuthorizationResult =
+                        await requireAuthorizationLoader(loaderProps);
+
+                    if (requireAuthorizationResult != null) {
+                        return requireAuthorizationResult;
+                    }
+
+                    const userAuthInfo = await userAuthInfoLoader(loaderProps);
+                    return userAuthInfo;
+                },
+                element: <NewApp />,
                 children: [
                     {
-                        path: '/thread',
-                        // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
-                        // We just redirect to the playground to make sure people going to /thread get what they want
-                        element: <Navigate to={links.playground} />,
-                    },
-                    {
-                        path: links.thread(':id'),
-                        element: (
-                            <OlmoPage>
-                                <ThreadDisplay />
-                            </OlmoPage>
-                        ),
+                        path: links.playground,
+                        element: <UIRefreshThreadPage />,
+                        children: [
+                            {
+                                path: '/thread',
+                                // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
+                                // We just redirect to the playground to make sure people going to /thread get what they want
+                                element: <Navigate to={links.playground} />,
+                            },
+                            {
+                                path: links.thread(':id'),
+                                element: (
+                                    <OlmoPage>
+                                        <ThreadDisplay />
+                                    </OlmoPage>
+                                ),
+                                handle: {
+                                    title: 'OLMo Playground',
+                                },
+                                loader: selectedThreadLoader,
+                            },
+                        ],
                         handle: {
                             title: 'OLMo Playground',
                         },
-                        loader: selectedThreadLoader,
+                        loader: playgroundLoader,
+                        shouldRevalidate: handleRevalidation,
+                    },
+                    {
+                        path: links.document(':id'),
+                        element: (
+                            <DolmaPage>
+                                <Document />
+                            </DolmaPage>
+                        ),
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                    },
+                    {
+                        path: links.datasetExplorer,
+                        element: (
+                            <DolmaPage>
+                                <DolmaExplorer />
+                            </DolmaPage>
+                        ),
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                        loader: DolmaDataLoader,
+                    },
+                    {
+                        path: links.search,
+                        element: (
+                            <DolmaPage>
+                                <Search />
+                            </DolmaPage>
+                        ),
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                        loader: searchPageLoader,
+                    },
+                    {
+                        path: links.faqs,
+                        element: (
+                            <OlmoPage>
+                                <FAQsPage />
+                            </OlmoPage>
+                        ),
+                        handle: {
+                            title: 'Frequently Asked Questions',
+                        },
                     },
                 ],
-                handle: {
-                    title: 'OLMo Playground',
-                },
-                loader: playgroundLoader,
-                shouldRevalidate: handleRevalidation,
-            },
-            {
-                path: links.document(':id'),
-                element: (
-                    <DolmaPage>
-                        <Document />
-                    </DolmaPage>
-                ),
-                handle: {
-                    title: 'Dataset Explorer',
-                },
-            },
-            {
-                path: links.datasetExplorer,
-                element: (
-                    <DolmaPage>
-                        <DolmaExplorer />
-                    </DolmaPage>
-                ),
-                handle: {
-                    title: 'Dataset Explorer',
-                },
-                loader: DolmaDataLoader,
-            },
-            {
-                path: links.search,
-                element: (
-                    <DolmaPage>
-                        <Search />
-                    </DolmaPage>
-                ),
-                handle: {
-                    title: 'Dataset Explorer',
-                },
-                loader: searchPageLoader,
-            },
-            {
-                path: links.faqs,
-                element: (
-                    <OlmoPage>
-                        <FAQsPage />
-                    </OlmoPage>
-                ),
-                handle: {
-                    title: 'Frequently Asked Questions',
-                },
             },
             {
                 path: '/*',
-                element: (
-                    <VarnishedApp>
-                        <NotFound />
-                    </VarnishedApp>
-                ),
+                element: <NotFound />,
                 handle: {
                     title: '',
                 },
             },
+            {
+                path: links.login(),
+                action: loginAction,
+                loader: loginLoader,
+            },
+            {
+                path: links.logout,
+                action: logoutAction,
+                loader: logoutAction,
+            },
+            { path: links.loginResult, loader: loginResultLoader },
         ],
     },
 ];

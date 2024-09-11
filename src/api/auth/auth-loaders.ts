@@ -1,6 +1,8 @@
 import { User } from '@auth0/auth0-spa-js';
 import { ActionFunction, LoaderFunction, redirect, useRouteLoaderData } from 'react-router-dom';
 
+import { links } from '@/Links';
+
 import { createLoginRedirectURL } from './auth-utils';
 import { auth0Client } from './auth0Client';
 
@@ -58,9 +60,11 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
         return redirect('/');
     }
 
-    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || '/';
+    const redirectToParam = new URL(request.url).searchParams.get('redirectTo') || '/';
+    // if the user refreshes on the login page for some reason they can get stuck in a loop, checking for the redirect param starting with 'login' helps prevent that
+    const finalRedirectTo = redirectToParam.startsWith(links.login('')) ? '/' : redirectToParam;
 
-    await auth0Client.login(redirectTo);
+    await auth0Client.login(finalRedirectTo);
 
     return null;
 };
@@ -76,7 +80,8 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 };
 
 export const useUserAuthInfo = (): UserAuthInfo => {
-    const { userInfo, isAuthenticated } = useRouteLoaderData('root') as UserAuthInfo;
+    const { userInfo, isAuthenticated } =
+        (useRouteLoaderData('auth-root') as UserAuthInfo | undefined) ?? {};
 
-    return { userInfo, isAuthenticated };
+    return { userInfo, isAuthenticated: Boolean(isAuthenticated) };
 };
