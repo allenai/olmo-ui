@@ -9,6 +9,7 @@ const webpack = require('webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+const { RetryChunkLoadPlugin } = require('webpack-retry-chunk-load-plugin');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: ['.env.local', '.env'] });
@@ -93,6 +94,9 @@ module.exports = (env) => ({
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
+        new RetryChunkLoadPlugin({
+            maxRetries: 3,
+        }),
     ],
     output: {
         filename: 'main.[contenthash:6].js',
