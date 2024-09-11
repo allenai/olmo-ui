@@ -56,6 +56,9 @@ export const NewApp = () => {
                     <Container
                         component="main"
                         sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+
                             overflow: 'auto',
 
                             paddingInline: 2,
@@ -105,8 +108,8 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                         gridTemplateAreas: `
                             'nav app-bar side-drawer'
                             'nav content side-drawer'`,
-                        gridTemplateRows: 'auto 1fr',
-                        gridTemplateColumns: 'auto 1fr auto',
+                        gridTemplateRows: 'auto minmax(0, 1fr)',
+                        gridTemplateColumns: 'auto minmax(0, 1fr) auto',
                         columnGap: theme.spacing(8),
                     },
                 }),

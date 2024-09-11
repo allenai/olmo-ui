@@ -1,4 +1,6 @@
 import {
+    Card,
+    CardContent,
     MenuItem,
     OutlinedInput,
     Select,
@@ -6,12 +8,10 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { LoaderFunction, Outlet, ShouldRevalidateFunction, useMatch } from 'react-router-dom';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
-import { ResponsiveCard } from '@/components/ResponsiveCard';
 import { QueryForm } from '@/components/thread/QueryForm';
-import { SearchDatasetCard } from '@/components/thread/SearchDatasetCard';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { links } from '@/Links';
 
@@ -20,7 +20,6 @@ export const UIRefreshThreadPage = () => {
     const models = useAppContext((state) => state.models);
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
     const selectedModel = useAppContext((state) => state.selectedModel);
-    const threadPageMatch = useMatch(links.thread(':id'));
 
     const handlePromptSubmission = (data: { content: string; parent?: string }) => {
         streamPrompt(data);
@@ -31,39 +30,50 @@ export const UIRefreshThreadPage = () => {
     };
 
     return (
-        <Stack
-            gap={4}
+        <Card
+            variant="elevation"
+            elevation={0}
             sx={{
-                containerName: 'thread-page',
-                containerType: 'inline-size',
+                flexGrow: '1',
             }}>
-            <ThreadPageControls />
+            <CardContent
+                component={Stack}
+                gap={2}
+                sx={{
+                    containerName: 'thread-page',
+                    containerType: 'inline-size',
 
-            <Select
-                id="model-select"
-                sx={{ width: { xs: '75%', md: '35%' } }}
-                size="small"
-                onChange={onModelChange}
-                input={<OutlinedInput />}
-                value={(selectedModel && selectedModel.id) || ''}>
-                {models.map((model) => (
-                    <MenuItem key={model.name} value={model.id}>
-                        {model.name}
-                    </MenuItem>
-                ))}
-            </Select>
+                    backgroundColor: 'background.default',
 
-            <ResponsiveCard>
+                    paddingBlock: 2,
+                    paddingInline: 4,
+
+                    height: 1,
+                }}>
+                <ThreadPageControls />
+
+                <Select
+                    id="model-select"
+                    sx={{ width: { xs: '75%', md: '35%' } }}
+                    size="small"
+                    onChange={onModelChange}
+                    input={<OutlinedInput />}
+                    value={(selectedModel && selectedModel.id) || ''}>
+                    {models.map((model) => (
+                        <MenuItem key={model.name} value={model.id}>
+                            {model.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+
                 <Outlet />
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
-            </ResponsiveCard>
 
-            {threadPageMatch && <SearchDatasetCard />}
-
-            <Typography variant="caption">
-                OLMo is experimental and can make mistakes. Consider fact-checking your results.
-            </Typography>
-        </Stack>
+                <Typography variant="caption">
+                    OLMo is experimental and can make mistakes. Consider fact-checking your results.
+                </Typography>
+            </CardContent>
+        </Card>
     );
 };
 

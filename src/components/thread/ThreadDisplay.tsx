@@ -65,7 +65,7 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        <Stack gap={2} direction="column" data-testid="thread-display">
+        <Stack gap={2} direction="column" data-testid="thread-display" overflow="auto">
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
