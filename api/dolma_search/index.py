@@ -153,6 +153,7 @@ class Document:
     snippets: list[Snippet]
     word_count: int
     archive: str
+    isDocumentBad: bool
     metadata: t.Optional[dict[str, t.Any]] = None
     url: t.Optional[str] = None
     domain: t.Optional[str] = None
@@ -189,6 +190,27 @@ class Document:
         # Produce better snippets than we have in the index, which uses a naive regexp.
         del src["snippet"]
         snippets = [Snippet.from_body_text(src["text"]).strip()]
+        is_document_bad = False
+        
+        title_content = src['title']
+        text_content = src['text']
+
+        with open('/api/dolma_search/static/bad_words/nsfw_wordlist.txt', 'r') as file:
+            nsfw_wordlist = set(file.read().splitlines())
+        
+        with open('/api/dolma_search/static/bad_words/really_bad_words.txt', 'r') as file:
+            really_bad_words = set(file.read().splitlines())
+        
+        if title_content and text_content:
+            combined_content = title_content + ' ' + text_content
+            sanitized_content = re.sub(r'[^\w\s]', ' ', combined_content)
+            unique_words = set(sanitized_content.lower().split())
+
+            if unique_words & really_bad_words:
+                is_document_bad = True
+            else:
+                nsfw_matches = unique_words & nsfw_wordlist
+                is_document_bad = len(nsfw_matches) >= 2
 
         # TODO: set text for clients that should have access
         fields = {
@@ -199,10 +221,10 @@ class Document:
             "archive": sanitized_archive,
             "snippets": snippets,
             "text": None,
+            "isDocumentBad": is_document_bad
         }
 
-        return cls(**fields)
-
+        return cls(**fields)      
 
 @dataclass
 class SearchResult(Document):
