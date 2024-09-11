@@ -103,8 +103,6 @@ export const QueryForm = (): JSX.Element => {
             if (e instanceof StreamBadRequestError) {
                 formContext.setError('content', {
                     type: 'inappropriate',
-                    message:
-                        'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
                 });
             }
         }
