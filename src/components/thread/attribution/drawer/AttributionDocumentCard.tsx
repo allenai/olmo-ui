@@ -28,7 +28,10 @@ const AttributionDocumentCardBase = ({
     source,
 }: AttributionDocumentCardBaseProps) => {
     return (
-        <Card>
+        <Card
+            sx={{
+                bgcolor: '#F8F0E780',
+            }}>
             <CardActionArea
                 disabled={setSelectedDocument == null}
                 onClick={() => {
