@@ -54,12 +54,6 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 };
 
 export const loginLoader: LoaderFunction = async ({ request }) => {
-    const isAuthenticated = await auth0Client.isAuthenticated();
-
-    if (isAuthenticated) {
-        return redirect('/');
-    }
-
     const redirectToParam = new URL(request.url).searchParams.get('redirectTo') || '/';
     // if the user refreshes on the login page for some reason they can get stuck in a loop, checking for the redirect param starting with 'login' helps prevent that
     const finalRedirectTo = redirectToParam.startsWith(links.login('')) ? '/' : redirectToParam;
