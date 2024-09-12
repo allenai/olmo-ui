@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, SxProps, Typography } from '@mui/material';
+import { Box, Stack, SxProps, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';

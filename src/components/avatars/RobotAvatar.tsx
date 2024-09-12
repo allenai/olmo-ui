@@ -1,6 +1,3 @@
-import { Avatar } from '@mui/material';
-import styled from 'styled-components';
-
 import robotAvatarURL from '../assets/robot.svg';
 import { ChatAvatar } from './ChatAvatar';
 

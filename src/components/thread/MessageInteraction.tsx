@@ -9,7 +9,6 @@ import {
 } from '@mui/icons-material';
 import { ButtonGroup, Snackbar, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
-import styled from 'styled-components';
 
 import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
