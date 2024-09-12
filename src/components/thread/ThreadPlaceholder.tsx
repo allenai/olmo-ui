@@ -12,7 +12,9 @@ export const ThreadPlaceholder = () => {
             <img src="/ai2-monogram.svg" alt="" width={70} height={70} />
             <Typography variant="body1">
                 <br />
-                {/* TODO: This still working text will need to show up at some point when we add the loading states */}
+                {/* TODO: This still working text will need to show up at some point when we add the loading states
+                    We need  
+                */}
                 {/* Still working... */}
             </Typography>
         </Stack>
