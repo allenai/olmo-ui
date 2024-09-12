@@ -58,6 +58,11 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
     // if the user refreshes on the login page for some reason they can get stuck in a loop, checking for the redirect param starting with 'login' helps prevent that
     const finalRedirectTo = redirectToParam.startsWith(links.login('')) ? '/' : redirectToParam;
 
+    // The template we pulled from checked for isAuthenticated and would just redirect if it was present.
+    // This was causing problems if we had an invalid token
+    // We're assuming that if you're landing on the login route you should be logged in again
+    // Logging in again will reset the token even if it's invalid
+
     await auth0Client.login(finalRedirectTo);
 
     return null;
