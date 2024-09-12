@@ -13,6 +13,7 @@ import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-d
 import { appContext, useAppContext } from '@/AppContext';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
@@ -36,20 +37,24 @@ export const UIRefreshThreadPage = () => {
             sx={{
                 flexGrow: '1',
             }}>
-            <CardContent
-                component={Stack}
+            <Stack
                 gap={2}
-                sx={{
+                sx={(theme) => ({
                     containerName: 'thread-page',
                     containerType: 'inline-size',
 
                     backgroundColor: 'background.default',
 
-                    paddingBlock: 2,
-                    paddingInline: 4,
+                    paddingBlockStart: 1,
+                    paddingBlockEnd: 2,
+
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        paddingBlock: 2,
+                        paddingInline: 4,
+                    },
 
                     height: 1,
-                }}>
+                })}>
                 <ThreadPageControls />
 
                 <Select
@@ -69,10 +74,16 @@ export const UIRefreshThreadPage = () => {
                 <Outlet />
                 <QueryForm onSubmit={handlePromptSubmission} variant="new" />
 
-                <Typography variant="caption">
+                <Typography
+                    variant="caption"
+                    sx={(theme) => ({
+                        [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            display: 'none',
+                        },
+                    })}>
                     OLMo is experimental and can make mistakes. Consider fact-checking your results.
                 </Typography>
-            </CardContent>
+            </Stack>
         </Card>
     );
 };
