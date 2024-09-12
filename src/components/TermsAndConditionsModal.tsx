@@ -1,35 +1,39 @@
 import CircleIcon from '@mui/icons-material/Circle';
-import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
-import PrivacyTipOutlinedIcon from '@mui/icons-material/PrivacyTipOutlined';
-import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
 import {
+    Box,
     Button,
     Checkbox,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControlLabel,
+    Link,
     Stack,
     Typography,
+    useMediaQuery,
+    useTheme as useMuiTheme,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
 import { UserClient } from '@/api/User';
+import { links } from '@/Links';
 
 import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
 interface TermsAndConditionsSection {
     title: string;
-    icon: React.ReactNode;
     contents: React.ReactNode;
     acknowledgement: string;
     submitButtonText: string;
 }
 
 export const TermsAndConditionsModal = () => {
+    const theme = useMuiTheme();
+    const greaterThanSm = useMediaQuery(theme.breakpoints.up('sm'));
+    console.log(greaterThanSm);
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
     const formContext = useForm({
@@ -57,80 +61,119 @@ export const TermsAndConditionsModal = () => {
 
     const section = sections[activeStep];
     return (
-        <StandardModal open={open}>
-            <Stack gap={2}>
-                <DialogTitle id="modal-title" variant="h1" sx={{ p: 0, m: 0 }}>
-                    Getting Started
-                </DialogTitle>
-                <DialogContent
-                    sx={{ p: 0, m: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Typography
-                        id="modal-description"
-                        variant="h4"
-                        color={(theme) => theme.palette.primary.main}
-                        m={0}>
-                        Please read carefully.
-                    </Typography>
-                    <Typography
-                        variant="h3"
-                        color={(theme) => theme.color.N9.hex}
-                        sx={{ m: 0, alignItems: 'center', display: 'inline-flex' }}>
-                        {section.icon}
-                        {section.title}
-                    </Typography>
-                    <Typography variant="body1">{section.contents}</Typography>
-                </DialogContent>
-                <DialogActions sx={{ p: 0, justifyContent: 'flex-start' }}>
-                    <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                        <FormControlLabel
-                            sx={{ alignItems: 'flex-start', gap: 2 }}
-                            control={
-                                <Controller
-                                    rules={{ required: true }}
-                                    control={formContext.control}
-                                    render={({ field: { onChange, value } }) => (
-                                        <Checkbox checked={value} onChange={onChange} />
-                                    )}
-                                    name="checked"
-                                />
-                            }
-                            label={section.acknowledgement}
-                        />
-                        <Stack gap={2} direction="row" mt={2}>
-                            <Button
-                                fullWidth
-                                variant="outlined"
-                                onClick={handlePrevious}
-                                disabled={activeStep === 0}
-                                sx={{
-                                    height: 'fit-content',
-                                    width: 'fit-content',
-                                    paddingX: 3,
-                                    paddingY: 1,
-                                    whiteSpace: 'nowrap',
-                                }}>
-                                Previous
-                            </Button>
-                            <Button
-                                variant="contained"
-                                disabled={!isValid}
-                                type="submit"
-                                fullWidth
-                                sx={{
-                                    height: 'fit-content',
-                                    width: 'fit-content',
-                                    paddingX: 3,
-                                    paddingY: 1,
-                                    whiteSpace: 'nowrap',
-                                }}>
-                                {section.submitButtonText}
-                            </Button>
+        <>
+            <StandardModal open={open}>
+                <Stack direction="row" spacing={2} sx={{ display: 'flex' }}>
+                    {greaterThanSm && (
+                        <Stack sx={{ width: '40%', height: 'auto', justifyContent: 'center' }}>
+                            <Box component="img" src="/Subtract.png" />
                         </Stack>
-                    </FormContainer>
-                </DialogActions>
-                <ProgressIndicator steps={sections.length} activeStep={activeStep} />
-            </Stack>
-        </StandardModal>
+                    )}
+                    <Stack sx={{ display: 'flex', flexDirection: 'column', flexGrow: 3 }} gap={1}>
+                        <Typography
+                            variant="overline"
+                            sx={{
+                                color: (theme) => theme.palette.text.primary,
+                                fontSize: 'small',
+                            }}>
+                            GETTING STARTED
+                        </Typography>
+                        <DialogContent
+                            sx={{
+                                p: 0,
+                                m: 0,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                                flex: 1,
+                            }}>
+                            <Typography
+                                id="modal-description"
+                                variant="h1"
+                                color={(theme) => theme.palette.text.primary}
+                                m={0}>
+                                Research purposes
+                            </Typography>
+                            <Typography
+                                variant="body1"
+                                color={(theme) => theme.palette.primary.dark}
+                                sx={{ m: 0, alignItems: 'center', display: 'inline-flex' }}>
+                                {section.title}
+                            </Typography>
+                            <Typography variant="body1">{section.contents}</Typography>
+                        </DialogContent>
+                        <DialogActions sx={{ p: 0, justifyContent: 'flex-start' }}>
+                            <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+                                <FormControlLabel
+                                    sx={{ alignItems: 'center', gap: 2 }}
+                                    control={
+                                        <Controller
+                                            rules={{ required: true }}
+                                            control={formContext.control}
+                                            render={({ field: { onChange, value } }) => (
+                                                <Checkbox checked={value} onChange={onChange} />
+                                            )}
+                                            name="checked"
+                                        />
+                                    }
+                                    label={section.acknowledgement}
+                                />
+                                <Stack
+                                    gap={2}
+                                    direction="row"
+                                    mt={2}
+                                    justifyContent="space-between">
+                                    <Stack direction="row" gap={2}>
+                                        <Button
+                                            fullWidth
+                                            variant="outlined"
+                                            onClick={handlePrevious}
+                                            disabled={activeStep === 0}
+                                            sx={{
+                                                height: 'fit-content',
+                                                width: 'fit-content',
+                                                paddingX: 3,
+                                                paddingY: 1,
+                                                whiteSpace: 'nowrap',
+                                            }}>
+                                            Prev
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            disabled={!isValid}
+                                            type="submit"
+                                            fullWidth
+                                            sx={{
+                                                height: 'fit-content',
+                                                width: 'fit-content',
+                                                paddingX: 3,
+                                                paddingY: 1,
+                                                whiteSpace: 'nowrap',
+                                            }}>
+                                            {section.submitButtonText}
+                                        </Button>
+                                    </Stack>
+                                    <Button
+                                        component={Link}
+                                        href={links.logout}
+                                        variant="text"
+                                        startIcon={<LogoutIcon />}
+                                        underline="none"
+                                        sx={{
+                                            color: (theme) => theme.palette.text.primary,
+                                        }}>
+                                        Log out
+                                    </Button>
+                                </Stack>
+                            </FormContainer>
+                        </DialogActions>
+                    </Stack>
+                </Stack>
+                <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <ProgressIndicator steps={sections.length} activeStep={activeStep} />
+                </Stack>
+            </StandardModal>
+        </>
     );
 };
 
@@ -158,8 +201,7 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
 };
 
 const Section1: TermsAndConditionsSection = {
-    title: 'Research Purposes',
-    icon: <ScienceOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
+    title: 'Please read carefully',
     contents: (
         <>
             OLMo Platform is a research tool designed to allow for interaction with the OLMo model
@@ -175,7 +217,6 @@ const Section1: TermsAndConditionsSection = {
 
 const Section2: TermsAndConditionsSection = {
     title: 'Limitations',
-    icon: <DangerousOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
         <>
             Large pretrained language models, such as OLMo, are trained on mostly{' '}
@@ -206,7 +247,6 @@ const Section2: TermsAndConditionsSection = {
 
 const Section3: TermsAndConditionsSection = {
     title: 'Privacy and Data Collection',
-    icon: <PrivacyTipOutlinedIcon fontSize="large" sx={{ mr: 2 }} />,
     contents: (
         <>
             The OLMo Platform collects user queries and inputs entered into it. You will have 30
