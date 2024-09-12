@@ -44,9 +44,10 @@ export const TermsAndConditionsModal = () => {
             const userClient: UserClient = new UserClient();
             await userClient.acceptTermsAndConditions();
             setOpen(false);
+        } else {
+            setActiveStep(activeStep + 1);
+            formContext.reset();
         }
-        setActiveStep(activeStep + 1);
-        formContext.reset();
     }, [activeStep, formContext]);
 
     const handlePrevious = useCallback(() => {
@@ -220,4 +221,4 @@ const Section3: TermsAndConditionsSection = {
     submitButtonText: "Let's Go!",
 };
 
-const sections = [Section1, Section2, Section3];
+export const sections = [Section1, Section2, Section3];

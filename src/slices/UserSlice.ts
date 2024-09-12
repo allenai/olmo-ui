@@ -8,6 +8,7 @@ export interface UserSlice {
     userRemoteState?: RemoteState;
     userInfo: User | null;
     getUserInfo: () => Promise<User>;
+    resetTermsAndConditionsAcceptance: () => void;
 }
 
 const userClient = new UserClient();
@@ -38,5 +39,12 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
             set({ userRemoteState: RemoteState.Error });
             throw new Error(`Error getting user.`);
         }
+    },
+    resetTermsAndConditionsAcceptance: () => {
+        set((state) => {
+            if (state.userInfo) {
+                state.userInfo.hasAcceptedTermsAndConditions = false;
+            }
+        });
     },
 });

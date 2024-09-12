@@ -92,3 +92,8 @@ export type OlmoStateCreator<TOwnSlice> = StateCreator<
     [],
     TOwnSlice
 >;
+
+// @ts-expect-error - Making a new function to be able to show T&Cs whenever we want
+window.showTermsAndConditions = () => {
+    appContext.getState().resetTermsAndConditionsAcceptance();
+};
