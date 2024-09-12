@@ -8,6 +8,7 @@ import {
     MessageStreamError,
     MessageStreamErrorReason,
     parseMessage,
+    StreamBadRequestError,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { OlmoStateCreator } from '@/AppContext';
@@ -185,6 +186,15 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
             }
         } catch (err) {
+            set(
+                (state) => {
+                    state.abortController = null;
+                    state.streamPromptState = RemoteState.Error;
+                },
+                false,
+                'threadUpdate/errorCreateNewThread'
+            );
+
             let snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
                 'Unable to Submit Message',
@@ -201,6 +211,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     setMessageLimitReached(err.messageId, true);
                 }
+            } else if (err instanceof StreamBadRequestError) {
+                throw err;
             } else if (err instanceof Error) {
                 if (err.name === 'AbortError') {
                     snackMessage = ABORT_ERROR_MESSAGE;
@@ -208,15 +220,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             }
 
             addSnackMessage(snackMessage);
-
-            set(
-                (state) => {
-                    state.abortController = null;
-                    state.streamPromptState = RemoteState.Error;
-                },
-                false,
-                'threadUpdate/errorCreateNewThread'
-            );
         }
     },
 });

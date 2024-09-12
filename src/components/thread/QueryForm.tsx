@@ -1,21 +1,16 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { IconButton, InputAdornment, Link, Stack, Typography } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useLocation } from 'react-router-dom';
 
-import { MessagePost } from '@/api/Message';
+import { MessagePost, StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
 import { getSelectedMessagesToShow } from './ThreadDisplay';
-
-interface QueryFormProps {
-    onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
-    variant: 'new' | 'response';
-}
 
 const useNewQueryFormHandling = () => {
     const models = useAppContext((state) => state.models);
@@ -29,14 +24,20 @@ const useNewQueryFormHandling = () => {
     });
 
     useEffect(() => {
-        if (models.length > 0) {
+        if (models.length > 0 && !formContext.formState.isDirty) {
             formContext.reset({ model: models[0].id });
         }
-    }, [models]);
+    }, [formContext, models]);
     return formContext;
 };
 
-export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
+export const QueryForm = (): JSX.Element => {
+    const streamPrompt = useAppContext((state) => state.streamPrompt);
+
+    const handlePromptSubmission = async (data: { content: string; parent?: string }) => {
+        await streamPrompt(data);
+    };
+
     // TODO: Refactor this to not use model stuff
     const formContext = useNewQueryFormHandling();
     const location = useLocation();
@@ -52,10 +53,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
 
     const abortController = useAppContext((state) => state.abortController);
     const canPauseThread = useAppContext(
-        (state) =>
-            !!state.streamingMessageId &&
-            state.streamPromptState === RemoteState.Loading &&
-            !!abortController
+        (state) => state.streamPromptState === RemoteState.Loading && abortController != null
     );
 
     const onAbort = useCallback(
@@ -98,8 +96,16 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
             request.parent = lastMessageId;
         }
 
-        await onSubmit(request);
-        formContext.reset();
+        try {
+            await handlePromptSubmission(request);
+            formContext.reset();
+        } catch (e) {
+            if (e instanceof StreamBadRequestError) {
+                formContext.setError('content', {
+                    type: 'inappropriate',
+                });
+            }
+        }
     };
 
     const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -128,6 +134,21 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                     fullWidth
                     multiline
                     required
+                    parseError={(error) => {
+                        if (error.type === 'inappropriate') {
+                            return (
+                                <>
+                                    This prompt was flagged as inappropriate. Please change your
+                                    prompt and resubmit.{' '}
+                                    <Link href={links.faqs} target="_blank" rel="noreferrer">
+                                        Learn why
+                                    </Link>
+                                </>
+                            );
+                        }
+
+                        return error.message;
+                    }}
                     validation={{ pattern: /[^\s]+/ }}
                     // If we don't have a dense margin the label gets cut off!
                     margin="dense"
