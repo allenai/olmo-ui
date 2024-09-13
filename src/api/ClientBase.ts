@@ -1,15 +1,12 @@
+import { createLoginRedirectURL } from './auth/auth-utils';
+import { auth0Client } from './auth/auth0Client';
 import { error } from './error';
 
 export abstract class ClientBase {
     constructor(readonly origin = process.env.LLMX_API_URL) {}
 
     protected login(dest: string = document.location.toString()) {
-        const url = this.createURL('/v3/login/skiff');
-        if (dest) {
-            url.searchParams.set('dest', dest);
-        }
-
-        document.location = url.toString();
+        document.location = createLoginRedirectURL(dest);
     }
 
     protected unpack = async <T>(response: Response): Promise<T> => {
@@ -25,19 +22,20 @@ export abstract class ClientBase {
         }
     };
 
-    private createStandardHeaders = async (headers?: HeadersInit) => {
+    protected createStandardHeaders = async (headers?: HeadersInit) => {
         const standardHeaders = new Headers(headers);
         standardHeaders.set('Content-Type', 'application/json');
 
         // TODO: put this back when we start handling auth0 login again.
-        // Theres ocassaionally a problem with getToken failing if someone isn't logged in
-        // const token = await auth0Client.getToken().catch((error: unknown) => {
-        //     console.error('Error getting token: ', error);
-        //     return undefined;
-        // });
-        // if (token) {
-        //     standardHeaders.set('Authorization', `Bearer ${token}`);
-        // }
+        // Theres occasionally a problem with getToken failing if someone isn't logged in
+        const token = await auth0Client.getToken().catch((error: unknown) => {
+            console.error('Error getting token: ', error);
+            return undefined;
+        });
+
+        if (token) {
+            standardHeaders.set('Authorization', `Bearer ${token}`);
+        }
 
         return standardHeaders;
     };
