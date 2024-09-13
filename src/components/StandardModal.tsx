@@ -9,7 +9,7 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
             fullScreen={false}
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
-            maxWidth="lg"
+            maxWidth="md"
             PaperProps={{
                 sx: {
                     padding: 6,

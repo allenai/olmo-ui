@@ -65,10 +65,19 @@ export const TermsAndConditionsModal = () => {
     return (
         <>
             <StandardModal open={open}>
-                <Stack direction="row" spacing={2} sx={{ display: 'flex' }}>
+                <Stack direction="row" spacing={2} sx={{ display: 'flex', height: '100%' }}>
                     {greaterThanMd && (
-                        <Stack sx={{ height: 'auto', justifyContent: 'center' }}>
-                            <Box component="img" src={section.image} />
+                        <Stack
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                flexGrow: 1,
+                            }}>
+                            <Box
+                                component="img"
+                                src={section.image}
+                                sx={{ width: 'auto', height: '100%' }}
+                            />
                         </Stack>
                     )}
                     <Stack sx={{ display: 'flex', flexDirection: 'column', flexGrow: 3 }} gap={1}>
@@ -111,7 +120,16 @@ export const TermsAndConditionsModal = () => {
                                             rules={{ required: true }}
                                             control={formContext.control}
                                             render={({ field: { onChange, value } }) => (
-                                                <Checkbox checked={value} onChange={onChange} />
+                                                <Checkbox
+                                                    checked={value}
+                                                    onChange={onChange}
+                                                    sx={{
+                                                        '&.Mui-checked': {
+                                                            color: (theme) =>
+                                                                theme.palette.primary.contrastText,
+                                                        },
+                                                    }}
+                                                />
                                             )}
                                             name="checked"
                                         />
@@ -135,6 +153,14 @@ export const TermsAndConditionsModal = () => {
                                                 paddingX: 3,
                                                 paddingY: 1,
                                                 whiteSpace: 'nowrap',
+                                                color: 'inherit',
+                                                borderColor: (theme) =>
+                                                    theme.palette.primary.contrastText,
+                                                '&:hover': {
+                                                    backgroundColor: theme.palette.action.hover,
+                                                    borderColor: (theme) =>
+                                                        theme.palette.primary.contrastText,
+                                                },
                                             }}>
                                             Prev
                                         </Button>
