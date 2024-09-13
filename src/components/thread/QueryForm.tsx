@@ -1,6 +1,6 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import { Box, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { IconButton, InputAdornment, outlinedInputClasses, Stack, Typography } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useLocation } from 'react-router-dom';
@@ -17,28 +17,14 @@ interface QueryFormProps {
     variant: 'new' | 'response';
 }
 
-const useNewQueryFormHandling = () => {
-    const models = useAppContext((state) => state.models);
-
+export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     const formContext = useForm({
         defaultValues: {
-            model: models.length > 0 ? models[0].id : '',
             content: '',
             private: false,
         },
     });
 
-    useEffect(() => {
-        if (models.length > 0) {
-            formContext.reset({ model: models[0].id });
-        }
-    }, [models]);
-    return formContext;
-};
-
-export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
-    // TODO: Refactor this to not use model stuff
-    const formContext = useNewQueryFormHandling();
     const location = useLocation();
 
     const canEditThread = useAppContext((state) => {
@@ -102,7 +88,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
         formContext.reset();
     };
 
-    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             await formContext.handleSubmit(handleSubmit)();
@@ -122,12 +108,17 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                     <TextFieldElement
                         name="content"
                         label="Prompt"
-                        placeholder="Enter your prompt here"
+                        placeholder="Enter prompt"
                         InputLabelProps={{
                             shrink: true,
+                            // This gets rid of the * by the label
+                            required: false,
+                            // @ts-expect-error - text is valid but isn't typed
+                            color: 'text',
                         }}
                         fullWidth
                         multiline
+                        maxRows={5}
                         required
                         validation={{ pattern: /[^\s]+/ }}
                         // If we don't have a dense margin the label gets cut off!
@@ -135,8 +126,13 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                         disabled={!canEditThread}
                         onKeyDown={handleOnKeyDown}
                         InputProps={{
+                            sx: (theme) => ({
+                                [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
+                                    borderColor: theme.palette.text.primary,
+                                },
+                            }),
                             endAdornment: (
-                                <InputAdornment position="end">
+                                <InputAdornment position="end" sx={{ color: 'text.primary' }}>
                                     {canPauseThread ? (
                                         <IconButton
                                             data-testid="Pause Thread"
