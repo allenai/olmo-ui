@@ -59,7 +59,18 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         (state) => state.streamPromptState === RemoteState.Loading
     );
 
-    if (isPromptLoading || loadingState === RemoteState.Loading) {
+    if (isPromptLoading) {
+        return (
+            <Card>
+                <CardContent>
+                    Once the response has been fully generated, documents that can be attributed to
+                    this response will display.
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (loadingState === RemoteState.Loading) {
         return (
             <>
                 <AttributionDocumentCardSkeleton />
