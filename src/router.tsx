@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Box } from '@mui/material';
-=======
-import { PropsWithChildren } from 'react';
->>>>>>> [OEUI-169] rework the router to make the 404 page not be in auth (#583)
 import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
@@ -52,11 +48,7 @@ export const routes: RouteObject[] = [
         id: 'root',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
-<<<<<<< HEAD
                 <MetaTags title="AI2 Playground" />
-=======
-                <MetaTags title="AI2 Playground - OLMo" />
->>>>>>> [OEUI-169] rework the router to make the 404 page not be in auth (#583)
                 <Outlet />
             </VarnishedApp>
         ),
@@ -83,13 +75,10 @@ export const routes: RouteObject[] = [
                         element: <UIRefreshThreadPage />,
                         children: [
                             {
-<<<<<<< HEAD
                                 path: links.playground,
                                 element: <ThreadPlaceholder />,
                             },
                             {
-=======
->>>>>>> [OEUI-169] rework the router to make the 404 page not be in auth (#583)
                                 path: '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
                                 // We just redirect to the playground to make sure people going to /thread get what they want
@@ -97,35 +86,20 @@ export const routes: RouteObject[] = [
                             },
                             {
                                 path: links.thread(':id'),
-<<<<<<< HEAD
                                 element: <ThreadDisplay />,
                                 handle: {
                                     title: 'Playground',
-=======
-                                element: (
-                                    <OlmoPage>
-                                        <ThreadDisplay />
-                                    </OlmoPage>
-                                ),
-                                handle: {
-                                    title: 'OLMo Playground',
->>>>>>> [OEUI-169] rework the router to make the 404 page not be in auth (#583)
                                 },
                                 loader: selectedThreadLoader,
                             },
                         ],
                         handle: {
-<<<<<<< HEAD
                             title: 'Playground',
-=======
-                            title: 'OLMo Playground',
->>>>>>> [OEUI-169] rework the router to make the 404 page not be in auth (#583)
                         },
                         loader: playgroundLoader,
                         shouldRevalidate: handleRevalidation,
                     },
                     {
-<<<<<<< HEAD
                         element: <DolmaPage />,
                         children: [
                             {
@@ -156,49 +130,6 @@ export const routes: RouteObject[] = [
                     {
                         path: links.faqs,
                         element: <FAQsPage />,
-=======
-                        path: links.document(':id'),
-                        element: (
-                            <DolmaPage>
-                                <Document />
-                            </DolmaPage>
-                        ),
-                        handle: {
-                            title: 'Dataset Explorer',
-                        },
-                    },
-                    {
-                        path: links.datasetExplorer,
-                        element: (
-                            <DolmaPage>
-                                <DolmaExplorer />
-                            </DolmaPage>
-                        ),
-                        handle: {
-                            title: 'Dataset Explorer',
-                        },
-                        loader: DolmaDataLoader,
-                    },
-                    {
-                        path: links.search,
-                        element: (
-                            <DolmaPage>
-                                <Search />
-                            </DolmaPage>
-                        ),
-                        handle: {
-                            title: 'Dataset Explorer',
-                        },
-                        loader: searchPageLoader,
-                    },
-                    {
-                        path: links.faqs,
-                        element: (
-                            <OlmoPage>
-                                <FAQsPage />
-                            </OlmoPage>
-                        ),
->>>>>>> [OEUI-169] rework the router to make the 404 page not be in auth (#583)
                         handle: {
                             title: 'Frequently Asked Questions',
                         },
