@@ -19,8 +19,8 @@
     "@types/react": "^18.2.55"
   },
   "dependencies": {
-    "@allenai/varnish-theme": "^2.0.1-beta.0",
-    "@allenai/varnish2": "2.0.1-beta.0",
+    "@allenai/varnish-theme": "^2.0.2-beta.0",
+    "@allenai/varnish2": "2.0.2-beta.0",
     "@auth0/auth0-spa-js": "^2.1.3",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
