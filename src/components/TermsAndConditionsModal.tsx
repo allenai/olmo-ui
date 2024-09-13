@@ -7,6 +7,7 @@ import {
     Checkbox,
     DialogActions,
     DialogContent,
+    DialogTitle,
     FormControlLabel,
     Link,
     Stack,
@@ -25,6 +26,8 @@ import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
 interface TermsAndConditionsSection {
     title: string;
+    image: string;
+    warning: string;
     contents: React.ReactNode;
     acknowledgement: string;
     submitButtonText: string;
@@ -32,7 +35,7 @@ interface TermsAndConditionsSection {
 
 export const TermsAndConditionsModal = () => {
     const theme = useMuiTheme();
-    const greaterThanSm = useMediaQuery(theme.breakpoints.up('sm'));
+    const greaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
     const formContext = useForm({
@@ -63,20 +66,18 @@ export const TermsAndConditionsModal = () => {
         <>
             <StandardModal open={open}>
                 <Stack direction="row" spacing={2} sx={{ display: 'flex' }}>
-                    {greaterThanSm && (
-                        <Stack sx={{ width: '40%', height: 'auto', justifyContent: 'center' }}>
-                            <Box component="img" src="/Subtract.png" />
+                    {greaterThanMd && (
+                        <Stack sx={{ height: 'auto', justifyContent: 'center' }}>
+                            <Box component="img" src={section.image} />
                         </Stack>
                     )}
                     <Stack sx={{ display: 'flex', flexDirection: 'column', flexGrow: 3 }} gap={1}>
-                        <Typography
+                        <DialogTitle
+                            id="modal-title"
                             variant="overline"
-                            sx={{
-                                color: (theme) => theme.palette.text.primary,
-                                fontSize: 'small',
-                            }}>
-                            GETTING STARTED
-                        </Typography>
+                            sx={{ p: 0, m: 0, color: (theme) => theme.palette.text.primary }}>
+                            Getting Started
+                        </DialogTitle>
                         <DialogContent
                             sx={{
                                 p: 0,
@@ -91,13 +92,13 @@ export const TermsAndConditionsModal = () => {
                                 variant="h1"
                                 color={(theme) => theme.palette.text.primary}
                                 m={0}>
-                                Research purposes
+                                {section.title}
                             </Typography>
                             <Typography
                                 variant="body1"
                                 color={(theme) => theme.palette.primary.dark}
                                 sx={{ m: 0, alignItems: 'center', display: 'inline-flex' }}>
-                                {section.title}
+                                {section.warning}
                             </Typography>
                             <Typography variant="body1">{section.contents}</Typography>
                         </DialogContent>
@@ -200,7 +201,9 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
 };
 
 const Section1: TermsAndConditionsSection = {
-    title: 'Please read carefully',
+    title: 'Research purposes',
+    image: '/Subtract.png',
+    warning: 'Please read carefully',
     contents: (
         <>
             OLMo Platform is a research tool designed to allow for interaction with the OLMo model
@@ -216,6 +219,8 @@ const Section1: TermsAndConditionsSection = {
 
 const Section2: TermsAndConditionsSection = {
     title: 'Limitations',
+    image: '/Blog Post Images.png',
+    warning: 'Please read carefully',
     contents: (
         <>
             Large pretrained language models, such as OLMo, are trained on mostly{' '}
@@ -246,6 +251,8 @@ const Section2: TermsAndConditionsSection = {
 
 const Section3: TermsAndConditionsSection = {
     title: 'Privacy and Data Collection',
+    image: '/Blog Post Images2.png',
+    warning: 'Please read carefully',
     contents: (
         <>
             The OLMo Platform collects user queries and inputs entered into it. You will have 30
