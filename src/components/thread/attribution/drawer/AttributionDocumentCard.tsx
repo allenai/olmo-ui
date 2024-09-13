@@ -28,7 +28,10 @@ const AttributionDocumentCardBase = ({
     source,
 }: AttributionDocumentCardBaseProps) => {
     return (
-        <Card>
+        <Card
+            sx={{
+                bgcolor: '#F8F0E780',
+            }}>
             <CardActionArea
                 disabled={setSelectedDocument == null}
                 onClick={() => {
@@ -63,11 +66,26 @@ const AttributionDocumentCardBase = ({
                     }}
                     data-selected-document={isSelected}
                     data-previewed-document={isPreviewed}>
-                    <Typography variant="h6" component="h2" margin={0}>
+                    <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        component="h4"
+                        margin={0}
+                        sx={{
+                            // This isn't _standard_ standard but it's widely available
+                            // It uses an older version of a Chrome flex implementation that's supported in Safari and FF
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            '-webkit-line-clamp': '2',
+                            lineClamp: '2',
+                            '-webkit-box-orient': 'vertical',
+                        }}>
                         {title}
                     </Typography>
                     <Typography variant="body1">{text}</Typography>
-                    <Typography variant="subtitle1" fontWeight="bold" component="span">
+                    {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
+                    <Typography variant="body2" fontWeight={600} component="span">
                         {source}
                     </Typography>
                 </CardContent>
@@ -92,10 +110,6 @@ export const AttributionDocumentCard = ({
     source,
     documentIndex,
 }: AttributionDocumentCardProps): JSX.Element => {
-    const isSelected = useAppContext(
-        (state) => state.attribution.selectedDocumentIndex === documentIndex
-    );
-
     const spans = useAppContext((state) => {
         const selectedMessageId = state.attribution.selectedMessageId;
 
@@ -107,31 +121,11 @@ export const AttributionDocumentCard = ({
         }
     });
 
-    const setSelectedDocument = useAppContext((state) => () => {
-        state.selectDocument(documentIndex);
-    });
-
-    const isPreviewed = useAppContext(
-        (state) => state.attribution.previewDocumentIndex === documentIndex
-    );
-
-    const setPreviewDocument = useAppContext((state) => () => {
-        state.previewDocument(documentIndex);
-    });
-    const unsetPreviewDocument = useAppContext((state) => () => {
-        state.stopPreviewingDocument(documentIndex);
-    });
-
     return (
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
             text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
             source={`Source: ${source}`}
-            isSelected={isSelected}
-            setSelectedDocument={setSelectedDocument}
-            isPreviewed={isPreviewed}
-            setPreviewDocument={setPreviewDocument}
-            unsetPreviewDocument={unsetPreviewDocument}
         />
     );
 };
