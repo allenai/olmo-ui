@@ -3,12 +3,15 @@ import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/mater
 import { useState } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
+import { useDesktopOrUp } from '../dolma/shared';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const isDesktopOrUp = useDesktopOrUp();
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -27,30 +30,42 @@ export const OlmoAppBar = (): JSX.Element => {
                 elevation={0}
                 sx={{
                     gridArea: 'app-bar',
-                    paddingInline: 2,
-                    paddingBlock: 3,
                 }}>
                 <Toolbar
-                    component={Stack}
-                    direction="row"
                     disableGutters
-                    gap={4}
-                    alignItems="center">
-                    <Link href="/">
+                    sx={{
+                        paddingBlockStart: 4,
+                        paddingInline: 4,
+
+                        display: 'grid',
+                        gridTemplateColumns: 'auto 1fr auto',
+                        alignItems: 'center',
+                    }}>
+                    <Link
+                        href="/"
+                        sx={{
+                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+                            gridColumn: '1',
+                            gridRow: '1',
+                        }}>
                         <img
-                            src="/olmo-logo-light.svg"
-                            alt="Return to Olmo home"
-                            height={46}
-                            width={91}
+                            height={18.5}
+                            width={60}
+                            src="/ai2-logo-full.svg"
+                            alt="Return to the Playground home page"
                         />
                     </Link>
                     <Typography
-                        variant="h3"
+                        variant={isDesktopOrUp ? 'h1' : 'h3'}
                         component="h1"
+                        color="primary"
                         sx={{
-                            color: (theme) => theme.palette.primary.main,
                             margin: 0,
-                            display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
+                            // marginInline: 'auto',
+
+                            textAlign: 'center',
+                            gridColumn: '1 / -1',
+                            gridRow: '1',
                         }}>
                         {title}
                     </Typography>
@@ -58,7 +73,8 @@ export const OlmoAppBar = (): JSX.Element => {
                         onClick={handleDrawerToggle}
                         sx={{
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                            marginInlineStart: 'auto',
+                            gridColumn: '-1',
+                            gridRow: '1',
                         }}>
                         <MenuIcon />
                     </IconButton>

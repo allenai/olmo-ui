@@ -96,13 +96,13 @@ export const routes: RouteObject[] = [
                                     </OlmoPage>
                                 ),
                                 handle: {
-                                    title: 'OLMo Playground',
+                                    title: 'Playground',
                                 },
                                 loader: selectedThreadLoader,
                             },
                         ],
                         handle: {
-                            title: 'OLMo Playground',
+                            title: 'Playground',
                         },
                         loader: playgroundLoader,
                         shouldRevalidate: handleRevalidation,

@@ -59,7 +59,6 @@ export const NewApp = () => {
 
                             overflow: 'auto',
 
-                            paddingInline: 2,
                             paddingBlockEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
 
                             height: 1,
@@ -102,6 +101,8 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                         'content'
                     `,
                     gridTemplateRows: 'auto 1fr',
+
+                    rowGap: 2,
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridTemplateAreas: `
