@@ -1,9 +1,16 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import { IconButton, InputAdornment, outlinedInputClasses, Stack, Typography } from '@mui/material';
-import React, { useCallback, useEffect } from 'react';
+import {
+    IconButton,
+    InputAdornment,
+    outlinedInputClasses,
+    Stack,
+    svgIconClasses,
+    Typography,
+} from '@mui/material';
+import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigation } from 'react-router-dom';
 
 import { MessagePost } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
@@ -11,6 +18,80 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
 import { getSelectedMessagesToShow } from './ThreadDisplay';
+
+interface QueryFormButtonProps
+    extends PropsWithChildren,
+        Pick<
+            ComponentProps<typeof IconButton>,
+            'type' | 'aria-label' | 'children' | 'disabled' | 'onKeyDown' | 'onClick'
+        > {}
+
+const QueryFormButton = ({
+    children,
+    type,
+    'aria-label': ariaLabel,
+    disabled,
+}: QueryFormButtonProps) => {
+    return (
+        <IconButton
+            type={type}
+            aria-label={ariaLabel}
+            color="inherit"
+            edge="end"
+            disableRipple
+            sx={(theme) => ({
+                paddingInlineEnd: 2,
+                '&:hover': {
+                    color: theme.color['teal-100'].hex,
+                },
+                [`&.Mui-focusVisible .${svgIconClasses.root}`]: {
+                    outline: `1px solid`,
+                    borderRadius: '50%',
+                },
+            })}
+            disabled={disabled}>
+            {children}
+        </IconButton>
+    );
+};
+
+interface SubmitPauseAdornmentProps {
+    canPause?: boolean;
+    onPause: (event: UIEvent) => void;
+    isSubmitDisabled?: boolean;
+}
+
+const SubmitPauseAdornment = ({
+    canPause,
+    onPause,
+    isSubmitDisabled,
+}: SubmitPauseAdornmentProps) => {
+    return (
+        <InputAdornment position="end" sx={{ color: 'text.primary' }}>
+            {canPause ? (
+                <QueryFormButton
+                    aria-label="Stop response generation"
+                    onKeyDown={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onPause(event);
+                    }}
+                    onClick={(event) => {
+                        onPause(event);
+                    }}>
+                    <StopCircleOutlinedIcon fontSize="large" />
+                </QueryFormButton>
+            ) : (
+                <QueryFormButton
+                    type="submit"
+                    aria-label="Submit prompt"
+                    disabled={isSubmitDisabled}>
+                    <ArrowCircleUpIcon fontSize="large" />
+                </QueryFormButton>
+            )}
+        </InputAdornment>
+    );
+};
 
 interface QueryFormProps {
     onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
@@ -45,7 +126,7 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
     );
 
     const onAbort = useCallback(
-        (event: React.MouseEvent<HTMLButtonElement>) => {
+        (event: UIEvent) => {
             event.preventDefault();
             abortController?.abort();
         },
@@ -95,11 +176,21 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
         }
     };
 
+    // Autofocus the input if we're on a new thread
     useEffect(() => {
         if (location.pathname === links.playground) {
             formContext.setFocus('content');
         }
     }, [location.pathname, formContext]);
+
+    const navigation = useNavigation();
+
+    // Clear errors when we navigate between pages
+    useEffect(() => {
+        if (navigation.state === 'loading') {
+            formContext.clearErrors();
+        }
+    }, [formContext, navigation.state]);
 
     return (
         <Box marginBlockStart="auto" width={1}>
@@ -132,45 +223,26 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                                 },
                             }),
                             endAdornment: (
-                                <InputAdornment position="end" sx={{ color: 'text.primary' }}>
-                                    {canPauseThread ? (
-                                        <IconButton
-                                            data-testid="Pause Thread"
-                                            onClick={(event) => {
-                                                onAbort(event);
-                                            }}>
-                                            <StopCircleOutlinedIcon fontSize="large" />
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton
-                                            type="submit"
-                                            data-testid="Submit Prompt Button"
-                                            disabled={
-                                                isSelectedThreadLoading ||
-                                                isLimitReached ||
-                                                !canEditThread
-                                            }>
-                                            <ArrowCircleUpIcon fontSize="large" />
-                                        </IconButton>
-                                    )}
-                                </InputAdornment>
+                                <SubmitPauseAdornment
+                                    canPause={canPauseThread}
+                                    onPause={onAbort}
+                                    isSubmitDisabled={
+                                        isSelectedThreadLoading || isLimitReached || !canEditThread
+                                    }
+                                />
                             ),
                         }}
                     />
                     <Stack direction="row" gap={2} alignItems="center">
                         {isLimitReached && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
+                            <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                                 You have reached maximum thread length. Please start a new thread.
                             </Typography>
                         )}
                         {!canEditThread && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You cannot add a prompt because you are not the thread creator.
-                                Please submit your prompt in a new thread.
+                            <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                                You cannot add a prompt because you are not the thread creator. Please
+                                submit your prompt in a new thread.
                             </Typography>
                         )}
                     </Stack>
