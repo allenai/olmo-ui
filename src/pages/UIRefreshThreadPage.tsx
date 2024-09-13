@@ -48,7 +48,8 @@ export const UIRefreshThreadPage = () => {
                     paddingBlockEnd: 2,
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlock: 2,
+                        paddingBlockStart: 2,
+                        paddingBlockEnd: 4,
                         paddingInline: 4,
                     },
 
