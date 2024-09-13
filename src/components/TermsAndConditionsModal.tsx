@@ -33,7 +33,6 @@ interface TermsAndConditionsSection {
 export const TermsAndConditionsModal = () => {
     const theme = useMuiTheme();
     const greaterThanSm = useMediaQuery(theme.breakpoints.up('sm'));
-    console.log(greaterThanSm);
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
     const formContext = useForm({
