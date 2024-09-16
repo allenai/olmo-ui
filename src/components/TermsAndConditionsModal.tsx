@@ -167,7 +167,6 @@ export const TermsAndConditionsModal = () => {
                                         <Button
                                             variant="contained"
                                             disabled={!isValid}
-                                            color="tertiary"
                                             type="submit"
                                             fullWidth
                                             sx={{
