@@ -67,7 +67,7 @@ export const UIRefreshThreadPage = () => {
                 </Select>
 
                 <Outlet />
-                <QueryForm onSubmit={handlePromptSubmission} variant="new" />
+                <QueryForm />
 
                 <Typography
                     variant="caption"

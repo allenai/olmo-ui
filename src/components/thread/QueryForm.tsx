@@ -4,8 +4,8 @@ import {
     Box,
     IconButton,
     InputAdornment,
-    outlinedInputClasses,
     Link,
+    outlinedInputClasses,
     Stack,
     svgIconClasses,
     Typography,
@@ -95,18 +95,19 @@ const SubmitPauseAdornment = ({
     );
 };
 
-interface QueryFormProps {
-    onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
-    variant: 'new' | 'response';
-}
-
-export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
+export const QueryForm = (): JSX.Element => {
     const formContext = useForm({
         defaultValues: {
             content: '',
             private: false,
         },
     });
+
+    const streamPrompt = useAppContext((state) => state.streamPrompt);
+
+    const handlePromptSubmission = async (data: { content: string; parent?: string }) => {
+        await streamPrompt(data);
+    };
 
     const location = useLocation();
 
@@ -233,21 +234,6 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                             return error.message;
                         }}
                         required
-                        parseError={(error) => {
-                            if (error.type === 'inappropriate') {
-                                return (
-                                    <>
-                                        This prompt was flagged as inappropriate. Please change your
-                                        prompt and resubmit.{' '}
-                                        <Link href={links.faqs} target="_blank" rel="noreferrer">
-                                            Learn why
-                                        </Link>
-                                    </>
-                                );
-                            }
-
-                            return error.message;
-                        }}
                         validation={{ pattern: /[^\s]+/ }}
                         // If we don't have a dense margin the label gets cut off!
                         margin="dense"
