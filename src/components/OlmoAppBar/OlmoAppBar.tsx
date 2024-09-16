@@ -1,5 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { links } from '@/Links';

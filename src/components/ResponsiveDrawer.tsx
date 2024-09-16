@@ -1,8 +1,7 @@
 import { Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
-import { useDesktopOrUp, useIsOnlyBreakpoint } from './dolma/shared';
+import { useDesktopOrUp } from './dolma/shared';
 
 type BaseResponsiveDrawerProps = {
     mobileHeading?: ReactNode;
