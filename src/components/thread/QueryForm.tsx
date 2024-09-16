@@ -4,8 +4,8 @@ import {
     Box,
     IconButton,
     InputAdornment,
-    outlinedInputClasses,
     Link,
+    outlinedInputClasses,
     Stack,
     svgIconClasses,
     Typography,
@@ -95,12 +95,7 @@ const SubmitPauseAdornment = ({
     );
 };
 
-interface QueryFormProps {
-    onSubmit: (data: { content: string; parent?: string }) => Promise<void> | void;
-    variant: 'new' | 'response';
-}
-
-export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
+export const QueryForm = (): JSX.Element => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
 
     const handlePromptSubmission = async (data: { content: string; parent?: string }) => {
@@ -174,10 +169,12 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
             await handlePromptSubmission(request);
             formContext.reset();
         } catch (e) {
-            if (e instanceof StreamBadRequestError) {
+            if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
                     type: 'inappropriate',
                 });
+            } else {
+                throw e;
             }
         }
     };

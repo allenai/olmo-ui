@@ -68,9 +68,6 @@ export const UIRefreshThreadPage = () => {
 
                 <Outlet />
                 <QueryForm />
-            </ResponsiveCard>
-
-            {threadPageMatch && <SearchDatasetCard />}
 
                 <Typography
                     variant="caption"
