@@ -1,6 +1,7 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import {
+    Box,
     IconButton,
     InputAdornment,
     outlinedInputClasses,
@@ -235,14 +236,18 @@ export const QueryForm = ({ onSubmit }: QueryFormProps): JSX.Element => {
                     />
                     <Stack direction="row" gap={2} alignItems="center">
                         {isLimitReached && (
-                            <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
                                 You have reached maximum thread length. Please start a new thread.
                             </Typography>
                         )}
                         {!canEditThread && (
-                            <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
-                                You cannot add a prompt because you are not the thread creator. Please
-                                submit your prompt in a new thread.
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You cannot add a prompt because you are not the thread creator.
+                                Please submit your prompt in a new thread.
                             </Typography>
                         )}
                     </Stack>
