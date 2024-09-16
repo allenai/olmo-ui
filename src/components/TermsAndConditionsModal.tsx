@@ -167,6 +167,7 @@ export const TermsAndConditionsModal = () => {
                                         <Button
                                             variant="contained"
                                             disabled={!isValid}
+                                            color="tertiary"
                                             type="submit"
                                             fullWidth
                                             sx={{
@@ -175,6 +176,16 @@ export const TermsAndConditionsModal = () => {
                                                 paddingX: 3,
                                                 paddingY: 1,
                                                 whiteSpace: 'nowrap',
+                                                backgroundColor: (theme) =>
+                                                    theme.palette.text.primary,
+                                                color: 'white',
+                                                '&:hover': {
+                                                    backgroundColor: theme.palette.text.primary,
+                                                },
+                                                ':focus-visible': {
+                                                    outlineStyle: 'solid',
+                                                    outlineWidth: 2,
+                                                },
                                             }}>
                                             {section.submitButtonText}
                                         </Button>
