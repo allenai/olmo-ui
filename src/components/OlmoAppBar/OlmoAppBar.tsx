@@ -26,27 +26,34 @@ export const OlmoAppBar = (): JSX.Element => {
             <AppBar
                 position="sticky"
                 color="inherit"
-                enableColorOnDark
                 elevation={0}
-                sx={{
+                sx={(theme) => ({
                     gridArea: 'app-bar',
-                }}>
-                <Toolbar
-                    disableGutters
-                    sx={{
+
+                    backgroundColor: theme.palette.background.reversed,
+
+                    paddingBlock: 1,
+                    paddingInline: 2,
+
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         paddingBlockStart: 4,
                         paddingInline: 4,
 
-                        display: 'grid',
-                        gridTemplateColumns: 'auto 1fr auto',
+                        backgroundColor: 'transparent',
+                    },
+                })}>
+                <Toolbar
+                    disableGutters
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
                     }}>
                     <Link
                         href="/"
+                        lineHeight={1}
                         sx={{
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                            gridColumn: '1',
-                            gridRow: '1',
                         }}>
                         <img
                             height={18.5}
@@ -61,20 +68,17 @@ export const OlmoAppBar = (): JSX.Element => {
                         color="primary"
                         sx={{
                             margin: 0,
-                            // marginInline: 'auto',
 
                             textAlign: 'center',
-                            gridColumn: '1 / -1',
-                            gridRow: '1',
                         }}>
                         {title}
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
+                        // @ts-expect-error - Varnish doesn't support tertiary colors yet
+                        color="tertiary"
                         sx={{
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                            gridColumn: '-1',
-                            gridRow: '1',
                         }}>
                         <MenuIcon />
                     </IconButton>

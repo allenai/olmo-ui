@@ -102,8 +102,6 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                     `,
                     gridTemplateRows: 'auto 1fr',
 
-                    rowGap: 2,
-
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridTemplateAreas: `
                             'nav app-bar side-drawer'
@@ -111,6 +109,7 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                         gridTemplateRows: 'auto minmax(0, 1fr)',
                         gridTemplateColumns: 'auto minmax(0, 1fr) auto',
                         columnGap: theme.spacing(8),
+                        rowGap: 2,
                     },
                 }),
             ]}
