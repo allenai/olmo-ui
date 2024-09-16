@@ -1,13 +1,15 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
+import { Icon, Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { KeyboardEventHandler, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 interface NavigationLinkProps extends PropsWithChildren {
     icon: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
+    variant?: 'internal' | 'external';
     href: string;
+    onClick?: MouseEventHandler | KeyboardEventHandler;
 }
 
 export const NavigationLink = ({
@@ -15,7 +17,7 @@ export const NavigationLink = ({
     children,
     href,
     selected,
-    isExternalLink,
+    variant = 'internal',
 }: NavigationLinkProps) => {
     return (
         <ListItem disableGutters>
@@ -23,21 +25,44 @@ export const NavigationLink = ({
                 component={Link}
                 alignItems="center"
                 selected={selected}
-                sx={{
-                    gap: (theme) => theme.spacing(2),
-                }}
-                target={isExternalLink ? '_blank' : '_self'}
+                sx={(theme) => ({
+                    gap: theme.spacing(2),
+                    color: theme.palette.common.white,
+
+                    '&.Mui-selected': {
+                        backgroundColor: 'transparent',
+                        color: theme.palette.tertiary.main,
+
+                        ':focus-visible': {
+                            backgroundColor: theme.palette.tertiary.light,
+                            color: theme.palette.tertiary.contrastText,
+                        },
+                    },
+
+                    '&.Mui-focusVisible': {
+                        backgroundColor: theme.palette.tertiary.light,
+                        color: theme.palette.tertiary.contrastText,
+                    },
+                })}
+                target={variant === 'external' ? '_blank' : '_self'}
                 href={href}>
-                <Icon>{icon}</Icon>
+                <ListItemIcon sx={{ color: 'inherit' }}>{icon}</ListItemIcon>
                 <ListItemText
-                    primaryTypographyProps={{ variant: 'h6', color: 'inherit', sx: { margin: 0 } }}>
+                    primaryTypographyProps={{
+                        variant: 'h4',
+                        component: 'span',
+                        color: 'inherit',
+                        sx: { margin: 0 },
+                    }}>
                     {children}
                 </ListItemText>
-                {isExternalLink ? (
-                    <LaunchOutlinedIcon sx={{ marginInlineStart: 'auto' }} />
-                ) : (
-                    <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
-                )}
+                <ListItemIcon sx={{ color: 'inherit' }}>
+                    {variant === 'external' ? (
+                        <LaunchOutlinedIcon sx={{ marginInlineStart: 'auto' }} />
+                    ) : (
+                        <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
+                    )}
+                </ListItemIcon>
             </ListItemButton>
         </ListItem>
     );

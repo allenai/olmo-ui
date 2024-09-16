@@ -10,8 +10,8 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
 import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
-import { ComponentProps, useEffect } from 'react';
-import { UIMatch, useMatches } from 'react-router-dom';
+import { ComponentProps, KeyboardEvent, MouseEvent, useEffect } from 'react';
+import { UIMatch, useLocation, useMatches, useNavigation } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { links } from '@/Links';
@@ -79,10 +79,6 @@ export const NavigationDrawer = ({
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
-            miniHeading={<TabletHeading toggleOpen={onDrawerToggle} open={open} />}
-            enableMiniVariant
-            miniVariantCollapsedWidth={7}
-            miniVariantExpandedWidth={45}
             desktopDrawerSx={{ gridArea: 'nav' }}>
             <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
                 <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
@@ -96,10 +92,9 @@ export const NavigationDrawer = ({
                         href={links.ourModels}
                         icon={<ModelTrainingIcon />}
                         selected={curriedDoesMatchPath(links.ourModels)}
-                        isExternalLink={true}>
+                        variant="external">
                         OLMo Models
                     </NavigationLink>
-                    <Divider />
                     <NavigationLink
                         href={links.datasetExplorer}
                         icon={<ExploreIcon />}
@@ -114,14 +109,15 @@ export const NavigationDrawer = ({
                         href={links.ourDatasets}
                         icon={<DatasetIcon />}
                         selected={curriedDoesMatchPath(links.ourDatasets)}
-                        isExternalLink={true}>
+                        variant="external">
                         Dolma Dataset
                     </NavigationLink>
-                    <Divider sx={{ marginBlockStart: 'auto' }} />
-                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
-                        FAQ
-                    </NavigationLink>
-                    <Auth0LoginLink />
+                    <Box marginBlockStart="auto">
+                        <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
+                            FAQ
+                        </NavigationLink>
+                        <Auth0LoginLink />
+                    </Box>
                 </Stack>
             </Box>
         </ResponsiveDrawer>
