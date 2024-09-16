@@ -1,6 +1,6 @@
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import { IconButton, InputAdornment, Link, Stack, Typography } from '@mui/material';
+import { Box, IconButton, InputAdornment, Link, Stack, Typography } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useLocation } from 'react-router-dom';
@@ -122,79 +122,85 @@ export const QueryForm = (): JSX.Element => {
     }, [location.pathname, formContext]);
 
     return (
-        <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-            <Stack gap={1.5} alignItems="flex-start">
-                <TextFieldElement
-                    name="content"
-                    label="Prompt"
-                    placeholder="Enter your prompt here"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    fullWidth
-                    multiline
-                    required
-                    parseError={(error) => {
-                        if (error.type === 'inappropriate') {
-                            return (
-                                <>
-                                    This prompt was flagged as inappropriate. Please change your
-                                    prompt and resubmit.{' '}
-                                    <Link href={links.faqs} target="_blank" rel="noreferrer">
-                                        Learn why
-                                    </Link>
-                                </>
-                            );
-                        }
+        <Box marginBlockStart="auto" width={1}>
+            <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+                <Stack gap={1.5} alignItems="flex-start">
+                    <TextFieldElement
+                        name="content"
+                        label="Prompt"
+                        placeholder="Enter your prompt here"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
+                        multiline
+                        required
+                        parseError={(error) => {
+                            if (error.type === 'inappropriate') {
+                                return (
+                                    <>
+                                        This prompt was flagged as inappropriate. Please change your
+                                        prompt and resubmit.{' '}
+                                        <Link href={links.faqs} target="_blank" rel="noreferrer">
+                                            Learn why
+                                        </Link>
+                                    </>
+                                );
+                            }
 
-                        return error.message;
-                    }}
-                    validation={{ pattern: /[^\s]+/ }}
-                    // If we don't have a dense margin the label gets cut off!
-                    margin="dense"
-                    disabled={!canEditThread}
-                    onKeyDown={handleOnKeyDown}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                {canPauseThread ? (
-                                    <IconButton
-                                        data-testid="Pause Thread"
-                                        onClick={(event) => {
-                                            onAbort(event);
-                                        }}>
-                                        <StopCircleOutlinedIcon fontSize="large" />
-                                    </IconButton>
-                                ) : (
-                                    <IconButton
-                                        type="submit"
-                                        data-testid="Submit Prompt Button"
-                                        disabled={
-                                            isSelectedThreadLoading ||
-                                            isLimitReached ||
-                                            !canEditThread
-                                        }>
-                                        <ArrowCircleUpIcon fontSize="large" />
-                                    </IconButton>
-                                )}
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <Stack direction="row" gap={2} alignItems="center">
-                    {isLimitReached && (
-                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
-                            You have reached maximum thread length. Please start a new thread.
-                        </Typography>
-                    )}
-                    {!canEditThread && (
-                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
-                            You cannot add a prompt because you are not the thread creator. Please
-                            submit your prompt in a new thread.
-                        </Typography>
-                    )}
+                            return error.message;
+                        }}
+                        validation={{ pattern: /[^\s]+/ }}
+                        // If we don't have a dense margin the label gets cut off!
+                        margin="dense"
+                        disabled={!canEditThread}
+                        onKeyDown={handleOnKeyDown}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    {canPauseThread ? (
+                                        <IconButton
+                                            data-testid="Pause Thread"
+                                            onClick={(event) => {
+                                                onAbort(event);
+                                            }}>
+                                            <StopCircleOutlinedIcon fontSize="large" />
+                                        </IconButton>
+                                    ) : (
+                                        <IconButton
+                                            type="submit"
+                                            data-testid="Submit Prompt Button"
+                                            disabled={
+                                                isSelectedThreadLoading ||
+                                                isLimitReached ||
+                                                !canEditThread
+                                            }>
+                                            <ArrowCircleUpIcon fontSize="large" />
+                                        </IconButton>
+                                    )}
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <Stack direction="row" gap={2} alignItems="center">
+                        {isLimitReached && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You have reached maximum thread length. Please start a new thread.
+                            </Typography>
+                        )}
+                        {!canEditThread && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You cannot add a prompt because you are not the thread creator.
+                                Please submit your prompt in a new thread.
+                            </Typography>
+                        )}
+                    </Stack>
                 </Stack>
-            </Stack>
-        </FormContainer>
+            </FormContainer>
+        </Box>
     );
 };
