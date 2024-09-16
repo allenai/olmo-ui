@@ -28,13 +28,14 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         <>
             <ChatMessage role={role} messageId={messageId}>
                 <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+
+                <MessageInteraction
+                    role={role}
+                    content={content}
+                    messageLabels={messageLabels}
+                    messageId={messageId}
+                />
             </ChatMessage>
-            <MessageInteraction
-                role={role}
-                content={content}
-                messageLabels={messageLabels}
-                messageId={messageId}
-            />
         </>
     );
 };
@@ -65,7 +66,7 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        <Stack gap={2} direction="column" data-testid="thread-display">
+        <Stack gap={2} direction="column" data-testid="thread-display" overflow="auto">
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
