@@ -82,6 +82,7 @@ export const ThreadPageControls = (): JSX.Element => {
             sx={(theme) => ({
                 borderColor: alpha(theme.palette.primary.main, 0.5),
                 padding: 2,
+                flexShrink: 0,
 
                 [smallerContainerQuery(theme)]: {
                     border: 0,
