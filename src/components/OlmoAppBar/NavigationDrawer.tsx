@@ -1,4 +1,8 @@
-import { LoginOutlined as LoginIcon } from '@mui/icons-material';
+import {
+    LoginOutlined as LoginIcon,
+    PolicyOutlined,
+    RateReviewOutlined,
+} from '@mui/icons-material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import CloseIcon from '@mui/icons-material/Close';
 import DatasetIcon from '@mui/icons-material/DatasetOutlined';
@@ -81,7 +85,9 @@ export const NavigationDrawer = ({
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
             desktopDrawerSx={{ gridArea: 'nav' }}>
-            <Stack component="nav" sx={{ height: 1, overflowX: 'hidden', paddingInline: 4 }}>
+            <Stack
+                component="nav"
+                sx={{ height: 1, overflowX: 'hidden', paddingInline: 4, paddingBlockEnd: 2 }}>
                 <NavigationLink
                     href={links.playground}
                     icon={<img alt="" src="/chat.svg" />}
@@ -89,11 +95,18 @@ export const NavigationDrawer = ({
                     Playground
                 </NavigationLink>
                 <NavigationLink
+                    onClick={() => {
+                        console.log('open thread history');
+                    }}
+                    inset>
+                    Thread history
+                </NavigationLink>
+                <NavigationLink
                     href={links.ourModels}
-                    icon={<ModelTrainingIcon />}
                     selected={curriedDoesMatchPath(links.ourModels)}
-                    iconVariant="external">
-                    OLMo Models
+                    iconVariant="external"
+                    inset>
+                    Ai2&apos;s models
                 </NavigationLink>
                 <NavigationLink
                     href={links.datasetExplorer}
@@ -107,17 +120,31 @@ export const NavigationDrawer = ({
                 </NavigationLink>
                 <NavigationLink
                     href={links.ourDatasets}
-                    icon={<DatasetIcon />}
                     selected={curriedDoesMatchPath(links.ourDatasets)}
-                    iconVariant="external">
-                    Dolma Dataset
+                    iconVariant="external"
+                    inset>
+                    Ai2&apos;s datasets
                 </NavigationLink>
-                <Box marginBlockStart="auto" id="nav-footer">
+                <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
                         FAQ
                     </NavigationLink>
+                    <NavigationLink
+                        icon={<RateReviewOutlined />}
+                        href={links.feedbackForm}
+                        iconVariant="external"
+                        variant="footer">
+                        Give feedback
+                    </NavigationLink>
+                    <NavigationLink
+                        icon={<PolicyOutlined />}
+                        href={links.responsibleUsePolicy}
+                        iconVariant="external"
+                        variant="footer">
+                        Responsible use policy
+                    </NavigationLink>
                     <Auth0LoginLink />
-                </Box>
+                </Stack>
             </Stack>
         </ResponsiveDrawer>
     );

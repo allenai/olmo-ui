@@ -33,31 +33,39 @@ const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItem
     />
 );
 
-interface NavigationLinkProps extends PropsWithChildren {
-    icon: ReactNode;
+type NavigationLinkProps = PropsWithChildren & {
+    icon?: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
     variant?: 'default' | 'footer';
     iconVariant?: 'internal' | 'external';
-    href: string;
-    onClick?: MouseEventHandler | KeyboardEventHandler;
-}
+    inset?: boolean;
+    dense?: boolean;
+} & (
+        | {
+              href?: never;
+              onClick?: MouseEventHandler | KeyboardEventHandler;
+          }
+        | { href: string; onClick?: never }
+    );
 
 export const NavigationLink = ({
     icon,
     children,
     href,
     selected,
-    variant,
+    variant = 'default',
     iconVariant = 'internal',
+    inset,
 }: NavigationLinkProps) => {
     return (
-        <ListItem disableGutters>
+        <ListItem disableGutters dense={variant === 'footer'}>
             <ListItemButton
                 component={Link}
                 alignItems="center"
                 selected={selected}
                 disableGutters
+                dense={variant === 'footer'}
                 sx={(theme) => ({
                     gap: theme.spacing(2),
                     color: theme.palette.common.white,
@@ -77,10 +85,12 @@ export const NavigationLink = ({
                         color: theme.palette.tertiary.contrastText,
                     },
                 })}
-                target={href.startsWith('/') ? '_self' : '_blank'}
+                target={href == null ? undefined : href.startsWith('/') ? '_self' : '_blank'}
                 href={href}>
                 <NavigationListItemIcon
-                    sx={{ height: '1.25rem', widtH: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
+                    sx={{ height: '1.25rem', width: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
+                    {/* We need something to take up space if this item is inset */}
+                    {inset && icon == null && <div />}
                     {icon}
                 </NavigationListItemIcon>
                 <ListItemText
@@ -88,19 +98,11 @@ export const NavigationLink = ({
                     primaryTypographyProps={{
                         variant: variant === 'default' ? 'h4' : 'body1',
                         component: 'span',
-                        color: 'inherit',
-                        fontWeight: 500,
-                        // TODO: Put this back when we get semiBold added to varnish
-                        // fontWeight: (theme) => theme.typography.fontWeightSemiBold,
                     }}>
                     {children}
                 </ListItemText>
                 <NavigationListItemIcon>
-                    {iconVariant === 'external' ? (
-                        <LaunchOutlinedIcon sx={{ fontSize: '1rem' }} />
-                    ) : (
-                        <img height={16} width={16} src="/chevron-ai2.svg" alt="" />
-                    )}
+                    {iconVariant === 'external' && <LaunchOutlinedIcon sx={{ fontSize: '1rem' }} />}
                 </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>

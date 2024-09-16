@@ -97,7 +97,7 @@ export const ResponsiveDrawer = ({
                             sharedDrawerStyle,
                             {
                                 width: 'auto',
-                                minWidth: '19rem',
+                                minWidth: '21rem',
                                 maxWidth: 'calc(100dvw - 44px)',
                             },
                         ],
