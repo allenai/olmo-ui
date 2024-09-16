@@ -32,7 +32,7 @@ import {
 const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <>
-            <MetaTags title="AI2 Playground - OLMo" />
+            <MetaTags title="AI2 Playground" />
             {children}
         </>
     );
@@ -52,7 +52,7 @@ export const routes: RouteObject[] = [
         id: 'root',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
-                <MetaTags title="AI2 Playground - OLMo" />
+                <MetaTags title="AI2 Playground" />
                 <Outlet />
             </VarnishedApp>
         ),

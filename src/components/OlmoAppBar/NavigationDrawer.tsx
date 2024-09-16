@@ -3,18 +3,16 @@ import {
     PolicyOutlined,
     RateReviewOutlined,
 } from '@mui/icons-material';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import CloseIcon from '@mui/icons-material/Close';
-import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
-import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
-import { Box, IconButton, Link, List, Stack } from '@mui/material';
+import { IconButton, Link, Stack } from '@mui/material';
 import { ComponentProps, useEffect } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { ChatIcon } from '@/components/assets/ChatIcon';
 import { links } from '@/Links';
 
 import { Ai2LogoFull } from '../Ai2LogoFull';
@@ -90,7 +88,7 @@ export const NavigationDrawer = ({
                 sx={{ height: 1, overflowX: 'hidden', paddingInline: 4, paddingBlockEnd: 2 }}>
                 <NavigationLink
                     href={links.playground}
-                    icon={<img alt="" src="/chat.svg" />}
+                    icon={<ChatIcon />}
                     selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
                     Playground
                 </NavigationLink>

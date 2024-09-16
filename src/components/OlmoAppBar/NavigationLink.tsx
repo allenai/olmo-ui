@@ -74,6 +74,10 @@ export const NavigationLink = ({
                         backgroundColor: 'transparent',
                         color: theme.palette.tertiary.main,
 
+                        ':hover': {
+                            backgroundColor: 'transparent',
+                        },
+
                         ':focus-visible': {
                             backgroundColor: theme.palette.tertiary.light,
                             color: theme.palette.tertiary.contrastText,
