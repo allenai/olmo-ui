@@ -25,7 +25,7 @@ const Auth0LoginLink = () => {
     if (isAuthenticated) {
         return (
             <NavigationLink icon={<LogoutIcon />} href={links.logout} variant="footer">
-                Log Out
+                Log out
             </NavigationLink>
         );
     }
@@ -35,7 +35,7 @@ const Auth0LoginLink = () => {
             icon={<LoginIcon />}
             href={links.login(window.location.href)}
             variant="footer">
-            Log In
+            Log in
         </NavigationLink>
     );
 };

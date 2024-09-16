@@ -1,15 +1,5 @@
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import {
-    Icon,
-    Link,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    styled,
-    SvgIcon,
-} from '@mui/material';
+import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import {
     ComponentProps,
     KeyboardEventHandler,
