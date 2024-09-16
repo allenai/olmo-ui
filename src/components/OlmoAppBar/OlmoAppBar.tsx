@@ -2,7 +2,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
+import { links } from '@/Links';
+
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
+import { Ai2LogoFull } from '../Ai2LogoFull';
 import { useDesktopOrUp } from '../dolma/shared';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
@@ -50,15 +53,14 @@ export const OlmoAppBar = (): JSX.Element => {
                         alignItems: 'center',
                     }}>
                     <Link
-                        href="/"
+                        href={links.home}
                         lineHeight={1}
                         sx={{
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
-                        <img
+                        <Ai2LogoFull
                             height={18.5}
                             width={60}
-                            src="/ai2-logo-full.svg"
                             alt="Return to the Playground home page"
                         />
                     </Link>

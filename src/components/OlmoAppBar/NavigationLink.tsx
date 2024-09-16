@@ -1,13 +1,44 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Icon, Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { KeyboardEventHandler, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import {
+    Icon,
+    Link,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    styled,
+    SvgIcon,
+} from '@mui/material';
+import {
+    ComponentProps,
+    KeyboardEventHandler,
+    MouseEventHandler,
+    PropsWithChildren,
+    ReactNode,
+} from 'react';
+
+const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
+    <ListItemIcon
+        sx={[
+            {
+                color: 'inherit',
+                minWidth: 'unset',
+            },
+            // Array.isArray doesn't preserve Sx's array type
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            ...(Array.isArray(sx) ? sx : [sx]),
+        ]}
+        {...props}
+    />
+);
 
 interface NavigationLinkProps extends PropsWithChildren {
     icon: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
-    variant?: 'internal' | 'external';
+    variant?: 'default' | 'footer';
+    iconVariant?: 'internal' | 'external';
     href: string;
     onClick?: MouseEventHandler | KeyboardEventHandler;
 }
@@ -17,7 +48,8 @@ export const NavigationLink = ({
     children,
     href,
     selected,
-    variant = 'internal',
+    variant,
+    iconVariant = 'internal',
 }: NavigationLinkProps) => {
     return (
         <ListItem disableGutters>
@@ -25,6 +57,7 @@ export const NavigationLink = ({
                 component={Link}
                 alignItems="center"
                 selected={selected}
+                disableGutters
                 sx={(theme) => ({
                     gap: theme.spacing(2),
                     color: theme.palette.common.white,
@@ -44,25 +77,31 @@ export const NavigationLink = ({
                         color: theme.palette.tertiary.contrastText,
                     },
                 })}
-                target={variant === 'external' ? '_blank' : '_self'}
+                target={href.startsWith('/') ? '_self' : '_blank'}
                 href={href}>
-                <ListItemIcon sx={{ color: 'inherit' }}>{icon}</ListItemIcon>
+                <NavigationListItemIcon
+                    sx={{ height: '1.25rem', widtH: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
+                    {icon}
+                </NavigationListItemIcon>
                 <ListItemText
+                    sx={{ margin: 0, marginInlineEnd: 'auto' }}
                     primaryTypographyProps={{
-                        variant: 'h4',
+                        variant: variant === 'default' ? 'h4' : 'body1',
                         component: 'span',
                         color: 'inherit',
-                        sx: { margin: 0 },
+                        fontWeight: 500,
+                        // TODO: Put this back when we get semiBold added to varnish
+                        // fontWeight: (theme) => theme.typography.fontWeightSemiBold,
                     }}>
                     {children}
                 </ListItemText>
-                <ListItemIcon sx={{ color: 'inherit' }}>
-                    {variant === 'external' ? (
-                        <LaunchOutlinedIcon sx={{ marginInlineStart: 'auto' }} />
+                <NavigationListItemIcon>
+                    {iconVariant === 'external' ? (
+                        <LaunchOutlinedIcon sx={{ fontSize: '1rem' }} />
                     ) : (
-                        <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
+                        <img height={16} width={16} src="/chevron-ai2.svg" alt="" />
                     )}
-                </ListItemIcon>
+                </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>
     );

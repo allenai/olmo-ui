@@ -47,7 +47,6 @@ export const ResponsiveDrawer = ({
     desktopDrawerSx,
     anchor = 'left',
     desktopDrawerVariant = 'permanent',
-    ...rest
 }: ResponsiveDrawerProps): JSX.Element => {
     const isPersistentDrawerClosed = !open && desktopDrawerVariant === 'persistent';
     const isDesktop = useDesktopOrUp();
@@ -66,6 +65,8 @@ export const ResponsiveDrawer = ({
                             width: 'auto',
                             overflow: isPersistentDrawerClosed ? 'hidden' : 'visible',
                         },
+                        // Array.isArray doesn't preserve Sx's array type
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         ...(Array.isArray(desktopDrawerSx) ? desktopDrawerSx : [desktopDrawerSx]),
                     ]}
                     PaperProps={{
@@ -96,6 +97,7 @@ export const ResponsiveDrawer = ({
                             sharedDrawerStyle,
                             {
                                 width: 'auto',
+                                minWidth: '19rem',
                                 maxWidth: 'calc(100dvw - 44px)',
                             },
                         ],

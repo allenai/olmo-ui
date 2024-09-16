@@ -1,21 +1,19 @@
-import { logos } from '@allenai/varnish2/components';
 import { LoginOutlined as LoginIcon } from '@mui/icons-material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
-import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
-import { ComponentProps, KeyboardEvent, MouseEvent, useEffect } from 'react';
-import { UIMatch, useLocation, useMatches, useNavigation } from 'react-router-dom';
+import { Box, IconButton, Link, List, Stack } from '@mui/material';
+import { ComponentProps, useEffect } from 'react';
+import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { links } from '@/Links';
 
+import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
@@ -24,14 +22,17 @@ const Auth0LoginLink = () => {
 
     if (isAuthenticated) {
         return (
-            <NavigationLink icon={<LogoutIcon />} href={links.logout}>
+            <NavigationLink icon={<LogoutIcon />} href={links.logout} variant="footer">
                 Log Out
             </NavigationLink>
         );
     }
 
     return (
-        <NavigationLink icon={<LoginIcon />} href={links.login(window.location.href)}>
+        <NavigationLink
+            icon={<LoginIcon />}
+            href={links.login(window.location.href)}
+            variant="footer">
             Log In
         </NavigationLink>
     );
@@ -80,46 +81,44 @@ export const NavigationDrawer = ({
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
             desktopDrawerSx={{ gridArea: 'nav' }}>
-            <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
-                <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
-                    <NavigationLink
-                        href={links.playground}
-                        icon={<ChatBubbleIcon />}
-                        selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                        OLMo Playground
+            <Stack component="nav" sx={{ height: 1, overflowX: 'hidden', paddingInline: 4 }}>
+                <NavigationLink
+                    href={links.playground}
+                    icon={<img alt="" src="/chat.svg" />}
+                    selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
+                    Playground
+                </NavigationLink>
+                <NavigationLink
+                    href={links.ourModels}
+                    icon={<ModelTrainingIcon />}
+                    selected={curriedDoesMatchPath(links.ourModels)}
+                    iconVariant="external">
+                    OLMo Models
+                </NavigationLink>
+                <NavigationLink
+                    href={links.datasetExplorer}
+                    icon={<ExploreIcon />}
+                    selected={
+                        curriedDoesMatchPath(links.datasetExplorer) ||
+                        curriedDoesMatchPath(links.search) ||
+                        curriedDoesMatchPath(links.document(''))
+                    }>
+                    Dataset Explorer
+                </NavigationLink>
+                <NavigationLink
+                    href={links.ourDatasets}
+                    icon={<DatasetIcon />}
+                    selected={curriedDoesMatchPath(links.ourDatasets)}
+                    iconVariant="external">
+                    Dolma Dataset
+                </NavigationLink>
+                <Box marginBlockStart="auto" id="nav-footer">
+                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
+                        FAQ
                     </NavigationLink>
-                    <NavigationLink
-                        href={links.ourModels}
-                        icon={<ModelTrainingIcon />}
-                        selected={curriedDoesMatchPath(links.ourModels)}
-                        variant="external">
-                        OLMo Models
-                    </NavigationLink>
-                    <NavigationLink
-                        href={links.datasetExplorer}
-                        icon={<ExploreIcon />}
-                        selected={
-                            curriedDoesMatchPath(links.datasetExplorer) ||
-                            curriedDoesMatchPath(links.search) ||
-                            curriedDoesMatchPath(links.document(''))
-                        }>
-                        Dataset Explorer
-                    </NavigationLink>
-                    <NavigationLink
-                        href={links.ourDatasets}
-                        icon={<DatasetIcon />}
-                        selected={curriedDoesMatchPath(links.ourDatasets)}
-                        variant="external">
-                        Dolma Dataset
-                    </NavigationLink>
-                    <Box marginBlockStart="auto">
-                        <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
-                            FAQ
-                        </NavigationLink>
-                        <Auth0LoginLink />
-                    </Box>
-                </Stack>
-            </Box>
+                    <Auth0LoginLink />
+                </Box>
+            </Stack>
         </ResponsiveDrawer>
     );
 };
@@ -130,15 +129,20 @@ interface MobileHeadingProps {
 
 const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
     return (
-        <Stack direction="row" justifyContent="space-between" paddingBlock={3} paddingInline={2}>
-            <Typography
-                variant="h4"
-                component="span"
-                m={0}
-                color={(theme) => theme.palette.primary.main}>
-                Menu
-            </Typography>
-            <IconButton aria-label="Close navigation drawer" onClick={onClose}>
+        <Stack
+            direction="row"
+            justifyContent="space-between"
+            paddingBlock={4}
+            paddingInline={4}
+            alignItems="center">
+            <Link href={links.home}>
+                <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
+            </Link>
+            <IconButton
+                aria-label="Close navigation drawer"
+                onClick={onClose}
+                edge="end"
+                sx={{ color: (theme) => theme.palette.tertiary.main }}>
                 <CloseIcon />
             </IconButton>
         </Stack>
@@ -147,36 +151,8 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 
 const DesktopHeading = (): JSX.Element => {
     return (
-        <Link paddingInline={2} paddingBlock={4} href="https://allenai.org">
-            <logos.AI2Logo />
+        <Link paddingInline={2} paddingBlock={4} href={links.home}>
+            <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
         </Link>
-    );
-};
-
-interface TabletHeadingProps {
-    toggleOpen: () => void;
-    open?: boolean;
-}
-
-const TabletHeading = ({ toggleOpen, open }: TabletHeadingProps): JSX.Element => {
-    return (
-        <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            paddingInlineStart={1}
-            paddingInlineEnd={2}
-            paddingBlock={4}
-            gap={2}
-            flexWrap="nowrap">
-            <IconButton
-                onClick={toggleOpen}
-                title={`${open === true ? 'Collapse' : 'Expand'} navigation drawer`}>
-                {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-            <Link href="https://allenai.org" marginInlineStart="auto">
-                <logos.AI2Logo includeText={false} />
-            </Link>
-        </Stack>
     );
 };

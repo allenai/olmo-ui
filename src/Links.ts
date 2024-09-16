@@ -1,4 +1,5 @@
 export const links = {
+    home: '/',
     playground: '/',
     ourModels: 'https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778',
     datasetExplorer: '/dolma',
