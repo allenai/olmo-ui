@@ -60,8 +60,10 @@ export const NewApp = () => {
 
                             height: 1,
 
-                            // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
-                            gridArea: 'aside / content / aside / aside',
+                            gridArea: {
+                                // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
+                                [DESKTOP_LAYOUT_BREAKPOINT]: 'aside / content / aside / aside',
+                            },
                             gridTemplateColumns: 'subgrid',
                             gridTemplateRows: 'subgrid',
 
