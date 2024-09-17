@@ -6,7 +6,6 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
     return (
         <Dialog
             fullWidth
-            fullScreen={false}
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
             maxWidth="md"

@@ -27,7 +27,6 @@ import { TermAndConditionsLink } from './TermsAndConditionsLink';
 interface TermsAndConditionsSection {
     title: string;
     image: string;
-    warning: string;
     contents: React.ReactNode;
     acknowledgement: string;
     submitButtonText: string;
@@ -107,7 +106,7 @@ export const TermsAndConditionsModal = () => {
                                 variant="body1"
                                 color={(theme) => theme.palette.primary.dark}
                                 sx={{ m: 0, alignItems: 'center', display: 'inline-flex' }}>
-                                {section.warning}
+                                Please read carefully
                             </Typography>
                             <Typography variant="body1">{section.contents}</Typography>
                         </DialogContent>
@@ -239,7 +238,6 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
 const Section1: TermsAndConditionsSection = {
     title: 'Research purposes',
     image: '/Subtract.png',
-    warning: 'Please read carefully',
     contents: (
         <>
             OLMo Platform is a research tool designed to allow for interaction with the OLMo model
@@ -256,7 +254,6 @@ const Section1: TermsAndConditionsSection = {
 const Section2: TermsAndConditionsSection = {
     title: 'Limitations',
     image: '/Blog Post Images.png',
-    warning: 'Please read carefully',
     contents: (
         <>
             Large pretrained language models, such as OLMo, are trained on mostly{' '}
@@ -288,7 +285,6 @@ const Section2: TermsAndConditionsSection = {
 const Section3: TermsAndConditionsSection = {
     title: 'Privacy and Data Collection',
     image: '/Blog Post Images2.png',
-    warning: 'Please read carefully',
     contents: (
         <>
             The OLMo Platform collects user queries and inputs entered into it. You will have 30
