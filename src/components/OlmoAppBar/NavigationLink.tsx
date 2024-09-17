@@ -1,43 +1,103 @@
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Icon, Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
+import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import {
+    ComponentProps,
+    KeyboardEventHandler,
+    MouseEventHandler,
+    PropsWithChildren,
+    ReactNode,
+} from 'react';
 
-interface NavigationLinkProps extends PropsWithChildren {
-    icon: ReactNode;
+const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
+    <ListItemIcon
+        sx={[
+            {
+                color: 'inherit',
+                minWidth: 'unset',
+            },
+            // Array.isArray doesn't preserve Sx's array type
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            ...(Array.isArray(sx) ? sx : [sx]),
+        ]}
+        {...props}
+    />
+);
+
+type NavigationLinkProps = PropsWithChildren & {
+    icon?: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
-    href: string;
-}
+    variant?: 'default' | 'footer';
+    iconVariant?: 'internal' | 'external';
+    inset?: boolean;
+    dense?: boolean;
+} & (
+        | {
+              href?: never;
+              onClick?: MouseEventHandler | KeyboardEventHandler;
+          }
+        | { href: string; onClick?: never }
+    );
 
 export const NavigationLink = ({
     icon,
     children,
     href,
     selected,
-    isExternalLink,
+    variant = 'default',
+    iconVariant = 'internal',
+    inset,
 }: NavigationLinkProps) => {
     return (
-        <ListItem disableGutters>
+        <ListItem disableGutters dense={variant === 'footer'}>
             <ListItemButton
                 component={Link}
                 alignItems="center"
                 selected={selected}
-                sx={{
-                    gap: (theme) => theme.spacing(2),
-                }}
-                target={isExternalLink ? '_blank' : '_self'}
+                disableGutters
+                dense={variant === 'footer'}
+                sx={(theme) => ({
+                    gap: theme.spacing(2),
+                    color: theme.palette.common.white,
+
+                    '&.Mui-selected': {
+                        backgroundColor: 'transparent',
+                        color: theme.palette.tertiary.main,
+
+                        ':hover': {
+                            backgroundColor: 'transparent',
+                        },
+
+                        ':focus-visible': {
+                            backgroundColor: theme.palette.tertiary.light,
+                            color: theme.palette.tertiary.contrastText,
+                        },
+                    },
+
+                    '&.Mui-focusVisible': {
+                        backgroundColor: theme.palette.tertiary.light,
+                        color: theme.palette.tertiary.contrastText,
+                    },
+                })}
+                target={href == null ? undefined : href.startsWith('/') ? '_self' : '_blank'}
                 href={href}>
-                <Icon>{icon}</Icon>
+                <NavigationListItemIcon
+                    sx={{ height: '1.25rem', width: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
+                    {/* We need something to take up space if this item is inset */}
+                    {inset && icon == null && <div />}
+                    {icon}
+                </NavigationListItemIcon>
                 <ListItemText
-                    primaryTypographyProps={{ variant: 'h6', color: 'inherit', sx: { margin: 0 } }}>
+                    sx={{ margin: 0, marginInlineEnd: 'auto' }}
+                    primaryTypographyProps={{
+                        variant: variant === 'default' ? 'h4' : 'body1',
+                        component: 'span',
+                    }}>
                     {children}
                 </ListItemText>
-                {isExternalLink ? (
-                    <LaunchOutlinedIcon sx={{ marginInlineStart: 'auto' }} />
-                ) : (
-                    <ChevronRightIcon sx={{ marginInlineStart: 'auto' }} />
-                )}
+                <NavigationListItemIcon>
+                    {iconVariant === 'external' && <LaunchOutlinedIcon sx={{ fontSize: '1rem' }} />}
+                </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>
     );

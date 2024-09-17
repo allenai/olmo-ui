@@ -4,7 +4,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('button', { name: 'History' }).click();
+    await page.getByRole('button', { name: 'History', exact: true }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Attribution' }).click();

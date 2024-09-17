@@ -8,9 +8,7 @@ import { useAppContext } from '../AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { useDesktopOrUp } from './dolma/shared';
 import { FAQDrawer } from './faq/FAQDrawer';
-import { Footer } from './Footer/Footer';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
-import { MobilePageTitle } from './OlmoAppBar/MobilePageTitle';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 import { AttributionDrawer } from './thread/attribution/drawer/AttributionDrawer';
@@ -56,13 +54,12 @@ export const NewApp = () => {
                     <Container
                         component="main"
                         sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+
                             overflow: 'auto',
 
-                            paddingInline: 2,
-                            paddingBlockStart: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
-                            // This is to give a little more height to the layout so it's a little easier to see at the end. If we add a footer we can remove this!
-                            // on mobile, we need more space because of the fixed header
-                            paddingBlockEnd: { xs: 16, [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
+                            paddingBlockEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
 
                             height: 1,
 
@@ -74,9 +71,7 @@ export const NewApp = () => {
                             }),
                         }}
                         maxWidth={false}>
-                        <MobilePageTitle />
                         <Outlet />
-                        <Footer />
                     </Container>
                 </>
             ) : null}
@@ -100,14 +95,21 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                     height: '100vh',
                     width: '100%',
 
+                    display: 'grid',
+                    gridTemplateAreas: `
+                        'app-bar'
+                        'content'
+                    `,
+                    gridTemplateRows: 'auto 1fr',
+
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        display: 'grid',
                         gridTemplateAreas: `
                             'nav app-bar side-drawer'
                             'nav content side-drawer'`,
-                        gridTemplateRows: 'auto 1fr',
-                        gridTemplateColumns: 'auto 1fr auto',
+                        gridTemplateRows: 'auto minmax(0, 1fr)',
+                        gridTemplateColumns: 'auto minmax(0, 1fr) auto',
                         columnGap: theme.spacing(8),
+                        rowGap: 2,
                     },
                 }),
             ]}

@@ -10,7 +10,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.waitForLoadState('networkidle');
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
-    await page.getByTestId('Submit Prompt Button').click();
+    await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
@@ -18,7 +18,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     expect(page.url()).toContain(selectedThreadId);
 
     // Make sure the new message is in the history drawer
-    await page.getByRole('button', { name: 'History' }).click();
+    await page.getByRole('button', { name: 'History', exact: true }).click();
     await expect(page.getByText('Today')).toBeVisible();
     await expect(page.getByRole('link', { name: 'User message' })).toBeVisible();
     await page.getByRole('button', { name: 'close history drawer' }).click();
@@ -26,7 +26,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     // Send a second message in the thread
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('say one word');
-    await page.getByTestId('Submit Prompt Button').click();
+    await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
@@ -39,7 +39,7 @@ test('can load threads from history drawer', async ({ page }) => {
     // Check the first existing thread
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'History' }).click();
+    await page.getByRole('button', { name: 'History', exact: true }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'close history drawer' }).click();

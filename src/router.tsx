@@ -13,6 +13,7 @@ import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
+import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
@@ -31,7 +32,7 @@ import {
 const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
         <>
-            <MetaTags title="AI2 Playground - OLMo" />
+            <MetaTags title="AI2 Playground" />
             {children}
         </>
     );
@@ -51,7 +52,7 @@ export const routes: RouteObject[] = [
         id: 'root',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
-                <MetaTags title="AI2 Playground - OLMo" />
+                <MetaTags title="AI2 Playground" />
                 <Outlet />
             </VarnishedApp>
         ),
@@ -78,6 +79,10 @@ export const routes: RouteObject[] = [
                         element: <UIRefreshThreadPage />,
                         children: [
                             {
+                                path: links.playground,
+                                element: <ThreadPlaceholder />,
+                            },
+                            {
                                 path: '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
                                 // We just redirect to the playground to make sure people going to /thread get what they want
@@ -91,13 +96,13 @@ export const routes: RouteObject[] = [
                                     </OlmoPage>
                                 ),
                                 handle: {
-                                    title: 'OLMo Playground',
+                                    title: 'Playground',
                                 },
                                 loader: selectedThreadLoader,
                             },
                         ],
                         handle: {
-                            title: 'OLMo Playground',
+                            title: 'Playground',
                         },
                         loader: playgroundLoader,
                         shouldRevalidate: handleRevalidation,
