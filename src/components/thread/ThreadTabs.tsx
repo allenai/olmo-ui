@@ -1,5 +1,5 @@
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Tab } from '@mui/material';
+import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
+import { Box, styled, Typography } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 
 import { AttributionContent } from './attribution/drawer/AttributionDrawer';
@@ -18,22 +18,72 @@ export const ThreadTabs = () => {
     };
 
     return (
-        <TabContext value={currentTab}>
-            <Box sx={{ gridArea: 'aside', overflowY: 'auto' }} bgcolor="background.default">
-                <TabList
-                    onChange={handleChange}
-                    sx={{ position: 'sticky', top: 0, backgroundColor: 'inherit', zIndex: 1 }}>
-                    <Tab label="Parameters" value={PARAMETERS_TAB_NAME} />
-                    <Tab label="Dataset" value={DATASET_TAB_NAME} />
-                </TabList>
+        <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
+            <TabsWithOverflow defaultValue={currentTab}>
+                <StickyTabsList>
+                    <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
+                        <Typography variant="h4" component="span">
+                            Parameters
+                        </Typography>
+                    </TabControl>
+                    <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
+                        <Typography variant="h4" component="span">
+                            Dataset
+                        </Typography>
+                    </TabControl>
+                </StickyTabsList>
 
-                <TabPanel value={PARAMETERS_TAB_NAME} sx={{ padding: 0 }}>
+                <TabPanelWithOverflow
+                    value={PARAMETERS_TAB_NAME}
+                    aria-labelledby="parameters-tab-control"
+                    id="parameters-tabpanel">
                     <ParameterContent />
-                </TabPanel>
-                <TabPanel value={DATASET_TAB_NAME} sx={{ padding: 0 }}>
+                </TabPanelWithOverflow>
+                <TabPanelWithOverflow
+                    value={DATASET_TAB_NAME}
+                    aria-labelledby="dataset-tab-control"
+                    id="parameters-tabpanel">
                     <AttributionContent />
-                </TabPanel>
-            </Box>
-        </TabContext>
+                </TabPanelWithOverflow>
+            </TabsWithOverflow>
+        </Box>
     );
 };
+
+const StickyTabsList = styled(TabsList)(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
+
+    width: '100%',
+    display: 'flex',
+}));
+
+const TabControl = styled(Tab)(({ theme }) => ({
+    paddingBlock: theme.spacing(3),
+    paddingInline: theme.spacing(2),
+    border: 0,
+    flexGrow: 1,
+
+    color: theme.palette.primary.dark,
+    backgroundColor: theme.palette.background.paper,
+
+    '&[aria-selected="true"]': {
+        backgroundColor: 'transparent',
+        color: 'inherit',
+    },
+}));
+
+const TabsWithOverflow = styled(Tabs)({
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    height: '100%',
+    // We need this so the children won't automatically take up all the space they can
+    overflow: 'hidden',
+});
+
+const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({
+    overflowY: 'auto',
+    scrollbarGutter: 'stable both-edges',
+    '& > *': {
+        marginInline: theme.spacing(2),
+    },
+}));

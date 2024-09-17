@@ -87,12 +87,7 @@ export const AttributionContent = () => {
     const { loadingState } = attributionForMessage;
 
     return (
-        <Stack
-            marginInline={2}
-            direction="column"
-            gap={2}
-            paddingBlock={2}
-            data-testid="attribution-drawer">
+        <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
             <Typography>
                 Select a document from this list to highlight which parts of the model’s response
                 have an exact text match in the training data
