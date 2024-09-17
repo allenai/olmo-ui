@@ -90,10 +90,10 @@ export const AttributionHighlight = ({
 
                 return {
                     cursor: isAttributionSpanFirstEnabled ? 'pointer' : undefined,
-
+                    textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
-                            ? theme.palette.primary.main
+                            ? theme.palette.primary.light
                             : theme.palette.secondary.main,
 
                     color: (theme) =>
