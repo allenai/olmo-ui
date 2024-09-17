@@ -31,46 +31,12 @@ const TEMPERATURE_INFO =
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
-interface ParameterDrawerProps {
-    schemaData: Schema;
-}
-export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Element => {
-    const closeDrawer = useAppContext((state) => state.closeDrawer);
-    const inferenceOpts = useAppContext((state) => state.inferenceOpts);
-    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
+export const ParameterDrawer = (): JSX.Element => {
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-    const addSnackMessageDebounce = useDebouncedCallback(() => {
-        addSnackMessage({
-            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-            type: SnackMessageType.Brief,
-            message: 'Parameters Saved',
-        });
-    }, 800);
+    const closeDrawer = useAppContext((state) => state.closeDrawer);
+
     const handleDrawerClose = () => {
         closeDrawer(PARAMETERS_DRAWER_ID);
-    };
-
-    const opts = schemaData.Message.InferenceOpts;
-
-    const handleOnChange = (
-        _event: React.SyntheticEvent,
-        value: string[],
-        reason: AutocompleteChangeReason
-    ) => {
-        switch (reason) {
-            default: {
-                const uniqueStopWords = Array.from(
-                    new Set(
-                        value.map((val) => val.replace(/\\n/g, '\n').replace(/\\t/g, '\t'))
-                    ).values()
-                );
-
-                updateInferenceOpts({ stop: uniqueStopWords });
-                addSnackMessageDebounce();
-                break;
-            }
-        }
     };
 
     const onKeyDownEscapeHandler: KeyboardEventHandler = (
@@ -120,50 +86,91 @@ export const ParameterDrawer = ({ schemaData }: ParameterDrawerProps): JSX.Eleme
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
-            <Stack direction="column">
-                <List>
-                    <ListItem>
-                        <ParameterSlider
-                            label="Temperature"
-                            min={opts.temperature.min}
-                            max={opts.temperature.max}
-                            step={opts.temperature.step}
-                            initialValue={opts.temperature.default}
-                            onChange={(v) => {
-                                updateInferenceOpts({ temperature: v });
-                            }}
-                            dialogContent={TEMPERATURE_INFO}
-                            dialogTitle="Temperature"
-                            id="temperature"
-                        />
-                    </ListItem>
-                    <Divider />
-                    <ListItem>
-                        <ParameterSlider
-                            label="Top P"
-                            min={opts.top_p.min}
-                            max={opts.top_p.max}
-                            step={opts.top_p.step}
-                            initialValue={opts.top_p.default}
-                            onChange={(v) => {
-                                updateInferenceOpts({ top_p: v });
-                            }}
-                            dialogContent={TOP_P_INFO}
-                            dialogTitle="Top P"
-                            id="top-p"
-                        />
-                    </ListItem>
-                    <Divider />
-                    <ListItem>
-                        <StopWordsInput
-                            value={inferenceOpts.stop}
-                            onChange={handleOnChange}
-                            id="stop-words"
-                        />
-                    </ListItem>
-                </List>
-            </Stack>
+            desktopDrawerSx={{ gridArea: 'aside' }}>
+            <ParameterContent />
         </ResponsiveDrawer>
+    );
+};
+
+export const ParameterContent = () => {
+    const inferenceOpts = useAppContext((state) => state.inferenceOpts);
+    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const addSnackMessageDebounce = useDebouncedCallback(() => {
+        addSnackMessage({
+            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'Parameters Saved',
+        });
+    }, 800);
+
+    const schemaData = useAppContext((state) => state.schema!);
+
+    const opts = schemaData.Message.InferenceOpts;
+
+    const handleOnChange = (
+        _event: React.SyntheticEvent,
+        value: string[],
+        reason: AutocompleteChangeReason
+    ) => {
+        switch (reason) {
+            default: {
+                const uniqueStopWords = Array.from(
+                    new Set(
+                        value.map((val) => val.replace(/\\n/g, '\n').replace(/\\t/g, '\t'))
+                    ).values()
+                );
+
+                updateInferenceOpts({ stop: uniqueStopWords });
+                addSnackMessageDebounce();
+                break;
+            }
+        }
+    };
+
+    return (
+        <Stack direction="column">
+            <List>
+                <ListItem>
+                    <ParameterSlider
+                        label="Temperature"
+                        min={opts.temperature.min}
+                        max={opts.temperature.max}
+                        step={opts.temperature.step}
+                        initialValue={opts.temperature.default}
+                        onChange={(v) => {
+                            updateInferenceOpts({ temperature: v });
+                        }}
+                        dialogContent={TEMPERATURE_INFO}
+                        dialogTitle="Temperature"
+                        id="temperature"
+                    />
+                </ListItem>
+                <Divider />
+                <ListItem>
+                    <ParameterSlider
+                        label="Top P"
+                        min={opts.top_p.min}
+                        max={opts.top_p.max}
+                        step={opts.top_p.step}
+                        initialValue={opts.top_p.default}
+                        onChange={(v) => {
+                            updateInferenceOpts({ top_p: v });
+                        }}
+                        dialogContent={TOP_P_INFO}
+                        dialogTitle="Top P"
+                        id="top-p"
+                    />
+                </ListItem>
+                <Divider />
+                <ListItem>
+                    <StopWordsInput
+                        value={inferenceOpts.stop}
+                        onChange={handleOnChange}
+                        id="stop-words"
+                    />
+                </ListItem>
+            </List>
+        </Stack>
     );
 };

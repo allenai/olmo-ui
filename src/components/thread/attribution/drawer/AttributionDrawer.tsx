@@ -17,11 +17,6 @@ export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
-    const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
-    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
-    const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
-
-    const { loadingState } = attributionForMessage;
 
     const isDrawerOpen = useAppContext(
         (state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID
@@ -50,7 +45,7 @@ export const AttributionDrawer = () => {
             onKeyDownHandler={onKeyDownEscapeHandler}
             anchor="right"
             desktopDrawerVariant="persistent"
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}
+            desktopDrawerSx={{ gridArea: 'aside' }}
             heading={
                 <Box
                     sx={{
@@ -79,36 +74,48 @@ export const AttributionDrawer = () => {
                     <Divider />
                 </Box>
             }>
-            <Stack
-                marginInline={2}
-                direction="column"
-                gap={2}
-                paddingBlock={2}
-                data-testid="attribution-drawer">
-                <Typography>
-                    Select a document from this list to highlight which parts of the model’s
-                    response have an exact text match in the training data
-                </Typography>
-                <Button
-                    variant="text"
-                    disabled={loadingState === RemoteState.Loading}
-                    startIcon={
-                        isAllHighlightVisible ? (
-                            <VisibilityOffOutlinedIcon />
-                        ) : (
-                            <VisibilityOutlinedIcon />
-                        )
-                    }
-                    onClick={toggleHighlightVisibility}
-                    sx={{
-                        justifyContent: 'flex-start',
-                        color: (theme) => theme.palette.text.primary,
-                    }}>
-                    {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
-                </Button>
-                <ClearSelectedSpanButton />
-                <AttributionDrawerDocumentList />
-            </Stack>
+            <AttributionContent />
         </ResponsiveDrawer>
+    );
+};
+
+export const AttributionContent = () => {
+    const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
+    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
+    const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
+
+    const { loadingState } = attributionForMessage;
+
+    return (
+        <Stack
+            marginInline={2}
+            direction="column"
+            gap={2}
+            paddingBlock={2}
+            data-testid="attribution-drawer">
+            <Typography>
+                Select a document from this list to highlight which parts of the model’s response
+                have an exact text match in the training data
+            </Typography>
+            <Button
+                variant="text"
+                disabled={loadingState === RemoteState.Loading}
+                startIcon={
+                    isAllHighlightVisible ? (
+                        <VisibilityOffOutlinedIcon />
+                    ) : (
+                        <VisibilityOutlinedIcon />
+                    )
+                }
+                onClick={toggleHighlightVisibility}
+                sx={{
+                    justifyContent: 'flex-start',
+                    color: (theme) => theme.palette.text.primary,
+                }}>
+                {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
+            </Button>
+            <ClearSelectedSpanButton />
+            <AttributionDrawerDocumentList />
+        </Stack>
     );
 };

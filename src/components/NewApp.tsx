@@ -54,7 +54,7 @@ export const NewApp = () => {
                     <Container
                         component="main"
                         sx={{
-                            display: 'flex',
+                            display: 'grid',
                             flexDirection: 'column',
 
                             overflow: 'auto',
@@ -63,7 +63,10 @@ export const NewApp = () => {
 
                             height: 1,
 
-                            gridArea: 'content',
+                            // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
+                            gridArea: 'aside / content / aside / aside',
+                            gridTemplateColumns: 'subgrid',
+                            gridTemplateRows: 'subgrid',
 
                             backgroundColor: (theme) => ({
                                 xs: theme.palette.background.default,
@@ -75,9 +78,6 @@ export const NewApp = () => {
                     </Container>
                 </>
             ) : null}
-            <HistoryDrawer />
-            <AttributionDrawer />
-            {schema && <ParameterDrawer schemaData={schema} />}
             {!isDesktop && <FAQDrawer />}
         </OuterContainer>
     );
@@ -104,8 +104,8 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridTemplateAreas: `
-                            'nav app-bar side-drawer'
-                            'nav content side-drawer'`,
+                            'nav app-bar aside'
+                            'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
                         gridTemplateColumns: 'auto minmax(0, 1fr) auto',
                         columnGap: theme.spacing(8),

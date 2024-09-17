@@ -7,9 +7,8 @@ export interface Field {
     name: string;
     /* eslint-disable @typescript-eslint/no-explicit-any */
     default: any;
-    min?: any;
-    max?: any;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    min?: number;
+    max?: number;
     step?: number;
 }
 
