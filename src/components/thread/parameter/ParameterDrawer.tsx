@@ -3,6 +3,7 @@ import {
     AutocompleteChangeReason,
     Box,
     Divider,
+    Drawer,
     IconButton,
     List,
     ListItem,
@@ -13,9 +14,7 @@ import {
 import { KeyboardEventHandler } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { Schema } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
-import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -52,43 +51,39 @@ export const ParameterDrawer = (): JSX.Element => {
     });
 
     return (
-        <ResponsiveDrawer
+        <Drawer
+            variant="temporary"
             onClose={handleDrawerClose}
-            onKeyDownHandler={onKeyDownEscapeHandler}
+            onKeyDown={onKeyDownEscapeHandler}
             open={isDrawerOpen}
             anchor="right"
-            desktopDrawerVariant="persistent"
-            heading={
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        background: 'inherit',
-                        zIndex: 1,
-                    }}>
-                    <Stack
-                        justifyContent="space-between"
-                        direction="row"
-                        gap={2}
-                        alignItems="center">
-                        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography variant="h5" margin={0} color="primary">
-                                Parameters
-                            </Typography>
-                        </ListSubheader>
-                        <IconButton
-                            onClick={handleDrawerClose}
-                            sx={{ color: 'inherit' }}
-                            aria-label="close parameters drawer">
-                            <CloseIcon />
-                        </IconButton>
-                    </Stack>
-                    <Divider />
-                </Box>
-            }
-            desktopDrawerSx={{ gridArea: 'aside' }}>
+            PaperProps={{
+                sx: { width: 1, backgroundColor: (theme) => theme.palette.background.default },
+            }}>
+            <Box
+                sx={{
+                    position: 'sticky',
+                    top: 0,
+                    background: 'inherit',
+                    zIndex: 1,
+                }}>
+                <Stack justifyContent="space-between" direction="row" gap={2} alignItems="center">
+                    <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
+                        <Typography variant="h5" margin={0} color="primary">
+                            Parameters
+                        </Typography>
+                    </ListSubheader>
+                    <IconButton
+                        onClick={handleDrawerClose}
+                        sx={{ color: 'inherit' }}
+                        aria-label="close parameters drawer">
+                        <CloseIcon />
+                    </IconButton>
+                </Stack>
+                <Divider />
+            </Box>
             <ParameterContent />
-        </ResponsiveDrawer>
+        </Drawer>
     );
 };
 

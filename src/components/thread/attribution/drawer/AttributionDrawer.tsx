@@ -1,11 +1,19 @@
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, Button, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    Divider,
+    Drawer,
+    IconButton,
+    ListSubheader,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { RemoteState } from '@/contexts/util';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
@@ -39,43 +47,43 @@ export const AttributionDrawer = () => {
     };
 
     return (
-        <ResponsiveDrawer
+        <Drawer
+            variant="temporary"
             open={isDrawerOpen}
             onClose={handleDrawerClose}
-            onKeyDownHandler={onKeyDownEscapeHandler}
+            onKeyDown={onKeyDownEscapeHandler}
             anchor="right"
-            desktopDrawerVariant="persistent"
-            desktopDrawerSx={{ gridArea: 'aside' }}
-            heading={
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        backgroundColor: 'inherit',
-                        zIndex: 1,
-                    }}>
-                    <Stack
-                        justifyContent="space-between"
-                        direction="row"
-                        gap={2}
-                        alignItems="center">
-                        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography component="h2" variant="h5" margin={0} color="primary">
-                                Attribution
-                            </Typography>
-                        </ListSubheader>
-                        <IconButton
-                            onClick={handleDrawerClose}
-                            sx={{ color: 'inherit' }}
-                            aria-label="close attribution drawer">
-                            <CloseIcon />
-                        </IconButton>
-                    </Stack>
-                    <Divider />
-                </Box>
-            }>
+            PaperProps={{
+                sx: {
+                    paddingBlock: 1,
+                    paddingInline: 2,
+                    backgroundColor: (theme) => theme.palette.background.default,
+                },
+            }}>
+            <Box
+                sx={{
+                    position: 'sticky',
+                    top: 0,
+                    backgroundColor: 'inherit',
+                    zIndex: 1,
+                }}>
+                <Stack justifyContent="space-between" direction="row" gap={2} alignItems="center">
+                    <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
+                        <Typography component="h2" variant="h5" margin={0} color="primary">
+                            Attribution
+                        </Typography>
+                    </ListSubheader>
+                    <IconButton
+                        onClick={handleDrawerClose}
+                        sx={{ color: 'inherit' }}
+                        aria-label="close attribution drawer">
+                        <CloseIcon />
+                    </IconButton>
+                </Stack>
+                <Divider />
+            </Box>
             <AttributionContent />
-        </ResponsiveDrawer>
+        </Drawer>
     );
 };
 
