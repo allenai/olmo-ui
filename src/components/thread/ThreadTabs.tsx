@@ -51,8 +51,7 @@ export const ThreadTabs = () => {
 };
 
 const StickyTabsList = styled(TabsList)(({ theme }) => ({
-    backgroundColor: theme.palette.background.default,
-
+    backgroundColor: theme.palette.background.paper,
     width: '100%',
     display: 'flex',
 }));
@@ -67,8 +66,10 @@ const TabControl = styled(Tab)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
 
     '&[aria-selected="true"]': {
-        backgroundColor: 'transparent',
+        backgroundColor: theme.palette.background.default,
         color: 'inherit',
+        borderTopLeftRadius: theme.shape.borderRadius,
+        borderTopRightRadius: theme.shape.borderRadius,
     },
 }));
 

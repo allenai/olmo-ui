@@ -1,4 +1,4 @@
-import { Box, Container, Paper, PaperProps } from '@mui/material';
+import { Container, Paper, PaperProps } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -11,9 +11,6 @@ import { FAQDrawer } from './faq/FAQDrawer';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
-import { AttributionDrawer } from './thread/attribution/drawer/AttributionDrawer';
-import { HistoryDrawer } from './thread/history/HistoryDrawer';
-import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -60,7 +57,6 @@ export const NewApp = () => {
                             overflow: 'auto',
 
                             paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
-                            paddingInlineEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
 
                             height: 1,
 
@@ -108,9 +104,12 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                             'nav app-bar aside'
                             'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
-                        gridTemplateColumns: 'auto minmax(0, 1fr) minmax(23rem, 25lvw)',
+                        // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
+                        gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
                         columnGap: theme.spacing(8),
                         rowGap: 2,
+
+                        paddingInlineEnd: 3,
                     },
                 }),
             ]}
