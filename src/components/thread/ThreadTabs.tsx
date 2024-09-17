@@ -19,8 +19,10 @@ export const ThreadTabs = () => {
 
     return (
         <TabContext value={currentTab}>
-            <Box sx={{ gridArea: 'aside', width: '23rem', overflowY: 'auto' }}>
-                <TabList onChange={handleChange} sx={{ position: 'sticky', top: 0 }}>
+            <Box sx={{ gridArea: 'aside', overflowY: 'auto' }} bgcolor="background.default">
+                <TabList
+                    onChange={handleChange}
+                    sx={{ position: 'sticky', top: 0, backgroundColor: 'inherit', zIndex: 1 }}>
                     <Tab label="Parameters" value={PARAMETERS_TAB_NAME} />
                     <Tab label="Dataset" value={DATASET_TAB_NAME} />
                 </TabList>

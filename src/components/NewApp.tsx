@@ -1,4 +1,4 @@
-import { Container, Paper, PaperProps } from '@mui/material';
+import { Box, Container, Paper, PaperProps } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -59,7 +59,8 @@ export const NewApp = () => {
 
                             overflow: 'auto',
 
-                            paddingBlockEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
+                            paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
+                            paddingInlineEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
 
                             height: 1,
 
@@ -107,7 +108,7 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                             'nav app-bar aside'
                             'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
-                        gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+                        gridTemplateColumns: 'auto minmax(0, 1fr) minmax(23rem, 25lvw)',
                         columnGap: theme.spacing(8),
                         rowGap: 2,
                     },

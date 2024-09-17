@@ -93,7 +93,11 @@ export const UIRefreshThreadPage = () => {
             </Card>
 
             {isDesktop ? (
-                <ThreadTabs />
+                <>
+                    <ThreadTabs />
+                    {/* TODO: Remove this when we refactor history */}
+                    <HistoryDrawer />
+                </>
             ) : (
                 <>
                     <HistoryDrawer />
