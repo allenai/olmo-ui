@@ -99,7 +99,11 @@ export const ParameterContent = () => {
         });
     }, 800);
 
-    const schemaData = useAppContext((state) => state.schema!);
+    const schemaData = useAppContext((state) => state.schema);
+
+    if (schemaData == null) {
+        return null;
+    }
 
     const opts = schemaData.Message.InferenceOpts;
 
