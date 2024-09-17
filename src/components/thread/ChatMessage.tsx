@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, SxProps, Typography } from '@mui/material';
+import { Box, Stack, SxProps, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';
@@ -7,9 +7,11 @@ import { RemoteState } from '@/contexts/util';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
 import { RobotAvatar } from '../avatars/RobotAvatar';
+import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
+    paddingInlineEnd: 2,
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
@@ -47,18 +49,7 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
         return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
     });
 
-    return (
-        <Paper
-            variant="outlined"
-            elevation={1}
-            sx={{
-                border: 'none',
-                backgroundColor: (theme) => theme.palette.background.paper,
-                padding: 2,
-            }}>
-            <Typography sx={messageStyle}>{children}</Typography>
-        </Paper>
-    );
+    return <Typography sx={messageStyle}>{children}</Typography>;
 };
 
 interface ChatMessageProps extends PropsWithChildren {
@@ -83,10 +74,10 @@ export const ChatMessage = ({
     });
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
-    const icon = variant === Role.User ? null : <RobotAvatar />;
+    const icon = variant === Role.User ? <UserAvatar /> : <RobotAvatar />;
 
     return (
-        <Stack direction="row" gap={1} alignItems="start">
+        <Stack direction="row" gap={3} alignItems="start">
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>

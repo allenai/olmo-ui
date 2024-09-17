@@ -226,9 +226,11 @@ export class MessageClient extends ClientBase {
 
         if (!response.ok) {
             if (response.status === 400) {
-                const body = (await response.json()) as { code: number; message: string };
+                const body = (await response.json()) as {
+                    error: { code: number; message: string };
+                };
 
-                throw new StreamBadRequestError(response.status, body.message);
+                throw new StreamBadRequestError(response.status, body.error.message);
             }
 
             throw new Error(`POST ${url.toString()}: ${response.status} ${response.statusText}`);

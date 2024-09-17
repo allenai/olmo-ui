@@ -13,6 +13,7 @@ import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
+import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
@@ -77,6 +78,10 @@ export const routes: RouteObject[] = [
                         path: links.playground,
                         element: <UIRefreshThreadPage />,
                         children: [
+                            {
+                                path: links.playground,
+                                element: <ThreadPlaceholder />,
+                            },
                             {
                                 path: '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
