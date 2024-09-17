@@ -25,6 +25,7 @@ export const GlobalSnackMessageList = () => {
         <>
             {snackMessages.map((msg, index) => (
                 <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                     key={index}
                     open={isOpen}
                     autoHideDuration={AUTO_HIDE_DURATION}
