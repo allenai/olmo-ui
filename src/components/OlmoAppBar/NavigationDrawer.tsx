@@ -1,21 +1,21 @@
-import { logos } from '@allenai/varnish2/components';
-import { LoginOutlined as LoginIcon } from '@mui/icons-material';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {
+    LoginOutlined as LoginIcon,
+    PolicyOutlined,
+    RateReviewOutlined,
+} from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import DatasetIcon from '@mui/icons-material/DatasetOutlined';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
-import ModelTrainingIcon from '@mui/icons-material/ModelTrainingOutlined';
-import { Box, Divider, IconButton, Link, List, Stack, Typography } from '@mui/material';
+import { IconButton, Link, Stack } from '@mui/material';
 import { ComponentProps, useEffect } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { ChatIcon } from '@/components/assets/ChatIcon';
 import { links } from '@/Links';
 
+import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { NavigationLink } from './NavigationLink';
 
@@ -24,15 +24,18 @@ const Auth0LoginLink = () => {
 
     if (isAuthenticated) {
         return (
-            <NavigationLink icon={<LogoutIcon />} href={links.logout}>
-                Log Out
+            <NavigationLink icon={<LogoutIcon />} href={links.logout} variant="footer">
+                Log out
             </NavigationLink>
         );
     }
 
     return (
-        <NavigationLink icon={<LoginIcon />} href={links.login(window.location.href)}>
-            Log In
+        <NavigationLink
+            icon={<LoginIcon />}
+            href={links.login(window.location.href)}
+            variant="footer">
+            Log in
         </NavigationLink>
     );
 };
@@ -79,51 +82,68 @@ export const NavigationDrawer = ({
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
-            miniHeading={<TabletHeading toggleOpen={onDrawerToggle} open={open} />}
-            enableMiniVariant
-            miniVariantCollapsedWidth={7}
-            miniVariantExpandedWidth={45}
             desktopDrawerSx={{ gridArea: 'nav' }}>
-            <Box component="nav" sx={{ height: 1, overflowX: 'hidden' }}>
-                <Stack component={List} flexGrow={1} direction="column" sx={{ height: 1 }}>
-                    <NavigationLink
-                        href={links.playground}
-                        icon={<ChatBubbleIcon />}
-                        selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                        OLMo Playground
-                    </NavigationLink>
-                    <NavigationLink
-                        href={links.ourModels}
-                        icon={<ModelTrainingIcon />}
-                        selected={curriedDoesMatchPath(links.ourModels)}
-                        isExternalLink={true}>
-                        OLMo Models
-                    </NavigationLink>
-                    <Divider />
-                    <NavigationLink
-                        href={links.datasetExplorer}
-                        icon={<ExploreIcon />}
-                        selected={
-                            curriedDoesMatchPath(links.datasetExplorer) ||
-                            curriedDoesMatchPath(links.search) ||
-                            curriedDoesMatchPath(links.document(''))
-                        }>
-                        Dataset Explorer
-                    </NavigationLink>
-                    <NavigationLink
-                        href={links.ourDatasets}
-                        icon={<DatasetIcon />}
-                        selected={curriedDoesMatchPath(links.ourDatasets)}
-                        isExternalLink={true}>
-                        Dolma Dataset
-                    </NavigationLink>
-                    <Divider sx={{ marginBlockStart: 'auto' }} />
-                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs}>
+            <Stack
+                component="nav"
+                sx={{ height: 1, overflowX: 'hidden', paddingInline: 4, paddingBlockEnd: 2 }}>
+                <NavigationLink
+                    href={links.playground}
+                    icon={<ChatIcon />}
+                    selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
+                    Playground
+                </NavigationLink>
+                <NavigationLink
+                    onClick={() => {
+                        console.log('open thread history');
+                    }}
+                    inset>
+                    Thread history
+                </NavigationLink>
+                <NavigationLink
+                    href={links.ourModels}
+                    selected={curriedDoesMatchPath(links.ourModels)}
+                    iconVariant="external"
+                    inset>
+                    Ai2&apos;s models
+                </NavigationLink>
+                <NavigationLink
+                    href={links.datasetExplorer}
+                    icon={<ExploreIcon />}
+                    selected={
+                        curriedDoesMatchPath(links.datasetExplorer) ||
+                        curriedDoesMatchPath(links.search) ||
+                        curriedDoesMatchPath(links.document(''))
+                    }>
+                    Dataset Explorer
+                </NavigationLink>
+                <NavigationLink
+                    href={links.ourDatasets}
+                    selected={curriedDoesMatchPath(links.ourDatasets)}
+                    iconVariant="external"
+                    inset>
+                    Ai2&apos;s datasets
+                </NavigationLink>
+                <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
+                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
                         FAQ
+                    </NavigationLink>
+                    <NavigationLink
+                        icon={<RateReviewOutlined />}
+                        href={links.feedbackForm}
+                        iconVariant="external"
+                        variant="footer">
+                        Give feedback
+                    </NavigationLink>
+                    <NavigationLink
+                        icon={<PolicyOutlined />}
+                        href={links.responsibleUsePolicy}
+                        iconVariant="external"
+                        variant="footer">
+                        Responsible use policy
                     </NavigationLink>
                     <Auth0LoginLink />
                 </Stack>
-            </Box>
+            </Stack>
         </ResponsiveDrawer>
     );
 };
@@ -134,15 +154,20 @@ interface MobileHeadingProps {
 
 const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
     return (
-        <Stack direction="row" justifyContent="space-between" paddingBlock={3} paddingInline={2}>
-            <Typography
-                variant="h4"
-                component="span"
-                m={0}
-                color={(theme) => theme.palette.primary.main}>
-                Menu
-            </Typography>
-            <IconButton aria-label="Close navigation drawer" onClick={onClose}>
+        <Stack
+            direction="row"
+            justifyContent="space-between"
+            paddingBlock={4}
+            paddingInline={4}
+            alignItems="center">
+            <Link href={links.home}>
+                <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
+            </Link>
+            <IconButton
+                aria-label="Close navigation drawer"
+                onClick={onClose}
+                edge="end"
+                sx={{ color: (theme) => theme.palette.tertiary.main }}>
                 <CloseIcon />
             </IconButton>
         </Stack>
@@ -151,36 +176,8 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 
 const DesktopHeading = (): JSX.Element => {
     return (
-        <Link paddingInline={2} paddingBlock={4} href="https://allenai.org">
-            <logos.AI2Logo />
+        <Link paddingInline={2} paddingBlock={4} href={links.home}>
+            <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
         </Link>
-    );
-};
-
-interface TabletHeadingProps {
-    toggleOpen: () => void;
-    open?: boolean;
-}
-
-const TabletHeading = ({ toggleOpen, open }: TabletHeadingProps): JSX.Element => {
-    return (
-        <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            paddingInlineStart={1}
-            paddingInlineEnd={2}
-            paddingBlock={4}
-            gap={2}
-            flexWrap="nowrap">
-            <IconButton
-                onClick={toggleOpen}
-                title={`${open === true ? 'Collapse' : 'Expand'} navigation drawer`}>
-                {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-            <Link href="https://allenai.org" marginInlineStart="auto">
-                <logos.AI2Logo includeText={false} />
-            </Link>
-        </Stack>
     );
 };
