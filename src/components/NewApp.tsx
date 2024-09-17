@@ -59,7 +59,6 @@ export const NewApp = () => {
 
                             overflow: 'auto',
 
-                            paddingInline: 2,
                             paddingBlockEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
 
                             height: 1,
@@ -110,6 +109,7 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
                         gridTemplateRows: 'auto minmax(0, 1fr)',
                         gridTemplateColumns: 'auto minmax(0, 1fr) auto',
                         columnGap: theme.spacing(8),
+                        rowGap: 2,
                     },
                 }),
             ]}

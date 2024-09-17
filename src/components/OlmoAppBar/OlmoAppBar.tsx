@@ -1,14 +1,20 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, IconButton, Link, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
+import { links } from '@/Links';
+
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
+import { Ai2LogoFull } from '../Ai2LogoFull';
+import { useDesktopOrUp } from '../dolma/shared';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const isDesktopOrUp = useDesktopOrUp();
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -23,42 +29,58 @@ export const OlmoAppBar = (): JSX.Element => {
             <AppBar
                 position="sticky"
                 color="inherit"
-                enableColorOnDark
                 elevation={0}
-                sx={{
+                sx={(theme) => ({
                     gridArea: 'app-bar',
+
+                    backgroundColor: theme.palette.background.reversed,
+
+                    paddingBlock: 1,
                     paddingInline: 2,
-                    paddingBlock: 3,
-                }}>
+
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        paddingBlockStart: 4,
+                        paddingInline: 4,
+
+                        backgroundColor: 'transparent',
+                    },
+                })}>
                 <Toolbar
-                    component={Stack}
-                    direction="row"
                     disableGutters
-                    gap={4}
-                    alignItems="center">
-                    <Link href="/">
-                        <img
-                            src="/olmo-logo-light.svg"
-                            alt="Return to Olmo home"
-                            height={46}
-                            width={91}
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}>
+                    <Link
+                        href={links.home}
+                        lineHeight={1}
+                        sx={{
+                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+                        }}>
+                        <Ai2LogoFull
+                            height={18.5}
+                            width={60}
+                            alt="Return to the Playground home page"
                         />
                     </Link>
                     <Typography
-                        variant="h3"
+                        variant={isDesktopOrUp ? 'h1' : 'h3'}
                         component="h1"
+                        color="primary"
                         sx={{
-                            color: (theme) => theme.palette.primary.main,
                             margin: 0,
-                            display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'block' },
+
+                            textAlign: 'center',
                         }}>
                         {title}
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
+                        // @ts-expect-error - Varnish doesn't support tertiary colors yet
+                        color="tertiary"
                         sx={{
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                            marginInlineStart: 'auto',
                         }}>
                         <MenuIcon />
                     </IconButton>
