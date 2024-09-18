@@ -123,5 +123,5 @@ module.exports = (env) => ({
             },
         },
     },
-    devtool: env.production ? false : 'source-map',
+    devtool: env.production ? 'source-map' : 'eval-source-map',
 });
