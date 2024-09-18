@@ -27,7 +27,7 @@ export const ShareThreadButton = () => {
         <ResponsiveButton
             variant="outlined"
             startIcon={<ShareOutlinedIcon />}
-            title="Share"
+            title="Share Thread"
             onClick={handleShareThread}
         />
     );
