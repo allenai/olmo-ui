@@ -12,11 +12,13 @@ import { ComponentProps, useEffect } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { useAppContext } from '@/AppContext';
 import { ChatIcon } from '@/components/assets/ChatIcon';
 import { links } from '@/Links';
 
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
+import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationLink } from './NavigationLink';
 
 const Auth0LoginLink = () => {
@@ -67,6 +69,7 @@ export const NavigationDrawer = ({
 }: NavigationDrawerProps): JSX.Element => {
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
+    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
     useEffect(() => {
@@ -94,7 +97,7 @@ export const NavigationDrawer = ({
                 </NavigationLink>
                 <NavigationLink
                     onClick={() => {
-                        console.log('open thread history');
+                        toggleDrawer(HISTORY_DRAWER_ID);
                     }}
                     inset>
                     Thread history
