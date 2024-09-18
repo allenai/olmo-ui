@@ -27,10 +27,17 @@ export const ResponsiveButton = ({
                 {...props}
                 variant={biggerVariant != null ? biggerVariant : variant}
                 startIcon={startIcon}
+                color="primary"
                 sx={(theme) => ({
                     display: 'none',
                     [biggerContainerQuery(theme)]: {
                         display: 'inline-flex',
+                    },
+                    borderColor: theme.palette.primary.contrastText,
+                    color: theme.palette.primary.contrastText,
+                    '&:hover': {
+                        color: theme.palette.primary.contrastText,
+                        borderColor: theme.palette.primary.contrastText,
                     },
                 })}>
                 {title}
@@ -44,6 +51,8 @@ export const ResponsiveButton = ({
                     [biggerContainerQuery(theme)]: {
                         display: 'none',
                     },
+                    borderColor: theme.palette.primary.contrastText,
+                    color: theme.palette.primary.contrastText,
                 })}>
                 {startIcon}
             </Button>
