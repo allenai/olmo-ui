@@ -2,6 +2,7 @@ import PlusIcon from '@mui/icons-material/Add';
 import { alpha, ButtonGroup, Card, Stack, Typography } from '@mui/material';
 import { useMatch } from 'react-router-dom';
 
+import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
@@ -32,6 +33,7 @@ const NewThreadButton = () => {
 
 const ThreadButtonGroup = (): JSX.Element => {
     const featureToggles = useFeatureToggles();
+    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
 
     return (
         <>
@@ -47,9 +49,9 @@ const ThreadButtonGroup = (): JSX.Element => {
                 <NewThreadButton />
                 <DeleteThreadButton />
                 <ShareThreadButton />
-                <ParameterButton />
-                <HistoryButton />
-                {featureToggles.attribution && <AttributionButton />}
+                {!selectedThreadRootId && <ParameterButton />}
+                {!selectedThreadRootId && <HistoryButton />}
+                {featureToggles.attribution && !selectedThreadRootId && <AttributionButton />}
             </Stack>
 
             {/* Small screens */}
@@ -64,9 +66,9 @@ const ThreadButtonGroup = (): JSX.Element => {
                 <NewThreadButton />
                 <DeleteThreadButton />
                 <ShareThreadButton />
-                <ParameterButton />
-                <HistoryButton />
-                {featureToggles.attribution && <AttributionButton />}
+                {!selectedThreadRootId && <ParameterButton />}
+                {!selectedThreadRootId && <HistoryButton />}
+                {featureToggles.attribution && !selectedThreadRootId && <AttributionButton />}
             </ButtonGroup>
         </>
     );
@@ -82,7 +84,6 @@ export const ThreadPageControls = (): JSX.Element => {
             sx={(theme) => ({
                 borderColor: alpha(theme.palette.primary.main, 0.5),
                 padding: 2,
-                flexShrink: 0,
 
                 [smallerContainerQuery(theme)]: {
                     border: 0,
