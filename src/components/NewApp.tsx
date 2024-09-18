@@ -91,7 +91,7 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
         <Paper
             sx={[
                 (theme) => ({
-                    height: '100vh',
+                    height: '100dvh',
                     width: '100%',
 
                     display: 'grid',
