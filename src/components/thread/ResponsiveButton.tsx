@@ -53,6 +53,10 @@ export const ResponsiveButton = ({
                     },
                     borderColor: theme.palette.primary.contrastText,
                     color: theme.palette.primary.contrastText,
+                    '&:hover': {
+                        color: theme.palette.primary.contrastText,
+                        borderColor: theme.palette.primary.contrastText,
+                    },
                 })}>
                 {startIcon}
             </Button>
