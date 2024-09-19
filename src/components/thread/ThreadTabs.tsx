@@ -1,25 +1,43 @@
 import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
 import { Box, styled, Typography } from '@mui/material';
-import { SyntheticEvent, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { useAppContext } from '@/AppContext';
+import { DrawerId } from '@/slices/DrawerSlice';
 
 import { AttributionContent } from './attribution/drawer/AttributionDrawer';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
-const PARAMETERS_TAB_NAME = 'parameters';
-const DATASET_TAB_NAME = 'dataset';
+const PARAMETERS_TAB_NAME: DrawerId = 'parameters';
+const DATASET_TAB_NAME: DrawerId = 'attribution';
 
 type ThreadTabName = typeof PARAMETERS_TAB_NAME | typeof DATASET_TAB_NAME;
 
 export const ThreadTabs = () => {
     const [currentTab, setCurrentTab] = useState<ThreadTabName>(PARAMETERS_TAB_NAME);
 
-    const handleChange = (_e: SyntheticEvent, value: ThreadTabName) => {
-        setCurrentTab(value);
-    };
+    const currentOpenGlobalDrawer = useAppContext(
+        (state) => state.currentOpenDrawer as ThreadTabName
+    );
+    const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
+
+    useEffect(() => {
+        if ([PARAMETERS_TAB_NAME, DATASET_TAB_NAME].includes(currentOpenGlobalDrawer)) {
+            setCurrentTab(currentOpenGlobalDrawer);
+        }
+    }, [currentOpenGlobalDrawer, setCurrentTab]);
 
     return (
         <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
-            <TabsWithOverflow defaultValue={currentTab}>
+            <TabsWithOverflow
+                value={currentTab}
+                // defaultValue={currentTab}
+                onChange={(e, value) => {
+                    if (value != null && typeof value === 'string') {
+                        setCurrentOpenGlobalDrawer(value as ThreadTabName);
+                        setCurrentTab(value as ThreadTabName);
+                    }
+                }}>
                 <StickyTabsList>
                     <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
                         <Typography variant="h4" component="span">

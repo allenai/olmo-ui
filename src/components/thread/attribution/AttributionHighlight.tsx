@@ -12,6 +12,8 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     const selectSpans = useAppContext((state) => state.selectSpans);
     const resetSelectedSpans = useAppContext((state) => state.resetSelectedSpans);
 
+    const openDrawer = useAppContext((state) => state.openDrawer);
+
     const isSelectedSpan = useAppContext((state) => {
         const isSpanIdSelected = (spanId: string) =>
             state.attribution.selectedSpanIds.includes(spanId);
@@ -27,6 +29,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 
     const toggleSelectedSpans = () => {
         if (isAttributionSpanFirstEnabled) {
+            openDrawer('attribution');
             if (isSelectedSpan) {
                 resetSelectedSpans();
             } else {
