@@ -3,39 +3,26 @@ import { Box, styled, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { DrawerId } from '@/slices/DrawerSlice';
+import { DrawerId, ThreadTabId } from '@/slices/DrawerSlice';
 
 import { AttributionContent } from './attribution/drawer/AttributionDrawer';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
-const PARAMETERS_TAB_NAME: DrawerId = 'parameters';
-const DATASET_TAB_NAME: DrawerId = 'attribution';
-
-type ThreadTabName = typeof PARAMETERS_TAB_NAME | typeof DATASET_TAB_NAME;
+const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
+const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
 export const ThreadTabs = () => {
-    const [currentTab, setCurrentTab] = useState<ThreadTabName>(PARAMETERS_TAB_NAME);
-
-    const currentOpenGlobalDrawer = useAppContext(
-        (state) => state.currentOpenDrawer as ThreadTabName
-    );
+    const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
-
-    useEffect(() => {
-        if ([PARAMETERS_TAB_NAME, DATASET_TAB_NAME].includes(currentOpenGlobalDrawer)) {
-            setCurrentTab(currentOpenGlobalDrawer);
-        }
-    }, [currentOpenGlobalDrawer, setCurrentTab]);
 
     return (
         <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
             <TabsWithOverflow
-                value={currentTab}
+                value={currentOpenThreadTab}
                 // defaultValue={currentTab}
                 onChange={(e, value) => {
                     if (value != null && typeof value === 'string') {
-                        setCurrentOpenGlobalDrawer(value as ThreadTabName);
-                        setCurrentTab(value as ThreadTabName);
+                        setCurrentOpenGlobalDrawer(value as ThreadTabId);
                     }
                 }}>
                 <StickyTabsList>
