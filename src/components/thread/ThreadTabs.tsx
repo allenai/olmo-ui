@@ -70,6 +70,8 @@ const TabControl = styled(Tab)(({ theme }) => ({
     color: theme.palette.primary.dark,
     backgroundColor: theme.palette.background.paper,
 
+    cursor: 'pointer',
+
     '&[aria-selected="true"]': {
         backgroundColor: theme.palette.background.default,
         color: 'inherit',
