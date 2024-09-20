@@ -197,8 +197,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 } else {
                     state.attribution.selectedSpanIds = [spanIds];
                 }
-
-                state.currentOpenDrawer = 'attribution';
             },
             false,
             'attribution/selectSpan'
@@ -237,8 +235,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 if (
                     window.matchMedia(
                         `(min-width: ${varnishTokens.breakpoint[DESKTOP_LAYOUT_BREAKPOINT].value})`
-                    ).matches &&
-                    state.currentOpenDrawer == null
+                    ).matches
                 ) {
                     state.currentOpenDrawer = 'attribution';
                 }

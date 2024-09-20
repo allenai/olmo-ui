@@ -8,6 +8,7 @@ import { useDesktopOrUp } from '@/components/dolma/shared';
 import { FAQButton } from '@/components/faq/FAQButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
+import { MetaTags } from '@/components/MetaTags';
 import { NoResults } from '@/components/NoResults';
 
 const SEARCH_FIELD_NAME = 'search';
@@ -48,6 +49,7 @@ export const FAQsPage = (): JSX.Element => {
 
     return (
         <Grid container spacing={2}>
+            <MetaTags title="Ai2 Playground" />
             <Grid item xs={10}>
                 <PageContentWrapper>
                     <Form>

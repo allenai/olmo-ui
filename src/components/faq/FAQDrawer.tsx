@@ -51,7 +51,7 @@ export const FAQDrawer = () => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'side-drawer' }}>
+            desktopDrawerSx={{ gridArea: 'aside' }}>
             <Stack direction="column" sx={{ overflowY: 'scroll' }}>
                 <FAQCategorySection />
             </Stack>

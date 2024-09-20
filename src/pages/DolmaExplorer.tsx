@@ -6,7 +6,11 @@ import { DolmaTabs } from '../components/dolma/DolmaTabs';
 
 export const DolmaExplorer = () => (
     <>
-        <Stack sx={{ textAlign: 'center' }} spacing={2}>
+        <Stack
+            sx={{
+                textAlign: 'center',
+            }}
+            spacing={2}>
             <DolmaCard />
             <DolmaTabs />
         </Stack>

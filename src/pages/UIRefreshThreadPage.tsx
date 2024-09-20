@@ -10,8 +10,14 @@ import {
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
+import { useDesktopOrUp } from '@/components/dolma/shared';
+import { MetaTags } from '@/components/MetaTags';
+import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
+import { HistoryDrawer } from '@/components/thread/history/HistoryDrawer';
+import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
+import { ThreadTabs } from '@/components/thread/ThreadTabs';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
@@ -24,63 +30,80 @@ export const UIRefreshThreadPage = () => {
         setSelectedModel(event.target.value);
     };
 
+    const isDesktop = useDesktopOrUp();
+
     return (
-        <Card
-            variant="elevation"
-            elevation={0}
-            sx={{
-                flexGrow: '1',
-            }}>
-            <Stack
-                gap={2}
-                sx={(theme) => ({
-                    containerName: 'thread-page',
-                    containerType: 'inline-size',
-
-                    backgroundColor: 'background.default',
-
-                    paddingBlockStart: 1,
-                    paddingBlockEnd: 2,
-                    paddingInline: 2,
-
-                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 2,
-                        paddingBlockEnd: 4,
-                        paddingInline: 4,
-                    },
-
-                    height: 1,
-                })}>
-                <ThreadPageControls />
-
-                <Select
-                    id="model-select"
-                    sx={{ width: { xs: '75%', md: '35%' } }}
-                    size="small"
-                    onChange={onModelChange}
-                    input={<OutlinedInput />}
-                    value={(selectedModel && selectedModel.id) || ''}>
-                    {models.map((model) => (
-                        <MenuItem key={model.name} value={model.id}>
-                            {model.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-
-                <Outlet />
-                <QueryForm />
-
-                <Typography
-                    variant="caption"
+        <>
+            <MetaTags title="Ai2 Playground" />
+            <Card
+                variant="elevation"
+                elevation={0}
+                sx={{
+                    flexGrow: '1',
+                    gridArea: 'content',
+                }}>
+                <Stack
+                    gap={2}
                     sx={(theme) => ({
-                        [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            display: 'none',
+                        containerName: 'thread-page',
+                        containerType: 'inline-size',
+
+                        backgroundColor: 'background.default',
+
+                        paddingBlockStart: 1,
+                        paddingBlockEnd: 2,
+                        paddingInline: 2,
+
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            paddingBlockStart: 2,
+                            paddingBlockEnd: 4,
+                            paddingInline: 4,
                         },
+
+                        height: 1,
                     })}>
-                    OLMo is experimental and can make mistakes. Consider fact-checking your results.
-                </Typography>
-            </Stack>
-        </Card>
+                    <ThreadPageControls />
+
+                    <Select
+                        id="model-select"
+                        sx={{ width: { xs: '75%', md: '35%' } }}
+                        size="small"
+                        onChange={onModelChange}
+                        input={<OutlinedInput />}
+                        value={(selectedModel && selectedModel.id) || ''}>
+                        {models.map((model) => (
+                            <MenuItem key={model.name} value={model.id}>
+                                {model.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+
+                    <Outlet />
+                    <QueryForm />
+
+                    <Typography
+                        variant="caption"
+                        sx={(theme) => ({
+                            [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                display: 'none',
+                            },
+                        })}>
+                        OLMo is experimental and can make mistakes. Consider fact-checking your
+                        results.
+                    </Typography>
+                </Stack>
+            </Card>
+
+            {isDesktop ? (
+                <ThreadTabs />
+            ) : (
+                <>
+                    <HistoryDrawer />
+                    <AttributionDrawer />
+                    <ParameterDrawer />
+                </>
+            )}
+        </>
     );
 };
 
