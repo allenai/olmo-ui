@@ -67,7 +67,7 @@ export const DolmaTabs = () => {
             <Box
                 sx={{
                     position: 'sticky',
-                    top: (theme) => (isDesktopOrUp ? theme.spacing(-4) : 0),
+                    top: 0,
                     marginBottom: (theme) => theme.spacing(2),
                     zIndex: 1000,
                     background: (theme) => theme.color2.N1.hex,
