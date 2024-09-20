@@ -18,7 +18,6 @@ export const ThreadTabs = () => {
         <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
             <TabsWithOverflow
                 value={currentOpenThreadTab}
-                // defaultValue={currentTab}
                 onChange={(e, value) => {
                     if (value != null && typeof value === 'string') {
                         setCurrentOpenGlobalDrawer(value as ThreadTabId);
