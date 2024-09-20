@@ -1,9 +1,8 @@
 import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
 import { Box, styled, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { DrawerId, ThreadTabId } from '@/slices/DrawerSlice';
+import { ThreadTabId } from '@/slices/DrawerSlice';
 
 import { AttributionContent } from './attribution/drawer/AttributionDrawer';
 import { ParameterContent } from './parameter/ParameterDrawer';

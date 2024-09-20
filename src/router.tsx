@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
