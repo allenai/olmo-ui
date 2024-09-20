@@ -8,13 +8,11 @@ import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchForm } from './SearchForm';
-import { useDesktopOrUp } from './shared';
 import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
 
 export const DolmaTabs = () => {
-    const isDesktopOrUp = useDesktopOrUp();
     const [tabNumber, setTabNumber] = useState<number>(0);
     const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]);
 
@@ -67,7 +65,7 @@ export const DolmaTabs = () => {
             <Box
                 sx={{
                     position: 'sticky',
-                    top: (theme) => (isDesktopOrUp ? theme.spacing(-4) : 0),
+                    top: 0,
                     marginBottom: (theme) => theme.spacing(2),
                     zIndex: 1000,
                     background: (theme) => theme.color2.N1.hex,

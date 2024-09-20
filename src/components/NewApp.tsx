@@ -11,9 +11,6 @@ import { FAQDrawer } from './faq/FAQDrawer';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
-import { AttributionDrawer } from './thread/attribution/drawer/AttributionDrawer';
-import { HistoryDrawer } from './thread/history/HistoryDrawer';
-import { ParameterDrawer } from './thread/parameter/ParameterDrawer';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -54,16 +51,21 @@ export const NewApp = () => {
                     <Container
                         component="main"
                         sx={{
-                            display: 'flex',
+                            display: 'grid',
                             flexDirection: 'column',
 
                             overflow: 'auto',
 
-                            paddingBlockEnd: { [DESKTOP_LAYOUT_BREAKPOINT]: 4 },
+                            paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
 
                             height: 1,
 
-                            gridArea: 'content',
+                            gridArea: {
+                                // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
+                                [DESKTOP_LAYOUT_BREAKPOINT]: 'aside / content / aside / aside',
+                            },
+                            gridTemplateColumns: 'subgrid',
+                            gridTemplateRows: 'subgrid',
 
                             backgroundColor: (theme) => ({
                                 xs: theme.palette.background.default,
@@ -75,9 +77,6 @@ export const NewApp = () => {
                     </Container>
                 </>
             ) : null}
-            <HistoryDrawer />
-            <AttributionDrawer />
-            {schema && <ParameterDrawer schemaData={schema} />}
             {!isDesktop && <FAQDrawer />}
         </OuterContainer>
     );
@@ -92,7 +91,7 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
         <Paper
             sx={[
                 (theme) => ({
-                    height: '100vh',
+                    height: '100dvh',
                     width: '100%',
 
                     display: 'grid',
@@ -104,12 +103,15 @@ const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridTemplateAreas: `
-                            'nav app-bar side-drawer'
-                            'nav content side-drawer'`,
+                            'nav app-bar aside'
+                            'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
-                        gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+                        // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
+                        gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
                         columnGap: theme.spacing(8),
                         rowGap: 2,
+
+                        paddingInlineEnd: 3,
                     },
                 }),
             ]}

@@ -1,9 +1,11 @@
 import { OlmoStateCreator } from '@/AppContext';
 
 export type DrawerId = 'history' | 'parameters' | 'category' | 'attribution';
+export type ThreadTabId = 'parameters' | 'attribution';
 
 export interface DrawerSlice {
     currentOpenDrawer: DrawerId | null;
+    currentOpenThreadTab: ThreadTabId;
     openDrawer: (id: DrawerId) => void;
     closeDrawer: (id: DrawerId) => void;
     toggleDrawer: (id: DrawerId) => void;
@@ -11,9 +13,17 @@ export interface DrawerSlice {
 
 export const createDrawerSlice: OlmoStateCreator<DrawerSlice> = (set, get) => ({
     currentOpenDrawer: null,
+    currentOpenThreadTab: 'parameters',
 
     openDrawer: (id) => {
-        set({ currentOpenDrawer: id });
+        set((state) => {
+            state.currentOpenDrawer = id;
+
+            if (['parameters', 'attribution'].includes(id)) {
+                // This is a safe assertion because we check to see if it's a ThreadTabId in the if
+                state.currentOpenThreadTab = id as ThreadTabId;
+            }
+        });
     },
 
     closeDrawer: (id) => {

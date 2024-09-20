@@ -106,8 +106,8 @@ const fakeSchemaResponse: Schema = {
             },
             stop: {
                 default: null,
-                max: null,
-                min: null,
+                max: undefined,
+                min: undefined,
                 name: 'stop',
                 step: undefined,
             },
