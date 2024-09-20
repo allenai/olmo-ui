@@ -30,16 +30,7 @@ import {
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
 
-const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
-    return (
-        <>
-            <MetaTags title="AI2 Playground" />
-            {children}
-        </>
-    );
-};
-
-const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
+const DolmaPage = (): JSX.Element => {
     return (
         <Box
             sx={{
@@ -48,7 +39,7 @@ const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
                 overflow: 'auto',
             }}>
             <MetaTags title="AI2 Playground - Dataset Explorer" />
-            {children}
+            <Outlet />
         </Box>
     );
 };
@@ -96,11 +87,7 @@ export const routes: RouteObject[] = [
                             },
                             {
                                 path: links.thread(':id'),
-                                element: (
-                                    <OlmoPage>
-                                        <ThreadDisplay />
-                                    </OlmoPage>
-                                ),
+                                element: <ThreadDisplay />,
                                 handle: {
                                     title: 'Playground',
                                 },
@@ -114,47 +101,36 @@ export const routes: RouteObject[] = [
                         shouldRevalidate: handleRevalidation,
                     },
                     {
-                        path: links.document(':id'),
-                        element: (
-                            <DolmaPage>
-                                <Document />
-                            </DolmaPage>
-                        ),
-                        handle: {
-                            title: 'Dataset Explorer',
-                        },
-                    },
-                    {
-                        path: links.datasetExplorer,
-                        element: (
-                            <DolmaPage>
-                                <DolmaExplorer />
-                            </DolmaPage>
-                        ),
-                        handle: {
-                            title: 'Dataset Explorer',
-                        },
-                        loader: DolmaDataLoader,
-                    },
-                    {
-                        path: links.search,
-                        element: (
-                            <DolmaPage>
-                                <Search />
-                            </DolmaPage>
-                        ),
-                        handle: {
-                            title: 'Dataset Explorer',
-                        },
-                        loader: searchPageLoader,
+                        element: <DolmaPage />,
+                        children: [
+                            {
+                                path: links.document(':id'),
+                                element: <Document />,
+                                handle: {
+                                    title: 'Dataset Explorer',
+                                },
+                            },
+                            {
+                                path: links.datasetExplorer,
+                                element: <DolmaExplorer />,
+                                handle: {
+                                    title: 'Dataset Explorer',
+                                },
+                                loader: DolmaDataLoader,
+                            },
+                            {
+                                path: links.search,
+                                element: <Search />,
+                                handle: {
+                                    title: 'Dataset Explorer',
+                                },
+                                loader: searchPageLoader,
+                            },
+                        ],
                     },
                     {
                         path: links.faqs,
-                        element: (
-                            <OlmoPage>
-                                <FAQsPage />
-                            </OlmoPage>
-                        ),
+                        element: <FAQsPage />,
                         handle: {
                             title: 'Frequently Asked Questions',
                         },

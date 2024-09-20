@@ -11,6 +11,7 @@ import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-d
 
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
+import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { HistoryDrawer } from '@/components/thread/history/HistoryDrawer';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
@@ -33,6 +34,7 @@ export const UIRefreshThreadPage = () => {
 
     return (
         <>
+            <MetaTags title="Ai2 Playground" />
             <Card
                 variant="elevation"
                 elevation={0}
