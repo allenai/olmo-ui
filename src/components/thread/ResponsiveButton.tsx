@@ -27,7 +27,6 @@ export const ResponsiveButton = ({
                 {...props}
                 variant={biggerVariant != null ? biggerVariant : variant}
                 startIcon={startIcon}
-                color="primary"
                 sx={(theme) => ({
                     display: 'none',
                     [biggerContainerQuery(theme)]: {

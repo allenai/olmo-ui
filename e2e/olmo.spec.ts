@@ -39,7 +39,7 @@ test('can load threads from history drawer', async ({ page }) => {
     // Check the first existing thread
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'History', exact: true }).click();
+    await page.getByRole('button', { name: 'Thread history', exact: true }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'close history drawer' }).click();
