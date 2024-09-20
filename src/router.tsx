@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
@@ -40,10 +41,15 @@ const OlmoPage = ({ children }: PropsWithChildren): JSX.Element => {
 
 const DolmaPage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
-        <>
+        <Box
+            sx={{
+                // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
+                gridArea: 'content / content / aside / aside',
+                overflow: 'auto',
+            }}>
             <MetaTags title="AI2 Playground - Dataset Explorer" />
             {children}
-        </>
+        </Box>
     );
 };
 
