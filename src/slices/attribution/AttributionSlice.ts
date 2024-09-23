@@ -237,7 +237,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         `(min-width: ${varnishTokens.breakpoint[DESKTOP_LAYOUT_BREAKPOINT].value})`
                     ).matches
                 ) {
-                    state.currentOpenDrawer = 'attribution';
+                    state.currentOpenThreadTab = 'attribution';
                 }
             },
             false,

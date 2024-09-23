@@ -100,7 +100,7 @@ export const HistoryDrawer = (): JSX.Element => {
             onClose={handleDrawerClose}
             onKeyDownHandler={onKeyDownEscapeHandler}
             open={isDrawerOpen}
-            anchor="right"
+            anchor="left"
             desktopDrawerVariant="persistent"
             heading={
                 <Box
@@ -115,13 +115,13 @@ export const HistoryDrawer = (): JSX.Element => {
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography variant="h5" margin={0} color="primary">
-                                History
+                            <Typography variant="h3" margin={0} color="primary">
+                                Thread History
                             </Typography>
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ color: 'inherit' }}
+                            sx={{ color: (theme) => theme.palette.common.white }}
                             aria-label="close history drawer">
                             <CloseIcon />
                         </IconButton>
@@ -129,8 +129,8 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'aside' }}>
-            <Stack direction="column" ref={rootRef} sx={{ overflowY: 'scroll' }}>
+            desktopDrawerSx={{ gridArea: 'nav' }}>
+            <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"

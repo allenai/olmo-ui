@@ -1,4 +1,12 @@
-import { Card, Stack, Typography } from '@mui/material';
+import {
+    Card,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    SelectChangeEvent,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -54,21 +62,32 @@ export const UIRefreshThreadPage = () => {
 
                         height: 1,
                     })}>
-                    <ThreadPageControls />
-
-                    <Select
-                        id="model-select"
-                        sx={{ width: { xs: '75%', md: '35%' } }}
-                        size="small"
-                        onChange={onModelChange}
-                        input={<OutlinedInput />}
-                        value={(selectedModel && selectedModel.id) || ''}>
-                        {models.map((model) => (
-                            <MenuItem key={model.name} value={model.id}>
-                                {model.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        alignItems="center"
+                        justifyContent="space-between">
+                        <>
+                            {models.length > 1 ? (
+                                <Select
+                                    id="model-select"
+                                    sx={{ width: { xs: '75%', md: '35%' } }}
+                                    size="small"
+                                    onChange={onModelChange}
+                                    input={<OutlinedInput />}
+                                    value={(selectedModel && selectedModel.id) || ''}>
+                                    {models.map((model) => (
+                                        <MenuItem key={model.name} value={model.id}>
+                                            {model.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            ) : (
+                                <Typography key={models[0].name}>{models[0].name}</Typography>
+                            )}
+                        </>
+                        <ThreadPageControls />
+                    </Stack>
 
                     <Outlet />
                     <QueryForm />

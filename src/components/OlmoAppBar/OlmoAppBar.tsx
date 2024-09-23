@@ -2,17 +2,23 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { useDesktopOrUp } from '../dolma/shared';
+import { HISTORY_DRAWER_ID, HistoryDrawer } from '../thread/history/HistoryDrawer';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const isHistoryDrawerOpen = useAppContext(
+        (state) => state.currentOpenDrawer === HISTORY_DRAWER_ID
+    );
 
     const isDesktopOrUp = useDesktopOrUp();
 
@@ -86,11 +92,16 @@ export const OlmoAppBar = (): JSX.Element => {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <NavigationDrawer
-                open={isDrawerOpen}
-                onClose={handleDrawerClose}
-                onDrawerToggle={handleDrawerToggle}
-            />
+
+            {isHistoryDrawerOpen ? (
+                <HistoryDrawer />
+            ) : (
+                <NavigationDrawer
+                    open={isDrawerOpen}
+                    onClose={handleDrawerClose}
+                    onDrawerToggle={handleDrawerToggle}
+                />
+            )}
         </>
     );
 };
