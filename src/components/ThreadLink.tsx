@@ -25,9 +25,12 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     '&.Mui-selected': {
                         backgroundColor: (theme) => theme.palette.tertiary.light,
                         color: (theme) => theme.palette.text.primary,
+                        fontWeight: 'normal',
+
                         '&:hover': {
                             backgroundColor: (theme) => theme.palette.tertiary.light,
                             color: (theme) => theme.palette.text.primary,
+                            fontWeight: 'normal',
                         },
                     },
                 }}
