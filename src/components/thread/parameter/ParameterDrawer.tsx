@@ -1,6 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
-    AutocompleteChangeReason,
     Box,
     Divider,
     Drawer,
@@ -12,15 +11,11 @@ import {
     Typography,
 } from '@mui/material';
 import { KeyboardEventHandler } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
-import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
-
-import { StopWordsInput } from './inputs/StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -30,6 +25,8 @@ const TEMPERATURE_INFO =
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
+const MAX_NEW_TOKENS_INFO =
+    'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
 export const ParameterDrawer = (): JSX.Element => {
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const closeDrawer = useAppContext((state) => state.closeDrawer);
@@ -88,16 +85,7 @@ export const ParameterDrawer = (): JSX.Element => {
 };
 
 export const ParameterContent = () => {
-    const inferenceOpts = useAppContext((state) => state.inferenceOpts);
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-    const addSnackMessageDebounce = useDebouncedCallback(() => {
-        addSnackMessage({
-            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-            type: SnackMessageType.Brief,
-            message: 'Parameters Saved',
-        });
-    }, 800);
 
     const schemaData = useAppContext((state) => state.schema);
 
@@ -107,29 +95,24 @@ export const ParameterContent = () => {
 
     const opts = schemaData.Message.InferenceOpts;
 
-    const handleOnChange = (
-        _event: React.SyntheticEvent,
-        value: string[],
-        reason: AutocompleteChangeReason
-    ) => {
-        switch (reason) {
-            default: {
-                const uniqueStopWords = Array.from(
-                    new Set(
-                        value.map((val) => val.replace(/\\n/g, '\n').replace(/\\t/g, '\t'))
-                    ).values()
-                );
-
-                updateInferenceOpts({ stop: uniqueStopWords });
-                addSnackMessageDebounce();
-                break;
-            }
-        }
-    };
-
     return (
         <Stack direction="column">
             <List>
+                <ListItem>
+                    <ParameterSlider
+                        label="Temperature"
+                        min={opts.max_tokens.min}
+                        max={opts.max_tokens.max}
+                        step={opts.max_tokens.step}
+                        initialValue={opts.max_tokens.default}
+                        onChange={(v) => {
+                            updateInferenceOpts({ max_tokens: v });
+                        }}
+                        dialogContent={MAX_NEW_TOKENS_INFO}
+                        dialogTitle="Max new tokens"
+                        id="tokens"
+                    />
+                </ListItem>
                 <ListItem>
                     <ParameterSlider
                         label="Temperature"
@@ -145,7 +128,6 @@ export const ParameterContent = () => {
                         id="temperature"
                     />
                 </ListItem>
-                <Divider />
                 <ListItem>
                     <ParameterSlider
                         label="Top P"
@@ -159,14 +141,6 @@ export const ParameterContent = () => {
                         dialogContent={TOP_P_INFO}
                         dialogTitle="Top P"
                         id="top-p"
-                    />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <StopWordsInput
-                        value={inferenceOpts.stop}
-                        onChange={handleOnChange}
-                        id="stop-words"
                     />
                 </ListItem>
             </List>

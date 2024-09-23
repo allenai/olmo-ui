@@ -89,7 +89,12 @@ export const ParameterSlider = ({
             {({ inputLabelId }) => (
                 // The result of this ends up being pretty similar to MUI's Grid component
                 // I had trouble getting Grid to add a column gap so I used flex stuff instead
-                <Stack gap={3} flexWrap="wrap" direction="row">
+                <Stack
+                    gap={3}
+                    flexWrap="wrap"
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between">
                     <Box flexGrow={2} flexShrink={1} flexBasis="12rem">
                         <Slider
                             value={value}
@@ -98,6 +103,7 @@ export const ParameterSlider = ({
                             step={step}
                             min={min}
                             max={max}
+                            color="primary"
                         />
                     </Box>
                     {/* The basis here accounts for roughly three characters and a decimal point at the minimum width. 
@@ -114,6 +120,16 @@ export const ParameterSlider = ({
                                 max,
                                 type: 'number',
                                 id,
+                            }}
+                            sx={{
+                                '&:before': {
+                                    borderBottom: 'none',
+                                },
+                                '&:after': {
+                                    borderBottom: 'none',
+                                },
+                                textAlign: 'right', // Align text to the right
+                                color: (theme) => theme.palette.text.primary,
                             }}
                         />
                     </Box>
