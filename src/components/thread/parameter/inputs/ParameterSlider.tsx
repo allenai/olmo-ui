@@ -130,6 +130,7 @@ export const ParameterSlider = ({
                                     borderBottom: 'none', // Remove hover underline
                                 },
                                 color: (theme) => theme.palette.text.primary,
+                                mr: (theme) => theme.spacing(-5),
                             }}
                             inputProps={{
                                 step,
