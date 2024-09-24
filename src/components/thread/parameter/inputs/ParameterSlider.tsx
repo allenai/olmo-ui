@@ -90,7 +90,7 @@ export const ParameterSlider = ({
             {({ inputLabelId }) => (
                 // The result of this ends up being pretty similar to MUI's Grid component
                 // I had trouble getting Grid to add a column gap so I used flex stuff instead
-                <Stack flexWrap="wrap" direction="row">
+                <Stack flexWrap="wrap" direction="row" sx={{ mt: (theme) => theme.spacing(-2) }}>
                     <Box flexGrow={2} flexShrink={1} flexBasis="12rem">
                         <Slider
                             value={value}

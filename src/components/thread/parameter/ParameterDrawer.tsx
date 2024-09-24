@@ -100,7 +100,7 @@ export const ParameterContent = () => {
             <List>
                 <ListItem>
                     <ParameterSlider
-                        label="Temperature"
+                        label="Max new tokens"
                         min={opts.max_tokens.min}
                         max={opts.max_tokens.max}
                         step={opts.max_tokens.step}
