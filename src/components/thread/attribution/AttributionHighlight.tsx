@@ -94,6 +94,7 @@ export const AttributionHighlight = ({
                 return {
                     cursor: isAttributionSpanFirstEnabled ? 'pointer' : undefined,
 
+                    textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
                             ? theme.palette.primary.main
@@ -101,7 +102,7 @@ export const AttributionHighlight = ({
 
                     color: (theme) =>
                         isPrimaryVariant
-                            ? theme.palette.primary.contrastText
+                            ? theme.palette.primary.light
                             : theme.palette.secondary.contrastText,
 
                     ':focus-visible': {
