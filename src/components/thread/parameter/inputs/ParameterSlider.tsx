@@ -2,7 +2,7 @@
  * A slider with a number control next to it.
  */
 
-import { Box, Input, Slider, Stack, useTheme } from '@mui/material';
+import { Box, Input, Slider, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -37,7 +37,6 @@ export const ParameterSlider = ({
     const clipToMinMax = (val: number) => {
         return Math.min(Math.max(val, min), max);
     };
-    const theme = useTheme();
     const [value, setValue] = useState<number>(clipToMinMax(initialValue));
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const addSnackMessageDebounce = useDebouncedCallback(() => {
@@ -117,7 +116,7 @@ export const ParameterSlider = ({
                             size="small"
                             onChange={handleInputChange}
                             onBlur={handleBlur}
-                            sx={{
+                            sx={(theme) => ({
                                 ...theme.typography.caption,
                                 border: 'none',
                                 '&:before': {
@@ -131,7 +130,7 @@ export const ParameterSlider = ({
                                 },
                                 color: (theme) => theme.palette.text.primary,
                                 mr: (theme) => theme.spacing(-5),
-                            }}
+                            })}
                             inputProps={{
                                 step,
                                 min,

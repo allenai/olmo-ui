@@ -25,8 +25,6 @@ const TEMPERATURE_INFO =
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
-const MAX_NEW_TOKENS_INFO =
-    'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
 export const ParameterDrawer = (): JSX.Element => {
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const closeDrawer = useAppContext((state) => state.closeDrawer);
@@ -98,21 +96,6 @@ export const ParameterContent = () => {
     return (
         <Stack direction="column">
             <List>
-                <ListItem>
-                    <ParameterSlider
-                        label="Max new tokens"
-                        min={opts.max_tokens.min}
-                        max={opts.max_tokens.max}
-                        step={opts.max_tokens.step}
-                        initialValue={opts.max_tokens.default}
-                        onChange={(v) => {
-                            updateInferenceOpts({ max_tokens: v });
-                        }}
-                        dialogContent={MAX_NEW_TOKENS_INFO}
-                        dialogTitle="Max new tokens"
-                        id="tokens"
-                    />
-                </ListItem>
                 <ListItem>
                     <ParameterSlider
                         label="Temperature"
