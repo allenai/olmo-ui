@@ -6,7 +6,9 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 
+import { AttributionButton } from './attribution/AttributionButton';
 import { DeleteThreadButton } from './DeleteThreadButton';
+import { ParameterButton } from './parameter/ParameterButton';
 import { ResponsiveButton } from './ResponsiveButton';
 import { ShareThreadButton } from './ShareThreadButton';
 
@@ -62,6 +64,8 @@ const ThreadButtonGroup = (): JSX.Element => {
                 <NewThreadButton />
                 <DeleteThreadButton />
                 <ShareThreadButton />
+                <ParameterButton />
+                <AttributionButton />
             </ButtonGroup>
         </>
     );
