@@ -89,7 +89,7 @@ export const ParameterSlider = ({
             {({ inputLabelId }) => (
                 // The result of this ends up being pretty similar to MUI's Grid component
                 // I had trouble getting Grid to add a column gap so I used flex stuff instead
-                <Stack gap={3} flexWrap="wrap" direction="row">
+                <Stack flexWrap="wrap" direction="row" sx={{ mt: (theme) => theme.spacing(-2) }}>
                     <Box flexGrow={2} flexShrink={1} flexBasis="12rem">
                         <Slider
                             value={value}
@@ -98,22 +98,46 @@ export const ParameterSlider = ({
                             step={step}
                             min={min}
                             max={max}
+                            sx={{
+                                color: 'inherit',
+                            }}
                         />
                     </Box>
                     {/* The basis here accounts for roughly three characters and a decimal point at the minimum width. 
                     If we make a slider that needs more we'll need to change this basis or make it configurable */}
-                    <Box flexGrow={1} flexShrink={1} flexBasis="calc(4ch + 1rem)">
+                    <Box
+                        flexGrow={1}
+                        flexShrink={1}
+                        flexBasis="calc(4ch + 1rem)"
+                        display="flex"
+                        justifyContent="flex-end">
                         <Input
                             value={value}
                             size="small"
                             onChange={handleInputChange}
                             onBlur={handleBlur}
+                            sx={(theme) => ({
+                                ...theme.typography.caption,
+                                border: 'none',
+                                '&:before': {
+                                    borderBottom: 'none', // Remove underline (focused and unfocused)
+                                },
+                                '&:after': {
+                                    borderBottom: 'none', // Remove focused underline
+                                },
+                                '&:hover:not(.Mui-disabled):before': {
+                                    borderBottom: 'none', // Remove hover underline
+                                },
+                                color: (theme) => theme.palette.text.primary,
+                                mr: (theme) => theme.spacing(-5),
+                            })}
                             inputProps={{
                                 step,
                                 min,
                                 max,
                                 type: 'number',
                                 id,
+                                sx: { textAlign: 'right' },
                             }}
                         />
                     </Box>
