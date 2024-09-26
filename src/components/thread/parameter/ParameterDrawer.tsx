@@ -1,6 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
-    AutocompleteChangeReason,
     Box,
     Divider,
     Drawer,
@@ -12,15 +11,11 @@ import {
     Typography,
 } from '@mui/material';
 import { KeyboardEventHandler } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
-import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
-
-import { StopWordsInput } from './inputs/StopWordsInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -88,16 +83,7 @@ export const ParameterDrawer = (): JSX.Element => {
 };
 
 export const ParameterContent = () => {
-    const inferenceOpts = useAppContext((state) => state.inferenceOpts);
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-    const addSnackMessageDebounce = useDebouncedCallback(() => {
-        addSnackMessage({
-            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-            type: SnackMessageType.Brief,
-            message: 'Parameters Saved',
-        });
-    }, 800);
 
     const schemaData = useAppContext((state) => state.schema);
 
@@ -106,26 +92,6 @@ export const ParameterContent = () => {
     }
 
     const opts = schemaData.Message.InferenceOpts;
-
-    const handleOnChange = (
-        _event: React.SyntheticEvent,
-        value: string[],
-        reason: AutocompleteChangeReason
-    ) => {
-        switch (reason) {
-            default: {
-                const uniqueStopWords = Array.from(
-                    new Set(
-                        value.map((val) => val.replace(/\\n/g, '\n').replace(/\\t/g, '\t'))
-                    ).values()
-                );
-
-                updateInferenceOpts({ stop: uniqueStopWords });
-                addSnackMessageDebounce();
-                break;
-            }
-        }
-    };
 
     return (
         <Stack direction="column">
@@ -145,7 +111,6 @@ export const ParameterContent = () => {
                         id="temperature"
                     />
                 </ListItem>
-                <Divider />
                 <ListItem>
                     <ParameterSlider
                         label="Top P"
@@ -159,14 +124,6 @@ export const ParameterContent = () => {
                         dialogContent={TOP_P_INFO}
                         dialogTitle="Top P"
                         id="top-p"
-                    />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <StopWordsInput
-                        value={inferenceOpts.stop}
-                        onChange={handleOnChange}
-                        id="stop-words"
                     />
                 </ListItem>
             </List>
