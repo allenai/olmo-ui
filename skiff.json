@@ -3,5 +3,5 @@
     "contact": "sams",
     "team": "oe-adoption",
     "replicas": { "prod": 2 },
-    "customDomains": [ "olmo.allen.ai", "playground.allenai" ]
+    "customDomains": [ "olmo.allen.ai", "playground.allen.ai" ]
 }

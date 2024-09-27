@@ -2,7 +2,7 @@ import Plausible from 'plausible-tracker';
 
 import { AnalyticsEvent } from './AnalyticsClient';
 
-const plausibleClient = Plausible({ domain: 'playground.allenai' });
+const plausibleClient = Plausible({ domain: 'playground.allen.ai' });
 
 type Primitive = string | number | boolean | undefined;
 
