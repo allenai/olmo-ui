@@ -32,6 +32,12 @@ export const ResponsiveButton = ({
                     [biggerContainerQuery(theme)]: {
                         display: 'inline-flex',
                     },
+                    borderColor: theme.palette.primary.contrastText,
+                    color: theme.palette.primary.contrastText,
+                    '&:hover': {
+                        color: theme.palette.primary.contrastText,
+                        borderColor: theme.palette.primary.contrastText,
+                    },
                 })}>
                 {title}
             </Button>
@@ -43,6 +49,12 @@ export const ResponsiveButton = ({
                     display: 'inline-flex',
                     [biggerContainerQuery(theme)]: {
                         display: 'none',
+                    },
+                    borderColor: theme.palette.primary.contrastText,
+                    color: theme.palette.primary.contrastText,
+                    '&:hover': {
+                        color: theme.palette.primary.contrastText,
+                        borderColor: theme.palette.primary.contrastText,
                     },
                 })}>
                 {startIcon}
