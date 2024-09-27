@@ -15,6 +15,7 @@ import { KeyboardEventHandler } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
+import { TemporaryDrawer } from '@/components/TemporaryDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -31,59 +32,39 @@ const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
 export const ParameterDrawer = (): JSX.Element => {
-    const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const closeDrawer = useAppContext((state) => state.closeDrawer);
-
-    const handleDrawerClose = () => {
-        closeDrawer(PARAMETERS_DRAWER_ID);
-    };
-
-    const onKeyDownEscapeHandler: KeyboardEventHandler = (
-        event: React.KeyboardEvent<HTMLDivElement>
-    ) => {
-        if (event.key === 'Escape') {
-            handleDrawerClose();
-        }
-    };
-
-    useCloseDrawerOnNavigation({
-        handleDrawerClose,
-    });
-
     return (
-        <Drawer
-            variant="temporary"
-            onClose={handleDrawerClose}
-            onKeyDown={onKeyDownEscapeHandler}
-            open={isDrawerOpen}
-            anchor="right"
-            PaperProps={{
-                sx: { width: 1, backgroundColor: (theme) => theme.palette.background.default },
-            }}>
-            <Box
-                sx={{
-                    position: 'sticky',
-                    top: 0,
-                    background: 'inherit',
-                    zIndex: 1,
-                }}>
-                <Stack justifyContent="space-between" direction="row" gap={2} alignItems="center">
-                    <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                        <Typography variant="h5" margin={0} color="primary">
-                            Parameters
-                        </Typography>
-                    </ListSubheader>
-                    <IconButton
-                        onClick={handleDrawerClose}
-                        sx={{ color: 'inherit' }}
-                        aria-label="close parameters drawer">
-                        <CloseIcon />
-                    </IconButton>
-                </Stack>
-                <Divider />
-            </Box>
+        <TemporaryDrawer
+            drawerId="parameters"
+            header={({ onDrawerClose }) => (
+                <Box
+                    sx={{
+                        position: 'sticky',
+                        top: 0,
+                        background: 'inherit',
+                        zIndex: 1,
+                    }}>
+                    <Stack
+                        justifyContent="space-between"
+                        direction="row"
+                        gap={2}
+                        alignItems="center">
+                        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
+                            <Typography variant="h5" margin={0} color="primary">
+                                Parameters
+                            </Typography>
+                        </ListSubheader>
+                        <IconButton
+                            onClick={onDrawerClose}
+                            sx={{ color: 'inherit' }}
+                            aria-label="close parameters drawer">
+                            <CloseIcon />
+                        </IconButton>
+                    </Stack>
+                    <Divider />
+                </Box>
+            )}>
             <ParameterContent />
-        </Drawer>
+        </TemporaryDrawer>
     );
 };
 

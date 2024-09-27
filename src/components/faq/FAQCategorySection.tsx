@@ -1,4 +1,4 @@
-import { Divider, List } from '@mui/material';
+import { Divider, List, Stack } from '@mui/material';
 
 import { faqs } from '@/assets/faq-list';
 
@@ -7,7 +7,7 @@ import { FAQCategoryLink } from './FAQCategoryLink';
 
 export const FAQCategorySection = () => {
     return (
-        <>
+        <Stack direction="column" sx={{ overflowY: 'scroll' }}>
             <List>
                 {faqs.map((faqCategory, index) => (
                     <>
@@ -19,6 +19,6 @@ export const FAQCategorySection = () => {
                     </>
                 ))}
             </List>
-        </>
+        </Stack>
     );
 };
