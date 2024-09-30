@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
     Box,
+    CircularProgress,
     Divider,
     IconButton,
     ListItem,
@@ -37,13 +38,12 @@ export const HistoryDrawer = (): JSX.Element => {
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
     };
-    // const hasMoreThreadsToFetch = useAppContext((state) => {
-    //     const totalThreadsOnServer = state.messageList.meta.total;
-    //     const loadedThreadCount = state.allThreads.length;
+    const hasMoreThreadsToFetch = useAppContext((state) => {
+        const totalThreadsOnServer = state.messageList.meta.total;
+        const loadedThreadCount = state.allThreads.length;
 
-    //     return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
-    // });
-    const hasMoreThreadsToFetch = true
+        return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
+    });
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
     const [offset, setOffSet] = useState(0);
     const creator = userInfo?.client;
@@ -78,7 +78,6 @@ export const HistoryDrawer = (): JSX.Element => {
     const onKeyDownEscapeHandler: KeyboardEventHandler = (
         event: React.KeyboardEvent<HTMLDivElement>
     ) => {
-        console.log("capture!", event)
         if (event.key === 'Escape') {
             handleDrawerClose();
         }
@@ -145,6 +144,14 @@ export const HistoryDrawer = (): JSX.Element => {
                     hasDivider
                 />
                 {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
+                    <CircularProgress
+                        sx={{
+                            color: (theme) => theme.palette.tertiary.light,
+                            marginLeft: (theme) => theme.spacing(3),
+                        }}
+                    />
+                )}
+                {(hasMoreThreadsToFetch || messageListState === RemoteState.Loaded) && (
                     <ListItem ref={sentryRef}>
                         <ListItemText
                             sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}
