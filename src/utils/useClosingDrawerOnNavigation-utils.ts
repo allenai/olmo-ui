@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-
-import { links } from '@/Links';
+import { useNavigation } from 'react-router-dom';
 
 interface UseCloseDrawerOnNavigationProps {
     handleDrawerClose: () => void;
@@ -10,10 +8,10 @@ interface UseCloseDrawerOnNavigationProps {
 export const useCloseDrawerOnNavigation = ({
     handleDrawerClose,
 }: UseCloseDrawerOnNavigationProps) => {
-    const location = useLocation();
+    const navigation = useNavigation();
     useEffect(() => {
-        if (location.pathname !== links.playground && !location.pathname.includes('thread')) {
+        if (navigation.state === 'loading' && !navigation.location.pathname.includes('thread')) {
             handleDrawerClose();
         }
-    }, [handleDrawerClose, location.pathname]);
+    }, [handleDrawerClose, navigation]);
 };
