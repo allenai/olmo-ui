@@ -37,13 +37,13 @@ export const HistoryDrawer = (): JSX.Element => {
     const handleDrawerClose = () => {
         closeDrawer(HISTORY_DRAWER_ID);
     };
-    const hasMoreThreadsToFetch = useAppContext((state) => {
-        const totalThreadsOnServer = state.messageList.meta.total;
-        const loadedThreadCount = state.allThreads.length;
+    // const hasMoreThreadsToFetch = useAppContext((state) => {
+    //     const totalThreadsOnServer = state.messageList.meta.total;
+    //     const loadedThreadCount = state.allThreads.length;
 
-        return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
-    });
-
+    //     return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
+    // });
+    const hasMoreThreadsToFetch = true
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
     const [offset, setOffSet] = useState(0);
     const creator = userInfo?.client;
@@ -78,6 +78,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const onKeyDownEscapeHandler: KeyboardEventHandler = (
         event: React.KeyboardEvent<HTMLDivElement>
     ) => {
+        console.log("capture!", event)
         if (event.key === 'Escape') {
             handleDrawerClose();
         }
@@ -101,12 +102,13 @@ export const HistoryDrawer = (): JSX.Element => {
             onKeyDownHandler={onKeyDownEscapeHandler}
             open={isDrawerOpen}
             anchor="left"
-            desktopDrawerVariant="persistent"
+            desktopDrawerVariant="temporary"
             heading={
                 <Box
                     sx={{
                         position: 'sticky',
-                        top: 0,
+                        paddingInline: (theme) => theme.spacing(2),
+                        paddingBlock: (theme) => theme.spacing(4),
                         backgroundColor: 'inherit',
                     }}>
                     <Stack
@@ -114,7 +116,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         direction="row"
                         gap={2}
                         alignItems="center">
-                        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
+                        <ListSubheader sx={{ backgroundColor: 'transparent', padding: 0 }}>
                             <Typography variant="h3" margin={0} color="primary">
                                 Thread History
                             </Typography>
@@ -129,7 +131,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'nav' }}>
+            desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
