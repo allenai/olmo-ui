@@ -26,7 +26,7 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     // Send a second message in the thread
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('say one word');
-    await page.getByLabel('Submit prompt').click();
+    await page.getByRole('button', { name: 'Submit prompt' }).click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();

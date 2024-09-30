@@ -1,5 +1,5 @@
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Button, Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
@@ -46,7 +46,7 @@ export const NavigationLink = ({
     return (
         <ListItem disableGutters dense={variant === 'footer'}>
             <ListItemButton
-                component={Link}
+                component={href == null ? Button : Link}
                 alignItems="center"
                 selected={selected}
                 disableGutters
