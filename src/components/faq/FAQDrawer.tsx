@@ -2,7 +2,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Divider, IconButton, ListSubheader, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 
-import { useAppContext } from '@/AppContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 
 import { TemporaryDrawer } from '../TemporaryDrawer';
@@ -11,11 +10,10 @@ import { FAQCategorySection } from './FAQCategorySection';
 export const CATEGORY_DRAWER_ID: DrawerId = 'category';
 
 export const FAQDrawer = () => {
-    const closeDrawer = useAppContext((state) => state.closeDrawer);
-
     return (
         <TemporaryDrawer
             drawerId="category"
+            fullWidth
             header={({ onDrawerClose }) => (
                 <Box
                     sx={{

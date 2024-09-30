@@ -8,9 +8,15 @@ import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation
 interface TemporaryDrawerProps extends PropsWithChildren {
     drawerId: DrawerId;
     header: ReactNode | (({ onDrawerClose }: { onDrawerClose: () => void }) => ReactNode);
+    fullWidth?: boolean;
 }
 
-export const TemporaryDrawer = ({ drawerId, header, children }: TemporaryDrawerProps) => {
+export const TemporaryDrawer = ({
+    drawerId,
+    header,
+    children,
+    fullWidth,
+}: TemporaryDrawerProps) => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === drawerId);
@@ -43,6 +49,7 @@ export const TemporaryDrawer = ({ drawerId, header, children }: TemporaryDrawerP
                     paddingBlock: 1,
                     paddingInline: 2,
                     backgroundColor: (theme) => theme.palette.background.default,
+                    width: fullWidth ? '100vw' : undefined,
                 },
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
