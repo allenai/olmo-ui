@@ -1,22 +1,11 @@
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import {
-    Box,
-    Button,
-    Divider,
-    Drawer,
-    IconButton,
-    ListSubheader,
-    Stack,
-    Typography,
-} from '@mui/material';
-import { KeyboardEventHandler } from 'react';
+import { Box, Button, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { TemporaryDrawer } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
-import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';

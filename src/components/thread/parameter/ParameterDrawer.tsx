@@ -2,7 +2,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import {
     Box,
     Divider,
-    Drawer,
     IconButton,
     List,
     ListItem,
@@ -10,13 +9,11 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { TemporaryDrawer } from '@/components/TemporaryDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
-import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
