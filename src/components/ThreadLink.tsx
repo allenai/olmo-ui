@@ -15,11 +15,12 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
     const isSelected = idParameter === id;
 
     return (
-        <ListItem disableGutters>
+        <ListItem disablePadding sx={{ minHeight: (theme) => theme.spacing(7) }}>
             <ListItemButton
                 alignItems="center"
                 selected={isSelected}
                 sx={{
+                    minHeight: (theme) => theme.spacing(7),
                     gap: (theme) => theme.spacing(1),
                     color: (theme) => theme.palette.common.white,
                     '&.Mui-selected': {
@@ -60,7 +61,7 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     }}>
                     <TimeDisplay timeStamp={created} />
                 </ListItemText>
-                <ChevronRightIcon />
+                {!isSelected && <ChevronRightIcon />}
             </ListItemButton>
         </ListItem>
     );
