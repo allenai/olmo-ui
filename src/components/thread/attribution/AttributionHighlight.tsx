@@ -101,7 +101,7 @@ export const AttributionHighlight = ({
 
                     color: (theme) =>
                         isPrimaryVariant
-                            ? theme.palette.primary.contrastText
+                            ? theme.palette.primary.light
                             : theme.palette.secondary.contrastText,
 
                     ':focus-visible': {
