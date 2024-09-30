@@ -4,9 +4,11 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
     Box,
     Button,
+    Card,
     Divider,
     Drawer,
     IconButton,
+    Link,
     ListSubheader,
     Stack,
     Typography,
@@ -15,6 +17,7 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
@@ -96,10 +99,35 @@ export const AttributionContent = () => {
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
+            <Typography variant="h5">Text matches from pre-training data</Typography>
             <Typography>
-                Select a document from this list to highlight which parts of the model’s response
-                have an exact text match in the training data
+                Select a highlight from the model response to see the documents from the
+                pre-training data that have exact text matches in the mode response.
             </Typography>
+            <Link href={links.faqs} underline="always">
+                <Typography variant="caption">Learn more</Typography>
+            </Link>
+            <Stack spacing={2} direction="row" justifyContent="flex-start" sx={{ display: 'flex' }}>
+                <Card
+                    sx={{
+                        background: (theme) => theme.palette.background.reversed,
+                        padding: (theme) => theme.spacing(2),
+                        width: '100%',
+                    }}>
+                    <Typography
+                        variant="body1"
+                        sx={{ color: (theme) => theme.palette.common.white }}>
+                        Want to see more pre-training data?
+                    </Typography>
+                    <Button
+                        color="tertiary"
+                        component={Link}
+                        href={links.datasetExplorer}
+                        size="small">
+                        Explore the full dataset
+                    </Button>
+                </Card>
+            </Stack>
             <Button
                 variant="text"
                 disabled={loadingState === RemoteState.Loading}
