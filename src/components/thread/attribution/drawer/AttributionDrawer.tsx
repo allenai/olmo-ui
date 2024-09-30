@@ -4,7 +4,6 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
     Box,
     Button,
-    Card,
     Divider,
     Drawer,
     IconButton,
@@ -107,27 +106,6 @@ export const AttributionContent = () => {
             <Link href={links.faqs} underline="always">
                 <Typography variant="caption">Learn more</Typography>
             </Link>
-            <Stack spacing={2} direction="row" justifyContent="flex-start" sx={{ display: 'flex' }}>
-                <Card
-                    sx={{
-                        background: (theme) => theme.palette.background.reversed,
-                        padding: (theme) => theme.spacing(2),
-                        width: '100%',
-                    }}>
-                    <Typography
-                        variant="body1"
-                        sx={{ color: (theme) => theme.palette.common.white }}>
-                        Want to see more pre-training data?
-                    </Typography>
-                    <Button
-                        color="tertiary"
-                        component={Link}
-                        href={links.datasetExplorer}
-                        size="small">
-                        Explore the full dataset
-                    </Button>
-                </Card>
-            </Stack>
             <Button
                 variant="text"
                 disabled={loadingState === RemoteState.Loading}
