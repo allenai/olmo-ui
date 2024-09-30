@@ -92,16 +92,12 @@ export const OlmoAppBar = (): JSX.Element => {
                     </IconButton>
                 </Toolbar>
             </AppBar>
-
-            {isHistoryDrawerOpen ? (
-                <HistoryDrawer />
-            ) : (
-                <NavigationDrawer
-                    open={isDrawerOpen}
-                    onClose={handleDrawerClose}
-                    onDrawerToggle={handleDrawerToggle}
-                />
-            )}
+            {isHistoryDrawerOpen && <HistoryDrawer />}
+            <NavigationDrawer
+                open={isDrawerOpen && !isHistoryDrawerOpen}
+                onClose={handleDrawerClose}
+                onDrawerToggle={handleDrawerToggle}
+            />
         </>
     );
 };
