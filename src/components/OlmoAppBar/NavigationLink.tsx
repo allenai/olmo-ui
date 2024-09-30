@@ -1,12 +1,6 @@
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import {
-    ComponentProps,
-    KeyboardEventHandler,
-    MouseEventHandler,
-    PropsWithChildren,
-    ReactNode,
-} from 'react';
+import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
     <ListItemIcon
@@ -34,7 +28,7 @@ type NavigationLinkProps = PropsWithChildren & {
 } & (
         | {
               href?: never;
-              onClick?: MouseEventHandler | KeyboardEventHandler;
+              onClick?: MouseEventHandler<HTMLElement>;
           }
         | { href: string; onClick?: never }
     );
@@ -43,6 +37,7 @@ export const NavigationLink = ({
     icon,
     children,
     href,
+    onClick,
     selected,
     variant = 'default',
     iconVariant = 'internal',
@@ -56,6 +51,7 @@ export const NavigationLink = ({
                 selected={selected}
                 disableGutters
                 dense={variant === 'footer'}
+                onClick={onClick}
                 sx={(theme) => ({
                     gap: theme.spacing(2),
                     color: theme.palette.common.white,

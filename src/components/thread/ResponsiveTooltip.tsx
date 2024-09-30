@@ -51,10 +51,12 @@ export const ResponsiveTooltip = ({
                 sx={{
                     // This is here instead of using the direct prop because it gets overridden as the prop and not here
                     paddingBlockEnd: 1,
+                    color: (theme) => theme.palette.text.primary,
                 }}>
                 {dialogTitle}
             </DialogTitle>
-            <DialogContent sx={{ paddingBlockEnd: 0 }}>
+            <DialogContent
+                sx={{ paddingBlockEnd: 0, color: (theme) => theme.palette.text.primary }}>
                 <DialogContentText id={tooltipContentId}>{dialogContent}</DialogContentText>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'flex-start' }} disableSpacing>
@@ -79,6 +81,7 @@ export const ResponsiveTooltip = ({
                         borderRadius: theme.spacing(1.5),
                         position: 'relative',
                         right: theme.spacing(2),
+                        background: (theme) => theme.palette.common.white,
                     }),
                 },
                 popper: { anchorEl },
