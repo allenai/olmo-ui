@@ -1,5 +1,5 @@
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Link, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
@@ -27,9 +27,9 @@ type NavigationLinkProps = PropsWithChildren & {
     dense?: boolean;
 } & (
         | {
-              href?: never;
-              onClick?: MouseEventHandler<HTMLElement>;
-          }
+            href?: never;
+            onClick?: MouseEventHandler<HTMLElement>;
+        }
         | { href: string; onClick?: never }
     );
 
@@ -43,10 +43,17 @@ export const NavigationLink = ({
     iconVariant = 'internal',
     inset,
 }: NavigationLinkProps) => {
+    const linkProps =
+        href == null
+            ? {}
+            : {
+                href,
+                target: href == null ? undefined : href.startsWith('/') ? '_self' : '_blank',
+            };
+
     return (
         <ListItem disableGutters dense={variant === 'footer'}>
             <ListItemButton
-                component={Link}
                 alignItems="center"
                 selected={selected}
                 disableGutters
@@ -75,8 +82,7 @@ export const NavigationLink = ({
                         color: theme.palette.tertiary.contrastText,
                     },
                 })}
-                target={href == null ? undefined : href.startsWith('/') ? '_self' : '_blank'}
-                href={href}>
+                {...linkProps}>
                 <NavigationListItemIcon
                     sx={{ height: '1.25rem', width: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
                     {/* We need something to take up space if this item is inset */}
