@@ -27,9 +27,9 @@ type NavigationLinkProps = PropsWithChildren & {
     dense?: boolean;
 } & (
         | {
-            href?: never;
-            onClick?: MouseEventHandler<HTMLElement>;
-        }
+              href?: never;
+              onClick?: MouseEventHandler<HTMLElement>;
+          }
         | { href: string; onClick?: never }
     );
 
@@ -47,9 +47,9 @@ export const NavigationLink = ({
         href == null
             ? {}
             : {
-                href,
-                target: href == null ? undefined : href.startsWith('/') ? '_self' : '_blank',
-            };
+                  href,
+                  target: href == null ? undefined : href.startsWith('/') ? '_self' : '_blank',
+              };
 
     return (
         <ListItem disableGutters dense={variant === 'footer'}>
