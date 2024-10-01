@@ -4,7 +4,7 @@ import { Form, useSearchParams } from 'react-router-dom';
 
 import { faqs } from '@/assets/faq-list';
 import { useDesktopOrUp } from '@/components/dolma/shared';
-import { FAQCategoriesButton } from '@/components/faq/FAQButton';
+import { FAQCategoriesButton } from '@/components/faq/FAQCategoriesButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
 import { MetaTags } from '@/components/MetaTags';
