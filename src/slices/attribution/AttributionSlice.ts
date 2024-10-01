@@ -148,7 +148,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             try {
                 const attributionResponse = await attributionClient.getAttributionDocuments(
                     message.content,
-                    'olmo-7b-chat'
+                    'OLMoE-1B-7B-0924-Instruct'
                 );
 
                 set(

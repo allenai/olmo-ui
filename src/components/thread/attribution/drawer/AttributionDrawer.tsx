@@ -1,7 +1,17 @@
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, Button, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    Divider,
+    Drawer,
+    IconButton,
+    Link,
+    ListSubheader,
+    Stack,
+    Typography,
+} from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { TemporaryDrawer } from '@/components/TemporaryDrawer';
@@ -59,10 +69,14 @@ export const AttributionContent = () => {
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
+            <Typography variant="h5">Text matches from pre-training data</Typography>
             <Typography>
-                Select a document from this list to highlight which parts of the model’s response
-                have an exact text match in the training data
+                Select a highlight from the model response to see the documents from the
+                pre-training data that have exact text matches in the mode response.
             </Typography>
+            <Link href={links.faqs} underline="always">
+                <Typography variant="caption">Learn more</Typography>
+            </Link>
             <Button
                 variant="text"
                 disabled={loadingState === RemoteState.Loading}
