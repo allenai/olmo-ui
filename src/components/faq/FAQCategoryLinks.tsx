@@ -4,7 +4,7 @@ import { faqs } from '@/assets/faq-list';
 
 import { useDesktopOrUp } from '../dolma/shared';
 import { createFAQId } from './createFAQId';
-import { FAQDrawer } from './FAQDrawer';
+import { FAQCategoriesDrawer } from './FAQDrawer';
 
 export const FAQCategoryLinks = (): JSX.Element => {
     const isDesktop = useDesktopOrUp();
@@ -39,6 +39,6 @@ export const FAQCategoryLinks = (): JSX.Element => {
             </Card>
         );
     } else {
-        return <FAQDrawer />;
+        return <FAQCategoriesDrawer />;
     }
 };

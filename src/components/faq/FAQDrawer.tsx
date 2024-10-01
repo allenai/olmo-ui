@@ -9,7 +9,7 @@ import { FAQCategorySection } from './FAQCategorySection';
 
 export const CATEGORY_DRAWER_ID: DrawerId = 'category';
 
-export const FAQDrawer = () => {
+export const FAQCategoriesDrawer = () => {
     return (
         <TemporaryDrawer
             drawerId="category"

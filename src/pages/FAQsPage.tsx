@@ -4,7 +4,7 @@ import { Form, useSearchParams } from 'react-router-dom';
 
 import { faqs } from '@/assets/faq-list';
 import { useDesktopOrUp } from '@/components/dolma/shared';
-import { FAQButton } from '@/components/faq/FAQButton';
+import { FAQCategoriesButton } from '@/components/faq/FAQButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
 import { MetaTags } from '@/components/MetaTags';
@@ -72,7 +72,7 @@ export const FAQsPage = (): JSX.Element => {
                             </Button>
                         </Stack>
                     </Form>
-                    {!isDesktop && <FAQButton />}
+                    {!isDesktop && <FAQCategoriesButton />}
                     {hasNoQuestionsToDisplay && search != null ? (
                         <NoResults request={search} resultsType="FAQ" />
                     ) : (

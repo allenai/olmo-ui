@@ -5,7 +5,7 @@ import { useAppContext } from '@/AppContext';
 
 import { CATEGORY_DRAWER_ID } from './FAQDrawer';
 
-export const FAQButton = () => {
+export const FAQCategoriesButton = () => {
     const openDrawer = useAppContext((state) => state.openDrawer);
     const openCategoryDrawer = () => {
         openDrawer(CATEGORY_DRAWER_ID);
