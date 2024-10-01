@@ -5,7 +5,6 @@ import {
     Box,
     Button,
     Divider,
-    Drawer,
     IconButton,
     Link,
     ListSubheader,
@@ -16,6 +15,7 @@ import {
 import { useAppContext } from '@/AppContext';
 import { TemporaryDrawer } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
