@@ -7,6 +7,7 @@ import {
     Divider,
     Drawer,
     IconButton,
+    Link,
     ListSubheader,
     Stack,
     Typography,
@@ -15,6 +16,7 @@ import { KeyboardEventHandler } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
@@ -96,10 +98,14 @@ export const AttributionContent = () => {
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
+            <Typography variant="h5">Text matches from pre-training data</Typography>
             <Typography>
-                Select a document from this list to highlight which parts of the model’s response
-                have an exact text match in the training data
+                Select a highlight from the model response to see the documents from the
+                pre-training data that have exact text matches in the mode response.
             </Typography>
+            <Link href={links.faqs} underline="always">
+                <Typography variant="caption">Learn more</Typography>
+            </Link>
             <Button
                 variant="text"
                 disabled={loadingState === RemoteState.Loading}
