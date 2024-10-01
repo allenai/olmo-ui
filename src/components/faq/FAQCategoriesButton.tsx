@@ -5,10 +5,10 @@ import { useAppContext } from '@/AppContext';
 
 import { CATEGORY_DRAWER_ID } from './FAQDrawer';
 
-export const FAQButton = () => {
-    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-    const toggleCategoryDrawer = () => {
-        toggleDrawer(CATEGORY_DRAWER_ID);
+export const FAQCategoriesButton = () => {
+    const openDrawer = useAppContext((state) => state.openDrawer);
+    const openCategoryDrawer = () => {
+        openDrawer(CATEGORY_DRAWER_ID);
     };
 
     return (
@@ -17,7 +17,7 @@ export const FAQButton = () => {
             component="label"
             variant="outlined"
             startIcon={<FilterListIcon />}
-            onClick={toggleCategoryDrawer}>
+            onClick={openCategoryDrawer}>
             Categories
         </Button>
     );

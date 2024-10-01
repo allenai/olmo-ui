@@ -6,8 +6,6 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 import { useAppContext } from '../AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
-import { useDesktopOrUp } from './dolma/shared';
-import { FAQDrawer } from './faq/FAQDrawer';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
@@ -21,8 +19,6 @@ export const NewApp = () => {
     const getSchema = useAppContext((state) => state.getSchema);
 
     const [isLoading, setLoading] = useState(true);
-
-    const isDesktop = useDesktopOrUp();
 
     // TODO: There's an edge case where these XHR requests fail that we're not handling now.
     // This is a temporary compromise to avoid "flashing" an error to users while they're
@@ -77,7 +73,6 @@ export const NewApp = () => {
                     </Container>
                 </>
             ) : null}
-            {!isDesktop && <FAQDrawer />}
         </OuterContainer>
     );
 };

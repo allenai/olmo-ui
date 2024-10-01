@@ -40,8 +40,13 @@ export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
                 <AccordionSummary
                     id={faqId}
                     expandIcon={<ExpandMore />}
+                    sx={{
+                        color: 'inherit',
+                    }}
                     aria-controls={faqContentId}>
-                    {question}
+                    <Typography variant="h6" component="span">
+                        {question}
+                    </Typography>
                 </AccordionSummary>
             </Typography>
             <AccordionDetails id={faqContentId}>

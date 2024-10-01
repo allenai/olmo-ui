@@ -1,10 +1,12 @@
-import { Box, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 import type { FAQ as FAQType } from '@/assets/faq-list';
 
 import { createFAQId } from './createFAQId';
 import { FAQ } from './FAQ';
+
+const FAQ_GAP = 1;
 
 interface FAQCategoryProps {
     categoryName: string;
@@ -17,28 +19,29 @@ export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): Reac
     }
 
     return (
-        <Box
+        <Stack
             id={createFAQId(categoryName)}
+            direction="column"
+            gap={FAQ_GAP}
             className="faq-category"
             sx={{
-                ':not(:last-of-type)': {
-                    marginBlockEnd: 2,
-                },
                 '&+&': {
                     borderBlockStart: (theme) => `1px solid ${theme.palette.divider}`,
-                    paddingBlockStart: 2,
+                    paddingBlockStart: FAQ_GAP,
                 },
             }}>
-            <Typography variant="h5" component="h2" margin={0} marginBlockEnd={1}>
+            <Typography variant="h5" component="h2">
                 {categoryName}
             </Typography>
-            {questions.map((question) => (
-                <FAQ
-                    question={question.question}
-                    answer={question.answer}
-                    key={categoryName + question.question}
-                />
-            ))}
-        </Box>
+            <Stack direction="column" gap={2}>
+                {questions.map((question) => (
+                    <FAQ
+                        question={question.question}
+                        answer={question.answer}
+                        key={categoryName + question.question}
+                    />
+                ))}
+            </Stack>
+        </Stack>
     );
 };

@@ -131,7 +131,7 @@ export const routes: RouteObject[] = [
                         path: links.faqs,
                         element: <FAQsPage />,
                         handle: {
-                            title: 'Frequently Asked Questions',
+                            title: 'FAQs',
                         },
                     },
                 ],

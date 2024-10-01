@@ -16,21 +16,25 @@ export const createDrawerSlice: OlmoStateCreator<DrawerSlice> = (set, get) => ({
     currentOpenThreadTab: 'parameters',
 
     openDrawer: (id) => {
-        set((state) => {
-            state.currentOpenDrawer = id;
+        set(
+            (state) => {
+                state.currentOpenDrawer = id;
 
-            if (['parameters', 'attribution'].includes(id)) {
-                // This is a safe assertion because we check to see if it's a ThreadTabId in the if
-                state.currentOpenThreadTab = id as ThreadTabId;
-            }
-        });
+                if (['parameters', 'attribution'].includes(id)) {
+                    // This is a safe assertion because we check to see if it's a ThreadTabId in the if
+                    state.currentOpenThreadTab = id as ThreadTabId;
+                }
+            },
+            false,
+            'drawer/openDrawer'
+        );
     },
 
     closeDrawer: (id) => {
         const { currentOpenDrawer } = get();
 
         if (currentOpenDrawer === id) {
-            set({ currentOpenDrawer: null });
+            set({ currentOpenDrawer: null }, false, 'drawer/closeDrawer');
         }
     },
 
