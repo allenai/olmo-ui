@@ -31,7 +31,7 @@ export const ThreadTabs = () => {
                     </TabControl>
                     <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
                         <Typography variant="h4" component="span">
-                            Dataset
+                            CorpusLink
                         </Typography>
                     </TabControl>
                 </StickyTabsList>
