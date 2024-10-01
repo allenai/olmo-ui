@@ -101,7 +101,7 @@ export const AttributionContent = () => {
             <Typography variant="h5">Text matches from pre-training data</Typography>
             <Typography>
                 Select a highlight from the model response to see the documents from the
-                pre-training data that have exact text matches in the mode response.
+                pre-training data that have exact text matches in the model response.
             </Typography>
             <Link href={links.faqs} underline="always">
                 <Typography variant="caption">Learn more</Typography>
