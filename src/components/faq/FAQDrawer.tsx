@@ -4,14 +4,14 @@ import { Box, Stack } from '@mui/system';
 
 import { DrawerId } from '@/slices/DrawerSlice';
 
-import { TemporaryDrawer } from '../TemporaryDrawer';
+import { FullScreenDrawer } from '../TemporaryDrawer';
 import { FAQCategorySection } from './FAQCategorySection';
 
 export const CATEGORY_DRAWER_ID: DrawerId = 'category';
 
 export const FAQCategoriesDrawer = () => {
     return (
-        <TemporaryDrawer
+        <FullScreenDrawer
             drawerId="category"
             fullWidth
             header={({ onDrawerClose }) => (
@@ -42,6 +42,6 @@ export const FAQCategoriesDrawer = () => {
                 </Box>
             )}>
             <FAQCategorySection />
-        </TemporaryDrawer>
+        </FullScreenDrawer>
     );
 };

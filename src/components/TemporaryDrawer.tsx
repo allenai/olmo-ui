@@ -11,7 +11,7 @@ interface TemporaryDrawerProps extends PropsWithChildren {
     fullWidth?: boolean;
 }
 
-export const TemporaryDrawer = ({
+export const FullScreenDrawer = ({
     drawerId,
     header,
     children,

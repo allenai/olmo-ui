@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { TemporaryDrawer } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer } from '@/components/TemporaryDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -25,7 +25,7 @@ const TOP_P_INFO =
 
 export const ParameterDrawer = (): JSX.Element => {
     return (
-        <TemporaryDrawer
+        <FullScreenDrawer
             drawerId="parameters"
             header={({ onDrawerClose }) => (
                 <Box
@@ -56,7 +56,7 @@ export const ParameterDrawer = (): JSX.Element => {
                 </Box>
             )}>
             <ParameterContent />
-        </TemporaryDrawer>
+        </FullScreenDrawer>
     );
 };
 

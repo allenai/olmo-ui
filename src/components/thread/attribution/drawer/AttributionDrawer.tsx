@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { TemporaryDrawer } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
@@ -25,7 +25,7 @@ export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
     return (
-        <TemporaryDrawer
+        <FullScreenDrawer
             drawerId="attribution"
             header={({ onDrawerClose }) => (
                 <Box
@@ -56,7 +56,7 @@ export const AttributionDrawer = () => {
                 </Box>
             )}>
             <AttributionContent />
-        </TemporaryDrawer>
+        </FullScreenDrawer>
     );
 };
 
