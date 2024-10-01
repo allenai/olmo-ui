@@ -1,11 +1,10 @@
-import { Button, Grid, Stack, TextField } from '@mui/material';
+import { Button, Card, CardContent, Stack, TextField } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { Form, useSearchParams } from 'react-router-dom';
 
 import { faqs } from '@/assets/faq-list';
-import { PageContentWrapper } from '@/components/dolma/PageContentWrapper';
 import { useDesktopOrUp } from '@/components/dolma/shared';
-import { FAQButton } from '@/components/faq/FAQButton';
+import { FAQCategoriesButton } from '@/components/faq/FAQCategoriesButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
 import { MetaTags } from '@/components/MetaTags';
@@ -48,12 +47,18 @@ export const FAQsPage = (): JSX.Element => {
     );
 
     return (
-        <Grid container spacing={2}>
+        <>
             <MetaTags title="Ai2 Playground" />
-            <Grid item xs={10}>
-                <PageContentWrapper>
+            <Card
+                elevation={0}
+                sx={{
+                    gridArea: 'content',
+                    overflow: 'auto',
+                    backgroundColor: 'background.default',
+                }}>
+                <CardContent sx={{ paddingInline: 2 }} component={Stack} gap={2}>
                     <Form>
-                        <Stack direction="row" gap={2} marginBlockEnd={3}>
+                        <Stack direction="row" gap={2}>
                             <TextField
                                 type="search"
                                 label="Search FAQs"
@@ -62,12 +67,12 @@ export const FAQsPage = (): JSX.Element => {
                                 defaultValue={search}
                                 size="small"
                             />
-                            <Button type="submit" variant="contained">
+                            <Button type="submit" variant="contained" color="inherit">
                                 Search
                             </Button>
                         </Stack>
                     </Form>
-                    {!isDesktop && <FAQButton />}
+                    {!isDesktop && <FAQCategoriesButton />}
                     {hasNoQuestionsToDisplay && search != null ? (
                         <NoResults request={search} resultsType="FAQ" />
                     ) : (
@@ -79,11 +84,9 @@ export const FAQsPage = (): JSX.Element => {
                             />
                         ))
                     )}
-                </PageContentWrapper>
-            </Grid>
-            <Grid item xs={2}>
-                {isDesktop && <FAQCategoryLinks />}
-            </Grid>
-        </Grid>
+                </CardContent>
+            </Card>
+            <FAQCategoryLinks />
+        </>
     );
 };
