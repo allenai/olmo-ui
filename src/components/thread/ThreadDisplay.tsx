@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -70,6 +70,16 @@ export const ThreadDisplay = (): JSX.Element => {
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
+            <Box
+                sx={{
+                    bottom: '-1px',
+                    minHeight: (theme) => theme.spacing(6),
+                    position: 'sticky',
+                    background:
+                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                    marginTop: (theme) => theme.spacing(-3),
+                }}
+            />
         </Stack>
     );
 };
