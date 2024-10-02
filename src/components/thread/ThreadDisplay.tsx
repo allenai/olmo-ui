@@ -72,7 +72,7 @@ export const ThreadDisplay = (): JSX.Element => {
             ))}
             <Box
                 sx={{
-                    bottom: '0px',
+                    bottom: '-1px',
                     minHeight: (theme) => theme.spacing(6),
                     position: 'sticky',
                     background:
