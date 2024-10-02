@@ -30,4 +30,5 @@ export const links = {
     odc: 'https://blog.allenai.org/making-a-switch-dolma-moves-to-odc-by-8f0e73852f44',
     dolmaBlog: 'https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64',
     responsibleUsePolicy: 'https://allenai.org/responsible-use',
+    molmo: 'https://molmo.allenai.org',
 } as const;
