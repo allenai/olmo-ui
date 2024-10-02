@@ -85,10 +85,15 @@ export const NavigationDrawer = ({
             onClose={onClose}
             mobileHeading={<MobileHeading onClose={onClose} />}
             heading={<DesktopHeading />}
-            desktopDrawerSx={{ gridArea: 'nav' }}>
+            desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack
                 component="nav"
-                sx={{ height: 1, overflowX: 'hidden', paddingInline: 4, paddingBlockEnd: 2 }}>
+                sx={{
+                    height: 1,
+                    overflowX: 'hidden',
+                    paddingInline: 4,
+                    paddingBlockEnd: 2,
+                }}>
                 <NavigationLink
                     href={links.playground}
                     icon={<ChatIcon />}

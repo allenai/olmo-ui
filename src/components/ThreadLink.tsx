@@ -1,8 +1,8 @@
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
+import { ChevronIcon } from './assets/ChevronIcon';
 import { TimeDisplay } from './TimeDisplay';
 interface ThreadLinkProps {
     content: string;
@@ -15,11 +15,12 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
     const isSelected = idParameter === id;
 
     return (
-        <ListItem disableGutters>
+        <ListItem disablePadding sx={{ minHeight: (theme) => theme.spacing(7) }}>
             <ListItemButton
                 alignItems="center"
                 selected={isSelected}
                 sx={{
+                    minHeight: (theme) => theme.spacing(7),
                     gap: (theme) => theme.spacing(1),
                     color: (theme) => theme.palette.common.white,
                     '&.Mui-selected': {
@@ -60,7 +61,11 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     }}>
                     <TimeDisplay timeStamp={created} />
                 </ListItemText>
-                <ChevronRightIcon />
+                {!isSelected && (
+                    <ChevronIcon
+                        sx={(theme) => ({ width: theme.spacing(1.5), height: theme.spacing(1.5) })}
+                    />
+                )}
             </ListItemButton>
         </ListItem>
     );
