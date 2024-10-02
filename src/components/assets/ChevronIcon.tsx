@@ -1,0 +1,22 @@
+import { SvgIcon } from '@mui/material';
+import { ComponentProps } from 'react';
+
+export const ChevronIcon = (props: ComponentProps<typeof SvgIcon>): JSX.Element => {
+    return (
+        <SvgIcon
+            width="9"
+            height="18"
+            viewBox="0 0 9 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}>
+            <path
+                id="Chevron"
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M0.425679 2.18972L6.6215 8.75644C6.74841 8.89095 6.74841 9.10903 6.6215 9.24354L0.425678 15.8103L1.80444 17.2716L8.00026 10.7048C8.88865 9.76328 8.88864 8.2367 8.00026 7.29514L1.80444 0.728424L0.425679 2.18972Z"
+                fill="currentColor"
+            />
+        </SvgIcon>
+    );
+};

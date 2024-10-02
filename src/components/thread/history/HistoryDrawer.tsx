@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
     Box,
+    CircularProgress,
     Divider,
     IconButton,
     ListItem,
@@ -43,7 +44,6 @@ export const HistoryDrawer = (): JSX.Element => {
 
         return totalThreadsOnServer !== 0 && loadedThreadCount < totalThreadsOnServer;
     });
-
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === HISTORY_DRAWER_ID);
     const [offset, setOffSet] = useState(0);
     const creator = userInfo?.client;
@@ -101,12 +101,13 @@ export const HistoryDrawer = (): JSX.Element => {
             onKeyDownHandler={onKeyDownEscapeHandler}
             open={isDrawerOpen}
             anchor="left"
-            desktopDrawerVariant="persistent"
+            desktopDrawerVariant="temporary"
             heading={
                 <Box
                     sx={{
                         position: 'sticky',
-                        top: 0,
+                        paddingInline: (theme) => theme.spacing(2),
+                        paddingBlock: (theme) => theme.spacing(4),
                         backgroundColor: 'inherit',
                     }}>
                     <Stack
@@ -114,7 +115,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         direction="row"
                         gap={2}
                         alignItems="center">
-                        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
+                        <ListSubheader sx={{ backgroundColor: 'transparent', padding: 0 }}>
                             <Typography variant="h3" margin={0} color="primary">
                                 Thread History
                             </Typography>
@@ -129,7 +130,7 @@ export const HistoryDrawer = (): JSX.Element => {
                     <Divider />
                 </Box>
             }
-            desktopDrawerSx={{ gridArea: 'nav' }}>
+            desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
                 <HistoryDrawerSection
@@ -143,6 +144,14 @@ export const HistoryDrawer = (): JSX.Element => {
                     hasDivider
                 />
                 {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
+                    <CircularProgress
+                        sx={{
+                            color: (theme) => theme.palette.tertiary.light,
+                            marginLeft: (theme) => theme.spacing(3),
+                        }}
+                    />
+                )}
+                {(hasMoreThreadsToFetch || messageListState === RemoteState.Loaded) && (
                     <ListItem ref={sentryRef}>
                         <ListItemText
                             sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}
