@@ -108,6 +108,12 @@ export const NavigationDrawer = ({
                     Thread history
                 </NavigationLink>
                 <NavigationLink
+                    href={links.molmo}
+                    selected={curriedDoesMatchPath(links.molmo)}
+                    iconVariant="external">
+                    Molmo
+                </NavigationLink>
+                <NavigationLink
                     href={links.ourModels}
                     selected={curriedDoesMatchPath(links.ourModels)}
                     iconVariant="external"
