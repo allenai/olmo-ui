@@ -4,6 +4,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
     Box,
     Button,
+    Card,
+    CardContent,
     Divider,
     IconButton,
     Link,
@@ -77,6 +79,29 @@ export const AttributionContent = () => {
             <Link href={links.faqs} underline="always">
                 <Typography variant="caption">Learn more</Typography>
             </Link>
+            <Card>
+                <CardContent
+                    sx={{
+                        backgroundColor: (theme) => theme.palette.background.reversed,
+                        '&:last-child': {
+                            padding: (theme) => theme.spacing(2),
+                        },
+                    }}>
+                    <Typography color="white">Want to see more pre-training data?</Typography>
+                    <Button
+                        variant="contained"
+                        href={links.datasetExplorer}
+                        sx={(theme) => ({
+                            backgroundColor: theme.palette.tertiary.light,
+                            '&:hover': {
+                                backgroundColor: theme.palette.tertiary.light,
+                            },
+                            marginTop: theme.spacing(2),
+                        })}>
+                        <Typography fontWeight={500}>Explore the full dataset</Typography>
+                    </Button>
+                </CardContent>
+            </Card>
             <Button
                 variant="text"
                 disabled={loadingState === RemoteState.Loading}
