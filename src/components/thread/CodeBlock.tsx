@@ -59,12 +59,15 @@ export const CodeBlock = ({
                     </SyntaxHighlighter>
                     {spansInsideThisCodeBlock.length > 0 && (
                         <Button
-                            fullWidth
-                            variant="text"
+                            variant="outlined"
+                            sx={(theme) => ({
+                                color: theme.palette.primary.contrastText,
+                                borderColor: theme.palette.primary.contrastText,
+                            })}
                             onClick={() => {
                                 toggleSelectedSpans();
                             }}>
-                            Show documents related to this code block
+                            View code dataset matches
                         </Button>
                     )}
                 </>
