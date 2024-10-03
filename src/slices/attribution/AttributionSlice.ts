@@ -105,6 +105,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     resetAttribution: () => {
         set(
             (state) => {
+                state.attribution.attributionsByMessageId = {};
                 state.attribution.selectedMessageId = null;
                 state.attribution.selectedSpanIds =
                     initialAttributionState.attribution.selectedSpanIds;
