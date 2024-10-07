@@ -63,6 +63,10 @@ export const CodeBlock = ({
                             sx={(theme) => ({
                                 color: theme.palette.primary.contrastText,
                                 borderColor: theme.palette.primary.contrastText,
+                                '&:hover': {
+                                    backgroundColor: theme.palette.action.hover,
+                                    borderColor: (theme) => theme.palette.primary.contrastText,
+                                },
                             })}
                             onClick={() => {
                                 toggleSelectedSpans();
