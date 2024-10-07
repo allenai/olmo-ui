@@ -107,7 +107,7 @@ export function CopyToClipboardButton({
     };
 
     return (
-        <Box sx={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
+        <Box sx={{ display: 'inline-flex', whiteSpace: 'nowrap', alignItems: 'center' }}>
             <IconButton
                 size="small"
                 aria-label={ariaLabel || 'Copy'}

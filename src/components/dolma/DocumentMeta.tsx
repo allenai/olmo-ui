@@ -1,6 +1,5 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Box, Stack, styled, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Link, Stack, styled, Typography } from '@mui/material';
 
 import { CopyToClipboardButton } from './shared';
 
@@ -15,40 +14,44 @@ export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
         <Stack direction="row" gap={1} flexWrap="wrap">
             {!!url && (
                 <Box sx={{ minWidth: '0' }}>
-                    <Link to={url}>
-                        <Typography
-                            sx={{
-                                whiteSpace: 'nowrap',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                            }}
-                            variant="subtitle1"
-                            component="div"
-                            color={(theme) => theme.color.B6.hex}>
-                            {url}
-                        </Typography>
+                    <Link
+                        href={url}
+                        sx={{
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                        }}
+                        variant="subtitle1">
+                        {url}
                     </Link>
                 </Box>
             )}
-            <Typography noWrap variant="subtitle1" component="div" sx={{ flexShrink: 0 }}>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ display: 'inline-block' }}>
-                    Dolma ID:&nbsp;&nbsp;
-                </Typography>
-                <CopyToClipboardButton
-                    buttonContent={<ContentCopyIcon fontSize="inherit" />}
-                    text={dolmaId}
-                    ariaLabel="Copy Dolma ID">
-                    <TruncatableText>&nbsp;{dolmaId}</TruncatableText>
-                </CopyToClipboardButton>
-                <Typography
-                    variant="subtitle1"
-                    component="div"
-                    fontWeight="bold"
-                    sx={{ display: 'inline-block' }}>
-                    Source:&nbsp;
-                </Typography>
-                {source}
-            </Typography>
+            <Stack direction="row" gap={1} alignItems="center">
+                <Stack direction="row" alignItems="center" gap="0.5ch">
+                    <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        sx={{ display: 'inline-block' }}>
+                        Dolma ID:
+                    </Typography>
+                    <CopyToClipboardButton
+                        buttonContent={<ContentCopyIcon fontSize="inherit" />}
+                        text={dolmaId}
+                        ariaLabel="Copy Dolma ID">
+                        <TruncatableText>{dolmaId}</TruncatableText>
+                    </CopyToClipboardButton>
+                </Stack>
+                <Stack direction="row" alignItems="center" gap="0.5ch">
+                    <Typography
+                        variant="subtitle1"
+                        component="div"
+                        fontWeight="bold"
+                        sx={{ display: 'inline-block' }}>
+                        Source:
+                    </Typography>
+                    {source}
+                </Stack>
+            </Stack>
         </Stack>
     );
 };

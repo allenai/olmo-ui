@@ -1,5 +1,6 @@
 import math
 from datetime import datetime
+from typing import Optional
 
 import flask
 from google.oauth2.service_account import Credentials
@@ -19,16 +20,20 @@ from .. import analytics, config, index
 from ..infini_gram_api_client import Client
 
 
-def parse_int_from_qs(name: str, default: int, smallest: int, largest: int) -> int:
+def parse_int_from_qs(
+    name: str, default: int, smallest: int, largest: Optional[int] = None
+) -> int:
     try:
         v = flask.request.args.get(name)
         if v is None:
             return default
         i = int(v)
-        if not smallest <= i <= largest:
+
+        if smallest > i or (largest is not None and i > largest):
             raise exceptions.BadRequest(
                 f'The "{name}" argument "{i}" must be in range [{smallest}, {largest}]'
             )
+
         return i
     except ValueError:
         raise exceptions.BadRequest(f'The "{name}" argument must be a valid integer')
@@ -91,12 +96,7 @@ class Server(flask.Blueprint):
         no_aggs = True
 
         size = parse_int_from_qs("size", default=10, smallest=1, largest=100)
-        offset = parse_int_from_qs("offset", default=0, smallest=0, largest=10_000 - 1)
-
-        # Elasticsearch can't scroll beyond 10,000 results without cursors.
-        # See: https://www.elastic.co/guide/en/elasticsearch/reference/current/paginate-search-results.html#paginate-search-results
-        if size + offset > 10_000:
-            raise exceptions.BadRequest("Unable to retrieve more than 10,000 results")
+        offset = parse_int_from_qs("offset", default=0, smallest=0)
 
         try:
             sp = flask.request.args.get(
@@ -142,7 +142,6 @@ class Server(flask.Blueprint):
 
         print(infini_gram_response.documents[0].text)
         return flask.jsonify(mapped_response)
-        return flask.jsonify(self.es().search(self.search_request_from_query_string()))
 
     def document(self, id: str):
         doc = self.es().document(id)
