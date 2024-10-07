@@ -218,8 +218,6 @@ export const QueryForm = (): JSX.Element => {
                             color: 'text',
                         }}
                         fullWidth
-                        multiline
-                        maxRows={5}
                         required
                         parseError={(error) => {
                             if (error.type === 'inappropriate') {
