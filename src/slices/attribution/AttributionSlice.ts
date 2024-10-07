@@ -68,6 +68,10 @@ const getAttributionsByMessageIdOrDefault = (state: Draft<AppContextState>, mess
         };
     }
 
+    if (!state.attribution.highlightMapping[messageId]) {
+        state.attribution.highlightMapping[messageId] = true;
+    }
+
     return state.attribution.attributionsByMessageId[messageId];
 };
 
@@ -173,7 +177,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         });
                         state.orderedDocumentIds = orderedDocumentIds;
                         attributions.loadingState = RemoteState.Loaded;
-                        state.attribution.highlightMapping[messageId] = true;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
