@@ -16,8 +16,7 @@ def _get_kwargs(
     *,
     search: str,
     maximum_document_display_length: Union[Unset, int] = 10,
-    page: Union[Unset, int] = 0,
-    page_size: Union[Unset, int] = 10,
+
 ) -> Dict[str, Any]:
     params: Dict[str, Any] = {}
 

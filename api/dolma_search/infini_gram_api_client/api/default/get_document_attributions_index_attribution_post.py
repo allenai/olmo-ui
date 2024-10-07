@@ -47,16 +47,16 @@ def _parse_response(
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                response_200_type_0 = InfiniGramAttributionResponse.from_dict(data)
+                response_200_type_1 = InfiniGramAttributionResponseWithDocuments.from_dict(data)
 
-                return response_200_type_0
+                return response_200_type_1
             except:  # noqa: E722
                 pass
             if not isinstance(data, dict):
                 raise TypeError()
-            response_200_type_1 = InfiniGramAttributionResponseWithDocuments.from_dict(data)
+            response_200_type_0 = InfiniGramAttributionResponse.from_dict(data)
 
-            return response_200_type_1
+            return response_200_type_0
 
         response_200 = _parse_response_200(response.json())
 
