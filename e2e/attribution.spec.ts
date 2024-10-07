@@ -7,7 +7,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     // await page.getByRole('button', { name: 'History', exact: true }).click();
     // await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
     // await page.waitForLoadState('networkidle');
-    await page.getByRole('tab', { name: 'Dataset' }).click();
+    await page.getByRole('tab', { name: 'CorpusLink' }).click();
     await expect(page.getByTestId('attribution-drawer').getByText('Untitled Document')).toHaveCount(
         2
     );
