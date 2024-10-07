@@ -21,6 +21,9 @@ interface AttributionState {
         };
         selectedMessageId: string | null;
         selectedSpanIds: string[];
+        highlightMapping: {
+            [messageId: string]: boolean;
+        };
     };
     orderedDocumentIds: number[];
     isAllHighlightVisible: boolean;
@@ -48,6 +51,7 @@ const initialAttributionState: AttributionState = {
         attributionsByMessageId: {},
         selectedMessageId: null,
         selectedSpanIds: [],
+        highlightMapping: {},
     },
     isAllHighlightVisible: true,
     orderedDocumentIds: [],
@@ -105,7 +109,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     resetAttribution: () => {
         set(
             (state) => {
-                state.attribution.attributionsByMessageId = {};
+                if (state.attribution.selectedMessageId) {
+                    state.attribution.highlightMapping[state.attribution.selectedMessageId] = false;
+                }
                 state.attribution.selectedMessageId = null;
                 state.attribution.selectedSpanIds =
                     initialAttributionState.attribution.selectedSpanIds;
@@ -167,6 +173,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         });
                         state.orderedDocumentIds = orderedDocumentIds;
                         attributions.loadingState = RemoteState.Loaded;
+                        state.attribution.highlightMapping[messageId] = true;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
