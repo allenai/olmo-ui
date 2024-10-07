@@ -1,6 +1,7 @@
 import { render, screen } from '@test-utils';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 import { DeepPartial } from 'react-hook-form';
+import { debug } from 'vitest-preview';
 import { useStore } from 'zustand';
 
 import { Role } from '@/api/Role';
@@ -112,6 +113,9 @@ describe('ThreadDisplay', () => {
                                 },
                             },
                         },
+                        highlightMapping: {
+                            llmMessage: true,
+                        },
                     },
                 }}>
                 <ThreadDisplay />
@@ -127,7 +131,7 @@ describe('ThreadDisplay', () => {
             }
         );
 
-        screen.debug();
+        debug();
         expect.soft(screen.getByText('(parens)')).toHaveRole('button');
         expect.soft(screen.getByText('[braces]')).toHaveRole('button');
         expect.soft(screen.getByText('.dot')).toHaveRole('button');
