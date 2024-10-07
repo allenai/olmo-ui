@@ -1,44 +1,44 @@
 {
-    "c4": {
-      "label": "C4",
-      "order": 1,
-      "color": "#B5F0FF",
-      "staticData": [ "words", "domains", "created", "sourceCounts" ]
-    },
-    "common-crawl": {
-      "label": "Common Crawl",
-      "order": 0,
+    "algebraic-stack": {
+      "label": "Algebraic Stack",
+      "order": 6,
       "color": "#FF9F9E",
-      "staticData": [ "words", "domains", "created", "sourceCounts" ]
+      "staticData": [ "words", "sourceCounts" ]
     },
-    "gutenberg": {
-      "label": "Gutenberg",
+    "arxiv": {
+      "label": "Arxiv",
       "order": 4,
       "color": "#E7A2DE",
-      "staticData": [ "words", "created", "sourceCounts" ]
+      "staticData": [ "words", "sourceCounts" ]
     },
-    "reddit": {
-      "label": "Reddit",
-      "order": 3,
-      "color": "#70DDBA",
-      "staticData": [ "words", "domains", "created", "sourceCounts" ]
-    },
-    "s2": {
-      "label": "Semantic Scholar (pes2o)",
-      "order": 5,
-      "color": "#9AE7EC",
-      "staticData": [ "words", "domains", "created", "sourceCounts" ]
-    },
-    "stack-dedup": {
-      "label": "Stack Dedup",
-      "order": 6,
-      "color": "#FFD45D",
+    "dclm": {
+      "label": "DCLM",
+      "order": 0,
+      "color": "#B5F0FF",
       "staticData": [ "words", "domains", "sourceCounts" ]
     },
-    "wikipedia": {
-      "label": "Wikipedia",
+    "open-web-math": {
+      "label": "OpenWebMath",
+      "order": 5,
+      "color": "#70DDBA",
+      "staticData": [ "words", "sourceCounts" ]
+    },
+    "pes2o": {
+      "label": "Semantic Scholar (pes2o)",
       "order": 2,
+      "color": "#9AE7EC",
+      "staticData": [ "words", "sourceCounts" ]
+    },
+    "starcoder": {
+      "label": "StarCoder",
+      "order": 1,
+      "color": "#FFD45D",
+      "staticData": [ "words", "sourceCounts" ]
+    },
+    "wiki": {
+      "label": "Wiki",
+      "order": 3,
       "color": "#B7AFEB",
-      "staticData": [ "words", "domains", "created", "sourceCounts" ]
+      "staticData": [ "words", "domains", "sourceCounts" ]
     }
   }
