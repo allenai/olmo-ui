@@ -8,6 +8,11 @@ import bs4
 import elasticsearch8 as es8
 from uniseg import wordbreak
 
+from dolma_search.api.toxic_content_service import is_content_toxic
+from dolma_search.infini_gram_api_client.models.document import (
+    Document as InfiniGramDocument,
+)
+
 from . import config
 
 
@@ -191,26 +196,14 @@ class Document:
         del src["snippet"]
         snippets = [Snippet.from_body_text(src["text"]).strip()]
         is_document_bad = False
-        
-        title_content = src['title']
-        text_content = src['text']
 
-        with open('/api/dolma_search/static/bad_words/nsfw_wordlist.txt', 'r') as file:
-            nsfw_wordlist = set(file.read().splitlines())
-        
-        with open('/api/dolma_search/static/bad_words/really_bad_words.txt', 'r') as file:
-            really_bad_words = set(file.read().splitlines())
-        
+        title_content = src["title"]
+        text_content = src["text"]
+
         if title_content and text_content:
-            combined_content = title_content + ' ' + text_content
-            sanitized_content = re.sub(r'[^\w\s]', ' ', combined_content)
-            unique_words = set(sanitized_content.lower().split())
+            combined_content = title_content + " " + text_content
 
-            if unique_words & really_bad_words:
-                is_document_bad = True
-            else:
-                nsfw_matches = unique_words & nsfw_wordlist
-                is_document_bad = len(nsfw_matches) >= 2
+            is_document_bad = is_content_toxic(combined_content)
 
         # TODO: set text for clients that should have access
         fields = {
@@ -221,10 +214,47 @@ class Document:
             "archive": sanitized_archive,
             "snippets": snippets,
             "text": None,
-            "isDocumentBad": is_document_bad
+            "isDocumentBad": is_document_bad,
         }
 
-        return cls(**fields)      
+        return cls(**fields)
+
+    @classmethod
+    def from_infini_gram_document(
+        cls, infini_gram_document: InfiniGramDocument
+    ) -> t.Self:
+        title = (
+            infini_gram_document.metadata.additional_properties.get("metadata", {})
+            .get("metadata", {})
+            .get("title", "Untitled Document")
+        )
+
+        is_document_bad = is_content_toxic(title + infini_gram_document.text)
+
+        source = infini_gram_document.metadata.additional_properties.get(
+            "metadata", {}
+        ).get("source", None)
+
+        if source is None:
+            source = infini_gram_document.metadata.additional_properties.get(
+                "path", ""
+            ).split("/")[0]
+
+        snippet = Snippet.from_body_text(infini_gram_document.text).strip()
+
+        return cls(
+            id=str(infini_gram_document.document_index),
+            dolma_id=str(infini_gram_document.document_index),
+            source=source,
+            title=title,
+            snippets=[snippet],
+            word_count=infini_gram_document.document_length,
+            archive=infini_gram_document.metadata.additional_properties.get("path", ""),
+            isDocumentBad=is_document_bad,
+            metadata=infini_gram_document.metadata.to_dict(),
+            text=infini_gram_document.text,
+        )
+
 
 @dataclass
 class SearchResult(Document):
@@ -243,6 +273,13 @@ class SearchResult(Document):
             snippets = d.snippets
 
         return cls(**{**asdict(d), "score": hit["_score"], "snippets": snippets})
+
+    @classmethod
+    def from_infini_gram_document(
+        cls, infini_gram_document: InfiniGramDocument
+    ) -> t.Self:
+        document = Document.from_infini_gram_document(infini_gram_document)
+        return cls(**asdict(document))
 
 
 @dataclass

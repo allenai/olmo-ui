@@ -1,16 +1,22 @@
+import math
 from datetime import datetime
 
 import flask
 from google.oauth2.service_account import Credentials
 from werkzeug import exceptions
 
+from dolma_search.infini_gram_api_client.api.documents import (
+    search_documents_index_documents_get,
+)
 from dolma_search.infini_gram_api_client.models.available_infini_gram_index_id import (
     AvailableInfiniGramIndexId,
+)
+from dolma_search.infini_gram_api_client.models.http_validation_error import (
+    HTTPValidationError,
 )
 
 from .. import analytics, config, index
 from ..infini_gram_api_client import Client
-from ..infini_gram_api_client.api.documents import search_documents_index_documents_get
 
 
 def parse_int_from_qs(name: str, default: int, smallest: int, largest: int) -> int:
@@ -105,13 +111,37 @@ class Server(flask.Blueprint):
         )
 
     def search(self):
-        return flask.jsonify(
-            search_documents_index_documents_get.sync(
-                client=self.infini_gram_client,
-                index=AvailableInfiniGramIndexId.OLMOE_MIX_0924,
-                search=self.search_request_from_query_string().query,
-            )
+        request = self.search_request_from_query_string()
+
+        infini_gram_response = search_documents_index_documents_get.sync(
+            client=self.infini_gram_client,
+            index=AvailableInfiniGramIndexId.OLMOE_MIX_0924,
+            search=self.search_request_from_query_string().query,
+            page=math.floor(request.offset / request.size),
+            page_size=request.size,
+            maximum_document_display_length=400,
         )
+
+        if infini_gram_response is None or isinstance(
+            infini_gram_response, HTTPValidationError
+        ):
+            raise Exception()
+
+        mapped_response = index.SearchResults(
+            request=request,
+            meta=index.SearchMeta(
+                took_ms=0,
+                total=infini_gram_response.total_documents,
+                overflow=infini_gram_response.total_documents > 10000,
+            ),
+            results=[
+                index.SearchResult.from_infini_gram_document(document)
+                for document in infini_gram_response.documents
+            ],
+        )
+
+        print(infini_gram_response.documents[0].text)
+        return flask.jsonify(mapped_response)
         return flask.jsonify(self.es().search(self.search_request_from_query_string()))
 
     def document(self, id: str):
