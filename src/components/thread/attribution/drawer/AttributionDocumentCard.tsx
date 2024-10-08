@@ -115,29 +115,34 @@ export const AttributionDocumentCardSnippets = ({
                 text={firstSnippet}
             />
             <Box
-                // The styles are here to follow an optimization recommended by MUI
-                // https://mui.com/system/getting-started/the-sx-prop/#dynamic-values
-                style={{ '--document-content-height': expanded ? '1fr' : '0fr' } as CSSProperties}
-                sx={{
-                    // This uses grid's ability to transition to 1fr height to animate the other snippets showing
-                    // https://css-tricks.com/css-grid-can-do-auto-height-transitions/
-                    display: 'grid',
-                    gridTemplateRows: 'var(--document-content-height)',
-                    overflow: 'hidden',
-                    transition: `grid-template-rows ${SNIPPET_TRANSITION_TIME} ease`,
-                }}>
+                sx={[
+                    {
+                        // This uses grid's ability to transition to 1fr height to animate the other snippets showing
+                        // https://css-tricks.com/css-grid-can-do-auto-height-transitions/
+                        display: 'grid',
+                        gridTemplateRows: '1fr',
+                        overflow: 'hidden',
+                        transitionProperty: 'grid-template-rows, margin-block-end',
+                        transitionDuration: SNIPPET_TRANSITION_TIME,
+                        transitionTimingFunction: 'ease',
+                    },
+                    !expanded && {
+                        marginBlockEnd: -1,
+                        gridTemplateRows: '0fr',
+                    },
+                ]}>
                 <Box
-                    style={
+                    sx={[
                         {
-                            '--document-content-visibility': expanded ? 'visible' : 'hidden',
-                        } as CSSProperties
-                    }
-                    sx={{
-                        // This combines with the grid transition above to help the animation
-                        minHeight: 0,
-                        transition: `visibility ${SNIPPET_TRANSITION_TIME}`,
-                        visibility: 'var(--document-content-visibility)',
-                    }}>
+                            // This combines with the grid transition above to help the animation
+                            minHeight: 0,
+                            transition: `visibility ${SNIPPET_TRANSITION_TIME}`,
+                            visibility: 'visible',
+                        },
+                        !expanded && {
+                            visibility: 'hidden',
+                        },
+                    ]}>
                     {restSnippets.map((snippet) => (
                         <BoldTextForDocumentAttribution
                             key={snippet}
