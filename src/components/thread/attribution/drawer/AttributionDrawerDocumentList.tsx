@@ -104,8 +104,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            {documents.map((document) => {
-                return <AttributionDocumentCard key={document.index} document={document} />;
+            {documents.map((document, index) => {
+                return <AttributionDocumentCard key={index} document={document} />;
             })}
         </>
     );
