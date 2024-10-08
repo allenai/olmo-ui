@@ -12,7 +12,7 @@ export const useSpanHighlighting = (messageId: string) => {
         : documentFirstMarkedContentSelector;
 
     const contentWithMarks = useAppContext((state) => {
-        if (!attribution || !state.attribution.highlightMapping[messageId]) {
+        if (!attribution || state.attribution.selectedMessageId !== messageId) {
             return state.selectedThreadMessagesById[messageId].content;
         }
 

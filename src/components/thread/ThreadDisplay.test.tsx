@@ -112,9 +112,6 @@ describe('ThreadDisplay', () => {
                                 },
                             },
                         },
-                        highlightMapping: {
-                            llmMessage: true,
-                        },
                     },
                 }}>
                 <ThreadDisplay />
