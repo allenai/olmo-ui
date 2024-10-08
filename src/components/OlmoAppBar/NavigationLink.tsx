@@ -61,7 +61,7 @@ export const NavigationLink = ({
                 onClick={onClick}
                 sx={(theme) => ({
                     gap: theme.spacing(2),
-                    color: theme.palette.common.white,
+                    color: theme.palette.text.reversed,
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
