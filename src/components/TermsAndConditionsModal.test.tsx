@@ -1,6 +1,5 @@
 import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { debug } from 'vitest-preview';
 
 import { sections, TermsAndConditionsModal } from './TermsAndConditionsModal';
 
