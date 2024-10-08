@@ -1,12 +1,4 @@
-import {
-    Button,
-    Card,
-    CardActionArea,
-    CardContent,
-    Skeleton,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -19,23 +11,9 @@ interface AttributionDocumentCardBaseProps {
     text: ReactNode;
     source: ReactNode;
     // href: string;
-    setSelectedDocument?: () => void;
-    setPreviewDocument?: () => void;
-    unsetPreviewDocument?: () => void;
-    isSelected?: boolean;
-    isPreviewed?: boolean;
 }
 
-const AttributionDocumentCardBase = ({
-    setSelectedDocument,
-    setPreviewDocument,
-    unsetPreviewDocument,
-    isSelected,
-    isPreviewed,
-    title,
-    text,
-    source,
-}: AttributionDocumentCardBaseProps) => {
+const AttributionDocumentCardBase = ({ title, text, source }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
             sx={{
@@ -55,9 +33,7 @@ const AttributionDocumentCardBase = ({
                     '&[data-selected-document="true"]': {
                         borderColor: (theme) => theme.palette.primary.main,
                     },
-                }}
-                data-selected-document={isSelected}
-                data-previewed-document={isPreviewed}>
+                }}>
                 <Typography
                     variant="body1"
                     fontWeight="bold"
@@ -95,6 +71,8 @@ interface AttributionDocumentCardProps {
 
 const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
 
+const SNIPPET_TRANSITION_TIME = '300ms';
+
 export const AttributionDocumentCardSnippets = ({
     documentIndex,
 }: Pick<AttributionDocumentCardProps, 'documentIndex'>) => {
@@ -124,26 +102,53 @@ export const AttributionDocumentCardSnippets = ({
         })
     );
 
+    if (snippets.length === 0) {
+        return null;
+    }
+
+    const [firstSnippet, ...restSnippets] = snippets;
+
     return (
-        <Stack direction="column" gap={2}>
-            {expanded ? (
-                snippets.map((snippet) => (
-                    <BoldTextForDocumentAttribution
-                        key={snippet}
-                        correspondingSpans={spans}
-                        text={snippet}
-                    />
-                ))
-            ) : (
-                <BoldTextForDocumentAttribution
-                    key={snippets[0]}
-                    correspondingSpans={spans}
-                    text={snippets[0]}
-                />
+        <Stack direction="column" gap={1}>
+            <BoldTextForDocumentAttribution
+                key={firstSnippet}
+                correspondingSpans={spans}
+                text={firstSnippet}
+            />
+            <Box
+                sx={{
+                    // This uses grid's ability to transition to 1fr height to animate the other snippets showing
+                    // https://css-tricks.com/css-grid-can-do-auto-height-transitions/
+                    display: 'grid',
+                    gridTemplateRows: expanded ? '1fr' : '0fr',
+                    overflow: 'hidden',
+                    transition: `grid-template-rows ${SNIPPET_TRANSITION_TIME} ease`,
+                }}>
+                <Box
+                    sx={{
+                        minHeight: 0,
+                        transition: `visibility ${SNIPPET_TRANSITION_TIME}`,
+                        visibility: expanded ? 'visible' : 'hidden',
+                    }}>
+                    {restSnippets.map((snippet) => (
+                        <BoldTextForDocumentAttribution
+                            key={snippet}
+                            correspondingSpans={spans}
+                            text={snippet}
+                        />
+                    ))}
+                </Box>
+            </Box>
+
+            {snippets.length > 1 && (
+                <Link
+                    component="button"
+                    onClick={toggleExpanded}
+                    underline="always"
+                    alignSelf="start">
+                    Show {expanded ? 'less' : 'more'}
+                </Link>
             )}
-            <Button variant="text" onClick={toggleExpanded}>
-                Show {expanded ? 'less' : 'more'}
-            </Button>
         </Stack>
     );
 };

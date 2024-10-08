@@ -21,10 +21,8 @@ const fakeAttributionResponse = {
             corresponding_span_texts: ['OkayOkay'],
             index: '2132419687',
             source: 'c4',
-            text: "exes.\nCooooool, would this supposedly fix some translation issues I'm having with Shady Job too, if it runs from a 1.13 build? I better get reading on this topic.\nOkayOkayOkayOkayOkayOkayOkayOkayOkay where's this new SCI??\nintegrated in 1.13-UB if yes.\nIt all depends on what they needed that proprietary ex",
-            snippets: [
-                "exes.\nCooooool, would this supposedly fix some translation issues I'm having with Shady Job too, if it runs from a 1.13 build? I better get reading on this topic.\nOkayOkayOkayOkayOkayOkayOkayOkayOkay where's this new SCI??\nintegrated in 1.13-UB if yes.\nIt all depends on what they needed that proprietary ex",
-            ],
+            text: 'some text surrounding OkayOkay end surrounding',
+            snippets: ['some text surrounding OkayOkay end surrounding'],
             title: null,
         },
     ],

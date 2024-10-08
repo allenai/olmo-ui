@@ -22,7 +22,8 @@ export const BoldTextForDocumentAttribution = ({
     const splitTextSegments = text.split(regexPattern);
 
     return (
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
+            &quot;...
             {splitTextSegments.map((segment, index) => {
                 // Check if the segment matches any of the substrings exactly
                 const isExactMatch = correspondingSpans.some(
@@ -31,6 +32,7 @@ export const BoldTextForDocumentAttribution = ({
 
                 return isExactMatch ? <strong key={index}>{segment}</strong> : segment;
             })}
+            ...&quot;
         </Typography>
     );
 };
