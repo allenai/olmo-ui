@@ -115,12 +115,18 @@ export const AttributionDocumentCard = ({
 
         if (selectedMessageId != null) {
             const documents =
-                state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
+                state.attribution.attributionsByMessageId[selectedMessageId]?.documents[
+                documentIndex
+                ] ?? [];
 
-            return documents[documentIndex]?.corresponding_span_texts;
+            return documents.flatMap((doc) => {
+                console.log(doc.corresponding_span_texts);
+                return doc.corresponding_span_texts;
+            });
         }
     });
 
+    console.log('>>>>', spans);
     return (
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}

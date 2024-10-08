@@ -7,7 +7,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {
-    documents: { [documentIndex: string]: Document | undefined };
+    documents: { [documentIndex: string]: Document[] };
     spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
 }
@@ -161,9 +161,19 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;
                         });
+
+                        const documentResults: { [documentIndex: string]: Document[] } = {};
+
                         attributionResponse.documents.forEach((document) => {
-                            attributions.documents[document.index] = document;
+                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                            if (documentResults[document.index]) {
+                                documentResults[document.index].push(document);
+                            } else {
+                                documentResults[document.index] = [document];
+                            }
                         });
+                        console.log('finish', documentResults);
+                        attributions.documents = documentResults;
                         state.orderedDocumentIds = orderedDocumentIds;
                         attributions.loadingState = RemoteState.Loaded;
                     },

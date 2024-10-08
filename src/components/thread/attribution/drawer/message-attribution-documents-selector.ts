@@ -1,4 +1,4 @@
-import { Document } from '@/api/AttributionClient';
+import { Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
 import type { AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import {
@@ -18,21 +18,24 @@ export const messageAttributionDocumentsSelector = (
     const hasSelectedSpan = hasSelectedSpansSelector(state);
 
     if (hasSelectedSpan) {
-        const selectedSpans = state.attribution.selectedSpanIds.map(
-            (spanId) => attributions?.spans[spanId]
+        const selectedSpans = state.attribution.selectedSpanIds.reduce<TopLevelAttributionSpan[]>(
+            (accu, spanId) => {
+                const span = attributions?.spans[spanId];
+                if (span) {
+                    accu.push(span);
+                }
+                return accu;
+            },
+            []
         );
 
         // flatmap allows us to skip elements in a map by returning an empty array
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap#for_adding_and_removing_items_during_a_map
-        const documents = selectedSpans
-            .flatMap((span) =>
-                span?.documents.flatMap((documentIndex) => {
-                    const document = attributions?.documents[documentIndex];
-
-                    return document != null ? [document] : [];
-                })
-            )
-            .filter((document) => document != null);
+        const documents = selectedSpans.flatMap((span) =>
+            span.documents.flatMap((documentIndex) => {
+                return attributions?.documents[documentIndex] || [];
+            })
+        );
 
         return {
             documents,
@@ -40,18 +43,13 @@ export const messageAttributionDocumentsSelector = (
         };
     }
 
-    const documents: Document[] = state.orderedDocumentIds
-        .map((docId) => {
-            return attributions?.documents[docId.toString()];
-        })
-        .filter((doc) => doc !== undefined);
-
-    const filteredDocuments = Array.from(
-        new Map(documents.map((doc) => [doc.index, doc])).values()
-    );
+    const documents = [...new Set(state.orderedDocumentIds)].reduce<Document[]>((accu, docId) => {
+        const docs = attributions?.documents[docId.toString()];
+        return docs ? accu.concat(docs) : accu;
+    }, []);
 
     return {
-        documents: filteredDocuments,
+        documents,
         loadingState: attributions?.loadingState ?? null,
     };
 };
