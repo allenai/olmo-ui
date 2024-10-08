@@ -90,7 +90,7 @@ module.exports = (env) => ({
             ENABLE_MOCKING: false,
             IS_ATTRIBUTION_ENABLED: true,
             AUTH0_DOMAIN: 'allenai-public-dev.us.auth0.com',
-            AUTH0_CLIENT_ID: '9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd',
+            AUTH0_CLIENT_ID: 'CmIxLlwn0miZ8kaQgDAK37pG0L6vrQEm',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
         }),

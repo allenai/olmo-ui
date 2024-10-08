@@ -21,7 +21,6 @@ describe('Terms and Conditions', () => {
             );
         }
 
-        debug();
         expect(screen.getByLabelText('Getting Started')).not.toBeVisible();
     });
 });
