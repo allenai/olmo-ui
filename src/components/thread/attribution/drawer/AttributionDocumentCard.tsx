@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { CSSProperties, ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -116,19 +116,28 @@ export const AttributionDocumentCardSnippets = ({
                 text={firstSnippet}
             />
             <Box
+                // The styles are here to follow an optimization recommended by MUI
+                // https://mui.com/system/getting-started/the-sx-prop/#dynamic-values
+                style={{ '--document-content-height': expanded ? '1fr' : '0fr' } as CSSProperties}
                 sx={{
                     // This uses grid's ability to transition to 1fr height to animate the other snippets showing
                     // https://css-tricks.com/css-grid-can-do-auto-height-transitions/
                     display: 'grid',
-                    gridTemplateRows: expanded ? '1fr' : '0fr',
+                    gridTemplateRows: 'var(--document-content-height)',
                     overflow: 'hidden',
                     transition: `grid-template-rows ${SNIPPET_TRANSITION_TIME} ease`,
                 }}>
                 <Box
+                    style={
+                        {
+                            '--document-content-visibility': expanded ? 'visible' : 'hidden',
+                        } as CSSProperties
+                    }
                     sx={{
+                        // This combines with the grid transition above to help the animation
                         minHeight: 0,
                         transition: `visibility ${SNIPPET_TRANSITION_TIME}`,
-                        visibility: expanded ? 'visible' : 'hidden',
+                        visibility: 'var(--document-content-visibility)',
                     }}>
                     {restSnippets.map((snippet) => (
                         <BoldTextForDocumentAttribution
