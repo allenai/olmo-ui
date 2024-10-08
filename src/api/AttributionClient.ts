@@ -18,7 +18,7 @@ export interface TopLevelAttributionSpan extends AttributionSpan {
     nested_spans: AttributionSpan[];
 }
 
-interface AttributionResponse {
+export interface AttributionResponse {
     documents: Document[];
     spans: TopLevelAttributionSpan[];
 }

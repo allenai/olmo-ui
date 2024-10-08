@@ -5,6 +5,7 @@ import { Role } from '@/api/Role';
 
 import highlightStressTestMessage from './highlightStressTestMessage';
 import { newMessageId } from './messageStreamHandlers';
+import { infinigramCaseIds, mockInfinigramResponses } from './mockInfinigramThreads';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
 const fakeFirstThreadResponse = {
@@ -139,7 +140,7 @@ const highlightStressTestResponse = {
 };
 
 const fakeGetAllThreadsResponse: MessagesResponse = {
-    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse],
+    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse, ...mockInfinigramResponses],
     meta: { limit: 10, offset: 0, total: 2 },
 };
 
@@ -163,4 +164,10 @@ export const messageHandlers = [
     http.get(`*${MessageApiUrl}/${highlightStressTestMessageId}`, () => {
         return HttpResponse.json(highlightStressTestResponse);
     }),
+
+    ...infinigramCaseIds.map((threadId, index) =>
+        http.get(`*${MessageApiUrl}/${threadId}`, () =>
+            HttpResponse.json(mockInfinigramResponses[index])
+        )
+    ),
 ];

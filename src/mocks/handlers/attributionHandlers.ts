@@ -1,6 +1,7 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
 import highlightStressTestResponse from './highlightStressTestResponse.json';
+import { mockInfiThreadResponseToMockAttribution } from './mockAttributionResponses';
 
 const fakeAttributionResponse = {
     documents: [
@@ -56,6 +57,19 @@ export const attributionHandlers = [
             requestBody.model_response.startsWith('HighlightStressTest')
         ) {
             return new HttpResponse(JSON.stringify(highlightStressTestResponse));
+        }
+
+        for (let idx = 0; idx < mockInfiThreadResponseToMockAttribution.length; idx++) {
+            if (
+                requestBody.model_response ===
+                mockInfiThreadResponseToMockAttribution[idx].model_response
+            ) {
+                return new HttpResponse(
+                    JSON.stringify(
+                        mockInfiThreadResponseToMockAttribution[idx].attribution_response
+                    )
+                );
+            }
         }
 
         return passthrough();
