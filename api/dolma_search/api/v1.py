@@ -116,7 +116,7 @@ class Server(flask.Blueprint):
         infini_gram_response = search_documents_index_documents_get.sync(
             client=self.infini_gram_client,
             index=AvailableInfiniGramIndexId.OLMOE_MIX_0924,
-            search=self.search_request_from_query_string().query,
+            search=request.query,
             page=math.floor(request.offset / request.size),
             page_size=request.size,
             maximum_document_display_length=400,
@@ -135,7 +135,9 @@ class Server(flask.Blueprint):
                 overflow=infini_gram_response.total_documents > 10000,
             ),
             results=[
-                index.SearchResult.from_infini_gram_document(document)
+                index.SearchResult.from_infini_gram_document_and_search_term(
+                    document, search_term=request.query
+                )
                 for document in infini_gram_response.documents
             ],
         )
