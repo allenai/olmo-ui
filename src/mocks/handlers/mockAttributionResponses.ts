@@ -2,6 +2,7 @@ import { AttributionResponse } from '@/api/AttributionClient';
 
 import { mockInfinigramResponses } from './mockInfinigramThreads';
 
+// Created based on https://docs.google.com/document/d/1s8RLWVofHtLAI_SlHayYYG9DmbuLIrra_d4ltOcqXxw/edit?usp=sharing
 const mockAttributionCase01Response: AttributionResponse = {
     documents: [
         {

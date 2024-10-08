@@ -1,6 +1,7 @@
 import { JSONMessage } from '@/api/Message';
 import { Role } from '@/api/Role';
 
+// Created based on https://docs.google.com/document/d/1s8RLWVofHtLAI_SlHayYYG9DmbuLIrra_d4ltOcqXxw/edit?usp=sharing
 export const infiThreadCase01 = 'msg_INFICASE01';
 export const mockInfiThreadCase01Response: JSONMessage = {
     id: infiThreadCase01,
@@ -248,7 +249,7 @@ const infinigramResponses = [
 
 // Infinigram only relies on model_response to find the corresponding attribution responsse
 // This may let Infinigram find an incorrect attribution response when two different threads has the same response
-// This step adds response id to the end of the content to avoid it
+// This step adds response Id to the end of the content to avoid it
 const mockInfinigramResponses = infinigramResponses.map((resp) => {
     const child = resp.children?.[0];
     const identifiableResp = { ...resp };
