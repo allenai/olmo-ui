@@ -107,6 +107,33 @@ class Snippet:
         return cls(spans=[Span(text, words)])
 
     @classmethod
+    def from_body_text_and_search_term(cls, body: str, search_term: str) -> t.Self:
+        split_body = re.split(
+            # This is modified from this regex: https://medium.com/@shemar.gordon32/how-to-split-and-keep-the-delimiter-s-d433fb697c65
+            # It uses non-capturing groups rather than character classes
+            rf"(?=(?>{re.escape(search_term)}))|(?<=(?>{re.escape(search_term)}))",
+            body,
+            flags=re.IGNORECASE,
+        )
+
+        spans = []
+
+        for body_part in split_body:
+            word_count = 0
+            for word in wordbreak.words(body_part):
+                word_count += 1 if is_word(word) else 0
+
+            span = Span(
+                text=body_part,
+                words=word_count,
+                highlight=body_part.lower() == search_term.lower(),
+            )
+
+            spans.append(span)
+
+        return cls(spans=spans)
+
+    @classmethod
     def from_highlights(cls, highlights: list[str]) -> t.Optional[list[t.Self]]:
         snippets: list[Snippet] = []
         for h in highlights:
@@ -220,8 +247,8 @@ class Document:
         return cls(**fields)
 
     @classmethod
-    def from_infini_gram_document(
-        cls, infini_gram_document: InfiniGramDocument
+    def from_infini_gram_document_and_search_term(
+        cls, infini_gram_document: InfiniGramDocument, search_term: str
     ) -> t.Self:
         title = (
             infini_gram_document.metadata.additional_properties.get("metadata", {})
@@ -240,7 +267,9 @@ class Document:
                 "path", ""
             ).split("/")[0]
 
-        snippet = Snippet.from_body_text(infini_gram_document.text).strip()
+        snippet = Snippet.from_body_text_and_search_term(
+            body=infini_gram_document.text, search_term=search_term
+        ).strip()
 
         return cls(
             id=str(infini_gram_document.document_index),
@@ -275,10 +304,12 @@ class SearchResult(Document):
         return cls(**{**asdict(d), "score": hit["_score"], "snippets": snippets})
 
     @classmethod
-    def from_infini_gram_document(
-        cls, infini_gram_document: InfiniGramDocument
+    def from_infini_gram_document_and_search_term(
+        cls, infini_gram_document: InfiniGramDocument, search_term: str
     ) -> t.Self:
-        document = Document.from_infini_gram_document(infini_gram_document)
+        document = Document.from_infini_gram_document_and_search_term(
+            infini_gram_document, search_term=search_term
+        )
         return cls(**asdict(document))
 
 
