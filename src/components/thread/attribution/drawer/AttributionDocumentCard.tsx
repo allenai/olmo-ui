@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
-import { CSSProperties, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
