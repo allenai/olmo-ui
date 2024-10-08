@@ -40,11 +40,11 @@ const AttributionDocumentCardBase = ({ title, text, source }: AttributionDocumen
                     component="h4"
                     margin={0}
                     sx={{
-                        // This isn't _standard_ standard but it's widely available
-                        // It uses an older version of a Chrome flex implementation that's supported in Safari and FF
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         display: '-webkit-box',
+                        // This isn't _standard_ standard but it's widely available
+                        // It uses an older version of a Chrome flex implementation that's supported in Safari and FF
                         '-webkit-line-clamp': '2',
                         lineClamp: '2',
                         '-webkit-box-orient': 'vertical',
