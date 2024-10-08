@@ -1,37 +1,11 @@
 import { render, screen } from '@test-utils';
-import { createContext, PropsWithChildren, useContext, useRef } from 'react';
-import { DeepPartial } from 'react-hook-form';
-import { useStore } from 'zustand';
 
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { ThreadDisplay } from './ThreadDisplay';
-
-type AppContextStore = ReturnType<typeof appContext.createAppContext>;
-const FakeAppContext = createContext<AppContextStore | null>(null);
-
-const FakeAppContextProvider = ({
-    initialState,
-    children,
-}: PropsWithChildren<{
-    initialState: DeepPartial<appContext.AppContextState>;
-}>) => {
-    const storeRef = useRef<AppContextStore>(appContext.createAppContext(initialState));
-
-    return <FakeAppContext.Provider value={storeRef.current}>{children}</FakeAppContext.Provider>;
-};
-
-const useFakeAppContext = (selector: (state: appContext.AppContextState) => unknown) => {
-    const store = useContext(FakeAppContext);
-
-    if (store == null) {
-        throw new Error("AppContext store wasn't initialized");
-    }
-
-    return useStore(store, selector);
-};
 
 describe('ThreadDisplay', () => {
     afterEach(() => {

@@ -63,7 +63,6 @@ const AttributionDocumentCardBase = ({ title, text, source }: AttributionDocumen
 
 interface AttributionDocumentCardProps {
     title?: string;
-    text: string;
     source: string;
     documentIndex: string;
     // href: string;
