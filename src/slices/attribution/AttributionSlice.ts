@@ -172,7 +172,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                                 documentResults[document.index] = [document];
                             }
                         });
-                        console.log('finish', documentResults);
+
                         attributions.documents = documentResults;
                         state.orderedDocumentIds = orderedDocumentIds;
                         attributions.loadingState = RemoteState.Loaded;

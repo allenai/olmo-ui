@@ -37,7 +37,6 @@ export const messageAttributionDocumentsSelector = (
                     return attributions?.documents[documentIndex] || [];
                 })
                 .filter((doc) => {
-                    console.log(doc);
                     const spanText = doc.corresponding_span_texts[0];
 
                     return spanText ? topLevelSpan.text.includes(spanText) : false;
