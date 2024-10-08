@@ -127,7 +127,6 @@ describe('ThreadDisplay', () => {
             }
         );
 
-        screen.debug();
         expect.soft(screen.getByText('(parens)')).toHaveRole('button');
         expect.soft(screen.getByText('[braces]')).toHaveRole('button');
         expect.soft(screen.getByText('.dot')).toHaveRole('button');
