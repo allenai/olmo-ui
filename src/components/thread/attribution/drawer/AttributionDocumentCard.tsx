@@ -1,5 +1,5 @@
 import { Card, CardActionArea, CardContent, Skeleton, Stack, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 
@@ -110,21 +110,38 @@ export const AttributionDocumentCard = ({
     source,
     documentIndex,
 }: AttributionDocumentCardProps): JSX.Element => {
-    const spans = useAppContext((state) => {
+    const { spans, snippets } = useAppContext((state) => {
         const selectedMessageId = state.attribution.selectedMessageId;
 
         if (selectedMessageId != null) {
             const documents =
                 state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
 
-            return documents[documentIndex]?.corresponding_span_texts;
+            const document = documents[documentIndex];
+
+            return {
+                spans: document?.corresponding_span_texts,
+                snippets: document?.snippets ?? [],
+            };
+        } else {
+            return { spans: [], snippets: [] };
         }
     });
 
     return (
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
-            text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
+            text={
+                <Stack direction="column" gap={2}>
+                    {snippets.map((snippet) => (
+                        <BoldTextForDocumentAttribution
+                            key={snippet}
+                            correspondingSpans={spans}
+                            text={snippet}
+                        />
+                    ))}
+                </Stack>
+            }
             source={`Source: ${source}`}
         />
     );

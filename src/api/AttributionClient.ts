@@ -2,6 +2,7 @@ import { ClientBase } from './ClientBase';
 
 export interface Document {
     text: string;
+    snippets: string[];
     corresponding_spans: number[];
     corresponding_span_texts: string[];
     index: string;

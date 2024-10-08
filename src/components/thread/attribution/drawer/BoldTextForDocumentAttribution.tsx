@@ -1,3 +1,5 @@
+import { Typography } from '@mui/material';
+
 import { escapeRegExp } from '@/utils/escape-reg-exp';
 
 interface BoldTextForDocumentAttributionProps {
@@ -20,14 +22,15 @@ export const BoldTextForDocumentAttribution = ({
     const splitTextSegments = text.split(regexPattern);
 
     return (
-        <>
+        <Typography variant="body1">
             {splitTextSegments.map((segment, index) => {
                 // Check if the segment matches any of the substrings exactly
                 const isExactMatch = correspondingSpans.some(
                     (substring) => substring.toLowerCase() === segment.toLowerCase()
                 );
+
                 return isExactMatch ? <strong key={index}>{segment}</strong> : segment;
             })}
-        </>
+        </Typography>
     );
 };
