@@ -105,15 +105,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
             */}
             <MatchingDocumentsText documentCount={documents.length} />
             {documents.map((document) => {
-                return (
-                    <AttributionDocumentCard
-                        key={document.index}
-                        documentIndex={document.index}
-                        title={document.title}
-                        text={document.text}
-                        source={document.source}
-                    />
-                );
+                return <AttributionDocumentCard key={document.index} document={document} />;
             })}
         </>
     );

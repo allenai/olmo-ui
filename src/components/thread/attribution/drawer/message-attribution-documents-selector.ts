@@ -31,11 +31,20 @@ export const messageAttributionDocumentsSelector = (
 
         // flatmap allows us to skip elements in a map by returning an empty array
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap#for_adding_and_removing_items_during_a_map
-        const documents = selectedSpans.flatMap((span) =>
-            span.documents.flatMap((documentIndex) => {
-                return attributions?.documents[documentIndex] || [];
-            })
-        );
+        const documents = selectedSpans.flatMap((topLevelSpan) => {
+            const filteredDoc = topLevelSpan.documents
+                .flatMap((documentIndex) => {
+                    return attributions?.documents[documentIndex] || [];
+                })
+                .filter((doc) => {
+                    console.log(doc);
+                    const spanText = doc.corresponding_span_texts[0];
+
+                    return spanText ? topLevelSpan.text.includes(spanText) : false;
+                });
+
+            return filteredDoc;
+        });
 
         return {
             documents,

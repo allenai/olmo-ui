@@ -1,7 +1,7 @@
 import { Card, CardActionArea, CardContent, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { useAppContext } from '@/AppContext';
+import { Document } from '@/api/AttributionClient';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
 
@@ -95,43 +95,24 @@ const AttributionDocumentCardBase = ({
 };
 
 interface AttributionDocumentCardProps {
-    title?: string;
-    text: string;
-    source: string;
-    documentIndex: string;
-    // href: string;
+    document: Document;
 }
 
 const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
 
 export const AttributionDocumentCard = ({
-    title,
-    text,
-    source,
-    documentIndex,
+    document,
 }: AttributionDocumentCardProps): JSX.Element => {
-    const spans = useAppContext((state) => {
-        const selectedMessageId = state.attribution.selectedMessageId;
-
-        if (selectedMessageId != null) {
-            const documents =
-                state.attribution.attributionsByMessageId[selectedMessageId]?.documents[
-                documentIndex
-                ] ?? [];
-
-            return documents.flatMap((doc) => {
-                console.log(doc.corresponding_span_texts);
-                return doc.corresponding_span_texts;
-            });
-        }
-    });
-
-    console.log('>>>>', spans);
     return (
         <AttributionDocumentCardBase
-            title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
-            text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
-            source={`Source: ${source}`}
+            title={document.title ?? MISSING_DOCUMENT_TITLE_TEXT}
+            text={
+                <BoldTextForDocumentAttribution
+                    correspondingSpans={document.corresponding_span_texts}
+                    text={document.text}
+                />
+            }
+            source={`Source: ${document.source}`}
         />
     );
 };
