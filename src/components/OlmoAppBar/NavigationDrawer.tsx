@@ -138,7 +138,11 @@ export const NavigationDrawer = ({
                     inset>
                     Ai2&apos;s datasets
                 </NavigationLink>
-                <NavigationLink icon={<LanguageIcon />} iconVariant="external">
+                <NavigationLink
+                    href={links.documentation}
+                    icon={<LanguageIcon />}
+                    selected={curriedDoesMatchPath(links.documentation)}
+                    iconVariant="external">
                     Documentation
                 </NavigationLink>
                 <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
