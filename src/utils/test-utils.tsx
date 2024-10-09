@@ -1,19 +1,10 @@
 /* eslint-disable no-restricted-imports */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
-import { getRouterOverriddenTheme } from '@allenai/varnish2';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material';
-import type { InitialEntry } from '@remix-run/router';
 import { render, RenderOptions } from '@testing-library/react';
 import { ComponentProps, PropsWithChildren, ReactNode } from 'react';
-import {
-    createMemoryRouter,
-    Link,
-    MemoryRouter,
-    RouteObject,
-    RouterProvider,
-} from 'react-router-dom';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
