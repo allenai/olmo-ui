@@ -142,7 +142,6 @@ class Server(flask.Blueprint):
             ],
         )
 
-        print(infini_gram_response.documents[0].text)
         return flask.jsonify(mapped_response)
 
     def document(self, id: str):
