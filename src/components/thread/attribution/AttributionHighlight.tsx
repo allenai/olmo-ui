@@ -96,11 +96,13 @@ export const AttributionHighlight = ({
 
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
-                        isPrimaryVariant ? theme.palette.primary.main : theme.palette.tertiary.main,
+                        isPrimaryVariant
+                            ? theme.color['pink-30'].hex
+                            : theme.palette.tertiary.light,
 
                     color: (theme) =>
                         isPrimaryVariant
-                            ? theme.palette.primary.light
+                            ? theme.palette.text.primary
                             : theme.palette.tertiary.contrastText,
 
                     ':focus-visible': {
