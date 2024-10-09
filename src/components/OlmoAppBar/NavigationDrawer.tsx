@@ -6,6 +6,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
+import LanguageIcon from '@mui/icons-material/Language';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import { IconButton, Link, Stack } from '@mui/material';
 import { ComponentProps, useEffect } from 'react';
@@ -136,6 +137,13 @@ export const NavigationDrawer = ({
                     iconVariant="external"
                     inset>
                     Ai2&apos;s datasets
+                </NavigationLink>
+                <NavigationLink
+                    href={links.documentation}
+                    icon={<LanguageIcon />}
+                    selected={curriedDoesMatchPath(links.documentation)}
+                    iconVariant="external">
+                    Documentation
                 </NavigationLink>
                 <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
                     <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
