@@ -65,21 +65,21 @@ export const NavigationLink = ({
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
-                        color: theme.palette.tertiary.main,
+                        color: theme.palette.secondary.main,
 
                         ':hover': {
                             backgroundColor: 'transparent',
                         },
 
                         ':focus-visible': {
-                            backgroundColor: theme.palette.tertiary.light,
-                            color: theme.palette.tertiary.contrastText,
+                            backgroundColor: theme.palette.secondary.light,
+                            color: theme.palette.secondary.contrastText,
                         },
                     },
 
                     '&.Mui-focusVisible': {
-                        backgroundColor: theme.palette.tertiary.light,
-                        color: theme.palette.tertiary.contrastText,
+                        backgroundColor: theme.palette.secondary.light,
+                        color: theme.palette.secondary.contrastText,
                     },
                 })}
                 {...linkProps}>
