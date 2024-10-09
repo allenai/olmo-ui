@@ -92,9 +92,9 @@ export const AttributionContent = () => {
                         variant="contained"
                         href={links.datasetExplorer}
                         sx={(theme) => ({
-                            backgroundColor: theme.palette.tertiary.light,
+                            backgroundColor: theme.palette.secondary.light,
                             '&:hover': {
-                                backgroundColor: theme.palette.tertiary.light,
+                                backgroundColor: theme.palette.secondary.light,
                             },
                             marginTop: theme.spacing(2),
                         })}>

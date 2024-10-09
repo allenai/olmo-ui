@@ -12,22 +12,22 @@
   resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.4.0.tgz#728c484f4e10df03d5a3acd0d8adcbbebff8ad63"
   integrity sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==
 
-"@allenai/eslint-config-varnish@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-2.0.0.tgz#ec38af3c3e5980b667e355a977ef38f21fac6a4d"
-  integrity sha512-UIyDABMV3XJYWvV5/msEZG5DRMUp72b+hzrWrrX6ak3/D8hekCf+LbvjdRkRMQ+AJWLaPc88ESPgIfPOfoAXww==
+"@allenai/eslint-config-varnish@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-2.0.3.tgz#705cab3be01fbea16d56dc457e237c6976eac4ad"
+  integrity sha512-KguMr+/BTWWHOsNlnPNMkvddOSEV/zQq9/tN3Xl+edsN3CrUPfCCt0m0vZezi8RzSjTCAJ2E7CwoZiIbQwWJAw==
 
-"@allenai/varnish-theme@^2.0.2-beta.0":
-  version "2.0.2-beta.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-2.0.2-beta.0.tgz#339140bf80624443f40234fdc917e16c6c7598f6"
-  integrity sha512-ILD0to7JxBggaX6PxfBoYF66I09RivOfTw1QM2Cg7ffBq/7LGxeMTNm/agoFsr96qQs7/6Tzr/PyCxJJAloVBw==
+"@allenai/varnish-theme@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-2.0.5.tgz#68997e29d364844391c594ed9911298e2bea094b"
+  integrity sha512-XOlk/oJgYxwOKoy+A07awOCLml704l4U2buEYM7zCsSW9/G5Tyt0bJFe21QXMF72pqMJMfR7s5E49+udLgkJrA==
 
-"@allenai/varnish2@2.0.2-beta.0":
-  version "2.0.2-beta.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-2.0.2-beta.0.tgz#dec9b136d07e18ad7080e3a636dc4cb8a80d36e9"
-  integrity sha512-w50F0Jh625h7Coxk1wiveX0X6ShMspnOVP/loWiIM+mNjfPeHAjnNBKHRKLx0nla97mr8IhbbYvFgcdT5WrGaQ==
+"@allenai/varnish2@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-2.0.5.tgz#378a86fdc011df73e64516cbf1a5106c11ba0dbf"
+  integrity sha512-EE8N5XcDin+yH74mbSJ+x+kV9Pi2iQiL3UNmOHfkh8WpU186VhYiD8paPMjel/Izy3hmr2hj2okCMuu8aUjt2A==
   dependencies:
-    "@allenai/varnish-theme" "^2.0.2-beta.0"
+    "@allenai/varnish-theme" "^2.0.5"
     react-markdown "^9.0.1"
     remark-gfm "^4.0.0"
 

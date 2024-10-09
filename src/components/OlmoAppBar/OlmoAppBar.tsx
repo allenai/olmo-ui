@@ -83,8 +83,8 @@ export const OlmoAppBar = (): JSX.Element => {
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
-                        // @ts-expect-error - Varnish doesn't support tertiary colors yet
-                        color="tertiary"
+                        // @ts-expect-error - Varnish doesn't support secondary colors yet
+                        color="secondary"
                         sx={{
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
