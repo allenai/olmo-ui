@@ -181,7 +181,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
                 aria-label="Close navigation drawer"
                 onClick={onClose}
                 edge="end"
-                sx={{ color: (theme) => theme.palette.tertiary.main }}>
+                sx={{ color: (theme) => theme.palette.secondary.main }}>
                 <CloseIcon />
             </IconButton>
         </Stack>

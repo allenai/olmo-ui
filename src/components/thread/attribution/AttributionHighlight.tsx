@@ -97,13 +97,13 @@ export const AttributionHighlight = ({
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
-                            ? theme.palette.primary.main
-                            : theme.palette.secondary.main,
+                            ? theme.color['pink-30'].hex
+                            : theme.palette.tertiary.light,
 
                     color: (theme) =>
                         isPrimaryVariant
-                            ? theme.palette.primary.light
-                            : theme.palette.secondary.contrastText,
+                            ? theme.palette.text.primary
+                            : theme.palette.tertiary.contrastText,
 
                     ':focus-visible': {
                         outlineStyle: 'solid',
@@ -111,7 +111,7 @@ export const AttributionHighlight = ({
                         outlineColor: (theme) =>
                             isPrimaryVariant
                                 ? theme.palette.primary.dark
-                                : theme.palette.secondary.dark,
+                                : theme.palette.tertiary.dark,
                     },
                 };
             }}>

@@ -146,7 +146,7 @@ export const HistoryDrawer = (): JSX.Element => {
                 {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
                     <CircularProgress
                         sx={{
-                            color: (theme) => theme.palette.tertiary.light,
+                            color: (theme) => theme.palette.secondary.light,
                             marginLeft: (theme) => theme.spacing(3),
                         }}
                     />
