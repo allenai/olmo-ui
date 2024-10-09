@@ -3,9 +3,17 @@
 import { getRouterOverriddenTheme } from '@allenai/varnish2';
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
+import { ThemeProvider as MUIThemeProvider } from '@mui/material';
+import type { InitialEntry } from '@remix-run/router';
 import { render, RenderOptions } from '@testing-library/react';
 import { ComponentProps, PropsWithChildren, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import {
+    createMemoryRouter,
+    Link,
+    MemoryRouter,
+    RouteObject,
+    RouterProvider,
+} from 'react-router-dom';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
@@ -13,7 +21,7 @@ import {
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
-import { olmoTheme } from '../olmoTheme';
+import { uiRefreshOlmoTheme } from '../olmoTheme';
 
 const FakeFeatureToggleProvider = ({
     children,
@@ -36,12 +44,17 @@ interface WrapperProps extends PropsWithChildren {
     featureToggles?: ComponentProps<typeof FakeFeatureToggleProvider>['featureToggles'];
 }
 const TestWrapper = ({ children, featureToggles = { logToggles: false } }: WrapperProps) => {
-    const theme = getTheme(getRouterOverriddenTheme(Link, olmoTheme));
+    // This intentionally doesn't use the routerOverriddenTheme, we'd have to set up a router if we use it and that's a pain
+    // If we need to test with react router Link functionality we can add it back but we'd need to do some router setup in here
+    const theme = getTheme(uiRefreshOlmoTheme);
 
     return (
         <FakeFeatureToggleProvider featureToggles={featureToggles}>
             <ThemeProvider theme={theme}>
-                <VarnishApp>{children}</VarnishApp>
+                <VarnishApp theme={theme}>
+                    {/* for some reason VarnishApp isn't properly passing the theme in tests */}
+                    <MUIThemeProvider theme={theme}>{children}</MUIThemeProvider>
+                </VarnishApp>
             </ThemeProvider>
         </FakeFeatureToggleProvider>
     );
