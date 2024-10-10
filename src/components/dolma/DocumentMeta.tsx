@@ -27,39 +27,31 @@ export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
                 </Box>
             )}
             <Stack direction="row" gap={1} alignItems="center">
-                <Stack direction="row" alignItems="center" gap="0.5ch">
-                    <Typography
-                        variant="subtitle1"
-                        fontWeight="bold"
-                        sx={{ display: 'inline-block' }}>
-                        Dolma ID:
+                <Stack direction="row" alignItems="center">
+                    <Typography variant="h5" component="div" fontWeight="bold">
+                        <strong>Dolma ID:</strong>&nbsp;
                     </Typography>
                     <CopyToClipboardButton
                         buttonContent={<ContentCopyIcon fontSize="inherit" />}
                         text={dolmaId}
                         ariaLabel="Copy Dolma ID">
-                        <TruncatableText>{dolmaId}</TruncatableText>
+                        <TruncatableText variant="body1">{dolmaId}</TruncatableText>
                     </CopyToClipboardButton>
                 </Stack>
-                <Stack direction="row" alignItems="center" gap="0.5ch">
-                    <Typography
-                        variant="subtitle1"
-                        component="div"
-                        fontWeight="bold"
-                        sx={{ display: 'inline-block' }}>
-                        Source:
+                <Stack direction="row" alignItems="center">
+                    <Typography variant="h5" component="div" fontWeight="bold">
+                        <strong>Source</strong>:&nbsp;
                     </Typography>
-                    {source}
+                    <Typography variant="body1" component="div">
+                        {source}
+                    </Typography>
                 </Stack>
             </Stack>
         </Stack>
     );
 };
 
-const TruncatableText = styled('span')`
-    display: inline-block;
-    font-size: 14px;
-    vertical-align: top;
+const TruncatableText = styled(Typography)`
     max-width: 9ch;
     white-space: nowrap;
     overflow: hidden;

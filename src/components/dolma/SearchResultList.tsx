@@ -1,7 +1,7 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Link, Pagination, Stack, Typography } from '@mui/material';
 import { Fragment, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
@@ -121,7 +121,8 @@ const SearchResult = ({
                 }}>
                 <DocumentMeta dolmaId={result.dolma_id} source={result.source} />
                 <Link
-                    to={documentURL(result.id, response.request.query)}
+                    underline="hover"
+                    href={documentURL(result.id, response.request.query)}
                     onClick={() => {
                         analyticsClient.trackSearchResultClick({
                             request: response.request,
@@ -132,12 +133,13 @@ const SearchResult = ({
                     }}>
                     <Typography
                         component="h3"
-                        variant="h6"
+                        variant="h4"
                         m={0}
                         mt={1}
+                        fontWeight="bold"
                         textOverflow="ellipsis"
                         overflow="hidden"
-                        color={(theme) => theme.color.B6.hex}>
+                        color="text.primary">
                         {result.title}
                     </Typography>
                 </Link>
