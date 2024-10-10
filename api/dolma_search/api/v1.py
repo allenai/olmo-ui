@@ -1,5 +1,6 @@
 import logging
 import math
+from dataclasses import asdict
 from datetime import datetime
 from typing import Optional
 
@@ -13,6 +14,10 @@ from dolma_search.infini_gram_api_client.api.documents import (
 from dolma_search.infini_gram_api_client.models.available_infini_gram_index_id import (
     AvailableInfiniGramIndexId,
 )
+from dolma_search.infini_gram_api_client.api.documents import (
+    get_document_by_index_index_documents_document_index_get,
+)
+from dolma_search.infini_gram_api_client.models.document import Document
 from dolma_search.infini_gram_api_client.models.http_validation_error import (
     HTTPValidationError,
 )
@@ -163,10 +168,28 @@ class Server(flask.Blueprint):
         return flask.jsonify(mapped_response)
 
     def document(self, id: str):
-        doc = self.es().document(id)
-        if doc is None:
-            raise exceptions.NotFound(f'Document "{id}" not found')
-        return flask.jsonify(doc)
+        infini_gram_document_response = (
+            get_document_by_index_index_documents_document_index_get.sync(
+                index=AvailableInfiniGramIndexId.OLMOE_MIX_0924,
+                document_index=int(id),
+                client=self.infini_gram_client,
+            )
+        )
+
+        if infini_gram_document_response is None or isinstance(
+            infini_gram_document_response, HTTPValidationError
+        ):
+            raise Exception()
+
+        target_doc = Document.from_dict(infini_gram_document_response.to_dict())
+        result = index.SearchResult.from_infini_gram_document_and_search_term(
+            target_doc, search_term=""
+        )
+
+        response = asdict(result)
+        response["index"] = infini_gram_document_response.index
+
+        return flask.jsonify(response)
 
     def meta(self):
         return flask.jsonify(self.es().meta())
