@@ -1,3 +1,4 @@
+import logging
 import math
 from datetime import datetime
 from typing import Optional
@@ -18,6 +19,8 @@ from dolma_search.infini_gram_api_client.models.http_validation_error import (
 
 from .. import analytics, config, index
 from ..infini_gram_api_client import Client
+
+logger = logging.getLogger()
 
 
 def parse_int_from_qs(
@@ -113,19 +116,34 @@ class Server(flask.Blueprint):
     def search(self):
         request = self.search_request_from_query_string()
 
+        computed_page = math.floor(request.offset / request.size)
+
         infini_gram_response = search_documents_index_documents_get.sync(
             client=self.infini_gram_client,
             index=AvailableInfiniGramIndexId.OLMOE_MIX_0924,
             search=request.query,
-            page=math.floor(request.offset / request.size),
+            page=computed_page,
             page_size=request.size,
             maximum_document_display_length=400,
         )
 
-        if infini_gram_response is None or isinstance(
-            infini_gram_response, HTTPValidationError
-        ):
-            raise Exception()
+        if infini_gram_response is None:
+            logger.error(
+                f'Received a "None" response from infinigram-api while searching for documents. search={request.query} page={computed_page} page_size={request.size}'
+            )
+
+            raise exceptions.BadGateway(
+                "Something went wrong when searching for documents"
+            )
+
+        if isinstance(infini_gram_response, HTTPValidationError):
+            logger.error(
+                f"Received a validation error from infinigram-api while searching for documents: {infini_gram_response.detail}"
+            )
+
+            raise exceptions.BadGateway(
+                "Something went wrong when searching for documents"
+            )
 
         mapped_response = index.SearchResults(
             request=request,
