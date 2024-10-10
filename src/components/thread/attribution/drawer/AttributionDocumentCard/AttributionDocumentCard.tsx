@@ -39,7 +39,7 @@ const AttributionDocumentCardBase = ({
                 },
             }}>
             <CardContent component={Stack} direction="column" gap={1}>
-                <Typography variant="body1">{snippets}</Typography>
+                <Typography variant="body1" component="span">{snippets}</Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
                 <Typography
                     variant="body2"
