@@ -24,12 +24,12 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     gap: (theme) => theme.spacing(1),
                     color: (theme) => theme.palette.common.white,
                     '&.Mui-selected': {
-                        backgroundColor: (theme) => theme.palette.tertiary.light,
+                        backgroundColor: (theme) => theme.palette.secondary.light,
                         color: (theme) => theme.palette.text.primary,
                         fontWeight: 'normal',
 
                         '&:hover': {
-                            backgroundColor: (theme) => theme.palette.tertiary.light,
+                            backgroundColor: (theme) => theme.palette.secondary.light,
                             color: (theme) => theme.palette.text.primary,
                             fontWeight: 'normal',
                         },
