@@ -176,10 +176,16 @@ class Server(flask.Blueprint):
             )
         )
 
-        if infini_gram_document_response is None or isinstance(
-            infini_gram_document_response, HTTPValidationError
-        ):
-            raise Exception()
+        if infini_gram_document_response is None:
+            raise exceptions.NotFound(f'Document "{id}" not found')
+
+        if isinstance(infini_gram_document_response, HTTPValidationError):
+            logger.error(
+                f"Received a validation error from infinigram-api while getting document {id}: {infini_gram_document_response.detail}"
+            )
+            raise exceptions.BadGateway(
+                f"Something went wrong when retrieving document {id}"
+            )
 
         target_doc = Document.from_dict(infini_gram_document_response.to_dict())
         result = index.SearchResult.from_infini_gram_document_and_search_term(
