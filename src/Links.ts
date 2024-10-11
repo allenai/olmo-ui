@@ -31,4 +31,5 @@ export const links = {
     dolmaBlog: 'https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64',
     responsibleUsePolicy: 'https://allenai.org/responsible-use',
     molmo: 'https://molmo.allenai.org',
+    documentation: 'http://allenai.org/documentation',
 } as const;

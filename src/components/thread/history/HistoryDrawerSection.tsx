@@ -24,7 +24,7 @@ export const HistoryDrawerSection = ({
         <>
             {hasDivider && <Divider />}
             <List>
-                <NavigationHeading color={theme.palette.tertiary.light}>
+                <NavigationHeading color={theme.palette.secondary.light}>
                     {heading}
                 </NavigationHeading>
                 {threads.map((thread) => (

@@ -1,22 +1,7 @@
-import { Color } from '@allenai/varnish2/theme';
 import { alpha, ThemeOptions } from '@mui/material';
-import deepmerge from 'deepmerge';
 
 // extended theme to hold olmo specific values and overrides
-export const olmoTheme = {
-    // @ts-expect-error - our theme mapping isn't quite right, we'll need to make an override if these stick around
-    color2: {
-        N7: new Color('Black7', '#333333', undefined, true),
-        N8: new Color('Black8', '#282828', undefined, true),
-        N9: new Color('Black9', '#262626', undefined, true),
-        B6: new Color('Blue6', '#BBF4FF', undefined, true),
-        O6: new Color('Orange6', '#FFF1BD', undefined, true),
-        O7: new Color('Orange7', '#F4D35E', undefined, true),
-    },
-    components: {},
-} satisfies ThemeOptions;
-
-export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
+export const uiRefreshOlmoTheme = {
     components: {
         MuiButton: {},
         MuiListItemButton: {
@@ -84,4 +69,4 @@ export const uiRefreshOlmoTheme = deepmerge(olmoTheme, {
             },
         },
     },
-} satisfies Partial<ThemeOptions>);
+} satisfies Partial<ThemeOptions>;

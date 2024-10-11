@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
-import { olmoTheme } from '../olmoTheme';
+import { uiRefreshOlmoTheme } from '../olmoTheme';
 import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';
 
 export const GlobalStyle = createGlobalStyle`
@@ -25,7 +25,7 @@ interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
 
-export const VarnishedApp = ({ children, theme = olmoTheme }: VarnishedAppProps) => {
+export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
     const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
 
     return (

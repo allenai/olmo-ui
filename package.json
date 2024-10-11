@@ -19,8 +19,8 @@
     "@types/react": "^18.2.55"
   },
   "dependencies": {
-    "@allenai/varnish-theme": "^2.0.2-beta.0",
-    "@allenai/varnish2": "2.0.2-beta.0",
+    "@allenai/varnish-theme": "^2.0.5",
+    "@allenai/varnish2": "2.0.5",
     "@auth0/auth0-spa-js": "^2.1.3",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -62,7 +62,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@allenai/eslint-config-varnish": "^2.0.0",
+    "@allenai/eslint-config-varnish": "^2.0.3",
     "@playwright/test": "^1.46.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@testing-library/jest-dom": "^6.4.8",
