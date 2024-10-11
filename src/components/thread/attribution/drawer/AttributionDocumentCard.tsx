@@ -119,9 +119,6 @@ export const AttributionDocumentCard = ({
                     fullWidth={false}
                     sx={{
                         width: 'fit-content',
-                        // this is slightly further from the thing above it in the design so it gets this extra margin
-                        // combined with gap this makes the total margin 2
-                        // marginBlockStart: 1,
                     }}>
                     Open in Dataset Explorer
                 </Button>
