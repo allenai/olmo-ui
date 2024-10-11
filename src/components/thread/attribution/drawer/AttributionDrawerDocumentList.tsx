@@ -109,7 +109,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                     <AttributionDocumentCard
                         key={document.index}
                         documentIndex={document.index}
-                        title={document.title}
                         text={document.text}
                         source={document.source}
                     />
