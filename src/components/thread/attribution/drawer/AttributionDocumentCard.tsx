@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
@@ -31,22 +31,21 @@ const AttributionDocumentCardBase = ({
         <Card
             sx={{
                 bgcolor: '#F8F0E780',
+
+                borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
+
+                '&[data-previewed-document="true"]': {
+                    borderColor: (theme) => theme.palette.primary.light,
+                },
+
+                '&[data-selected-document="true"]': {
+                    borderColor: (theme) => theme.palette.primary.main,
+                },
             }}>
             <CardContent
                 component={Stack}
                 direction="column"
                 gap={1}
-                sx={{
-                    borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
-
-                    '&[data-previewed-document="true"]': {
-                        borderColor: (theme) => theme.palette.primary.light,
-                    },
-
-                    '&[data-selected-document="true"]': {
-                        borderColor: (theme) => theme.palette.primary.main,
-                    },
-                }}
                 data-selected-document={isSelected}
                 data-previewed-document={isPreviewed}>
                 <Typography
@@ -71,8 +70,10 @@ const AttributionDocumentCardBase = ({
                 <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
-                {datasetExplorerLink != null && datasetExplorerLink}
             </CardContent>
+            <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
+                {datasetExplorerLink != null && datasetExplorerLink}
+            </CardActions>
         </Card>
     );
 };
@@ -120,7 +121,7 @@ export const AttributionDocumentCard = ({
                         width: 'fit-content',
                         // this is slightly further from the thing above it in the design so it gets this extra margin
                         // combined with gap this makes the total margin 2
-                        marginBlockStart: 1,
+                        // marginBlockStart: 1,
                     }}>
                     Open in Dataset Explorer
                 </Button>
