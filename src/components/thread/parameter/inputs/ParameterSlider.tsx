@@ -2,7 +2,7 @@
  * A slider with a number control next to it.
  */
 
-import { Box, Input, Slider, Stack } from '@mui/material';
+import { Box, Input, Slider } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -87,10 +87,8 @@ export const ParameterSlider = ({
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
             {({ inputLabelId }) => (
-                // The result of this ends up being pretty similar to MUI's Grid component
-                // I had trouble getting Grid to add a column gap so I used flex stuff instead
-                <Stack flexWrap="wrap" direction="row" sx={{ mt: (theme) => theme.spacing(-2) }}>
-                    <Box flexGrow={2} flexShrink={1} flexBasis="12rem">
+                <Box display="grid" gridTemplateColumns="auto min-content" columnGap={1}>
+                    <Box>
                         <Slider
                             value={value}
                             onChange={handleSliderChange}
@@ -103,14 +101,7 @@ export const ParameterSlider = ({
                             }}
                         />
                     </Box>
-                    {/* The basis here accounts for roughly three characters and a decimal point at the minimum width. 
-                    If we make a slider that needs more we'll need to change this basis or make it configurable */}
-                    <Box
-                        flexGrow={1}
-                        flexShrink={1}
-                        flexBasis="calc(4ch + 1rem)"
-                        display="flex"
-                        justifyContent="flex-end">
+                    <Box>
                         <Input
                             value={value}
                             size="small"
@@ -129,7 +120,7 @@ export const ParameterSlider = ({
                                     borderBottom: 'none', // Remove hover underline
                                 },
                                 color: (theme) => theme.palette.text.primary,
-                                mr: (theme) => theme.spacing(-5),
+                                mr: theme.spacing(-1),
                             })}
                             inputProps={{
                                 step,
@@ -137,11 +128,11 @@ export const ParameterSlider = ({
                                 max,
                                 type: 'number',
                                 id,
-                                sx: { textAlign: 'right' },
+                                sx: { textAlign: 'right', width: 'auto' },
                             }}
                         />
                     </Box>
-                </Stack>
+                </Box>
             )}
         </ParameterDrawerInputWrapper>
     );

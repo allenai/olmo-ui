@@ -72,9 +72,9 @@ export const ParameterContent = () => {
     const opts = schemaData.Message.InferenceOpts;
 
     return (
-        <Stack direction="column">
+        <Stack>
             <List>
-                <ListItem>
+                <ListItem disableGutters>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
@@ -89,7 +89,7 @@ export const ParameterContent = () => {
                         id="temperature"
                     />
                 </ListItem>
-                <ListItem>
+                <ListItem disableGutters>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
