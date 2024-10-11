@@ -1,7 +1,7 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Divider, IconButton, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Link, Pagination, Stack, Typography } from '@mui/material';
 import { Fragment, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
@@ -31,63 +31,17 @@ export const SearchResultList = ({ response }: SearchResultListProps): JSX.Eleme
 
     return (
         <>
-            <Stack direction="column" gap={1.5} pt={2}>
+            <Stack direction="column" gap={1.5} p={2}>
                 {response.meta.total === 0 && <NoResults request={response.request.query} />}
                 {response.results.map((result, idx) => (
                     <Fragment key={result.id}>
-                        <Box
-                            pb={1}
-                            sx={{
-                                position: 'relative',
-                            }}>
-                            <Box
-                                sx={{
-                                    filter:
-                                        result.isDocumentBad && !revealedDocuments[result.id]
-                                            ? 'blur(2.5px)'
-                                            : 'none', // Blur effect when caution is shown
-                                    transition: 'filter 0.3s ease',
-                                }}>
-                                <DocumentMeta dolmaId={result.dolma_id} source={result.source} />
-                                <Link
-                                    to={documentURL(result.id, response.request.query)}
-                                    onClick={() => {
-                                        analyticsClient.trackSearchResultClick({
-                                            request: response.request,
-                                            id: result.id,
-                                            source: result.source,
-                                            index: response.request.offset + idx,
-                                        });
-                                    }}>
-                                    <Typography
-                                        component="h3"
-                                        variant="h6"
-                                        m={0}
-                                        mt={1}
-                                        textOverflow="ellipsis"
-                                        overflow="hidden"
-                                        color={(theme) => theme.color.B6.hex}>
-                                        {result.title}
-                                    </Typography>
-                                </Link>
-                                <Box
-                                    aria-hidden={
-                                        result.isDocumentBad && !revealedDocuments[result.id]
-                                            ? 'true'
-                                            : 'false'
-                                    }>
-                                    <Snippets document={result} lineLimit={4} />
-                                </Box>
-                            </Box>
-                            {result.isDocumentBad && (
-                                <ToxicContentWarning
-                                    isRevealed={revealedDocuments[result.id]}
-                                    onReveal={() => {
-                                        handleReveal(result.id);
-                                    }}
-                                />
-                            )}
-                        </Box>
+                        <SearchResult
+                            result={result}
+                            revealedDocuments={revealedDocuments}
+                            response={response}
+                            idx={idx}
+                            handleReveal={handleReveal}
+                        />
                         {response.results.length - 1 !== idx && (
                             <Divider sx={{ borderColor: (theme) => theme.color.N4.hex }} />
                         )}
@@ -137,6 +91,76 @@ const AboutTheseResults = () => (
         </Typography>
     </IconButton>
 );
+
+const SearchResult = ({
+    result,
+    revealedDocuments,
+    response,
+    idx,
+    handleReveal,
+}: {
+    result: search.Result;
+    revealedDocuments: Record<string, boolean>;
+    response: search.Response;
+    idx: number;
+    handleReveal: (id: string) => void;
+}) => {
+    return (
+        <Box
+            pb={1}
+            sx={{
+                position: 'relative',
+            }}>
+            <Box
+                sx={{
+                    filter:
+                        result.isDocumentBad && !revealedDocuments[result.id]
+                            ? 'blur(2.5px)'
+                            : 'none', // Blur effect when caution is shown
+                    transition: 'filter 0.3s ease',
+                }}>
+                <DocumentMeta dolmaId={result.dolma_id} source={result.source} />
+                <Link
+                    underline="hover"
+                    href={documentURL(result.id, response.request.query)}
+                    onClick={() => {
+                        analyticsClient.trackSearchResultClick({
+                            request: response.request,
+                            id: result.id,
+                            source: result.source,
+                            index: response.request.offset + idx,
+                        });
+                    }}>
+                    <Typography
+                        component="h3"
+                        variant="h4"
+                        m={0}
+                        mt={1}
+                        fontWeight="bold"
+                        textOverflow="ellipsis"
+                        overflow="hidden"
+                        color="text.primary">
+                        {result.title}
+                    </Typography>
+                </Link>
+                <Box
+                    aria-hidden={
+                        result.isDocumentBad && !revealedDocuments[result.id] ? 'true' : 'false'
+                    }>
+                    <Snippets document={result} lineLimit={4} />
+                </Box>
+            </Box>
+            {result.isDocumentBad && (
+                <ToxicContentWarning
+                    isRevealed={revealedDocuments[result.id]}
+                    onReveal={() => {
+                        handleReveal(result.id);
+                    }}
+                />
+            )}
+        </Box>
+    );
+};
 
 export function documentURL(id: string, query?: string) {
     const qs = query ? `?${new URLSearchParams({ query }).toString()}` : '';
