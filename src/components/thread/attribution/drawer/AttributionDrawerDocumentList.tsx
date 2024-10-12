@@ -99,8 +99,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     return (
         <>
-            {/* 
-                MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole. 
+            {/*
+                MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole.
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
@@ -111,6 +111,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                         documentIndex={document.index}
                         title={document.title}
                         text={document.text}
+                        url={document.url}
                         source={document.source}
                     />
                 );

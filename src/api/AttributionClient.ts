@@ -5,6 +5,7 @@ export interface Document {
     corresponding_spans: number[];
     corresponding_span_texts: string[];
     index: string;
+    url: string;
     source: string;
     title: string;
 }

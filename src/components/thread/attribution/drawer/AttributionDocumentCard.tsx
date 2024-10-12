@@ -5,10 +5,12 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
+import { UrlForDocumentAttribution } from './UrlForDocumentAttribution';
 
 interface AttributionDocumentCardBaseProps {
     title: ReactNode;
     text: ReactNode;
+    url?: ReactNode;
     source: ReactNode;
     datasetExplorerLink: ReactNode;
     // href: string;
@@ -24,6 +26,7 @@ const AttributionDocumentCardBase = ({
     isPreviewed,
     title,
     text,
+    url,
     source,
     datasetExplorerLink,
 }: AttributionDocumentCardBaseProps) => {
@@ -68,6 +71,9 @@ const AttributionDocumentCardBase = ({
                 <Typography variant="body1">{text}</Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
                 <Typography variant="body2" fontWeight={600} component="span">
+                    {url}
+                </Typography>
+                <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
             </CardContent>
@@ -81,6 +87,7 @@ const AttributionDocumentCardBase = ({
 interface AttributionDocumentCardProps {
     title?: string;
     text: string;
+    url?: string;
     source: string;
     documentIndex: string;
     // href: string;
@@ -91,6 +98,7 @@ const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
 export const AttributionDocumentCard = ({
     title,
     text,
+    url,
     source,
     documentIndex,
 }: AttributionDocumentCardProps): JSX.Element => {
@@ -109,6 +117,7 @@ export const AttributionDocumentCard = ({
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
             text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
+            url={<UrlForDocumentAttribution url={url} />}
             source={`Source: ${source}`}
             datasetExplorerLink={
                 <Button
@@ -140,6 +149,7 @@ export const AttributionDocumentCardSkeleton = (): JSX.Element => {
                     <Skeleton />
                 </>
             }
+            url={<Skeleton />}
             source={<Skeleton />}
             datasetExplorerLink={<Skeleton />}
         />
