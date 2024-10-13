@@ -3,6 +3,7 @@ import { Card, CardContent, Typography } from '@mui/material';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
+import { Document } from '@/api/AttributionClient';
 
 import {
     AttributionDocumentCard,
@@ -97,6 +98,25 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return <NoDocumentsCard />;
     }
 
+    // Create a modified version of the documents with the URL replaced with https://www.google.com
+    const documentsWithUrlReplaced = documents.map((document) => {
+        return {
+            ...document,
+            url: 'https://www.google.com',
+        };
+    });
+
+    // Collapse duplicates by URL
+    const documentsWithoutUrl = documentsWithUrlReplaced.filter((document) => !document.url);
+    const documentsWithUrl = documentsWithUrlReplaced.filter((document) => document.url);
+    const urlToDocuments = documentsWithUrl.reduce((acc, document) => {
+        const existingDocuments = acc.get(document.url) ?? [];
+        acc.set(document.url, [...existingDocuments, document]);
+        return acc;
+    }, new Map<string, Document[]>());
+    const documentsWithUrlDeduped = Array.from(urlToDocuments.values()).map((documents) => {return documents[0];});
+    const documentsDeduped = [...documentsWithoutUrl, ...documentsWithUrlDeduped];
+
     return (
         <>
             {/*
@@ -104,7 +124,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            {documents.map((document) => {
+            {documentsDeduped.map((document) => {
                 return (
                     <AttributionDocumentCard
                         key={document.index}
@@ -113,6 +133,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                         text={document.text}
                         url={document.url}
                         source={document.source}
+                        numRepetitions={document.url ? urlToDocuments.get(document.url)!.length : 1}
                     />
                 );
             })}

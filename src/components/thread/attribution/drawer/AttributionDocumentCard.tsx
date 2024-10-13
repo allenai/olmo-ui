@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
@@ -29,6 +29,7 @@ const AttributionDocumentCardBase = ({
     url,
     source,
     datasetExplorerLink,
+    numRepetitions,
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
@@ -76,6 +77,14 @@ const AttributionDocumentCardBase = ({
                 <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
+                {numRepetitions > 1 && (
+                    <Typography variant="body2" fontWeight={600} component="span">
+                        Document repeated {numRepetitions} times in corpus.{' '}
+                        <Link href="" underline="always">
+                            <Typography variant="caption">Show all</Typography>
+                        </Link>
+                    </Typography>
+                )}
             </CardContent>
             <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
                 {datasetExplorerLink != null && datasetExplorerLink}
@@ -101,6 +110,7 @@ export const AttributionDocumentCard = ({
     url,
     source,
     documentIndex,
+    numRepetitions,
 }: AttributionDocumentCardProps): JSX.Element => {
     const spans = useAppContext((state) => {
         const selectedMessageId = state.attribution.selectedMessageId;
@@ -132,6 +142,7 @@ export const AttributionDocumentCard = ({
                     Open in Dataset Explorer
                 </Button>
             }
+            numRepetitions={numRepetitions}
         />
     );
 };
