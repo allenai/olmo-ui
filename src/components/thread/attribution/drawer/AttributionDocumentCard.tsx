@@ -8,7 +8,6 @@ import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution
 import { UrlForDocumentAttribution } from './UrlForDocumentAttribution';
 
 interface AttributionDocumentCardBaseProps {
-    title: ReactNode;
     text: ReactNode;
     url?: ReactNode;
     source: ReactNode;
@@ -25,7 +24,6 @@ interface AttributionDocumentCardBaseProps {
 const AttributionDocumentCardBase = ({
     isSelected,
     isPreviewed,
-    title,
     text,
     url,
     source,
@@ -53,23 +51,6 @@ const AttributionDocumentCardBase = ({
                 gap={1}
                 data-selected-document={isSelected}
                 data-previewed-document={isPreviewed}>
-                <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    component="h4"
-                    margin={0}
-                    sx={{
-                        // This isn't _standard_ standard but it's widely available
-                        // It uses an older version of a Chrome flex implementation that's supported in Safari and FF
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        '-webkit-line-clamp': '2',
-                        lineClamp: '2',
-                        '-webkit-box-orient': 'vertical',
-                    }}>
-                    {title}
-                </Typography>
                 <Typography variant="body1">{text}</Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
                 <Typography variant="body2" fontWeight={600} component="span">
@@ -96,7 +77,6 @@ const AttributionDocumentCardBase = ({
 };
 
 interface AttributionDocumentCardProps {
-    title?: string;
     text: string;
     url?: string;
     source: string;
@@ -105,10 +85,7 @@ interface AttributionDocumentCardProps {
     // href: string;
 }
 
-const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
-
 export const AttributionDocumentCard = ({
-    title,
     text,
     url,
     source,
@@ -128,7 +105,6 @@ export const AttributionDocumentCard = ({
 
     return (
         <AttributionDocumentCardBase
-            title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
             text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
             url={<UrlForDocumentAttribution url={url} />}
             source={`Source: ${source}`}
@@ -153,7 +129,6 @@ export const AttributionDocumentCard = ({
 export const AttributionDocumentCardSkeleton = (): JSX.Element => {
     return (
         <AttributionDocumentCardBase
-            title={<Skeleton />}
             text={
                 <>
                     <Skeleton />
