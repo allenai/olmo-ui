@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
@@ -81,9 +81,10 @@ const AttributionDocumentCardBase = ({
                 {numRepetitions > 1 && (
                     <Typography variant="body2" fontWeight={600} component="span">
                         Document repeated {numRepetitions} times in corpus.{' '}
-                        <Link href="" underline="always">
+                        {/* TODO: Make the "Show all" link work */}
+                        {/* <Link href="" underline="always">
                             <Typography variant="caption">Show all</Typography>
-                        </Link>
+                        </Link> */}
                     </Typography>
                 )}
             </CardContent>
@@ -100,6 +101,7 @@ interface AttributionDocumentCardProps {
     url?: string;
     source: string;
     documentIndex: string;
+    numRepetitions: number;
     // href: string;
 }
 
