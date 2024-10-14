@@ -1,6 +1,6 @@
 import { escapeRegExp } from '@/utils/escape-reg-exp';
 
-const truncateUrl = (url, maxLength = 50) => {
+const truncateUrl = (url, maxLength = 40) => {
     if (url.length <= maxLength) return url;
     return url.slice(0, maxLength) + '...';
 };

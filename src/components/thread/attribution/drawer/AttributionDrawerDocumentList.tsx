@@ -98,17 +98,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return <NoDocumentsCard />;
     }
 
-    // Create a modified version of the documents with the URL replaced with https://www.google.com
-    const documentsWithUrlReplaced = documents.map((document) => {
-        return {
-            ...document,
-            url: 'https://www.google.com',
-        };
-    });
-
     // Collapse duplicates by URL
-    const documentsWithoutUrl = documentsWithUrlReplaced.filter((document) => !document.url);
-    const documentsWithUrl = documentsWithUrlReplaced.filter((document) => document.url);
+    const documentsWithoutUrl = documents.filter((document) => !document.url);
+    const documentsWithUrl = documents.filter((document) => document.url);
     const urlToDocuments = documentsWithUrl.reduce((acc, document) => {
         const existingDocuments = acc.get(document.url) ?? [];
         acc.set(document.url, [...existingDocuments, document]);
