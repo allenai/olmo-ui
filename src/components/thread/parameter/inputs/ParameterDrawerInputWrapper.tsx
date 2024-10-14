@@ -42,7 +42,6 @@ export const ParameterDrawerInputWrapper = ({
             gridTemplateAreas={`"label info-button"
                                 "input input"`}
             gridTemplateColumns="auto 1fr"
-            rowGap={0}
             columnGap={1}
             width={1}
             alignItems="center"
