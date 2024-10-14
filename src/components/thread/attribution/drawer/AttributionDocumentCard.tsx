@@ -5,12 +5,15 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
+import { UrlForDocumentAttribution } from './UrlForDocumentAttribution';
 
 interface AttributionDocumentCardBaseProps {
     title: ReactNode;
     text: ReactNode;
+    url?: ReactNode;
     source: ReactNode;
     datasetExplorerLink: ReactNode;
+    numRepetitions: number;
     // href: string;
     setSelectedDocument?: () => void;
     setPreviewDocument?: () => void;
@@ -24,8 +27,10 @@ const AttributionDocumentCardBase = ({
     isPreviewed,
     title,
     text,
+    url,
     source,
     datasetExplorerLink,
+    numRepetitions,
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
@@ -68,8 +73,20 @@ const AttributionDocumentCardBase = ({
                 <Typography variant="body1">{text}</Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
                 <Typography variant="body2" fontWeight={600} component="span">
+                    {url}
+                </Typography>
+                <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
+                {numRepetitions > 1 && (
+                    <Typography variant="body2" fontWeight={600} component="span">
+                        Document repeated {numRepetitions} times in corpus.{' '}
+                        {/* TODO: Make the "Show all" link work */}
+                        {/* <Link href="" underline="always">
+                            <Typography variant="caption">Show all</Typography>
+                        </Link> */}
+                    </Typography>
+                )}
             </CardContent>
             <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
                 {datasetExplorerLink != null && datasetExplorerLink}
@@ -81,8 +98,10 @@ const AttributionDocumentCardBase = ({
 interface AttributionDocumentCardProps {
     title?: string;
     text: string;
+    url?: string;
     source: string;
     documentIndex: string;
+    numRepetitions: number;
     // href: string;
 }
 
@@ -91,8 +110,10 @@ const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
 export const AttributionDocumentCard = ({
     title,
     text,
+    url,
     source,
     documentIndex,
+    numRepetitions,
 }: AttributionDocumentCardProps): JSX.Element => {
     const spans = useAppContext((state) => {
         const selectedMessageId = state.attribution.selectedMessageId;
@@ -109,6 +130,7 @@ export const AttributionDocumentCard = ({
         <AttributionDocumentCardBase
             title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
             text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
+            url={<UrlForDocumentAttribution url={url} />}
             source={`Source: ${source}`}
             datasetExplorerLink={
                 <Button
@@ -123,6 +145,7 @@ export const AttributionDocumentCard = ({
                     Open in Dataset Explorer
                 </Button>
             }
+            numRepetitions={numRepetitions}
         />
     );
 };
@@ -140,8 +163,10 @@ export const AttributionDocumentCardSkeleton = (): JSX.Element => {
                     <Skeleton />
                 </>
             }
+            url={<Skeleton />}
             source={<Skeleton />}
             datasetExplorerLink={<Skeleton />}
+            numRepetitions={1}
         />
     );
 };
