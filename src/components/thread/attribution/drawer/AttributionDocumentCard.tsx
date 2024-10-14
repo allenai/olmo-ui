@@ -13,6 +13,7 @@ interface AttributionDocumentCardBaseProps {
     url?: ReactNode;
     source: ReactNode;
     datasetExplorerLink: ReactNode;
+    numRepetitions: number;
     // href: string;
     setSelectedDocument?: () => void;
     setPreviewDocument?: () => void;

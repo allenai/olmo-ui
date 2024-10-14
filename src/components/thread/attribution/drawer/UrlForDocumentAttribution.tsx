@@ -1,6 +1,4 @@
-import { escapeRegExp } from '@/utils/escape-reg-exp';
-
-const truncateUrl = (url, maxLength = 40) => {
+const truncateUrl = (url: string, maxLength = 40) => {
     if (url.length <= maxLength) return url;
     return url.slice(0, maxLength) + '...';
 };
@@ -9,9 +7,7 @@ interface UrlForDocumentAttributionProps {
     url: string | undefined;
 }
 
-export const UrlForDocumentAttribution = ({
-    url,
-}: UrlForDocumentAttributionProps) => {
+export const UrlForDocumentAttribution = ({url,}: UrlForDocumentAttributionProps) => {
     if (!url) {
         return null;
     }
@@ -19,5 +15,5 @@ export const UrlForDocumentAttribution = ({
         <>
             URL: <a href={url} target="_blank" rel="noopener noreferrer">{truncateUrl(url)}</a>
         </>
-    )
+    );
 };

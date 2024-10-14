@@ -106,7 +106,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         acc.set(document.url, [...existingDocuments, document]);
         return acc;
     }, new Map<string, Document[]>());
-    const documentsWithUrlDeduped = Array.from(urlToDocuments.values()).map((documents) => {return documents[0];});
+    const documentsWithUrlDeduped = Array.from(urlToDocuments.values()).map((documents) => {
+        return documents[0];
+    });
     const documentsDeduped = [...documentsWithoutUrl, ...documentsWithUrlDeduped];
 
     return (
