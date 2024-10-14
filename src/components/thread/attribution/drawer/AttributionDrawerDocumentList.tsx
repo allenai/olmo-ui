@@ -36,8 +36,8 @@ const NoDocumentsCard = (): JSX.Element => {
 
     const message = isThereASelectedThread ? (
         <>
-            There are no documents that can be attributed to this response. This will happen often
-            on short responses.
+            There are no documents from the training set that contain exact text matches to sections
+            of the model response. This will often happen on short responses.
         </>
     ) : (
         <>Start a new thread or select an existing one to see response attributions.</>
@@ -63,8 +63,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return (
             <Card>
                 <CardContent>
-                    Once the response has been fully generated, documents that can be attributed to
-                    this response will display.
+                    Once the response has been fully generated, documents from the training set that
+                    contain exact text matches to sections of the model response will be displayed.
                 </CardContent>
             </Card>
         );

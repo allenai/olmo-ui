@@ -9,13 +9,11 @@ from google.oauth2.service_account import Credentials
 from werkzeug import exceptions
 
 from dolma_search.infini_gram_api_client.api.documents import (
+    get_document_by_index_index_documents_document_index_get,
     search_documents_index_documents_get,
 )
 from dolma_search.infini_gram_api_client.models.available_infini_gram_index_id import (
     AvailableInfiniGramIndexId,
-)
-from dolma_search.infini_gram_api_client.api.documents import (
-    get_document_by_index_index_documents_document_index_get,
 )
 from dolma_search.infini_gram_api_client.models.document import Document
 from dolma_search.infini_gram_api_client.models.http_validation_error import (
@@ -173,6 +171,7 @@ class Server(flask.Blueprint):
                 index=AvailableInfiniGramIndexId.OLMOE_MIX_0924,
                 document_index=int(id),
                 client=self.infini_gram_client,
+                maximum_document_display_length=1_000_000,
             )
         )
 
