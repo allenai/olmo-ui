@@ -127,7 +127,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                         text={document.text}
                         url={document.url}
                         source={document.source}
-                        numRepetitions={document.url ? (urlToDocuments.get(document.url)?.length ?? 1) : 1}
+                        numRepetitions={
+                            document.url ? (urlToDocuments.get(document.url)?.length ?? 1) : 1
+                        }
                     />
                 );
             })}

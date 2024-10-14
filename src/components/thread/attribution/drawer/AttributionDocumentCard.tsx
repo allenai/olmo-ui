@@ -166,6 +166,7 @@ export const AttributionDocumentCardSkeleton = (): JSX.Element => {
             url={<Skeleton />}
             source={<Skeleton />}
             datasetExplorerLink={<Skeleton />}
+            numRepetitions={1}
         />
     );
 };

@@ -7,7 +7,7 @@ interface UrlForDocumentAttributionProps {
     url: string | undefined;
 }
 
-export const UrlForDocumentAttribution = ({url}: UrlForDocumentAttributionProps) => {
+export const UrlForDocumentAttribution = ({ url }: UrlForDocumentAttributionProps) => {
     if (!url) {
         return null;
     }
