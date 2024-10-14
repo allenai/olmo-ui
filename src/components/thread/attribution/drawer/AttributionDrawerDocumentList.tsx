@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography } from '@mui/material';
 
+import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
@@ -97,20 +98,37 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return <NoDocumentsCard />;
     }
 
+    // Collapse duplicates by URL
+    const documentsWithoutUrl = documents.filter((document) => !document.url);
+    const documentsWithUrl = documents.filter((document) => document.url);
+    const urlToDocuments = documentsWithUrl.reduce((acc, document) => {
+        const existingDocuments = acc.get(document.url) ?? [];
+        acc.set(document.url, [...existingDocuments, document]);
+        return acc;
+    }, new Map<string, Document[]>());
+    const documentsWithUrlDeduped = Array.from(urlToDocuments.values()).map((documents) => {
+        return documents[0];
+    });
+    const documentsDeduped = [...documentsWithoutUrl, ...documentsWithUrlDeduped];
+
     return (
         <>
-            {/* 
-                MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole. 
+            {/*
+                MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole.
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            {documents.map((document) => {
+            {documentsDeduped.map((document) => {
                 return (
                     <AttributionDocumentCard
                         key={document.index}
                         documentIndex={document.index}
                         text={document.text}
+                        url={document.url}
                         source={document.source}
+                        numRepetitions={
+                            document.url ? urlToDocuments.get(document.url)?.length ?? 1 : 1
+                        }
                     />
                 );
             })}
