@@ -146,7 +146,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                     <AttributionDocumentCard
                         key={document.index}
                         documentIndex={document.index}
-                        text={document.index}
+                        text={document.text}
                         url={document.url}
                         source={document.source}
                         numRepetitions={document.duplicateDocumentIndexes.length + 1}
