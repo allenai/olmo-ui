@@ -187,7 +187,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         return {
             attribution: get().attribution,
             isAllHighlightVisible: get().isAllHighlightVisible,
-            orderedDocumentIds: get().orderedDocumentIds,
         };
     },
 
