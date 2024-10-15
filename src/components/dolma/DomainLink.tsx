@@ -6,7 +6,12 @@ export interface DomainLinkProp {
 
 export const DomainLink = ({ link }: DomainLinkProp) => {
     return (
-        <Link href={`http://${link}`} target="_blank" underline="none" rel="noopener">
+        <Link
+            href={`http://${link}`}
+            target="_blank"
+            underline="none"
+            rel="noopener"
+            sx={{ color: (theme) => theme.palette.text.primary }}>
             <Typography
                 sx={() => ({
                     fontWeight: 700,

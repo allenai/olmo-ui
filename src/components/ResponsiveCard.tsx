@@ -5,9 +5,11 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useDesktopOrUp } from './dolma/shared';
 
-interface ThreadPageCardProps extends PropsWithChildren {}
+interface ThreadPageCardProps extends PropsWithChildren {
+    backgroundColor?: string;
+}
 
-export const ResponsiveCard = ({ children }: ThreadPageCardProps): JSX.Element => {
+export const ResponsiveCard = ({ children, backgroundColor }: ThreadPageCardProps): JSX.Element => {
     const isDesktopOrUp = useDesktopOrUp();
 
     return (
@@ -22,7 +24,7 @@ export const ResponsiveCard = ({ children }: ThreadPageCardProps): JSX.Element =
                     borderRadius: '12px',
                 },
 
-                backgroundColor: (theme) => theme.palette.background.default,
+                backgroundColor: backgroundColor || theme.palette.background.default,
 
                 // This removes the border from the outlined version of the component. Doesn't affect the elevated version.
                 border: 0,

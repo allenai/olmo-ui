@@ -24,7 +24,12 @@ export const SearchForm = ({
 
     return (
         <Wrapper>
-            <SearchBar defaultValue={defaultValue} disabled={disabled} showTooltip={showTooltip} />
+            <SearchBar
+                defaultValue={defaultValue}
+                disabled={disabled}
+                showTooltip={showTooltip}
+                title="Search the dataset"
+            />
             {dolmaRouteMatch && <NewSearchPlaceholder />}
         </Wrapper>
     );

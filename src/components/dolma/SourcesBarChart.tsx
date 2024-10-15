@@ -10,6 +10,7 @@ import {
     useTheme,
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import { AxisTickProps } from '@nivo/axes'; // Import correct types
 import { ComputedDatum, ResponsiveBar } from '@nivo/bar';
 import { useLoaderData, useNavigation } from 'react-router-dom';
 
@@ -71,7 +72,7 @@ export const SourcesBarChart = () => {
     const sortedData = filteredData.sort((a, b) => a.value - b.value);
 
     const generatedBarAriaLabel = (data: ComputedDatum<BarData>): string => {
-        return `${data.data.label} makes up ${formatValueAsPercentage(data.data.value, totalSum)}% of the dataset and contains ${data.data.value} documents`;
+        return `${data.data.label} makes up ${formatValueAsPercentage(data.data.value, totalSum)} of the dataset and contains ${data.data.value} documents`;
     };
 
     if (isLoading) {
@@ -92,7 +93,7 @@ export const SourcesBarChart = () => {
                     labelSkipWidth={0}
                     labelSkipHeight={0}
                     padding={0.1}
-                    colors={theme.palette.primary.main}
+                    colors={theme.color['teal-100'].hex}
                     margin={{ top: 50, right: 30, bottom: 100, left: 110 }}
                     groupMode="grouped"
                     axisLeft={{
@@ -111,7 +112,22 @@ export const SourcesBarChart = () => {
                         legendPosition: 'middle',
                         legendOffset: 80,
                         truncateTickAt: 0,
-                        format: (value) => formatValueAsPercentage(value as number, totalSum),
+                        renderTick: (props: AxisTickProps<string | number>) => {
+                            const { x, y, value } = props;
+                            return (
+                                <g transform={`translate(${x - 15}, ${y + 35})`}>
+                                    <text
+                                        style={{
+                                            fontSize: theme.typography.body2.fontSize,
+                                            fontFamily: theme.typography.body2.fontFamily,
+                                            fontWeight: theme.typography.body2.fontWeight,
+                                            fill: theme.palette.text.secondary,
+                                        }}>
+                                        {formatValueAsPercentage(value as number, totalSum)}
+                                    </text>
+                                </g>
+                            );
+                        },
                     }}
                     enableGridX={true}
                     enableGridY={false}
@@ -139,16 +155,21 @@ export const SourcesBarChart = () => {
                             <TableCell sx={{ border: 'none' }}>
                                 <Typography
                                     variant="h6"
-                                    sx={{ fontWeight: 'bold', textAlign: 'left' }}>
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        textAlign: 'left',
+                                        color: (theme) => theme.palette.text.primary,
+                                    }}>
                                     Other* includes
                                 </Typography>
                             </TableCell>
                             <TableCell sx={{ border: 'none', textAlign: 'right', paddingRight: 2 }}>
                                 <Typography
-                                    variant="body1"
+                                    variant="h6"
                                     sx={{
                                         textAlign: 'right',
                                         margin: '20px 0 0',
+                                        color: (theme) => theme.palette.text.primary,
                                     }}>
                                     Document Count
                                 </Typography>
@@ -160,14 +181,18 @@ export const SourcesBarChart = () => {
                             <TableRow key={index}>
                                 <TableCell
                                     sx={{ textAlign: 'left', border: 'none', paddingLeft: 2 }}>
-                                    <Typography variant="body1">{data.label}</Typography>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{ color: (theme) => theme.palette.text.secondary }}>
+                                        {data.label}
+                                    </Typography>
                                 </TableCell>
                                 <TableCell
                                     sx={{ textAlign: 'right', border: 'none', paddingRight: 2 }}>
                                     <Typography
                                         variant="body1"
                                         sx={{
-                                            color: (theme) => theme.palette.primary.main,
+                                            color: (theme) => theme.color['teal-90'].hex,
                                         }}>
                                         {formatNumberWithCommas(data.value)}
                                     </Typography>

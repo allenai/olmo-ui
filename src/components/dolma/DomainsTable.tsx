@@ -101,7 +101,7 @@ export const DomainsTable = () => {
                     marginTop: theme.spacing(4),
                     marginBottom: theme.spacing(2),
                 })}>
-                Domains
+                Web Domains
             </Typography>
             <DataGrid
                 {...dataGridConfig}
@@ -114,6 +114,14 @@ export const DomainsTable = () => {
                             page={page}
                             size={isSmallLayoutOrUp ? 'medium' : 'small'}
                             onChange={onPageChange}
+                            sx={{
+                                '& .MuiPaginationItem-root': {
+                                    '&.Mui-selected': {
+                                        backgroundColor: (theme) => theme.color['dark-blue'].hex, // Background color for the selected item
+                                        color: 'white', // Text color for the selected item
+                                    },
+                                },
+                            }}
                             showFirstButton
                             showLastButton
                         />
@@ -135,7 +143,7 @@ export const DomainsTable = () => {
                         border: 0,
                     },
                     [`& .${gridClasses.row}:nth-of-type(odd) `]: {
-                        bgcolor: theme.palette.background.paper,
+                        bgcolor: theme.color.N3.hex,
                     },
                     [`& .${gridClasses.footerContainer}`]: {
                         justifyContent: 'flex-start',
