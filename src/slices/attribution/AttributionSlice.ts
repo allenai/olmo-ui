@@ -7,6 +7,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {
+    orderedDocumentIndexes: string[];
     documents: { [documentIndex: string]: Document | undefined };
     spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
@@ -22,7 +23,6 @@ interface AttributionState {
         selectedMessageId: string | null;
         selectedSpanIds: string[];
     };
-    orderedDocumentIds: number[];
     isAllHighlightVisible: boolean;
 }
 
@@ -50,7 +50,6 @@ const initialAttributionState: AttributionState = {
         selectedSpanIds: [],
     },
     isAllHighlightVisible: true,
-    orderedDocumentIds: [],
 };
 
 const attributionClient = new AttributionClient();
@@ -59,6 +58,7 @@ const getAttributionsByMessageIdOrDefault = (state: Draft<AppContextState>, mess
     if (state.attribution.attributionsByMessageId[messageId] == null) {
         state.attribution.attributionsByMessageId[messageId] = {
             loadingState: null,
+            orderedDocumentIndexes: [],
             documents: {},
             spans: {},
         };
@@ -154,17 +154,19 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
-                        const orderedDocumentIds = attributionResponse.spans.flatMap((span) => [
-                            ...span.documents,
-                        ]);
 
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;
                         });
+
                         attributionResponse.documents.forEach((document) => {
                             attributions.documents[document.index] = document;
                         });
-                        state.orderedDocumentIds = orderedDocumentIds;
+
+                        attributions.orderedDocumentIndexes = attributionResponse.documents.map(
+                            (document) => document.index
+                        );
+
                         attributions.loadingState = RemoteState.Loaded;
                     },
                     false,

@@ -5,9 +5,10 @@ export interface Document {
     corresponding_spans: number[];
     corresponding_span_texts: string[];
     index: string;
-    url: string;
+    url?: string;
     source: string;
     title: string;
+    relevance_score: number;
 }
 
 export interface AttributionSpan {

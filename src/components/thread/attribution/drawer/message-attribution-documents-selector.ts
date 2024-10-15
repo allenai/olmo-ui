@@ -40,7 +40,7 @@ export const messageAttributionDocumentsSelector = (
         };
     }
 
-    const documents: Document[] = state.orderedDocumentIds
+    const documents: Document[] = (attributions?.orderedDocumentIndexes ?? [])
         .map((docId) => {
             return attributions?.documents[docId.toString()];
         })
