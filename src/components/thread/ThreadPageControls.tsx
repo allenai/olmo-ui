@@ -6,6 +6,7 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
 
+import { useDesktopOrUp } from '../dolma/shared';
 import { AttributionButton } from './attribution/AttributionButton';
 import { DeleteThreadButton } from './DeleteThreadButton';
 import { ParameterButton } from './parameter/ParameterButton';
@@ -31,6 +32,7 @@ const NewThreadButton = () => {
 
 const ThreadButtonGroup = (): JSX.Element => {
     const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
+    const isNotDesktop = !useDesktopOrUp();
 
     if (!selectedThreadRootId) {
         return <></>;
@@ -64,8 +66,8 @@ const ThreadButtonGroup = (): JSX.Element => {
                 <NewThreadButton />
                 <DeleteThreadButton />
                 <ShareThreadButton />
-                <ParameterButton />
-                <AttributionButton />
+                {isNotDesktop && <ParameterButton />}
+                {isNotDesktop && <AttributionButton />}
             </ButtonGroup>
         </>
     );
