@@ -1,14 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-    Box,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
-    ListSubheader,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { FullScreenDrawer } from '@/components/TemporaryDrawer';
@@ -61,16 +52,20 @@ export const ParameterDrawer = (): JSX.Element => {
 };
 
 // Not sure what I should do about these, I just wanted to avoid repetition -- but they are mildly specific
-const GridList = ({ children }: React.PropsWithChildren) => (
-    <List sx={{ display: 'grid', gridTemplateColumns: 'auto min-content' }}>{children}</List>
-);
-const GridListItem = ({ children }: React.PropsWithChildren) => (
-    <ListItem
-        disablePadding
-        disableGutters
-        sx={{ display: 'grid', gridTemplateColumns: 'subgrid', gridColumn: '1 / -1' }}>
+const SubGridList = ({ children }: React.PropsWithChildren) => (
+    <Box
+        component="ul"
+        margin="0"
+        padding="0"
+        display="grid"
+        gridTemplateColumns="auto min-content">
         {children}
-    </ListItem>
+    </Box>
+);
+const SubGridListItem = ({ children }: React.PropsWithChildren) => (
+    <Box component="li" display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1">
+        {children}
+    </Box>
 );
 
 export const ParameterContent = () => {
@@ -86,8 +81,8 @@ export const ParameterContent = () => {
 
     return (
         <Stack>
-            <GridList>
-                <GridListItem>
+            <SubGridList>
+                <SubGridListItem>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
@@ -101,8 +96,8 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </GridListItem>
-                <GridListItem>
+                </SubGridListItem>
+                <SubGridListItem>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
@@ -116,8 +111,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </GridListItem>
-            </GridList>
+                </SubGridListItem>
+            </SubGridList>
         </Stack>
     );
 };
