@@ -1,4 +1,4 @@
-import { CardContent, Link, Stack, Typography, useTheme } from '@mui/material';
+import { CardContent, Link, Stack, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 
@@ -6,22 +6,20 @@ import { DolmaInformationCard } from './DolmaInformationCard';
 import { ResponsiveCard } from './ResponsiveCard';
 
 export const DolmaCard = () => {
-    const theme = useTheme();
-
     return (
         <>
-            <ResponsiveCard backgroundColor={theme.palette.background.reversed}>
-                <CardContent sx={{ padding: theme.spacing(4, 2) }}>
+            <ResponsiveCard sx={{ backgroundColor: (theme) => theme.palette.background.reversed }}>
+                <CardContent sx={{ padding: (theme) => theme.spacing(4, 2) }}>
                     <Typography
                         variant="h1"
                         align="center"
-                        sx={{ color: theme.palette.common.white }}>
+                        sx={{ color: (theme) => theme.palette.common.white }}>
                         OLMoE-Mix is proven, trusted, and fully open.
                     </Typography>
                     <Typography
                         variant="subtitle1"
                         align="center"
-                        sx={{ color: theme.palette.common.white }}>
+                        sx={{ color: (theme) => theme.palette.common.white }}>
                         <Link
                             href={links.olmoeMixAnnouncement}
                             target="_blank"
