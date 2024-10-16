@@ -76,7 +76,7 @@ export const DolmaTabs = () => {
                     onChange={handleTabChange}
                     aria-label="Dataset Explorer Pages">
                     <Tab
-                        label="Search Dataset"
+                        label="Search dataset"
                         onClick={(event) => {
                             handleTabClick(event, 'search-dataset');
                         }}

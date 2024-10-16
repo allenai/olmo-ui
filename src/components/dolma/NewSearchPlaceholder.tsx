@@ -6,7 +6,7 @@ import { search } from '../../api/dolma/search';
 import { NoPaddingGrid } from './shared';
 
 export const NewSearchPlaceholder = () => {
-    const exampleQueries = ['Economic Growth', 'Linda Tuhiwai Smith', 'Stoichiometry'];
+    const exampleQueries = ['Economic growth', 'Linda Tuhiwai Smith', 'Stoichiometry'];
     const theme = useTheme();
 
     return (

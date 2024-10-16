@@ -34,10 +34,10 @@ export const DolmaCard = () => {
             </ResponsiveCard>
             <Stack direction="row" flexWrap="wrap" sx={{ columnGap: 4, rowGap: 2 }}>
                 <DolmaInformationCard
-                    linkText="Learn More"
+                    linkText="Learn more"
                     linkUrl="#"
                     title="How was OLMoE-Mix Created?"
-                    buttonText="Read the Blog"
+                    buttonText="Read the blog"
                     buttonUrl={links.olmoeMixAnnouncement}
                 />
                 <DolmaInformationCard
