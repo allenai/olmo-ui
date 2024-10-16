@@ -122,7 +122,6 @@ export const ParameterSlider = ({
                                 color: (theme) => theme.palette.text.primary,
                                 mr: theme.spacing(-1),
                                 height: '100%',
-                                // display: 'block',
                             })}
                             inputProps={{
                                 step,
