@@ -5,17 +5,35 @@ import highlightStressTestResponse from './highlightStressTestResponse.json';
 const fakeAttributionResponse = {
     documents: [
         {
-            corresponding_spans: ['OkayOkayOkayOkayOkayOkayOkayOkay'],
+            corresponding_spans: [0],
+            corresponding_span_texts: ['OkayOkayOkayOkayOkayOkayOkayOkay', 'OkayOkay'],
             index: '2132419686',
             source: 'c4',
             text: "exes.\nCooooool, would this supposedly fix some translation issues I'm having with Shady Job too, if it runs from a 1.13 build? I better get reading on this topic.\nOkayOkayOkayOkayOkayOkayOkayOkayOkay where's this new SCI??\nintegrated in 1.13-UB if yes.\nIt all depends on what they needed that proprietary ex",
+            snippets: [
+                {
+                    text: "exes.\nCooooool, would this supposedly fix some translation issues I'm having with Shady Job too, if it runs from a 1.13 build? I better get reading on this topic.\nOkayOkayOkayOkayOkayOkayOkayOkayOkay where's this new SCI??\nintegrated in 1.13-UB if yes.\nIt all depends on what they needed that proprietary ex",
+                    corresponding_span_text: 'OkayOkayOkayOkayOkayOkayOkayOkay',
+                },
+                {
+                    text: 'some text surrounding OkayOkay end surrounding',
+                    corresponding_span_text: 'OkayOkay',
+                },
+            ],
             title: null,
         },
         {
-            corresponding_spans: ['OkayOkay'],
+            corresponding_spans: [1],
+            corresponding_span_texts: ['OkayOkay'],
             index: '2132419687',
             source: 'c4',
-            text: "exes.\nCooooool, would this supposedly fix some translation issues I'm having with Shady Job too, if it runs from a 1.13 build? I better get reading on this topic.\nOkayOkayOkayOkayOkayOkayOkayOkayOkay where's this new SCI??\nintegrated in 1.13-UB if yes.\nIt all depends on what they needed that proprietary ex",
+            text: 'some text surrounding OkayOkay end surrounding',
+            snippets: [
+                {
+                    text: 'some text surrounding OkayOkay end surrounding',
+                    corresponding_span_text: 'OkayOkay',
+                },
+            ],
             title: null,
         },
     ],
@@ -31,7 +49,7 @@ const fakeAttributionResponse = {
             text: 'OkayOkayOkayOkayOkayOkayOkayOkay',
         },
         {
-            documents: [2132419687],
+            documents: [2132419687, 2132419686],
             nested_spans: [
                 {
                     documents: [2132419686],

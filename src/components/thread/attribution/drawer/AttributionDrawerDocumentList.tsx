@@ -9,7 +9,7 @@ import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selec
 import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard';
+} from './AttributionDocumentCard/AttributionDocumentCard';
 import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
@@ -147,7 +147,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                         <AttributionDocumentCard
                             key={document.index}
                             documentIndex={document.index}
-                            text={document.text}
                             documentUrl={document.url}
                             source={document.source}
                             numRepetitions={document.duplicateDocumentIndexes.length + 1}

@@ -1,5 +1,6 @@
 import { render, screen } from '@test-utils';
 
+import { Document } from '@/api/AttributionClient';
 import * as appContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
@@ -31,6 +32,10 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_spans: [0],
                                 source: 'made up',
                                 relevance_score: 5,
+                                url: undefined,
+                                snippets: [
+                                    { text: 'document 1', corresponding_span_text: 'span 1' },
+                                ],
                             },
                             2: {
                                 index: '2',
@@ -39,6 +44,10 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_spans: [1],
                                 source: 'made up',
                                 relevance_score: 4,
+                                url: undefined,
+                                snippets: [
+                                    { text: 'document 2', corresponding_span_text: 'span 2' },
+                                ],
                             },
                             3: {
                                 index: '3',
@@ -47,6 +56,10 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_spans: [2],
                                 source: 'made up',
                                 relevance_score: 3,
+                                url: undefined,
+                                snippets: [
+                                    { text: 'document 3', corresponding_span_text: 'span 3' },
+                                ],
                             },
                             4: {
                                 index: '4',
@@ -55,6 +68,10 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_spans: [3],
                                 source: 'made up',
                                 relevance_score: 2,
+                                url: undefined,
+                                snippets: [
+                                    { text: 'document 4', corresponding_span_text: 'span 4' },
+                                ],
                             },
                             5: {
                                 index: '5',
@@ -63,8 +80,12 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_spans: [4],
                                 source: 'made up',
                                 relevance_score: 1,
+                                url: undefined,
+                                snippets: [
+                                    { text: 'document 5', corresponding_span_text: 'span 5' },
+                                ],
                             },
-                        },
+                        } satisfies Record<string, Document>,
                     },
                 },
             },
@@ -77,11 +98,11 @@ describe('AttributionDrawerDocumentList', () => {
         );
         // If these are null something's wrong with the test anyway
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
-        const documentCard1 = screen.getByText('document 1').parentElement!;
-        const documentCard2 = screen.getByText('document 2').parentElement!;
-        const documentCard3 = screen.getByText('document 3').parentElement!;
-        const documentCard4 = screen.getByText('document 4').parentElement!;
-        const documentCard5 = screen.getByText('document 5').parentElement!;
+        const documentCard1 = screen.getByText('"...document 1..."').parentElement!;
+        const documentCard2 = screen.getByText('"...document 2..."').parentElement!;
+        const documentCard3 = screen.getByText('"...document 3..."').parentElement!;
+        const documentCard4 = screen.getByText('"...document 4..."').parentElement!;
+        const documentCard5 = screen.getByText('"...document 5..."').parentElement!;
         /* eslint-enable@typescript-eslint/no-non-null-assertion */
 
         expect(documentCard1.compareDocumentPosition(documentCard2)).toEqual(
@@ -116,6 +137,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 source: 'made up',
                                 relevance_score: 5,
                                 url: 'https://fake.website',
+                                snippets: [
+                                    { text: 'document 1', corresponding_span_text: 'span 1' },
+                                ],
                             },
                             2: {
                                 index: '2',
@@ -125,6 +149,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 source: 'made up',
                                 relevance_score: 4,
                                 url: 'https://fake.website',
+                                snippets: [
+                                    { text: 'document 2', corresponding_span_text: 'span 2' },
+                                ],
                             },
                             3: {
                                 index: '3',
@@ -134,6 +161,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 source: 'made up',
                                 relevance_score: 3,
                                 url: 'https://fake.website',
+                                snippets: [
+                                    { text: 'document 3', corresponding_span_text: 'span 3' },
+                                ],
                             },
                             4: {
                                 index: '4',
@@ -143,6 +173,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 source: 'made up',
                                 relevance_score: 2,
                                 url: undefined,
+                                snippets: [
+                                    { text: 'document 4', corresponding_span_text: 'span 4' },
+                                ],
                             },
                             5: {
                                 index: '5',
@@ -152,6 +185,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 source: 'made up',
                                 relevance_score: 1,
                                 url: 'https://another.fake.website',
+                                snippets: [
+                                    { text: 'document 5', corresponding_span_text: 'span 5' },
+                                ],
                             },
                         },
                     },
