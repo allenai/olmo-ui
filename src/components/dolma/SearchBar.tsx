@@ -1,5 +1,5 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Button, ButtonProps, IconButton, Stack, styled, Tooltip } from '@mui/material';
+import { Button, ButtonProps, IconButton, Stack, styled, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useNavigate } from 'react-router-dom';
@@ -52,7 +52,9 @@ export const SearchBar = ({
     return (
         <FormContainer formContext={formContext} onSuccess={submitSearch}>
             <Stack gap={1.5} alignItems="flex-start">
-                {title}
+                <Typography variant="h3" sx={{ alignSelf: 'center' }}>
+                    {title}
+                </Typography>
                 <SearchTextField
                     name="queryText"
                     inputProps={{
@@ -74,7 +76,14 @@ export const SearchBar = ({
                         type="submit"
                         variant="contained"
                         {...submitButtonProps}
-                        disabled={disabled}>
+                        disabled={disabled}
+                        sx={{
+                            backgroundColor: (theme) => theme.palette.background.reversed,
+                            color: (theme) => theme.palette.secondary.light,
+                            '&:hover': {
+                                backgroundColor: (theme) => theme.color['teal-100'].hex,
+                            },
+                        }}>
                         Submit
                     </Button>
                     {showTooltip && (

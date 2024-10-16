@@ -20,7 +20,7 @@ export const DolmaInformationCard = ({
         <Card
             variant="outlined"
             sx={(theme) => ({
-                background: (theme) => theme.palette.primary.dark,
+                background: (theme) => theme.palette.background.reversed,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
@@ -41,13 +41,15 @@ export const DolmaInformationCard = ({
                     alignItems: 'flex-start',
                     padding: 4,
                 }}>
-                <Typography variant="body1" color="primary.light">
+                <Typography
+                    variant="subtitle2"
+                    sx={{ color: (theme) => theme.palette.secondary.light }}>
                     {linkText}
                 </Typography>
                 <Typography
-                    variant="h5"
+                    variant="h3"
                     sx={{
-                        color: (theme) => theme.palette.primary.contrastText,
+                        color: (theme) => theme.palette.common.white,
                         marginY: 1,
                     }}>
                     {title}
@@ -59,7 +61,13 @@ export const DolmaInformationCard = ({
                         component={Link}
                         href={buttonUrl}
                         target="_blank"
-                        rel="noopener noreferrer">
+                        rel="noopener noreferrer"
+                        color="secondary"
+                        sx={{
+                            '&:hover': {
+                                backgroundColor: (theme) => theme.color['teal-10'].hex,
+                            },
+                        }}>
                         {buttonText}
                     </Button>
                 </CardActions>
