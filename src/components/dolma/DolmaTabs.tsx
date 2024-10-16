@@ -103,7 +103,7 @@ export const DolmaTabs = () => {
                         }}
                     />
                     <Tab
-                        label="Document Length"
+                        label="Document length"
                         onClick={(event) => {
                             handleTabClick(event, 'document-length');
                         }}
