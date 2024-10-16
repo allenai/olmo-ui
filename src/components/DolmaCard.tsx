@@ -13,7 +13,10 @@ export const DolmaCard = () => {
                     <Typography
                         variant="h1"
                         align="center"
-                        sx={{ color: (theme) => theme.palette.common.white }}>
+                        sx={{
+                            color: (theme) => theme.palette.common.white,
+                            marginBottom: (theme) => theme.spacing(2),
+                        }}>
                         OLMoE-Mix is proven, trusted, and fully open.
                     </Typography>
                     <Typography
