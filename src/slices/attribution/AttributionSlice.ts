@@ -230,7 +230,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     },
 
     openAttributionForNewThread: () => {
-        get().resetAttribution();
         set(
             (state) => {
                 if (
