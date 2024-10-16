@@ -12,7 +12,7 @@ export interface Document {
     index: string;
     url?: string;
     source: string;
-    title: string;
+    title?: string;
     relevance_score: number;
 }
 

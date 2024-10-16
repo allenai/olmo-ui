@@ -22,7 +22,7 @@ export const BoldTextForDocumentAttribution = ({
     const splitTextSegments = text.split(regexPattern);
 
     return (
-        <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
+        <Typography variant="body1" sx={{ wordBreak: 'break-word' }} component="blockquote">
             &quot;...
             {splitTextSegments.map((segment, index) => {
                 // Check if the segment matches any of the substrings exactly

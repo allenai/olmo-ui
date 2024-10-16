@@ -9,7 +9,7 @@ import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selec
 import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard';
+} from './AttributionDocumentCard/AttributionDocumentCard';
 import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
