@@ -54,7 +54,10 @@ const AttributionDocumentCardBase = ({
                 data-previewed-document={isPreviewed}>
                 <Typography variant="body1">{text}</Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
-                <Typography variant="body2" fontWeight={600} component="span">
+                <Typography
+                    variant="body2"
+                    fontWeight={(theme) => theme.typography.fontWeightBold}
+                    component="span">
                     {url}
                 </Typography>
                 <Typography variant="body2" fontWeight={600} component="span">

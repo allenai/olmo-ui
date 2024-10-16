@@ -1,4 +1,4 @@
-import { render, screen, within } from '@test-utils';
+import { render, screen } from '@test-utils';
 
 import * as appContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
