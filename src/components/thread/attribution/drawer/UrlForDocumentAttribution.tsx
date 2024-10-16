@@ -1,3 +1,5 @@
+import { Link } from '@mui/material';
+
 const truncateUrl = (url: string, maxLength = 40) => {
     if (url.length <= maxLength) return url;
     return url.slice(0, maxLength) + '...';
@@ -13,10 +15,10 @@ export const UrlForDocumentAttribution = ({ url }: UrlForDocumentAttributionProp
     }
     return (
         <>
-            URL:
-            <a href={url} target="_blank" rel="noopener noreferrer">
+            URL:{' '}
+            <Link href={url} target="_blank" rel="noopener noreferrer">
                 {truncateUrl(url)}
-            </a>
+            </Link>
         </>
     );
 };
