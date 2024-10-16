@@ -67,7 +67,7 @@ export const AttributionContent = () => {
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
     const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
 
-    const { loadingState } = attributionForMessage;
+    const { loadingState, documents } = attributionForMessage;
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
@@ -104,7 +104,7 @@ export const AttributionContent = () => {
             </Card>
             <Button
                 variant="text"
-                disabled={loadingState === RemoteState.Loading}
+                disabled={loadingState === RemoteState.Loading || documents.length === 0}
                 startIcon={
                     isAllHighlightVisible ? (
                         <VisibilityOffOutlinedIcon />
