@@ -1,71 +1,88 @@
-import { Box, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+
 import { useAppContext } from '@/AppContext';
+import { links } from '@/Links';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
+import { UrlForDocumentAttribution } from './UrlForDocumentAttribution';
 
 interface AttributionDocumentCardBaseProps {
-    title: ReactNode;
     text: ReactNode;
+    url?: ReactNode;
     source: ReactNode;
+    datasetExplorerLink: ReactNode;
+    numRepetitions: number;
     // href: string;
 }
 
-const AttributionDocumentCardBase = ({ title, text, source }: AttributionDocumentCardBaseProps) => {
+const AttributionDocumentCardBase = ({
+    isSelected,
+    isPreviewed,
+    text,
+    url,
+    source,
+    datasetExplorerLink,
+    numRepetitions,
+}: AttributionDocumentCardBaseProps) => {
     return (
         <Card
+            component="li"
             sx={{
                 bgcolor: '#F8F0E780',
+
+                borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
+
+                '&[data-previewed-document="true"]': {
+                    borderColor: (theme) => theme.palette.primary.light,
+                },
+
+                '&[data-selected-document="true"]': {
+                    borderColor: (theme) => theme.palette.primary.main,
+                },
             }}>
             <CardContent
                 component={Stack}
                 direction="column"
                 gap={1}
-                sx={{
-                    borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
-
-                    '&[data-previewed-document="true"]': {
-                        borderColor: (theme) => theme.palette.primary.light,
-                    },
-
-                    '&[data-selected-document="true"]': {
-                        borderColor: (theme) => theme.palette.primary.main,
-                    },
-                }}>
-                <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    component="h4"
-                    margin={0}
-                    sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        // This isn't _standard_ standard but it's widely available
-                        // It uses an older version of a Chrome flex implementation that's supported in Safari and FF
-                        '-webkit-line-clamp': '2',
-                        lineClamp: '2',
-                        '-webkit-box-orient': 'vertical',
-                    }}>
-                    {title}
-                </Typography>
-                {text}
+                data-selected-document={isSelected}
+                data-previewed-document={isPreviewed}>
+                <Typography variant="body1">{text}</Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
+                <Typography
+                    variant="body2"
+                    fontWeight={(theme) => theme.typography.fontWeightBold}
+                    component="span">
+                    {url}
+                </Typography>
                 <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
+                {numRepetitions > 1 && (
+                    <Typography variant="body2" fontWeight={600} component="span">
+                        Document repeated {numRepetitions} times in result
+                        {/* TODO: Make the "Show all" link work */}
+                        {/* <Link href="" underline="always">
+                            <Typography variant="caption">Show all</Typography>
+                        </Link> */}
+                    </Typography>
+                )}
             </CardContent>
+            <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
+                {datasetExplorerLink != null && datasetExplorerLink}
+            </CardActions>
         </Card>
     );
 };
 
 interface AttributionDocumentCardProps {
-    title?: string;
+    text: string;
+    documentUrl?: string;
     source: string;
     documentIndex: string;
-    // href: string;
+    numRepetitions: number;
 }
 
 const MISSING_DOCUMENT_TITLE_TEXT = 'Untitled Document';
@@ -169,15 +186,31 @@ export const AttributionDocumentCardSnippets = ({
 };
 
 export const AttributionDocumentCard = ({
-    title,
+    text,
+    documentUrl,
     source,
     documentIndex,
+    numRepetitions,
 }: AttributionDocumentCardProps): JSX.Element => {
     return (
         <AttributionDocumentCardBase
-            title={title ?? MISSING_DOCUMENT_TITLE_TEXT}
             text={<AttributionDocumentCardSnippets documentIndex={documentIndex} />}
+            url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
+            datasetExplorerLink={
+                <Button
+                    href={links.document(documentIndex)}
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    fullWidth={false}
+                    sx={{
+                        width: 'fit-content',
+                    }}>
+                    Open in Dataset Explorer
+                </Button>
+            }
+            numRepetitions={numRepetitions}
         />
     );
 };
@@ -185,7 +218,6 @@ export const AttributionDocumentCard = ({
 export const AttributionDocumentCardSkeleton = (): JSX.Element => {
     return (
         <AttributionDocumentCardBase
-            title={<Skeleton />}
             text={
                 <Typography variant="body1">
                     <Skeleton />
@@ -195,7 +227,10 @@ export const AttributionDocumentCardSkeleton = (): JSX.Element => {
                     <Skeleton />
                 </Typography>
             }
+            url={<Skeleton />}
             source={<Skeleton />}
+            datasetExplorerLink={<Skeleton />}
+            numRepetitions={1}
         />
     );
 };

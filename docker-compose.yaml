@@ -24,7 +24,7 @@ services:
       - NODE_ENV=development
       - LLMX_API_URL
       - DOLMA_API_URL=/api
-      # - ENABLE_MOCKING=true
+      - ENABLE_MOCKING=false
       - IS_ATTRIBUTION_ENABLED=true
       - IS_ATTRIBUTION_SPAN_FIRST_ENABLED=true
   nginx:
