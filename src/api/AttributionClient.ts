@@ -1,8 +1,12 @@
 import { ClientBase } from './ClientBase';
+export interface AttributionDocumentSnippet {
+    text: string;
+    corresponding_span_text: string;
+}
 
 export interface Document {
     text: string;
-    snippets: string[];
+    snippets: AttributionDocumentSnippet[];
     corresponding_spans: number[];
     corresponding_span_texts: string[];
     index: string;

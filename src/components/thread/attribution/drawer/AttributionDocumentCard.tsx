@@ -109,11 +109,13 @@ export const AttributionDocumentCardSnippets = ({
 
     return (
         <Stack direction="column" gap={1}>
-            <BoldTextForDocumentAttribution
-                key={firstSnippet}
-                correspondingSpans={spans}
-                text={firstSnippet}
-            />
+            <Box>
+                <BoldTextForDocumentAttribution
+                    key={firstSnippet.text}
+                    correspondingSpans={[firstSnippet.corresponding_span_text]}
+                    text={firstSnippet.text}
+                />
+            </Box>
             <Box
                 sx={[
                     {
@@ -145,9 +147,9 @@ export const AttributionDocumentCardSnippets = ({
                     ]}>
                     {restSnippets.map((snippet) => (
                         <BoldTextForDocumentAttribution
-                            key={snippet}
-                            correspondingSpans={spans}
-                            text={snippet}
+                            key={snippet.text}
+                            correspondingSpans={[snippet.corresponding_span_text]}
+                            text={snippet.text}
                         />
                     ))}
                 </Box>
