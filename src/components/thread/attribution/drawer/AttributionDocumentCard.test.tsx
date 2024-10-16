@@ -69,8 +69,16 @@ describe('AttributionDocumentCard', () => {
                                         ],
                                         index: '12345',
                                         source: 'c4',
-                                        text: 'This is a',
-                                        snippets: ['This is a', 'message from the LLM'],
+                                        snippets: [
+                                            {
+                                                text: 'This is a part of a larger document that contains the text "message from the LLM"',
+                                                corresponding_span_text: 'This is a',
+                                            },
+                                            {
+                                                text: 'This is a part of a larger document that contains the text "message from the LLM"',
+                                                corresponding_span_text: 'message from the LLM',
+                                            },
+                                        ],
                                         title: 'Title',
                                     },
                                 },
@@ -92,12 +100,15 @@ describe('AttributionDocumentCard', () => {
             </FakeAppContextProvider>
         );
 
+        screen.debug();
         expect(screen.getByText('This is a')).toBeVisible();
+        expect(screen.getByText('This is a')).toHaveStyle({ 'font-weight': '700' });
         expect(screen.queryByText('message from the LLM')).not.toBeVisible();
 
         await user.click(screen.getByRole('button', { name: 'Show more' }));
 
         expect(screen.getByText('message from the LLM')).toBeVisible();
+        expect(screen.getByText('message from the LLM')).toHaveStyle({ 'font-weight': '700' });
 
         await user.click(screen.getByRole('button', { name: 'Show less' }));
 
