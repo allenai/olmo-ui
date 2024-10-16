@@ -32,6 +32,7 @@ const AttributionDocumentCardBase = ({
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
+            component="li"
             sx={{
                 bgcolor: '#F8F0E780',
 
@@ -61,7 +62,7 @@ const AttributionDocumentCardBase = ({
                 </Typography>
                 {numRepetitions > 1 && (
                     <Typography variant="body2" fontWeight={600} component="span">
-                        Document repeated {numRepetitions} times in corpus.{' '}
+                        Document repeated {numRepetitions} times in result
                         {/* TODO: Make the "Show all" link work */}
                         {/* <Link href="" underline="always">
                             <Typography variant="caption">Show all</Typography>
@@ -78,16 +79,15 @@ const AttributionDocumentCardBase = ({
 
 interface AttributionDocumentCardProps {
     text: string;
-    url?: string;
+    documentUrl?: string;
     source: string;
     documentIndex: string;
     numRepetitions: number;
-    // href: string;
 }
 
 export const AttributionDocumentCard = ({
     text,
-    url,
+    documentUrl,
     source,
     documentIndex,
     numRepetitions,
@@ -106,7 +106,7 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
-            url={<UrlForDocumentAttribution url={url} />}
+            url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
             datasetExplorerLink={
                 <Button

@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
@@ -141,18 +141,20 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            {deduplicatedDocuments.map((document) => {
-                return (
-                    <AttributionDocumentCard
-                        key={document.index}
-                        documentIndex={document.index}
-                        text={document.text}
-                        url={document.url}
-                        source={document.source}
-                        numRepetitions={document.duplicateDocumentIndexes.length + 1}
-                    />
-                );
-            })}
+            <Box p={0} m={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+                {deduplicatedDocuments.map((document) => {
+                    return (
+                        <AttributionDocumentCard
+                            key={document.index}
+                            documentIndex={document.index}
+                            text={document.text}
+                            documentUrl={document.url}
+                            source={document.source}
+                            numRepetitions={document.duplicateDocumentIndexes.length + 1}
+                        />
+                    );
+                })}
+            </Box>
         </>
     );
 };
