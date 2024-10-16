@@ -87,8 +87,8 @@ export const ParameterSlider = ({
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
             {({ inputLabelId }) => (
-                <Box display="grid" gridTemplateColumns="auto min-content" columnGap={1}>
-                    <Box>
+                <>
+                    <Box gridColumn={1}>
                         <Slider
                             value={value}
                             onChange={handleSliderChange}
@@ -101,7 +101,7 @@ export const ParameterSlider = ({
                             }}
                         />
                     </Box>
-                    <Box>
+                    <Box gridColumn={2} justifySelf="right">
                         <Input
                             value={value}
                             size="small"
@@ -121,6 +121,8 @@ export const ParameterSlider = ({
                                 },
                                 color: (theme) => theme.palette.text.primary,
                                 mr: theme.spacing(-1),
+                                height: '100%',
+                                // display: 'block',
                             })}
                             inputProps={{
                                 step,
@@ -128,11 +130,15 @@ export const ParameterSlider = ({
                                 max,
                                 type: 'number',
                                 id,
-                                sx: { textAlign: 'right', width: 'auto' },
+                                sx: {
+                                    textAlign: 'right',
+                                    width: 'auto',
+                                    transform: 'translateY(-3px)',
+                                },
                             }}
                         />
                     </Box>
-                </Box>
+                </>
             )}
         </ParameterDrawerInputWrapper>
     );

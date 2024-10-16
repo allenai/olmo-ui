@@ -60,6 +60,19 @@ export const ParameterDrawer = (): JSX.Element => {
     );
 };
 
+// Not sure what I should do about these, I just wanted to avoid repetition -- but they are mildly specific
+const GridList = ({ children }: React.PropsWithChildren) => (
+    <List sx={{ display: 'grid', gridTemplateColumns: 'auto min-content' }}>{children}</List>
+);
+const GridListItem = ({ children }: React.PropsWithChildren) => (
+    <ListItem
+        disablePadding
+        disableGutters
+        sx={{ display: 'grid', gridTemplateColumns: 'subgrid', gridColumn: '1 / -1' }}>
+        {children}
+    </ListItem>
+);
+
 export const ParameterContent = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
 
@@ -73,8 +86,8 @@ export const ParameterContent = () => {
 
     return (
         <Stack>
-            <List>
-                <ListItem disableGutters>
+            <GridList>
+                <GridListItem>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
@@ -88,8 +101,8 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </ListItem>
-                <ListItem disableGutters>
+                </GridListItem>
+                <GridListItem>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
@@ -103,8 +116,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </ListItem>
-            </List>
+                </GridListItem>
+            </GridList>
         </Stack>
     );
 };
