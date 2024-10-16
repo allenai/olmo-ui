@@ -1,4 +1,4 @@
-import { render, screen } from '@test-utils';
+import { render, screen, within } from '@test-utils';
 
 import * as appContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -165,6 +165,10 @@ describe('AttributionDrawerDocumentList', () => {
             </FakeAppContextProvider>
         );
 
-        screen.getByText('document 1').sibl;
+        const corpusLinkDocuments = screen.getAllByRole('listitem');
+
+        expect(corpusLinkDocuments).toHaveLength(3);
+        expect(corpusLinkDocuments[0]).toHaveTextContent('document 1');
+        expect(corpusLinkDocuments[0]).toHaveTextContent('Document repeated 3 times in result');
     });
 });
