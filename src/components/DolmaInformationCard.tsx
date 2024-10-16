@@ -62,8 +62,8 @@ export const DolmaInformationCard = ({
                         href={buttonUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        color="secondary"
                         sx={{
-                            backgroundColor: (theme) => theme.palette.secondary.light,
                             '&:hover': {
                                 backgroundColor: (theme) => theme.color['teal-10'].hex,
                             },

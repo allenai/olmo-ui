@@ -23,7 +23,7 @@ export const DolmaCard = () => {
                         align="center"
                         sx={{ color: theme.palette.common.white }}>
                         <Link
-                            href={links.olmoe_mix}
+                            href={links.olmoeMixAnnouncement}
                             target="_blank"
                             sx={{ color: (theme) => theme.palette.secondary.light }}>
                             OLMoE-Mix
@@ -40,14 +40,14 @@ export const DolmaCard = () => {
                     linkUrl="#"
                     title="How was OLMoE-Mix Created?"
                     buttonText="Read the Blog"
-                    buttonUrl={links.olmoe_mix}
+                    buttonUrl={links.olmoeMixAnnouncement}
                 />
                 <DolmaInformationCard
                     linkText="Research"
                     linkUrl="#"
                     title="Access the Dataset on Hugging Face"
                     buttonText="Download OLMoE-Mix"
-                    buttonUrl={links.olmoe_mix_download}
+                    buttonUrl={links.olmoeMixDownload}
                 />
             </Stack>
         </>

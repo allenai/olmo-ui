@@ -52,9 +52,7 @@ export const SearchBar = ({
     return (
         <FormContainer formContext={formContext} onSuccess={submitSearch}>
             <Stack gap={1.5} alignItems="flex-start">
-                <Typography
-                    variant="h3"
-                    sx={{ color: (theme) => theme.palette.text.primary, alignSelf: 'center' }}>
+                <Typography variant="h3" sx={{ alignSelf: 'center' }}>
                     {title}
                 </Typography>
                 <SearchTextField
@@ -82,6 +80,9 @@ export const SearchBar = ({
                         sx={{
                             backgroundColor: (theme) => theme.palette.background.reversed,
                             color: (theme) => theme.palette.secondary.light,
+                            '&:hover': {
+                                backgroundColor: (theme) => theme.color['teal-100'].hex,
+                            },
                         }}>
                         Submit
                     </Button>

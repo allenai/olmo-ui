@@ -156,7 +156,7 @@ export const SourcesBarChart = () => {
                                 <Typography
                                     variant="h6"
                                     sx={{
-                                        fontWeight: 'bold',
+                                        fontWeight: (theme) => theme.typography.fontWeightBold,
                                         textAlign: 'left',
                                         color: (theme) => theme.palette.text.primary,
                                     }}>
@@ -169,7 +169,6 @@ export const SourcesBarChart = () => {
                                     sx={{
                                         textAlign: 'right',
                                         margin: '20px 0 0',
-                                        color: (theme) => theme.palette.text.primary,
                                     }}>
                                     Document Count
                                 </Typography>

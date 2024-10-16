@@ -26,9 +26,9 @@ export const links = {
     search: '/search',
     promptTemplates: '/prompt-templates',
     admin: '/admin',
-    olmoe_mix:
+    olmoeMixAnnouncement:
         'https://blog.allenai.org/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514',
-    olmoe_mix_download: 'https://huggingface.co/datasets/allenai/OLMoE-mix-0924',
+    olmoeMixDownload: 'https://huggingface.co/datasets/allenai/OLMoE-mix-0924',
     odc: 'https://blog.allenai.org/making-a-switch-dolma-moves-to-odc-by-8f0e73852f44',
     responsibleUsePolicy: 'https://allenai.org/responsible-use',
     molmo: 'https://molmo.allenai.org',

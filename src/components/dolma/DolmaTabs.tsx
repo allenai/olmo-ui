@@ -70,8 +70,6 @@ export const DolmaTabs = () => {
                     marginBottom: (theme) => theme.spacing(2),
                     background: (theme) => theme.color2.N1.hex,
                     zIndex: 1000,
-                    borderColor: 'divider',
-                    borderBottom: 1,
                 }}>
                 <Tabs
                     value={tabNumber}
