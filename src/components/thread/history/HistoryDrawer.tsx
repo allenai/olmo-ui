@@ -49,10 +49,11 @@ export const HistoryDrawer = (): JSX.Element => {
     const creator = userInfo?.client;
 
     useEffect(() => {
-        if (creator) {
+        // load messages when its open
+        if (isDrawerOpen && creator) {
             getMessageList(offset, creator, LIMIT);
         }
-    }, [creator]);
+    }, [creator, isDrawerOpen]);
 
     const threadsFromToday: Message[] = [];
     const threadsFromThisWeek: Message[] = [];

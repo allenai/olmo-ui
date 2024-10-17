@@ -109,7 +109,7 @@ export const UIRefreshThreadPage = () => {
                 <ThreadTabs />
             ) : (
                 <>
-                    <HistoryDrawer />
+
                     <AttributionDrawer />
                     <ParameterDrawer />
                 </>
