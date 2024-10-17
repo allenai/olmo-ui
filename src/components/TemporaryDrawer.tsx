@@ -59,12 +59,14 @@ export const FullScreenDrawer = ({
 export const FullScreenDrawerHeader = ({ children }: PropsWithChildren) => {
     return (
         <Box
-            position="sticky"
-            top={0}
-            backgroundColor="inherit"
-            paddingBlockStart={1}
-            paddingInline={2}
-            zIndex={1}>
+            sx={{
+                position: 'sticky',
+                top: 0,
+                backgroundColor: 'inherit',
+                paddingBlockStart: 1,
+                paddingInline: 2,
+                zIndex: 1,
+            }}>
             {children}
         </Box>
     );
