@@ -1,13 +1,19 @@
 import { ClientBase } from './ClientBase';
+export interface AttributionDocumentSnippet {
+    text: string;
+    corresponding_span_text: string;
+}
 
 export interface Document {
     text: string;
+    snippets: AttributionDocumentSnippet[];
     corresponding_spans: number[];
     corresponding_span_texts: string[];
     index: string;
-    url: string;
+    url?: string;
     source: string;
-    title: string;
+    title?: string;
+    relevance_score: number;
 }
 
 export interface AttributionSpan {

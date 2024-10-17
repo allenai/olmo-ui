@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { json, LoaderFunction } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
 
 export const DolmaTabs = () => {
+    const theme = useTheme();
     const [tabNumber, setTabNumber] = useState<number>(0);
     const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]);
 
@@ -67,17 +68,20 @@ export const DolmaTabs = () => {
                     position: 'sticky',
                     top: 0,
                     marginBottom: (theme) => theme.spacing(2),
-                    zIndex: 1000,
                     background: (theme) => theme.color2.N1.hex,
+                    zIndex: 1000,
                 }}>
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
                     aria-label="Dataset Explorer Pages">
                     <Tab
-                        label="Search Dataset"
+                        label="Search dataset"
                         onClick={(event) => {
                             handleTabClick(event, 'search-dataset');
+                        }}
+                        sx={{
+                            ...theme.typography.subtitle2,
                         }}
                     />
                     <Tab
@@ -85,17 +89,26 @@ export const DolmaTabs = () => {
                         onClick={(event) => {
                             handleTabClick(event, 'sources');
                         }}
-                    />
-                    <Tab
-                        label="Domains"
-                        onClick={(event) => {
-                            handleTabClick(event, 'domains');
+                        sx={{
+                            ...theme.typography.subtitle2,
                         }}
                     />
                     <Tab
-                        label="Document Length"
+                        label="Web domains"
+                        onClick={(event) => {
+                            handleTabClick(event, 'domains');
+                        }}
+                        sx={{
+                            ...theme.typography.subtitle2,
+                        }}
+                    />
+                    <Tab
+                        label="Document length"
                         onClick={(event) => {
                             handleTabClick(event, 'document-length');
+                        }}
+                        sx={{
+                            ...theme.typography.subtitle2,
                         }}
                     />
                 </Tabs>
@@ -128,7 +141,11 @@ export const DolmaTabs = () => {
                         tabContentRefs.current[3] = element;
                     }}>
                     <ResponsiveCard>
-                        <Typography variant="h3">Document Length</Typography>
+                        <Typography
+                            variant="h3"
+                            sx={{ color: (theme) => theme.palette.text.primary }}>
+                            Document Length
+                        </Typography>
                         <WordDist />
                     </ResponsiveCard>
                 </Box>

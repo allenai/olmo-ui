@@ -2,7 +2,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
-    Box,
     Button,
     Card,
     CardContent,
@@ -15,7 +14,7 @@ import {
 } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { FullScreenDrawer } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
@@ -30,13 +29,7 @@ export const AttributionDrawer = () => {
         <FullScreenDrawer
             drawerId="attribution"
             header={({ onDrawerClose }) => (
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        backgroundColor: 'inherit',
-                        zIndex: 1,
-                    }}>
+                <FullScreenDrawerHeader>
                     <Stack
                         justifyContent="space-between"
                         direction="row"
@@ -55,7 +48,7 @@ export const AttributionDrawer = () => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </Box>
+                </FullScreenDrawerHeader>
             )}>
             <AttributionContent />
         </FullScreenDrawer>

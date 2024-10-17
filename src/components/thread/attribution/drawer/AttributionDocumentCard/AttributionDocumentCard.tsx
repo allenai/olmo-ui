@@ -1,30 +1,22 @@
 import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
-import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
-import { UrlForDocumentAttribution } from './UrlForDocumentAttribution';
+import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
+import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
 interface AttributionDocumentCardBaseProps {
-    text: ReactNode;
+    snippets: ReactNode;
     url?: ReactNode;
     source: ReactNode;
     datasetExplorerLink: ReactNode;
     numRepetitions: number;
     // href: string;
-    setSelectedDocument?: () => void;
-    setPreviewDocument?: () => void;
-    unsetPreviewDocument?: () => void;
-    isSelected?: boolean;
-    isPreviewed?: boolean;
 }
 
 const AttributionDocumentCardBase = ({
-    isSelected,
-    isPreviewed,
-    text,
+    snippets,
     url,
     source,
     datasetExplorerLink,
@@ -32,6 +24,7 @@ const AttributionDocumentCardBase = ({
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
+            component="li"
             sx={{
                 bgcolor: '#F8F0E780',
 
@@ -45,15 +38,15 @@ const AttributionDocumentCardBase = ({
                     borderColor: (theme) => theme.palette.primary.main,
                 },
             }}>
-            <CardContent
-                component={Stack}
-                direction="column"
-                gap={1}
-                data-selected-document={isSelected}
-                data-previewed-document={isPreviewed}>
-                <Typography variant="body1">{text}</Typography>
+            <CardContent component={Stack} direction="column" gap={1}>
+                <Typography variant="body1" component="span">
+                    {snippets}
+                </Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
-                <Typography variant="body2" fontWeight={600} component="span">
+                <Typography
+                    variant="body2"
+                    fontWeight={(theme) => theme.typography.fontWeightBold}
+                    component="span">
                     {url}
                 </Typography>
                 <Typography variant="body2" fontWeight={600} component="span">
@@ -61,7 +54,7 @@ const AttributionDocumentCardBase = ({
                 </Typography>
                 {numRepetitions > 1 && (
                     <Typography variant="body2" fontWeight={600} component="span">
-                        Document repeated {numRepetitions} times in corpus.{' '}
+                        Document repeated {numRepetitions} times in result
                         {/* TODO: Make the "Show all" link work */}
                         {/* <Link href="" underline="always">
                             <Typography variant="caption">Show all</Typography>
@@ -77,36 +70,22 @@ const AttributionDocumentCardBase = ({
 };
 
 interface AttributionDocumentCardProps {
-    text: string;
-    url?: string;
+    documentUrl?: string;
     source: string;
     documentIndex: string;
     numRepetitions: number;
-    // href: string;
 }
 
 export const AttributionDocumentCard = ({
-    text,
-    url,
+    documentUrl,
     source,
     documentIndex,
     numRepetitions,
 }: AttributionDocumentCardProps): JSX.Element => {
-    const spans = useAppContext((state) => {
-        const selectedMessageId = state.attribution.selectedMessageId;
-
-        if (selectedMessageId != null) {
-            const documents =
-                state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
-
-            return documents[documentIndex]?.corresponding_span_texts;
-        }
-    });
-
     return (
         <AttributionDocumentCardBase
-            text={<BoldTextForDocumentAttribution correspondingSpans={spans} text={text} />}
-            url={<UrlForDocumentAttribution url={url} />}
+            snippets={<AttributionDocumentCardSnippets documentIndex={documentIndex} />}
+            url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
             datasetExplorerLink={
                 <Button
@@ -129,14 +108,14 @@ export const AttributionDocumentCard = ({
 export const AttributionDocumentCardSkeleton = (): JSX.Element => {
     return (
         <AttributionDocumentCardBase
-            text={
-                <>
+            snippets={
+                <Typography variant="body1">
                     <Skeleton />
                     <Skeleton />
                     <Skeleton />
                     <Skeleton />
                     <Skeleton />
-                </>
+                </Typography>
             }
             url={<Skeleton />}
             source={<Skeleton />}

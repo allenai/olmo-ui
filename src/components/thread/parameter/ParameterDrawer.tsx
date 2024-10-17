@@ -1,17 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-    Box,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
-    ListSubheader,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { FullScreenDrawer } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -27,14 +18,9 @@ export const ParameterDrawer = (): JSX.Element => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
+            fullWidth
             header={({ onDrawerClose }) => (
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        background: 'inherit',
-                        zIndex: 1,
-                    }}>
+                <FullScreenDrawerHeader>
                     <Stack
                         justifyContent="space-between"
                         direction="row"
@@ -53,12 +39,29 @@ export const ParameterDrawer = (): JSX.Element => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </Box>
+                </FullScreenDrawerHeader>
             )}>
             <ParameterContent />
         </FullScreenDrawer>
     );
 };
+
+// Not sure what I should do about these, I just wanted to avoid repetition -- but they are mildly specific
+const SubGridList = ({ children }: React.PropsWithChildren) => (
+    <Box
+        component="ul"
+        margin="0"
+        padding="0"
+        display="grid"
+        gridTemplateColumns="auto min-content">
+        {children}
+    </Box>
+);
+const SubGridListItem = ({ children }: React.PropsWithChildren) => (
+    <Box component="li" display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1">
+        {children}
+    </Box>
+);
 
 export const ParameterContent = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
@@ -72,9 +75,9 @@ export const ParameterContent = () => {
     const opts = schemaData.Message.InferenceOpts;
 
     return (
-        <Stack direction="column">
-            <List>
-                <ListItem>
+        <Stack>
+            <SubGridList>
+                <SubGridListItem>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
@@ -88,8 +91,8 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </ListItem>
-                <ListItem>
+                </SubGridListItem>
+                <SubGridListItem>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
@@ -103,8 +106,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </ListItem>
-            </List>
+                </SubGridListItem>
+            </SubGridList>
         </Stack>
     );
 };

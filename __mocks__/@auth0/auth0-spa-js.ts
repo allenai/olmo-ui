@@ -4,7 +4,6 @@ export const createAuth0Client = (): Promise<auth0.Auth0Client> =>
     // @ts-expect-error - This just has what we use, nothing else
     Promise.resolve({
         isAuthenticated: () => {
-            console.log('auth');
             return true;
         },
         getUser: () => {},

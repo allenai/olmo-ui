@@ -18,7 +18,7 @@ export const WordDist = () => {
 
     return (
         <DistChart
-            categoryLabel="Characters per Document"
+            categoryLabel="Words per Document"
             data={distData}
             mapData={mapDistData}
             sourceMap={sources}

@@ -1,4 +1,5 @@
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
@@ -8,9 +9,12 @@ import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selec
 import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard';
+} from './AttributionDocumentCard/AttributionDocumentCard';
 import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
 
+interface DedupedDocument extends Document {
+    duplicateDocumentIndexes: string[];
+}
 interface MatchingDocumentsTextProps {
     documentCount: number;
 }
@@ -60,6 +64,38 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         (state) => state.streamPromptState === RemoteState.Loading
     );
 
+    const deduplicatedDocuments = useMemo(() => {
+        // the key to this map is either the URL or the document index
+        const documentsDedupedByUrl = new Map<string, DedupedDocument>();
+        documents.forEach((currentDocument) => {
+            if (currentDocument.url != null) {
+                if (documentsDedupedByUrl.has(currentDocument.url)) {
+                    documentsDedupedByUrl
+                        .get(currentDocument.url)
+                        ?.duplicateDocumentIndexes.push(currentDocument.index);
+                } else {
+                    documentsDedupedByUrl.set(currentDocument.url, {
+                        ...currentDocument,
+                        duplicateDocumentIndexes: [],
+                    });
+                }
+            } else {
+                if (documentsDedupedByUrl.has(currentDocument.index)) {
+                    documentsDedupedByUrl
+                        .get(currentDocument.index)
+                        ?.duplicateDocumentIndexes.push(currentDocument.index);
+                } else {
+                    documentsDedupedByUrl.set(currentDocument.index, {
+                        ...currentDocument,
+                        duplicateDocumentIndexes: [],
+                    });
+                }
+            }
+        });
+
+        return Array.from(documentsDedupedByUrl.values());
+    }, [documents]);
+
     if (isPromptLoading) {
         return (
             <Card>
@@ -98,19 +134,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return <NoDocumentsCard />;
     }
 
-    // Collapse duplicates by URL
-    const documentsWithoutUrl = documents.filter((document) => !document.url);
-    const documentsWithUrl = documents.filter((document) => document.url);
-    const urlToDocuments = documentsWithUrl.reduce((acc, document) => {
-        const existingDocuments = acc.get(document.url) ?? [];
-        acc.set(document.url, [...existingDocuments, document]);
-        return acc;
-    }, new Map<string, Document[]>());
-    const documentsWithUrlDeduped = Array.from(urlToDocuments.values()).map((documents) => {
-        return documents[0];
-    });
-    const documentsDeduped = [...documentsWithoutUrl, ...documentsWithUrlDeduped];
-
     return (
         <>
             {/*
@@ -118,20 +141,19 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            {documentsDeduped.map((document) => {
-                return (
-                    <AttributionDocumentCard
-                        key={document.index}
-                        documentIndex={document.index}
-                        text={document.text}
-                        url={document.url}
-                        source={document.source}
-                        numRepetitions={
-                            document.url ? urlToDocuments.get(document.url)?.length ?? 1 : 1
-                        }
-                    />
-                );
-            })}
+            <Box p={0} m={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+                {deduplicatedDocuments.map((document) => {
+                    return (
+                        <AttributionDocumentCard
+                            key={document.index}
+                            documentIndex={document.index}
+                            documentUrl={document.url}
+                            source={document.source}
+                            numRepetitions={document.duplicateDocumentIndexes.length + 1}
+                        />
+                    );
+                })}
+            </Box>
         </>
     );
 };
