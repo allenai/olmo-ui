@@ -88,8 +88,9 @@ const TabsWithOverflow = styled(Tabs)({
 
 const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({
     overflowY: 'auto',
+    overflowX: 'hidden',
     scrollbarGutter: 'stable both-edges',
     '& > *': {
-        marginInline: theme.spacing(2),
+        paddingInline: theme.spacing(2),
     },
 }));
