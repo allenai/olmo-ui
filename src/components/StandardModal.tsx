@@ -8,12 +8,12 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
             fullWidth
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
-            maxWidth="md"
             PaperProps={{
                 sx: {
-                    padding: 6,
-                    borderRadius: isLessThanMedium ? 0 : 3,
+                    maxWidth: '970px',
+                    padding: 3.75,
                     margin: '0 auto',
+                    backgroundColor: (theme) => theme.color.N1.hex,
                 },
             }}
             {...rest}
