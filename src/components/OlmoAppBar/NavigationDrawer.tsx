@@ -75,9 +75,6 @@ export const NavigationDrawer = ({
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
     useEffect(() => {
         onClose();
-        // if (!location.pathname.includes('thread')) {
-        //     onClose();
-        // }
     }, [location.pathname]);
 
     return (
