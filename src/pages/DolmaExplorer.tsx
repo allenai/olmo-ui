@@ -1,18 +1,20 @@
 import { Stack } from '@mui/material';
 
+import { DolmaTabs } from '@/components/dolma/DolmaTabs';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { DolmaCard } from '@/components/DolmaCard';
 
-import { DolmaTabs } from '../components/dolma/DolmaTabs';
+export const DolmaExplorer = () => {
+    const isDesktop = useDesktopOrUp();
 
-export const DolmaExplorer = () => (
-    <>
+    return (
         <Stack
             sx={{
                 textAlign: 'center',
             }}
-            spacing={2}>
+            spacing={isDesktop ? 4 : 2}>
             <DolmaCard />
             <DolmaTabs />
         </Stack>
-    </>
-);
+    );
+};

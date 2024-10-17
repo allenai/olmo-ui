@@ -58,6 +58,18 @@ export const InfoParagraph = styled.p`
     padding-bottom: ${({ theme }) => theme.spacing(1)};
 `;
 
+export const BaseCard = ({ children, ...cardProps }: CardProps) => (
+    <Card
+        sx={{
+            padding: (theme) => theme.spacing(2.25),
+            backgroundColor: (theme) => theme.palette.background.default,
+        }}
+        {...cardProps}>
+        {children}
+    </Card>
+);
+
+// I don't think this is used anymore
 export const ElevatedCard = ({ children, ...cardProps }: CardProps) => (
     <Card
         variant="elevation"
@@ -71,6 +83,7 @@ export const ElevatedCard = ({ children, ...cardProps }: CardProps) => (
     </Card>
 );
 
+// I don't think this is used anymore
 export const ElevatedPaper = ({ children, ...paperProps }: PaperProps) => (
     <Paper
         elevation={1}

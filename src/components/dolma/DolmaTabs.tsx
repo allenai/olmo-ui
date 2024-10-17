@@ -8,6 +8,7 @@ import { StaticDataClient } from '@/api/dolma/StaticDataClient';
 import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchForm } from './SearchForm';
+import { useDesktopOrUp } from './shared';
 import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
@@ -16,6 +17,8 @@ export const DolmaTabs = () => {
     const theme = useTheme();
     const [tabNumber, setTabNumber] = useState<number>(0);
     const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]);
+
+    const isDesktop = useDesktopOrUp();
 
     const handleTabChange = (_event: React.SyntheticEvent, newTabNumber: number) => {
         setTabNumber(newTabNumber);
@@ -67,14 +70,21 @@ export const DolmaTabs = () => {
                 sx={{
                     position: 'sticky',
                     top: 0,
-                    marginBottom: (theme) => theme.spacing(2),
-                    background: (theme) => theme.color2.N1.hex,
+                    marginBottom: (theme) => theme.spacing(isDesktop ? 4 : 2),
+                    background: (theme) =>
+                        isDesktop
+                            ? theme.palette.background.paper
+                            : theme.palette.background.default,
+                    borderBottom: (theme) => `1px solid ${theme.palette.grey[600]}`,
                     zIndex: 1000,
                 }}>
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
-                    aria-label="Dataset Explorer Pages">
+                    aria-label="Dataset Explorer Pages"
+                    sx={{
+                        marginBottom: '-1px',
+                    }}>
                     <Tab
                         label="Search dataset"
                         onClick={(event) => {
@@ -113,7 +123,7 @@ export const DolmaTabs = () => {
                     />
                 </Tabs>
             </Box>
-            <Stack gap={2}>
+            <Stack gap={isDesktop ? 4 : 2}>
                 <Box
                     id="search-dataset"
                     ref={(element: HTMLDivElement) => {

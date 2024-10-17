@@ -2,10 +2,13 @@ import { CardContent, Link, Stack, Typography } from '@mui/material';
 
 import { links } from '@/Links';
 
+import { useDesktopOrUp } from './dolma/shared';
 import { DolmaInformationCard } from './DolmaInformationCard';
 import { ResponsiveCard } from './ResponsiveCard';
 
 export const DolmaCard = () => {
+    const isDesktop = useDesktopOrUp();
+
     return (
         <>
             <ResponsiveCard sx={{ backgroundColor: (theme) => theme.palette.background.reversed }}>
@@ -35,7 +38,7 @@ export const DolmaCard = () => {
                     </Typography>
                 </CardContent>
             </ResponsiveCard>
-            <Stack direction="row" flexWrap="wrap" sx={{ columnGap: 4, rowGap: 2 }}>
+            <Stack direction="row" flexWrap="wrap" sx={{ gap: isDesktop ? 4 : 2 }}>
                 <DolmaInformationCard
                     linkText="Learn more"
                     linkUrl="#"
