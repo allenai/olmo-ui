@@ -18,6 +18,7 @@ export const ParameterDrawer = (): JSX.Element => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
+            fullWidth
             header={({ onDrawerClose }) => (
                 <Box
                     sx={{
