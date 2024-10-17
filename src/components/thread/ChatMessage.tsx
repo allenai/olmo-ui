@@ -30,7 +30,7 @@ const streamingMessageIndicatorStyle: SxProps = {
 
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
-        <Typography fontWeight="bold" sx={sharedMessageStyle}>
+        <Typography component="div" fontWeight="bold" sx={sharedMessageStyle}>
             {children}
         </Typography>
     );
@@ -49,7 +49,11 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
         return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
     });
 
-    return <Typography sx={messageStyle}>{children}</Typography>;
+    return (
+        <Typography component="div" sx={messageStyle}>
+            {children}
+        </Typography>
+    );
 };
 
 interface ChatMessageProps extends PropsWithChildren {
