@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { FullScreenDrawer } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -20,13 +20,7 @@ export const ParameterDrawer = (): JSX.Element => {
             drawerId="parameters"
             fullWidth
             header={({ onDrawerClose }) => (
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        background: 'inherit',
-                        zIndex: 1,
-                    }}>
+                <FullScreenDrawerHeader>
                     <Stack
                         justifyContent="space-between"
                         direction="row"
@@ -45,7 +39,7 @@ export const ParameterDrawer = (): JSX.Element => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </Box>
+                </FullScreenDrawerHeader>
             )}>
             <ParameterContent />
         </FullScreenDrawer>
