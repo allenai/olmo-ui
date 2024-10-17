@@ -10,8 +10,14 @@ export const NavigationHeading = ({
     color = 'primary',
 }: NavigationHeadingProps): JSX.Element => {
     return (
-        <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent', position: 'static' }}>
-            <Typography variant="h6" margin={0} color={color}>
+        <ListSubheader
+            sx={{
+                paddingBlock: 1,
+                lineHeight: '42px', // This was set higher up as 48px -- reducing here.
+                backgroundColor: 'transparent',
+                position: 'static',
+            }}>
+            <Typography variant="h5" component="strong" margin={0} color={color}>
                 {children}
             </Typography>
         </ListSubheader>

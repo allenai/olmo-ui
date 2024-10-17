@@ -1,4 +1,4 @@
-import { Divider, List, useTheme } from '@mui/material';
+import { Divider, List, styled, useTheme } from '@mui/material';
 
 import { Message } from '@/api/Message';
 import { NavigationHeading } from '@/components/OlmoAppBar/NavigationHeading';
@@ -10,10 +10,15 @@ interface HistoryDrawerSectionProps {
     hasDivider?: boolean;
 }
 
+export const HistoryDivider = styled(Divider)(({ theme }) => ({
+    borderColor: theme.palette.background.paper,
+    opacity: 0.5,
+}));
+
 export const HistoryDrawerSection = ({
     heading,
     threads,
-    hasDivider,
+    hasDivider = false,
 }: HistoryDrawerSectionProps): JSX.Element => {
     const theme = useTheme();
     if (threads.length === 0) {
@@ -22,7 +27,6 @@ export const HistoryDrawerSection = ({
 
     return (
         <>
-            {hasDivider && <Divider />}
             <List>
                 <NavigationHeading color={theme.palette.secondary.light}>
                     {heading}
@@ -31,6 +35,7 @@ export const HistoryDrawerSection = ({
                     <ThreadLink {...thread} key={thread.id} />
                 ))}
             </List>
+            {hasDivider && <HistoryDivider />}
         </>
     );
 };
