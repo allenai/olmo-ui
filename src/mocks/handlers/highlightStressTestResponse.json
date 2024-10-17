@@ -186,5 +186,20 @@
             "nested_spans": []
         }
     ],
-    "documents": []
+    "documents": [
+        {
+            "corresponding_spans": [
+                0
+            ],
+            "snippets": [
+                {
+                    "text": "exes.\nCooooool, would this supposedly fix some translation issues I'm having with Shady Job too, if it runs from a 1.13 build? I better get reading on this topic.\nOkayOkayOkayOkayOkayOkayOkayOkayOkay where's this new SCI??\nintegrated in 1.13-UB if yes.\nIt all depends on what they needed that proprietary ex",
+                    "corresponding_span_text": "#H1 with # inside the span"
+                }
+            ],
+            "index": "2132419686",
+            "source": "fake",
+            "title": null
+        }
+    ]
 }
