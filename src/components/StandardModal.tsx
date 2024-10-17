@@ -1,8 +1,8 @@
-import { Dialog, DialogProps, useMediaQuery, useTheme } from '@mui/material';
+import { Dialog, DialogProps } from '@mui/material';
+
+export const DEFAULT_MODAL_WIDTH = 970;
 
 export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
-    const theme = useTheme();
-    const isLessThanMedium = useMediaQuery(theme.breakpoints.down('md'));
     return (
         <Dialog
             fullWidth
@@ -10,7 +10,7 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
             aria-describedby="modal-description"
             PaperProps={{
                 sx: {
-                    maxWidth: '970px',
+                    maxWidth: `${DEFAULT_MODAL_WIDTH}px`,
                     padding: 3.75,
                     margin: '0 auto',
                     backgroundColor: (theme) => theme.color.N1.hex,

@@ -34,7 +34,7 @@ interface TermsAndConditionsSection {
 
 export const TermsAndConditionsModal = () => {
     const theme = useMuiTheme();
-    const greaterThanMd = useMediaQuery(theme.breakpoints.up(970));
+    const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
     const formContext = useForm({
@@ -70,7 +70,7 @@ export const TermsAndConditionsModal = () => {
                     display: 'flex',
                     maxHeight: '520px',
                 }}>
-                {greaterThanMd && (
+                {greaterThanLg && (
                     <Box
                         component="img"
                         src={section.image}
@@ -190,11 +190,18 @@ export const TermsAndConditionsModal = () => {
                             </Stack>
                         </FormContainer>
                     </DialogActions>
-                    <ProgressIndicator
-                        steps={sections.length}
-                        activeStep={activeStep}
-                        sx={{ marginTop: 2 }}
-                    />
+                    <Stack
+                        sx={
+                            greaterThanLg
+                                ? { marginTop: 1 }
+                                : {
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                  }
+                        }>
+                        <ProgressIndicator steps={sections.length} activeStep={activeStep} />
+                    </Stack>
                 </Stack>
             </Stack>
         </StandardModal>
@@ -203,7 +210,7 @@ export const TermsAndConditionsModal = () => {
 
 const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: number }) => {
     return (
-        <Stack direction="row" gap={2} mt={3}>
+        <Stack direction="row" gap={2} mt={1}>
             {[...Array(steps).keys()].map((step, i) => {
                 return step <= activeStep ? (
                     <CircleIcon
