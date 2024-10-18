@@ -37,13 +37,13 @@ export const AttributionDrawer = () => {
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
                             <Typography component="h2" variant="h5" margin={0} color="primary">
-                                Attribution
+                                CorpusLink
                             </Typography>
                         </ListSubheader>
                         <IconButton
                             onClick={onDrawerClose}
                             sx={{ color: 'inherit' }}
-                            aria-label="close attribution drawer">
+                            aria-label="close CorpusLink drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>
@@ -58,7 +58,7 @@ export const AttributionDrawer = () => {
 export const AttributionContent = () => {
     const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
-    const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
+    const isAllHighlightVisible = useAppContext((state) => state.attribution.isAllHighlightVisible);
 
     const { loadingState } = attributionForMessage;
 
