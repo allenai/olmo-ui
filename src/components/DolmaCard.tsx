@@ -1,14 +1,12 @@
 import { CardContent, Link, Stack, Typography } from '@mui/material';
 
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
-import { useDesktopOrUp } from './dolma/shared';
 import { DolmaInformationCard } from './DolmaInformationCard';
 import { ResponsiveCard } from './ResponsiveCard';
 
 export const DolmaCard = () => {
-    const isDesktop = useDesktopOrUp();
-
     return (
         <>
             <ResponsiveCard sx={{ backgroundColor: (theme) => theme.palette.background.reversed }}>
@@ -16,10 +14,10 @@ export const DolmaCard = () => {
                     <Typography
                         variant="h1"
                         align="center"
-                        sx={{
-                            color: (theme) => theme.palette.common.white,
-                            marginBottom: (theme) => theme.spacing(2),
-                        }}>
+                        sx={(theme) => ({
+                            color: theme.palette.common.white,
+                            marginBottom: theme.spacing(2),
+                        })}>
                         OLMoE-Mix is proven, trusted, and fully open.
                     </Typography>
                     <Typography
@@ -38,7 +36,7 @@ export const DolmaCard = () => {
                     </Typography>
                 </CardContent>
             </ResponsiveCard>
-            <Stack direction="row" flexWrap="wrap" sx={{ gap: isDesktop ? 4 : 2 }}>
+            <Stack direction="row" flexWrap="wrap" gap={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 4 }}>
                 <DolmaInformationCard
                     linkText="Learn more"
                     linkUrl="#"

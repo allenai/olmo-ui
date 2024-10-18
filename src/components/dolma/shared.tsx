@@ -6,8 +6,6 @@ import {
     Container,
     Grid,
     IconButton,
-    Paper,
-    PaperProps,
     Snackbar,
     useMediaQuery,
     useTheme,
@@ -67,34 +65,6 @@ export const BaseCard = ({ children, ...cardProps }: CardProps) => (
         {...cardProps}>
         {children}
     </Card>
-);
-
-// I don't think this is used anymore
-export const ElevatedCard = ({ children, ...cardProps }: CardProps) => (
-    <Card
-        variant="elevation"
-        elevation={1}
-        sx={{
-            padding: (theme) => theme.spacing(2.25),
-            backgroundColor: (theme) => theme.palette.background.default,
-        }}
-        {...cardProps}>
-        {children}
-    </Card>
-);
-
-// I don't think this is used anymore
-export const ElevatedPaper = ({ children, ...paperProps }: PaperProps) => (
-    <Paper
-        elevation={1}
-        sx={{
-            padding: (theme) => theme.spacing(2.25),
-            borderRadius: '12px',
-            backgroundColor: (theme) => theme.palette.background.default,
-        }}
-        {...paperProps}>
-        {children}
-    </Paper>
 );
 
 interface CopyToClipboardButtonProps {

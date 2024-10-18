@@ -4,11 +4,11 @@ import { json, LoaderFunction } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
 import { SearchForm } from './SearchForm';
-import { useDesktopOrUp } from './shared';
 import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
@@ -17,8 +17,6 @@ export const DolmaTabs = () => {
     const theme = useTheme();
     const [tabNumber, setTabNumber] = useState<number>(0);
     const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]);
-
-    const isDesktop = useDesktopOrUp();
 
     const handleTabChange = (_event: React.SyntheticEvent, newTabNumber: number) => {
         setTabNumber(newTabNumber);
@@ -67,22 +65,25 @@ export const DolmaTabs = () => {
     return (
         <Box sx={{ width: '100%' }}>
             <Box
-                sx={{
+                sx={(theme) => ({
                     position: 'sticky',
                     top: 0,
-                    marginBottom: (theme) => theme.spacing(isDesktop ? 4 : 2),
-                    background: (theme) =>
-                        isDesktop
-                            ? theme.palette.background.paper
-                            : theme.palette.background.default,
-                    borderBottom: (theme) => `1px solid ${theme.palette.grey[600]}`,
+                    marginBottom: 2,
+                    background: theme.palette.background.default,
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        marginBottom: 4,
+                        background: theme.palette.background.paper,
+                    },
+                    borderBottom: `1px solid ${theme.palette.grey[600]}`,
                     zIndex: 1000,
-                }}>
+                })}>
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
                     aria-label="Dataset Explorer Pages"
                     sx={{
+                        // This keeps the border of the selected tab
+                        // on top (z-axis) of the borderBottom of the tab list (defined on Box above)
                         marginBottom: '-1px',
                     }}>
                     <Tab
@@ -123,7 +124,7 @@ export const DolmaTabs = () => {
                     />
                 </Tabs>
             </Box>
-            <Stack gap={isDesktop ? 4 : 2}>
+            <Stack gap={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 4 }}>
                 <Box
                     id="search-dataset"
                     ref={(element: HTMLDivElement) => {
