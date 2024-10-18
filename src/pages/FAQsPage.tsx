@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Stack, TextField } from '@mui/material';
+import { Box, Button, Card, CardContent, Stack, TextField } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { Form, useSearchParams } from 'react-router-dom';
 
@@ -56,7 +56,7 @@ export const FAQsPage = (): JSX.Element => {
                     overflow: 'auto',
                     backgroundColor: 'background.default',
                 }}>
-                <CardContent sx={{ paddingInline: 2 }} component={Stack} gap={2}>
+                <CardContent sx={{ paddingX: 4 }} component={Stack} gap={3.5}>
                     <Form>
                         <Stack direction="row" gap={2}>
                             <TextField
@@ -67,8 +67,17 @@ export const FAQsPage = (): JSX.Element => {
                                 defaultValue={search}
                                 size="small"
                             />
-                            <Button type="submit" variant="contained" color="inherit">
-                                Search
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    backgroundColor: (theme) => theme.palette.background.reversed,
+                                    color: (theme) => theme.palette.secondary.main,
+                                    '&:hover': {
+                                        backgroundColor: (theme) => theme.color['teal-100'].hex,
+                                    },
+                                }}>
+                                Submit
                             </Button>
                         </Stack>
                     </Form>
@@ -84,6 +93,17 @@ export const FAQsPage = (): JSX.Element => {
                             />
                         ))
                     )}
+                    {/* Fade effect */}
+                    <Box
+                        sx={{
+                            bottom: '-1px',
+                            minHeight: (theme) => theme.spacing(6),
+                            position: 'sticky',
+                            background:
+                                'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                            marginTop: (theme) => theme.spacing(-3),
+                        }}
+                    />
                 </CardContent>
             </Card>
             <FAQCategoryLinks />

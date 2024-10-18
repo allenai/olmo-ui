@@ -1,5 +1,13 @@
 import { ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Link, Typography } from '@mui/material';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Link,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material';
 import { ComponentProps } from 'react';
 import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
@@ -19,10 +27,14 @@ interface FAQProps {
 
 export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
     const location = useLocation();
+    const theme = useTheme();
+    const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
+
     const faqId = createFAQId(question);
     const faqContentId = faqId + '-content';
 
     const isLinkedFAQ = location.hash === `#${faqId}`;
+    const faqPaddings = greaterThanLg ? { padding: 0, paddingLeft: 4 } : { padding: 0 };
 
     return (
         <Accordion
@@ -36,21 +48,20 @@ export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
             defaultExpanded={isLinkedFAQ}
             role="region"
             aria-labelledby={faqId}>
-            <Typography variant="body1" fontWeight="bold" component="h3">
-                <AccordionSummary
-                    id={faqId}
-                    expandIcon={<ExpandMore />}
-                    sx={{
-                        color: 'inherit',
-                    }}
-                    aria-controls={faqContentId}>
-                    <Typography variant="h6" component="span">
-                        {question}
-                    </Typography>
-                </AccordionSummary>
-            </Typography>
-            <AccordionDetails id={faqContentId}>
-                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+            <AccordionSummary
+                id={faqId}
+                expandIcon={<ExpandMore />}
+                sx={{
+                    color: 'inherit',
+                    ...faqPaddings,
+                }}
+                aria-controls={faqContentId}>
+                <Typography variant="h6" component="span">
+                    {question}
+                </Typography>
+            </AccordionSummary>
+            <AccordionDetails id={faqContentId} sx={faqPaddings}>
+                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }} mb={2.5}>
                     <Markdown components={markdownComponents}>{answer}</Markdown>
                 </Typography>
             </AccordionDetails>
