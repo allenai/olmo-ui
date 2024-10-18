@@ -9,19 +9,19 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import { IconButton, Link, Stack } from '@mui/material';
-import { ComponentProps, useEffect } from 'react';
+import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { ChatIcon } from '@/components/assets/ChatIcon';
 import { links } from '@/Links';
+import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationLink } from './NavigationLink';
-import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
