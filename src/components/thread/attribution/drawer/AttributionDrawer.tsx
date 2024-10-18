@@ -32,25 +32,31 @@ import {
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
-export const AttributionDrawer = () => {
+export const useResetScrollWhenOpeningRepeatedDocuments = () => {
     const shouldShowRepeatedDocuments = useAppContext(
         (state) => state.attribution.selectedRepeatedDocumentIndex != null
     );
 
-    const drawerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // we want to reset the scroll position to the top when we show repeated documents
         // otherwise the scroll will be in the middle somewhere since we just replace the contents of the drawer
-        if (drawerRef.current != null && shouldShowRepeatedDocuments) {
-            drawerRef.current.scrollTop = 0;
+        if (containerRef.current != null && shouldShowRepeatedDocuments) {
+            containerRef.current.scrollTop = 0;
         }
     }, [shouldShowRepeatedDocuments]);
 
+    return { containerRef, shouldShowRepeatedDocuments };
+};
+
+export const AttributionDrawer = () => {
+    const { containerRef, shouldShowRepeatedDocuments } =
+        useResetScrollWhenOpeningRepeatedDocuments();
     return (
         <FullScreenDrawer
             drawerId="attribution"
-            ref={drawerRef}
+            ref={containerRef}
             header={({ onDrawerClose }) => (
                 <FullScreenDrawerHeader>
                     <Stack

@@ -1,6 +1,5 @@
 import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
 import { Box, styled, Typography } from '@mui/material';
-import { useEffect, useRef } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
@@ -8,6 +7,7 @@ import { ThreadTabId } from '@/slices/DrawerSlice';
 import {
     AttributionContent,
     RepeatedAttributionDocumentsContent,
+    useResetScrollWhenOpeningRepeatedDocuments,
 } from './attribution/drawer/AttributionDrawer';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
@@ -15,23 +15,12 @@ const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
 const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
 const AttributionTab = () => {
-    const shouldShowRepeatedDocuments = useAppContext(
-        (state) => state.attribution.selectedRepeatedDocumentIndex != null
-    );
-
-    const drawerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // we want to reset the scroll position to the top when we show repeated documents
-        // otherwise the scroll will be in the middle somewhere since we just replace the contents of the drawer
-        if (drawerRef.current != null && shouldShowRepeatedDocuments) {
-            drawerRef.current.scrollTop = 0;
-        }
-    }, [shouldShowRepeatedDocuments]);
+    const { shouldShowRepeatedDocuments, containerRef } =
+        useResetScrollWhenOpeningRepeatedDocuments();
 
     return (
         <TabPanelWithOverflow
-            ref={drawerRef}
+            ref={containerRef}
             value={DATASET_TAB_NAME}
             aria-labelledby="dataset-tab-control"
             id="parameters-tabpanel">
