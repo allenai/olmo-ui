@@ -164,10 +164,15 @@ export const RepeatedAttributionDocumentsContent = () => {
                 color="inherit"
                 sx={{
                     justifyContent: 'start',
+                    paddingInlineStart: 0,
                 }}>
                 <ArrowBack />
                 &nbsp;Back to CorpusLink documents
             </Button>
+
+            <Typography variant="h4" component="p">
+                Viewing {repeatedDocumentsByUrl.length} repeated documents
+            </Typography>
             <Box p={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
                 {repeatedDocumentsByUrl.map((document) => {
                     return (

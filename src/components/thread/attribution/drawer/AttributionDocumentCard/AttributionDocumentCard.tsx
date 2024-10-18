@@ -57,16 +57,9 @@ const AttributionDocumentCardBase = ({
                     {source}
                 </Typography>
             </CardContent>
-            <CardActions
-                sx={{
-                    padding: 2,
-                    paddingBlockStart: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                }}>
+            <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
                 {actions != null && actions}
-            </CardActions>
+            </Stack>
         </Card>
     );
 };
@@ -106,17 +99,19 @@ export const AttributionDocumentCard = ({
                     </Button>
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
-                        <Typography variant="body2" fontWeight={600} component="span">
-                            Document repeated {repeatedDocumentCount} times in result
+                        <Stack direction="column" alignItems="start">
+                            <Typography variant="body2" fontWeight={600}>
+                                Document repeated {repeatedDocumentCount} times in result
+                            </Typography>
                             <Link
                                 component="button"
-                                variant="caption"
+                                variant="body2"
                                 onClick={() => {
                                     selectRepeatedDocument(documentIndex);
                                 }}>
-                                Show all
+                                View all repeated documents
                             </Link>
-                        </Typography>
+                        </Stack>
                     )}
                 </>
             }
