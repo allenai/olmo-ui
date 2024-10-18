@@ -1,5 +1,12 @@
 import { Box, Drawer } from '@mui/material';
-import { KeyboardEvent, KeyboardEventHandler, PropsWithChildren, ReactNode } from 'react';
+import {
+    forwardRef,
+    KeyboardEvent,
+    KeyboardEventHandler,
+    PropsWithChildren,
+    ReactNode,
+    Ref,
+} from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { DrawerId } from '@/slices/DrawerSlice';
@@ -11,12 +18,10 @@ interface TemporaryDrawerProps extends PropsWithChildren {
     fullWidth?: boolean;
 }
 
-export const FullScreenDrawer = ({
-    drawerId,
-    header,
-    children,
-    fullWidth,
-}: TemporaryDrawerProps) => {
+export const FullScreenDrawer = forwardRef(function FullScreenDrawer(
+    { drawerId, header, children, fullWidth }: TemporaryDrawerProps,
+    ref: Ref<HTMLDivElement>
+) {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === drawerId);
@@ -47,6 +52,7 @@ export const FullScreenDrawer = ({
                     backgroundColor: (theme) => theme.palette.background.default,
                     width: fullWidth ? '100vw' : undefined,
                 },
+                ref,
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
             <Box paddingBlockEnd={1} paddingInline={2}>
@@ -54,7 +60,7 @@ export const FullScreenDrawer = ({
             </Box>
         </Drawer>
     );
-};
+});
 
 export const FullScreenDrawerHeader = ({ children }: PropsWithChildren) => {
     return (

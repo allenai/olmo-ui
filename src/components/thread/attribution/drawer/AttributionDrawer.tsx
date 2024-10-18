@@ -14,6 +14,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+import { Ref, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -36,9 +37,20 @@ export const AttributionDrawer = () => {
         (state) => state.attribution.selectedRepeatedDocumentIndex != null
     );
 
+    const drawerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // we want to reset the scroll position to the top when we show repeated documents
+        // otherwise the scroll will be in the middle somewhere since we just replace the contents of the drawer
+        if (drawerRef.current != null && shouldShowRepeatedDocuments) {
+            drawerRef.current.scrollTop = 0;
+        }
+    }, [shouldShowRepeatedDocuments]);
+
     return (
         <FullScreenDrawer
             drawerId="attribution"
+            ref={drawerRef}
             header={({ onDrawerClose }) => (
                 <FullScreenDrawerHeader>
                     <Stack
