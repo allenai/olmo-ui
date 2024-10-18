@@ -1,4 +1,5 @@
 import {
+    Box,
     Card,
     MenuItem,
     OutlinedInput,
@@ -7,8 +8,10 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+import { BoxProps } from '@mui/system';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
+import { Model, ModelList } from '@/api/Model';
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
@@ -19,6 +22,47 @@ import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { ThreadTabs } from '@/components/thread/ThreadTabs';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
+import { maxContainerQuery } from '@/utils/container-query-utils';
+
+type ModelSelectionDisplayProps = Pick<BoxProps, 'sx'> & {
+    models: ModelList;
+    selectedModel?: Model;
+    onModelChange: (event: SelectChangeEvent) => void;
+    label?: string;
+};
+
+const ModelSelectionDisplay = ({
+    models,
+    selectedModel,
+    onModelChange,
+    sx,
+    label = '',
+}: ModelSelectionDisplayProps) => {
+    return (
+        <Box sx={sx}>
+            {models.length > 1 ? (
+                <Select
+                    id="model-select"
+                    sx={{ width: { xs: '75%', md: '35%' } }}
+                    size="small"
+                    onChange={onModelChange}
+                    input={<OutlinedInput />}
+                    value={(selectedModel && selectedModel.id) || ''}>
+                    {models.map((model) => (
+                        <MenuItem key={model.name} value={model.id}>
+                            {model.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            ) : (
+                <Typography key={models[0].name}>
+                    {label}
+                    {models[0].name}
+                </Typography>
+            )}
+        </Box>
+    );
+};
 
 export const UIRefreshThreadPage = () => {
     const models = useAppContext((state) => state.models);
@@ -61,32 +105,43 @@ export const UIRefreshThreadPage = () => {
 
                         height: 1,
                     })}>
-                    <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                        justifyContent="space-between">
-                        <>
-                            {models.length > 1 ? (
-                                <Select
-                                    id="model-select"
-                                    sx={{ width: { xs: '75%', md: '35%' } }}
-                                    size="small"
-                                    onChange={onModelChange}
-                                    input={<OutlinedInput />}
-                                    value={(selectedModel && selectedModel.id) || ''}>
-                                    {models.map((model) => (
-                                        <MenuItem key={model.name} value={model.id}>
-                                            {model.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            ) : (
-                                <Typography key={models[0].name}>{models[0].name}</Typography>
-                            )}
-                        </>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: '1fr auto',
+                        }}>
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            sx={(theme) => ({
+                                display: 'none',
+                                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                    display: 'block',
+                                    [maxContainerQuery(theme, 450)]: {
+                                        display: 'none',
+                                    },
+                                },
+                            })}
+                        />
                         <ThreadPageControls />
-                    </Stack>
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            label="Model: "
+                            sx={(theme) => ({
+                                display: 'block',
+                                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                    display: 'none',
+                                    [maxContainerQuery(theme, 450)]: {
+                                        display: 'block',
+                                    },
+                                },
+                                paddingTop: 2,
+                            })}
+                        />
+                    </Box>
 
                     <Outlet />
                     <QueryForm />
