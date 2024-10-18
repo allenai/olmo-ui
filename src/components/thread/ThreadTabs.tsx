@@ -1,5 +1,6 @@
 import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
 import { Box, styled, Typography } from '@mui/material';
+import { useEffect, useRef } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
@@ -13,13 +14,39 @@ import { ParameterContent } from './parameter/ParameterDrawer';
 const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
 const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
-export const ThreadTabs = () => {
-    const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
-    const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
-
+const AttributionTab = () => {
     const shouldShowRepeatedDocuments = useAppContext(
         (state) => state.attribution.selectedRepeatedDocumentIndex != null
     );
+
+    const drawerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // we want to reset the scroll position to the top when we show repeated documents
+        // otherwise the scroll will be in the middle somewhere since we just replace the contents of the drawer
+        if (drawerRef.current != null && shouldShowRepeatedDocuments) {
+            drawerRef.current.scrollTop = 0;
+        }
+    }, [shouldShowRepeatedDocuments]);
+
+    return (
+        <TabPanelWithOverflow
+            ref={drawerRef}
+            value={DATASET_TAB_NAME}
+            aria-labelledby="dataset-tab-control"
+            id="parameters-tabpanel">
+            {shouldShowRepeatedDocuments ? (
+                <RepeatedAttributionDocumentsContent />
+            ) : (
+                <AttributionContent />
+            )}
+        </TabPanelWithOverflow>
+    );
+};
+
+export const ThreadTabs = () => {
+    const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
+    const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
 
     return (
         <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
@@ -49,16 +76,7 @@ export const ThreadTabs = () => {
                     id="parameters-tabpanel">
                     <ParameterContent />
                 </TabPanelWithOverflow>
-                <TabPanelWithOverflow
-                    value={DATASET_TAB_NAME}
-                    aria-labelledby="dataset-tab-control"
-                    id="parameters-tabpanel">
-                    {shouldShowRepeatedDocuments ? (
-                        <RepeatedAttributionDocumentsContent />
-                    ) : (
-                        <AttributionContent />
-                    )}
-                </TabPanelWithOverflow>
+                <AttributionTab />
             </TabsWithOverflow>
         </Box>
     );
