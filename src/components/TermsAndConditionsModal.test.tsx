@@ -8,18 +8,18 @@ describe('Terms and Conditions', () => {
         const user = userEvent.setup();
         render(<TermsAndConditionsModal />);
 
-        expect(await screen.findByLabelText('Getting Started')).toBeVisible();
+        expect(screen.getByText('Getting Started')).toBeVisible();
 
-        const labels = sections.map((section) => section.acknowledgement);
+        for (let i = 0; i < sections.length; i++) {
+            expect(await screen.findByText(sections[i].title)).toBeVisible();
 
-        for (let i = 0; i < labels.length; i++) {
-            await user.click(screen.getByLabelText(labels[i]));
+            await user.click(screen.getByRole('checkbox'));
 
             await user.click(
-                screen.getByRole('button', { name: i < labels.length - 1 ? 'Next' : "Let's Go!" })
+                screen.getByRole('button', { name: i < sections.length - 1 ? 'Next' : "Let's Go!" })
             );
         }
 
-        expect(screen.getByLabelText('Getting Started')).not.toBeVisible();
+        expect(screen.getByText('Getting Started')).not.toBeVisible();
     });
 });
