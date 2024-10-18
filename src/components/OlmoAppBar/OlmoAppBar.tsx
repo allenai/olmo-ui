@@ -54,9 +54,8 @@ export const OlmoAppBar = (): JSX.Element => {
                 <Toolbar
                     disableGutters
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr auto 1fr',
                     }}>
                     <Link
                         href={links.home}
@@ -85,6 +84,7 @@ export const OlmoAppBar = (): JSX.Element => {
                         onClick={handleDrawerToggle}
                         color="secondary"
                         sx={{
+                            justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
                         <MenuIcon />
