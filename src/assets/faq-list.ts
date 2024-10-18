@@ -1,7 +1,7 @@
 export interface FAQ {
     question: string;
     answer: string;
-    interlinkId?: string;
+    interlinkId?: string; // assign it with a value and use it in your markdown link to achieve interlinking between questions
 }
 
 export interface FAQCategory {
@@ -47,7 +47,6 @@ export const faqs: FAQCategory[] = [
                 answer: 'Your account is linked to your Google account. If you would like to change your email address, please sign in using a different Google account.',
             },
             {
-                // TODO
                 question: 'How do I delete my Playground account?',
                 answer: 'Your Playground account is linked to your Google account and so cannot be deleted. Instead, you can remove the authorization to share data from your Google account with Ai2 via [third-party app management](https://support.google.com/accounts/answer/13533235?hl=en&ref_topic=7188760&sjid=15649851997490028435-NC) in your Google account. Please note that removing the authorization does not delete your prompt history from our database.  To [delete thread history](#request-prompt-history-delete) click the ‘Delete Thread’ button.',
             },
