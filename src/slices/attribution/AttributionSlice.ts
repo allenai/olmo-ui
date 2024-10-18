@@ -22,7 +22,7 @@ interface AttributionState {
         };
         selectedMessageId: string | null;
         selectedSpanIds: string[];
-
+        selectedRepeatedDocumentIndex: string | null;
         isAllHighlightVisible: boolean;
     };
 }
@@ -38,6 +38,8 @@ interface AttributionActions {
     resetSelectedSpans: () => void;
     toggleHighlightVisibility: () => void;
     openAttributionForNewThread: () => void;
+    selectRepeatedDocument: (documentIndex: string) => void;
+    resetSelectedRepeatedDocument: () => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -49,6 +51,7 @@ const initialAttributionState: AttributionState = {
         attributionsByMessageId: {},
         selectedMessageId: null,
         selectedSpanIds: [],
+        selectedRepeatedDocumentIndex: null,
         isAllHighlightVisible: true,
     },
 };
@@ -109,6 +112,8 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 state.attribution.selectedMessageId = null;
                 state.attribution.selectedSpanIds =
                     initialAttributionState.attribution.selectedSpanIds;
+                state.attribution.selectedRepeatedDocumentIndex =
+                    initialAttributionState.attribution.selectedRepeatedDocumentIndex;
             },
             false,
             'attribution/resetAttribution'
@@ -212,6 +217,27 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             },
             false,
             'attribution/resetSelectedSpan'
+        );
+    },
+
+    selectRepeatedDocument: (documentIndex: string) => {
+        set(
+            (state) => {
+                state.attribution.selectedRepeatedDocumentIndex = documentIndex;
+            },
+            false,
+            'attribution/selectRepeatedDocument'
+        );
+    },
+
+    resetSelectedRepeatedDocument: () => {
+        set(
+            (state) => {
+                state.attribution.selectedRepeatedDocumentIndex =
+                    initialAttributionState.attribution.selectedRepeatedDocumentIndex;
+            },
+            false,
+            'attribution/resetSelectedRepeatedDocument'
         );
     },
 

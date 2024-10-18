@@ -1,7 +1,9 @@
+import { ArrowBack } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
+    Box,
     Button,
     Card,
     CardContent,
@@ -12,19 +14,28 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
+import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
-import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
+import {
+    messageAttributionDocumentsSelector,
+    useAttributionDocumentsForMessage,
+} from './message-attribution-documents-selector';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
+    const shouldShowRepeatedDocuments = useAppContext(
+        (state) => state.attribution.selectedRepeatedDocumentIndex != null
+    );
+
     return (
         <FullScreenDrawer
             drawerId="attribution"
@@ -50,7 +61,11 @@ export const AttributionDrawer = () => {
                     <Divider />
                 </FullScreenDrawerHeader>
             )}>
-            <AttributionContent />
+            {shouldShowRepeatedDocuments ? (
+                <RepeatedAttributionDocumentsContent />
+            ) : (
+                <AttributionContent />
+            )}
         </FullScreenDrawer>
     );
 };
@@ -114,6 +129,57 @@ export const AttributionContent = () => {
             </Button>
             <ClearSelectedSpanButton />
             <AttributionDrawerDocumentList />
+        </Stack>
+    );
+};
+
+export const RepeatedAttributionDocumentsContent = () => {
+    const attributionForMessage = useAttributionDocumentsForMessage();
+
+    const repeatedDocumentsByUrl = useAppContext(
+        useShallow((state) => {
+            const selectedRepeatedDocumentIndex = state.attribution.selectedRepeatedDocumentIndex;
+
+            const selectedDocument = attributionForMessage.documents.find(
+                (document) => document.index === selectedRepeatedDocumentIndex
+            );
+
+            const documentsWithTheSameUrl = attributionForMessage.documents.filter(
+                (document) => document.url === selectedDocument?.url
+            );
+
+            return documentsWithTheSameUrl;
+        })
+    );
+
+    const resetSelectedRepeatedDocument = useAppContext(
+        (state) => state.resetSelectedRepeatedDocument
+    );
+
+    return (
+        <Stack direction="column" gap={2} paddingBlock={2} data-testid="repeated-documents-drawer">
+            <Button
+                onClick={resetSelectedRepeatedDocument}
+                variant="text"
+                color="inherit"
+                sx={{
+                    justifyContent: 'start',
+                }}>
+                <ArrowBack />
+                &nbsp;Back to CorpusLink documents
+            </Button>
+            <Box p={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+                {repeatedDocumentsByUrl.map((document) => {
+                    return (
+                        <AttributionDocumentCard
+                            key={document.index}
+                            documentIndex={document.index}
+                            documentUrl={document.url}
+                            source={document.source}
+                        />
+                    );
+                })}
+            </Box>
         </Stack>
     );
 };

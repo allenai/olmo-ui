@@ -4,7 +4,10 @@ import { Box, styled, Typography } from '@mui/material';
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
-import { AttributionContent } from './attribution/drawer/AttributionDrawer';
+import {
+    AttributionContent,
+    RepeatedAttributionDocumentsContent,
+} from './attribution/drawer/AttributionDrawer';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
 const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
@@ -13,6 +16,10 @@ const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 export const ThreadTabs = () => {
     const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
+
+    const shouldShowRepeatedDocuments = useAppContext(
+        (state) => state.attribution.selectedRepeatedDocumentIndex != null
+    );
 
     return (
         <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
@@ -46,7 +53,11 @@ export const ThreadTabs = () => {
                     value={DATASET_TAB_NAME}
                     aria-labelledby="dataset-tab-control"
                     id="parameters-tabpanel">
-                    <AttributionContent />
+                    {shouldShowRepeatedDocuments ? (
+                        <RepeatedAttributionDocumentsContent />
+                    ) : (
+                        <AttributionContent />
+                    )}
                 </TabPanelWithOverflow>
             </TabsWithOverflow>
         </Box>
