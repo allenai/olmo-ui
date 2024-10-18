@@ -1,6 +1,7 @@
 export interface FAQ {
     question: string;
     answer: string;
+    interlinkId?: string;
 }
 
 export interface FAQCategory {
@@ -48,7 +49,7 @@ export const faqs: FAQCategory[] = [
             {
                 // TODO
                 question: 'How do I delete my Playground account?',
-                answer: 'Your Playground account is linked to your Google account and so cannot be deleted. Instead, you can remove the authorization to share data from your Google account with Ai2 via [third-party app management](https://support.google.com/accounts/answer/13533235?hl=en&ref_topic=7188760&sjid=15649851997490028435-NC) in your Google account. Please note that removing the authorization does not delete your prompt history from our database.  To [delete thread history](TODO!) click the ‘Delete Thread’ button.',
+                answer: 'Your Playground account is linked to your Google account and so cannot be deleted. Instead, you can remove the authorization to share data from your Google account with Ai2 via [third-party app management](https://support.google.com/accounts/answer/13533235?hl=en&ref_topic=7188760&sjid=15649851997490028435-NC) in your Google account. Please note that removing the authorization does not delete your prompt history from our database.  To [delete thread history](#request-prompt-history-delete) click the ‘Delete Thread’ button.',
             },
         ],
     },
@@ -138,6 +139,7 @@ export const faqs: FAQCategory[] = [
             {
                 question: 'How can I request my prompt history be deleted?',
                 answer: 'You can use the “Delete Thread” button to delete your prompt and the generated response. Click the “History” button to view your historical prompts and use the “Delete Thread” button to delete threads within the last 30 days. Threads older than 30 days cannot be deleted via the Playground and will be retained as described in our [Terms of Use](https://allenai.org/terms/2024-09-25) and [Privacy Policy](https://allenai.org/privacy-policy/2022-07-21).',
+                interlinkId: 'request-prompt-history-delete',
             },
             {
                 question:

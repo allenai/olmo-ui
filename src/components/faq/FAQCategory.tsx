@@ -36,6 +36,7 @@ export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): Reac
                     <FAQ
                         question={question.question}
                         answer={question.answer}
+                        linkId={question.interlinkId}
                         key={categoryName + question.question}
                     />
                 ))}

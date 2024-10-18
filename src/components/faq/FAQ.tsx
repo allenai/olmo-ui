@@ -17,20 +17,38 @@ import { createFAQId } from './createFAQId';
 const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
     p: ({ children }) => <Typography variant="body1">{children}</Typography>,
     // The ref types don't match for some reason
-    a: ({ ref, ...props }) => <Link {...props} target="_blank" />,
+    a: ({ ref, href, ...props }) => {
+        if (href && href[0] === '#') {
+            return (
+                <Link
+                    onClick={() => {
+                        const target = document.querySelector(href);
+                        if (target) {
+                            (target as HTMLDivElement).click();
+                            target.scrollIntoView();
+                        }
+                    }}
+                    {...props}
+                />
+            );
+        }
+
+        return <Link href={href} {...props} target="_blank" />;
+    },
 };
 
 interface FAQProps {
     question: string;
     answer: string;
+    linkId?: string;
 }
 
-export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
+export const FAQ = ({ question, answer, linkId }: FAQProps): JSX.Element => {
     const location = useLocation();
     const theme = useTheme();
     const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
 
-    const faqId = createFAQId(question);
+    const faqId = linkId || createFAQId(question);
     const faqContentId = faqId + '-content';
 
     const isLinkedFAQ = location.hash === `#${faqId}`;
