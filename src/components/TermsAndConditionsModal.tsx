@@ -281,7 +281,10 @@ const Section2: TermsAndConditionsSection = {
     image: '/getting-started-section-2.png',
     contents: (
         <>
-            <p>
+            <p
+                style={{
+                    fontVariantLigatures: 'none', // This avoids font-family to replace '(c)' with a copyright mark
+                }}>
                 The Ai2 Playground is intended for research and educational purposes in accordance
                 with our{' '}
                 <TermAndConditionsLink link="https://allenai.org/terms/2024-09-25">
@@ -298,7 +301,7 @@ const Section2: TermsAndConditionsSection = {
                 . The Ai2 Playground collects user queries and inputs entered into it as well as
                 other information about the user. You will have 30 days to delete your queries will
                 be stored and used for future research and educational purposes in the public
-                interest consistent with Ai2’s mission as a 501( c)(3) nonprofit organization. All
+                interest consistent with Ai2’s mission as a 501(c)(3) nonprofit organization. All
                 retained prompt history and user interaction data shared with the Ai2 Playground and
                 Dataset Explorer may be shared outside of Ai2, as permitted by applicable law and
                 Ai2’s policies. Please use your discretion and best judgment when accessing and
