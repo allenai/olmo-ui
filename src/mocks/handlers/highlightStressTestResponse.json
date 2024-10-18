@@ -186,5 +186,20 @@
             "nested_spans": []
         }
     ],
-    "documents": []
+    "documents": [
+        {
+            "corresponding_spans": [
+                0
+            ],
+            "snippets": [
+                {
+                    "text": "starting text #H1 with # inside the span ending text",
+                    "corresponding_span_text": "#H1 with # inside the span"
+                }
+            ],
+            "index": "2132419686",
+            "source": "fake",
+            "title": null
+        }
+    ]
 }

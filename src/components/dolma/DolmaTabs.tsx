@@ -74,6 +74,7 @@ export const DolmaTabs = () => {
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
+                    variant="scrollable"
                     aria-label="Dataset Explorer Pages">
                     <Tab
                         label="Search dataset"
