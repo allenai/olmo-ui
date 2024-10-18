@@ -42,7 +42,6 @@ test('can load threads from history drawer', async ({ page }) => {
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
     await page.waitForLoadState('networkidle');
-    // await expect(page.getByTestId('Drawer')).toBeHidden();
     await expect(page.getByText('Ether')).toBeVisible();
     expect(page.url()).toContain(firstThreadMessageId);
 
@@ -50,7 +49,6 @@ test('can load threads from history drawer', async ({ page }) => {
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
     await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
     await page.waitForLoadState('networkidle');
-    // await expect(page.getByTestId('Drawer')).toBeHidden();
     await expect(
         page.getByTestId('thread-display').getByText('Second existing message')
     ).toBeVisible();

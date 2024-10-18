@@ -21,6 +21,7 @@ import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationLink } from './NavigationLink';
+import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
@@ -73,9 +74,10 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
-    useEffect(() => {
-        onClose();
-    }, [location.pathname]);
+
+    useCloseDrawerOnNavigation({
+        handleDrawerClose: onClose,
+    });
 
     return (
         <ResponsiveDrawer

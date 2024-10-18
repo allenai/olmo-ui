@@ -50,10 +50,10 @@ export const HistoryDrawer = (): JSX.Element => {
 
     useEffect(() => {
         // load messages when its open
-        if (isDrawerOpen && creator) {
+        if (creator) {
             getMessageList(offset, creator, LIMIT);
         }
-    }, [creator, isDrawerOpen]);
+    }, [creator]);
 
     const threadsFromToday: Message[] = [];
     const threadsFromThisWeek: Message[] = [];
