@@ -1,4 +1,13 @@
-import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    Link,
+    Skeleton,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { ReactNode } from 'react';
 
 import { links } from '@/Links';
@@ -53,16 +62,22 @@ const AttributionDocumentCardBase = ({
                     {source}
                 </Typography>
             </CardContent>
-            <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
+            <CardActions
+                sx={{
+                    padding: 2,
+                    paddingBlockStart: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'start',
+                }}>
                 {datasetExplorerLink != null && datasetExplorerLink}
 
                 {numRepetitions > 1 && (
                     <Typography variant="body2" fontWeight={600} component="span">
                         Document repeated {numRepetitions} times in result
-                        {/* TODO: Make the "Show all" link work */}
-                        {/* <Link href="" underline="always">
-                            <Typography variant="caption">Show all</Typography>
-                        </Link> */}
+                        <Link component="button" variant="caption">
+                            Show all
+                        </Link>
                     </Typography>
                 )}
             </CardActions>
