@@ -36,7 +36,7 @@ interface AttributionActions {
     selectSpans: (span: string | string[]) => void;
     resetSelectedSpans: () => void;
     toggleHighlightVisibility: () => void;
-    openAttributionForNewThread: () => void;
+    handleAttributionForChangingThread: () => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -229,8 +229,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
-    openAttributionForNewThread: () => {
-        get().resetAttribution();
+    handleAttributionForChangingThread: () => {
+        // when we change threads we want to reset all the selected spans from the last thread
+        get().resetSelectedSpans();
         set(
             (state) => {
                 if (
@@ -238,6 +239,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         `(min-width: ${varnishTokens.breakpoint[DESKTOP_LAYOUT_BREAKPOINT].value})`
                     ).matches
                 ) {
+                    // If we're on desktop we want to open the attribution tab whenever we move between threads
                     state.currentOpenThreadTab = 'attribution';
                 }
             },

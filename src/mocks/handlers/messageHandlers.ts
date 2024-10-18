@@ -111,7 +111,7 @@ const highlightStressTestResponse = {
     created: '2024-08-20T22:34:03.342086+00:00',
     children: [
         {
-            id: 'msg_V6Y0U4H4O9',
+            id: highlightStressTestMessageId + 'response',
             content: highlightStressTestMessage,
             snippet: 'HighlightStressTest',
             creator: 'murphy@allenai.org',
@@ -139,8 +139,8 @@ const highlightStressTestResponse = {
 };
 
 const fakeGetAllThreadsResponse: MessagesResponse = {
-    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse],
-    meta: { limit: 10, offset: 0, total: 2 },
+    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse, highlightStressTestResponse],
+    meta: { limit: 10, offset: 0, total: 3 },
 };
 
 export const messageHandlers = [
