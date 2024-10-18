@@ -8,7 +8,7 @@ import {
     AttributionContent,
     RepeatedAttributionDocumentsContent,
     useResetScrollWhenOpeningRepeatedDocuments,
-} from './attribution/drawer/AttributionCoontent';
+} from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
 const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';

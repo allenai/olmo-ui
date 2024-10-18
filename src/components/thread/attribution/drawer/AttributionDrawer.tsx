@@ -7,7 +7,7 @@ import {
     AttributionContent,
     RepeatedAttributionDocumentsContent,
     useResetScrollWhenOpeningRepeatedDocuments,
-} from './AttributionCoontent';
+} from './AttributionContent';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
