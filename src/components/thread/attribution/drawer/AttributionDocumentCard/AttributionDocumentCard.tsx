@@ -52,6 +52,10 @@ const AttributionDocumentCardBase = ({
                 <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
+            </CardContent>
+            <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
+                {datasetExplorerLink != null && datasetExplorerLink}
+
                 {numRepetitions > 1 && (
                     <Typography variant="body2" fontWeight={600} component="span">
                         Document repeated {numRepetitions} times in result
@@ -61,9 +65,6 @@ const AttributionDocumentCardBase = ({
                         </Link> */}
                     </Typography>
                 )}
-            </CardContent>
-            <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
-                {datasetExplorerLink != null && datasetExplorerLink}
             </CardActions>
         </Card>
     );

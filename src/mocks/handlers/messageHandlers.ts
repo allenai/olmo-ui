@@ -3,6 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
+import duplicateDocumentsResponse from './duplicateDocumentMessageResponse.json';
 import highlightStressTestMessage from './highlightStressTestMessage';
 import { newMessageId } from './messageStreamHandlers';
 
@@ -162,5 +163,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/${highlightStressTestMessageId}`, () => {
         return HttpResponse.json(highlightStressTestResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/msg_duplicatedocuments`, () => {
+        return HttpResponse.json(duplicateDocumentsResponse);
     }),
 ];
