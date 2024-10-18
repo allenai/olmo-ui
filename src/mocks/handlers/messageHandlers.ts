@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
+import { JSONMessage, MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
 import duplicateDocumentsResponse from './duplicateDocumentMessageResponse.json';
@@ -140,7 +140,11 @@ const highlightStressTestResponse = {
 };
 
 const fakeGetAllThreadsResponse: MessagesResponse = {
-    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse],
+    messages: [
+        fakeFirstThreadResponse,
+        fakeSecondThreadResponse,
+        duplicateDocumentsResponse as JSONMessage,
+    ],
     meta: { limit: 10, offset: 0, total: 2 },
 };
 
