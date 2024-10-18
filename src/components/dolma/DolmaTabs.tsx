@@ -81,6 +81,7 @@ export const DolmaTabs = () => {
                     value={tabNumber}
                     onChange={handleTabChange}
                     aria-label="Dataset Explorer Pages"
+                    variant="scrollable"
                     sx={{
                         // This keeps the border of the selected tab
                         // on top (z-axis) of the borderBottom of the tab list (defined on Box above)
