@@ -21,9 +21,16 @@ export const Ai2LogoMarkSpinner = ({
                         transform: 'rotate(360deg)',
                     },
                 },
-                animation: isAnimating ? 'spin 1.5s linear infinite' : undefined,
+                animation: isAnimating ? 'spin 1.33s ease-in-out infinite' : undefined,
             }}>
-            <img src="/ai2-monogram.svg" alt={alt} width={width} height={height} />
+            <Box
+                component="img"
+                src="/ai2-monogram.svg"
+                alt={alt}
+                width={width}
+                height={height}
+                sx={{ display: 'block' }}
+            />
         </Box>
     );
 };
