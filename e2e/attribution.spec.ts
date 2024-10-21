@@ -22,7 +22,6 @@ test('should show the attribution drawer when navigating to a thread', async ({ 
 
     await page.getByRole('button', { name: 'Thread history' }).click();
     await page.getByRole('link', { name: 'Second existing message' }).click();
-    await page.getByRole('heading', { name: 'Thread History' }).press('Escape');
 
     // CorpusLink should be open when we open a thread
     await expect(page.getByRole('tab', { name: 'CorpusLink' })).toHaveAttribute(
@@ -61,7 +60,6 @@ test('should show the attribution drawer when navigating to a thread', async ({ 
     // Make sure attribution and selected spans don't go away when you click on the same thread
     await page.getByRole('button', { name: 'Thread history' }).click();
     await page.getByRole('link', { name: 'Second existing message' }).click();
-    await page.getByRole('heading', { name: 'Thread History' }).press('Escape');
 
     // if we go to the same thread we should keep the parameters tab open
     await expect(page.getByRole('tab', { name: 'Parameters' })).toHaveAttribute(
@@ -80,7 +78,6 @@ test('should show the attribution drawer when navigating to a thread', async ({ 
     // Make sure new attributions show and selected spans do go away when you click another thread
     await page.getByRole('button', { name: 'Thread history' }).click();
     await page.getByRole('link', { name: 'Highlight stress test' }).click();
-    await page.getByRole('heading', { name: 'Thread History' }).press('Escape');
 
     await expect(page.getByRole('button', { name: 'Clear Selection' })).not.toBeVisible();
     await expect(page.getByText(/\d+ documents* containing the selected span/)).not.toBeVisible();

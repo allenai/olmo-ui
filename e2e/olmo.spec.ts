@@ -40,17 +40,19 @@ test('can load threads from history drawer', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Thread History' })).toBeVisible();
     await page.getByTestId('Drawer').getByRole('link', { name: 'First existing message' }).click();
     await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'close history drawer' }).click();
+    await expect(page.getByRole('heading', { name: 'Thread History' })).toBeHidden();
     await expect(page.getByText('Ether')).toBeVisible();
     expect(page.url()).toContain(firstThreadMessageId);
 
     // Check the second existing thread
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Thread History' })).toBeVisible();
     await page.getByTestId('Drawer').getByRole('link', { name: 'Second existing message' }).click();
     await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'close history drawer' }).click();
+    await expect(page.getByRole('heading', { name: 'Thread History' })).toBeHidden();
     await expect(
         page.getByTestId('thread-display').getByText('Second existing message')
     ).toBeVisible();
