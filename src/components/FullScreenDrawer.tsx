@@ -51,7 +51,6 @@ export const FullScreenDrawer = forwardRef(function FullScreenDrawer(
                 sx: {
                     backgroundColor: (theme) => theme.palette.background.default,
                     width: fullWidth ? '100vw' : undefined,
-                    overflow: 'hidden',
                 },
                 ref,
             }}>
