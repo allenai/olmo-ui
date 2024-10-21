@@ -58,13 +58,7 @@ const NoDocumentsCard = (): JSX.Element => {
     );
 };
 
-interface AttributionDrawerDocumentListProps {
-    onShowRepeatedDocuments: () => void;
-}
-
-export const AttributionDrawerDocumentList = ({
-    onShowRepeatedDocuments,
-}: AttributionDrawerDocumentListProps): JSX.Element => {
+export const AttributionDrawerDocumentList = (): JSX.Element => {
     const attributionForMessage = useAttributionDocumentsForMessage();
 
     const { documents, loadingState } = attributionForMessage;
@@ -159,7 +153,6 @@ export const AttributionDrawerDocumentList = ({
                             documentUrl={document.url}
                             source={document.source}
                             repeatedDocumentCount={document.duplicateDocumentIndexes.length + 1}
-                            onShowRepeatedDocuments={onShowRepeatedDocuments}
                         />
                     );
                 })}

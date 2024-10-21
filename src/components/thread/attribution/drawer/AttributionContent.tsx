@@ -54,29 +54,12 @@ export const useResetScrollWhenOpeningRepeatedDocuments = () => {
         scrollToTop,
     };
 };
-interface AttributionContentProps {
-    restoreScrollPosition: () => void;
-    saveScrollPosition: () => void;
-}
-export const AttributionContent = ({
-    restoreScrollPosition,
-    saveScrollPosition,
-}: AttributionContentProps) => {
+export const AttributionContent = () => {
     const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
     const isAllHighlightVisible = useAppContext((state) => state.attribution.isAllHighlightVisible);
 
     const { loadingState } = attributionForMessage;
-
-    const isFirstMount = useRef(true);
-
-    useEffect(() => {
-        if (isFirstMount.current) {
-            console.log('reset');
-            restoreScrollPosition();
-            isFirstMount.current = false;
-        }
-    }, [restoreScrollPosition]);
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
@@ -129,29 +112,13 @@ export const AttributionContent = ({
                 {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
             </Button>
             <ClearSelectedSpanButton />
-            <AttributionDrawerDocumentList onShowRepeatedDocuments={saveScrollPosition} />
+            <AttributionDrawerDocumentList />
         </Stack>
     );
 };
 
-interface RepeatedAttributionDocumentsContentProps {
-    scrollToTop: () => void;
-    saveScrollPosition: () => void;
-}
-
-export const RepeatedAttributionDocumentsContent = ({
-    scrollToTop,
-}: RepeatedAttributionDocumentsContentProps) => {
+export const RepeatedAttributionDocumentsContent = () => {
     const attributionForMessage = useAttributionDocumentsForMessage();
-
-    const isFirstMount = useRef(true);
-
-    useEffect(() => {
-        if (isFirstMount.current) {
-            scrollToTop();
-            isFirstMount.current = false;
-        }
-    }, [scrollToTop]);
 
     const repeatedDocumentsByUrl = useAppContext(
         useShallow((state) => {
@@ -210,25 +177,29 @@ export const RepeatedAttributionDocumentsContent = ({
     );
 };
 
-interface FullAttributionContentProps {
-    shouldShowRepeatedDocuments: boolean;
-    restoreScrollPosition: () => void;
-    saveScrollPosition: () => void;
-    scrollToTop: () => void;
-}
+export const FullAttributionContent = () => {
+    const shouldShowRepeatedDocuments = useAppContext(
+        (state) => state.attribution.selectedRepeatedDocumentIndex != null
+    );
 
-export const FullAttributionContent = ({
-    shouldShowRepeatedDocuments,
-    restoreScrollPosition,
-    saveScrollPosition,
-    scrollToTop,
-}: FullAttributionContentProps) => {
-    return shouldShowRepeatedDocuments ? (
-        <RepeatedAttributionDocumentsContent scrollToTop={scrollToTop} />
-    ) : (
-        <AttributionContent
-            saveScrollPosition={saveScrollPosition}
-            restoreScrollPosition={restoreScrollPosition}
-        />
+    return (
+        <>
+            <Box
+                sx={{
+                    display: shouldShowRepeatedDocuments ? 'none' : undefined,
+                    height: 1,
+                    overflowY: 'auto',
+                }}>
+                <AttributionContent />
+            </Box>
+            <Box
+                sx={{
+                    display: shouldShowRepeatedDocuments ? undefined : 'none',
+                    height: 1,
+                    overflowY: 'auto',
+                }}>
+                {shouldShowRepeatedDocuments && <RepeatedAttributionDocumentsContent />}
+            </Box>
+        </>
     );
 };
