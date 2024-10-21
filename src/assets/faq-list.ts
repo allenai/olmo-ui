@@ -43,7 +43,7 @@ export const faqs: FAQCategory[] = [
                 answer: 'No, your account is linked to your Google account. If you would like to change the email address, please sign in from a different Google account.',
             },
             {
-                question: 'How can I delete my account?',
+                question: 'Can I change the email address associated with my account',
                 answer: 'Your account is linked to your Google account. If you would like to change your email address, please sign in using a different Google account.',
             },
             {
@@ -78,6 +78,10 @@ export const faqs: FAQCategory[] = [
             {
                 question: 'What is CorpusLink?',
                 answer: 'CorpusLink is a Playground feature that links parts of the model output to documents in the training corpus. CorpusLink is designed to find verbatim matches between model outputs and the training corpus for text spans that are relatively long and relatively unique (appear at least once but not more than 10 times in the training corpus). We developed CorpusLink in the hope that researchers and the general public might find it helpful for inspecting where and how Ai2’s models ***might*** have learned to generate certain word sequences. CorpusLink is a one-of-a-kind feature and is only made possible by Ai2’s commitment to making large pretraining and post-training datasets open in the interest of advancing scientific research in AI and public understanding of AI systems.\n\nAfter the model generates a response to user input, several substrings of the model output will be highlighted, and a “CorpusLink” panel will show up on the right side of the screen. The highlights indicate relatively long substrings that appear verbatim at least once, but no more than 10 times, in the training corpus of this model. This encourages the highlighted spans to be informative and unique enough to warrant further inspection.\n\nIn the CorpusLink panel is a collection of documents from the training corpus that contain at least one of the highlighted substrings. Sometimes, an entire highlighted substring may not be present contiguously in any single document, but different parts of the substring are present (possibly in different documents) and together they cover the full substring.\n\nIf you click on a highlight, the CorpusLink panel will show documents corresponding to the highlighted substring. Click “Clear selection” or the highlight itself to show all highlights and documents again.',
+            },
+            {
+                question: 'Why are some CorpusLink documents repeated in the results?',
+                answer: 'Because some documents are repeated in the training dataset of our models. If a document contains one of the spans and is retrieved, it means all its repetitions are retrieved as well. While we group some repeated documents into the same card by matching the URL in their metadata, there are documents with identical content but different URLs and they will show up as separate cards in the CorpusLink result.',
             },
             {
                 question:
