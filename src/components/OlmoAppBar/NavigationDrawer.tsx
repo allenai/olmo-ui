@@ -146,7 +146,11 @@ export const NavigationDrawer = ({
                     Documentation
                 </NavigationLink>
                 <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
-                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
+                    <NavigationLink
+                        icon={<HelpCenterIcon />}
+                        selected={curriedDoesMatchPath(links.faqs)}
+                        href={links.faqs}
+                        variant="footer">
                         FAQ
                     </NavigationLink>
                     <NavigationLink
