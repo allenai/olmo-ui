@@ -1,12 +1,5 @@
 import { Box, Drawer } from '@mui/material';
-import {
-    forwardRef,
-    KeyboardEvent,
-    KeyboardEventHandler,
-    PropsWithChildren,
-    ReactNode,
-    Ref,
-} from 'react';
+import { KeyboardEvent, KeyboardEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { DrawerId } from '@/slices/DrawerSlice';
@@ -18,10 +11,12 @@ interface FullScreenDrawerProps extends PropsWithChildren {
     fullWidth?: boolean;
 }
 
-export const FullScreenDrawer = (
-    { drawerId, header, children, fullWidth }: FullScreenDrawerProps,
-    ref: Ref<HTMLDivElement>
-) => {
+export const FullScreenDrawer = ({
+    drawerId,
+    header,
+    children,
+    fullWidth,
+}: FullScreenDrawerProps) => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === drawerId);
@@ -52,7 +47,6 @@ export const FullScreenDrawer = (
                     backgroundColor: (theme) => theme.palette.background.default,
                     width: fullWidth ? '100vw' : undefined,
                 },
-                ref,
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
             {/* minHeight here helps the children overflow properly */}
