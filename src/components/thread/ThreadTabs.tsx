@@ -1,5 +1,5 @@
 import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
-import { Box, styled, Typography } from '@mui/material';
+import { styled, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
@@ -79,15 +79,9 @@ const TabsWithOverflow = styled(Tabs)(({ theme }) => ({
     display: 'flex',
     flexFlow: 'column nowrap',
     height: '100%',
-    // We need this so the children won't automatically take up all the space they can
-    overflow: 'hidden',
 
     gridArea: 'aside',
-    minHeight: 0,
     backgroundColor: theme.palette.background.default,
-
-    // display: 'grid',
-    // gridTemplateColumns: 'auto 1fr',
 }));
 
 const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({

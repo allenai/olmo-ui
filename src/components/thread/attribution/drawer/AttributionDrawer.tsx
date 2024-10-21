@@ -1,23 +1,16 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
-import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
-import {
-    AttributionContent,
-    RepeatedAttributionDocumentsContentProps,
-    useResetScrollWhenOpeningRepeatedDocuments,
-} from './AttributionContent';
+import { FullAttributionContent } from './AttributionContent';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
-    const { containerRef, shouldShowRepeatedDocuments } =
-        useResetScrollWhenOpeningRepeatedDocuments();
     return (
         <FullScreenDrawer
             drawerId="attribution"
-            ref={containerRef}
             header={({ onDrawerClose }) => (
                 <FullScreenDrawerHeader>
                     <Stack
@@ -40,11 +33,7 @@ export const AttributionDrawer = () => {
                     <Divider />
                 </FullScreenDrawerHeader>
             )}>
-            {shouldShowRepeatedDocuments ? (
-                <RepeatedAttributionDocumentsContent />
-            ) : (
-                <AttributionContent />
-            )}
+            <FullAttributionContent />
         </FullScreenDrawer>
     );
 };

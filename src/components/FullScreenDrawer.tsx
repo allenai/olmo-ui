@@ -12,14 +12,14 @@ import { useAppContext } from '@/AppContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-interface TemporaryDrawerProps extends PropsWithChildren {
+interface FullScreenDrawerProps extends PropsWithChildren {
     drawerId: DrawerId;
     header: ReactNode | (({ onDrawerClose }: { onDrawerClose: () => void }) => ReactNode);
     fullWidth?: boolean;
 }
 
 export const FullScreenDrawer = forwardRef(function FullScreenDrawer(
-    { drawerId, header, children, fullWidth }: TemporaryDrawerProps,
+    { drawerId, header, children, fullWidth }: FullScreenDrawerProps,
     ref: Ref<HTMLDivElement>
 ) {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
@@ -51,11 +51,12 @@ export const FullScreenDrawer = forwardRef(function FullScreenDrawer(
                 sx: {
                     backgroundColor: (theme) => theme.palette.background.default,
                     width: fullWidth ? '100vw' : undefined,
+                    overflow: 'hidden',
                 },
                 ref,
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
-            <Box paddingBlockEnd={1} paddingInline={2}>
+            <Box paddingBlockEnd={1} paddingInline={2} minHeight={0}>
                 {children}
             </Box>
         </Drawer>
