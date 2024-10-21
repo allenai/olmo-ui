@@ -40,7 +40,6 @@ const ResponsiveButtonBase = ({
     };
 
     const btnVariant = variant === 'list' ? 'text' : variant;
-    const bgHover = variant === 'list' ? { background: 'transparent' } : {};
 
     return (
         <Button
@@ -55,7 +54,6 @@ const ResponsiveButtonBase = ({
                 '&:hover': {
                     color: theme.palette.primary.contrastText,
                     borderColor: theme.palette.primary.contrastText,
-                    ...bgHover,
                 },
                 justifyContent: variant === 'list' ? 'start' : 'center',
                 flexBasis: layout === 'icon' ? 'min-content' : undefined,

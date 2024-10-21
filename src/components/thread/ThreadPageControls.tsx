@@ -1,7 +1,7 @@
 import PlusIcon from '@mui/icons-material/Add';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Button, ButtonGroup, ButtonProps, Menu, MenuItem, Stack } from '@mui/material';
-import { MouseEvent, ReactElement, useState } from 'react';
+import { Button, ButtonGroup, ButtonProps, Menu, Stack } from '@mui/material';
+import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
@@ -98,26 +98,24 @@ export const ThreadPageControls = (): JSX.Element => {
                                     color: theme.palette.primary.contrastText,
                                     borderColor: theme.palette.primary.contrastText,
                                 },
-                            })}
-                            buttons={[
-                                <NewThreadButton
-                                    key="more-new-thread-button"
-                                    variant="list"
-                                    isResponsive={false}
-                                />,
-                                <DeleteThreadButton
-                                    key="more-delete-thread-button"
-                                    variant="list"
-                                    isResponsive={false}
-                                    onClick={onClickDelete}
-                                />,
-                                <ShareThreadButton
-                                    key="more-share-thread-button"
-                                    variant="list"
-                                    isResponsive={false}
-                                />,
-                            ]}
-                        />
+                            })}>
+                            <NewThreadButton
+                                key="more-new-thread-button"
+                                variant="list"
+                                isResponsive={false}
+                            />
+                            <DeleteThreadButton
+                                key="more-delete-thread-button"
+                                variant="list"
+                                isResponsive={false}
+                                onClick={onClickDelete}
+                            />
+                            <ShareThreadButton
+                                key="more-share-thread-button"
+                                variant="list"
+                                isResponsive={false}
+                            />
+                        </MoreButton>
                     ) : null}
                 </ButtonGroup>
                 {isMediumLayout ? (
@@ -135,10 +133,10 @@ export const ThreadPageControls = (): JSX.Element => {
 
 type MoreButtonProps = Pick<ButtonProps, 'sx'> & {
     id?: string;
-    buttons: ReactElement<ButtonProps>[];
+    children: ReactNode;
 };
 
-const MoreButton = ({ id = 'more-button', buttons, sx }: MoreButtonProps) => {
+const MoreButton = ({ id = 'more-button', sx, children }: MoreButtonProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -166,12 +164,18 @@ const MoreButton = ({ id = 'more-button', buttons, sx }: MoreButtonProps) => {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
+                onClick={handleClose}
                 MenuListProps={{
                     dense: true,
                     disablePadding: true,
+                    component: 'div',
                     sx: (theme) => ({
-                        '& li': {
+                        '& > .MuiButton-root': {
                             borderBottom: `1px solid ${theme.palette.grey[300]}`,
+                            borderRadius: 0,
+                            '&:hover': {
+                                borderColor: theme.palette.grey[300],
+                            },
                             ':last-child': {
                                 borderBottom: 'none',
                             },
@@ -183,11 +187,7 @@ const MoreButton = ({ id = 'more-button', buttons, sx }: MoreButtonProps) => {
                         width: '200px',
                     },
                 }}>
-                {buttons.map((button, idx) => (
-                    <MenuItem key={idx} onClick={handleClose}>
-                        {button}
-                    </MenuItem>
-                ))}
+                {children}
             </Menu>
         </>
     );
