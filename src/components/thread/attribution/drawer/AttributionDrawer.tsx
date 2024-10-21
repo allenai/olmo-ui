@@ -5,7 +5,7 @@ import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/Temporary
 
 import {
     AttributionContent,
-    RepeatedAttributionDocumentsContent,
+    RepeatedAttributionDocumentsContentProps,
     useResetScrollWhenOpeningRepeatedDocuments,
 } from './AttributionContent';
 

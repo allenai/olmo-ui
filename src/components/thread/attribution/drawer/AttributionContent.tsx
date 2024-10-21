@@ -2,7 +2,7 @@ import { ArrowBack } from '@mui/icons-material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { type UIEvent, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -23,24 +23,80 @@ export const useResetScrollWhenOpeningRepeatedDocuments = () => {
     );
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const [initialScrollPosition, setInitialScrollPosition] = useState<number | null>(null);
+    const refInitialScrollPosition = useRef<number | null>(null);
 
-    useEffect(() => {
-        // we want to reset the scroll position to the top when we show repeated documents
-        // otherwise the scroll will be in the middle somewhere since we just replace the contents of the drawer
-        if (containerRef.current != null && shouldShowRepeatedDocuments) {
+    const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+        console.log(event.target.scrollTop);
+        // setInitialScrollPosition(event.target.scrollTop);
+    };
+
+    const handleShowRepeatedDocuments = () => {
+        if (containerRef.current != null) {
+            refInitialScrollPosition.current = containerRef.current.scrollTop;
+            // setInitialScrollPosition(containerRef.current.scrollTop);
             containerRef.current.scrollTop = 0;
+            console.log('initialScrollPosition set', refInitialScrollPosition);
         }
-    }, [shouldShowRepeatedDocuments]);
+    };
 
-    return { containerRef, shouldShowRepeatedDocuments };
+    const handleShowAllDocuments = () => {
+        if (containerRef.current != null && refInitialScrollPosition.current != null) {
+            console.log('initialScrollPosition restored', refInitialScrollPosition.current);
+            containerRef.current.scrollTo({ top: refInitialScrollPosition.current });
+        }
+        // containerRef.current.scrollTop = initialScrollPosition.current ?? 0;
+    };
+
+    // useEffect(() => {
+    //     if (containerRef.current == null) {
+    //         return;
+    //     }
+
+    //     console.log('containerRef', containerRef.current);
+    //     console.log('scrollTop', containerRef.current.scrollTop);
+
+    //     // we want to reset the scroll position to the top when we show repeated documents
+    //     // otherwise the scroll will be in the middle somewhere since we just replace the contents of the drawer
+    //     if (shouldShowRepeatedDocuments) {
+    //         setInitialScrollPosition(containerRef.current.scrollTop);
+    //         containerRef.current.scrollTop = 0;
+    //         console.log('initialScrollPosition set', initialScrollPosition);
+    //     } else {
+    //         console.log('initialScrollPosition restored', initialScrollPosition);
+    //         if (initialScrollPosition != null) {
+    //             containerRef.current.scrollTo({ top: initialScrollPosition });
+    //         }
+
+    //         // containerRef.current.scrollTop = initialScrollPosition.current ?? 0;
+    //     }
+    // }, [initialScrollPosition, shouldShowRepeatedDocuments]);
+
+    return {
+        containerRef,
+        shouldShowRepeatedDocuments,
+        handleScroll,
+        handleShowRepeatedDocuments,
+        handleShowAllDocuments,
+    };
 };
-
-export const AttributionContent = () => {
+interface AttributionContentProps {
+    handleShowRepeatedDocuments: () => void;
+    handleShowAllDocuments: () => void;
+}
+export const AttributionContent = ({
+    handleShowRepeatedDocuments,
+    handleShowAllDocuments,
+}: AttributionContentProps) => {
     const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
     const isAllHighlightVisible = useAppContext((state) => state.attribution.isAllHighlightVisible);
 
     const { loadingState } = attributionForMessage;
+
+    useEffect(() => {
+        handleShowAllDocuments();
+    }, [handleShowAllDocuments]);
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
@@ -93,12 +149,20 @@ export const AttributionContent = () => {
                 {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
             </Button>
             <ClearSelectedSpanButton />
-            <AttributionDrawerDocumentList />
+            <AttributionDrawerDocumentList
+                handleShowRepeatedDocuments={handleShowRepeatedDocuments}
+            />
         </Stack>
     );
 };
 
-export const RepeatedAttributionDocumentsContent = () => {
+interface RepeatedAttributionDocumentsContentProps {
+    handleShowAllDocuments: () => void;
+}
+
+export const RepeatedAttributionDocumentsContent = ({
+    handleShowAllDocuments,
+}: RepeatedAttributionDocumentsContentProps) => {
     const attributionForMessage = useAttributionDocumentsForMessage();
 
     const repeatedDocumentsByUrl = useAppContext(
@@ -121,10 +185,15 @@ export const RepeatedAttributionDocumentsContent = () => {
         (state) => state.resetSelectedRepeatedDocument
     );
 
+    const handleBackToCorpusLinkDocumentsClick = () => {
+        resetSelectedRepeatedDocument();
+        // handleShowAllDocuments();
+    };
+
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="repeated-documents-drawer">
             <Button
-                onClick={resetSelectedRepeatedDocument}
+                onClick={handleBackToCorpusLinkDocumentsClick}
                 variant="text"
                 color="inherit"
                 sx={{
@@ -146,6 +215,7 @@ export const RepeatedAttributionDocumentsContent = () => {
                             documentIndex={document.index}
                             documentUrl={document.url}
                             source={document.source}
+                            handleShowRepeatedDocuments={() => {}}
                         />
                     );
                 })}

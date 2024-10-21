@@ -15,19 +15,30 @@ const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
 const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
 const AttributionTab = () => {
-    const { shouldShowRepeatedDocuments, containerRef } =
-        useResetScrollWhenOpeningRepeatedDocuments();
+    const {
+        shouldShowRepeatedDocuments,
+        containerRef,
+        handleScroll,
+        handleShowAllDocuments,
+        handleShowRepeatedDocuments,
+    } = useResetScrollWhenOpeningRepeatedDocuments();
 
     return (
         <TabPanelWithOverflow
             ref={containerRef}
+            onScroll={handleScroll}
             value={DATASET_TAB_NAME}
             aria-labelledby="dataset-tab-control"
             id="parameters-tabpanel">
             {shouldShowRepeatedDocuments ? (
-                <RepeatedAttributionDocumentsContent />
+                <RepeatedAttributionDocumentsContent
+                    handleShowAllDocuments={handleShowAllDocuments}
+                />
             ) : (
-                <AttributionContent />
+                <AttributionContent
+                    handleShowAllDocuments={handleShowAllDocuments}
+                    handleShowRepeatedDocuments={handleShowRepeatedDocuments}
+                />
             )}
         </TabPanelWithOverflow>
     );

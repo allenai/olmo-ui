@@ -69,6 +69,7 @@ interface AttributionDocumentCardProps {
     source: string;
     documentIndex: string;
     repeatedDocumentCount?: number;
+    handleShowRepeatedDocuments: () => void;
 }
 
 export const AttributionDocumentCard = ({
@@ -76,6 +77,7 @@ export const AttributionDocumentCard = ({
     source,
     documentIndex,
     repeatedDocumentCount,
+    handleShowRepeatedDocuments,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
 
@@ -108,6 +110,7 @@ export const AttributionDocumentCard = ({
                                 variant="body2"
                                 onClick={() => {
                                     selectRepeatedDocument(documentIndex);
+                                    handleShowRepeatedDocuments();
                                 }}>
                                 View all repeated documents
                             </Link>
