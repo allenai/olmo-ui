@@ -56,7 +56,10 @@ export const FAQsPage = (): JSX.Element => {
                     overflow: 'auto',
                     backgroundColor: 'background.default',
                 }}>
-                <CardContent sx={{ paddingX: 4 }} component={Stack} gap={3.5}>
+                <CardContent
+                    sx={() => (isDesktop ? { paddingX: 4 } : { paddingInline: 2 })}
+                    component={Stack}
+                    gap={3.5}>
                     <Form>
                         <Stack direction="row" gap={2}>
                             <TextField
