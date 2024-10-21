@@ -1,13 +1,4 @@
-import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    Link,
-    Skeleton,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
@@ -69,7 +60,7 @@ interface AttributionDocumentCardProps {
     source: string;
     documentIndex: string;
     repeatedDocumentCount?: number;
-    handleShowRepeatedDocuments: () => void;
+    onShowRepeatedDocuments?: () => void;
 }
 
 export const AttributionDocumentCard = ({
@@ -77,7 +68,7 @@ export const AttributionDocumentCard = ({
     source,
     documentIndex,
     repeatedDocumentCount,
-    handleShowRepeatedDocuments,
+    onShowRepeatedDocuments,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
 
@@ -109,8 +100,8 @@ export const AttributionDocumentCard = ({
                                 component="button"
                                 variant="body2"
                                 onClick={() => {
+                                    onShowRepeatedDocuments?.();
                                     selectRepeatedDocument(documentIndex);
-                                    handleShowRepeatedDocuments();
                                 }}>
                                 View all repeated documents
                             </Link>

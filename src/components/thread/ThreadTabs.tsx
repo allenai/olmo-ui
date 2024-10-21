@@ -6,6 +6,7 @@ import { ThreadTabId } from '@/slices/DrawerSlice';
 
 import {
     AttributionContent,
+    FullAttributionContent,
     RepeatedAttributionDocumentsContent,
     useResetScrollWhenOpeningRepeatedDocuments,
 } from './attribution/drawer/AttributionContent';
@@ -18,28 +19,23 @@ const AttributionTab = () => {
     const {
         shouldShowRepeatedDocuments,
         containerRef,
-        handleScroll,
-        handleShowAllDocuments,
-        handleShowRepeatedDocuments,
+        restoreScrollPosition,
+        saveScrollPosition,
+        scrollToTop,
     } = useResetScrollWhenOpeningRepeatedDocuments();
 
     return (
         <TabPanelWithOverflow
             ref={containerRef}
-            onScroll={handleScroll}
             value={DATASET_TAB_NAME}
             aria-labelledby="dataset-tab-control"
             id="parameters-tabpanel">
-            {shouldShowRepeatedDocuments ? (
-                <RepeatedAttributionDocumentsContent
-                    handleShowAllDocuments={handleShowAllDocuments}
-                />
-            ) : (
-                <AttributionContent
-                    handleShowAllDocuments={handleShowAllDocuments}
-                    handleShowRepeatedDocuments={handleShowRepeatedDocuments}
-                />
-            )}
+            <FullAttributionContent
+                shouldShowRepeatedDocuments={shouldShowRepeatedDocuments}
+                restoreScrollPosition={restoreScrollPosition}
+                saveScrollPosition={saveScrollPosition}
+                scrollToTop={scrollToTop}
+            />
         </TabPanelWithOverflow>
     );
 };
