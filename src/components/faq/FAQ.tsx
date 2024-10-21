@@ -1,31 +1,33 @@
 import { ExpandMore } from '@mui/icons-material';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Link,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Link, Typography } from '@mui/material';
 import { ComponentProps } from 'react';
 import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 
+import { useDesktopOrUp } from '../dolma/shared';
 import { createFAQId } from './createFAQId';
 
 const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
     p: ({ children }) => <Typography variant="body1">{children}</Typography>,
     // The ref types don't match for some reason
     a: ({ ref, href, ...props }) => {
+        // open the corresponding collapsed faq section for an interlink
         if (href && href[0] === '#') {
             return (
                 <Link
                     onClick={() => {
                         const target = document.querySelector(href);
                         if (target) {
-                            (target as HTMLDivElement).click();
-                            target.scrollIntoView();
+                            const targetSection = target as HTMLDivElement;
+                            if (
+                                !(
+                                    targetSection.ariaExpanded &&
+                                    targetSection.ariaExpanded === 'true'
+                                )
+                            ) {
+                                targetSection.click();
+                            }
+                            targetSection.scrollIntoView();
                         }
                     }}
                     {...props}
@@ -45,14 +47,13 @@ interface FAQProps {
 
 export const FAQ = ({ question, answer, linkId }: FAQProps): JSX.Element => {
     const location = useLocation();
-    const theme = useTheme();
-    const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
+    const isDesktopOrUp = useDesktopOrUp();
 
     const faqId = linkId || createFAQId(question);
     const faqContentId = faqId + '-content';
 
     const isLinkedFAQ = location.hash === `#${faqId}`;
-    const faqPaddings = greaterThanLg ? { padding: 0, paddingLeft: 4 } : { padding: 0 };
+    const faqPaddings = isDesktopOrUp ? { padding: 0, paddingLeft: 4 } : { padding: 0 };
 
     return (
         <Accordion
