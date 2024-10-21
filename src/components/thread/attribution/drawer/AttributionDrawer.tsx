@@ -26,7 +26,7 @@ export const AttributionDrawer = () => {
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography component="h2" variant="h5" margin={0} color="primary">
+                            <Typography component="h2" variant="h5" margin={0}>
                                 CorpusLink
                             </Typography>
                         </ListSubheader>

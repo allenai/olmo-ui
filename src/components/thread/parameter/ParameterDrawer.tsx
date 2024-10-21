@@ -27,7 +27,7 @@ export const ParameterDrawer = (): JSX.Element => {
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography variant="h5" margin={0} color="primary">
+                            <Typography variant="h5" margin={0}>
                                 Parameters
                             </Typography>
                         </ListSubheader>
