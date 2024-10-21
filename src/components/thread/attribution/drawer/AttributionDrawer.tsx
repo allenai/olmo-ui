@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
+import { useAppContext } from '@/AppContext';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
 import { FullAttributionContent } from './AttributionContent';
@@ -8,6 +9,10 @@ import { FullAttributionContent } from './AttributionContent';
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const AttributionDrawer = () => {
+    const resetSelectedRepeatedDocument = useAppContext(
+        (state) => state.resetSelectedRepeatedDocument
+    );
+
     return (
         <FullScreenDrawer
             drawerId="attribution"
@@ -24,7 +29,10 @@ export const AttributionDrawer = () => {
                             </Typography>
                         </ListSubheader>
                         <IconButton
-                            onClick={onDrawerClose}
+                            onClick={() => {
+                                resetSelectedRepeatedDocument();
+                                onDrawerClose();
+                            }}
                             sx={{ color: 'inherit' }}
                             aria-label="close CorpusLink drawer">
                             <CloseIcon />
