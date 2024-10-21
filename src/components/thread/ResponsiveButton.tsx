@@ -58,8 +58,7 @@ const ResponsiveButtonBase = ({
                 justifyContent: variant === 'list' ? 'start' : 'center',
                 flexBasis: layout === 'icon' ? 'min-content' : undefined,
             })}>
-            {layout !== 'icon' ? title : null}
-            {layout === 'icon' ? startIcon : null}
+            {layout === 'icon' ? startIcon : title}
         </Button>
     );
 };
