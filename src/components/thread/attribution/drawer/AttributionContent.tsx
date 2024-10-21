@@ -17,43 +17,6 @@ import {
     useAttributionDocumentsForMessage,
 } from './message-attribution-documents-selector';
 
-export const useResetScrollWhenOpeningRepeatedDocuments = () => {
-    const shouldShowRepeatedDocuments = useAppContext(
-        (state) => state.attribution.selectedRepeatedDocumentIndex != null
-    );
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const scrollPosition = useRef<number | null>(null);
-
-    const saveScrollPosition = () => {
-        if (containerRef.current != null) {
-            scrollPosition.current = containerRef.current.scrollTop;
-            console.log('save position', scrollPosition.current, containerRef.current.scrollTop);
-            // containerRef.current.scrollTop = 0;
-        }
-    };
-
-    const restoreScrollPosition = () => {
-        if (containerRef.current != null && scrollPosition.current != null) {
-            console.log('restore position', scrollPosition.current);
-            containerRef.current.scrollTo({ top: scrollPosition.current });
-        }
-    };
-
-    const scrollToTop = () => {
-        if (containerRef.current) {
-            containerRef.current.scrollTop = 0;
-        }
-    };
-
-    return {
-        containerRef,
-        shouldShowRepeatedDocuments,
-        saveScrollPosition,
-        restoreScrollPosition,
-        scrollToTop,
-    };
-};
 export const AttributionContent = () => {
     const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);

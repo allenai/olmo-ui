@@ -18,10 +18,10 @@ interface FullScreenDrawerProps extends PropsWithChildren {
     fullWidth?: boolean;
 }
 
-export const FullScreenDrawer = forwardRef(function FullScreenDrawer(
+export const FullScreenDrawer = (
     { drawerId, header, children, fullWidth }: FullScreenDrawerProps,
     ref: Ref<HTMLDivElement>
-) {
+) => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === drawerId);
@@ -55,12 +55,13 @@ export const FullScreenDrawer = forwardRef(function FullScreenDrawer(
                 ref,
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
+            {/* minHeight here helps the children overflow properly */}
             <Box paddingBlockEnd={1} paddingInline={2} minHeight={0}>
                 {children}
             </Box>
         </Drawer>
     );
-});
+};
 
 export const FullScreenDrawerHeader = ({ children }: PropsWithChildren) => {
     return (
