@@ -254,6 +254,9 @@ export const QueryForm = (): JSX.Element => {
                                     }
                                 />
                             ),
+                            maxRows: 5,
+                            multiline: true,
+                            inputComponent: 'textarea',
                         }}
                     />
                     <Stack direction="row" gap={2} alignItems="center">
