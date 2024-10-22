@@ -1,69 +1,17 @@
-import {
-    Box,
-    BoxProps,
-    Card,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    SelectChangeEvent,
-    Stack,
-    Theme,
-    Typography,
-} from '@mui/material';
+import { Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
-import { Model, ModelList } from '@/api/Model';
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
+import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { ThreadTabs } from '@/components/thread/ThreadTabs';
-import { ContainerSizes, DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
-import { maxContainerQuery } from '@/utils/container-query-utils';
-
-type ModelSelectionDisplayProps = Pick<BoxProps, 'sx'> & {
-    models: ModelList;
-    selectedModel?: Model;
-    onModelChange: (event: SelectChangeEvent) => void;
-    label?: string;
-};
-
-const ModelSelectionDisplay = ({
-    models,
-    selectedModel,
-    onModelChange,
-    sx,
-    label = '',
-}: ModelSelectionDisplayProps) => {
-    return (
-        <Box sx={sx}>
-            {models.length > 1 ? (
-                <Select
-                    id="model-select"
-                    sx={{ width: { xs: '75%', md: '35%' } }}
-                    size="small"
-                    onChange={onModelChange}
-                    input={<OutlinedInput />}
-                    value={(selectedModel && selectedModel.id) || ''}>
-                    {models.map((model) => (
-                        <MenuItem key={model.name} value={model.id}>
-                            {model.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-            ) : (
-                <Typography key={models[0].name}>
-                    {label ? `${label}: ` : ''}
-                    {models[0].name}
-                </Typography>
-            )}
-        </Box>
-    );
-};
 
 export const UIRefreshThreadPage = () => {
     const models = useAppContext((state) => state.models);
@@ -109,26 +57,15 @@ export const UIRefreshThreadPage = () => {
                     <Box
                         sx={{
                             display: 'grid',
-                            gridTemplateColumns: '1fr auto',
+                            gridTemplateColumns: '1fr max-content',
+                            columnGap: 1,
                         }}>
                         <ModelSelectionDisplay
                             models={models}
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
-                            sx={(theme: Theme) => ({
-                                // These responsive styles are mirrors to the ones below
-                                // the display values should be flipped versions
-                                //
-                                display: 'none', // This is hidden by default (mobile first)
-                                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                    // it is visible above the DESKTOP_LAYOUT_BREAKPOINT
-                                    display: 'block',
-                                },
-                                [maxContainerQuery(ContainerSizes.ThreadControls.sm)]: {
-                                    // Unlesss the container is too small, then it is hidden again
-                                    display: 'none',
-                                },
-                            })}
+                            label="Model"
+                            isLayoutWide={true}
                         />
                         <ThreadPageControls />
                         <ModelSelectionDisplay
@@ -136,18 +73,7 @@ export const UIRefreshThreadPage = () => {
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             label="Model"
-                            sx={(theme: Theme) => ({
-                                display: 'block', // This is visible by default (mobile first)
-                                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                    // it is hidden above the DESKTOP_LAYOUT_BREAKPOINT
-                                    display: 'none',
-                                },
-                                [maxContainerQuery(ContainerSizes.ThreadControls.sm)]: {
-                                    // ... unless the container is too small, then it is visible again
-                                    display: 'block',
-                                },
-                                paddingTop: 2,
-                            })}
+                            isLayoutWide={false}
                         />
                     </Box>
 

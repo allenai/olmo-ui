@@ -1,7 +1,6 @@
 import { Button, ButtonProps, Theme } from '@mui/material';
 
-import { ContainerSizes } from '@/constants';
-import { minContainerQuery } from '@/utils/container-query-utils';
+import { LARGE_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
 /**
  * Creates a single button to create a responsive button set
@@ -31,7 +30,7 @@ const ResponsiveButtonBase = ({
         if (responsiveSize !== 'none') {
             return {
                 display: responsiveSize === 'large' ? 'none' : 'inline-flex',
-                [minContainerQuery(ContainerSizes.ThreadControls.lg)]: {
+                [LARGE_THREAD_CONTAINER_QUERY]: {
                     display: responsiveSize === 'large' ? 'inline-flex' : 'none',
                 },
             };

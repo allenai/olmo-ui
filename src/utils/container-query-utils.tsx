@@ -1,9 +1,4 @@
-// not smart enough to check if unit, just convert base number to `Zpx`
-const addPxIfNumber = (size: number | string): string =>
-    typeof size === 'number' ? `${size}px` : size;
+import { LARGE_CONTAINER_SIZE, SMALL_CONTAINER_SIZE } from '@/constants';
 
-export const minContainerQuery = (size: number | string) =>
-    `@container (min-width: ${addPxIfNumber(size)})`;
-
-export const maxContainerQuery = (size: number | string) =>
-    `@container (max-width: ${addPxIfNumber(size)})`;
+export const LARGE_THREAD_CONTAINER_QUERY = `@container (min-width: ${LARGE_CONTAINER_SIZE})`;
+export const SMALL_THREAD_CONTAINER_QUERY = `@container (max-width: ${SMALL_CONTAINER_SIZE})`;

@@ -5,9 +5,8 @@ import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
-import { ContainerSizes } from '@/constants';
 import { links } from '@/Links';
-import { maxContainerQuery } from '@/utils/container-query-utils';
+import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
 import { useDesktopOrUp, useMediumLayoutOrUp } from '../dolma/shared';
 import { AttributionButton } from './attribution/AttributionButton';
@@ -65,7 +64,7 @@ export const ThreadPageControls = (): JSX.Element => {
                 sx={{
                     height: 'auto',
                     alignItems: 'flex-start',
-                    [maxContainerQuery(ContainerSizes.ThreadControls.sm)]: {
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
                         gridColumn: '1 / -1',
                         justifyContent: 'right',
                     },
