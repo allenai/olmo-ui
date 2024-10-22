@@ -50,13 +50,19 @@ export const OlmoAppBar = (): JSX.Element => {
                     disableGutters
                     sx={{
                         display: 'grid',
-                        gridTemplateColumns: '1fr auto 1fr',
+                        gridTemplateColumns: '1fr max-content 1fr',
                     }}>
                     <Link
                         href={links.home}
                         lineHeight={1}
                         sx={{
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+                            justifySelf: 'left',
+                            alignItems: 'center',
+                            height: '100%',
+                            display: 'flex',
+                            [DESKTOP_LAYOUT_BREAKPOINT]: {
+                                display: 'none',
+                            },
                         }}>
                         <Ai2LogoFull
                             height={18.5}
