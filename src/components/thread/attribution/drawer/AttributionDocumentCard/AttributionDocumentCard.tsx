@@ -25,6 +25,7 @@ const AttributionDocumentCardBase = ({
             component="li"
             sx={{
                 bgcolor: '#F8F0E780',
+                listStyle: 'none',
 
                 borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
 

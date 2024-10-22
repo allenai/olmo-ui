@@ -2,7 +2,6 @@ import { ArrowBack } from '@mui/icons-material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
-import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -147,6 +146,9 @@ export const FullAttributionContent = () => {
 
     return (
         <>
+            {/* These are in separate boxes so they have separate scroll states. 
+                When RepeatedAttributionDocumentsContent is opened, it should be at the top of its content. 
+                When it's closed, we should go back to where we were in AttributionContent */}
             <Box
                 sx={{
                     display: shouldShowRepeatedDocuments ? 'none' : undefined,
