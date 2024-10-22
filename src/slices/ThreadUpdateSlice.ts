@@ -182,6 +182,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     }
 
                     selectMessage(finalMessageId);
+                    set({ currentOpenThreadTab: 'attribution' });
                     await getAttributionsForMessage(finalMessageId);
                 }
             }
