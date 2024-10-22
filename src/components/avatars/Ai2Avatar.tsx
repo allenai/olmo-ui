@@ -10,8 +10,6 @@ export const Ai2Avatar = () => {
             alt="Ai2 Monogram representing the LLM"
             sx={(theme: Theme) => ({
                 background: theme.palette.primary.main,
-                border: '1px solid rgba(0, 0, 0, 0.15)',
-                borderColor: theme.palette.primary.dark,
             })}
         />
     );
