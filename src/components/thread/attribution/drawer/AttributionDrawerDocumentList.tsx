@@ -10,10 +10,7 @@ import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
 } from './AttributionDocumentCard/AttributionDocumentCard';
-import {
-    messageAttributionDocumentsSelector,
-    useAttributionDocumentsForMessage,
-} from './message-attribution-documents-selector';
+import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
     duplicateDocumentIndexes: string[];
