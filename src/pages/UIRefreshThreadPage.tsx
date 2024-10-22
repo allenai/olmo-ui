@@ -21,7 +21,7 @@ import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { ThreadTabs } from '@/components/thread/ThreadTabs';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { ContainerSizes, DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 import { maxContainerQuery } from '@/utils/container-query-utils';
 
@@ -57,7 +57,7 @@ const ModelSelectionDisplay = ({
                 </Select>
             ) : (
                 <Typography key={models[0].name}>
-                    {label}
+                    {label ? `${label}: ` : ''}
                     {models[0].name}
                 </Typography>
             )}
@@ -116,12 +116,17 @@ export const UIRefreshThreadPage = () => {
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             sx={(theme: Theme) => ({
-                                display: 'none',
+                                // These responsive styles are mirrors to the ones below
+                                // the display values should be flipped versions
+                                //
+                                display: 'none', // This is hidden by default (mobile first)
                                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                    // it is visible above the DESKTOP_LAYOUT_BREAKPOINT
                                     display: 'block',
-                                    [maxContainerQuery(theme, 450)]: {
-                                        display: 'none',
-                                    },
+                                },
+                                [maxContainerQuery(ContainerSizes.ThreadControls.sm)]: {
+                                    // Unlesss the container is too small, then it is hidden again
+                                    display: 'none',
                                 },
                             })}
                         />
@@ -130,14 +135,16 @@ export const UIRefreshThreadPage = () => {
                             models={models}
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
-                            label="Model: "
+                            label="Model"
                             sx={(theme: Theme) => ({
-                                display: 'block',
+                                display: 'block', // This is visible by default (mobile first)
                                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                    // it is hidden above the DESKTOP_LAYOUT_BREAKPOINT
                                     display: 'none',
-                                    [maxContainerQuery(theme, 450)]: {
-                                        display: 'block',
-                                    },
+                                },
+                                [maxContainerQuery(ContainerSizes.ThreadControls.sm)]: {
+                                    // ... unless the container is too small, then it is visible again
+                                    display: 'block',
                                 },
                                 paddingTop: 2,
                             })}

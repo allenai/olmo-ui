@@ -1,5 +1,6 @@
 import { Button, ButtonProps, Theme } from '@mui/material';
 
+import { ContainerSizes } from '@/constants';
 import { minContainerQuery } from '@/utils/container-query-utils';
 
 /**
@@ -26,11 +27,11 @@ const ResponsiveButtonBase = ({
     responsiveSize = 'none',
     ...props
 }: ResponsiveButtonBaseProps): JSX.Element => {
-    const sizeStyles = (theme: Theme) => {
+    const sizeStyles = () => {
         if (responsiveSize !== 'none') {
             return {
                 display: responsiveSize === 'large' ? 'none' : 'inline-flex',
-                [minContainerQuery(theme, 700)]: {
+                [minContainerQuery(ContainerSizes.ThreadControls.lg)]: {
                     display: responsiveSize === 'large' ? 'inline-flex' : 'none',
                 },
             };
@@ -48,7 +49,7 @@ const ResponsiveButtonBase = ({
             aria-label={title}
             startIcon={layout === 'both' ? startIcon : undefined}
             sx={(theme: Theme) => ({
-                ...sizeStyles(theme),
+                ...sizeStyles(),
                 borderColor: theme.palette.primary.contrastText,
                 color: theme.palette.primary.contrastText,
                 '&:hover': {

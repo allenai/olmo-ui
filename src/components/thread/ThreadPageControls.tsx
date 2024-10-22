@@ -5,6 +5,7 @@ import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
+import { ContainerSizes } from '@/constants';
 import { links } from '@/Links';
 import { maxContainerQuery } from '@/utils/container-query-utils';
 
@@ -52,7 +53,7 @@ export const ThreadPageControls = (): JSX.Element => {
         return <></>;
     }
 
-    const onClickDelete = () => {
+    const handleClickDelete = () => {
         setDeleteDialogOpen(true);
     };
 
@@ -61,16 +62,16 @@ export const ThreadPageControls = (): JSX.Element => {
             <Stack
                 direction="row"
                 gap={2}
-                sx={(theme) => ({
+                sx={{
                     height: 'auto',
                     alignItems: 'flex-start',
-                    [maxContainerQuery(theme, 450)]: {
+                    [maxContainerQuery(ContainerSizes.ThreadControls.sm)]: {
                         gridColumn: '1 / -1',
                         justifyContent: 'right',
                     },
-                })}>
+                }}>
                 <NewThreadButton />
-                <DeleteThreadButton onClick={onClickDelete} />
+                <DeleteThreadButton onClick={handleClickDelete} />
                 <ShareThreadButton />
                 <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
             </Stack>
@@ -108,7 +109,7 @@ export const ThreadPageControls = (): JSX.Element => {
                                 key="more-delete-thread-button"
                                 variant="list"
                                 isResponsive={false}
-                                onClick={onClickDelete}
+                                onClick={handleClickDelete}
                             />
                             <ShareThreadButton
                                 key="more-share-thread-button"
@@ -184,7 +185,7 @@ const MoreButton = ({ id = 'more-button', sx, children }: MoreButtonProps) => {
                 }}
                 PaperProps={{
                     style: {
-                        width: '200px',
+                        width: '12rem',
                     },
                 }}>
                 {children}
