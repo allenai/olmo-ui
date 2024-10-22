@@ -104,7 +104,7 @@ export const AttributionContent = () => {
             </Card>
             <Button
                 variant="text"
-                disabled={loadingState === RemoteState.Loading || documents.length === 0}
+                disabled={loadingState === RemoteState.Loading}
                 startIcon={
                     isAllHighlightVisible ? (
                         <VisibilityOffOutlinedIcon />
@@ -116,6 +116,7 @@ export const AttributionContent = () => {
                 sx={{
                     justifyContent: 'flex-start',
                     color: (theme) => theme.palette.text.primary,
+                    visibility: documents.length === 0 ? 'hidden' : 'visible',
                 }}>
                 {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
             </Button>
