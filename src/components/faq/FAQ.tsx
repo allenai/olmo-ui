@@ -1,11 +1,11 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Link, Typography } from '@mui/material';
-import { ComponentProps } from 'react';
+import { ComponentProps, createRef, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 
 import { useDesktopOrUp } from '../dolma/shared';
-import { createFAQId } from './createFAQId';
+import { createFAQId } from './faq-utils';
 
 const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
     p: ({ children }) => <Typography variant="body1">{children}</Typography>,
@@ -27,7 +27,7 @@ const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
                             ) {
                                 targetSection.click();
                             }
-                            targetSection.scrollIntoView();
+                            targetSection.scrollIntoView(true);
                         }
                     }}
                     {...props}
@@ -42,21 +42,27 @@ const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
 interface FAQProps {
     question: string;
     answer: string;
-    linkId?: string;
 }
 
-export const FAQ = ({ question, answer, linkId }: FAQProps): JSX.Element => {
+export const FAQ = ({ question, answer }: FAQProps): JSX.Element => {
     const location = useLocation();
     const isDesktopOrUp = useDesktopOrUp();
-
-    const faqId = linkId || createFAQId(question);
+    const accordionRef = createRef<HTMLDivElement>();
+    const faqId = createFAQId(question);
     const faqContentId = faqId + '-content';
 
     const isLinkedFAQ = location.hash === `#${faqId}`;
     const faqPaddings = isDesktopOrUp ? { padding: 0, paddingLeft: 4 } : { padding: 0 };
 
+    useEffect(() => {
+        if (accordionRef && accordionRef.current && isLinkedFAQ) {
+            accordionRef.current.scrollIntoView(true);
+        }
+    }, [isLinkedFAQ, accordionRef]);
+
     return (
         <Accordion
+            ref={accordionRef}
             elevation={0}
             square
             sx={{
