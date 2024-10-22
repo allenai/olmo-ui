@@ -6,5 +6,5 @@ import { ChatAvatar } from './ChatAvatar';
 export const UserAvatar = () => {
     const { userInfo } = useUserAuthInfo();
 
-    return <ChatAvatar src={userInfo?.picture || userAvatarURL} />;
+    return <ChatAvatar src={userInfo ? userInfo.picture : userAvatarURL} />;
 };
