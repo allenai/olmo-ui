@@ -1,6 +1,10 @@
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+
 import userAvatarURL from '../assets/user.svg';
 import { ChatAvatar } from './ChatAvatar';
 
 export const UserAvatar = () => {
-    return <ChatAvatar src={userAvatarURL} />;
+    const { userInfo } = useUserAuthInfo();
+
+    return <ChatAvatar src={userInfo?.picture || userAvatarURL} />;
 };
