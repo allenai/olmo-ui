@@ -47,7 +47,7 @@ const ResponsiveButtonBase = ({
             variant={btnVariant}
             aria-label={title}
             startIcon={layout === 'both' ? startIcon : undefined}
-            sx={(theme) => ({
+            sx={(theme: Theme) => ({
                 ...sizeStyles(theme),
                 borderColor: theme.palette.primary.contrastText,
                 color: theme.palette.primary.contrastText,

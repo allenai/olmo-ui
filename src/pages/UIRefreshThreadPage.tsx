@@ -1,14 +1,15 @@
 import {
     Box,
+    BoxProps,
     Card,
     MenuItem,
     OutlinedInput,
     Select,
     SelectChangeEvent,
     Stack,
+    Theme,
     Typography,
 } from '@mui/material';
-import { BoxProps } from '@mui/system';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { Model, ModelList } from '@/api/Model';
@@ -114,7 +115,7 @@ export const UIRefreshThreadPage = () => {
                             models={models}
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
-                            sx={(theme) => ({
+                            sx={(theme: Theme) => ({
                                 display: 'none',
                                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                                     display: 'block',
@@ -130,7 +131,7 @@ export const UIRefreshThreadPage = () => {
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             label="Model: "
-                            sx={(theme) => ({
+                            sx={(theme: Theme) => ({
                                 display: 'block',
                                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                                     display: 'none',
