@@ -1,9 +1,9 @@
 import { Card, CardContent, Link, Stack, Typography } from '@mui/material';
 
-import { faqs } from '@/assets/faq-list';
+import { faqs } from '@/components/faq/faq-list';
 
 import { useDesktopOrUp } from '../dolma/shared';
-import { createFAQId } from './createFAQId';
+import { createFAQId } from './faq-utils';
 import { FAQCategoriesDrawer } from './FAQDrawer';
 
 export const FAQCategoryLinks = (): JSX.Element => {
