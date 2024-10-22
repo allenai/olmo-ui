@@ -3,7 +3,7 @@ import { getFAQAnchorLinkByShortId } from '@/components/faq/faq-utils';
 export interface FAQ {
     question: string;
     answer: string | (() => string);
-    shortId?: string; // assign it with a value and use it in your markdown link to achieve interlinking between questions
+    shortId?: string; // helps finding a faq with shortId
 }
 
 export interface FAQCategory {
