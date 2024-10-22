@@ -19,6 +19,7 @@ import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
+import { getFAQAnchorLinkByShortId } from '../faq/faq-utils';
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 
 interface QueryFormButtonProps
@@ -225,7 +226,11 @@ export const QueryForm = (): JSX.Element => {
                                     <>
                                         This prompt was flagged as inappropriate. Please change your
                                         prompt and resubmit.{' '}
-                                        <Link href={links.faqs} target="_blank" rel="noreferrer">
+                                        <Link
+                                            href={
+                                                links.faqs +
+                                                getFAQAnchorLinkByShortId('wildguard-intro')
+                                            }>
                                             Learn why
                                         </Link>
                                     </>

@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
+import { getFAQAnchorLinkByShortId } from '@/components/faq/faq-utils';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -69,7 +70,9 @@ export const AttributionContent = () => {
                 Select a highlight from the model response to see the documents from the
                 pre-training data that have exact text matches in the model response.
             </Typography>
-            <Link href={links.faqs} underline="always">
+            <Link
+                href={links.faqs + getFAQAnchorLinkByShortId('corpuslink-intro')}
+                underline="always">
                 <Typography variant="caption">Learn more</Typography>
             </Link>
             <Card>
