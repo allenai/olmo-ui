@@ -9,7 +9,7 @@ import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
-import { getFAQAnchorLinkByShortId } from '../faq/faq-utils';
+import { getFAQIdByShortId } from '../faq/faq-utils';
 
 interface SearchBarProps {
     defaultValue?: string;
@@ -95,9 +95,7 @@ export const SearchBar = ({
                             <IconButton
                                 aria-label="About Dataset Explorer"
                                 size="large"
-                                href={
-                                    links.faqs + getFAQAnchorLinkByShortId('dataset-explorer-intro')
-                                }
+                                href={links.faqs + getFAQIdByShortId('dataset-explorer-intro')}
                                 sx={{
                                     color: (theme) => theme.palette.text.primary,
                                     padding: 1,

@@ -15,12 +15,9 @@ export const findFAQByShortId = (shortId: string) => {
     return targetFaq;
 };
 
-export const getFAQAnchorLinkByShortId = (shortId: string) => {
+export const getFAQIdByShortId = (shortId: string, withHashtag: boolean = true) => {
     const targetFaq = findFAQByShortId(shortId);
+    const targetId = targetFaq === undefined ? '' : createFAQId(targetFaq.question);
 
-    if (targetFaq === undefined) {
-        return '';
-    }
-
-    return '#' + createFAQId(targetFaq.question);
+    return withHashtag ? '#' + targetId : targetId;
 };

@@ -19,7 +19,7 @@ import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
-import { getFAQAnchorLinkByShortId } from '../faq/faq-utils';
+import { getFAQIdByShortId } from '../faq/faq-utils';
 import { getSelectedMessagesToShow } from './ThreadDisplay';
 
 interface QueryFormButtonProps
@@ -228,8 +228,7 @@ export const QueryForm = (): JSX.Element => {
                                         prompt and resubmit.{' '}
                                         <Link
                                             href={
-                                                links.faqs +
-                                                getFAQAnchorLinkByShortId('wildguard-intro')
+                                                links.faqs + getFAQIdByShortId('wildguard-intro')
                                             }>
                                             Learn why
                                         </Link>

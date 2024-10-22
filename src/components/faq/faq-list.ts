@@ -1,4 +1,4 @@
-import { getFAQAnchorLinkByShortId } from '@/components/faq/faq-utils';
+import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 
 export interface FAQ {
     question: string;
@@ -51,9 +51,7 @@ export const faqs: FAQCategory[] = [
             {
                 question: 'How do I delete my Playground account?',
                 answer: () => {
-                    const deleteSectionLink = getFAQAnchorLinkByShortId(
-                        'request-prompt-history-delete'
-                    );
+                    const deleteSectionLink = getFAQIdByShortId('request-prompt-history-delete');
 
                     return `Your Playground account is linked to your Google account and so cannot be deleted. Instead, you can remove the authorization to share data from your Google account with Ai2 via [third-party app management](https://support.google.com/accounts/answer/13533235?hl=en&ref_topic=7188760&sjid=15649851997490028435-NC) in your Google account. Please note that removing the authorization does not delete your prompt history from our database.  To [delete thread history](${deleteSectionLink}) click the ‘Delete Thread’ button.`;
                 },
