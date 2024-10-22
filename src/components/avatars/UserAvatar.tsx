@@ -7,8 +7,8 @@ export const UserAvatar = () => {
             src={userAvatarURL}
             alt="Icon representing the User"
             sx={(theme) => ({
-                background: theme.palette.primary.main,
-                border: '1px solid rgba(0, 0, 0, 0.15)',
+                background: theme.palette.background.paper,
+                border: `1px solid ${theme.palette.grey[100]}`,
             })}
         />
     );
