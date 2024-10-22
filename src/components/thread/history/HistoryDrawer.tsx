@@ -49,6 +49,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const creator = userInfo?.client;
 
     useEffect(() => {
+        // load messages when its open
         if (creator) {
             getMessageList(offset, creator, LIMIT);
         }

@@ -1,14 +1,14 @@
 import { LinearProgress } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { ElevatedPaper, NoPaddingContainer, useDesktopOrUp } from './shared';
+import { BaseCard, NoPaddingContainer, useDesktopOrUp } from './shared';
 
 interface PageContentWrapperProps extends PropsWithChildren {
     isLoading?: boolean;
 }
 
 export const PageContentWrapper = ({ isLoading, children }: PageContentWrapperProps) => {
-    const Wrapper = useDesktopOrUp() ? ElevatedPaper : NoPaddingContainer;
+    const Wrapper = useDesktopOrUp() ? BaseCard : NoPaddingContainer;
     return (
         <>
             <Wrapper>{children}</Wrapper>

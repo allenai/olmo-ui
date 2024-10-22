@@ -10,7 +10,7 @@ export const useCloseDrawerOnNavigation = ({
 }: UseCloseDrawerOnNavigationProps) => {
     const navigation = useNavigation();
     useEffect(() => {
-        if (navigation.state === 'loading' && !navigation.location.pathname.includes('thread')) {
+        if (navigation.state === 'loading') {
             handleDrawerClose();
         }
     }, [handleDrawerClose, navigation]);

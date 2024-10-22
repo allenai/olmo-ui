@@ -90,13 +90,13 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
         selectedThreadRootId,
         getAttributionsForMessage,
         selectMessage,
-        openAttributionForNewThread,
+        handleAttributionForChangingThread,
     } = appContext.getState();
 
-    openAttributionForNewThread();
-
-    // Always gets the latest state of the selectedThread
+    // get the latest state of the selectedThread if we're changing to a different thread
     if (params.id != null && params.id !== selectedThreadRootId) {
+        handleAttributionForChangingThread();
+
         const selectedThread = await getSelectedThread(params.id);
 
         const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();

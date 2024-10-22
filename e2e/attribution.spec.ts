@@ -15,3 +15,81 @@ test('should filter displayed documents when a span is selected', async ({ page 
         .click();
     await expect(page.getByTestId('attribution-drawer').getByText('Source')).toHaveCount(1);
 });
+
+test('should show the attribution drawer when navigating to a thread', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'Thread history' }).click();
+    await page.getByRole('link', { name: 'Second existing message' }).click();
+
+    // CorpusLink should be open when we open a thread
+    await expect(page.getByRole('tab', { name: 'CorpusLink' })).toHaveAttribute(
+        'aria-selected',
+        'true'
+    );
+
+    await expect(page.getByTestId('attribution-drawer').getByRole('listitem')).toHaveCount(2);
+
+    await page.getByRole('tab', { name: 'Parameters' }).click();
+    await expect(page.getByRole('tab', { name: 'Parameters' })).toHaveAttribute(
+        'aria-selected',
+        'true'
+    );
+    await expect(page.getByRole('tab', { name: 'CorpusLink' })).toHaveAttribute(
+        'aria-selected',
+        'false'
+    );
+
+    await page
+        .getByRole('button', { name: 'Show documents related to this span' })
+        .filter({ hasText: 'OkayOkayOkayOkayOkayOkayOkayOkay' })
+        .click();
+
+    // CorpusLink should be open when you select a span
+    await expect(page.getByRole('tab', { name: 'CorpusLink' })).toHaveAttribute(
+        'aria-selected',
+        'true'
+    );
+
+    await expect(page.getByText('1 document containing the selected span')).toBeVisible();
+    await expect(page.getByTestId('attribution-drawer').getByRole('listitem')).toHaveCount(1);
+
+    await page.getByRole('tab', { name: 'Parameters' }).click();
+
+    // Make sure attribution and selected spans don't go away when you click on the same thread
+    await page.getByRole('button', { name: 'Thread history' }).click();
+    await page.getByRole('link', { name: 'Second existing message' }).click();
+
+    // if we go to the same thread we should keep the parameters tab open
+    await expect(page.getByRole('tab', { name: 'Parameters' })).toHaveAttribute(
+        'aria-selected',
+        'true'
+    );
+
+    await page.getByRole('tab', { name: 'CorpusLink' }).click();
+
+    await expect(page.getByRole('button', { name: 'Clear Selection' })).toBeVisible();
+    await expect(page.getByText('1 document containing the selected span')).toBeVisible();
+    await expect(page.getByTestId('attribution-drawer').getByRole('listitem')).toHaveCount(1);
+
+    await page.getByRole('tab', { name: 'Parameters' }).click();
+
+    // Make sure new attributions show and selected spans do go away when you click another thread
+    await page.getByRole('button', { name: 'Thread history' }).click();
+    await page.getByRole('link', { name: 'Highlight stress test' }).click();
+
+    await expect(page.getByRole('button', { name: 'Clear Selection' })).not.toBeVisible();
+    await expect(page.getByText(/\d+ documents* containing the selected span/)).not.toBeVisible();
+    await expect(page.getByTestId('attribution-drawer').getByRole('listitem')).toHaveCount(1);
+
+    // Make sure the CorpusLink drawer automatically opens when switching threads
+    await expect(page.getByRole('tab', { name: 'Parameters' })).toHaveAttribute(
+        'aria-selected',
+        'false'
+    );
+    await expect(page.getByRole('tab', { name: 'CorpusLink' })).toHaveAttribute(
+        'aria-selected',
+        'true'
+    );
+});
