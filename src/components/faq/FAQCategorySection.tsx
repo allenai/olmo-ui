@@ -1,8 +1,8 @@
 import { Divider, List, Stack } from '@mui/material';
 
-import { faqs } from '@/assets/faq-list';
+import { faqs } from '@/components/faq/faq-list';
 
-import { createFAQId } from './createFAQId';
+import { createFAQId } from './faq-utils';
 import { FAQCategoryLink } from './FAQCategoryLink';
 
 export const FAQCategorySection = () => {

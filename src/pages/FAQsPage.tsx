@@ -2,8 +2,8 @@ import { Box, Button, Card, CardContent, Stack, TextField } from '@mui/material'
 import { useEffect, useMemo } from 'react';
 import { Form, useSearchParams } from 'react-router-dom';
 
-import { faqs } from '@/assets/faq-list';
 import { useDesktopOrUp } from '@/components/dolma/shared';
+import { faqs } from '@/components/faq/faq-list';
 import { FAQCategoriesButton } from '@/components/faq/FAQCategoriesButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
@@ -34,9 +34,16 @@ export const FAQsPage = (): JSX.Element => {
 
         const filtered = faqs.map((category) => ({
             category: category.category,
-            questions: category.questions.filter(
-                (question) => question.question.includes(search) || question.answer.includes(search)
-            ),
+            questions: category.questions.filter((question) => {
+                if (question.question.includes(search)) {
+                    return true;
+                }
+
+                const faqAnswer =
+                    typeof question.answer === 'string' ? question.answer : question.answer();
+
+                return faqAnswer.includes(search);
+            }),
         }));
 
         return filtered;

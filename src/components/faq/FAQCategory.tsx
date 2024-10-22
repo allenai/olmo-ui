@@ -1,10 +1,10 @@
 import { Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-import type { FAQ as FAQType } from '@/assets/faq-list';
+import type { FAQ as FAQType } from '@/components/faq/faq-list';
 
-import { createFAQId } from './createFAQId';
 import { FAQ } from './FAQ';
+import { createFAQId } from './faq-utils';
 
 interface FAQCategoryProps {
     categoryName: string;
@@ -32,14 +32,17 @@ export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): Reac
                 {categoryName}
             </Typography>
             <Stack direction="column" gap={0}>
-                {questions.map((question) => (
-                    <FAQ
-                        question={question.question}
-                        answer={question.answer}
-                        linkId={question.interlinkId}
-                        key={categoryName + question.question}
-                    />
-                ))}
+                {questions.map((question) => {
+                    const answer: string =
+                        typeof question.answer === 'string' ? question.answer : question.answer();
+                    return (
+                        <FAQ
+                            question={question.question}
+                            answer={answer}
+                            key={categoryName + question.question}
+                        />
+                    );
+                })}
             </Stack>
         </Stack>
     );
