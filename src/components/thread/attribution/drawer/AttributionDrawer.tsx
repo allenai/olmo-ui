@@ -1,11 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
-import { useAppContext } from '@/AppContext';
-import { getFAQIdByShortId } from '@/components/faq/faq-utils';
-import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
-import { RemoteState } from '@/contexts/util';
-import { links } from '@/Links';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
 import { FullAttributionContent } from './AttributionContent';
 
