@@ -9,13 +9,14 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import { IconButton, Link, Stack } from '@mui/material';
-import { ComponentProps, useEffect } from 'react';
+import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { ChatIcon } from '@/components/assets/ChatIcon';
 import { links } from '@/Links';
+import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
@@ -73,11 +74,10 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
-    useEffect(() => {
-        if (!location.pathname.includes('thread')) {
-            onClose();
-        }
-    }, [location.pathname]);
+
+    useCloseDrawerOnNavigation({
+        handleDrawerClose: onClose,
+    });
 
     return (
         <ResponsiveDrawer
@@ -146,7 +146,11 @@ export const NavigationDrawer = ({
                     Documentation
                 </NavigationLink>
                 <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
-                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
+                    <NavigationLink
+                        icon={<HelpCenterIcon />}
+                        selected={curriedDoesMatchPath(links.faqs)}
+                        href={links.faqs}
+                        variant="footer">
                         FAQ
                     </NavigationLink>
                     <NavigationLink

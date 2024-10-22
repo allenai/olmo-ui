@@ -5,7 +5,7 @@ import { links } from '@/Links';
 
 import { NewSearchPlaceholder } from './NewSearchPlaceholder';
 import { SearchBar } from './SearchBar';
-import { ElevatedCard, useDesktopOrUp } from './shared';
+import { BaseCard, useDesktopOrUp } from './shared';
 
 export const SearchForm = ({
     defaultValue,
@@ -19,7 +19,7 @@ export const SearchForm = ({
     noCardOnDesktop?: boolean;
 }) => {
     const isDesktop = useDesktopOrUp();
-    const Wrapper = noCardOnDesktop && isDesktop ? Box : ElevatedCard;
+    const Wrapper = noCardOnDesktop && isDesktop ? Box : BaseCard;
     const dolmaRouteMatch = useMatch(links.datasetExplorer);
 
     return (

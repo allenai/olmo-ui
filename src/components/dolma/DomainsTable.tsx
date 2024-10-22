@@ -89,10 +89,9 @@ export const DomainsTable = () => {
 
     return (
         <Paper
-            elevation={isSmallLayoutOrUp ? 2 : 0}
             sx={(theme) => ({
                 background: theme.palette.background.default,
-                borderRadius: isSmallLayoutOrUp ? theme.spacing(1.5) : 0,
+                borderRadius: isSmallLayoutOrUp ? 1 : 0,
                 padding: isSmallLayoutOrUp ? theme.spacing(4) : 0,
             })}>
             <Typography
