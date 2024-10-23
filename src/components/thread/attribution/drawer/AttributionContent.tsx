@@ -153,20 +153,22 @@ export const FullAttributionContent = () => {
                 When it's closed, we should go back to where we were in AttributionContent */}
             <Box
                 sx={{
+                    // This sticks around so we can preserve its scroll state. If we remove it from rendering entirely it'll reset
                     display: shouldShowRepeatedDocuments ? 'none' : undefined,
                     height: 1,
                     overflowY: 'auto',
                 }}>
                 <AttributionContent />
             </Box>
-            <Box
-                sx={{
-                    display: shouldShowRepeatedDocuments ? undefined : 'none',
-                    height: 1,
-                    overflowY: 'auto',
-                }}>
-                {shouldShowRepeatedDocuments && <RepeatedAttributionDocumentsContent />}
-            </Box>
+            {shouldShowRepeatedDocuments && (
+                <Box
+                    sx={{
+                        height: 1,
+                        overflowY: 'auto',
+                    }}>
+                    <RepeatedAttributionDocumentsContent />
+                </Box>
+            )}
         </>
     );
 };

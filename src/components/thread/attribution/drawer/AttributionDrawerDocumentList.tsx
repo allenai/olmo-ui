@@ -149,7 +149,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                             documentIndex={document.index}
                             documentUrl={document.url}
                             source={document.source}
-                            // This has a +1 because the repeated documents include this document we're showing here
+                            // This has a +1 because the repeated document count should include this document we're showing here
+                            // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
                             repeatedDocumentCount={document.duplicateDocumentIndexes.length + 1}
                         />
                     );
