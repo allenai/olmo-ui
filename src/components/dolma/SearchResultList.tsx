@@ -119,7 +119,7 @@ const SearchResult = ({
                             : 'none', // Blur effect when caution is shown
                     transition: 'filter 0.3s ease',
                 }}>
-                <DocumentMeta dolmaId={result.dolma_id} source={result.source} />
+                <DocumentMeta source={result.source} />
                 <Link
                     underline="hover"
                     href={documentURL(result.id, response.request.query)}

@@ -58,11 +58,7 @@ export const Document = () => {
             )}
             {documentState === RemoteState.Loaded && documentDetails && (
                 <Stack pt={3.5}>
-                    <DocumentMeta
-                        dolmaId={documentDetails.dolma_id}
-                        source={documentDetails.source}
-                        url={documentDetails.url}
-                    />
+                    <DocumentMeta source={documentDetails.source} url={documentDetails.url} />
                     <Typography variant="h4" m={0} mt={1} textOverflow="ellipsis" overflow="hidden">
                         {documentDetails.title}
                     </Typography>
