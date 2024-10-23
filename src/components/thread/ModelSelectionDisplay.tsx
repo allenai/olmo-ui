@@ -1,6 +1,5 @@
 import {
     Box,
-    BoxProps,
     FormControl,
     InputLabel,
     MenuItem,
@@ -16,19 +15,19 @@ import { Model, ModelList } from '@/api/Model';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
-type ModelSelectionDisplayProps = Pick<BoxProps, 'sx'> & {
+type ModelSelectionDisplayProps = {
     models: ModelList;
     selectedModel?: Model;
     onModelChange: (event: SelectChangeEvent) => void;
     label?: string;
-    isLayoutWide: boolean;
+    shouldOnlyShowAtDesktop: boolean;
 };
 
 export const ModelSelectionDisplay = ({
     models,
     selectedModel,
     onModelChange,
-    isLayoutWide,
+    shouldOnlyShowAtDesktop,
     label = '',
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
@@ -38,22 +37,22 @@ export const ModelSelectionDisplay = ({
                 // These responsive styles are mirrors to the ones below
                 // the display values should be flipped versions
                 //
-                display: isLayoutWide ? 'none' : 'block', // This is hidden by default (mobile first)
+                display: shouldOnlyShowAtDesktop ? 'none' : 'block', // This is hidden by default (mobile first)
                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                     // it is visible above the DESKTOP_LAYOUT_BREAKPOINT
-                    display: isLayoutWide ? 'block' : 'none',
+                    display: shouldOnlyShowAtDesktop ? 'block' : 'none',
                 },
                 [SMALL_THREAD_CONTAINER_QUERY]: {
                     // Unlesss the container is too small, then it is hidden again
-                    display: isLayoutWide ? 'none' : 'block',
+                    display: shouldOnlyShowAtDesktop ? 'none' : 'block',
                 },
-                paddingTop: !isLayoutWide ? 2 : undefined,
-                gridColumn: !isLayoutWide ? '1 / -1' : '1',
+                paddingTop: !shouldOnlyShowAtDesktop ? 2 : undefined,
+                gridColumn: !shouldOnlyShowAtDesktop ? '1 / -1' : '1',
             })}>
             {models.length > 1 ? (
                 <FormControl
                     sx={{
-                        width: !isLayoutWide ? '100%' : undefined,
+                        width: !shouldOnlyShowAtDesktop ? '100%' : undefined,
                         maxWidth: '25rem',
                         justifySelf: 'center',
                     }}>

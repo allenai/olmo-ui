@@ -65,7 +65,7 @@ export const UIRefreshThreadPage = () => {
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             label="Model"
-                            isLayoutWide={true}
+                            shouldOnlyShowAtDesktop={true}
                         />
                         <ThreadPageControls />
                         <ModelSelectionDisplay
@@ -73,7 +73,7 @@ export const UIRefreshThreadPage = () => {
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             label="Model"
-                            isLayoutWide={false}
+                            shouldOnlyShowAtDesktop={false}
                         />
                     </Box>
 
