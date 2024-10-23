@@ -94,7 +94,7 @@ test('should show the attribution drawer when navigating to a thread', async ({ 
     );
 });
 
-test('should reset selected repeated documents when navigating to a new thread', async ({
+test('should keep scroll position when going back to CorpusLink documents and reset selected repeated documents when navigating to a new thread', async ({
     page,
 }) => {
     await page.goto('/thread/msg_duplicatedocuments');
@@ -102,8 +102,20 @@ test('should reset selected repeated documents when navigating to a new thread',
 
     const documentWithDuplicates = page
         .getByRole('listitem')
-        .filter({ has: page.getByText('https://www.thezoologicalworld.com/emper...') });
+        .filter({ has: page.getByText('https://www.worldatlas.com/articles/empe...') });
     await expect(documentWithDuplicates).toHaveCount(1);
+
+    await documentWithDuplicates.scrollIntoViewIfNeeded();
+
+    await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
+
+    await documentWithDuplicates
+        .getByRole('button', { name: 'View all repeated documents' })
+        .click();
+
+    // We should keep the scroll position when going back to the documents
+    await page.getByText('Back to CorpusLink documents').click();
+    await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
 
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents' })

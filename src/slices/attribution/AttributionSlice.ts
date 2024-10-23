@@ -258,6 +258,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     handleAttributionForChangingThread: () => {
         // when we change threads we want to reset all the selected spans from the last thread
         get().resetSelectedSpans();
+        get().resetSelectedRepeatedDocument();
         set(
             (state) => {
                 if (
