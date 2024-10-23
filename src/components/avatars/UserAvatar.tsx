@@ -12,7 +12,7 @@ export const UserAvatar = () => {
     return (
         <ChatAvatar
             src={userPicture || userAvatarURL}
-            alt="Icon representing the User"
+            alt=""
             sx={(theme: Theme) => ({
                 padding: userPicture ? 0 : undefined, // undefined to allow default
                 background: theme.palette.background.paper,
