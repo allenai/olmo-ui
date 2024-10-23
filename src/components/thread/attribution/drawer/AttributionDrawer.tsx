@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
+import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -60,7 +61,7 @@ export const AttributionContent = () => {
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
     const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
 
-    const { loadingState } = attributionForMessage;
+    const { loadingState, documents } = attributionForMessage;
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
@@ -69,7 +70,7 @@ export const AttributionContent = () => {
                 Select a highlight from the model response to see the documents from the
                 pre-training data that have exact text matches in the model response.
             </Typography>
-            <Link href={links.faqs} underline="always">
+            <Link href={links.faqs + getFAQIdByShortId('corpuslink-intro')} underline="always">
                 <Typography variant="caption">Learn more</Typography>
             </Link>
             <Card>
@@ -109,6 +110,7 @@ export const AttributionContent = () => {
                 sx={{
                     justifyContent: 'flex-start',
                     color: (theme) => theme.palette.text.primary,
+                    visibility: documents.length === 0 ? 'hidden' : 'visible',
                 }}>
                 {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
             </Button>
