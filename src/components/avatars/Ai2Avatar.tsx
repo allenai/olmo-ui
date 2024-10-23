@@ -7,7 +7,7 @@ export const Ai2Avatar = () => {
     return (
         <ChatAvatar
             src={ai2AvatarURL}
-            alt="Ai2 Monogram representing the LLM"
+            alt=""
             sx={(theme: Theme) => ({
                 background: theme.palette.primary.main,
             })}
