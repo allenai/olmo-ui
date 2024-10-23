@@ -248,10 +248,26 @@ export const messageStreamHandlers = [
 
         const stream = new ReadableStream({
             async start(controller) {
-                for (const message of response) {
-                    await delay();
-                    controller.enqueue(encoder.encode(JSON.stringify(message) + '\n'));
+                if (requestBody.content === 'infinite') {
+                    controller.enqueue(encoder.encode(JSON.stringify(response[0]) + '\n'));
+                    let i = 1;
+                    while (true) {
+                        if (i === response.length - 1) {
+                            i = 1;
+                        }
+
+                        await delay();
+                        controller.enqueue(encoder.encode(JSON.stringify(response[i]) + '\n'));
+
+                        i++;
+                    }
+                } else {
+                    for (const message of response) {
+                        await delay();
+                        controller.enqueue(encoder.encode(JSON.stringify(message) + '\n'));
+                    }
                 }
+
                 controller.close();
             },
         });
