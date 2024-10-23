@@ -24,6 +24,7 @@ const AttributionDocumentCardBase = ({
         <Card
             component="li"
             sx={{
+                // this bgcolor is the varnish off-white with 80% opacity
                 bgcolor: '#F8F0E780',
                 listStyle: 'none',
 
