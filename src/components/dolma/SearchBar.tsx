@@ -82,8 +82,13 @@ export const SearchBar = ({
                         sx={{
                             backgroundColor: (theme) => theme.palette.background.reversed,
                             color: (theme) => theme.palette.secondary.light,
-                            '&:hover': {
+                            ':hover': {
                                 backgroundColor: (theme) => theme.color['teal-100'].hex,
+                                color: (theme) => theme.color.G6.hex,
+                            },
+                            ':focus': {
+                                background: (theme) => theme.color['teal-90'].hex,
+                                color: (theme) => theme.color.G6.hex,
                             },
                         }}>
                         Submit
