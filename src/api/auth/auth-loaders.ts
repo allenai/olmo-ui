@@ -48,7 +48,7 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 
     const isAuthenticated = await auth0Client.isAuthenticated();
     if (isAuthenticated) {
-        const redirectTo = new URL(request.url).searchParams.get('from') || '/';
+        const redirectTo = new URL(request.url).searchParams.get('redirectTo') || '/';
         return redirect(redirectTo);
     }
 };
