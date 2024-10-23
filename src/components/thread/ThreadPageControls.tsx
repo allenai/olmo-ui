@@ -121,7 +121,11 @@ export const ThreadPageControls = (): JSX.Element => {
                 {isMediumLayout ? (
                     <ButtonGroup size="large" variant="outlined">
                         <NewThreadButton layout="icon" isResponsive={false} />
-                        <DeleteThreadButton layout="icon" isResponsive={false} />
+                        <DeleteThreadButton
+                            layout="icon"
+                            isResponsive={false}
+                            onClick={handleClickDelete}
+                        />
                         <ShareThreadButton layout="icon" isResponsive={false} />
                     </ButtonGroup>
                 ) : null}

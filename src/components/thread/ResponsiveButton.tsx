@@ -67,7 +67,7 @@ const ResponsiveButtonBase = ({
  * Creates a responsive button set
  *
  * layout - see ResponsiveButtonBase -- when not creating a pair of buttons, which button layout to use
- * isResponsive - weather to make responsive
+ * isResponsive - whether to make responsive
  */
 
 export type ResponsiveButtonProps = Omit<ResponsiveButtonBaseProps, 'responsiveSize'> & {
@@ -82,17 +82,17 @@ export const ResponsiveButton = ({
     isResponsive = true,
     ...props
 }: ResponsiveButtonProps): JSX.Element => {
-    return (
-        <>
-            <ResponsiveButtonBase
-                {...props}
-                variant={variant}
-                startIcon={startIcon}
-                title={title}
-                layout={layout}
-                responsiveSize={isResponsive ? 'large' : 'none'}
-            />
-            {isResponsive ? (
+    if (isResponsive) {
+        return (
+            <>
+                <ResponsiveButtonBase
+                    {...props}
+                    variant={variant}
+                    startIcon={startIcon}
+                    title={title}
+                    layout={layout}
+                    responsiveSize="large"
+                />
                 <ResponsiveButtonBase
                     {...props}
                     variant={variant}
@@ -101,7 +101,17 @@ export const ResponsiveButton = ({
                     layout="icon"
                     responsiveSize="small"
                 />
-            ) : null}
-        </>
+            </>
+        );
+    }
+    return (
+        <ResponsiveButtonBase
+            {...props}
+            variant={variant}
+            startIcon={startIcon}
+            title={title}
+            layout={layout}
+            responsiveSize="none"
+        />
     );
 };
