@@ -1,9 +1,11 @@
 import { render, screen } from '@test-utils';
 
+import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
+import { useFakeUserAuthInfo } from '@/utils/FakeAuthLoaders';
 
 import { ThreadDisplay } from './ThreadDisplay';
 
@@ -14,6 +16,7 @@ describe('ThreadDisplay', () => {
 
     it('should highlight spans that contain special regex characters', () => {
         vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(useFakeUserAuthInfo);
 
         render(
             <FakeAppContextProvider
