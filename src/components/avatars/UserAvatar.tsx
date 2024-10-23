@@ -11,13 +11,14 @@ export const UserAvatar = () => {
 
     return (
         <ChatAvatar
-            src={userPicture || userAvatarURL}
+            src={userPicture}
             alt=""
+            color="primary"
             sx={(theme: Theme) => ({
-                padding: userPicture ? 0 : undefined, // undefined to allow default
+                padding: 0,
                 background: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.grey[100]}`,
-            })}
-        />
+            })}>
+            <img src={`${userAvatarURL}`} alt="" className="MuiAvatar-fallback" />
+        </ChatAvatar>
     );
 };
