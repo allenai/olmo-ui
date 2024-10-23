@@ -39,7 +39,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     };
 
     const shouldShowHighlight = useAppContext((state) => {
-        if (!state.isAllHighlightVisible) {
+        if (!state.attribution.isAllHighlightVisible) {
             return false;
         }
 

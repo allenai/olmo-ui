@@ -4,7 +4,7 @@ import { Stack } from '@mui/system';
 
 import { DrawerId } from '@/slices/DrawerSlice';
 
-import { FullScreenDrawer, FullScreenDrawerHeader } from '../TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '../FullScreenDrawer';
 import { FAQCategorySection } from './FAQCategorySection';
 
 export const CATEGORY_DRAWER_ID: DrawerId = 'category';

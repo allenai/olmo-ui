@@ -10,7 +10,7 @@ import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
 } from './AttributionDocumentCard/AttributionDocumentCard';
-import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
+import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
     duplicateDocumentIndexes: string[];
@@ -56,7 +56,7 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
+    const attributionForMessage = useAttributionDocumentsForMessage();
 
     const { documents, loadingState } = attributionForMessage;
 
@@ -149,7 +149,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                             documentIndex={document.index}
                             documentUrl={document.url}
                             source={document.source}
-                            numRepetitions={document.duplicateDocumentIndexes.length + 1}
+                            // This has a +1 because the repeated document count should include this document we're showing here
+                            // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
+                            repeatedDocumentCount={document.duplicateDocumentIndexes.length + 1}
                         />
                     );
                 })}

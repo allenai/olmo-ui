@@ -1,10 +1,10 @@
 import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
-import { Box, styled, Typography } from '@mui/material';
+import { styled, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
-import { AttributionContent } from './attribution/drawer/AttributionDrawer';
+import { FullAttributionContent } from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
 const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
@@ -15,41 +15,38 @@ export const ThreadTabs = () => {
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
 
     return (
-        <Box sx={{ gridArea: 'aside', minHeight: 0 }} bgcolor="background.default">
-            <TabsWithOverflow
-                value={currentOpenThreadTab}
-                onChange={(e, value) => {
-                    if (value != null && typeof value === 'string') {
-                        setCurrentOpenGlobalDrawer(value as ThreadTabId);
-                    }
-                }}>
-                <StickyTabsList>
-                    <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
-                        <Typography variant="h4" component="span">
-                            Parameters
-                        </Typography>
-                    </TabControl>
-                    <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
-                        <Typography variant="h4" component="span">
-                            CorpusLink
-                        </Typography>
-                    </TabControl>
-                </StickyTabsList>
-
-                <TabPanelWithOverflow
-                    value={PARAMETERS_TAB_NAME}
-                    aria-labelledby="parameters-tab-control"
-                    id="parameters-tabpanel">
-                    <ParameterContent />
-                </TabPanelWithOverflow>
-                <TabPanelWithOverflow
-                    value={DATASET_TAB_NAME}
-                    aria-labelledby="dataset-tab-control"
-                    id="parameters-tabpanel">
-                    <AttributionContent />
-                </TabPanelWithOverflow>
-            </TabsWithOverflow>
-        </Box>
+        <TabsWithOverflow
+            value={currentOpenThreadTab}
+            onChange={(e, value) => {
+                if (value != null && typeof value === 'string') {
+                    setCurrentOpenGlobalDrawer(value as ThreadTabId);
+                }
+            }}>
+            <StickyTabsList>
+                <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
+                    <Typography variant="h4" component="span">
+                        Parameters
+                    </Typography>
+                </TabControl>
+                <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
+                    <Typography variant="h4" component="span">
+                        CorpusLink
+                    </Typography>
+                </TabControl>
+            </StickyTabsList>
+            <TabPanelWithOverflow
+                value={PARAMETERS_TAB_NAME}
+                aria-labelledby="parameters-tab-control"
+                id="parameters-tabpanel">
+                <ParameterContent />
+            </TabPanelWithOverflow>
+            <TabPanelWithOverflow
+                value={DATASET_TAB_NAME}
+                aria-labelledby="dataset-tab-control"
+                id="parameters-tabpanel">
+                <FullAttributionContent />
+            </TabPanelWithOverflow>
+        </TabsWithOverflow>
     );
 };
 
@@ -78,18 +75,17 @@ const TabControl = styled(Tab)(({ theme }) => ({
     },
 }));
 
-const TabsWithOverflow = styled(Tabs)({
+const TabsWithOverflow = styled(Tabs)(({ theme }) => ({
     display: 'flex',
     flexFlow: 'column nowrap',
     height: '100%',
-    // We need this so the children won't automatically take up all the space they can
-    overflow: 'hidden',
-});
+
+    gridArea: 'aside',
+    backgroundColor: theme.palette.background.default,
+}));
 
 const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    scrollbarGutter: 'stable both-edges',
+    minHeight: 0,
     '& > *': {
         paddingInline: theme.spacing(2),
     },

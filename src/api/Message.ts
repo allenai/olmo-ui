@@ -7,12 +7,12 @@ export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
 export interface InferenceOpts {
-    max_tokens?: number;
-    temperature?: number;
-    n?: number;
-    top_p?: number;
-    logprobs?: number;
-    stop?: string[];
+    max_tokens?: number | null;
+    temperature?: number | null;
+    n?: number | null;
+    top_p?: number | null;
+    logprobs?: number | null;
+    stop?: string[] | null;
 }
 
 export interface Logprob {
@@ -33,27 +33,27 @@ export interface MessagePost {
 }
 
 export interface Message {
-    children?: Message[];
+    children?: Message[] | null;
     content: string;
     snippet: string;
     created: Date;
     creator: string;
-    deleted?: Date;
+    deleted?: Date | null;
     id: string;
     labels: Label[];
-    completion?: string;
-    logprobs?: Logprob[];
-    model_type?: string;
-    finish_reason?: string;
+    completion?: string | null;
+    logprobs?: Logprob[] | null;
+    model_type?: string | null;
+    finish_reason?: string | null;
     opts: InferenceOpts;
     original?: string | null;
-    parent?: string;
-    private?: boolean;
+    parent?: string | null;
+    private?: boolean | null;
     role: Role;
     root: string;
-    template?: string;
+    template?: string | null;
     final: boolean;
-    model?: string;
+    model?: string | null;
 }
 
 export interface MessageList {
@@ -64,8 +64,8 @@ export interface MessageList {
 // The serialized representation, where certain fields (dates) are encoded as strings.
 export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
     created: string;
-    deleted?: string;
-    children?: JSONMessage[];
+    deleted?: string | null;
+    children?: JSONMessage[] | null;
 }
 
 export interface MessagesResponse {

@@ -1,6 +1,7 @@
-import { Button, Card, CardActions, CardContent, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
@@ -10,23 +11,22 @@ interface AttributionDocumentCardBaseProps {
     snippets: ReactNode;
     url?: ReactNode;
     source: ReactNode;
-    datasetExplorerLink: ReactNode;
-    numRepetitions: number;
-    // href: string;
+    actions?: ReactNode;
 }
 
 const AttributionDocumentCardBase = ({
     snippets,
     url,
     source,
-    datasetExplorerLink,
-    numRepetitions,
+    actions,
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
             component="li"
             sx={{
+                // this bgcolor is the varnish off-white with 80% opacity
                 bgcolor: '#F8F0E780',
+                listStyle: 'none',
 
                 borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
 
@@ -43,28 +43,16 @@ const AttributionDocumentCardBase = ({
                     {snippets}
                 </Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
-                <Typography
-                    variant="body2"
-                    fontWeight={(theme) => theme.typography.fontWeightBold}
-                    component="span">
+                <Typography variant="body2" fontWeight={600} component="span">
                     {url}
                 </Typography>
                 <Typography variant="body2" fontWeight={600} component="span">
                     {source}
                 </Typography>
-                {numRepetitions > 1 && (
-                    <Typography variant="body2" fontWeight={600} component="span">
-                        Document repeated {numRepetitions} times in result
-                        {/* TODO: Make the "Show all" link work */}
-                        {/* <Link href="" underline="always">
-                            <Typography variant="caption">Show all</Typography>
-                        </Link> */}
-                    </Typography>
-                )}
             </CardContent>
-            <CardActions sx={{ padding: 2, paddingBlockStart: 0 }}>
-                {datasetExplorerLink != null && datasetExplorerLink}
-            </CardActions>
+            <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
+                {actions != null && actions}
+            </Stack>
         </Card>
     );
 };
@@ -73,34 +61,53 @@ interface AttributionDocumentCardProps {
     documentUrl?: string;
     source: string;
     documentIndex: string;
-    numRepetitions: number;
+    repeatedDocumentCount?: number;
 }
 
 export const AttributionDocumentCard = ({
     documentUrl,
     source,
     documentIndex,
-    numRepetitions,
+    repeatedDocumentCount,
 }: AttributionDocumentCardProps): JSX.Element => {
+    const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
+
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets documentIndex={documentIndex} />}
             url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
-            datasetExplorerLink={
-                <Button
-                    href={links.document(documentIndex)}
-                    variant="outlined"
-                    color="inherit"
-                    size="small"
-                    fullWidth={false}
-                    sx={{
-                        width: 'fit-content',
-                    }}>
-                    Open in Dataset Explorer
-                </Button>
+            actions={
+                <>
+                    <Button
+                        href={links.document(documentIndex)}
+                        variant="outlined"
+                        color="inherit"
+                        size="small"
+                        fullWidth={false}
+                        sx={{
+                            width: 'fit-content',
+                        }}>
+                        Open in Dataset Explorer
+                    </Button>
+
+                    {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
+                        <Stack direction="column" alignItems="start">
+                            <Typography variant="body2" fontWeight={600}>
+                                Document repeated {repeatedDocumentCount} times in result
+                            </Typography>
+                            <Link
+                                component="button"
+                                variant="body2"
+                                onClick={() => {
+                                    selectRepeatedDocument(documentIndex);
+                                }}>
+                                View all repeated documents
+                            </Link>
+                        </Stack>
+                    )}
+                </>
             }
-            numRepetitions={numRepetitions}
         />
     );
 };
@@ -119,8 +126,7 @@ export const AttributionDocumentCardSkeleton = (): JSX.Element => {
             }
             url={<Skeleton />}
             source={<Skeleton />}
-            datasetExplorerLink={<Skeleton />}
-            numRepetitions={1}
+            actions={<Skeleton variant="rectangular" />}
         />
     );
 };

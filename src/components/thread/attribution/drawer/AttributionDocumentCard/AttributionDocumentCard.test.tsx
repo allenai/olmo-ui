@@ -96,7 +96,11 @@ describe('AttributionDocumentCard', () => {
                         },
                     },
                 }}>
-                <AttributionDocumentCard source="Source" documentIndex="12345" numRepetitions={1} />
+                <AttributionDocumentCard
+                    source="Source"
+                    documentIndex="12345"
+                    repeatedDocumentCount={1}
+                />
             </FakeAppContextProvider>
         );
 

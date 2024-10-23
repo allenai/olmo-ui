@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -27,7 +27,10 @@ export const ParameterDrawer = (): JSX.Element => {
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography variant="h5" margin={0} color="primary">
+                            <Typography
+                                variant="h5"
+                                margin={0}
+                                color={(theme) => theme.palette.text.primary}>
                                 Parameters
                             </Typography>
                         </ListSubheader>

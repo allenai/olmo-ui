@@ -22,8 +22,9 @@ interface AttributionState {
         };
         selectedMessageId: string | null;
         selectedSpanIds: string[];
+        selectedRepeatedDocumentIndex: string | null;
+        isAllHighlightVisible: boolean;
     };
-    isAllHighlightVisible: boolean;
 }
 
 interface AttributionActions {
@@ -37,6 +38,8 @@ interface AttributionActions {
     resetSelectedSpans: () => void;
     toggleHighlightVisibility: () => void;
     handleAttributionForChangingThread: () => void;
+    selectRepeatedDocument: (documentIndex: string) => void;
+    resetSelectedRepeatedDocument: () => void;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -48,8 +51,9 @@ const initialAttributionState: AttributionState = {
         attributionsByMessageId: {},
         selectedMessageId: null,
         selectedSpanIds: [],
+        selectedRepeatedDocumentIndex: null,
+        isAllHighlightVisible: true,
     },
-    isAllHighlightVisible: true,
 };
 
 const attributionClient = new AttributionClient();
@@ -108,6 +112,8 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 state.attribution.selectedMessageId = null;
                 state.attribution.selectedSpanIds =
                     initialAttributionState.attribution.selectedSpanIds;
+                state.attribution.selectedRepeatedDocumentIndex =
+                    initialAttributionState.attribution.selectedRepeatedDocumentIndex;
             },
             false,
             'attribution/resetAttribution'
@@ -186,7 +192,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
         return {
             attribution: get().attribution,
-            isAllHighlightVisible: get().isAllHighlightVisible,
         };
     },
 
@@ -215,6 +220,27 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
+    selectRepeatedDocument: (documentIndex: string) => {
+        set(
+            (state) => {
+                state.attribution.selectedRepeatedDocumentIndex = documentIndex;
+            },
+            false,
+            'attribution/selectRepeatedDocument'
+        );
+    },
+
+    resetSelectedRepeatedDocument: () => {
+        set(
+            (state) => {
+                state.attribution.selectedRepeatedDocumentIndex =
+                    initialAttributionState.attribution.selectedRepeatedDocumentIndex;
+            },
+            false,
+            'attribution/resetSelectedRepeatedDocument'
+        );
+    },
+
     toggleHighlightVisibility: () => {
         const { attribution, resetSelectedSpans } = get();
         if (attribution.selectedSpanIds.length > 0) {
@@ -222,7 +248,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         }
         set(
             (state) => {
-                state.isAllHighlightVisible = !state.isAllHighlightVisible;
+                state.attribution.isAllHighlightVisible = !state.attribution.isAllHighlightVisible;
             },
             false,
             'attribution/toggleHighlightVisibility'
@@ -232,6 +258,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     handleAttributionForChangingThread: () => {
         // when we change threads we want to reset all the selected spans from the last thread
         get().resetSelectedSpans();
+        get().resetSelectedRepeatedDocument();
         set(
             (state) => {
                 if (
