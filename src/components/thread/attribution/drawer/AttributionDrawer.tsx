@@ -61,7 +61,7 @@ export const AttributionContent = () => {
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
     const isAllHighlightVisible = useAppContext((state) => state.isAllHighlightVisible);
 
-    const { loadingState } = attributionForMessage;
+    const { loadingState, documents } = attributionForMessage;
 
     return (
         <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
@@ -110,6 +110,7 @@ export const AttributionContent = () => {
                 sx={{
                     justifyContent: 'flex-start',
                     color: (theme) => theme.palette.text.primary,
+                    visibility: documents.length === 0 ? 'hidden' : 'visible',
                 }}>
                 {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
             </Button>
