@@ -17,7 +17,11 @@ describe('Dataset Explorer Search', () => {
         debug();
 
         await waitFor(() => {
-            expect(screen.getAllByText('stack-dedup')).toBeGreaterThanOrEqual(4);
+            expect(
+                screen.getAllByText(
+                    'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
+                )
+            ).toBeVisible();
         });
 
         expect(screen.queryByTestId('search-progress-bar')).not.toBeInTheDocument();
