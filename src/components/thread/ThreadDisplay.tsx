@@ -7,7 +7,7 @@ import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from './ChatMessage';
+import { CHAT_MESSAGE_CLASS_NAME, ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 
@@ -71,9 +71,12 @@ export const ThreadDisplay = (): JSX.Element => {
             direction="column"
             data-testid="thread-display"
             overflow="auto"
+            useFlexGap
             sx={{
                 scrollSnapType: 'y proximity',
-                '& :last-child': {
+
+                // '& :last-child': {
+                [`& .${CHAT_MESSAGE_CLASS_NAME}:last-of-type`]: {
                     scrollSnapAlign: 'end',
                 },
             }}>

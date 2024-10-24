@@ -11,14 +11,15 @@ import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
-    textWrap: 'pretty',
     paddingInlineEnd: 2,
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
+    // this assumes a response format like what's generated with react-markdown
+    // we wrap with a Typography element then inside the Typography element is the actual message
     '&[data-is-streaming="true"] * :last-child::after': {
         borderRadius: 5,
-        bgcolor: 'primary.dark',
+        bgcolor: 'primary.main',
         content: '""',
         display: 'inline-block',
         height: '1em',
@@ -58,6 +59,8 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
     );
 };
 
+export const CHAT_MESSAGE_CLASS_NAME = 'chat-message';
+
 interface ChatMessageProps extends PropsWithChildren {
     role: Role;
     messageId: string;
@@ -83,7 +86,7 @@ export const ChatMessage = ({
     const icon = variant === Role.User ? <UserAvatar /> : <RobotAvatar />;
 
     return (
-        <Stack direction="row" gap={3} alignItems="start">
+        <Stack direction="row" gap={3} alignItems="start" className={CHAT_MESSAGE_CLASS_NAME}>
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>

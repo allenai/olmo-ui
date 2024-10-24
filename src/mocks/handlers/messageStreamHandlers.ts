@@ -254,6 +254,14 @@ export const messageStreamHandlers = [
                     while (true) {
                         if (i === response.length - 1) {
                             i = 1;
+                            controller.enqueue(
+                                encoder.encode(
+                                    JSON.stringify({
+                                        message: 'msg_V6Y0U4H4O9',
+                                        content: ' ',
+                                    }) + '\n'
+                                )
+                            );
                         }
 
                         await delay();
