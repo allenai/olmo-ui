@@ -18,7 +18,7 @@ describe('Dataset Explorer Search', () => {
 
         await waitFor(() => {
             expect(
-                screen.getAllByText(
+                screen.getByText(
                     'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
                 )
             ).toBeVisible();
