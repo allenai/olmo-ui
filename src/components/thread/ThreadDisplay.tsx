@@ -66,20 +66,36 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        <Stack gap={2} direction="column" data-testid="thread-display" overflow="auto">
+        <Stack
+            gap={2}
+            direction="column"
+            data-testid="thread-display"
+            overflow="auto"
+            sx={{
+                scrollSnapType: 'y proximity',
+                '& :last-child': {
+                    scrollSnapAlign: 'end',
+                },
+            }}>
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
-            <Box
-                sx={{
-                    bottom: '-1px',
-                    minHeight: (theme) => theme.spacing(6),
-                    position: 'sticky',
-                    background:
-                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                    marginTop: (theme) => theme.spacing(-3),
+            {/* <Box
+                sx={(theme) => {
+                    const marginTop = theme.spacing(3);
+                    return {
+                        bottom: '-1px',
+                        minHeight: (theme) => theme.spacing(6),
+                        position: 'sticky',
+                        background:
+                            'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                        marginTop,
+
+                        scrollSnapAlign: 'end',
+                        // scrollMarginBlockEnd: marginTop,
+                    };
                 }}
-            />
+            /> */}
         </Stack>
     );
 };

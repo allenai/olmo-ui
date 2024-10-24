@@ -11,11 +11,12 @@ import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
+    textWrap: 'pretty',
     paddingInlineEnd: 2,
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
-    '&::after': {
+    '&[data-is-streaming="true"] * :last-child::after': {
         borderRadius: 5,
         bgcolor: 'primary.dark',
         content: '""',
@@ -41,16 +42,17 @@ interface LLMMessageProps extends PropsWithChildren {
 }
 
 const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
-    const messageStyle = useAppContext((state) => {
-        const shouldShowStreamingIndicator =
+    const shouldShowStreamingIndicator = useAppContext(
+        (state) =>
             state.streamingMessageId === messageId &&
-            state.streamPromptState === RemoteState.Loading;
-
-        return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
-    });
+            state.streamPromptState === RemoteState.Loading
+    );
 
     return (
-        <Typography component="div" sx={messageStyle}>
+        <Typography
+            component="div"
+            sx={[sharedMessageStyle, streamingMessageIndicatorStyle]}
+            data-is-streaming={shouldShowStreamingIndicator}>
             {children}
         </Typography>
     );
