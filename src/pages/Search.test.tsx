@@ -17,7 +17,7 @@ describe('Dataset Explorer Search', () => {
         debug();
 
         await waitFor(() => {
-            expect(screen.getAllByText('stack-dedup')).toBeInTheDocument();
+            expect(screen.getAllByText('stack-dedup')).toBeGreaterThanOrEqual(4);
         });
 
         expect(screen.queryByTestId('search-progress-bar')).not.toBeInTheDocument();
