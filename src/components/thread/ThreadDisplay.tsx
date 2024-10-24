@@ -8,7 +8,7 @@ import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { CHAT_MESSAGE_CLASS_NAME, ChatMessage } from './ChatMessage';
+import { ChatMessage, LLM_RESPONSE_ELEMENT } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 
@@ -77,12 +77,18 @@ export const ThreadDisplay = (): JSX.Element => {
                 scrollSnapType: 'y proximity',
                 overscrollBehavior: 'contain',
 
-                [`& .${CHAT_MESSAGE_CLASS_NAME}:last-of-type`]: {
+                // this is defined as a CSS variable because it's easier to handle it responsively in CSS
+                '--mask-height': (theme) => ({
+                    xs: theme.spacing(3.5),
+                    [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6.5),
+                }),
+
+                // Make sure you don't add any more elements with the same type as MessageView (article as of writing this) below it, it'll mess up the scroll pinning
+                // TODO: found out that we were applying this to both user and chat messages. it worked better before i fixed that?
+                [`& ${LLM_RESPONSE_ELEMENT}:last-of-type`]: {
                     scrollSnapAlign: 'end',
-                    scrollMarginBlockEnd: (theme) => ({
-                        xs: theme.spacing(3.5),
-                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6.5),
-                    }),
+                    scrollMarginBlockEnd: (theme) =>
+                        `calc(var(--mask-height) + ${theme.spacing(1)})`,
                 },
 
                 '@media (prefers-reduced-motion: no-preference)': {
@@ -92,15 +98,11 @@ export const ThreadDisplay = (): JSX.Element => {
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
-
             <Box
                 component="span"
                 sx={{
                     bottom: '-1px',
-                    minHeight: (theme) => ({
-                        xs: theme.spacing(3),
-                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
-                    }),
+                    minHeight: 'var(--mask-height)',
                     position: 'sticky',
                     background:
                         'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
