@@ -51,6 +51,9 @@ export const AttributionContent = () => {
                             '&:hover': {
                                 backgroundColor: theme.palette.secondary.light,
                             },
+                            ':focus': {
+                                backgroundColor: theme.color['green-20'].hex,
+                            },
                             marginTop: theme.spacing(2),
                         })}>
                         <Typography fontWeight={500}>Explore the full dataset</Typography>
