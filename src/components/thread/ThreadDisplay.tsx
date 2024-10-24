@@ -73,16 +73,21 @@ export const ThreadDisplay = (): JSX.Element => {
             overflow="auto"
             useFlexGap
             sx={{
-                scrollSnapType: 'y proximity',
-
-                // '& :last-child': {
-                [`& .${CHAT_MESSAGE_CLASS_NAME}:last-of-type`]: {
-                    scrollSnapAlign: 'end',
+                '*': {
+                    overflowAnchor: 'none',
                 },
             }}>
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
+            <Box
+                id="scroll-anchor"
+                sx={{
+                    overflowAnchor: 'auto',
+                    height: '12px',
+                    backgroundColor: 'red',
+                }}
+            />
             {/* <Box
                 sx={(theme) => {
                     const marginTop = theme.spacing(3);
