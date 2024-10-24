@@ -4,7 +4,7 @@ import { ComponentProps } from 'react';
 export const ChatIcon = (props: ComponentProps<typeof SvgIcon>): JSX.Element => {
     return (
         <SvgIcon {...props}>
-            {/* viewbox is a hack to visually move the svg */}
+            {/* the negative viewbox is a hack to visually move the svg since it's shifted up a little */}
             <svg width="20" height="20" viewBox="0 -4 24 24" fill="none">
                 <path
                     d="M0 0H20V14.8003H13.9168L8.80089 20L7.24396 18.4176L13.0047 12.5624H17.7982V2.23792H2.20183V12.5624H7.28084V14.8003H0V0Z"
