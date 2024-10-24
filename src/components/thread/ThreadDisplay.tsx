@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, styled } from '@mui/material';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -66,29 +66,17 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        <Stack
-            gap={2}
-            direction="column"
-            data-testid="thread-display"
-            overflow="auto"
-            useFlexGap
-            sx={{
-                '*': {
-                    overflowAnchor: 'none',
-                },
-            }}>
-            {childMessageIds.map((messageId) => (
-                <MessageView messageId={messageId} key={messageId} />
-            ))}
+        // HACK: I tried to implement https://css-tricks.com/books/greatest-css-tricks/pin-scrolling-to-bottom/ with this.
+        // It turns out that it DOESN'T work if the scrollable container is a flex container
+        // This Box holds the thread and the anchor so we can get the auto-scrolling
+        <ScrollPinContainer>
+            <Stack gap={2} direction="column" data-testid="thread-display">
+                {childMessageIds.map((messageId) => (
+                    <MessageView messageId={messageId} key={messageId} />
+                ))}
+            </Stack>
+            <ScrollPinAnchor id="scroll-anchor" />
             <Box
-                id="scroll-anchor"
-                sx={{
-                    overflowAnchor: 'auto',
-                    height: '12px',
-                    backgroundColor: 'red',
-                }}
-            />
-            {/* <Box
                 sx={(theme) => {
                     const marginTop = theme.spacing(3);
                     return {
@@ -98,15 +86,25 @@ export const ThreadDisplay = (): JSX.Element => {
                         background:
                             'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
                         marginTop,
-
-                        scrollSnapAlign: 'end',
-                        // scrollMarginBlockEnd: marginTop,
                     };
                 }}
-            /> */}
-        </Stack>
+            />
+        </ScrollPinContainer>
     );
 };
+
+// This is an implementation of https://css-tricks.com/books/greatest-css-tricks/pin-scrolling-to-bottom/
+const ScrollPinContainer = styled('div')({
+    overflow: 'auto',
+    '*': {
+        overflowAnchor: 'none',
+    },
+});
+
+const ScrollPinAnchor = styled('div')({
+    overflowAnchor: 'auto',
+    height: '1px',
+});
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
     const {
