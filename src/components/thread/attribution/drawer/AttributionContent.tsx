@@ -46,12 +46,13 @@ export const AttributionContent = () => {
                     <Button
                         variant="contained"
                         href={links.datasetExplorer}
+                        disableRipple={true}
                         sx={(theme) => ({
                             backgroundColor: theme.palette.secondary.light,
                             '&:hover': {
-                                backgroundColor: theme.palette.secondary.light,
+                                backgroundColor: theme.color['green-20'].hex,
                             },
-                            ':focus': {
+                            '&:focus-visible': {
                                 backgroundColor: theme.color['green-20'].hex,
                             },
                             marginTop: theme.spacing(2),
