@@ -25,7 +25,7 @@ export const AttributionContent = () => {
     const { loadingState, documents } = attributionForMessage;
 
     return (
-        <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
+        <Stack direction="column" gap={2} data-testid="attribution-drawer">
             <Typography variant="h5">Text matches from pre-training data</Typography>
             <Typography>
                 Select a highlight from the model response to see the documents from the
