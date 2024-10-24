@@ -15,7 +15,7 @@ describe('Dataset Explorer Search', () => {
         render(<RouterProvider router={router} />);
 
         await waitFor(() => {
-            expect(screen.getByText('b1277a5bbd120574d3abea306025f274da483a47')).toBeVisible();
+            expect(screen.getByText('stack-dedup')).toBeVisible();
         });
 
         expect(screen.queryByTestId('search-progress-bar')).not.toBeInTheDocument();
