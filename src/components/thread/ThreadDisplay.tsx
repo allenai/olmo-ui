@@ -8,7 +8,7 @@ import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { ChatMessage, LLM_RESPONSE_ELEMENT } from './ChatMessage';
+import { CHAT_MESSAGE_CLASS_NAME, ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 
@@ -83,9 +83,12 @@ export const ThreadDisplay = (): JSX.Element => {
                     [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6.5),
                 }),
 
-                // Make sure you don't add any more elements with the same type as MessageView (article as of writing this) below it, it'll mess up the scroll pinning
-                // TODO: found out that we were applying this to both user and chat messages. it worked better before i fixed that?
-                [`& ${LLM_RESPONSE_ELEMENT}:last-of-type`]: {
+                [`& div.${CHAT_MESSAGE_CLASS_NAME}`]: {
+                    scrollSnapAlign: 'top',
+                },
+
+                // Make sure you don't add any more elements with the same type as MessageView below it, it'll mess up the scroll pinning
+                [`& article.${CHAT_MESSAGE_CLASS_NAME}:last-of-type`]: {
                     scrollSnapAlign: 'end',
                     scrollMarginBlockEnd: (theme) =>
                         `calc(var(--mask-height) + ${theme.spacing(1)})`,
