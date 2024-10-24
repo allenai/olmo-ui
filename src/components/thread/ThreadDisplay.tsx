@@ -8,7 +8,7 @@ import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from './ChatMessage';
+import { CHAT_MESSAGE_CLASS_NAME, ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 
@@ -67,17 +67,34 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        // HACK: I tried to implement https://css-tricks.com/books/greatest-css-tricks/pin-scrolling-to-bottom/ with this.
-        // It turns out that it DOESN'T work if the scrollable container is a flex container
-        // This Box holds the thread and the anchor so we can get the auto-scrolling
-        <ScrollPinContainer>
-            <Stack gap={2} direction="column" data-testid="thread-display">
-                {childMessageIds.map((messageId) => (
-                    <MessageView messageId={messageId} key={messageId} />
-                ))}
-            </Stack>
-            <ScrollPinAnchor id="scroll-anchor" />
+        <Stack
+            gap={2}
+            direction="column"
+            data-testid="thread-display"
+            overflow="auto"
+            useFlexGap
+            sx={{
+                scrollSnapType: 'y proximity',
+                overscrollBehavior: 'contain',
+
+                [`& .${CHAT_MESSAGE_CLASS_NAME}:last-of-type`]: {
+                    scrollSnapAlign: 'end',
+                    scrollMarginBlockEnd: (theme) => ({
+                        xs: theme.spacing(3.5),
+                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6.5),
+                    }),
+                },
+
+                '@media (prefers-reduced-motion: no-preference)': {
+                    scrollBehavior: 'smooth',
+                },
+            }}>
+            {childMessageIds.map((messageId) => (
+                <MessageView messageId={messageId} key={messageId} />
+            ))}
+
             <Box
+                component="span"
                 sx={{
                     bottom: '-1px',
                     minHeight: (theme) => ({
@@ -89,24 +106,9 @@ export const ThreadDisplay = (): JSX.Element => {
                         'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
                 }}
             />
-        </ScrollPinContainer>
+        </Stack>
     );
 };
-
-// This is an implementation of https://css-tricks.com/books/greatest-css-tricks/pin-scrolling-to-bottom/
-// It makes it so that if a user scrolls down to the bottom, their scroll will stay at the bottom
-const ScrollPinContainer = styled('div')({
-    overflow: 'auto',
-
-    '*': {
-        overflowAnchor: 'none',
-    },
-});
-
-const ScrollPinAnchor = styled('div')({
-    overflowAnchor: 'auto',
-    height: '1px',
-});
 
 export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
     const {

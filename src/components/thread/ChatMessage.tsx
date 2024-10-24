@@ -84,9 +84,15 @@ export const ChatMessage = ({
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? <UserAvatar /> : <RobotAvatar />;
+    const component = variant === Role.LLM ? 'article' : 'div';
 
     return (
-        <Stack direction="row" gap={3} alignItems="start" className={CHAT_MESSAGE_CLASS_NAME}>
+        <Stack
+            direction="row"
+            gap={3}
+            alignItems="start"
+            className={CHAT_MESSAGE_CLASS_NAME}
+            component={component}>
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>
