@@ -167,7 +167,7 @@ export const QueryForm = (): JSX.Element => {
         }
 
         try {
-            await handlePromptSubmission(request);
+            handlePromptSubmission(request);
             formContext.reset();
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
@@ -183,7 +183,7 @@ export const QueryForm = (): JSX.Element => {
     const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            await formContext.handleSubmit(handleSubmit)();
+            formContext.handleSubmit(handleSubmit)();
         }
     };
 
@@ -241,7 +241,7 @@ export const QueryForm = (): JSX.Element => {
                         validation={{ pattern: /[^\s]+/ }}
                         // If we don't have a dense margin the label gets cut off!
                         margin="dense"
-                        disabled={!canEditThread}
+                        disabled={!canEditThread || isSelectedThreadLoading}
                         onKeyDown={handleOnKeyDown}
                         InputProps={{
                             sx: (theme) => ({
