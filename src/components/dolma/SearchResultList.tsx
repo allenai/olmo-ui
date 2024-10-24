@@ -122,7 +122,7 @@ const SearchResult = ({
                 <DocumentMeta source={result.source} />
                 <Link
                     underline="hover"
-                    href={documentURL(result.id)}
+                    href={documentURL(result.id, response.request.query)}
                     onClick={() => {
                         analyticsClient.trackSearchResultClick({
                             request: response.request,
