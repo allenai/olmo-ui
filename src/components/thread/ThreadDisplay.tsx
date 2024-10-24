@@ -5,9 +5,10 @@ import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { CHAT_MESSAGE_CLASS_NAME, ChatMessage } from './ChatMessage';
+import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 
@@ -77,16 +78,15 @@ export const ThreadDisplay = (): JSX.Element => {
             </Stack>
             <ScrollPinAnchor id="scroll-anchor" />
             <Box
-                sx={(theme) => {
-                    const marginTop = theme.spacing(3);
-                    return {
-                        bottom: '-1px',
-                        minHeight: (theme) => theme.spacing(6),
-                        position: 'sticky',
-                        background:
-                            'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                        marginTop,
-                    };
+                sx={{
+                    bottom: '-1px',
+                    minHeight: (theme) => ({
+                        xs: theme.spacing(3),
+                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
+                    }),
+                    position: 'sticky',
+                    background:
+                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
                 }}
             />
         </ScrollPinContainer>
@@ -94,8 +94,10 @@ export const ThreadDisplay = (): JSX.Element => {
 };
 
 // This is an implementation of https://css-tricks.com/books/greatest-css-tricks/pin-scrolling-to-bottom/
+// It makes it so that if a user scrolls down to the bottom, their scroll will stay at the bottom
 const ScrollPinContainer = styled('div')({
     overflow: 'auto',
+
     '*': {
         overflowAnchor: 'none',
     },
