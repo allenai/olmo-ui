@@ -36,11 +36,24 @@ const borderProps = {
 
 type BorderCorner = 'bottomRight' | 'bottomLeft' | 'topLeft' | 'topRight';
 
-export const outsideBorder = (corner: BorderCorner): SxProps => {
-    return {
-        '&::after': {
+export const invertedBorderRadius = (corner: BorderCorner, corner2?: BorderCorner): SxProps => {
+    let after;
+    const before = {
+        '&::before': {
             ...borderProps.base,
             ...borderProps[corner],
         },
+    };
+    if (corner2) {
+        after = {
+            '&::after': {
+                ...borderProps.base,
+                ...borderProps[corner2],
+            },
+        };
+    }
+    return {
+        ...before,
+        ...after,
     };
 };

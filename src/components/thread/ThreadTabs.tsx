@@ -4,7 +4,7 @@ import { styled, Typography } from '@mui/material';
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
-import { outsideBorder } from '../BorderProps';
+import { invertedBorderRadius } from '../invertedBorderRadius';
 import { FullAttributionContent } from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
@@ -27,7 +27,7 @@ export const ThreadTabs = () => {
                 <TabControl
                     value={PARAMETERS_TAB_NAME}
                     id="parameters-tab-control"
-                    sx={outsideBorder('bottomRight')}>
+                    sx={invertedBorderRadius('bottomRight')}>
                     <Typography variant="h4" component="span">
                         Parameters
                     </Typography>
@@ -35,7 +35,7 @@ export const ThreadTabs = () => {
                 <TabControl
                     value={DATASET_TAB_NAME}
                     id="dataset-tab-control"
-                    sx={outsideBorder('bottomLeft')}>
+                    sx={invertedBorderRadius('bottomLeft')}>
                     <Typography variant="h4" component="span">
                         CorpusLink
                     </Typography>
