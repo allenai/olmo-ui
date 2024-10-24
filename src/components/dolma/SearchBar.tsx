@@ -84,11 +84,11 @@ export const SearchBar = ({
                             color: (theme) => theme.palette.secondary.light,
                             ':hover': {
                                 backgroundColor: (theme) => theme.color['teal-100'].hex,
-                                color: (theme) => theme.color.G6.hex,
+                                color: (theme) => theme.palette.secondary.light,
                             },
                             ':focus': {
                                 background: (theme) => theme.color['teal-90'].hex,
-                                color: (theme) => theme.color.G6.hex,
+                                color: (theme) => theme.palette.secondary.light,
                             },
                         }}>
                         Submit
