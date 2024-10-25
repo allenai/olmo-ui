@@ -1,4 +1,6 @@
 import { Box, Stack } from '@mui/material';
+import { i } from 'node_modules/vite/dist/node/types.d-AKzkD8vd';
+import { useEffect, useRef, useState } from 'react';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -66,29 +68,71 @@ const getMessageIdsToShow = (
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
+    const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
+
+    const scrollingContainerRef = useRef<HTMLDivElement | null>(null);
+    const bottomScrollMarkerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (scrollingContainerRef.current != null && bottomScrollMarkerRef.current != null) {
+            console.log('creating observer');
+            const callback: IntersectionObserverCallback = (entries) => {
+                console.log(entries);
+                if (
+                    entries.some((entry) => entry.isIntersecting && entry.intersectionRatio === 1)
+                ) {
+                    console.log('sticking');
+                    setShouldStickToBottom(true);
+                } else {
+                    if (shouldStickToBottom) {
+                        console.log('unsticking');
+                        setShouldStickToBottom(false);
+                    }
+                }
+            };
+
+            const observer = new IntersectionObserver(callback, {
+                root: scrollingContainerRef.current,
+                threshold: 1,
+            });
+
+            observer.observe(bottomScrollMarkerRef.current);
+
+            return () => {
+                observer.disconnect();
+            };
+        }
+    }, [scrollingContainerRef, bottomScrollMarkerRef, shouldStickToBottom]);
+
     return (
         // This extra Stack with column-reverse let us keep scroll at the bottom if the user has scrolled there
         // Don't put anything else in this top Stack, put things into the inside Stack
         // https://cssence.com/2024/bottom-anchored-scrolling-area/
-        <Stack direction="column-reverse" overflow="auto">
+        <Stack
+            ref={scrollingContainerRef}
+            overflow="auto"
+            sx={{
+                flexDirection: shouldStickToBottom ? 'column-reverse' : 'column',
+            }}>
             <Stack gap={2} direction="column" data-testid="thread-display" useFlexGap>
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                <Box
-                    component="span"
-                    sx={{
-                        bottom: '-1px',
-                        minHeight: (theme) => ({
-                            xs: theme.spacing(2.5),
-                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
-                        }),
-                        position: 'sticky',
-                        background:
-                            'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                    }}
-                />
+                <div id="bottom-scroll-marker" ref={bottomScrollMarkerRef} />
             </Stack>
+            <Box
+                component="span"
+                sx={{
+                    bottom: '-1px',
+                    minHeight: (theme) => ({
+                        xs: theme.spacing(2.5),
+                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
+                    }),
+                    position: 'sticky',
+                    background:
+                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                }}
+            />
         </Stack>
     );
 };
