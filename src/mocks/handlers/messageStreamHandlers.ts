@@ -250,10 +250,13 @@ export const messageStreamHandlers = [
             async start(controller) {
                 if (requestBody.content === 'infinite') {
                     controller.enqueue(encoder.encode(JSON.stringify(response[0]) + '\n'));
-                    let i = 1;
-                    while (true) {
-                        if (i === response.length - 1) {
-                            i = 1;
+                    let responsePosition = 1;
+                    let maxRepetitions = 0;
+                    while (maxRepetitions < 20) {
+                        if (responsePosition === response.length - 1) {
+                            responsePosition = 1;
+                            maxRepetitions += 1;
+
                             controller.enqueue(
                                 encoder.encode(
                                     JSON.stringify({
@@ -264,11 +267,16 @@ export const messageStreamHandlers = [
                             );
                         }
 
-                        await delay();
-                        controller.enqueue(encoder.encode(JSON.stringify(response[i]) + '\n'));
+                        await delay(25);
+                        controller.enqueue(
+                            encoder.encode(JSON.stringify(response[responsePosition]) + '\n')
+                        );
 
-                        i++;
+                        responsePosition++;
                     }
+
+                    await delay(25);
+                    controller.enqueue(encoder.encode(JSON.stringify(response.at(-1)) + '\n'));
                 } else {
                     for (const message of response) {
                         await delay();
