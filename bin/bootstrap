@@ -5,10 +5,10 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 gcloud container clusters get-credentials skiff-prod --project ai2-reviz --zone us-west1-b
 
-kubectl get secret/config -n dolma-ui -o jsonpath='{.data.config\.json}' | \
+kubectl get secret/config -n olmo-ui -o jsonpath='{.data.config\.json}' | \
   base64 --decode | \
   jq -r 'del(.bq)' | \
   jq -r 'del(.gunicorn)' > "$dir/../api/config.json"
 
-kubectl get secret/config -n dolma-ui -o jsonpath='{.data.service_account\.json}' | \
+kubectl get secret/config -n olmo-ui -o jsonpath='{.data.service_account\.json}' | \
   base64 --decode > "$dir/../api/service_account.json"
