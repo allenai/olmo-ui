@@ -70,46 +70,16 @@ export const ThreadDisplay = (): JSX.Element => {
 
     const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
 
-    const scrollingContainerRef = useRef<HTMLDivElement | null>(null);
-    const bottomScrollMarkerRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (scrollingContainerRef.current != null && bottomScrollMarkerRef.current != null) {
-            console.log('creating observer');
-            const callback: IntersectionObserverCallback = (entries) => {
-                console.log(entries);
-                if (
-                    entries.some((entry) => entry.isIntersecting && entry.intersectionRatio === 1)
-                ) {
-                    console.log('sticking');
-                    setShouldStickToBottom(true);
-                } else {
-                    if (shouldStickToBottom) {
-                        console.log('unsticking');
-                        setShouldStickToBottom(false);
-                    }
-                }
-            };
-
-            const observer = new IntersectionObserver(callback, {
-                root: scrollingContainerRef.current,
-                threshold: 1,
-            });
-
-            observer.observe(bottomScrollMarkerRef.current);
-
-            return () => {
-                observer.disconnect();
-            };
-        }
-    }, [scrollingContainerRef, bottomScrollMarkerRef, shouldStickToBottom]);
-
     return (
         // This extra Stack with column-reverse let us keep scroll at the bottom if the user has scrolled there
         // Don't put anything else in this top Stack, put things into the inside Stack
         // https://cssence.com/2024/bottom-anchored-scrolling-area/
         <Stack
-            ref={scrollingContainerRef}
+            onScroll={() => {
+                // This prevents scrolling with the model response as soon as it starts overflowing
+                // We want the user to scroll to the bottom before we start following the prompt
+                setShouldStickToBottom(true);
+            }}
             overflow="auto"
             sx={{
                 flexDirection: shouldStickToBottom ? 'column-reverse' : 'column',
@@ -118,7 +88,6 @@ export const ThreadDisplay = (): JSX.Element => {
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                <div id="bottom-scroll-marker" ref={bottomScrollMarkerRef} />
             </Stack>
             <Box
                 component="span"
