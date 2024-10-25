@@ -35,10 +35,6 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
                 '& p': {
                     margin: 0,
                     marginBlockEnd: '1em',
-
-                    ':last-child': {
-                        marginBlockEnd: '0',
-                    },
                 },
             }}
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
