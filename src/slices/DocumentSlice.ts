@@ -41,10 +41,6 @@ export const createDocumentSlice: OlmoStateCreator<DocumentSlice> = (set) => ({
                     snippet: search.SnippetType.Long,
                 });
 
-                if (response.meta.total !== 1) {
-                    throw new Error('Not found');
-                }
-
                 const document = response.results[0];
                 set({
                     documentState: RemoteState.Loaded,
