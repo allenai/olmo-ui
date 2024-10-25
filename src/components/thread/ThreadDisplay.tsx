@@ -88,20 +88,20 @@ export const ThreadDisplay = (): JSX.Element => {
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
+                <Box
+                    component="span"
+                    sx={{
+                        bottom: '-1px',
+                        minHeight: (theme) => ({
+                            xs: theme.spacing(2.5),
+                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
+                        }),
+                        position: 'sticky',
+                        background:
+                            'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                    }}
+                />
             </Stack>
-            <Box
-                component="span"
-                sx={{
-                    bottom: '-1px',
-                    minHeight: (theme) => ({
-                        xs: theme.spacing(2.5),
-                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
-                    }),
-                    position: 'sticky',
-                    background:
-                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                }}
-            />
         </Stack>
     );
 };
