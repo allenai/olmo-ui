@@ -101,3 +101,7 @@ We use MSW to mock network requests for testing and local development. To enable
  Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
 
 ## Setting up to use the Dolma API
+    Generate a local config.json file:
+    ```
+    ./bin/bootstrap
+    ```
