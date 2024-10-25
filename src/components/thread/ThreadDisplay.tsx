@@ -1,4 +1,4 @@
-import { Box, Stack, styled } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -8,7 +8,7 @@ import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { CHAT_MESSAGE_CLASS_NAME, ChatMessage } from './ChatMessage';
+import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 
@@ -67,50 +67,28 @@ export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
     return (
-        <Stack
-            gap={2}
-            direction="column"
-            data-testid="thread-display"
-            overflow="auto"
-            useFlexGap
-            sx={{
-                scrollSnapType: 'y proximity',
-                overscrollBehavior: 'contain',
-
-                // this is defined as a CSS variable because it's easier to handle it responsively in CSS
-                '--mask-height': (theme) => ({
-                    xs: theme.spacing(3.5),
-                    [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6.5),
-                }),
-
-                [`& div.${CHAT_MESSAGE_CLASS_NAME}`]: {
-                    scrollSnapAlign: 'top',
-                },
-
-                // Make sure you don't add any more elements with the same type as MessageView below it, it'll mess up the scroll pinning
-                [`& article.${CHAT_MESSAGE_CLASS_NAME}:last-of-type`]: {
-                    scrollSnapAlign: 'end',
-                    scrollMarginBlockEnd: (theme) =>
-                        `calc(var(--mask-height) + ${theme.spacing(1)})`,
-                },
-
-                '@media (prefers-reduced-motion: no-preference)': {
-                    scrollBehavior: 'smooth',
-                },
-            }}>
-            {childMessageIds.map((messageId) => (
-                <MessageView messageId={messageId} key={messageId} />
-            ))}
-            <Box
-                component="span"
-                sx={{
-                    bottom: '-1px',
-                    minHeight: 'var(--mask-height)',
-                    position: 'sticky',
-                    background:
-                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                }}
-            />
+        // This extra Stack with column-reverse let us keep scroll at the bottom if the user has scrolled there
+        // Don't put anything else in this top Stack, put things into the inside Stack
+        // https://cssence.com/2024/bottom-anchored-scrolling-area/
+        <Stack direction="column-reverse" overflow="auto">
+            <Stack gap={2} direction="column" data-testid="thread-display" useFlexGap>
+                {childMessageIds.map((messageId) => (
+                    <MessageView messageId={messageId} key={messageId} />
+                ))}
+                <Box
+                    component="span"
+                    sx={{
+                        bottom: '-1px',
+                        minHeight: (theme) => ({
+                            xs: theme.spacing(2.5),
+                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
+                        }),
+                        position: 'sticky',
+                        background:
+                            'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                    }}
+                />
+            </Stack>
         </Stack>
     );
 };
