@@ -74,6 +74,7 @@ export const ThreadDisplay = (): JSX.Element => {
         // Don't put anything else in this top Stack, put things into the inside Stack
         // https://cssence.com/2024/bottom-anchored-scrolling-area/
         <Stack
+            data-testid="thread-display-sticky-scroll-container"
             onScroll={() => {
                 // This prevents scrolling with the model response as soon as it starts overflowing
                 // We want the user to scroll to the bottom before we start following the prompt

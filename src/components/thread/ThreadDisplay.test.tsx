@@ -1,4 +1,5 @@
-import { render, screen } from '@test-utils';
+import { fireEvent, render, screen } from '@test-utils';
+import userEvent from '@testing-library/user-event';
 
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
@@ -8,13 +9,15 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 import { ThreadDisplay } from './ThreadDisplay';
 
 describe('ThreadDisplay', () => {
+    beforeEach(() => {
+        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
+    });
+
     afterEach(() => {
         vi.restoreAllMocks();
     });
 
     it('should highlight spans that contain special regex characters', () => {
-        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
         render(
             <FakeAppContextProvider
                 initialState={{
@@ -109,5 +112,98 @@ describe('ThreadDisplay', () => {
         expect.soft(screen.getByText('|pipe')).toHaveRole('button');
         expect.soft(screen.getByText('\\backslash')).toHaveRole('button');
         expect.soft(screen.getByText('"quotes"')).toHaveRole('button');
+    });
+
+    it('should sticky-scroll after the user scrolls', () => {
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    userInfo: {
+                        client: 'currentUser',
+                        hasAcceptedTermsAndConditions: true,
+                    },
+                    selectedThreadRootId: 'userMessage',
+                    selectedThreadMessages: ['userMessage', 'llmMessage'],
+                    selectedThreadMessagesById: {
+                        userMessage: {
+                            id: 'userMessage',
+                            childIds: ['llmMessage'],
+                            selectedChildId: 'llmMessage',
+                            content: 'user prompt',
+                            role: Role.User,
+                            labels: [],
+                            creator: 'currentUser',
+                            isLimitReached: false,
+                            isOlderThan30Days: false,
+                        },
+                        llmMessage: {
+                            id: 'llmMessage',
+                            childIds: [],
+                            content: '(parens) [braces] .dot *star |pipe \\backslash "quotes"',
+                            role: Role.LLM,
+                            labels: [],
+                            creator: 'currentUser',
+                            isLimitReached: false,
+                            isOlderThan30Days: false,
+                            parent: 'userMessage',
+                        },
+                    },
+                    attribution: {
+                        selectedMessageId: 'llmMessage',
+                        attributionsByMessageId: {
+                            llmMessage: {
+                                loadingState: RemoteState.Loaded,
+                                documents: {},
+                                spans: {
+                                    0: {
+                                        documents: [0],
+                                        text: '(parens)',
+                                    },
+                                    1: {
+                                        documents: [0],
+                                        text: '[braces]',
+                                    },
+                                    2: {
+                                        documents: [0],
+                                        text: '.dot',
+                                    },
+                                    3: {
+                                        documents: [0],
+                                        text: '*star',
+                                    },
+                                    4: {
+                                        documents: [0],
+                                        text: '|pipe',
+                                    },
+                                    5: {
+                                        documents: [0],
+                                        text: '\\backslash',
+                                    },
+                                    6: {
+                                        documents: [0],
+                                        text: '"quotes"',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }}>
+                <ThreadDisplay />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByTestId('thread-display-sticky-scroll-container')).toHaveStyle(
+            'flex-direction: column'
+        );
+
+        fireEvent.scroll(screen.getByTestId('thread-display-sticky-scroll-container'), {
+            target: {
+                scrollBy: 1,
+            },
+        });
+
+        expect(screen.getByTestId('thread-display-sticky-scroll-container')).toHaveStyle(
+            'flex-direction: column-reverse'
+        );
     });
 });
