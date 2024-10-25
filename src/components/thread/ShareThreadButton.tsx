@@ -4,9 +4,17 @@ import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
-import { ResponsiveButton } from './ResponsiveButton';
+import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
 
-export const ShareThreadButton = () => {
+type ShareThreadButtonProps = Partial<
+    Pick<ResponsiveButtonProps, 'isResponsive' | 'layout' | 'variant'>
+>;
+
+export const ShareThreadButton = ({
+    variant = 'outlined',
+    layout = 'both',
+    isResponsive = true,
+}: ShareThreadButtonProps) => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
@@ -25,7 +33,9 @@ export const ShareThreadButton = () => {
 
     return (
         <ResponsiveButton
-            variant="outlined"
+            variant={variant}
+            layout={layout}
+            isResponsive={isResponsive}
             startIcon={<ShareOutlinedIcon />}
             title="Share Thread"
             onClick={handleShareThread}

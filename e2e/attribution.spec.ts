@@ -93,3 +93,38 @@ test('should show the attribution drawer when navigating to a thread', async ({ 
         'true'
     );
 });
+
+test('should keep scroll position when going back to CorpusLink documents and reset selected repeated documents when navigating to a new thread', async ({
+    page,
+}) => {
+    await page.goto('/thread/msg_duplicatedocuments');
+    await page.waitForLoadState('networkidle');
+
+    const documentWithDuplicates = page
+        .getByRole('listitem')
+        .filter({ has: page.getByText('https://www.worldatlas.com/articles/empe...') });
+    await expect(documentWithDuplicates).toHaveCount(1);
+
+    await documentWithDuplicates.scrollIntoViewIfNeeded();
+
+    await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
+
+    await documentWithDuplicates
+        .getByRole('button', { name: 'View all repeated documents' })
+        .click();
+
+    // We should keep the scroll position when going back to the documents
+    await page.getByText('Back to CorpusLink documents').click();
+    await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
+
+    await documentWithDuplicates
+        .getByRole('button', { name: 'View all repeated documents' })
+        .click();
+
+    await expect(page.getByText('Back to CorpusLink documents')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Thread history' }).click();
+    await page.getByRole('link', { name: 'Second existing message' }).click();
+
+    await expect(page.getByText('Back to CorpusLink documents')).not.toBeVisible();
+});

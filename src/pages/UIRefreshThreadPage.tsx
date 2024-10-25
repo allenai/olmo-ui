@@ -1,18 +1,11 @@
-import {
-    Card,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    SelectChangeEvent,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
+import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
@@ -61,32 +54,28 @@ export const UIRefreshThreadPage = () => {
 
                         height: 1,
                     })}>
-                    <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                        justifyContent="space-between">
-                        <>
-                            {models.length > 1 ? (
-                                <Select
-                                    id="model-select"
-                                    sx={{ width: { xs: '75%', md: '35%' } }}
-                                    size="small"
-                                    onChange={onModelChange}
-                                    input={<OutlinedInput />}
-                                    value={(selectedModel && selectedModel.id) || ''}>
-                                    {models.map((model) => (
-                                        <MenuItem key={model.name} value={model.id}>
-                                            {model.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            ) : (
-                                <Typography key={models[0].name}>{models[0].name}</Typography>
-                            )}
-                        </>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: '1fr max-content',
+                            columnGap: 1,
+                        }}>
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            label="Model"
+                            shouldOnlyShowAtDesktop={true}
+                        />
                         <ThreadPageControls />
-                    </Stack>
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            label="Model"
+                            shouldOnlyShowAtDesktop={false}
+                        />
+                    </Box>
 
                     <Outlet />
                     <QueryForm />

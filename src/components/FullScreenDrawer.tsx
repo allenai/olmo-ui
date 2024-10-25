@@ -5,7 +5,7 @@ import { useAppContext } from '@/AppContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-interface TemporaryDrawerProps extends PropsWithChildren {
+interface FullScreenDrawerProps extends PropsWithChildren {
     drawerId: DrawerId;
     header: ReactNode | (({ onDrawerClose }: { onDrawerClose: () => void }) => ReactNode);
     fullWidth?: boolean;
@@ -16,7 +16,7 @@ export const FullScreenDrawer = ({
     header,
     children,
     fullWidth,
-}: TemporaryDrawerProps) => {
+}: FullScreenDrawerProps) => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === drawerId);
@@ -49,7 +49,8 @@ export const FullScreenDrawer = ({
                 },
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
-            <Box paddingBlockEnd={1} paddingInline={2}>
+            {/* minHeight here helps the children overflow properly */}
+            <Box paddingBlockEnd={1} paddingInline={2} minHeight={0}>
                 {children}
             </Box>
         </Drawer>

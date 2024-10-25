@@ -52,7 +52,7 @@ export const NavigationLink = ({
               };
 
     return (
-        <ListItem disableGutters dense={variant === 'footer'}>
+        <ListItem disablePadding disableGutters dense>
             <ListItemButton
                 alignItems="center"
                 selected={selected}
@@ -60,8 +60,14 @@ export const NavigationLink = ({
                 dense={variant === 'footer'}
                 onClick={onClick}
                 sx={(theme) => ({
+                    paddingBlock: 1,
+                    paddingInline: 4,
                     gap: theme.spacing(2),
                     color: theme.palette.text.reversed,
+
+                    ':hover': {
+                        backgroundColor: 'transparent',
+                    },
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
@@ -84,7 +90,13 @@ export const NavigationLink = ({
                 })}
                 {...linkProps}>
                 <NavigationListItemIcon
-                    sx={{ height: '1.25rem', width: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
+                    sx={{
+                        height: '1.25rem',
+                        width: '1.25rem',
+                        '& svg': { fontSize: '1.25rem' },
+                        opacity: 0.5,
+                        '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
+                    }}>
                     {/* We need something to take up space if this item is inset */}
                     {inset && icon == null && <div />}
                     {icon}
@@ -92,13 +104,21 @@ export const NavigationLink = ({
                 <ListItemText
                     sx={{ margin: 0, marginInlineEnd: 'auto' }}
                     primaryTypographyProps={{
-                        variant: variant === 'default' ? 'h4' : 'body1',
+                        variant: 'body1',
+                        fontWeight: 500,
                         component: 'span',
                     }}>
                     {children}
                 </ListItemText>
                 <NavigationListItemIcon>
-                    {iconVariant === 'external' && <LaunchOutlinedIcon sx={{ fontSize: '1rem' }} />}
+                    {iconVariant === 'external' && (
+                        <LaunchOutlinedIcon
+                            sx={{
+                                fontSize: '1rem',
+                                opacity: 0.5,
+                            }}
+                        />
+                    )}
                 </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>

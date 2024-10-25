@@ -1,6 +1,24 @@
+import { Theme } from '@mui/material';
+
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+
 import userAvatarURL from '../assets/user.svg';
 import { ChatAvatar } from './ChatAvatar';
 
 export const UserAvatar = () => {
-    return <ChatAvatar src={userAvatarURL} />;
+    const { userInfo } = useUserAuthInfo();
+    const userPicture = userInfo?.picture;
+
+    return (
+        <ChatAvatar
+            src={userPicture}
+            alt=""
+            color="primary"
+            sx={(theme: Theme) => ({
+                padding: 0,
+                background: theme.palette.background.paper,
+            })}>
+            <img src={`${userAvatarURL}`} alt="" className="MuiAvatar-fallback" />
+        </ChatAvatar>
+    );
 };

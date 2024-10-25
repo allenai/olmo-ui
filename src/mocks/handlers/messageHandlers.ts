@@ -1,8 +1,9 @@
 import { http, HttpResponse } from 'msw';
 
-import { MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
+import { JSONMessage, MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
+import duplicateDocumentsResponse from './duplicateDocumentMessageResponse.json';
 import highlightStressTestMessage from './highlightStressTestMessage';
 import { newMessageId } from './messageStreamHandlers';
 
@@ -139,8 +140,13 @@ const highlightStressTestResponse = {
 };
 
 const fakeGetAllThreadsResponse: MessagesResponse = {
-    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse, highlightStressTestResponse],
-    meta: { limit: 10, offset: 0, total: 3 },
+    messages: [
+        fakeFirstThreadResponse,
+        fakeSecondThreadResponse,
+        highlightStressTestResponse,
+        duplicateDocumentsResponse as JSONMessage,
+    ],
+    meta: { limit: 10, offset: 0, total: 4 },
 };
 
 export const messageHandlers = [
@@ -162,5 +168,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/${highlightStressTestMessageId}`, () => {
         return HttpResponse.json(highlightStressTestResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/msg_duplicatedocuments`, () => {
+        return HttpResponse.json(duplicateDocumentsResponse);
     }),
 ];

@@ -1,5 +1,4 @@
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
@@ -7,12 +6,18 @@ import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { DeleteThreadDialog } from './DeleteThreadDialog';
-import { ResponsiveButton } from './ResponsiveButton';
+import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
 
-export const DeleteThreadButton = () => {
-    const nav = useNavigate();
-    const deleteThread = useAppContext((state) => state.deleteThread);
-    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
+type DeleteThreadButtonProps = Partial<
+    Pick<ResponsiveButtonProps, 'isResponsive' | 'variant' | 'layout' | 'onClick'>
+>;
+
+export const DeleteThreadButton = ({
+    variant = 'outlined',
+    isResponsive = true,
+    layout = 'both',
+    onClick,
+}: DeleteThreadButtonProps) => {
     const isPastThirtyDays = useAppContext(
         (state) =>
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -24,9 +29,39 @@ export const DeleteThreadButton = () => {
             state.selectedThreadMessagesById[state.selectedThreadRootId]?.creator ===
             state.userInfo?.client
     );
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
 
-    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    if (isPastThirtyDays || !selectedThreadId) {
+        return null;
+    }
+
+    return (
+        <>
+            <ResponsiveButton
+                variant={variant}
+                isResponsive={isResponsive}
+                layout={layout}
+                startIcon={<DeleteOutlinedIcon />}
+                title="Delete Thread"
+                onClick={onClick}
+                disabled={!canUseDeleteButton}
+            />
+        </>
+    );
+};
+
+export const DeleteDialog = ({
+    openDialog,
+    setOpenDialog,
+}: {
+    openDialog: boolean;
+    setOpenDialog: (_: boolean) => void;
+}) => {
+    const nav = useNavigate();
+    const deleteThread = useAppContext((state) => state.deleteThread);
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
+
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const handleDeleteThread = () => {
         if (selectedThreadId) {
@@ -41,30 +76,13 @@ export const DeleteThreadButton = () => {
         }
     };
 
-    const handleOnClick = () => {
-        setOpenDialog(true);
-    };
-
-    if (isPastThirtyDays || !selectedThreadId) {
-        return null;
-    }
-
     return (
-        <>
-            <ResponsiveButton
-                variant="outlined"
-                startIcon={<DeleteOutlinedIcon />}
-                title="Delete Thread"
-                onClick={handleOnClick}
-                disabled={!canUseDeleteButton}
-            />
-            <DeleteThreadDialog
-                open={openDialog}
-                onCancel={() => {
-                    setOpenDialog(false);
-                }}
-                handleDeleteThread={handleDeleteThread}
-            />
-        </>
+        <DeleteThreadDialog
+            open={openDialog}
+            onCancel={() => {
+                setOpenDialog(false);
+            }}
+            handleDeleteThread={handleDeleteThread}
+        />
     );
 };

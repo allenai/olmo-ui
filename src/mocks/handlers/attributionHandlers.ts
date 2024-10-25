@@ -1,5 +1,6 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
+import duplicateDocumentsResponse from './duplicateDocumentAttributionResponse.json';
 import highlightStressTestResponse from './highlightStressTestResponse.json';
 
 const fakeAttributionResponse = {
@@ -66,14 +67,21 @@ export const attributionHandlers = [
         const requestBody = (await request.json()) as Record<string, unknown>;
 
         if (requestBody.model_response === 'OkayOkayOkayOkayOkayOkayOkayOkayOkay') {
-            return new HttpResponse(JSON.stringify(fakeAttributionResponse));
+            return HttpResponse.json(fakeAttributionResponse);
         }
 
         if (
             typeof requestBody.model_response === 'string' &&
             requestBody.model_response.startsWith('HighlightStressTest')
         ) {
-            return new HttpResponse(JSON.stringify(highlightStressTestResponse));
+            return HttpResponse.json(highlightStressTestResponse);
+        }
+
+        if (
+            typeof requestBody.model_response === 'string' &&
+            requestBody.model_response.startsWith('Penguins are fascinating birds')
+        ) {
+            return HttpResponse.json(duplicateDocumentsResponse);
         }
 
         return passthrough();

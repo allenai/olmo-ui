@@ -17,16 +17,13 @@ export const ParameterButton = () => {
     const toggleParametersDrawer = () => {
         toggleDrawer(PARAMETERS_DRAWER_ID);
     };
-
-    const isParametersDrawerOpen = useAppContext(
-        (state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID
-    );
-
     return (
         <ResponsiveButton
-            variant={isParametersDrawerOpen ? 'contained' : 'outlined'}
+            variant="outlined"
+            isResponsive={false}
+            layout="text"
             startIcon={<GearIcon />}
-            title="Parameter"
+            title="Parameters"
             onClick={toggleParametersDrawer}
             disabled={!canUseParameterButton}
         />
