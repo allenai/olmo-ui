@@ -1,7 +1,6 @@
 import { render, renderHook, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { debug } from 'vitest-preview';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
@@ -14,7 +13,6 @@ describe('Dataset Explorer Search', () => {
             initialEntries: [{ pathname: links.search, search: '?query=Seattle' }],
         });
         render(<RouterProvider router={router} />);
-        debug();
 
         await waitFor(() => {
             expect(
