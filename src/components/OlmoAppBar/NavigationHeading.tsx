@@ -17,7 +17,7 @@ export const NavigationHeading = ({
                 backgroundColor: 'transparent',
                 position: 'static',
             }}>
-            <Typography variant="h5" component="strong" margin={0} color={color}>
+            <Typography variant="h5" component="h4" margin={0} color={color}>
                 {children}
             </Typography>
         </ListSubheader>
