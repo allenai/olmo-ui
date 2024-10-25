@@ -179,7 +179,6 @@ class Snippet:
 @dataclass
 class Document:
     id: str
-    dolma_id: str
     source: Source
     title: str
     snippets: list[Snippet]
@@ -273,7 +272,6 @@ class Document:
 
         return cls(
             id=str(infini_gram_document.document_index),
-            dolma_id=str(infini_gram_document.document_index),
             source=source,
             title=title,
             snippets=[snippet],
