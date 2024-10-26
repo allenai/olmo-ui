@@ -139,6 +139,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
 
         resetAttribution();
+        set({ currentOpenThreadTab: 'attribution' });
 
         try {
             const messageChunks = postMessageGenerator(
