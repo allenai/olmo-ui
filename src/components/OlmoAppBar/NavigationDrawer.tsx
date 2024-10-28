@@ -15,6 +15,7 @@ import { UIMatch, useMatches } from 'react-router-dom';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { ChatIcon } from '@/components/assets/ChatIcon';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
@@ -73,6 +74,8 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
+    const { isDatasetExplorerEnabled } = useFeatureToggles();
+
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     useCloseDrawerOnNavigation({
@@ -120,23 +123,27 @@ export const NavigationDrawer = ({
                     inset>
                     Ai2&apos;s models
                 </NavigationLink>
-                <NavigationLink
-                    href={links.datasetExplorer}
-                    icon={<ExploreIcon />}
-                    selected={
-                        curriedDoesMatchPath(links.datasetExplorer) ||
-                        curriedDoesMatchPath(links.search) ||
-                        curriedDoesMatchPath(links.document(''))
-                    }>
-                    Dataset Explorer
-                </NavigationLink>
-                <NavigationLink
-                    href={links.ourDatasets}
-                    selected={curriedDoesMatchPath(links.ourDatasets)}
-                    iconVariant="external"
-                    inset>
-                    Ai2&apos;s datasets
-                </NavigationLink>
+                {isDatasetExplorerEnabled && (
+                    <>
+                        <NavigationLink
+                            href={links.datasetExplorer}
+                            icon={<ExploreIcon />}
+                            selected={
+                                curriedDoesMatchPath(links.datasetExplorer) ||
+                                curriedDoesMatchPath(links.search) ||
+                                curriedDoesMatchPath(links.document(''))
+                            }>
+                            Dataset Explorer
+                        </NavigationLink>
+                        <NavigationLink
+                            href={links.ourDatasets}
+                            selected={curriedDoesMatchPath(links.ourDatasets)}
+                            iconVariant="external"
+                            inset>
+                            Ai2&apos;s datasets
+                        </NavigationLink>
+                    </>
+                )}
                 <NavigationLink
                     href={links.documentation}
                     icon={<LanguageIcon />}
