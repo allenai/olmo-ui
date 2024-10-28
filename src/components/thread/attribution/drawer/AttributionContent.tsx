@@ -1,11 +1,12 @@
 import { ArrowBack } from '@mui/icons-material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Link, Stack, styled, Typography } from '@mui/material';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
@@ -17,6 +18,13 @@ import {
     useAttributionDocumentsForMessage,
 } from './message-attribution-documents-selector';
 
+const AttributionContentStack = styled(Stack)(({ theme }) => ({
+    paddingBlock: theme.spacing(2),
+    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+        padding: 0,
+    },
+}));
+
 export const AttributionContent = () => {
     const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
     const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
@@ -25,7 +33,7 @@ export const AttributionContent = () => {
     const { loadingState, documents } = attributionForMessage;
 
     return (
-        <Stack direction="column" gap={2} paddingBlock={2} data-testid="attribution-drawer">
+        <AttributionContentStack direction="column" gap={2} data-testid="attribution-drawer">
             <Typography variant="h5">Text matches from pre-training data</Typography>
             <Typography>
                 Select a highlight from the model response to see the documents from the
@@ -81,7 +89,7 @@ export const AttributionContent = () => {
             </Button>
             <ClearSelectedSpanButton />
             <AttributionDrawerDocumentList />
-        </Stack>
+        </AttributionContentStack>
     );
 };
 
@@ -113,7 +121,7 @@ export const RepeatedAttributionDocumentsContent = () => {
     };
 
     return (
-        <Stack direction="column" gap={2} paddingBlock={2} data-testid="repeated-documents-drawer">
+        <AttributionContentStack direction="column" gap={2} data-testid="repeated-documents-drawer">
             <Button
                 onClick={handleBackToCorpusLinkDocumentsClick}
                 variant="text"
@@ -141,7 +149,7 @@ export const RepeatedAttributionDocumentsContent = () => {
                     );
                 })}
             </Box>
-        </Stack>
+        </AttributionContentStack>
     );
 };
 

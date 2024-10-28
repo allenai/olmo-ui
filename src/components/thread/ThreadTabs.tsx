@@ -4,6 +4,7 @@ import { styled, Typography } from '@mui/material';
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
+import { invertedBorderRadius } from '../invertedBorderRadius';
 import { FullAttributionContent } from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
@@ -23,12 +24,18 @@ export const ThreadTabs = () => {
                 }
             }}>
             <StickyTabsList>
-                <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
+                <TabControl
+                    value={PARAMETERS_TAB_NAME}
+                    id="parameters-tab-control"
+                    sx={invertedBorderRadius('bottomRight')}>
                     <Typography variant="h4" component="span">
                         Parameters
                     </Typography>
                 </TabControl>
-                <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
+                <TabControl
+                    value={DATASET_TAB_NAME}
+                    id="dataset-tab-control"
+                    sx={invertedBorderRadius('bottomLeft')}>
                     <Typography variant="h4" component="span">
                         CorpusLink
                     </Typography>
@@ -37,13 +44,19 @@ export const ThreadTabs = () => {
             <TabPanelWithOverflow
                 value={PARAMETERS_TAB_NAME}
                 aria-labelledby="parameters-tab-control"
-                id="parameters-tabpanel">
+                id="parameters-tabpanel"
+                sx={{
+                    borderTopLeftRadius: '0',
+                }}>
                 <ParameterContent />
             </TabPanelWithOverflow>
             <TabPanelWithOverflow
                 value={DATASET_TAB_NAME}
                 aria-labelledby="dataset-tab-control"
-                id="parameters-tabpanel">
+                id="parameters-tabpanel"
+                sx={{
+                    borderTopRightRadius: '0',
+                }}>
                 <FullAttributionContent />
             </TabPanelWithOverflow>
         </TabsWithOverflow>
@@ -66,26 +79,30 @@ const TabControl = styled(Tab)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
 
     cursor: 'pointer',
+    position: 'relative',
 
     '&[aria-selected="true"]': {
         backgroundColor: theme.palette.background.default,
         color: 'inherit',
         borderTopLeftRadius: theme.shape.borderRadius,
         borderTopRightRadius: theme.shape.borderRadius,
+        zIndex: 1,
     },
 }));
 
-const TabsWithOverflow = styled(Tabs)(({ theme }) => ({
+const TabsWithOverflow = styled(Tabs)(() => ({
     display: 'flex',
     flexFlow: 'column nowrap',
     height: '100%',
-
     gridArea: 'aside',
-    backgroundColor: theme.palette.background.default,
 }));
 
 const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({
     minHeight: 0,
+    borderRadius: theme.spacing(0.5),
+    paddingBlock: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
+    flexGrow: 1,
     '& > *': {
         paddingInline: theme.spacing(2),
     },
