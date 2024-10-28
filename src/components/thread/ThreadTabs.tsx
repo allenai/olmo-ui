@@ -4,7 +4,7 @@ import { styled, Typography } from '@mui/material';
 import { useAppContext } from '@/AppContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
-import { invertedBorderRadius } from '../invertedBorderRadius';
+import { invertedBorderRadius, tabRoundedBorderStyle } from '../invertedBorderRadius';
 import { FullAttributionContent } from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
@@ -24,18 +24,12 @@ export const ThreadTabs = () => {
                 }
             }}>
             <StickyTabsList>
-                <TabControl
-                    value={PARAMETERS_TAB_NAME}
-                    id="parameters-tab-control"
-                    sx={invertedBorderRadius('bottomRight')}>
+                <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
                     <Typography variant="h4" component="span">
                         Parameters
                     </Typography>
                 </TabControl>
-                <TabControl
-                    value={DATASET_TAB_NAME}
-                    id="dataset-tab-control"
-                    sx={invertedBorderRadius('bottomLeft')}>
+                <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
                     <Typography variant="h4" component="span">
                         CorpusLink
                     </Typography>
@@ -88,6 +82,8 @@ const TabControl = styled(Tab)(({ theme }) => ({
         borderTopRightRadius: theme.shape.borderRadius,
         zIndex: 1,
     },
+
+    ...tabRoundedBorderStyle,
 }));
 
 const TabsWithOverflow = styled(Tabs)(() => ({
