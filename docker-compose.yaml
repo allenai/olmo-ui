@@ -25,8 +25,9 @@ services:
       - LLMX_API_URL
       - DOLMA_API_URL=/api
       - ENABLE_MOCKING=${ENABLE_MOCKING:-false}
-      - IS_ATTRIBUTION_ENABLED=true
+      - IS_CORPUS_LINK_ENABLED=${IS_CORPUS_LINK_ENABLED:-true}
       - IS_ATTRIBUTION_SPAN_FIRST_ENABLED=true
+      - IS_DATASET_EXPLORER_ENABLED=${IS_DATASET_EXPLORER_ENABLED:-true}
   nginx:
     image: nginx:1.25.1-alpine
     volumes:

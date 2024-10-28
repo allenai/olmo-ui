@@ -128,7 +128,9 @@ export const QueryForm = (): JSX.Element => {
 
     const onAbort = useCallback(
         (event: UIEvent) => {
+            console.log('aborting');
             event.preventDefault();
+            console.log('abort controller', abortController);
             abortController?.abort();
         },
         [abortController]

@@ -1,17 +1,27 @@
-import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import {
+    createContext,
+    FC,
+    PropsWithChildren,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 export enum FeatureToggle {
     logToggles = 'logToggles',
-    attribution = 'attribution',
+    isCorpusLinkEnabled = 'isCorpusLinkEnabled',
     attributionSpanFirst = 'attributionSpanFirst',
+    isDatasetExplorerEnabled = 'isDatasetExplorerEnabled',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
-    [FeatureToggle.attribution]: true,
+    [FeatureToggle.isCorpusLinkEnabled]: true,
     [FeatureToggle.attributionSpanFirst]: true,
+    [FeatureToggle.isDatasetExplorerEnabled]: true,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -37,12 +47,12 @@ const parseToggleValue = (toggleValue: FTValue): boolean => {
     }
 };
 
-const parseToggles = (toggles: Record<string, FTValue>): FeatureToggles => {
+const parseToggles = (toggles: Partial<Record<FeatureToggle, FTValue>>): FeatureToggles => {
     const ret: FeatureToggles = {} as FeatureToggles;
-    Object.entries(toggles).forEach(([k, v]) => {
-        if (k in FeatureToggle) {
-            const kk: FeatureToggle = FeatureToggle[k as keyof typeof FeatureToggle];
-            ret[kk] = parseToggleValue(v);
+    Object.entries(toggles).forEach(([key, value]) => {
+        if (key in FeatureToggle) {
+            const kk: FeatureToggle = FeatureToggle[key as keyof typeof FeatureToggle];
+            ret[kk] = parseToggleValue(value);
         }
     });
     return ret;
@@ -60,7 +70,13 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
 }) => {
     const [featureToggles, setFeatureToggles] = useState(initialToggles);
 
+    const hasTogglesInitializationRun = useRef(false);
+
     useEffect(() => {
+        if (hasTogglesInitializationRun.current) {
+            return;
+        }
+
         // grab from local storage if we have any
         const localStorageToggles = parseToggles(
             JSON.parse(localStorage.getItem(localStorageKey) || '{}') as Record<string, FTValue>
@@ -71,7 +87,7 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
         const queryToggles = parseToggles(Object.fromEntries(query));
 
         const envToggles = parseToggles({
-            attribution: process.env.IS_ATTRIBUTION_ENABLED,
+            isCorpusLinkEnabled: process.env.IS_CORPUS_LINK_ENABLED,
             attributionSpanFirst: process.env.IS_ATTRIBUTION_SPAN_FIRST_ENABLED,
         });
 
@@ -90,7 +106,9 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
         if (toggles.logToggles) {
             console.table(toggles);
         }
-    }, []);
+
+        hasTogglesInitializationRun.current = true;
+    }, [initialToggles, hasTogglesInitializationRun]);
 
     return (
         <FeatureToggleContext.Provider value={featureToggles}>
