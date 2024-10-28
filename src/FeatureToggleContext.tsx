@@ -89,6 +89,7 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
         const envToggles = parseToggles({
             isCorpusLinkEnabled: process.env.IS_CORPUS_LINK_ENABLED,
             attributionSpanFirst: process.env.IS_ATTRIBUTION_SPAN_FIRST_ENABLED,
+            isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
         });
 
         const toggles = {
