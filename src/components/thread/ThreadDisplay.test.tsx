@@ -1,5 +1,4 @@
-import { fireEvent, render, screen } from '@test-utils';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from '@test-utils';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';
@@ -14,7 +13,6 @@ describe('ThreadDisplay', () => {
     beforeEach(() => {
         vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
         vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(useFakeUserAuthInfo);
-
     });
 
     afterEach(() => {
