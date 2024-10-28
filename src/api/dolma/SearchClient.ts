@@ -16,8 +16,8 @@ export class SearchClient extends ClientBase {
         return resp;
     }
 
-    async getDocument(id: string): Promise<search.Document> {
-        const url = `${this.dolmaApiUrl}/document/${id}`;
+    async getDocument(id: string, q: search.Request): Promise<search.Document> {
+        const url = `${this.dolmaApiUrl}/document/${id}${q.query ? `?${search.toQueryString(q)}` : ''}`;
         const resp = await this.fetch<search.Document>(url);
         return resp;
     }

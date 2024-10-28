@@ -39,7 +39,6 @@ export namespace search {
 
     export interface Document {
         id: string;
-        dolma_id: string;
         source: Source;
         title: string;
         snippets: Snippet[];
@@ -85,7 +84,7 @@ export namespace search {
     }
 
     export interface Request {
-        query: string;
+        query?: string;
         offset?: number;
         size?: number;
         filters?: Filters;
@@ -146,9 +145,12 @@ export namespace search {
     }
 
     export function toQueryString(q: Request): string {
-        const qs = new URLSearchParams({
-            [QueryStringParam.Query]: q.query,
-        });
+        const qs = new URLSearchParams();
+
+        // Add `query` only if it is defined and non-empty
+        if (q.query) {
+            qs.append(QueryStringParam.Query, q.query);
+        }
         if (q.offset) {
             qs.set(QueryStringParam.Offset, `${q.offset}`);
         }

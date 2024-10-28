@@ -27,38 +27,17 @@ export const createDocumentSlice: OlmoStateCreator<DocumentSlice> = (set) => ({
         });
 
         const api = new SearchClient();
-        // If the associated search query is set, use the search API so that
-        // the response includes highlights.
         try {
-            if (request.query) {
-                const response = await api.search({
-                    query: request.query,
-                    offset: 0,
-                    size: 1,
-                    filters: { sources: [], ids: [request.id] },
-                    match: search.MatchType.Should,
-                    no_aggs: true,
-                    snippet: search.SnippetType.Long,
-                });
+            const document = await api.getDocument(request.id, {
+                query: request.query,
+            });
+            set({
+                documentState: RemoteState.Loaded,
+                documentRequest: request,
+                document,
+            });
 
-                const document = response.results[0];
-                set({
-                    documentState: RemoteState.Loaded,
-                    documentRequest: request,
-                    document,
-                });
-
-                return document;
-            } else {
-                const document = await api.getDocument(request.id);
-                set({
-                    documentState: RemoteState.Loaded,
-                    documentRequest: request,
-                    document,
-                });
-
-                return document;
-            }
+            return document;
         } catch (e) {
             const error = !(e instanceof Error) ? new Error(`Unknown Error: ${e}`) : e;
             set({
