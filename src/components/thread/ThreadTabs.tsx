@@ -2,9 +2,10 @@ import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
 import { styled, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
-import { invertedBorderRadius, tabRoundedBorderStyle } from '../invertedBorderRadius';
+import { tabRoundedBorderStyle } from '../invertedBorderRadius';
 import { FullAttributionContent } from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
@@ -14,6 +15,8 @@ const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 export const ThreadTabs = () => {
     const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
+
+    const { isCorpusLinkEnabled } = useFeatureToggles();
 
     return (
         <TabsWithOverflow
@@ -29,11 +32,13 @@ export const ThreadTabs = () => {
                         Parameters
                     </Typography>
                 </TabControl>
-                <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
-                    <Typography variant="h4" component="span">
-                        CorpusLink
-                    </Typography>
-                </TabControl>
+                {isCorpusLinkEnabled && (
+                    <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
+                        <Typography variant="h4" component="span">
+                            CorpusLink
+                        </Typography>
+                    </TabControl>
+                )}
             </StickyTabsList>
             <TabPanelWithOverflow
                 value={PARAMETERS_TAB_NAME}
@@ -44,15 +49,17 @@ export const ThreadTabs = () => {
                 }}>
                 <ParameterContent />
             </TabPanelWithOverflow>
-            <TabPanelWithOverflow
-                value={DATASET_TAB_NAME}
-                aria-labelledby="dataset-tab-control"
-                id="parameters-tabpanel"
-                sx={{
-                    borderTopRightRadius: '0',
-                }}>
-                <FullAttributionContent />
-            </TabPanelWithOverflow>
+            {isCorpusLinkEnabled && (
+                <TabPanelWithOverflow
+                    value={DATASET_TAB_NAME}
+                    aria-labelledby="dataset-tab-control"
+                    id="parameters-tabpanel"
+                    sx={{
+                        borderTopRightRadius: '0',
+                    }}>
+                    <FullAttributionContent />
+                </TabPanelWithOverflow>
+            )}
         </TabsWithOverflow>
     );
 };
@@ -74,6 +81,10 @@ const TabControl = styled(Tab)(({ theme }) => ({
 
     cursor: 'pointer',
     position: 'relative',
+
+    ':only-of-type': {
+        textAlign: 'start',
+    },
 
     '&[aria-selected="true"]': {
         backgroundColor: theme.palette.background.default,
