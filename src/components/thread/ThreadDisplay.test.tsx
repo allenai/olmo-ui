@@ -97,8 +97,9 @@ describe('ThreadDisplay', () => {
                 wrapperProps: {
                     featureToggles: {
                         logToggles: false,
-                        attribution: true,
+                        isCorpusLinkEnabled: true,
                         attributionSpanFirst: true,
+                        isDatasetExplorerEnabled: true,
                     },
                 },
             }

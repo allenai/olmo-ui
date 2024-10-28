@@ -1,5 +1,3 @@
-import { SxProps } from '@mui/material';
-
 const borderProps = {
     base: {
         content: '""',
