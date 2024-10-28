@@ -19,9 +19,9 @@ export type FeatureToggles = Record<FeatureToggle, boolean>;
 
 export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
-    [FeatureToggle.isCorpusLinkEnabled]: true,
+    [FeatureToggle.isCorpusLinkEnabled]: false,
     [FeatureToggle.attributionSpanFirst]: true,
-    [FeatureToggle.isDatasetExplorerEnabled]: true,
+    [FeatureToggle.isDatasetExplorerEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
