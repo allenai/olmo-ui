@@ -92,7 +92,6 @@ export const NavigationDrawer = ({
                 sx={{
                     height: 1,
                     overflowX: 'hidden',
-                    paddingInline: 4,
                     paddingBlockEnd: 2,
                 }}>
                 <NavigationLink
@@ -202,7 +201,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 
 const DesktopHeading = (): JSX.Element => {
     return (
-        <Link paddingInline={2} paddingBlock={4} href={links.home}>
+        <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
             <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
         </Link>
     );

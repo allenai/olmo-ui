@@ -63,9 +63,14 @@ export const DolmaInformationCard = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         color="secondary"
+                        disableRipple={true}
                         sx={{
                             '&:hover': {
                                 backgroundColor: (theme) => theme.color['teal-10'].hex,
+                            },
+                            '&:focus-visible': {
+                                backgroundColor: (theme) => theme.color['green-20'].hex,
+                                border: (theme) => `1px solid ${theme.color['dark-teal'].hex}`,
                             },
                         }}>
                         {buttonText}

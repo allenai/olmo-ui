@@ -12,6 +12,9 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
+    await expect(page.getByText('Text matches from pre-training data'), {
+        message: 'should display CorpusLink tab',
+    }).toBeVisible();
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
     await expect(page.getByText('This is the first response.')).toBeVisible();
@@ -28,6 +31,9 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
     await page.getByRole('textbox', { name: 'Prompt' }).fill('say one word');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
+    await expect(page.getByText('Text matches from pre-training data'), {
+        message: 'should display CorpusLink tab',
+    }).toBeVisible();
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
     await expect(page.getByText('This is the first response.')).toBeVisible();

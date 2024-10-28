@@ -22,7 +22,6 @@ export const datasetSearchResponse = {
             added: '2023-03-17T17:15:52.533925',
             archive: 'stack/stack-v4-train-0124.json.gz',
             created: null,
-            dolma_id: 'b1277a5bbd120574d3abea306025f274da483a47',
             domain: 'github.com',
             id: 'a718be1486e24cbb7e0aee7d0bef8442',
             metadata: {
@@ -190,7 +189,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0061.json.gz',
             created: '2018-05-09T03:42:36+00:00',
-            dolma_id: '021609e97316428782ca371b8623c0be',
             domain: 'reddit.com',
             id: '40ae68afa3266dbc8e67ad01f3bbc1b9',
             metadata: {
@@ -339,7 +337,6 @@ export const datasetSearchResponse = {
             added: '2023-03-17T09:05:49.276272',
             archive: 'stack/stack-v4-train-0086.json.gz',
             created: null,
-            dolma_id: 'feadc2998f59c7d043b706a6d1cd0001ffb09050',
             domain: 'github.com',
             id: 'b8161d202f978b3be72ae6d7b0b6b97a',
             metadata: {
@@ -500,7 +497,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0030.json.gz',
             created: '2018-05-09T17:07:40+00:00',
-            dolma_id: '66d5c16832c945d1b6347a4c66f461a0',
             domain: 'reddit.com',
             id: '509b19cfcc971115c056148fe3ffd410',
             metadata: {
@@ -649,7 +645,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0028.json.gz',
             created: '2018-05-09T04:30:11+00:00',
-            dolma_id: 'e1bb16f20c504f95a53223ce7eb5d4c6',
             domain: 'reddit.com',
             id: '661ab0c84adc6c1e78a6d45f9de902c9',
             metadata: {
@@ -798,7 +793,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0023.json.gz',
             created: '2018-05-09T06:10:40+00:00',
-            dolma_id: 'aedeb56fd9f84dd08129a38004ff7e4a',
             domain: 'reddit.com',
             id: 'd6f6d074bf5de01c3884a5643e29fc7e',
             metadata: {
@@ -947,7 +941,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0063.json.gz',
             created: '2018-05-09T14:24:00+00:00',
-            dolma_id: 'fe1806c4b4a14a45a522050734b6e14c',
             domain: 'reddit.com',
             id: 'ff0f6defeaf9b49dd3a52d082be831f3',
             metadata: {
@@ -1096,7 +1089,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0037.json.gz',
             created: '2018-05-09T05:03:14+00:00',
-            dolma_id: '92b7f6468ba8441d895d58403858e7ad',
             domain: 'reddit.com',
             id: '841b92bc18733a46466e82d910f691b7',
             metadata: {
@@ -1245,7 +1237,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0029.json.gz',
             created: '2018-05-09T04:47:13+00:00',
-            dolma_id: 'e2f7fbfe3b4b49d0aed3f294da54313c',
             domain: 'reddit.com',
             id: 'c151649ac48cc87edd126c364d5ec65b',
             metadata: {
@@ -1394,7 +1385,6 @@ export const datasetSearchResponse = {
             added: '2023-03-16T01:43:55.831260+00:00',
             archive: 'reddit/reddit-v5-dedupe-pii-nsfw-toxic-0042.json.gz',
             created: '2018-05-09T04:47:03+00:00',
-            dolma_id: '242f48145c2c476a980b00290ca5bb06',
             domain: 'reddit.com',
             id: '4e1632c24007abd1913386f8e8d6964c',
             metadata: {

@@ -79,11 +79,17 @@ export const SearchBar = ({
                         variant="contained"
                         {...submitButtonProps}
                         disabled={disabled}
+                        disableRipple={true}
                         sx={{
                             backgroundColor: (theme) => theme.palette.background.reversed,
                             color: (theme) => theme.palette.secondary.light,
                             '&:hover': {
                                 backgroundColor: (theme) => theme.color['teal-100'].hex,
+                                color: (theme) => theme.palette.secondary.light,
+                            },
+                            '&:focus-visible': {
+                                background: (theme) => theme.color['teal-90'].hex,
+                                color: (theme) => theme.palette.secondary.light,
                             },
                         }}>
                         Submit

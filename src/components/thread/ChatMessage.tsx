@@ -6,7 +6,7 @@ import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
-import { RobotAvatar } from '../avatars/RobotAvatar';
+import { Ai2Avatar } from '../avatars/Ai2Avatar';
 import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
@@ -81,7 +81,7 @@ export const ChatMessage = ({
     });
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
-    const icon = variant === Role.User ? <UserAvatar /> : <RobotAvatar />;
+    const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
         <Stack direction="row" gap={3} alignItems="start">

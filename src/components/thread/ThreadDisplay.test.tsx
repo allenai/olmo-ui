@@ -1,16 +1,20 @@
 import { fireEvent, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
+import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
+import { useFakeUserAuthInfo } from '@/utils/FakeAuthLoaders';
 
 import { ThreadDisplay } from './ThreadDisplay';
 
 describe('ThreadDisplay', () => {
     beforeEach(() => {
         vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(useFakeUserAuthInfo);
+
     });
 
     afterEach(() => {

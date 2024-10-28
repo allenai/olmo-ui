@@ -1,15 +1,11 @@
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Box, Link, Stack, styled, Typography } from '@mui/material';
-
-import { CopyToClipboardButton } from './shared';
+import { Box, Link, Stack, Typography } from '@mui/material';
 
 interface Props {
-    dolmaId: string;
     source: string;
     url?: string;
 }
 
-export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
+export const DocumentMeta = ({ source, url }: Props) => {
     return (
         <Stack direction="row" gap={1} flexWrap="wrap">
             {!!url && (
@@ -29,17 +25,6 @@ export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
             <Stack direction="row" gap={1} alignItems="center">
                 <Stack direction="row" alignItems="center">
                     <Typography variant="h5" component="div" fontWeight="bold">
-                        <strong>Dolma ID:</strong>&nbsp;
-                    </Typography>
-                    <CopyToClipboardButton
-                        buttonContent={<ContentCopyIcon fontSize="inherit" />}
-                        text={dolmaId}
-                        ariaLabel="Copy Dolma ID">
-                        <TruncatableText variant="body1">{dolmaId}</TruncatableText>
-                    </CopyToClipboardButton>
-                </Stack>
-                <Stack direction="row" alignItems="center">
-                    <Typography variant="h5" component="div" fontWeight="bold">
                         <strong>Source</strong>:&nbsp;
                     </Typography>
                     <Typography variant="body1" component="div">
@@ -50,10 +35,3 @@ export const DocumentMeta = ({ dolmaId, source, url }: Props) => {
         </Stack>
     );
 };
-
-const TruncatableText = styled(Typography)`
-    max-width: 9ch;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
