@@ -13,10 +13,20 @@ const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
 const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
 export const ThreadTabs = () => {
-    const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
+    const { isCorpusLinkEnabled } = useFeatureToggles();
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
 
-    const { isCorpusLinkEnabled } = useFeatureToggles();
+    const currentOpenThreadTab = useAppContext((state): ThreadTabId => {
+        // This handles cases where we automatically open the CorpusLink tab
+        // Since our zustand store doesn't know about feature toggles we need to do checks in components that do have access
+        const currentOpenThreadTab = state.currentOpenThreadTab;
+
+        if (currentOpenThreadTab === 'attribution' && !isCorpusLinkEnabled) {
+            return 'parameters';
+        } else {
+            return currentOpenThreadTab;
+        }
+    });
 
     return (
         <TabsWithOverflow
