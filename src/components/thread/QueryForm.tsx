@@ -97,20 +97,16 @@ const SubmitPauseAdornment = ({
 };
 
 export const QueryForm = (): JSX.Element => {
+    const navigation = useNavigation();
+    const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
-
-    const handlePromptSubmission = async (data: { content: string; parent?: string }) => {
-        await streamPrompt(data);
-    };
-
+    const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const formContext = useForm({
         defaultValues: {
             content: '',
             private: false,
         },
     });
-
-    const location = useLocation();
 
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
@@ -159,6 +155,25 @@ export const QueryForm = (): JSX.Element => {
         return lastMessage;
     });
 
+    // Autofocus the input if we're on a new thread
+    useEffect(() => {
+        if (location.pathname === links.playground) {
+            formContext.setFocus('content');
+        }
+    }, [location.pathname, formContext]);
+
+    // Clear errors when we navigate between pages
+    useEffect(() => {
+        if (navigation.state === 'loading') {
+            formContext.clearErrors();
+        }
+    }, [formContext, navigation.state]);
+
+    // Clear form input after the client receive the first message
+    useEffect(() => {
+        formContext.reset();
+    }, [firstResponseId, formContext]);
+
     const handleSubmit = async (data: { content: string }) => {
         const request: MessagePost = { ...data };
 
@@ -167,8 +182,7 @@ export const QueryForm = (): JSX.Element => {
         }
 
         try {
-            handlePromptSubmission(request);
-            formContext.reset();
+            await streamPrompt(request);
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
@@ -183,25 +197,9 @@ export const QueryForm = (): JSX.Element => {
     const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            formContext.handleSubmit(handleSubmit)();
+            await formContext.handleSubmit(handleSubmit)();
         }
     };
-
-    // Autofocus the input if we're on a new thread
-    useEffect(() => {
-        if (location.pathname === links.playground) {
-            formContext.setFocus('content');
-        }
-    }, [location.pathname, formContext]);
-
-    const navigation = useNavigation();
-
-    // Clear errors when we navigate between pages
-    useEffect(() => {
-        if (navigation.state === 'loading') {
-            formContext.clearErrors();
-        }
-    }, [formContext, navigation.state]);
 
     return (
         <Box marginBlockStart="auto" width={1}>
