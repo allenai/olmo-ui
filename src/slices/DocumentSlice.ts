@@ -29,7 +29,7 @@ export const createDocumentSlice: OlmoStateCreator<DocumentSlice> = (set) => ({
         const api = new SearchClient();
         try {
             const document = await api.getDocument(request.id, {
-                query: request.query ? request.query : '',
+                query: request.query ?? '',
             });
             set({
                 documentState: RemoteState.Loaded,
