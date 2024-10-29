@@ -18,6 +18,14 @@ export const FakeAppContextProvider = ({
     return <FakeAppContext.Provider value={storeRef.current}>{children}</FakeAppContext.Provider>;
 };
 
+export const FakeAppContextWithCustomStatesProvider = ({
+    customStates,
+    children,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}: PropsWithChildren<{ customStates: any }>) => {
+    return <FakeAppContext.Provider value={customStates}>{children}</FakeAppContext.Provider>;
+};
+
 export const useFakeAppContext = (selector: (state: appContext.AppContextState) => unknown) => {
     const store = useContext(FakeAppContext);
 
