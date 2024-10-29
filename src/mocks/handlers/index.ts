@@ -40,16 +40,24 @@ export const handlers = [
     http.get(`${process.env.DOLMA_API_URL}/v1/search`, ({ request }) => {
         const searchParams = new URL(request.url).searchParams;
         const query = searchParams.get('query');
-        const id = searchParams.get('id');
         if (query === 'Seattle') {
-            if (id === 'a718be1486e24cbb7e0aee7d0bef8442') {
-                return HttpResponse.json(datasetDocumentResponse);
-            }
             return HttpResponse.json(datasetSearchResponse);
         }
 
         return passthrough();
     }),
+
+    http.get(
+        `${process.env.DOLMA_API_URL}/v1/document/a718be1486e24cbb7e0aee7d0bef8442`,
+        ({ request }) => {
+            const searchParams = new URL(request.url).searchParams;
+            const query = searchParams.get('query');
+            if (query === 'Seattle') {
+                return HttpResponse.json(datasetDocumentResponse);
+            }
+            return HttpResponse.json(datasetDocumentResponse);
+        }
+    ),
 ];
 
 const fakeModelsResponse: ModelList = [
