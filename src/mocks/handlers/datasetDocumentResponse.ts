@@ -22,7 +22,6 @@ export const datasetDocumentResponse = {
             added: '2023-03-17T17:15:52.533925',
             archive: 'stack/stack-v4-train-0124.json.gz',
             created: null,
-            dolma_id: 'b1277a5bbd120574d3abea306025f274da483a47',
             domain: 'github.com',
             id: 'a718be1486e24cbb7e0aee7d0bef8442',
             metadata: {

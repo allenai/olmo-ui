@@ -49,15 +49,20 @@ export const OlmoAppBar = (): JSX.Element => {
                 <Toolbar
                     disableGutters
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr max-content 1fr',
                     }}>
                     <Link
                         href={links.home}
                         lineHeight={1}
                         sx={{
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+                            justifySelf: 'left',
+                            alignItems: 'center',
+                            height: '100%',
+                            display: 'flex',
+                            [DESKTOP_LAYOUT_BREAKPOINT]: {
+                                display: 'none',
+                            },
                         }}>
                         <Ai2LogoFull
                             height={18.5}
@@ -80,6 +85,7 @@ export const OlmoAppBar = (): JSX.Element => {
                         onClick={handleDrawerToggle}
                         color="secondary"
                         sx={{
+                            justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
                         <MenuIcon />

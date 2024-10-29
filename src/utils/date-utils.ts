@@ -4,11 +4,11 @@ export const todayDateFormatter = new Intl.DateTimeFormat(undefined, {
     hour: 'numeric',
     minute: 'numeric',
 });
-export const pastWeekDateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
+export const pastWeekDateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
 export const pastMonthDateFormatter = new Intl.DateTimeFormat(undefined, {
     month: 'numeric',
     day: 'numeric',
-    year: 'numeric',
+    year: '2-digit',
 });
 
 export const isCurrentDay = (date: Date): boolean => {
