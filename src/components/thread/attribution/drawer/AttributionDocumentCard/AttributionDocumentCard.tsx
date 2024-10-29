@@ -2,6 +2,7 @@ import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@m
 import { ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
 import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
@@ -71,6 +72,7 @@ export const AttributionDocumentCard = ({
     repeatedDocumentCount,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
+    const { isDatasetExplorerEnabled } = useFeatureToggles();
 
     return (
         <AttributionDocumentCardBase
@@ -79,17 +81,19 @@ export const AttributionDocumentCard = ({
             source={`Source: ${source}`}
             actions={
                 <>
-                    <Button
-                        href={links.document(documentIndex)}
-                        variant="outlined"
-                        color="inherit"
-                        size="small"
-                        fullWidth={false}
-                        sx={{
-                            width: 'fit-content',
-                        }}>
-                        Open in Dataset Explorer
-                    </Button>
+                    {isDatasetExplorerEnabled && (
+                        <Button
+                            href={links.document(documentIndex)}
+                            variant="outlined"
+                            color="inherit"
+                            size="small"
+                            fullWidth={false}
+                            sx={{
+                                width: 'fit-content',
+                            }}>
+                            Open in Dataset Explorer
+                        </Button>
+                    )}
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
                         <Stack direction="column" alignItems="start">

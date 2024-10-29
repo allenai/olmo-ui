@@ -2,9 +2,10 @@ import { Tab, TabPanel, Tabs, TabsList } from '@mui/base';
 import { styled, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { ThreadTabId } from '@/slices/DrawerSlice';
 
-import { invertedBorderRadius } from '../invertedBorderRadius';
+import { tabRoundedBorderStyle } from '../invertedBorderRadius';
 import { FullAttributionContent } from './attribution/drawer/AttributionContent';
 import { ParameterContent } from './parameter/ParameterDrawer';
 
@@ -12,8 +13,20 @@ const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
 const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
 export const ThreadTabs = () => {
-    const currentOpenThreadTab = useAppContext((state) => state.currentOpenThreadTab);
+    const { isCorpusLinkEnabled } = useFeatureToggles();
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
+
+    const currentOpenThreadTab = useAppContext((state): ThreadTabId => {
+        // This handles cases where we automatically open the CorpusLink tab
+        // Since our zustand store doesn't know about feature toggles we need to do checks in components that do have access
+        const currentOpenThreadTab = state.currentOpenThreadTab;
+
+        if (currentOpenThreadTab === 'attribution' && !isCorpusLinkEnabled) {
+            return 'parameters';
+        } else {
+            return currentOpenThreadTab;
+        }
+    });
 
     return (
         <TabsWithOverflow
@@ -24,22 +37,18 @@ export const ThreadTabs = () => {
                 }
             }}>
             <StickyTabsList>
-                <TabControl
-                    value={PARAMETERS_TAB_NAME}
-                    id="parameters-tab-control"
-                    sx={invertedBorderRadius('bottomRight')}>
+                <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
                     <Typography variant="h4" component="span">
                         Parameters
                     </Typography>
                 </TabControl>
-                <TabControl
-                    value={DATASET_TAB_NAME}
-                    id="dataset-tab-control"
-                    sx={invertedBorderRadius('bottomLeft')}>
-                    <Typography variant="h4" component="span">
-                        CorpusLink
-                    </Typography>
-                </TabControl>
+                {isCorpusLinkEnabled && (
+                    <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
+                        <Typography variant="h4" component="span">
+                            CorpusLink
+                        </Typography>
+                    </TabControl>
+                )}
             </StickyTabsList>
             <TabPanelWithOverflow
                 value={PARAMETERS_TAB_NAME}
@@ -50,15 +59,17 @@ export const ThreadTabs = () => {
                 }}>
                 <ParameterContent />
             </TabPanelWithOverflow>
-            <TabPanelWithOverflow
-                value={DATASET_TAB_NAME}
-                aria-labelledby="dataset-tab-control"
-                id="parameters-tabpanel"
-                sx={{
-                    borderTopRightRadius: '0',
-                }}>
-                <FullAttributionContent />
-            </TabPanelWithOverflow>
+            {isCorpusLinkEnabled && (
+                <TabPanelWithOverflow
+                    value={DATASET_TAB_NAME}
+                    aria-labelledby="dataset-tab-control"
+                    id="parameters-tabpanel"
+                    sx={{
+                        borderTopRightRadius: '0',
+                    }}>
+                    <FullAttributionContent />
+                </TabPanelWithOverflow>
+            )}
         </TabsWithOverflow>
     );
 };
@@ -81,6 +92,10 @@ const TabControl = styled(Tab)(({ theme }) => ({
     cursor: 'pointer',
     position: 'relative',
 
+    ':only-of-type': {
+        textAlign: 'start',
+    },
+
     '&[aria-selected="true"]': {
         backgroundColor: theme.palette.background.default,
         color: 'inherit',
@@ -88,6 +103,8 @@ const TabControl = styled(Tab)(({ theme }) => ({
         borderTopRightRadius: theme.shape.borderRadius,
         zIndex: 1,
     },
+
+    ...tabRoundedBorderStyle,
 }));
 
 const TabsWithOverflow = styled(Tabs)(() => ({

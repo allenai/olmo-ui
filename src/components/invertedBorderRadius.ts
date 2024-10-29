@@ -1,5 +1,3 @@
-import { SxProps } from '@mui/material';
-
 const borderProps = {
     base: {
         content: '""',
@@ -34,26 +32,20 @@ const borderProps = {
     },
 };
 
-type BorderCorner = 'bottomRight' | 'bottomLeft' | 'topLeft' | 'topRight';
+export const tabRoundedBorderStyle = {
+    // Element with a sibling adjacent to it
+    // https://stackoverflow.com/a/75685931
+    '&:has(+ &)': {
+        '&::after': {
+            ...borderProps.base,
+            ...borderProps.bottomRight,
+        },
+    },
 
-export const invertedBorderRadius = (corner: BorderCorner, corner2?: BorderCorner): SxProps => {
-    let after;
-    const before = {
+    '& + &': {
         '&::before': {
             ...borderProps.base,
-            ...borderProps[corner],
+            ...borderProps.bottomLeft,
         },
-    };
-    if (corner2) {
-        after = {
-            '&::after': {
-                ...borderProps.base,
-                ...borderProps[corner2],
-            },
-        };
-    }
-    return {
-        ...before,
-        ...after,
-    };
+    },
 };

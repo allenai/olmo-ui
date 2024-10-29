@@ -5,11 +5,12 @@ import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
 import { useDesktopOrUp, useMediumLayoutOrUp } from '../dolma/shared';
-import { AttributionButton } from './attribution/AttributionButton';
+import { CorpusLinkButton } from './attribution/AttributionButton';
 import { DeleteDialog, DeleteThreadButton } from './DeleteThreadButton';
 import { ParameterButton } from './parameter/ParameterButton';
 import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
@@ -45,6 +46,8 @@ export const ThreadPageControls = (): JSX.Element => {
     const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const isDesktop = useDesktopOrUp();
     const isMediumLayout = useMediumLayoutOrUp();
+
+    const { isCorpusLinkEnabled } = useFeatureToggles();
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -85,7 +88,7 @@ export const ThreadPageControls = (): JSX.Element => {
                     gridColumn: '1 / -1',
                 }}>
                 <ButtonGroup size="large" variant="outlined" fullWidth>
-                    <AttributionButton />
+                    {isCorpusLinkEnabled && <CorpusLinkButton />}
                     <ParameterButton />
                     {!isMediumLayout ? (
                         <MoreButton

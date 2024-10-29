@@ -5,14 +5,14 @@ import { documentFirstMarkedContentSelector } from './document-first-marked-cont
 import { spanFirstMarkedContentSelector } from './span-first-marked-content-selector';
 
 export const useSpanHighlighting = (messageId: string) => {
-    const { attribution, attributionSpanFirst } = useFeatureToggles();
+    const { isCorpusLinkEnabled, attributionSpanFirst } = useFeatureToggles();
 
     const highlightSelector = attributionSpanFirst
         ? spanFirstMarkedContentSelector
         : documentFirstMarkedContentSelector;
 
     const contentWithMarks = useAppContext((state) => {
-        if (!attribution || state.attribution.selectedMessageId !== messageId) {
+        if (!isCorpusLinkEnabled || state.attribution.selectedMessageId !== messageId) {
             return state.selectedThreadMessagesById[messageId].content;
         }
 

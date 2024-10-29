@@ -5,7 +5,7 @@ import { useAppContext } from '@/AppContext';
 import { ResponsiveButton } from '../ResponsiveButton';
 import { ATTRIBUTION_DRAWER_ID } from './drawer/AttributionDrawer';
 
-export const AttributionButton = () => {
+export const CorpusLinkButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const toggleAttributionDrawer = () => {
         toggleDrawer(ATTRIBUTION_DRAWER_ID);
