@@ -17,7 +17,7 @@ const sharedMessageStyle: SxProps = {
 const streamingMessageIndicatorStyle: SxProps = {
     // this assumes a response format like what's generated with react-markdown
     // we wrap with a Typography element then inside the Typography element is the actual message
-    '&[data-is-streaming="true"] * :last-child::after': {
+    '&[data-is-streaming="true"] > * > :last-child::after': {
         borderRadius: 5,
         bgcolor: 'primary.main',
         content: '""',
