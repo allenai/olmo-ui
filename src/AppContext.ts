@@ -35,7 +35,17 @@ export type AppContextState = LabelSlice &
     DatasetExplorerSliceStates &
     AttributionSlice;
 
-export const createAppContext = (initialState?: DeepPartial<AppContextState>) => {
+export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
+export type OlmoStateCreator<TOwnSlice> = StateCreator<
+    AppContextState,
+    ZustandDevtools,
+    [],
+    TOwnSlice
+>;
+
+export const createAppContext = (
+    initialState?: OlmoStateCreator<unknown> | DeepPartial<AppContextState>
+) => {
     return createStore<AppContextState>()(
         devtools(
             immer((...store) =>
@@ -56,8 +66,8 @@ export const createAppContext = (initialState?: DeepPartial<AppContextState>) =>
                         ...createSelectedThreadSlice(...store),
                         ...createAttributionSlice(...store),
                     } satisfies AppContextState,
-                    // this is a bad cast but i just want to make TS happy rn
-                    (initialState as AppContextState | undefined) ?? {}
+                    (typeof initialState === 'function' ? initialState(...store) : initialState) ??
+                        {}
                 )
             )
         )
@@ -84,14 +94,6 @@ export function useAppContext<TSelectorReturnValue>(selector?: SelectorType<TSel
     return useStore(appContext, selector);
 }
 /* eslint-enable no-redeclare */
-
-export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
-export type OlmoStateCreator<TOwnSlice> = StateCreator<
-    AppContextState,
-    ZustandDevtools,
-    [],
-    TOwnSlice
->;
 
 // @ts-expect-error - Making a new function to be able to show T&Cs whenever we want
 window.showTermsAndConditions = () => {

@@ -1,5 +1,4 @@
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
-import { DeepPartial } from 'react-hook-form';
 import { useStore } from 'zustand';
 
 import * as appContext from '@/AppContext';
@@ -11,7 +10,7 @@ export const FakeAppContextProvider = ({
     initialState,
     children,
 }: PropsWithChildren<{
-    initialState: DeepPartial<appContext.AppContextState>;
+    initialState: Parameters<typeof appContext.createAppContext>[0];
 }>) => {
     const storeRef = useRef<AppContextStore>(appContext.createAppContext(initialState));
 

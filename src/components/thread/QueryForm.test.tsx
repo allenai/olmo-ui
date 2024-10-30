@@ -1,6 +1,7 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+import { ComponentProps } from 'react';
 import * as RouterDom from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
@@ -108,18 +109,24 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        const fakeContext = AppContext.createAppContext();
-        const fakeStates = fakeContext.getState();
-        vi.spyOn(fakeStates, 'streamPrompt').mockImplementation(() => {
-            fakeContext.setState({ streamingMessageId: 'FirstMessage' });
+        // const fakeContext = AppContext.createAppContext();
+        // const fakeStates = fakeContext.getState();
+        // vi.spyOn(fakeStates, 'streamPrompt').mockImplementation();
 
-            return Promise.resolve();
+        const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
+            set
+        ) => ({
+            streamPrompt: () => {
+                set({ streamingMessageId: 'FirstMessage' });
+
+                return Promise.resolve();
+            },
         });
 
         render(
-            <FakeAppContextWithCustomStatesProvider customStates={fakeContext}>
+            <FakeAppContextProvider initialState={initialState}>
                 <QueryForm />
-            </FakeAppContextWithCustomStatesProvider>
+            </FakeAppContextProvider>
         );
 
         const textfield = screen.getByPlaceholderText('Enter prompt');
