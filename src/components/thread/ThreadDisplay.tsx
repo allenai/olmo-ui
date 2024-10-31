@@ -1,5 +1,4 @@
-import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
-import { Box, IconButton, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { defer, LoaderFunction } from 'react-router-dom';
 
@@ -12,6 +11,7 @@ import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlight
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
+import { ScrollToBottomButton } from './ScrollToBottomButton';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -67,13 +67,13 @@ const getMessageIdsToShow = (
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
     const stackRef = useRef<HTMLDivElement | null>(null);
-    const [isButtonVisible, setIsButtonVisible] = useState(false);
+    const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
     const checkScrollVisibility = () => {
         if (stackRef.current) {
             const { scrollHeight, clientHeight, scrollTop } = stackRef.current;
             const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-            setIsButtonVisible(!isAtBottom);
+            setIsScrollToBottomButtonVisible(!isAtBottom);
         }
     };
 
@@ -113,15 +113,10 @@ export const ThreadDisplay = (): JSX.Element => {
                         'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
                     marginTop: (theme) => theme.spacing(-3),
                 }}>
-                {isButtonVisible && (
-                    <IconButton
-                        onClick={handleScrollToBottom}
-                        sx={{
-                            color: (theme) => theme.palette.text.secondary,
-                        }}>
-                        <ArrowCircleDownOutlinedIcon sx={{ width: '36px', height: '36px' }} />
-                    </IconButton>
-                )}
+                <ScrollToBottomButton
+                    isVisible={isScrollToBottomButtonVisible}
+                    onScrollToBottom={handleScrollToBottom}
+                />
             </Box>
         </Stack>
     );
