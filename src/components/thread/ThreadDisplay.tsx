@@ -69,16 +69,14 @@ export const ThreadDisplay = (): JSX.Element => {
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
 
-    // Check if the user has scrolled to the bottom
     const checkScrollVisibility = () => {
         if (stackRef.current) {
             const { scrollHeight, clientHeight, scrollTop } = stackRef.current;
             const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-            setIsButtonVisible(!isAtBottom); // Show button if not at bottom
+            setIsButtonVisible(!isAtBottom);
         }
     };
 
-    // Initial check on mount to set the button visibility based on scroll position
     useEffect(() => {
         checkScrollVisibility();
     }, []);
@@ -99,8 +97,7 @@ export const ThreadDisplay = (): JSX.Element => {
             data-testid="thread-display"
             overflow="auto"
             ref={stackRef}
-            onScroll={checkScrollVisibility} // Directly attach onScroll handler
-        >
+            onScroll={checkScrollVisibility}>
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
