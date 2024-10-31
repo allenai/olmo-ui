@@ -1,6 +1,6 @@
 import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
 import { Box, IconButton, Stack } from '@mui/material';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -69,13 +69,19 @@ export const ThreadDisplay = (): JSX.Element => {
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
 
+    // Check if the user has scrolled to the bottom
     const checkScrollVisibility = () => {
         if (stackRef.current) {
             const { scrollHeight, clientHeight, scrollTop } = stackRef.current;
             const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-            setIsButtonVisible(!isAtBottom);
+            setIsButtonVisible(!isAtBottom); // Show button if not at bottom
         }
     };
+
+    // Initial check on mount to set the button visibility based on scroll position
+    useEffect(() => {
+        checkScrollVisibility();
+    }, []);
 
     const handleScrollToBottom = () => {
         if (stackRef.current) {
@@ -93,7 +99,8 @@ export const ThreadDisplay = (): JSX.Element => {
             data-testid="thread-display"
             overflow="auto"
             ref={stackRef}
-            onScroll={checkScrollVisibility}>
+            onScroll={checkScrollVisibility} // Directly attach onScroll handler
+        >
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
