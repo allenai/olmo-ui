@@ -7,7 +7,6 @@ import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from './ChatMessage';
@@ -67,8 +66,7 @@ const getMessageIdsToShow = (
 
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
-    const streamPromptState = useAppContext((state) => state.streamPromptState);
-    const isStreamPromptFinished = streamPromptState === RemoteState.Loaded;
+    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
 
@@ -76,45 +74,16 @@ export const ThreadDisplay = (): JSX.Element => {
         if (stackRef.current) {
             const { scrollHeight, clientHeight, scrollTop } = stackRef.current;
             const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-            setIsButtonVisible(!isAtBottom); // Show button if not at bottom
+            setIsButtonVisible(!isAtBottom);
         }
     };
 
+    // Scroll to the bottom when a new message is added
     useEffect(() => {
-        const currentStackRef = stackRef.current;
-        const handleScroll = () => {
-            // Use requestAnimationFrame to make the check smoother
-            requestAnimationFrame(checkScrollVisibility);
-        };
-
-        // Check visibility on mount and listen for scroll events
-        if (currentStackRef) {
-            currentStackRef.addEventListener('scroll', handleScroll);
-            checkScrollVisibility(); // Initial check on mount
+        if (stackRef.current) {
+            stackRef.current.scrollTop = stackRef.current.scrollHeight;
         }
-
-        // Cleanup listeners on unmount
-        return () => {
-            if (currentStackRef) {
-                currentStackRef.removeEventListener('scroll', handleScroll);
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        // Scroll to the bottom if stream prompt is finished and there's content below the viewport
-        if (isStreamPromptFinished && stackRef.current) {
-            const { scrollHeight, clientHeight, scrollTop } = stackRef.current;
-            if (scrollHeight > clientHeight && scrollTop + clientHeight < scrollHeight) {
-                stackRef.current.scrollTo({
-                    top: scrollHeight,
-                    behavior: 'smooth',
-                });
-            }
-            // Check visibility immediately when prompt finishes
-            checkScrollVisibility();
-        }
-    }, [isStreamPromptFinished]);
+    }, [streamingMessageId]);
 
     const handleScrollToBottom = () => {
         if (stackRef.current) {
@@ -131,14 +100,15 @@ export const ThreadDisplay = (): JSX.Element => {
             direction="column"
             data-testid="thread-display"
             overflow="auto"
-            ref={stackRef}>
+            ref={stackRef}
+            onScroll={checkScrollVisibility}>
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
             <Box
                 sx={{
                     display: 'flex',
-                    justifyContent: 'center', // Centers horizontally
+                    justifyContent: 'center',
                     alignItems: 'center',
                     bottom: '-1px',
                     minHeight: (theme) => theme.spacing(6),
