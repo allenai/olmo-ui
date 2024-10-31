@@ -183,7 +183,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     }
 
                     selectMessage(finalMessageId);
-                    await getAttributionsForMessage(finalMessageId);
+                    await getAttributionsForMessage(promptMessage.content, finalMessageId);
                 }
             }
         } catch (err) {

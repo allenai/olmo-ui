@@ -130,7 +130,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         );
     },
 
-    getAttributionsForMessage: async (messageId: string): Promise<AttributionState> => {
+    getAttributionsForMessage: async (prompt: string, messageId: string): Promise<AttributionState> => {
         const message = get().selectedThreadMessagesById[messageId];
         get().selectMessage(messageId);
 
@@ -153,6 +153,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
             try {
                 const attributionResponse = await attributionClient.getAttributionDocuments(
+                    prompt,
                     message.content,
                     'OLMoE-1B-7B-0924-Instruct'
                 );
