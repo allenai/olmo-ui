@@ -115,8 +115,8 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
 
         const attributionsPromise =
             lastResponseId != null
-            ? getAttributionsForMessage(lastPrompt, lastResponseId)
-            : undefined;
+                ? getAttributionsForMessage(lastPrompt, lastResponseId)
+                : undefined;
 
         return defer({
             selectedThread,
