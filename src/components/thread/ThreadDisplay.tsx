@@ -1,6 +1,6 @@
 import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
 import { Box, IconButton, Stack } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -66,7 +66,6 @@ const getMessageIdsToShow = (
 
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
-    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
 
