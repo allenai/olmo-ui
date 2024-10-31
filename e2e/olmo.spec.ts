@@ -84,8 +84,6 @@ test('can search pretraining documents in DataSet Explorer', async ({ page }) =>
         .click();
     await page.waitForLoadState('networkidle');
     await expect(
-        page.getByText(
-            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
-        )
+        page.getByText('Test1SeattleTest2SeattleTestTestTestSeattleOkey okey okey okey…')
     ).toBeVisible();
 });

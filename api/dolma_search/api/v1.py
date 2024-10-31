@@ -166,6 +166,8 @@ class Server(flask.Blueprint):
         return flask.jsonify(mapped_response)
 
     def document(self, id: str):
+        query = flask.request.args.get("query", default="", type=lambda s: s.strip())
+        
         infini_gram_document_response = (
             get_document_by_index_index_documents_document_index_get.sync(
                 index=AvailableInfiniGramIndexId.OLMOE,
@@ -188,7 +190,7 @@ class Server(flask.Blueprint):
 
         target_doc = Document.from_dict(infini_gram_document_response.to_dict())
         result = index.SearchResult.from_infini_gram_document_and_search_term(
-            target_doc, search_term=""
+            target_doc, search_term= query if query else ""
         )
 
         response = asdict(result)
