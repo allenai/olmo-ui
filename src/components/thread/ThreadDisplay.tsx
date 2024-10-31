@@ -3,7 +3,6 @@ import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
-import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
@@ -28,7 +27,6 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         <>
             <ChatMessage role={role} messageId={messageId}>
                 <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
-
                 <MessageInteraction
                     role={role}
                     content={content}
@@ -40,31 +38,10 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     );
 };
 
-export const getSelectedMessagesToShow = (state: AppContextState) =>
-    getMessageIdsToShow(state.selectedThreadRootId, state.selectedThreadMessagesById);
-
-const getMessageIdsToShow = (
-    rootMessageId: string,
-    messagesById: Record<string, SelectedThreadMessage>,
-    messageIdList: string[] = []
-): string[] => {
-    const message = messagesById[rootMessageId];
-    if (message == null || rootMessageId == null) {
-        return [];
-    }
-
-    messageIdList.push(rootMessageId);
-    if (message.selectedChildId != null) {
-        const childMessage = messagesById[message.selectedChildId];
-        getMessageIdsToShow(childMessage.id, messagesById, messageIdList);
-    }
-
-    return messageIdList;
-};
+export const getSelectedMessagesToShow = (state: AppContextState) => state.branchIdList;
 
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
-
     return (
         <Stack gap={2} direction="column" data-testid="thread-display" overflow="auto">
             {childMessageIds.map((messageId) => (

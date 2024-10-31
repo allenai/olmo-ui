@@ -22,6 +22,8 @@ export interface SelectedThreadSlice {
     ) => Promise<SelectedThreadMessage>;
     deleteSelectedThread: () => void;
     resetSelectedThreadState: () => void;
+
+    branchIdList: string[];
 }
 
 const initialState = {
@@ -29,6 +31,8 @@ const initialState = {
     selectedThreadRootId: '',
     selectedThreadMessages: [],
     selectedThreadMessagesById: {},
+
+    branchIdList: [],
 };
 
 export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
@@ -62,12 +66,13 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
     addChildToSelectedThread: (message: Message) => {
         const mappedMessages = mapMessages(message);
-
+        console.log(mappedMessages)
         set(
             (state) => {
                 if (message.parent != null) {
                     mappedMessages.forEach((message) => {
                         state.selectedThreadMessagesById[message.id] = message;
+                        state.branchIdList.push(message.id);
                     });
 
                     state.selectedThreadMessagesById[message.parent].childIds.push(
@@ -75,6 +80,9 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     );
                     state.selectedThreadMessagesById[message.parent].selectedChildId =
                         mappedMessages[0].id;
+
+                    // state.branchIdList.push(mappedMessages);
+
                 }
             },
             false,
@@ -99,6 +107,25 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
         const mappedMessages = mapMessages(rootMessage);
 
+        const getMessageIdsToShow = (
+            rootMessageId: string,
+            messagesById: Record<string, SelectedThreadMessage>,
+            messageIdList: string[]
+        ): string[] => {
+            const message = messagesById[rootMessageId];
+            if (message == null || rootMessageId == null) {
+                return [];
+            }
+
+            messageIdList.push(rootMessageId);
+            if (message.selectedChildId != null) {
+                const childMessage = messagesById[message.selectedChildId];
+                getMessageIdsToShow(childMessage.id, messagesById, messageIdList);
+            }
+
+            return messageIdList;
+        };
+
         set(
             (state) => {
                 state.selectedThreadRootId = selectedThreadMessage.id;
@@ -109,11 +136,18 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     newSelectedThreadsById[message.id] = message;
                 });
                 state.selectedThreadMessagesById = newSelectedThreadsById;
+
+                state.branchIdList = getMessageIdsToShow(
+                    selectedThreadMessage.id,
+                    newSelectedThreadsById,
+                    []
+                );
             },
             false,
             'selectedThread/setSelectedThread'
         );
     },
+
 
     getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {
         let originalMessage: Message | undefined;
