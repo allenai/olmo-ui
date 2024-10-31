@@ -138,6 +138,11 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
         const selectedThread = await getSelectedThread(params.id);
 
         const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
+        const lastPromptId = selectedThreadMessages
+            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.User)
+            .at(-1);
+        const lastPrompt =
+            lastPromptId != null ? selectedThreadMessagesById[lastPromptId].content : '';
         const lastResponseId = selectedThreadMessages
             .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
             .at(-1);
@@ -147,7 +152,9 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
         }
 
         const attributionsPromise =
-            lastResponseId != null ? getAttributionsForMessage(lastResponseId) : undefined;
+            lastResponseId != null
+                ? getAttributionsForMessage(lastPrompt, lastResponseId)
+                : undefined;
 
         return defer({
             selectedThread,
