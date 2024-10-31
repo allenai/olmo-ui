@@ -66,6 +66,7 @@ const getMessageIdsToShow = (
 
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
+    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
@@ -80,6 +81,13 @@ export const ThreadDisplay = (): JSX.Element => {
     useEffect(() => {
         checkScrollVisibility();
     }, []);
+
+    // Scroll to the bottom when a new message is added
+    useEffect(() => {
+        if (stackRef.current) {
+            stackRef.current.scrollTop = stackRef.current.scrollHeight;
+        }
+    }, [streamingMessageId]);
 
     const handleScrollToBottom = () => {
         if (stackRef.current) {
