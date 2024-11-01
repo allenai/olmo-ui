@@ -1,15 +1,12 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+import { ComponentProps } from 'react';
 import * as RouterDom from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import {
-    FakeAppContextProvider,
-    FakeAppContextWithCustomStatesProvider,
-    useFakeAppContext,
-} from '@/utils/FakeAppContext';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { QueryForm } from './QueryForm';
 
@@ -107,10 +104,6 @@ describe('QueryForm', () => {
         });
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
-        // const fakeContext = AppContext.createAppContext();
-        // const fakeStates = fakeContext.getState();
-        // vi.spyOn(fakeStates, 'streamPrompt').mockImplementation();
 
         const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
             set
