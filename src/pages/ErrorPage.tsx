@@ -28,12 +28,13 @@ const isLoginError = (error: unknown): error is LoginError => {
         'type' in error.data &&
         // We check to make sure type exists right above, this is a safe access
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        error.data.type === 'login-error'
+        error.data.type === LOGIN_ERROR_TYPE
     );
 };
 
 export const ErrorPage = () => {
     const error = useRouteError();
+    console.log('errorpage');
 
     let statusMessage;
     let statusText;
