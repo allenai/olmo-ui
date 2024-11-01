@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { defer, LoaderFunction } from 'react-router-dom';
 
@@ -6,7 +6,6 @@ import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from './ChatMessage';
@@ -87,6 +86,7 @@ export const ThreadDisplay = (): JSX.Element => {
     useEffect(() => {
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+            setShouldStickToBottom(false);
         }
     }, [streamingMessageId]);
 

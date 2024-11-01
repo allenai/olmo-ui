@@ -17,7 +17,8 @@ export const ScrollToBottomButton = ({
                     onClick={onScrollToBottom}
                     sx={{
                         color: (theme) => theme.palette.text.secondary,
-                    }}>
+                    }}
+                    aria-label="Scroll to bottom">
                     <ArrowCircleDownOutlinedIcon sx={{ width: '36px', height: '36px' }} />
                 </IconButton>
             )}

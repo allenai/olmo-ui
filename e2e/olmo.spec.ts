@@ -69,12 +69,14 @@ test('should scroll to the new user prompt message when its submitted', async ({
     ).toBeVisible();
     await expect(page.getByText('This is the second response.')).toBeVisible();
 
-    const isElementScrolledDown = await page.evaluate(() => {
-        const element = document.querySelector('[data-testid="thread-display"]');
-        return element ? element.scrollTop > 0 : false;
+    const scrollContainerScrollTop = await page.evaluate(() => {
+        const element = document.querySelector(
+            '[data-testid="thread-display-sticky-scroll-container"]'
+        );
+        return element?.scrollTop;
     });
 
-    expect(isElementScrolledDown).toBeTruthy();
+    expect(scrollContainerScrollTop).toBeGreaterThan(0);
     expect(page.url()).toContain(selectedThreadId);
 });
 
