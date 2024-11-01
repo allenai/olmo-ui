@@ -20,7 +20,6 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
 import { getFAQIdByShortId } from '../faq/faq-utils';
-import { getSelectedMessagesToShow } from './ThreadDisplay';
 
 interface QueryFormButtonProps
     extends PropsWithChildren,
@@ -132,7 +131,7 @@ export const QueryForm = (): JSX.Element => {
 
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
-        const viewingMessageIds = getSelectedMessagesToShow(state);
+        const viewingMessageIds = state.currentBranchIdList;
         const isLimitReached = viewingMessageIds.some(
             (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
         );
@@ -145,7 +144,7 @@ export const QueryForm = (): JSX.Element => {
     );
 
     const lastMessageId = useAppContext((state) => {
-        const messagesToShow = getSelectedMessagesToShow(state);
+        const messagesToShow = state.currentBranchIdList;
 
         if (messagesToShow.length === 0) {
             return undefined;

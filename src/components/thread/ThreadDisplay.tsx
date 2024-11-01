@@ -4,7 +4,7 @@ import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
-import { appContext, AppContextState, useAppContext } from '@/AppContext';
+import { appContext, useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from './ChatMessage';
@@ -40,10 +40,8 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     );
 };
 
-export const getSelectedMessagesToShow = (state: AppContextState) => state.branchIdList;
-
 export const ThreadDisplay = (): JSX.Element => {
-    const childMessageIds = useAppContext(getSelectedMessagesToShow);
+    const childMessageIds = useAppContext((state) => state.currentBranchIdList);
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
