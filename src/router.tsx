@@ -52,7 +52,12 @@ export const routes: RouteObject[] = [
                 <Outlet />
             </VarnishedApp>
         ),
-        errorElement: <ErrorPage />,
+        errorElement: (
+            <VarnishedApp theme={uiRefreshOlmoTheme}>
+                <MetaTags title="AI2 Playground" />
+                <ErrorPage />
+            </VarnishedApp>
+        ),
         children: [
             {
                 id: 'auth-root',
