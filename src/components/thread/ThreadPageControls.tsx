@@ -4,7 +4,6 @@ import { Button, ButtonGroup, ButtonProps, Menu, Stack } from '@mui/material';
 import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
-import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
