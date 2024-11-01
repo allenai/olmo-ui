@@ -45,7 +45,12 @@ export const ParameterDrawerInputWrapper = ({
             gridColumn="1 / -1"
             ref={containerRef}
             paddingY={1}>
-            <Box gridTemplateAreas="label">
+            <Box
+                display="grid"
+                gridTemplateColumns="auto 1fr"
+                columnGap={1}
+                alignItems="center"
+                gridArea="label">
                 <Typography variant="body1" component="label" htmlFor={inputId} id={inputLabelId}>
                     {label}
                 </Typography>
