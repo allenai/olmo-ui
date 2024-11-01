@@ -57,11 +57,13 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'This ',
+        content:
+            'Lorem ipsum odor amet, consectetuer adipiscing elit. Mus ultricies laoreet ex leo ac nulla risus vulputate. Quam euismod dolor fames; tempus habitasse per efficitur rhoncus. Nisi laoreet quam est ante sollicitudin est. Volutpat mi hendrerit habitant curabitur rhoncus dui efficitur. Mauris massa habitant magna non praesent pulvinar laoreet. Enim posuere ex mauris fames lobortis. Eleifend vulputate litora amet semper justo orci odio dolor et. ',
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'is',
+        content:
+            'Ut varius ante integer netus urna rutrum neque. Fermentum ultrices et mauris nulla lacus venenatis amet nunc massa. Id cras donec euismod dapibus senectus cubilia est dui. Risus auctor luctus, maximus mi nascetur congue. Luctus pellentesque curabitur tortor erat aenean lectus nullam efficitur venenatis. Conubia interdum id vestibulum senectus ligula hendrerit platea. Efficitur varius gravida cubilia molestie conubia.',
     },
     {
         message: 'msg_V6Y0U4H4O9',
@@ -69,11 +71,13 @@ const fakeNewThreadMessages: Array<MessageStreamPart> = [
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: 'the',
+        content:
+            'Est rutrum penatibus dictumst tristique primis. Porta egestas lacus proin sollicitudin eget elementum eget morbi. Nunc commodo mollis tortor parturient eget imperdiet nam nisl. Aptent posuere ornare parturient nostra feugiat vel. Proin litora tellus volutpat molestie luctus taciti conubia nulla. Platea id ante natoque eu auctor donec. Laoreet accumsan sollicitudin platea, senectus maecenas euismod. Egestas etiam conubia nibh nibh mauris; felis arcu eleifend. Semper orci massa semper finibus enim lacus laoreet.',
     },
     {
         message: 'msg_V6Y0U4H4O9',
-        content: ' first response.',
+        content:
+            'Consectetur euismod arcu felis convallis quis, facilisi eget pulvinar ullamcorper. Senectus mus condimentum himenaeos consectetur cubilia, senectus vestibulum. Pretium vehicula class lacus feugiat a curabitur. Lacus dis leo quis sagittis mattis et cubilia enim dapibus. Maximus conubia praesent magnis vulputate a euismod arcu. Posuere phasellus metus sociosqu euismod risus nisl etiam ultrices himenaeos. Praesent ornare tristique ante sem nascetur praesent commodo. Massa efficitur nullam placerat elementum tempor vitae rhoncus. Tempus suscipit montes pulvinar dis urna eget molestie.',
     },
     {
         id: newMessageId,
