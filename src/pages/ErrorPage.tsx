@@ -5,6 +5,7 @@ import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
 import { AppLayout } from '@/components/AppLayout';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
 const hasStatusText = (error: unknown): error is { statusText: string } => {
@@ -74,7 +75,10 @@ export const ErrorPage = () => {
 
     return (
         <AppLayout>
-            <Stack gap={2} gridArea="content">
+            <Stack
+                gap={2}
+                gridArea="content"
+                paddingInline={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 0 }}>
                 <Typography variant="h3" component="h1">
                     <SentimentVeryDissatisfiedIcon sx={{ fontSize: 150 }} />
                     <br />
