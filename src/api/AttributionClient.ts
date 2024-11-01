@@ -34,6 +34,7 @@ const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';
 
 export class AttributionClient extends ClientBase {
     getAttributionDocuments = async (
+        prompt: string,
         modelResponse: string,
         modelId: string,
         maxDocuments: number = 10
@@ -41,6 +42,7 @@ export class AttributionClient extends ClientBase {
         const url = this.createURL(AttributionApiUrl);
 
         const request = {
+            prompt: prompt,
             model_response: modelResponse,
             model_id: modelId,
             max_documents: maxDocuments,

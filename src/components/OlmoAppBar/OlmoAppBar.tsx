@@ -41,7 +41,7 @@ export const OlmoAppBar = (): JSX.Element => {
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         paddingBlockStart: 4,
-                        paddingInline: 4,
+                        paddingInline: 0,
 
                         backgroundColor: 'transparent',
                     },
@@ -49,16 +49,21 @@ export const OlmoAppBar = (): JSX.Element => {
                 <Toolbar
                     disableGutters
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr max-content 1fr',
                     }}>
                     <Link
                         href={links.home}
                         lineHeight={1}
-                        sx={{
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                        }}>
+                        sx={(theme) => ({
+                            justifySelf: 'left',
+                            alignItems: 'center',
+                            height: '100%',
+                            display: 'flex',
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                display: 'none',
+                            },
+                        })}>
                         <Ai2LogoFull
                             height={18.5}
                             width={60}
@@ -69,17 +74,20 @@ export const OlmoAppBar = (): JSX.Element => {
                         variant={isDesktopOrUp ? 'h1' : 'h3'}
                         component="h1"
                         color="primary"
-                        sx={{
+                        sx={(theme) => ({
                             margin: 0,
-
                             textAlign: 'center',
-                        }}>
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                textAlign: 'left',
+                            },
+                        })}>
                         {title}
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
                         color="secondary"
                         sx={{
+                            justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
                         <MenuIcon />

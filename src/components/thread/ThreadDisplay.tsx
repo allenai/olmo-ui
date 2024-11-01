@@ -1,5 +1,5 @@
 import { Box, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
@@ -12,6 +12,7 @@ import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlight
 import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
+import { ScrollToBottomButton } from './ScrollToBottomButton';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -66,6 +67,37 @@ const getMessageIdsToShow = (
 
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
+    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
+
+    const checkScrollVisibility = () => {
+        if (scrollContainerRef.current) {
+            const { scrollHeight, clientHeight, scrollTop } = scrollContainerRef.current;
+            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+            setIsScrollToBottomButtonVisible(!isAtBottom);
+        }
+    };
+
+    useEffect(() => {
+        checkScrollVisibility();
+    }, []);
+
+    // Scroll to the bottom when a new message is added
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
+    }, [streamingMessageId]);
+
+    const handleScrollToBottom = () => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({
+                top: scrollContainerRef.current.scrollHeight,
+                behavior: 'smooth',
+            });
+        }
+    };
 
     const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
 
@@ -75,10 +107,13 @@ export const ThreadDisplay = (): JSX.Element => {
         // https://cssence.com/2024/bottom-anchored-scrolling-area/
         <Stack
             data-testid="thread-display-sticky-scroll-container"
+            ref={scrollContainerRef}
             onScroll={() => {
                 // This prevents scrolling with the model response as soon as it starts overflowing
                 // We want the user to scroll to the bottom before we start following the prompt
                 setShouldStickToBottom(true);
+
+                checkScrollVisibility();
             }}
             overflow="auto"
             sx={{
@@ -88,19 +123,22 @@ export const ThreadDisplay = (): JSX.Element => {
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                <Box
-                    component="span"
+                <Stack
+                    justifyContent="center"
+                    alignItems="center"
                     sx={{
                         bottom: '-1px',
-                        minHeight: (theme) => ({
-                            xs: theme.spacing(2.5),
-                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
-                        }),
+                        minHeight: (theme) => theme.spacing(6),
                         position: 'sticky',
                         background:
                             'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                    }}
-                />
+                        marginTop: (theme) => theme.spacing(-3),
+                    }}>
+                    <ScrollToBottomButton
+                        isVisible={isScrollToBottomButtonVisible}
+                        onScrollToBottom={handleScrollToBottom}
+                    />
+                </Stack>
             </Stack>
         </Stack>
     );
@@ -122,6 +160,11 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
         const selectedThread = await getSelectedThread(params.id);
 
         const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
+        const lastPromptId = selectedThreadMessages
+            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.User)
+            .at(-1);
+        const lastPrompt =
+            lastPromptId != null ? selectedThreadMessagesById[lastPromptId].content : '';
         const lastResponseId = selectedThreadMessages
             .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
             .at(-1);
@@ -131,7 +174,9 @@ export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
         }
 
         const attributionsPromise =
-            lastResponseId != null ? getAttributionsForMessage(lastResponseId) : undefined;
+            lastResponseId != null
+                ? getAttributionsForMessage(lastPrompt, lastResponseId)
+                : undefined;
 
         return defer({
             selectedThread,

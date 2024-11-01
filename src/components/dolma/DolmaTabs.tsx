@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Stack, styled, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { json, LoaderFunction } from 'react-router-dom';
 
@@ -12,6 +12,13 @@ import { SearchForm } from './SearchForm';
 import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
+
+const ScrollToBox = styled(Box)(({ theme }) => ({
+    scrollMarginBlockStart: '48px',
+    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+        scrollMarginBlockStart: '40px',
+    },
+}));
 
 export const DolmaTabs = () => {
     const theme = useTheme();
@@ -126,28 +133,28 @@ export const DolmaTabs = () => {
                 </Tabs>
             </Box>
             <Stack gap={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 4 }}>
-                <Box
+                <ScrollToBox
                     id="search-dataset"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[0] = element;
                     }}>
                     <SearchForm />
-                </Box>
-                <Box
+                </ScrollToBox>
+                <ScrollToBox
                     id="sources"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[1] = element;
                     }}>
                     <SourcesBarChart />
-                </Box>
-                <Box
+                </ScrollToBox>
+                <ScrollToBox
                     id="domains"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[2] = element;
                     }}>
                     <DomainsTable />
-                </Box>
-                <Box
+                </ScrollToBox>
+                <ScrollToBox
                     id="document-length"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[3] = element;
@@ -160,7 +167,7 @@ export const DolmaTabs = () => {
                         </Typography>
                         <WordDist />
                     </ResponsiveCard>
-                </Box>
+                </ScrollToBox>
             </Stack>
         </Box>
     );
