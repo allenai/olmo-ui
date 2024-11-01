@@ -20,8 +20,7 @@ export const FakeAppContextProvider = ({
 export const FakeAppContextWithCustomStatesProvider = ({
     customStates,
     children,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}: PropsWithChildren<{ customStates: any }>) => {
+}: PropsWithChildren<{ customStates: ReturnType<typeof appContext.createAppContext> }>) => {
     return <FakeAppContext.Provider value={customStates}>{children}</FakeAppContext.Provider>;
 };
 

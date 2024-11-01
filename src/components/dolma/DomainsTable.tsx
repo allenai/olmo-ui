@@ -1,8 +1,9 @@
-import { Pagination, Paper, Stack, Typography } from '@mui/material';
+import { Pagination, Stack, Typography } from '@mui/material';
 import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 
+import { ResponsiveCard } from '../ResponsiveCard';
 import { DolmaResponse } from './DolmaTabs';
 import { DomainLink } from './DomainLink';
 import { useSmallLayoutOrUp } from './shared';
@@ -88,20 +89,8 @@ export const DomainsTable = () => {
           };
 
     return (
-        <Paper
-            sx={(theme) => ({
-                background: theme.palette.background.default,
-                borderRadius: isSmallLayoutOrUp ? 1 : 0,
-                padding: isSmallLayoutOrUp ? theme.spacing(4) : 0,
-            })}>
-            <Typography
-                variant="h3"
-                sx={(theme) => ({
-                    marginTop: theme.spacing(4),
-                    marginBottom: theme.spacing(2),
-                })}>
-                Web Domains
-            </Typography>
+        <ResponsiveCard>
+            <Typography variant="h3">Web Domains</Typography>
             <DataGrid
                 {...dataGridConfig}
                 getRowId={(row) => `${row.source}-${row.domain}`}
@@ -149,6 +138,6 @@ export const DomainsTable = () => {
                     },
                 })}
             />
-        </Paper>
+        </ResponsiveCard>
     );
 };

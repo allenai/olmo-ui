@@ -41,7 +41,7 @@ export const OlmoAppBar = (): JSX.Element => {
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         paddingBlockStart: 4,
-                        paddingInline: 4,
+                        paddingInline: 0,
 
                         backgroundColor: 'transparent',
                     },
@@ -55,15 +55,15 @@ export const OlmoAppBar = (): JSX.Element => {
                     <Link
                         href={links.home}
                         lineHeight={1}
-                        sx={{
+                        sx={(theme) => ({
                             justifySelf: 'left',
                             alignItems: 'center',
                             height: '100%',
                             display: 'flex',
-                            [DESKTOP_LAYOUT_BREAKPOINT]: {
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                                 display: 'none',
                             },
-                        }}>
+                        })}>
                         <Ai2LogoFull
                             height={18.5}
                             width={60}
@@ -74,11 +74,13 @@ export const OlmoAppBar = (): JSX.Element => {
                         variant={isDesktopOrUp ? 'h1' : 'h3'}
                         component="h1"
                         color="primary"
-                        sx={{
+                        sx={(theme) => ({
                             margin: 0,
-
                             textAlign: 'center',
-                        }}>
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                textAlign: 'left',
+                            },
+                        })}>
                         {title}
                     </Typography>
                     <IconButton

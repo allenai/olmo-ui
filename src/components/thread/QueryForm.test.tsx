@@ -1,7 +1,6 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { ComponentProps } from 'react';
 import * as RouterDom from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
@@ -26,7 +25,7 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         render(<QueryForm />);
 
-        expect(screen.getByPlaceholderText('Enter prompt')).toBeVisible();
+        expect(screen.getByRole('textbox', { name: 'Prompt' })).toBeVisible();
     });
 
     it('should submit prompt successfully', async () => {
@@ -52,7 +51,7 @@ describe('QueryForm', () => {
         );
 
         const user = userEvent.setup();
-        const textfield = screen.getByPlaceholderText('Enter prompt');
+        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
 
         expect(textfield).toBeVisible();
         expect(textfield).toHaveTextContent('');
@@ -92,7 +91,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByPlaceholderText('Enter prompt');
+        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
 
         expect(textfield).toBeVisible();
         expect(textfield).toBeDisabled();
