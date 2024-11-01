@@ -6,6 +6,7 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 import { useAppContext } from '../AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
+import { AppLayout } from './AppLayout';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
@@ -36,81 +37,11 @@ export const NewApp = () => {
             });
     }, [getSchema, getUserInfo]);
 
-    const showModal = userInfo?.hasAcceptedTermsAndConditions === false;
+    const shouldShowTermsAndConditionsModal = userInfo?.hasAcceptedTermsAndConditions === false;
+
     return (
-        <OuterContainer square variant="outlined">
-            {!isLoading && userInfo && schema ? (
-                <>
-                    <OlmoAppBar />
-                    <GlobalSnackMessageList />
-                    {showModal && <TermsAndConditionsModal />}
-                    <Container
-                        component="main"
-                        sx={{
-                            display: 'grid',
-                            flexDirection: 'column',
-
-                            overflow: 'auto',
-
-                            paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
-
-                            height: 1,
-
-                            gridArea: {
-                                // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
-                                [DESKTOP_LAYOUT_BREAKPOINT]: 'aside / content / aside / aside',
-                            },
-                            gridTemplateColumns: 'subgrid',
-                            gridTemplateRows: 'subgrid',
-
-                            backgroundColor: (theme) => ({
-                                xs: theme.palette.background.default,
-                                [DESKTOP_LAYOUT_BREAKPOINT]: 'transparent',
-                            }),
-                        }}
-                        maxWidth={false}>
-                        <Outlet />
-                    </Container>
-                </>
-            ) : null}
-        </OuterContainer>
-    );
-};
-
-interface OuterContainerProps extends PaperProps {
-    isNavigationDrawerOpen?: boolean;
-}
-
-const OuterContainer = ({ isNavigationDrawerOpen, ...rest }: OuterContainerProps) => {
-    return (
-        <Paper
-            sx={[
-                (theme) => ({
-                    height: '100dvh',
-                    width: '100%',
-
-                    display: 'grid',
-                    gridTemplateAreas: `
-                        'app-bar'
-                        'content'
-                    `,
-                    gridTemplateRows: 'auto 1fr',
-
-                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        gridTemplateAreas: `
-                            'nav app-bar aside'
-                            'nav content aside'`,
-                        gridTemplateRows: 'auto minmax(0, 1fr)',
-                        // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
-                        gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
-                        columnGap: theme.spacing(8),
-                        rowGap: 2,
-
-                        paddingInlineEnd: 3,
-                    },
-                }),
-            ]}
-            {...rest}
-        />
+        <AppLayout shouldShowTermsAndConditionsModal={shouldShowTermsAndConditionsModal}>
+            {!isLoading && userInfo && schema ? <Outlet /> : null}
+        </AppLayout>
     );
 };
