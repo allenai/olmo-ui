@@ -105,14 +105,16 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
+        const fakeStreamPrompt = vi.fn();
+
         const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
             set
         ) => ({
-            streamPrompt: () => {
+            streamPrompt: fakeStreamPrompt.mockImplementation(() => {
                 set({ streamingMessageId: 'FirstMessage' });
 
                 return Promise.resolve();
-            },
+            }),
         });
 
         render(
@@ -133,5 +135,6 @@ describe('QueryForm', () => {
         });
 
         expect(textfield).toHaveTextContent('');
+        expect(fakeStreamPrompt).toHaveBeenCalledTimes(1);
     });
 });
