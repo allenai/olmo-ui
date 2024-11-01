@@ -1,30 +1,25 @@
-import { Card, Stack, SxProps, Theme, useTheme } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { Card, CardProps, Stack, styled } from '@mui/material';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
-interface ThreadPageCardProps extends PropsWithChildren {
-    sx?: SxProps<Theme>;
-}
+type ThreadPageCardProps = Pick<CardProps, 'sx' | 'children'>;
 
-export const ResponsiveCard = ({ sx = [], children }: ThreadPageCardProps): JSX.Element => {
-    const theme = useTheme(); // Accessing the theme using useTheme hook
+const ResponsiveCardBase = styled(Card)(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
+    border: 0, // This removes the border from the outlined version of the component.
+    borderRadius: 0,
+    paddingBlock: theme.spacing(2),
 
+    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+        paddingInline: theme.spacing(2),
+        paddingBlock: theme.spacing(4),
+        borderRadius: theme.spacing(1),
+    },
+}));
+
+export const ResponsiveCard = ({ sx = undefined, children }: ThreadPageCardProps): JSX.Element => {
     return (
-        <Card
-            sx={[
-                {
-                    borderRadius: 0,
-                    // Styles based on theme breakpoints
-                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        padding: 2,
-                        borderRadius: 1,
-                    },
-                    backgroundColor: theme.palette.background.default,
-                    border: 0, // This removes the border from the outlined version of the component.
-                },
-                ...(Array.isArray(sx) ? sx : [sx]), // Safely merging the sx prop
-            ]}>
+        <ResponsiveCardBase sx={sx}>
             <Stack
                 gap={2}
                 sx={{
@@ -32,6 +27,6 @@ export const ResponsiveCard = ({ sx = [], children }: ThreadPageCardProps): JSX.
                 }}>
                 {children}
             </Stack>
-        </Card>
+        </ResponsiveCardBase>
     );
 };
