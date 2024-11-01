@@ -78,6 +78,7 @@ export const ErrorPage = () => {
             <Stack
                 gap={2}
                 gridArea="content"
+                bgcolor="background.paper"
                 paddingInline={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 0 }}>
                 <Typography variant="h3" component="h1">
                     <SentimentVeryDissatisfiedIcon sx={{ fontSize: 150 }} />
