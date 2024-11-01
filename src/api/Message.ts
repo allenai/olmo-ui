@@ -1,3 +1,5 @@
+import { NullishPartial } from '@/util';
+
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
 import { Role } from './Role';
@@ -6,7 +8,7 @@ import { InferenceOpts, PaginationData } from './Schema';
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
-export type RequestInferenceOpts = Partial<InferenceOpts>;
+export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
 export interface Logprob {
     token: string;

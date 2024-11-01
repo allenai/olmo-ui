@@ -13,7 +13,7 @@ export interface InferenceOpts {
 
 interface Field<TDefault = unknown> {
     name: string;
-    default: TDefault;
+    default?: TDefault | null;
     min?: number;
     max?: number;
     step?: number;

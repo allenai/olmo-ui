@@ -80,7 +80,7 @@ export const ParameterContent = () => {
                         min={opts.temperature.min}
                         max={opts.temperature.max}
                         step={opts.temperature.step}
-                        initialValue={opts.temperature.default}
+                        initialValue={opts.temperature.default ?? undefined}
                         onChange={(v) => {
                             updateInferenceOpts({ temperature: v });
                         }}
@@ -95,7 +95,7 @@ export const ParameterContent = () => {
                         min={opts.top_p.min}
                         max={opts.top_p.max}
                         step={opts.top_p.step}
-                        initialValue={opts.top_p.default}
+                        initialValue={opts.top_p.default ?? undefined}
                         onChange={(v) => {
                             updateInferenceOpts({ top_p: v });
                         }}
