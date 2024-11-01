@@ -1,11 +1,13 @@
 import { Stack } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from './ChatMessage';
@@ -70,21 +72,12 @@ export const ThreadDisplay = (): JSX.Element => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
-    const checkScrollVisibility = () => {
-        if (scrollContainerRef.current) {
-            const { scrollHeight, clientHeight, scrollTop } = scrollContainerRef.current;
-            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-            setIsScrollToBottomButtonVisible(!isAtBottom);
-        }
-    };
-
-    useEffect(() => {
-        checkScrollVisibility();
-    }, []);
+    const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
 
     // Scroll to the bottom when a new message is added
     useEffect(() => {
-        if (scrollContainerRef.current) {
+        // we only want to scroll to the bottom if a new message is added to the current thread, not if we're visiting an existing thread
+        if (scrollContainerRef.current && streamingMessageId != null) {
             scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
             setShouldStickToBottom(false);
         }
@@ -94,12 +87,20 @@ export const ThreadDisplay = (): JSX.Element => {
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollTo({
                 top: scrollContainerRef.current.scrollHeight,
-                behavior: 'smooth',
             });
+            setShouldStickToBottom(true);
         }
     };
 
-    const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
+    // This useInView is tied to the bottom-scroll-anchor
+    // We use it to see if we've scrolled to the bottom of this element
+    const { ref: scrollAnchorRef } = useInView({
+        root: scrollContainerRef.current,
+        onChange: (inView) => {
+            setIsScrollToBottomButtonVisible(!inView);
+            setShouldStickToBottom(inView);
+        },
+    });
 
     return (
         // This extra Stack with column-reverse let us keep scroll at the bottom if the user has scrolled there
@@ -108,27 +109,34 @@ export const ThreadDisplay = (): JSX.Element => {
         <Stack
             data-testid="thread-display-sticky-scroll-container"
             ref={scrollContainerRef}
-            onScroll={() => {
-                // This prevents scrolling with the model response as soon as it starts overflowing
-                // We want the user to scroll to the bottom before we start following the prompt
-                setShouldStickToBottom(true);
+            // onScroll={() => {
+            //     // This prevents scrolling with the model response as soon as it starts overflowing
+            //     // We want the user to scroll to the bottom before we start following the prompt
+            //     setShouldStickToBottom(true);
 
-                checkScrollVisibility();
-            }}
+            //     checkScrollVisibility();
+            // }}
             overflow="auto"
             sx={{
                 flexDirection: shouldStickToBottom ? 'column-reverse' : 'column',
+                '@media (prefers-reduced-motion: no-preference)': {
+                    scrollBehavior: 'smooth',
+                },
             }}>
             <Stack gap={2} direction="column" data-testid="thread-display" useFlexGap>
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
+                <div ref={scrollAnchorRef} data-test-id="bottom-scroll-anchor" aria-hidden />
                 <Stack
                     justifyContent="center"
                     alignItems="center"
                     sx={{
                         bottom: '-1px',
-                        minHeight: (theme) => theme.spacing(6),
+                        minHeight: (theme) => ({
+                            xs: theme.spacing(2.5),
+                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
+                        }),
                         position: 'sticky',
                         background:
                             'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',

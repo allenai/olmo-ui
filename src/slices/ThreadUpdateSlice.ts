@@ -49,7 +49,7 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
-    streamingMessageId: string;
+    streamingMessageId: string | null;
     inferenceOpts: InferenceOpts;
     updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
     streamPromptState?: RemoteState;
@@ -59,7 +59,7 @@ export interface ThreadUpdateSlice {
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
-    streamingMessageId: '',
+    streamingMessageId: null,
     inferenceOpts: {},
     streamPromptState: undefined,
 
