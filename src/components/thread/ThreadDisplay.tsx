@@ -127,7 +127,7 @@ export const ThreadDisplay = (): JSX.Element => {
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                <div ref={scrollAnchorRef} data-test-id="bottom-scroll-anchor" aria-hidden />
+                <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
                 <Stack
                     justifyContent="center"
                     alignItems="center"
