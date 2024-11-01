@@ -43,17 +43,12 @@ const NewThreadButton = ({
 };
 
 export const ThreadPageControls = (): JSX.Element => {
-    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const isDesktop = useDesktopOrUp();
     const isMediumLayout = useMediumLayoutOrUp();
 
     const { isCorpusLinkEnabled } = useFeatureToggles();
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-    if (!selectedThreadRootId) {
-        return <></>;
-    }
 
     const handleClickDelete = () => {
         setDeleteDialogOpen(true);
