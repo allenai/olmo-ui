@@ -30,9 +30,15 @@ const streamingMessageIndicatorStyle: SxProps = {
     },
 };
 
+export const USER_MESSAGE_CLASS_NAME = 'user-message';
+
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
-        <Typography component="div" fontWeight="bold" sx={sharedMessageStyle}>
+        <Typography
+            component="div"
+            fontWeight="bold"
+            sx={sharedMessageStyle}
+            className={USER_MESSAGE_CLASS_NAME}>
             {children}
         </Typography>
     );

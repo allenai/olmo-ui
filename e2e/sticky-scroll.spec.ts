@@ -1,4 +1,4 @@
-import { expect, test } from './playwright-utils';
+import { expect, isElementVisibleInContainer, test } from '@playwright-utils';
 
 test.use({
     // Sticky scroll is easier to test consistently with a smaller viewport
@@ -8,21 +8,31 @@ test.use({
 test('should sticky-scroll only after the user scrolls', async ({ page }) => {
     await page.goto('/');
 
+    const firstStreamResponsePromise = page.waitForResponse((response) =>
+        response.url().includes('stream')
+    );
+
     await page.getByRole('textbox', { name: 'Prompt' }).fill('infinite');
     await page.getByLabel('Submit prompt').press('Enter');
 
-    await expect(page.getByLabel('Submit prompt')).toBeVisible({ timeout: 10000 });
-    // This should be a screenshot of the top of the thread
-    await expect
-        .soft(page.getByTestId('thread-display-sticky-scroll-container'))
-        .toHaveScreenshot('no-sticky-scroll.png');
+    await expect(page.getByText('User message')).toBeVisible({ timeout: 10000 });
+
+    await firstStreamResponsePromise;
+
+    expect(
+        await isElementVisibleInContainer({
+            page,
+            element: page.getByText('User message'),
+            container: page.getByTestId('thread-display-sticky-scroll-container'),
+        })
+    ).toBe(true);
 
     await page.getByRole('button', { name: 'more' }).click();
     await page.getByRole('link', { name: 'New Thread' }).click();
 
     await page.getByRole('textbox', { name: 'Prompt' }).fill('infinite');
 
-    const streamResponsePromise = page.waitForResponse((response) =>
+    const secondStreamResponsePromise = page.waitForResponse((response) =>
         response.url().includes('stream')
     );
     await page.getByLabel('Submit prompt').press('Enter');
@@ -35,15 +45,17 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
             'Lorem ipsum odor amet, consectetuer adipiscing elit. Mus ultricies laoreet ex leo ac nulla risus vulputate. Quam euismod dolor fames; tempus habitasse per efficitur rhoncus. Nisi laoreet quam est ante sollicitudin est. Volutpat mi hendrerit habitant curabitur rhoncus dui efficitur. Mauris massa habitant magna non praesent pulvinar laoreet. Enim posuere ex mauris fames lobortis. Eleifend vulputate litora amet semper justo orci odio dolor et.'
         )
     ).toBeAttached();
-    await page.getByTestId('thread-display-sticky-scroll-container').hover();
 
     // on webkit this _may_ just be waiting until things finish and scrolling to the bottom? Watching it shows a loading thing for a while
-    await page.mouse.wheel(0, 1000);
+    await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
 
-    await streamResponsePromise;
+    await secondStreamResponsePromise;
 
-    // This should be a screenshot of the bottom of the thread after it finishes streaming
-    await expect(page.getByTestId('thread-display-sticky-scroll-container')).toHaveScreenshot(
-        'sticky-scroll.png'
-    );
+    expect(
+        await isElementVisibleInContainer({
+            page,
+            element: page.getByTestId('bottom-scroll-anchor'),
+            container: page.getByTestId('thread-display-sticky-scroll-container'),
+        })
+    ).toBe(true);
 });

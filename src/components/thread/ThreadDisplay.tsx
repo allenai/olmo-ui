@@ -10,7 +10,7 @@ import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from './ChatMessage';
+import { ChatMessage, USER_MESSAGE_CLASS_NAME } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
@@ -68,39 +68,66 @@ const getMessageIdsToShow = (
 
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
+
+    const previousStreamingMessageId = useRef<string | null>(null);
     const streamingMessageId = useAppContext((state) => state.streamingMessageId);
+
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
-
     const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
+
+    const hasUserScrolledSinceSendingPromptRef = useRef(false);
+
+    useEffect(() => {
+        console.log('shouldStickToBottom', shouldStickToBottom);
+    }, [shouldStickToBottom]);
+
+    const scrollToBottom = useCallback(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({
+                top: shouldStickToBottom ? 0 : scrollContainerRef.current.scrollHeight,
+            });
+        }
+    }, [shouldStickToBottom]);
 
     // Scroll to the bottom when a new message is added
     useEffect(() => {
-        // we only want to scroll to the bottom if a new message is added to the current thread, not if we're visiting an existing thread
-        if (scrollContainerRef.current && streamingMessageId != null) {
-            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        // we want to scroll to the bottom of the thread to see the new user message
+        // but we only want to do it if we're adding to the current thread, not visiting an existing thread
+        // we also want to make sure it's a new message so that we don't scroll to the bottom multiple times if scrollToBottom gets updated
+        if (previousStreamingMessageId.current !== streamingMessageId) {
+            previousStreamingMessageId.current = streamingMessageId;
+
+            const userMessages = scrollContainerRef.current?.querySelectorAll(
+                '.' + USER_MESSAGE_CLASS_NAME
+            );
+
+            userMessages?.item(userMessages.length - 1).scrollIntoView(true);
+
             setShouldStickToBottom(false);
+            hasUserScrolledSinceSendingPromptRef.current = true;
         }
     }, [streamingMessageId]);
-
-    const handleScrollToBottom = () => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTo({
-                top: scrollContainerRef.current.scrollHeight,
-            });
-            setShouldStickToBottom(true);
-        }
-    };
 
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
     const { ref: scrollAnchorRef } = useInView({
         root: scrollContainerRef.current,
+        initialInView: true,
         onChange: (inView) => {
+            console.log('inView changed', inView);
             setIsScrollToBottomButtonVisible(!inView);
-            setShouldStickToBottom(inView);
+
+            if (hasUserScrolledSinceSendingPromptRef.current) {
+                setShouldStickToBottom(inView);
+            }
         },
     });
+
+    const handleScrollToBottomButtonClick = () => {
+        scrollToBottom();
+        setShouldStickToBottom(true);
+    };
 
     return (
         // This extra Stack with column-reverse let us keep scroll at the bottom if the user has scrolled there
@@ -109,13 +136,14 @@ export const ThreadDisplay = (): JSX.Element => {
         <Stack
             data-testid="thread-display-sticky-scroll-container"
             ref={scrollContainerRef}
-            // onScroll={() => {
-            //     // This prevents scrolling with the model response as soon as it starts overflowing
-            //     // We want the user to scroll to the bottom before we start following the prompt
-            //     setShouldStickToBottom(true);
-
-            //     checkScrollVisibility();
-            // }}
+            onScroll={() => {
+                // This prevents scrolling with the model response as soon as it starts overflowing
+                // We want the user to scroll to the bottom before we start following the prompt
+                // setShouldStickToBottom(true);
+                // checkScrollVisibility();
+                hasUserScrolledSinceSendingPromptRef.current = true;
+                console.log('scrolling');
+            }}
             overflow="auto"
             sx={{
                 flexDirection: shouldStickToBottom ? 'column-reverse' : 'column',
@@ -144,7 +172,7 @@ export const ThreadDisplay = (): JSX.Element => {
                     }}>
                     <ScrollToBottomButton
                         isVisible={isScrollToBottomButtonVisible}
-                        onScrollToBottom={handleScrollToBottom}
+                        onScrollToBottom={handleScrollToBottomButtonClick}
                     />
                 </Stack>
             </Stack>
