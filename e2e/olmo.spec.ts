@@ -1,6 +1,6 @@
 import { firstThreadMessageId, secondThreadMessageId } from '@/mocks/handlers/messageHandlers';
 
-import { expect, test } from './playwright-utils';
+import { expect, test } from '@playwright-utils';
 
 test('can send prompt in Olmo Playground', async ({ page }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';

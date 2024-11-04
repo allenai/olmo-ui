@@ -1,4 +1,4 @@
-import { expect, test } from './playwright-utils';
+import { expect, test } from '@playwright-utils';
 
 test('should filter displayed documents when a span is selected', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');

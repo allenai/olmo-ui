@@ -1,4 +1,4 @@
-import { expect, test } from './playwright-utils';
+import { expect, test } from '@playwright-utils';
 
 test('redirects back to original URL', async ({ page }) => {
     if (process.env.E2E_TEST_USER == null || process.env.E2E_TEST_PASSWORD == null) {
