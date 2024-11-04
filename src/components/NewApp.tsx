@@ -1,15 +1,10 @@
-import { Container, Paper, PaperProps } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 import { useAppContext } from '../AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '../constants';
 import { AppLayout } from './AppLayout';
-import { GlobalSnackMessageList } from './GlobalSnackMessageList';
-import { OlmoAppBar } from './OlmoAppBar/OlmoAppBar';
-import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 export const NewApp = () => {
     useTrackPageView();
