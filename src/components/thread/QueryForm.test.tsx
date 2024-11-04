@@ -123,7 +123,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByPlaceholderText('Enter prompt');
+        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
 
         expect(textfield).toBeVisible();
 
