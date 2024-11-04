@@ -87,8 +87,8 @@ export const UIRefreshThreadPage = () => {
                                 display: 'none',
                             },
                         })}>
-                        OLMo is experimental and can make mistakes. Consider fact-checking your
-                        results.
+                        Ai2 models are experimental and can make mistakes. Consider fact-checking
+                        your results.
                     </Typography>
                 </Stack>
             </Card>
