@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
 import type { Property as CSSProperty } from 'csstype';
-import { Ref, RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defer, LoaderFunction } from 'react-router-dom';
 
@@ -16,36 +16,6 @@ import { ChatMessage, USER_MESSAGE_CLASS_NAME } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
-
-interface ScrollAnchorProps {
-    onAnchorIsInView: () => void;
-    onAnchorIsOutOfView: () => void;
-    containerRef: RefObject<HTMLElement>;
-}
-const ScrollAnchor = ({
-    onAnchorIsInView,
-    onAnchorIsOutOfView,
-    containerRef,
-}: ScrollAnchorProps) => {
-    useEffect(() => {
-        console.log('anchor render');
-    });
-
-    // This useInView is tied to the bottom-scroll-anchor
-    // We use it to see if we've scrolled to the bottom of this element
-    const { ref: scrollAnchorRef } = useInView({
-        root: containerRef.current,
-        initialInView: true,
-        onChange: (inView) => {
-            if (inView) {
-                onAnchorIsInView();
-            } else {
-                onAnchorIsOutOfView();
-            }
-        },
-    });
-    return <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />;
-};
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -108,25 +78,24 @@ export const ThreadDisplay = (): JSX.Element => {
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
-    const [hasUserScrolledToBottom, setHasUserScrolledToBottom] = useState(false);
-    const isStreaming = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
+    const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
 
-    const shouldStickToBottom = hasUserScrolledToBottom && isStreaming;
+    const isStreaming = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
 
     useEffect(() => {
-        console.log('shouldStickToBottom', hasUserScrolledToBottom);
-    }, [hasUserScrolledToBottom]);
+        console.log('shouldStickToBottom', shouldStickToBottom);
+    }, [shouldStickToBottom]);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
             const isReversed =
                 getComputedStyle(scrollContainerRef.current).flexDirection === STICKY_SCROLL_STYLE;
 
-            console.log('direction', getComputedStyle(scrollContainerRef.current).flexDirection);
+            console.log(getComputedStyle(scrollContainerRef.current).flexDirection);
+
             const top = isReversed ? 0 : scrollContainerRef.current.scrollHeight;
-            console.log('top', top);
 
             scrollContainerRef.current.scrollTo({
                 top,
@@ -134,6 +103,20 @@ export const ThreadDisplay = (): JSX.Element => {
         }
     }, [scrollContainerRef]);
 
+    const handleUserMessageMount = () => {
+        if (isStreaming) {
+            skipNextStickyScrollSetFromAnchor.current = true;
+
+            // // This doesn't scroll correctly sometimes. Need to see if there's a way we can guarantee it'll be there before we scroll
+            const userMessages = scrollContainerRef.current?.querySelectorAll(
+                '.' + USER_MESSAGE_CLASS_NAME
+            );
+
+            userMessages?.item(userMessages.length - 1).scrollIntoView(true);
+
+            setShouldStickToBottom(false);
+        }
+    };
     // Scroll to the bottom when a new message is added
     useEffect(() => {
         // we want to scroll to the bottom of the thread to see the new user message
@@ -152,39 +135,30 @@ export const ThreadDisplay = (): JSX.Element => {
             //
             // scrollToBottom();
 
-            setHasUserScrolledToBottom(false);
+            setShouldStickToBottom(false);
         }
     }, [scrollToBottom, streamingMessageId]);
 
-    const handleScrolledToBottom = () => {
-        setIsScrollToBottomButtonVisible(false);
-        setHasUserScrolledToBottom(true);
-    };
+    // This useInView is tied to the bottom-scroll-anchor
+    // We use it to see if we've scrolled to the bottom of this element
+    const { ref: scrollAnchorRef } = useInView({
+        root: scrollContainerRef.current,
+        initialInView: true,
+        onChange: (inView) => {
+            setIsScrollToBottomButtonVisible(!inView);
 
-    const handleNotScrolledToBottom = () => {
-        setIsScrollToBottomButtonVisible(true);
-    };
-
-    // // This useInView is tied to the bottom-scroll-anchor
-    // // We use it to see if we've scrolled to the bottom of this element
-    // const { ref: scrollAnchorRef } = useInView({
-    //     root: scrollContainerRef.current,
-    //     initialInView: true,
-    //     onChange: (inView) => {
-    //         setIsScrollToBottomButtonVisible(!inView);
-
-    //         if (inView) {
-    //             if (!skipNextStickyScrollSetFromAnchor.current) {
-    //                 setHasUserScrolledToBottom(inView);
-    //             } else {
-    //                 // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
-    //                 // to prevent sticking right after that scroll, we ignore this event
-    //                 // we can't set that up in the effect because the browser is still sending scroll events even after the function returns
-    //                 skipNextStickyScrollSetFromAnchor.current = false;
-    //             }
-    //         }
-    //     },
-    // });
+            if (inView) {
+                if (!skipNextStickyScrollSetFromAnchor.current) {
+                    setShouldStickToBottom(inView);
+                } else {
+                    // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
+                    // to prevent sticking right after that scroll, we ignore this event
+                    // we can't set that up in the effect because the browser is still sending scroll events even after the function returns
+                    skipNextStickyScrollSetFromAnchor.current = false;
+                }
+            }
+        },
+    });
 
     const handleScrollToBottomButtonClick = () => {
         scrollToBottom();
@@ -199,7 +173,8 @@ export const ThreadDisplay = (): JSX.Element => {
             ref={scrollContainerRef}
             overflow="auto"
             sx={{
-                flexDirection: shouldStickToBottom ? 'column-reverse' : 'column',
+                flexDirection: 'column-reverse',
+                // flexDirection: shouldStickToBottom && isStreaming ? 'column-reverse' : 'column',
                 '@media (prefers-reduced-motion: no-preference)': {
                     scrollBehavior: 'smooth',
                 },
@@ -208,13 +183,7 @@ export const ThreadDisplay = (): JSX.Element => {
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                {scrollContainerRef.current != null && isStreaming && (
-                    <ScrollAnchor
-                        containerRef={scrollContainerRef}
-                        onAnchorIsInView={handleScrolledToBottom}
-                        onAnchorIsOutOfView={handleNotScrolledToBottom}
-                    />
-                )}
+                <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
                 <Stack
                     justifyContent="center"
                     alignItems="center"
