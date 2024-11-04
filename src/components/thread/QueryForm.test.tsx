@@ -1,15 +1,12 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+import { ComponentProps } from 'react';
 import * as RouterDom from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import {
-    FakeAppContextProvider,
-    FakeAppContextWithCustomStatesProvider,
-    useFakeAppContext,
-} from '@/utils/FakeAppContext';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { QueryForm } from './QueryForm';
 
@@ -108,18 +105,22 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        const fakeContext = AppContext.createAppContext();
-        const fakeStates = fakeContext.getState();
-        vi.spyOn(fakeStates, 'streamPrompt').mockImplementation(() => {
-            fakeContext.setState({ streamingMessageId: 'FirstMessage' });
+        const fakeStreamPrompt = vi.fn();
 
-            return Promise.resolve();
+        const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
+            set
+        ) => ({
+            streamPrompt: fakeStreamPrompt.mockImplementation(() => {
+                set({ streamingMessageId: 'FirstMessage' });
+
+                return Promise.resolve();
+            }),
         });
 
         render(
-            <FakeAppContextWithCustomStatesProvider customStates={fakeContext}>
+            <FakeAppContextProvider initialState={initialState}>
                 <QueryForm />
-            </FakeAppContextWithCustomStatesProvider>
+            </FakeAppContextProvider>
         );
 
         const textfield = screen.getByRole('textbox', { name: 'Prompt' });
@@ -134,5 +135,6 @@ describe('QueryForm', () => {
         });
 
         expect(textfield).toHaveTextContent('');
+        expect(fakeStreamPrompt).toHaveBeenCalledTimes(1);
     });
 });
