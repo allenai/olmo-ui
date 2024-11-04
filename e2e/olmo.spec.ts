@@ -78,6 +78,18 @@ test('should scroll to the new user prompt message when its submitted', async ({
     expect(page.url()).toContain(selectedThreadId);
 });
 
+test('should stop thread from streaming', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('textbox', { name: 'Prompt' }).focus();
+    await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
+    await page.getByLabel('Submit prompt').click();
+    await page.getByLabel('Stop response generation').click();
+    await expect(
+        page.getByText('You stopped OLMo from generating answers to your query')
+    ).toBeVisible();
+});
+
 test('can load threads from history drawer', async ({ page }) => {
     // Check the first existing thread
     await page.goto('/');
