@@ -2,12 +2,7 @@ import { render, screen } from '@test-utils';
 import { createMemoryRouter, json, RouterProvider } from 'react-router-dom';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
-import * as AppContext from '@/AppContext';
 import { VarnishedApp } from '@/components/VarnishedApp';
-import { routes } from '@/router';
-import { useFakeAppContext } from '@/utils/FakeAppContext';
-
-import { ErrorPage } from './ErrorPage';
 
 describe('Error Page', () => {
     it('should show a login error when one is thrown from the loader', () => {
