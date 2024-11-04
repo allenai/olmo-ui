@@ -51,7 +51,7 @@ export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string;
     inferenceOpts: RequestInferenceOpts;
-    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
+    updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;

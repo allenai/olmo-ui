@@ -19,10 +19,8 @@ interface Field<TDefault = unknown> {
     step?: number;
 }
 
-type NotNullish<T> = Exclude<T, null | undefined>;
-
 type MessageSchemaInferenceOpts = {
-    [K in keyof InferenceOpts]: Field<NotNullish<InferenceOpts[K]>>;
+    [K in keyof InferenceOpts]: Field<NonNullable<InferenceOpts[K]>>;
 };
 
 export interface MessageSchema {
