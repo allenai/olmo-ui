@@ -1,5 +1,4 @@
 import { Stack } from '@mui/material';
-import type { Property as CSSProperty } from 'csstype';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defer, LoaderFunction } from 'react-router-dom';
@@ -9,10 +8,9 @@ import { Role } from '@/api/Role';
 import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext, AppContextState, useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { RemoteState } from '@/contexts/util';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { ChatMessage, USER_MESSAGE_CLASS_NAME } from './ChatMessage';
+import { ChatMessage } from './ChatMessage';
 import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
 import { MessageInteraction } from './MessageInteraction';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
@@ -68,8 +66,6 @@ const getMessageIdsToShow = (
     return messageIdList;
 };
 
-const STICKY_SCROLL_STYLE: CSSProperty.FlexDirection = 'column-reverse';
-
 export const ThreadDisplay = (): JSX.Element => {
     const childMessageIds = useAppContext(getSelectedMessagesToShow);
 
@@ -78,45 +74,23 @@ export const ThreadDisplay = (): JSX.Element => {
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
-    const [shouldStickToBottom, setShouldStickToBottom] = useState(false);
 
-    const isStreaming = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
+    const shouldStickToBottom = useRef(false);
+
+    const setShouldStickToBottom = (newShouldStickToBottom: boolean) => {
+        shouldStickToBottom.current = newShouldStickToBottom;
+    };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
 
-    useEffect(() => {
-        console.log('shouldStickToBottom', shouldStickToBottom);
-    }, [shouldStickToBottom]);
-
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
-            const isReversed =
-                getComputedStyle(scrollContainerRef.current).flexDirection === STICKY_SCROLL_STYLE;
-
-            console.log(getComputedStyle(scrollContainerRef.current).flexDirection);
-
-            const top = isReversed ? 0 : scrollContainerRef.current.scrollHeight;
-
             scrollContainerRef.current.scrollTo({
-                top,
+                top: scrollContainerRef.current.scrollHeight,
             });
         }
-    }, [scrollContainerRef]);
+    }, []);
 
-    const handleUserMessageMount = () => {
-        if (isStreaming) {
-            skipNextStickyScrollSetFromAnchor.current = true;
-
-            // // This doesn't scroll correctly sometimes. Need to see if there's a way we can guarantee it'll be there before we scroll
-            const userMessages = scrollContainerRef.current?.querySelectorAll(
-                '.' + USER_MESSAGE_CLASS_NAME
-            );
-
-            userMessages?.item(userMessages.length - 1).scrollIntoView(true);
-
-            setShouldStickToBottom(false);
-        }
-    };
     // Scroll to the bottom when a new message is added
     useEffect(() => {
         // we want to scroll to the bottom of the thread to see the new user message
@@ -126,18 +100,34 @@ export const ThreadDisplay = (): JSX.Element => {
             previousStreamingMessageId.current = streamingMessageId;
             skipNextStickyScrollSetFromAnchor.current = true;
 
-            // This doesn't scroll correctly sometimes. Need to see if there's a way we can guarantee it'll be there before we scroll
-            const userMessages = scrollContainerRef.current?.querySelectorAll(
-                '.' + USER_MESSAGE_CLASS_NAME
-            );
-
-            userMessages?.item(userMessages.length - 1).scrollIntoView(true);
-            //
-            // scrollToBottom();
+            scrollToBottom();
 
             setShouldStickToBottom(false);
         }
     }, [scrollToBottom, streamingMessageId]);
+
+    useEffect(() => {
+        const mutationObserver = new MutationObserver((mutationsList) => {
+            console.log('mutations', mutationsList);
+            if (
+                shouldStickToBottom.current &&
+                mutationsList.some((mutation) => mutation.type === 'childList')
+            ) {
+                scrollToBottom();
+            }
+        });
+
+        if (scrollContainerRef.current != null) {
+            mutationObserver.observe(scrollContainerRef.current, {
+                childList: true,
+                subtree: true,
+            });
+        }
+
+        return () => {
+            mutationObserver.disconnect();
+        };
+    }, [scrollToBottom]);
 
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
@@ -165,44 +155,40 @@ export const ThreadDisplay = (): JSX.Element => {
     };
 
     return (
-        // This extra Stack with column-reverse let us keep scroll at the bottom if the user has scrolled there
-        // Don't put anything else in this top Stack, put things into the inside Stack
-        // https://cssence.com/2024/bottom-anchored-scrolling-area/
         <Stack
-            data-testid="thread-display-sticky-scroll-container"
+            gap={2}
+            direction="column"
+            data-testid="thread-display"
+            useFlexGap
             ref={scrollContainerRef}
             overflow="auto"
             sx={{
-                flexDirection: 'column-reverse',
-                // flexDirection: shouldStickToBottom && isStreaming ? 'column-reverse' : 'column',
                 '@media (prefers-reduced-motion: no-preference)': {
                     scrollBehavior: 'smooth',
                 },
             }}>
-            <Stack gap={2} direction="column" data-testid="thread-display" useFlexGap>
-                {childMessageIds.map((messageId) => (
-                    <MessageView messageId={messageId} key={messageId} />
-                ))}
-                <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
-                <Stack
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{
-                        bottom: '-1px',
-                        minHeight: (theme) => ({
-                            xs: theme.spacing(2.5),
-                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
-                        }),
-                        position: 'sticky',
-                        background:
-                            'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
-                        marginTop: (theme) => theme.spacing(-3),
-                    }}>
-                    <ScrollToBottomButton
-                        isVisible={isScrollToBottomButtonVisible}
-                        onScrollToBottom={handleScrollToBottomButtonClick}
-                    />
-                </Stack>
+            {childMessageIds.map((messageId) => (
+                <MessageView messageId={messageId} key={messageId} />
+            ))}
+            <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
+            <Stack
+                justifyContent="center"
+                alignItems="center"
+                sx={{
+                    bottom: '-1px',
+                    minHeight: (theme) => ({
+                        xs: theme.spacing(2.5),
+                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
+                    }),
+                    position: 'sticky',
+                    background:
+                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                    marginTop: (theme) => theme.spacing(-3),
+                }}>
+                <ScrollToBottomButton
+                    isVisible={isScrollToBottomButtonVisible}
+                    onScrollToBottom={handleScrollToBottomButtonClick}
+                />
             </Stack>
         </Stack>
     );
