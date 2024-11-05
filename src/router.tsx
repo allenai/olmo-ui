@@ -21,6 +21,7 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
+import { HomePage } from './pages/HomePage';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -58,7 +59,7 @@ export const routes: RouteObject[] = [
             </VarnishedApp>
         ),
         children: [
-            { id: 'landing', path: links.home, element: <div>landing page</div> },
+            { id: 'landing', path: links.home, element: <HomePage /> },
             {
                 id: 'auth-root',
                 loader: async (loaderProps) => {
