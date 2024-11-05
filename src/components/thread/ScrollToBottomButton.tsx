@@ -11,17 +11,14 @@ export const ScrollToBottomButton = ({
     onScrollToBottom,
 }: ScrollToBottomButtonProps) => {
     return (
-        <>
-            {isVisible && (
-                <IconButton
-                    onClick={onScrollToBottom}
-                    sx={{
-                        color: (theme) => theme.palette.text.secondary,
-                    }}
-                    aria-label="Scroll to bottom">
-                    <ArrowCircleDownOutlinedIcon sx={{ width: '36px', height: '36px' }} />
-                </IconButton>
-            )}
-        </>
+        <IconButton
+            onClick={onScrollToBottom}
+            sx={{
+                visibility: isVisible ? 'visible' : 'hidden',
+                color: (theme) => theme.palette.text.secondary,
+            }}
+            aria-label="Scroll to bottom">
+            <ArrowCircleDownOutlinedIcon sx={{ width: '36px', height: '36px' }} />
+        </IconButton>
     );
 };
