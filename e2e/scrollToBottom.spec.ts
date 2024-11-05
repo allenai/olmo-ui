@@ -16,7 +16,7 @@ test('scroll to bottom button', async ({ page }) => {
         await isElementVisibleInContainer({
             page,
             element: page.getByText('tell me about penguins in one paragraph'),
-            container: page.getByTestId('thread-display-sticky-scroll-container'),
+            container: page.getByTestId('thread-display'),
         })
     ).toBe(true);
 
@@ -30,7 +30,7 @@ test('scroll to bottom button', async ({ page }) => {
         await isElementVisibleInContainer({
             page,
             element: page.getByTestId('bottom-scroll-anchor'),
-            container: page.getByTestId('thread-display-sticky-scroll-container'),
+            container: page.getByTestId('thread-display'),
         })
     ).toBe(true);
     await expect(scrollToBottomButton).not.toBeVisible();
@@ -39,7 +39,7 @@ test('scroll to bottom button', async ({ page }) => {
         await isElementVisibleInContainer({
             page,
             element: page.getByText('tell me about penguins in one paragraph'),
-            container: page.getByTestId('thread-display-sticky-scroll-container'),
+            container: page.getByTestId('thread-display'),
         })
     ).toBe(false);
 });

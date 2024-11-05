@@ -1,6 +1,6 @@
-import { firstThreadMessageId, secondThreadMessageId } from '@/mocks/handlers/messageHandlers';
-
 import { expect, test } from '@playwright-utils';
+
+import { firstThreadMessageId, secondThreadMessageId } from '@/mocks/handlers/messageHandlers';
 
 test('can send prompt in Olmo Playground', async ({ page }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';
@@ -70,9 +70,7 @@ test('should scroll to the new user prompt message when its submitted', async ({
     await expect(page.getByText('This is the second response.')).toBeVisible();
 
     const scrollContainerScrollTop = await page.evaluate(() => {
-        const element = document.querySelector(
-            '[data-testid="thread-display-sticky-scroll-container"]'
-        );
+        const element = document.querySelector('[data-testid="thread-display"]');
         return element?.scrollTop;
     });
 

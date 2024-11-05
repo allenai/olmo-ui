@@ -23,7 +23,7 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
         await isElementVisibleInContainer({
             page,
             element: page.getByText('User message'),
-            container: page.getByTestId('thread-display-sticky-scroll-container'),
+            container: page.getByTestId('thread-display'),
         })
     ).toBe(true);
 
@@ -38,7 +38,7 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
         await isElementVisibleInContainer({
             page,
             element: page.getByText('Second user message'),
-            container: page.getByTestId('thread-display-sticky-scroll-container'),
+            container: page.getByTestId('thread-display'),
         })
     ).toBe(true);
 
@@ -54,7 +54,7 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
     // on webkit this _may_ just be waiting until things finish and scrolling to the bottom? Watching it shows a loading thing for a while
     // await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
 
-    await page.getByTestId('thread-display-sticky-scroll-container').hover();
+    await page.getByTestId('thread-display').hover();
 
     // on webkit this _may_ just be waiting until things finish and scrolling to the bottom? Watching it shows a loading thing for a while
     await page.mouse.wheel(0, 10000);
@@ -65,7 +65,7 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
         await isElementVisibleInContainer({
             page,
             element: page.getByTestId('bottom-scroll-anchor'),
-            container: page.getByTestId('thread-display-sticky-scroll-container'),
+            container: page.getByTestId('thread-display'),
         })
     ).toBe(true);
 });

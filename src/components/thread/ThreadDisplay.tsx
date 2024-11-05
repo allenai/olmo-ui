@@ -108,7 +108,6 @@ export const ThreadDisplay = (): JSX.Element => {
 
     useEffect(() => {
         const mutationObserver = new MutationObserver((mutationsList) => {
-            console.log('mutations', mutationsList);
             if (
                 shouldStickToBottom.current &&
                 mutationsList.some((mutation) => mutation.type === 'childList')
@@ -133,6 +132,7 @@ export const ThreadDisplay = (): JSX.Element => {
     // We use it to see if we've scrolled to the bottom of this element
     const { ref: scrollAnchorRef } = useInView({
         root: scrollContainerRef.current,
+        rootMargin: '24px',
         initialInView: true,
         onChange: (inView) => {
             setIsScrollToBottomButtonVisible(!inView);
@@ -177,8 +177,8 @@ export const ThreadDisplay = (): JSX.Element => {
                 sx={{
                     bottom: '-1px',
                     minHeight: (theme) => ({
-                        xs: theme.spacing(2.5),
-                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(3.5),
+                        xs: theme.spacing(6),
+                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
                     }),
                     position: 'sticky',
                     background:
