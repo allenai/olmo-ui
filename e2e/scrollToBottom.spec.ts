@@ -12,13 +12,20 @@ test('scroll to bottom button', async ({ page }) => {
     // Since the response is so long and the window is so small we can expect that this will be out of the window's viewport before scrolling to the bottom
     await expect(page.getByText('tell me about penguins in one paragraph')).toBeInViewport();
 
-    expect(
-        await isElementVisibleInContainer({
-            page,
-            element: page.getByText('tell me about penguins in one paragraph'),
-            container: page.getByTestId('thread-display'),
-        })
-    ).toBe(true);
+    await expect
+        .poll(
+            async () => {
+                return await isElementVisibleInContainer({
+                    page,
+                    element: page.getByText('tell me about penguins in one paragraph'),
+                    container: page.getByTestId('thread-display'),
+                });
+            },
+            {
+                message: 'First user message should be in container viewport',
+            }
+        )
+        .toBe(true);
 
     const scrollToBottomButton = page.getByRole('button', { name: 'Scroll to bottom' });
 
@@ -26,20 +33,20 @@ test('scroll to bottom button', async ({ page }) => {
 
     await scrollToBottomButton.click();
 
-    expect(
-        await isElementVisibleInContainer({
-            page,
-            element: page.getByTestId('bottom-scroll-anchor'),
-            container: page.getByTestId('thread-display'),
-        })
-    ).toBe(true);
-    await expect(scrollToBottomButton).not.toBeVisible();
+    await expect
+        .poll(
+            async () => {
+                return await isElementVisibleInContainer({
+                    page,
+                    element: page.getByText('tell me about penguins in one paragraph'),
+                    container: page.getByTestId('thread-display'),
+                });
+            },
+            {
+                message: 'User message should be scrolled out of the container viewport',
+            }
+        )
+        .toBe(false);
 
-    expect(
-        await isElementVisibleInContainer({
-            page,
-            element: page.getByText('tell me about penguins in one paragraph'),
-            container: page.getByTestId('thread-display'),
-        })
-    ).toBe(false);
+    await expect(scrollToBottomButton).not.toBeVisible();
 });
