@@ -10,7 +10,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import { IconButton, Link, Stack } from '@mui/material';
 import { ComponentProps } from 'react';
-import { UIMatch, useMatches } from 'react-router-dom';
+import { UIMatch, useLoaderData, useMatches, useRouteLoaderData } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
@@ -25,7 +25,12 @@ import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { NavigationLink } from './NavigationLink';
 
 const Auth0LoginLink = () => {
-    const { isAuthenticated } = useUserAuthInfo();
+    const userAuthInfo = useUserAuthInfo();
+    console.log(userAuthInfo);
+
+    const { isAuthenticated } = userAuthInfo;
+
+    console.log(isAuthenticated);
 
     if (isAuthenticated) {
         return (

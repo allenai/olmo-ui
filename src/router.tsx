@@ -9,6 +9,7 @@ import {
     requireAuthorizationLoader,
     userAuthInfoLoader,
 } from './api/auth/auth-loaders';
+import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -58,6 +59,7 @@ export const routes: RouteObject[] = [
                 <ErrorPage />
             </VarnishedApp>
         ),
+        loader: userInfoLoader,
         children: [
             {
                 id: 'landing',
@@ -72,7 +74,7 @@ export const routes: RouteObject[] = [
                 },
             },
             {
-                id: 'auth-root',
+                id: 'required-auth-root',
                 loader: async (loaderProps) => {
                     const requireAuthorizationResult =
                         await requireAuthorizationLoader(loaderProps);
@@ -81,8 +83,7 @@ export const routes: RouteObject[] = [
                         return requireAuthorizationResult;
                     }
 
-                    const userAuthInfo = await userAuthInfoLoader(loaderProps);
-                    return userAuthInfo;
+                    return null;
                 },
                 element: <NewApp />,
                 children: [

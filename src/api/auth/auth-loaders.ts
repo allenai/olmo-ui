@@ -10,12 +10,13 @@ import {
 
 import { links } from '@/Links';
 
+import { UserInfoLoaderResponse } from '../user-info-loader';
 import { createLoginRedirectURL } from './auth-utils';
 import { auth0Client } from './auth0Client';
 
 // adapted from https://github.com/brophdawg11/react-router-auth0-example/blob/91ad7ba916d8a3ecc348c037e1e534b4d87360cd/src/auth.ts
 
-interface UserAuthInfo {
+export interface UserAuthInfo {
     userInfo?: User;
     isAuthenticated: boolean;
 }
@@ -112,8 +113,12 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 };
 
 export const useUserAuthInfo = (): UserAuthInfo => {
-    const { userInfo, isAuthenticated } =
-        (useRouteLoaderData('auth-root') as UserAuthInfo | undefined) ?? {};
+    const { userAuthInfo } = useRouteLoaderData('root') as UserInfoLoaderResponse;
 
-    return { userInfo, isAuthenticated: Boolean(isAuthenticated) };
+    console.log('useAuthInfo', userAuthInfo);
+
+    return {
+        userInfo: userAuthInfo?.userInfo,
+        isAuthenticated: Boolean(userAuthInfo?.isAuthenticated),
+    };
 };

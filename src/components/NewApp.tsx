@@ -22,7 +22,6 @@ export const NewApp = () => {
     useEffect(() => {
         setLoading(true);
         getUserInfo()
-            .then(getSchema)
             .finally(() => {
                 setLoading(false);
             })
