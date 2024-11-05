@@ -1,3 +1,5 @@
+import { links } from '@/Links';
+
 import { expect, test } from './playwright-utils';
 
 test('should filter displayed documents when a span is selected', async ({ page }) => {
@@ -17,7 +19,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
 });
 
 test('should show the attribution drawer when navigating to a thread', async ({ page }) => {
-    await page.goto('/');
+    await page.goto(links.playground);
     await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'Thread history' }).click();

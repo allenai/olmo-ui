@@ -43,7 +43,7 @@ export const requireAuthorizationLoader: LoaderFunction = async (props) => {
 
 export const loginAction: ActionFunction = async ({ request }) => {
     const formData = await request.formData();
-    const redirectTo = (formData.get('redirectTo') as string | null) || '/';
+    const redirectTo = (formData.get('redirectTo') as string | null) || links.playground;
 
     await auth0Client.login(redirectTo);
 
@@ -62,7 +62,7 @@ export interface LoginError extends ErrorResponse {
 
 export const loginResultLoader: LoaderFunction = async ({ request }) => {
     await auth0Client.handleLoginRedirect();
-    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || '/';
+    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || links.playground;
 
     const isAuthenticated = await auth0Client.isAuthenticated();
     if (isAuthenticated) {
@@ -85,9 +85,11 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 };
 
 export const loginLoader: LoaderFunction = async ({ request }) => {
-    const redirectToParam = new URL(request.url).searchParams.get('redirectTo') || '/';
+    const redirectToParam = new URL(request.url).searchParams.get('redirectTo') || links.playground;
     // if the user refreshes on the login page for some reason they can get stuck in a loop, checking for the redirect param starting with 'login' helps prevent that
-    const finalRedirectTo = redirectToParam.startsWith(links.login('')) ? '/' : redirectToParam;
+    const finalRedirectTo = redirectToParam.startsWith(links.login(''))
+        ? links.playground
+        : redirectToParam;
 
     // The template we pulled from checked for isAuthenticated and would just redirect if it was present.
     // This was causing problems if we had an invalid token

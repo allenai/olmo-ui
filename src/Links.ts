@@ -1,10 +1,10 @@
 export const links = {
     home: '/',
-    playground: '/',
+    playground: '/playground',
+    thread: (threadId: string) => `${links.playground}/thread/${threadId}`,
     ourModels: 'https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778',
     datasetExplorer: '/dolma',
     ourDatasets: 'https://huggingface.co/datasets/allenai/dolma',
-    thread: (threadId: string) => `/thread/${threadId}`,
     faqs: '/faqs',
     login: (redirectTo?: string) => {
         const loginBase = '/login';

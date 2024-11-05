@@ -6,6 +6,7 @@ import * as RouterDom from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { QueryForm } from './QueryForm';
@@ -13,7 +14,7 @@ import { QueryForm } from './QueryForm';
 describe('QueryForm', () => {
     it('should render successfully', () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
+            pathname: links.playground,
             search: '',
             hash: '',
             state: 'loaded',
@@ -27,7 +28,7 @@ describe('QueryForm', () => {
 
     it('should submit prompt successfully', async () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
+            pathname: links.playground,
             search: '',
             hash: '',
             state: 'loaded',
@@ -69,7 +70,7 @@ describe('QueryForm', () => {
 
     it('should be disabled when streaming', async () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
+            pathname: links.playground,
             search: '',
             hash: '',
             state: 'loaded',
@@ -96,7 +97,7 @@ describe('QueryForm', () => {
 
     it('should clear out prompt after receiving the first message from the response', async () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
+            pathname: links.playground,
             search: '',
             hash: '',
             state: 'loaded',

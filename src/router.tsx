@@ -58,9 +58,9 @@ export const routes: RouteObject[] = [
             </VarnishedApp>
         ),
         children: [
+            { id: 'landing', path: links.home, element: <div>landing page</div> },
             {
                 id: 'auth-root',
-                path: '/',
                 loader: async (loaderProps) => {
                     const requireAuthorizationResult =
                         await requireAuthorizationLoader(loaderProps);
@@ -83,7 +83,7 @@ export const routes: RouteObject[] = [
                                 element: <ThreadPlaceholder />,
                             },
                             {
-                                path: '/thread',
+                                path: links.playground + '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
                                 // We just redirect to the playground to make sure people going to /thread get what they want
                                 element: <Navigate to={links.playground} />,

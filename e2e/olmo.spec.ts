@@ -1,12 +1,12 @@
+import { links } from '@/Links';
 import { firstThreadMessageId, secondThreadMessageId } from '@/mocks/handlers/messageHandlers';
 
 import { expect, test } from './playwright-utils';
-
 test('can send prompt in Olmo Playground', async ({ page }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';
 
     // Send the first message
-    await page.goto('/');
+    await page.goto(links.playground);
     await page.waitForLoadState('networkidle');
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
@@ -49,7 +49,7 @@ test('should scroll to the new user prompt message when its submitted', async ({
     const selectedThreadId = 'msg_A8E5H1X2O4';
 
     // Send the first message
-    await page.goto('/');
+    await page.goto(links.playground);
     await page.waitForLoadState('networkidle');
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
@@ -79,7 +79,7 @@ test('should scroll to the new user prompt message when its submitted', async ({
 });
 
 test('should stop thread from streaming', async ({ page }) => {
-    await page.goto('/');
+    await page.goto(links.playground);
     await page.waitForLoadState('networkidle');
     await page.getByRole('textbox', { name: 'Prompt' }).focus();
     await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
@@ -92,7 +92,7 @@ test('should stop thread from streaming', async ({ page }) => {
 
 test('can load threads from history drawer', async ({ page }) => {
     // Check the first existing thread
-    await page.goto('/');
+    await page.goto(links.playground);
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Thread History' })).toBeVisible();
