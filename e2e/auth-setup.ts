@@ -1,5 +1,6 @@
-import { test } from '@playwright-utils';
 import path from 'path';
+
+import { test } from './playwright-utils';
 
 const authFile = path.join(__dirname, '../e2e/.auth/storageState.json');
 
