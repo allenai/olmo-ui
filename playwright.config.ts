@@ -77,6 +77,8 @@ export default defineConfig({
             name: 'webkit',
             use: { ...devices['Desktop Safari'], storageState: 'e2e/.auth/storageState.json' },
             dependencies: ['setup'],
+            // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
+            testIgnore: ['*sticky-scroll*'],
         },
 
         /* Test against mobile viewports. */

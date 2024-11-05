@@ -66,13 +66,7 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
         )
     ).toBeAttached();
 
-    // on webkit this _may_ just be waiting until things finish and scrolling to the bottom? Watching it shows a loading thing for a while
     await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
-
-    // await page.getByTestId('thread-display').hover();
-
-    // on webkit this _may_ just be waiting until things finish and scrolling to the bottom? Watching it shows a loading thing for a while
-    // await page.mouse.wheel(0, 1000000);
 
     await secondStreamResponsePromise;
     await expect(page.getByLabel('Submit prompt')).toBeVisible();
