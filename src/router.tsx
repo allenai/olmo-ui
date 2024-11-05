@@ -142,13 +142,6 @@ export const routes: RouteObject[] = [
                 ],
             },
             {
-                path: '/*',
-                element: <NotFound />,
-                handle: {
-                    title: '',
-                },
-            },
-            {
                 path: links.login(),
                 action: loginAction,
                 loader: loginLoader,
