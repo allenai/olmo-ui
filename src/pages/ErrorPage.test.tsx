@@ -1,12 +1,15 @@
-import { render, screen } from '@test-utils';
+import { render, screen, waitFor } from '@test-utils';
 import { createMemoryRouter, json, RouterProvider } from 'react-router-dom';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
 import { VarnishedApp } from '@/components/VarnishedApp';
+import { links } from '@/Links';
+
+import { ErrorPage } from './ErrorPage';
 
 describe('Error Page', () => {
-    it('should show a login error when one is thrown from the loader', () => {
-        // vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+    it('should show a login error when one is thrown from the loader', async () => {
+        const redirectTo = '/redirect-to-path';
 
         const router = createMemoryRouter(
             [
@@ -14,13 +17,17 @@ describe('Error Page', () => {
                     id: 'test-root',
                     path: '/',
                     element: <div>shouldnt be here</div>,
-                    errorElement: <VarnishedApp>should be here{/* <ErrorPage /> */}</VarnishedApp>,
+                    errorElement: (
+                        <VarnishedApp>
+                            <ErrorPage />
+                        </VarnishedApp>
+                    ),
                     loader: () => {
                         const responseData: LoginError['data'] = {
                             type: LOGIN_ERROR_TYPE,
                             title: 'Login error',
                             detail: 'Something went wrong when logging in. Please try again.',
-                            redirectTo: '/redirect-to-path',
+                            redirectTo,
                         };
 
                         // react-router seems to recommend throwing Responses
@@ -32,14 +39,18 @@ describe('Error Page', () => {
                     },
                 },
             ],
-            { initialEntries: ['/'] }
+            { initialEntries: [{ pathname: '/' }] }
         );
 
         render(<RouterProvider router={router} />);
 
-        expect(screen.getByRole('button', { name: 'Log in' })).toHaveAttribute(
-            'href',
-            '/redirect-to-path'
-        );
+        const expectedURL = links.login(redirectTo);
+
+        await waitFor(() => {
+            expect(screen.getByRole('link', { name: 'Log in' })).toHaveAttribute(
+                'href',
+                expectedURL
+            );
+        });
     });
 });
