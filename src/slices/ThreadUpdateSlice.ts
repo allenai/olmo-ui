@@ -102,6 +102,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 state.abortController = null;
                 state.streamPromptState = RemoteState.Loaded;
+                state.streamingMessageId = null;
             },
             false,
             'threadUpdate/finishCreateNewThread'

@@ -96,7 +96,10 @@ export const ThreadDisplay = (): JSX.Element => {
         // we want to scroll to the bottom of the thread to see the new user message
         // but we only want to do it if we're adding to the current thread, not visiting an existing thread
         // we also want to make sure it's a new message so that we don't scroll to the bottom multiple times if scrollToBottom gets updated
-        if (previousStreamingMessageId.current !== streamingMessageId) {
+        if (
+            streamingMessageId != null &&
+            previousStreamingMessageId.current !== streamingMessageId
+        ) {
             previousStreamingMessageId.current = streamingMessageId;
             skipNextStickyScrollSetFromAnchor.current = true;
 
