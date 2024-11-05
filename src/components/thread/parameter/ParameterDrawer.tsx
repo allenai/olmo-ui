@@ -49,18 +49,12 @@ export const ParameterDrawer = (): JSX.Element => {
     );
 };
 
-// Not sure what I should do about these, I just wanted to avoid repetition -- but they are mildly specific
-const SubGridList = ({ children }: React.PropsWithChildren) => (
-    <Box
-        component="ul"
-        margin="0"
-        padding="0"
-        display="grid"
-        gridTemplateColumns="auto min-content">
+const ParametersList = ({ children }: React.PropsWithChildren) => (
+    <Box component="ul" margin="0" padding="0" display="grid" gridTemplateColumns="1fr auto">
         {children}
     </Box>
 );
-const SubGridListItem = ({ children }: React.PropsWithChildren) => (
+const ParametersListItem = ({ children }: React.PropsWithChildren) => (
     <Box component="li" display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1">
         {children}
     </Box>
@@ -79,14 +73,14 @@ export const ParameterContent = () => {
 
     return (
         <Stack>
-            <SubGridList>
-                <SubGridListItem>
+            <ParametersList>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
                         max={opts.temperature.max}
                         step={opts.temperature.step}
-                        initialValue={opts.temperature.default}
+                        initialValue={opts.temperature.default ?? undefined}
                         onChange={(v) => {
                             updateInferenceOpts({ temperature: v });
                         }}
@@ -94,14 +88,14 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </SubGridListItem>
-                <SubGridListItem>
+                </ParametersListItem>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
                         max={opts.top_p.max}
                         step={opts.top_p.step}
-                        initialValue={opts.top_p.default}
+                        initialValue={opts.top_p.default ?? undefined}
                         onChange={(v) => {
                             updateInferenceOpts({ top_p: v });
                         }}
@@ -109,8 +103,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </SubGridListItem>
-            </SubGridList>
+                </ParametersListItem>
+            </ParametersList>
         </Stack>
     );
 };

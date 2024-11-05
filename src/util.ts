@@ -5,3 +5,5 @@ export const formatValueAsPercentage = (value: number, totalSum: number) => {
         value / totalSum
     );
 };
+
+export type NullishPartial<T> = { [P in keyof T]?: T[P] | null };
