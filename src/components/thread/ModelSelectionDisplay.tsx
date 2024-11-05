@@ -13,6 +13,7 @@ import { useId } from 'react';
 
 import { Model, ModelList } from '@/api/Model';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
 type ModelSelectionDisplayProps = {
@@ -31,6 +32,10 @@ export const ModelSelectionDisplay = ({
     label = '',
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
+    const { isModelEnabled } = useFeatureToggles();
+    const newModels = isModelEnabled
+        ? models
+        : models.filter((model) => model.name !== 'OLMo-peteish-dpo-preview');
     return (
         <Box
             sx={(theme: Theme) => ({
@@ -49,7 +54,7 @@ export const ModelSelectionDisplay = ({
                 paddingTop: !shouldOnlyShowAtDesktop ? 2 : undefined,
                 gridColumn: !shouldOnlyShowAtDesktop ? '1 / -1' : '1',
             })}>
-            {models.length > 1 ? (
+            {newModels.length > 1 ? (
                 <FormControl
                     sx={{
                         width: !shouldOnlyShowAtDesktop ? '100%' : undefined,
@@ -71,7 +76,7 @@ export const ModelSelectionDisplay = ({
                         onChange={onModelChange}
                         input={<OutlinedInput />}
                         value={(selectedModel && selectedModel.id) || ''}>
-                        {models.map((model) => (
+                        {newModels.map((model) => (
                             <MenuItem key={model.name} value={model.id}>
                                 {model.name}
                             </MenuItem>
@@ -79,9 +84,9 @@ export const ModelSelectionDisplay = ({
                     </Select>
                 </FormControl>
             ) : (
-                <Typography key={models[0].name}>
+                <Typography key={newModels[0].name}>
                     {label ? `${label}: ` : ''}
-                    {models[0].name}
+                    {newModels[0].name}
                 </Typography>
             )}
         </Box>
