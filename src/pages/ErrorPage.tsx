@@ -54,7 +54,7 @@ export const ErrorPage = () => {
     } else {
         if (hasStatus(error)) {
             if (error.status === 404) {
-                statusMessage = "This page doesn't exist!";
+                statusMessage = 'We cannot find that page';
             } else if (error.status === 401) {
                 statusMessage = "You aren't authorized to see this";
             } else if (error.status === 503) {
