@@ -21,7 +21,6 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { NotFound } from './pages/NotFound';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
