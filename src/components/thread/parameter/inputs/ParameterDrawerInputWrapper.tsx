@@ -39,11 +39,18 @@ export const ParameterDrawerInputWrapper = ({
         <Box
             // MUI's Grid component had some weird stuff going on with top padding so we're using CSS grid here instead
             display="grid"
+            gridTemplateRows="auto auto"
             gridTemplateColumns="subgrid"
+            gridTemplateAreas='"label label" "input input"'
             gridColumn="1 / -1"
             ref={containerRef}
             paddingY={1}>
-            <Box display="grid" gridTemplateColumns="auto 1fr" columnGap={1} alignItems="center">
+            <Box
+                display="grid"
+                gridTemplateColumns="auto 1fr"
+                columnGap={1}
+                alignItems="center"
+                gridArea="label">
                 <Typography variant="body1" component="label" htmlFor={inputId} id={inputLabelId}>
                     {label}
                 </Typography>
@@ -74,7 +81,7 @@ export const ParameterDrawerInputWrapper = ({
                     </ResponsiveTooltip>
                 )}
             </Box>
-            <Box display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1" columnGap={1}>
+            <Box display="grid" gridTemplateColumns="subgrid" gridArea="input" columnGap={1}>
                 {children instanceof Function ? children({ inputLabelId }) : children}
             </Box>
         </Box>

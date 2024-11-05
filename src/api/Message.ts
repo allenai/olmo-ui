@@ -1,19 +1,14 @@
+import { NullishPartial } from '@/util';
+
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
 import { Role } from './Role';
-import { PaginationData } from './Schema';
+import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
-export interface InferenceOpts {
-    max_tokens?: number | null;
-    temperature?: number | null;
-    n?: number | null;
-    top_p?: number | null;
-    logprobs?: number | null;
-    stop?: string[] | null;
-}
+export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
 export interface Logprob {
     token: string;
@@ -28,7 +23,7 @@ export interface MessagePost {
     parent?: string;
     private?: boolean;
     prompt_template_id?: string;
-    opts?: InferenceOpts;
+    opts?: RequestInferenceOpts;
     model?: string;
 }
 
@@ -45,7 +40,7 @@ export interface Message {
     logprobs?: Logprob[] | null;
     model_type?: string | null;
     finish_reason?: string | null;
-    opts: InferenceOpts;
+    opts: RequestInferenceOpts;
     original?: string | null;
     parent?: string | null;
     private?: boolean | null;
@@ -198,7 +193,7 @@ export class MessageClient extends ClientBase {
 
     sendMessage = async (
         newMessage: MessagePost,
-        inferenceOptions: InferenceOpts,
+        inferenceOptions: RequestInferenceOpts,
         abortController: AbortController,
         parentMessageId?: string
     ) => {

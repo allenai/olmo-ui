@@ -4,7 +4,6 @@ import { Button, ButtonGroup, ButtonProps, Menu, Stack } from '@mui/material';
 import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
-import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
@@ -43,17 +42,12 @@ const NewThreadButton = ({
 };
 
 export const ThreadPageControls = (): JSX.Element => {
-    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const isDesktop = useDesktopOrUp();
     const isMediumLayout = useMediumLayoutOrUp();
 
     const { isCorpusLinkEnabled } = useFeatureToggles();
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-    if (!selectedThreadRootId) {
-        return <></>;
-    }
 
     const handleClickDelete = () => {
         setDeleteDialogOpen(true);

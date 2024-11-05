@@ -1,5 +1,4 @@
 import {
-    InferenceOpts,
     isFinalMessage,
     isFirstMessage,
     isMessageChunk,
@@ -8,6 +7,7 @@ import {
     MessageStreamError,
     MessageStreamErrorReason,
     parseMessage,
+    RequestInferenceOpts,
     StreamBadRequestError,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
@@ -50,8 +50,8 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string;
-    inferenceOpts: InferenceOpts;
-    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
+    inferenceOpts: RequestInferenceOpts;
+    updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
@@ -63,7 +63,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     inferenceOpts: {},
     streamPromptState: undefined,
 
-    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
+    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
         }));
