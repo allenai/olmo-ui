@@ -4,7 +4,8 @@ import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
-import { appContext, useAppContext } from '@/AppContext';
+import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
+import { appContext, AppContextState, useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from './ChatMessage';
@@ -29,6 +30,7 @@ const MessageView = ({ messageId }: MessageViewProps) => {
         <>
             <ChatMessage role={role} messageId={messageId}>
                 <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+
                 <MessageInteraction
                     role={role}
                     content={content}
@@ -40,8 +42,31 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     );
 };
 
+export const getSelectedMessagesToShow = (state: AppContextState) =>
+    getMessageIdsToShow(state.selectedThreadRootId, state.selectedThreadMessagesById);
+
+const getMessageIdsToShow = (
+    rootMessageId: string,
+    messagesById: Record<string, SelectedThreadMessage>,
+    messageIdList: string[] = []
+): string[] => {
+    const message = messagesById[rootMessageId];
+    if (message == null || rootMessageId == null) {
+        return [];
+    }
+
+    messageIdList.push(rootMessageId);
+    if (message.selectedChildId != null) {
+        const childMessage = messagesById[message.selectedChildId];
+        getMessageIdsToShow(childMessage.id, messagesById, messageIdList);
+    }
+
+    return messageIdList;
+};
+
 export const ThreadDisplay = (): JSX.Element => {
-    const childMessageIds = useAppContext((state) => state.currentBranchIdList);
+    const childMessageIds = useAppContext(getSelectedMessagesToShow);
+    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const stackRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
@@ -56,6 +81,13 @@ export const ThreadDisplay = (): JSX.Element => {
     useEffect(() => {
         checkScrollVisibility();
     }, []);
+
+    // Scroll to the bottom when a new message is added
+    useEffect(() => {
+        if (stackRef.current) {
+            stackRef.current.scrollTop = stackRef.current.scrollHeight;
+        }
+    }, [streamingMessageId]);
 
     const handleScrollToBottom = () => {
         if (stackRef.current) {

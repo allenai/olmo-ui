@@ -33,6 +33,8 @@ const QueryFormButton = ({
     type,
     'aria-label': ariaLabel,
     disabled,
+    onClick,
+    onKeyDown,
 }: QueryFormButtonProps) => {
     return (
         <IconButton
@@ -51,7 +53,9 @@ const QueryFormButton = ({
                     borderRadius: '50%',
                 },
             })}
-            disabled={disabled}>
+            disabled={disabled}
+            onClick={onClick}
+            onKeyDown={onKeyDown}>
             {children}
         </IconButton>
     );
