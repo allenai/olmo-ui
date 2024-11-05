@@ -13,16 +13,14 @@ import { useFakeUserAuthInfo } from '@/utils/FakeAuthLoaders';
 import { ThreadDisplay } from './ThreadDisplay';
 
 describe('ThreadDisplay', () => {
-    beforeEach(() => {
-        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
-        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(useFakeUserAuthInfo);
-    });
-
     afterEach(() => {
         vi.restoreAllMocks();
     });
 
     it('should highlight spans that contain special regex characters', () => {
+        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(useFakeUserAuthInfo);
+
         render(
             <FakeAppContextProvider
                 initialState={{
