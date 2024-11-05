@@ -13,9 +13,11 @@ import {
 import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 
 import { MessagePost, StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
+import { selectMessagesToShow } from '@/components/thread/ThreadDisplay';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
@@ -133,30 +135,21 @@ export const QueryForm = (): JSX.Element => {
         [abortController]
     );
 
+    const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
+
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
-        const viewingMessageIds = state.currentBranchIdList;
-        const isLimitReached = viewingMessageIds.some(
+        return viewingMessageIds.some(
             (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
         );
-
-        return isLimitReached;
     });
 
     const isSelectedThreadLoading = useAppContext(
         (state) => state.streamPromptState === RemoteState.Loading
     );
 
-    const lastMessageId = useAppContext((state) => {
-        const messagesToShow = state.currentBranchIdList;
-
-        if (messagesToShow.length === 0) {
-            return undefined;
-        }
-
-        const lastMessage = messagesToShow[messagesToShow.length - 1];
-        return lastMessage;
-    });
+    const lastMessageId =
+        viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
     // Autofocus the input if we're on a new thread
     useEffect(() => {

@@ -22,7 +22,6 @@ export interface SelectedThreadSlice {
     ) => Promise<SelectedThreadMessage>;
     deleteSelectedThread: () => void;
     resetSelectedThreadState: () => void;
-    currentBranchIdList: string[];
 }
 
 const initialState = {
@@ -30,7 +29,6 @@ const initialState = {
     selectedThreadRootId: '',
     selectedThreadMessages: [],
     selectedThreadMessagesById: {},
-    currentBranchIdList: [],
 };
 
 export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
@@ -70,7 +68,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                 if (message.parent != null) {
                     mappedMessages.forEach((message) => {
                         state.selectedThreadMessagesById[message.id] = message;
-                        state.currentBranchIdList.push(message.id);
                     });
 
                     state.selectedThreadMessagesById[message.parent].childIds.push(
@@ -102,25 +99,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
 
         const mappedMessages = mapMessages(rootMessage);
 
-        const getMessageIdsToShow = (
-            rootMessageId: string,
-            messagesById: Record<string, SelectedThreadMessage>,
-            messageIdList: string[]
-        ): string[] => {
-            const message = messagesById[rootMessageId];
-            if (message == null || rootMessageId == null) {
-                return [];
-            }
-
-            messageIdList.push(rootMessageId);
-            if (message.selectedChildId != null) {
-                const childMessage = messagesById[message.selectedChildId];
-                getMessageIdsToShow(childMessage.id, messagesById, messageIdList);
-            }
-
-            return messageIdList;
-        };
-
         set(
             (state) => {
                 state.selectedThreadRootId = selectedThreadMessage.id;
@@ -131,12 +109,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     newSelectedThreadsById[message.id] = message;
                 });
                 state.selectedThreadMessagesById = newSelectedThreadsById;
-
-                state.currentBranchIdList = getMessageIdsToShow(
-                    selectedThreadMessage.id,
-                    newSelectedThreadsById,
-                    []
-                );
             },
             false,
             'selectedThread/setSelectedThread'
