@@ -70,7 +70,6 @@ export default defineConfig({
             name: 'firefox',
             use: { ...devices['Desktop Firefox'], storageState: 'e2e/.auth/storageState.json' },
             dependencies: ['setup'],
-            // The sticky scroll test doesn't work in FF for some reason. it won't scroll all the way to the bottom
         },
 
         {
