@@ -34,7 +34,6 @@ const isLoginError = (error: unknown): error is LoginError => {
 
 export const ErrorPage = () => {
     const error = useRouteError();
-    console.log('errorpage');
 
     let statusMessage;
     let statusText;
