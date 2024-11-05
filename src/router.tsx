@@ -59,7 +59,18 @@ export const routes: RouteObject[] = [
             </VarnishedApp>
         ),
         children: [
-            { id: 'landing', path: links.home, element: <HomePage /> },
+            {
+                id: 'landing',
+                path: links.home,
+                element: <HomePage />,
+            },
+            {
+                path: links.faqs,
+                element: <FAQsPage />,
+                handle: {
+                    title: 'FAQs',
+                },
+            },
             {
                 id: 'auth-root',
                 loader: async (loaderProps) => {
@@ -131,13 +142,6 @@ export const routes: RouteObject[] = [
                                 loader: searchPageLoader,
                             },
                         ],
-                    },
-                    {
-                        path: links.faqs,
-                        element: <FAQsPage />,
-                        handle: {
-                            title: 'FAQs',
-                        },
                     },
                 ],
             },

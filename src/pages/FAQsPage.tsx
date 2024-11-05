@@ -2,6 +2,7 @@ import { Box, Button, Card, CardContent, Stack, TextField } from '@mui/material'
 import { useEffect, useMemo } from 'react';
 import { Form, useSearchParams } from 'react-router-dom';
 
+import { AppLayout } from '@/components/AppLayout';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { faqs } from '@/components/faq/faq-list';
 import { FAQCategoriesButton } from '@/components/faq/FAQCategoriesButton';
@@ -54,7 +55,7 @@ export const FAQsPage = (): JSX.Element => {
     );
 
     return (
-        <>
+        <AppLayout>
             <MetaTags title="Ai2 Playground" />
             <Card
                 elevation={0}
@@ -117,6 +118,6 @@ export const FAQsPage = (): JSX.Element => {
                 </CardContent>
             </Card>
             <FAQCategoryLinks />
-        </>
+        </AppLayout>
     );
 };
