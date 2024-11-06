@@ -28,6 +28,16 @@ const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     return { userInfo, isAuthenticated };
 };
 
+export const authorizationLoader: LoaderFunction = async () => {
+    const isAuthenticated = await auth0Client.isAuthenticated();
+
+    const userAuthInfo = isAuthenticated
+        ? await getUserAuthInfo()
+        : { isAuthenticated: false, userInfo: null };
+
+    return userAuthInfo;
+};
+
 export const loginAction: ActionFunction = async ({ request }) => {
     const formData = await request.formData();
     const redirectTo = (formData.get('redirectTo') as string | null) || links.playground;

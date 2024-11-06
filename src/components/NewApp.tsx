@@ -10,6 +10,7 @@ export const NewApp = () => {
     useTrackPageView();
 
     const userInfo = useAppContext((state) => state.userInfo);
+    const getUserInfo = useAppContext((state) => state.getUserInfo);
     const schema = useAppContext((state) => state.schema);
     const getSchema = useAppContext((state) => state.getSchema);
 
@@ -20,7 +21,8 @@ export const NewApp = () => {
     // being taken to the login page.
     useEffect(() => {
         setLoading(true);
-        getSchema()
+        getUserInfo()
+            .then(getSchema)
             .finally(() => {
                 setLoading(false);
             })
@@ -28,7 +30,7 @@ export const NewApp = () => {
                 console.error('Failed to get user info');
                 throw error;
             });
-    }, [getSchema]);
+    }, [getSchema, getUserInfo]);
 
     const shouldShowTermsAndConditionsModal = userInfo?.hasAcceptedTermsAndConditions === false;
 
