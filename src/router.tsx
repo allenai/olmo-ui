@@ -1,7 +1,14 @@
 import { Box } from '@mui/material';
 import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
-import { loginAction, loginLoader, loginResultLoader, logoutAction } from './api/auth/auth-loaders';
+import {
+    authorizationLoader,
+    loginAction,
+    loginLoader,
+    loginResultLoader,
+    logoutAction,
+    userAuthInfoLoader,
+} from './api/auth/auth-loaders';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -54,6 +61,16 @@ export const routes: RouteObject[] = [
             {
                 id: 'auth-root',
                 path: '/',
+                loader: async (loaderProps) => {
+                    const authorizationResult = await authorizationLoader(loaderProps);
+
+                    if (authorizationResult != null) {
+                        return authorizationResult;
+                    }
+
+                    const userAuthInfo = await userAuthInfoLoader(loaderProps);
+                    return userAuthInfo;
+                },
                 element: <NewApp />,
                 children: [
                     {
