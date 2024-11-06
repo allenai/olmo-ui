@@ -47,19 +47,16 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
                 storageState: 'e2e/.auth/storageState.json',
             },
-            dependencies: ['setup'],
         },
 
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'], storageState: 'e2e/.auth/storageState.json' },
-            dependencies: ['setup'],
         },
 
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'], storageState: 'e2e/.auth/storageState.json' },
-            dependencies: ['setup'],
         },
 
         /* Test against mobile viewports. */
