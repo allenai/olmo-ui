@@ -94,7 +94,7 @@ module.exports = (env) => ({
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
             IS_DATASET_EXPLORER_ENABLED: false,
-            IS_MODEL_ENABLED: false,
+            IS_PETEISH_MODEL_ENABLED: false,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
         new RetryChunkLoadPlugin({

@@ -13,7 +13,7 @@ export enum FeatureToggle {
     isCorpusLinkEnabled = 'isCorpusLinkEnabled',
     attributionSpanFirst = 'attributionSpanFirst',
     isDatasetExplorerEnabled = 'isDatasetExplorerEnabled',
-    isModelEnabled = 'isModelEnabled',
+    isPeteishModelEnabled = 'isPeteishModelEnabled',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
@@ -23,7 +23,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isCorpusLinkEnabled]: false,
     [FeatureToggle.attributionSpanFirst]: true,
     [FeatureToggle.isDatasetExplorerEnabled]: false,
-    [FeatureToggle.isModelEnabled]: false,
+    [FeatureToggle.isPeteishModelEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';

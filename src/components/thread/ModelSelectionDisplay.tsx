@@ -32,8 +32,8 @@ export const ModelSelectionDisplay = ({
     label = '',
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
-    const { isModelEnabled } = useFeatureToggles();
-    const newModels = isModelEnabled
+    const { isPeteishModelEnabled } = useFeatureToggles();
+    const newModels = isPeteishModelEnabled
         ? models
         : models.filter((model) => model.name !== 'OLMo-peteish-dpo-preview');
     return (
