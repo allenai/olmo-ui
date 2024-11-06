@@ -10,7 +10,6 @@ import {
 
 import { links } from '@/Links';
 
-import { createLoginRedirectURL } from './auth-utils';
 import { auth0Client } from './auth0Client';
 
 // adapted from https://github.com/brophdawg11/react-router-auth0-example/blob/91ad7ba916d8a3ecc348c037e1e534b4d87360cd/src/auth.ts
@@ -25,20 +24,6 @@ const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     const isAuthenticated = await auth0Client.isAuthenticated();
 
     return { userInfo, isAuthenticated };
-};
-
-export const requireAuthorizationLoader: LoaderFunction = async (props) => {
-    const { request } = props;
-    const isAuthenticated = await auth0Client.isAuthenticated();
-
-    if (!isAuthenticated) {
-        const loginURL = createLoginRedirectURL(request.url);
-
-        return redirect(loginURL);
-    }
-
-    const userAuthInfo = await getUserAuthInfo();
-    return userAuthInfo;
 };
 
 export const loginAction: ActionFunction = async ({ request }) => {

@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { createLoginRedirectURL } from './auth/auth-utils';
 import { auth0Client } from './auth/auth0Client';
 import { error } from './error';
@@ -13,10 +15,10 @@ export abstract class ClientBase {
         switch (response.status) {
             case 200:
                 return (await response.json()) as T;
-            case 401:
-                this.login();
-                // This shouldn't ever happen
-                throw new Error('Unauthorized');
+            // case 401:
+            //     this.login();
+            //     // This shouldn't ever happen
+            //     throw new Error('Unauthorized');
             default:
                 throw await error.unpack(response);
         }
@@ -25,6 +27,7 @@ export abstract class ClientBase {
     protected createStandardHeaders = async (headers?: HeadersInit) => {
         const standardHeaders = new Headers(headers);
         standardHeaders.set('Content-Type', 'application/json');
+        const sessionId = uuidv4(); // Generate a UUID for unauthenticated users
 
         // TODO: put this back when we start handling auth0 login again.
         // Theres occasionally a problem with getToken failing if someone isn't logged in
@@ -35,6 +38,8 @@ export abstract class ClientBase {
 
         if (token) {
             standardHeaders.set('Authorization', `Bearer ${token}`);
+        } else {
+            standardHeaders.set('X-Anonymous-User-ID', sessionId);
         }
 
         return standardHeaders;
