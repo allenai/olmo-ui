@@ -47,6 +47,7 @@ export abstract class ClientBase {
     protected createStandardHeaders = async (headers?: HeadersInit) => {
         const standardHeaders = new Headers(headers);
         standardHeaders.set('Content-Type', 'application/json');
+        const sessionId = uuidv4(); // Generate a UUID for unauthenticated users
 
         // TODO: put this back when we start handling auth0 login again.
         // Theres occasionally a problem with getToken failing if someone isn't logged in

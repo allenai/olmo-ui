@@ -28,20 +28,6 @@ const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     return { userInfo, isAuthenticated };
 };
 
-export const requireAuthorizationLoader: LoaderFunction = async (props) => {
-    const { request } = props;
-    const isAuthenticated = await auth0Client.isAuthenticated();
-
-    if (!isAuthenticated) {
-        const loginURL = createLoginRedirectURL(request.url);
-
-        return redirect(loginURL);
-    }
-
-    const userAuthInfo = await getUserAuthInfo();
-    return userAuthInfo;
-};
-
 export const loginAction: ActionFunction = async ({ request }) => {
     const formData = await request.formData();
     const redirectTo = (formData.get('redirectTo') as string | null) || links.playground;
