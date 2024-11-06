@@ -7,6 +7,12 @@ dotenv.config({
     path: ['./.env.local', `./.env${envSuffix}`],
 });
 
+// const bypassCSP = {
+//     // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
+//     bypassCSP: true,
+//     launchOptions: { args: ['--disable-web-security'] },
+// };
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -45,18 +51,27 @@ export default defineConfig({
             name: 'chromium',
             use: {
                 ...devices['Desktop Chrome'],
-                storageState: 'e2e/.auth/storageState.json',
+                // storageState: 'e2e/.auth/storageState.json',
             },
+            // dependencies: ['setup'],
         },
 
         {
             name: 'firefox',
-            use: { ...devices['Desktop Firefox'], storageState: 'e2e/.auth/storageState.json' },
+            use: {
+                ...devices['Desktop Firefox'],
+                // storageState: 'e2e/.auth/storageState.json'
+            },
+            // dependencies: ['setup'],
         },
 
         {
             name: 'webkit',
-            use: { ...devices['Desktop Safari'], storageState: 'e2e/.auth/storageState.json' },
+            use: {
+                ...devices['Desktop Safari'],
+                // storageState: 'e2e/.auth/storageState.json'
+            },
+            // dependencies: ['setup'],
         },
 
         /* Test against mobile viewports. */
