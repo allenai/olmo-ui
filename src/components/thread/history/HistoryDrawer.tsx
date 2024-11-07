@@ -3,6 +3,7 @@ import {
     Box,
     CircularProgress,
     IconButton,
+    Link,
     ListItem,
     ListItemText,
     ListSubheader,
@@ -10,13 +11,16 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { KeyboardEventHandler, useEffect, useState } from 'react';
+import { KeyboardEventHandler, ReactNode, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { useLocation } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
@@ -25,6 +29,27 @@ import { HistoryDivider, HistoryDrawerSection } from './HistoryDrawerSection';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;
+
+const AnonymousUserExpirationMessage = (): ReactNode => {
+    const { isAuthenticated } = useUserAuthInfo();
+    const location = useLocation();
+
+    if (isAuthenticated) {
+        return null;
+    }
+
+    return (
+        <Typography variant="caption" color="common.white" paddingInline={2}>
+            Logged-in users get to keep their thread history forever.{' '}
+            <Link
+                href={links.login(location.pathname)}
+                color={(theme) => theme.palette.secondary.light}>
+                Log in
+            </Link>{' '}
+            now to save future threads.
+        </Typography>
+    );
+};
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
@@ -131,6 +156,7 @@ export const HistoryDrawer = (): JSX.Element => {
             }
             desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
+                <AnonymousUserExpirationMessage />
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} hasDivider />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
