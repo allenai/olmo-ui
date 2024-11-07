@@ -28,13 +28,17 @@ const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     return { userInfo, isAuthenticated };
 };
 
-export const authorizationLoader: LoaderFunction = async () => {
+export const requireAuthorizationLoader: LoaderFunction = async (props) => {
+    const { request } = props;
     const isAuthenticated = await auth0Client.isAuthenticated();
 
-    const userAuthInfo = isAuthenticated
-        ? await getUserAuthInfo()
-        : { isAuthenticated: false, userInfo: null };
+    if (!isAuthenticated) {
+        const loginURL = createLoginRedirectURL(request.url);
 
+        return redirect(loginURL);
+    }
+
+    const userAuthInfo = await getUserAuthInfo();
     return userAuthInfo;
 };
 
