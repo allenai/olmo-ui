@@ -48,7 +48,7 @@ export const routes: RouteObject[] = [
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground" />
-                <Outlet />
+                <NewApp />,
             </VarnishedApp>
         ),
         errorElement: (
@@ -60,6 +60,63 @@ export const routes: RouteObject[] = [
         loader: userInfoLoader,
         children: [
             {
+                path: links.playground,
+                element: <UIRefreshThreadPage />,
+                children: [
+                    {
+                        path: links.playground,
+                        element: <ThreadPlaceholder />,
+                    },
+                    {
+                        path: links.playground + '/thread',
+                        // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
+                        // We just redirect to the playground to make sure people going to /thread get what they want
+                        element: <Navigate to={links.playground} />,
+                    },
+                    {
+                        path: links.thread(':id'),
+                        element: <ThreadDisplay />,
+                        handle: {
+                            title: 'Playground',
+                        },
+                        loader: selectedThreadLoader,
+                    },
+                ],
+                handle: {
+                    title: 'Playground',
+                },
+                loader: playgroundLoader,
+                shouldRevalidate: handleRevalidation,
+            },
+            {
+                element: <DolmaPage />,
+                children: [
+                    {
+                        path: links.document(':id'),
+                        element: <Document />,
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                    },
+                    {
+                        path: links.datasetExplorer,
+                        element: <DolmaExplorer />,
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                        loader: DolmaDataLoader,
+                    },
+                    {
+                        path: links.search,
+                        element: <Search />,
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                        loader: searchPageLoader,
+                    },
+                ],
+            },
+            {
                 path: links.faqs,
                 element: <FAQsPage />,
                 handle: {
@@ -68,6 +125,7 @@ export const routes: RouteObject[] = [
             },
             {
                 id: 'required-auth-root',
+                path: '/',
                 loader: async (loaderProps) => {
                     const requireAuthorizationResult =
                         await requireAuthorizationLoader(loaderProps);
@@ -75,65 +133,7 @@ export const routes: RouteObject[] = [
                     return requireAuthorizationResult ?? null;
                 },
                 element: <NewApp />,
-                children: [
-                    {
-                        path: links.playground,
-                        element: <UIRefreshThreadPage />,
-                        children: [
-                            {
-                                path: links.playground,
-                                element: <ThreadPlaceholder />,
-                            },
-                            {
-                                path: links.playground + '/thread',
-                                // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
-                                // We just redirect to the playground to make sure people going to /thread get what they want
-                                element: <Navigate to={links.playground} />,
-                            },
-                            {
-                                path: links.thread(':id'),
-                                element: <ThreadDisplay />,
-                                handle: {
-                                    title: 'Playground',
-                                },
-                                loader: selectedThreadLoader,
-                            },
-                        ],
-                        handle: {
-                            title: 'Playground',
-                        },
-                        loader: playgroundLoader,
-                        shouldRevalidate: handleRevalidation,
-                    },
-                    {
-                        element: <DolmaPage />,
-                        children: [
-                            {
-                                path: links.document(':id'),
-                                element: <Document />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                            },
-                            {
-                                path: links.datasetExplorer,
-                                element: <DolmaExplorer />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                                loader: DolmaDataLoader,
-                            },
-                            {
-                                path: links.search,
-                                element: <Search />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                                loader: searchPageLoader,
-                            },
-                        ],
-                    },
-                ],
+                children: [],
             },
             {
                 path: links.login(),
