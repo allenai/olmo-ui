@@ -10,11 +10,13 @@ import {
 
 import { links } from '@/Links';
 
+import { UserInfoLoaderResponse } from '../user-info-loader';
+import { createLoginRedirectURL } from './auth-utils';
 import { auth0Client } from './auth0Client';
 
 // adapted from https://github.com/brophdawg11/react-router-auth0-example/blob/91ad7ba916d8a3ecc348c037e1e534b4d87360cd/src/auth.ts
 
-interface UserAuthInfo {
+export interface UserAuthInfo {
     userInfo?: User;
     isAuthenticated: boolean;
 }
@@ -26,19 +28,23 @@ const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     return { userInfo, isAuthenticated };
 };
 
-export const authorizationLoader: LoaderFunction = async () => {
+export const requireAuthorizationLoader: LoaderFunction = async (props) => {
+    const { request } = props;
     const isAuthenticated = await auth0Client.isAuthenticated();
 
-    const userAuthInfo = isAuthenticated
-        ? await getUserAuthInfo()
-        : { isAuthenticated: false, userInfo: null };
+    if (!isAuthenticated) {
+        const loginURL = createLoginRedirectURL(request.url);
 
+        return redirect(loginURL);
+    }
+
+    const userAuthInfo = await getUserAuthInfo();
     return userAuthInfo;
 };
 
 export const loginAction: ActionFunction = async ({ request }) => {
     const formData = await request.formData();
-    const redirectTo = (formData.get('redirectTo') as string | null) || '/';
+    const redirectTo = (formData.get('redirectTo') as string | null) || links.playground;
 
     await auth0Client.login(redirectTo);
 
@@ -57,7 +63,7 @@ export interface LoginError extends ErrorResponse {
 
 export const loginResultLoader: LoaderFunction = async ({ request }) => {
     await auth0Client.handleLoginRedirect();
-    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || '/';
+    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || links.playground;
 
     const isAuthenticated = await auth0Client.isAuthenticated();
     if (isAuthenticated) {
@@ -80,9 +86,11 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 };
 
 export const loginLoader: LoaderFunction = async ({ request }) => {
-    const redirectToParam = new URL(request.url).searchParams.get('redirectTo') || '/';
+    const redirectToParam = new URL(request.url).searchParams.get('redirectTo') || links.playground;
     // if the user refreshes on the login page for some reason they can get stuck in a loop, checking for the redirect param starting with 'login' helps prevent that
-    const finalRedirectTo = redirectToParam.startsWith(links.login('')) ? '/' : redirectToParam;
+    const finalRedirectTo = redirectToParam.startsWith(links.login(''))
+        ? links.playground
+        : redirectToParam;
 
     // The template we pulled from checked for isAuthenticated and would just redirect if it was present.
     // This was causing problems if we had an invalid token
@@ -105,8 +113,12 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 };
 
 export const useUserAuthInfo = (): UserAuthInfo => {
-    const { userInfo, isAuthenticated } =
-        (useRouteLoaderData('auth-root') as UserAuthInfo | undefined) ?? {};
+    const { userAuthInfo } = useRouteLoaderData('root') as UserInfoLoaderResponse;
 
-    return { userInfo, isAuthenticated: Boolean(isAuthenticated) };
+    console.log('useAuthInfo', userAuthInfo);
+
+    return {
+        userInfo: userAuthInfo?.userInfo,
+        isAuthenticated: Boolean(userAuthInfo?.isAuthenticated),
+    };
 };

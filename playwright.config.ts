@@ -47,6 +47,16 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
+        // {
+        //     name: 'setup',
+        //     testMatch: 'e2e/auth-setup.ts',
+        //     use: bypassCSP,
+        // },
+        // {
+        //     name: 'auth-flow',
+        //     testMatch: 'e2e/auth-flow.ts',
+        //     use: bypassCSP,
+        // },
         {
             name: 'chromium',
             use: {

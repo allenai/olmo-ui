@@ -2,13 +2,13 @@ import { Box } from '@mui/material';
 import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
-    authorizationLoader,
     loginAction,
     loginLoader,
     loginResultLoader,
     logoutAction,
-    userAuthInfoLoader,
+    requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
+import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -57,19 +57,22 @@ export const routes: RouteObject[] = [
                 <ErrorPage />
             </VarnishedApp>
         ),
+        loader: userInfoLoader,
         children: [
             {
-                id: 'auth-root',
-                path: '/',
+                path: links.faqs,
+                element: <FAQsPage />,
+                handle: {
+                    title: 'FAQs',
+                },
+            },
+            {
+                id: 'required-auth-root',
                 loader: async (loaderProps) => {
-                    const authorizationResult = await authorizationLoader(loaderProps);
+                    const requireAuthorizationResult =
+                        await requireAuthorizationLoader(loaderProps);
 
-                    if (authorizationResult != null) {
-                        return authorizationResult;
-                    }
-
-                    const userAuthInfo = await userAuthInfoLoader(loaderProps);
-                    return userAuthInfo;
+                    return requireAuthorizationResult ?? null;
                 },
                 element: <NewApp />,
                 children: [
@@ -82,7 +85,7 @@ export const routes: RouteObject[] = [
                                 element: <ThreadPlaceholder />,
                             },
                             {
-                                path: '/thread',
+                                path: links.playground + '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
                                 // We just redirect to the playground to make sure people going to /thread get what they want
                                 element: <Navigate to={links.playground} />,
@@ -129,13 +132,6 @@ export const routes: RouteObject[] = [
                                 loader: searchPageLoader,
                             },
                         ],
-                    },
-                    {
-                        path: links.faqs,
-                        element: <FAQsPage />,
-                        handle: {
-                            title: 'FAQs',
-                        },
                     },
                 ],
             },
