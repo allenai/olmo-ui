@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { defer, LoaderFunction } from 'react-router-dom';
+import { defer, LoaderFunction, useLocation } from 'react-router-dom';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
@@ -91,6 +91,17 @@ export const ThreadDisplay = (): JSX.Element => {
         }
     }, []);
 
+    const location = useLocation();
+
+    useEffect(() => {
+        if (scrollContainerRef.current != null) {
+            scrollContainerRef.current.scrollTo({
+                top: 0,
+                behavior: 'instant',
+            });
+        }
+    }, [location.key]);
+
     // Scroll to the bottom when a new message is added
     useEffect(() => {
         // we want to scroll to the bottom of the thread to see the new user message
@@ -100,17 +111,19 @@ export const ThreadDisplay = (): JSX.Element => {
             streamingMessageId != null &&
             previousStreamingMessageId.current !== streamingMessageId
         ) {
-            previousStreamingMessageId.current = streamingMessageId;
             skipNextStickyScrollSetFromAnchor.current = true;
 
             scrollToBottom();
 
             setShouldStickToBottom(false);
         }
+
+        previousStreamingMessageId.current = streamingMessageId;
     }, [scrollToBottom, streamingMessageId]);
 
     useEffect(() => {
         const mutationObserver = new MutationObserver((mutationsList) => {
+            console.log('mutation', { shouldStickToBottom: shouldStickToBottom.current });
             if (
                 shouldStickToBottom.current &&
                 mutationsList.some((mutation) => mutation.type === 'childList')
