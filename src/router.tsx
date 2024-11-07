@@ -125,7 +125,6 @@ export const routes: RouteObject[] = [
             },
             {
                 id: 'required-auth-root',
-                path: '/',
                 loader: async (loaderProps) => {
                     const requireAuthorizationResult =
                         await requireAuthorizationLoader(loaderProps);
