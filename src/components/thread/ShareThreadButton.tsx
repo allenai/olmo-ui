@@ -1,5 +1,6 @@
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -18,7 +19,9 @@ export const ShareThreadButton = ({
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
-    if (!selectedThreadId) {
+    const { isAuthenticated } = useUserAuthInfo();
+
+    if (!selectedThreadId || !isAuthenticated) {
         return null;
     }
 
