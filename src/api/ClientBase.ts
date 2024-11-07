@@ -1,9 +1,31 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { createLoginRedirectURL } from './auth/auth-utils';
 import { auth0Client } from './auth/auth0Client';
 import { error } from './error';
 
+const ANONYMOUS_USER_ID_KEY = 'anonymousUserId';
+
 export abstract class ClientBase {
-    constructor(readonly origin = process.env.LLMX_API_URL) {}
+    anonymousUserId: string;
+
+    constructor(
+        readonly origin = process.env.LLMX_API_URL,
+        anonymousUserId?: string
+    ) {
+        if (anonymousUserId != null) {
+            this.anonymousUserId = anonymousUserId;
+        } else {
+            const storedAnonymousUserId = window.localStorage.getItem(ANONYMOUS_USER_ID_KEY);
+
+            if (storedAnonymousUserId != null) {
+                this.anonymousUserId = storedAnonymousUserId;
+            } else {
+                this.anonymousUserId = uuidv4();
+                window.localStorage.setItem(ANONYMOUS_USER_ID_KEY, this.anonymousUserId);
+            }
+        }
+    }
 
     protected login(dest: string = document.location.toString()) {
         document.location = createLoginRedirectURL(dest);
@@ -13,10 +35,10 @@ export abstract class ClientBase {
         switch (response.status) {
             case 200:
                 return (await response.json()) as T;
-            case 401:
-                this.login();
-                // This shouldn't ever happen
-                throw new Error('Unauthorized');
+            // case 401:
+            //     this.login();
+            //     // This shouldn't ever happen
+            //     throw new Error('Unauthorized');
             default:
                 throw await error.unpack(response);
         }
@@ -35,6 +57,8 @@ export abstract class ClientBase {
 
         if (token) {
             standardHeaders.set('Authorization', `Bearer ${token}`);
+        } else {
+            standardHeaders.set('X-Anonymous-User-ID', this.anonymousUserId);
         }
 
         return standardHeaders;
