@@ -115,8 +115,6 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 export const useUserAuthInfo = (): UserAuthInfo => {
     const { userAuthInfo } = useRouteLoaderData('root') as UserInfoLoaderResponse;
 
-    console.log('useAuthInfo', userAuthInfo);
-
     return {
         userInfo: userAuthInfo?.userInfo,
         isAuthenticated: Boolean(userAuthInfo?.isAuthenticated),
