@@ -21,7 +21,6 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { NotFound } from './pages/NotFound';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -52,7 +51,12 @@ export const routes: RouteObject[] = [
                 <Outlet />
             </VarnishedApp>
         ),
-        errorElement: <ErrorPage />,
+        errorElement: (
+            <VarnishedApp theme={uiRefreshOlmoTheme}>
+                <MetaTags title="AI2 Playground" />
+                <ErrorPage />
+            </VarnishedApp>
+        ),
         children: [
             {
                 id: 'auth-root',
@@ -135,13 +139,6 @@ export const routes: RouteObject[] = [
                         },
                     },
                 ],
-            },
-            {
-                path: '/*',
-                element: <NotFound />,
-                handle: {
-                    title: '',
-                },
             },
             {
                 path: links.login(),

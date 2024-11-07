@@ -1,5 +1,12 @@
 import { User } from '@auth0/auth0-spa-js';
-import { ActionFunction, LoaderFunction, redirect, useRouteLoaderData } from 'react-router-dom';
+import {
+    ActionFunction,
+    ErrorResponse,
+    json,
+    LoaderFunction,
+    redirect,
+    useRouteLoaderData,
+} from 'react-router-dom';
 
 import { links } from '@/Links';
 
@@ -43,13 +50,37 @@ export const loginAction: ActionFunction = async ({ request }) => {
     return null;
 };
 
+export const LOGIN_ERROR_TYPE = 'login-error';
+export interface LoginError extends ErrorResponse {
+    data: {
+        type: 'login-error';
+        title: string;
+        detail: string;
+        redirectTo?: string;
+    };
+}
+
 export const loginResultLoader: LoaderFunction = async ({ request }) => {
     await auth0Client.handleLoginRedirect();
+    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || '/';
 
     const isAuthenticated = await auth0Client.isAuthenticated();
     if (isAuthenticated) {
-        const redirectTo = new URL(request.url).searchParams.get('redirectTo') || '/';
         return redirect(redirectTo);
+    } else {
+        const responseData: LoginError['data'] = {
+            type: LOGIN_ERROR_TYPE,
+            title: 'Login error',
+            detail: 'Something went wrong when logging in. Please try again.',
+            redirectTo,
+        };
+
+        // react-router seems to recommend throwing Responses
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw json(responseData, {
+            status: 502,
+            statusText: 'Something went wrong when logging in. Please try again.',
+        });
     }
 };
 
