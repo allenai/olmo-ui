@@ -3,6 +3,7 @@ import * as reactRouter from 'react-router-dom';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
 import * as appContext from '@/AppContext';
+import { links } from '@/Links';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 import * as useCloseDrawerOnNavigation from '@/utils/useClosingDrawerOnNavigation-utils';
@@ -18,8 +19,9 @@ describe('HistoryDrawer', () => {
         vi.spyOn(useCloseDrawerOnNavigation, 'useCloseDrawerOnNavigation').mockImplementation(
             () => {}
         );
+        const currentPathname = '/thread/foo';
         vi.spyOn(reactRouter, 'useLocation').mockImplementation(() => ({
-            pathname: '/thread/foo',
+            pathname: currentPathname,
             search: '',
             hash: '',
             state: undefined,
@@ -42,7 +44,10 @@ describe('HistoryDrawer', () => {
 
         expect(screen.getByText('Thread History')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Log in' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Log in' })).toHaveAttribute('href', links.login);
+        expect(screen.getByRole('link', { name: 'Log in' })).toHaveAttribute(
+            'href',
+            links.login(currentPathname)
+        );
     });
 
     it('should not show a message about history to authenticated users', () => {
