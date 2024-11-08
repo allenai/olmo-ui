@@ -1,5 +1,4 @@
 import CircleIcon from '@mui/icons-material/Circle';
-import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
 import {
     Box,
@@ -9,7 +8,6 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
-    Link,
     Stack,
     Typography,
     useMediaQuery,
@@ -19,7 +17,6 @@ import React, { useCallback, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
 import { UserClient } from '@/api/User';
-import { links } from '@/Links';
 
 import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
