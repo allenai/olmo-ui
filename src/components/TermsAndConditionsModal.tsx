@@ -176,17 +176,6 @@ export const TermsAndConditionsModal = () => {
                                         {section.submitButtonText}
                                     </Button>
                                 </Stack>
-                                <Button
-                                    component={Link}
-                                    href={links.logout}
-                                    variant="text"
-                                    startIcon={<LogoutIcon />}
-                                    underline="none"
-                                    sx={{
-                                        color: (theme) => theme.palette.text.primary,
-                                    }}>
-                                    Log out
-                                </Button>
                             </Stack>
                         </FormContainer>
                     </DialogActions>
