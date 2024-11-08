@@ -48,7 +48,7 @@ export const routes: RouteObject[] = [
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground" />
-                <NewApp />,
+                <NewApp />
             </VarnishedApp>
         ),
         errorElement: (
