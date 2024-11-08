@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import { TestOptions } from 'e2e/playwright-utils';
 
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
@@ -7,16 +8,16 @@ dotenv.config({
     path: ['./.env.local', `./.env${envSuffix}`],
 });
 
-// const bypassCSP = {
-//     // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
-//     bypassCSP: true,
-//     launchOptions: { args: ['--disable-web-security'] },
-// };
+const bypassCSP = {
+    // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
+    bypassCSP: true,
+    launchOptions: { args: ['--disable-web-security'] },
+};
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<TestOptions>({
     testDir: './e2e',
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -38,50 +39,49 @@ export default defineConfig({
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         // trace: 'on-first-retry',
         trace: 'retain-on-failure',
-
-        extraHTTPHeaders: {
-            'X-Auth-Request-User': 'foo',
-            'X-Auth-Request-Email': 'foo@bar.com',
-        },
     },
 
     /* Configure projects for major browsers */
     projects: [
-        // {
-        //     name: 'setup',
-        //     testMatch: 'e2e/auth-setup.ts',
-        //     use: bypassCSP,
-        // },
-        // {
-        //     name: 'auth-flow',
-        //     testMatch: 'e2e/auth-flow.ts',
-        //     use: bypassCSP,
-        // },
+        {
+            name: 'setup',
+            testMatch: 'e2e/auth-setup.ts',
+            use: bypassCSP,
+        },
+        {
+            name: 'auth-flow',
+            testMatch: 'e2e/auth-flow.ts',
+            use: bypassCSP,
+        },
+        {
+            name: 'anonymous-chromium',
+            use: { ...devices['Desktop Chrome'], isAnonymousTest: true },
+        },
         {
             name: 'chromium',
             use: {
                 ...devices['Desktop Chrome'],
-                // storageState: 'e2e/.auth/storageState.json',
+                storageState: 'e2e/.auth/storageState.json',
             },
-            // dependencies: ['setup'],
+            dependencies: ['setup'],
         },
 
         {
             name: 'firefox',
             use: {
                 ...devices['Desktop Firefox'],
-                // storageState: 'e2e/.auth/storageState.json'
+                storageState: 'e2e/.auth/storageState.json',
             },
-            // dependencies: ['setup'],
+            dependencies: ['setup'],
         },
 
         {
             name: 'webkit',
             use: {
                 ...devices['Desktop Safari'],
-                // storageState: 'e2e/.auth/storageState.json'
+                storageState: 'e2e/.auth/storageState.json',
             },
-            // dependencies: ['setup'],
+            dependencies: ['setup'],
         },
 
         /* Test against mobile viewports. */

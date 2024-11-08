@@ -3,9 +3,15 @@ import { createWorker, MockServiceWorker } from 'playwright-msw';
 
 import { handlers } from '../src/mocks/handlers/index';
 
-const test = base.extend<{
-    worker: MockServiceWorker;
-}>({
+export interface TestOptions {
+    isAnonymousTest: boolean;
+}
+
+const test = base.extend<
+    {
+        worker: MockServiceWorker;
+    } & TestOptions
+>({
     worker: [
         async ({ page }, use) => {
             const server = await createWorker(page, handlers);
@@ -30,6 +36,7 @@ const test = base.extend<{
             auto: true,
         },
     ],
+    isAnonymousTest: [false, { option: true }],
 });
 
 export { expect, test };

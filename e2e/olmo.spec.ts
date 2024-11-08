@@ -2,7 +2,7 @@ import { firstThreadMessageId, secondThreadMessageId } from '@/mocks/handlers/me
 
 import { expect, test } from './playwright-utils';
 
-test('can send prompt in Olmo Playground', async ({ page }) => {
+test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';
 
     // Send the first message
@@ -16,7 +16,13 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
         message: 'should display CorpusLink tab',
     }).toBeVisible();
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+
+    if (isAnonymousTest) {
+        await expect(page.getByRole('button', { name: 'Share' })).toHaveCount(0);
+    } else {
+        await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+    }
+
     await expect(
         page.getByText('Lorem ipsum odor amet, consectetuer adipiscing elit.')
     ).toBeVisible();
@@ -37,7 +43,13 @@ test('can send prompt in Olmo Playground', async ({ page }) => {
         message: 'should display CorpusLink tab',
     }).toBeVisible();
     await expect(page.getByRole('button', { name: 'Delete Thread ' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+
+    if (isAnonymousTest) {
+        await expect(page.getByRole('button', { name: 'Share' })).toHaveCount(0);
+    } else {
+        await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+    }
+
     await expect(
         page.getByText('Lorem ipsum odor amet, consectetuer adipiscing elit.')
     ).toBeVisible();
