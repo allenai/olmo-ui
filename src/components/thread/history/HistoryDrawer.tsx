@@ -25,31 +25,11 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { AnonymousUserExpirationMessage } from './AnonymousUserExpirationMessage';
 import { HistoryDivider, HistoryDrawerSection } from './HistoryDrawerSection';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;
-
-const AnonymousUserExpirationMessage = (): ReactNode => {
-    const { isAuthenticated } = useUserAuthInfo();
-    const location = useLocation();
-
-    if (isAuthenticated) {
-        return null;
-    }
-
-    return (
-        <Typography variant="caption" color="common.white" paddingInline={2} paddingBlockEnd={2}>
-            Logged-in users get to keep their thread history forever.{' '}
-            <Link
-                href={links.login(location.pathname)}
-                color={(theme) => theme.palette.secondary.light}>
-                Log in
-            </Link>{' '}
-            now to save future threads.
-        </Typography>
-    );
-};
 
 export const HISTORY_DRAWER_ID: DrawerId = 'history';
 
