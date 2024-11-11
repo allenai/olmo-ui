@@ -21,6 +21,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { AnonymousUserExpirationMessage } from './AnonymousUserExpirationMessage';
 import { HistoryDivider, HistoryDrawerSection } from './HistoryDrawerSection';
 
 const LIMIT = 10;
@@ -131,6 +132,7 @@ export const HistoryDrawer = (): JSX.Element => {
             }
             desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
+                <AnonymousUserExpirationMessage />
                 <HistoryDrawerSection heading="Today" threads={threadsFromToday} hasDivider />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"

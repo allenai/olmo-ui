@@ -68,5 +68,31 @@ export const uiRefreshOlmoTheme = {
                 animation: 'wave',
             },
         },
+        MuiButtonGroup: {
+            // These x-child overrides fix issues with conditional rendering inside a ButtonGroup
+            // https://github.com/mui/material-ui/issues/39488#issuecomment-2410727625
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    '& .MuiButton-outlined:last-child': {
+                        borderTopRightRadius: theme.shape.borderRadius,
+                        borderBottomRightRadius: theme.shape.borderRadius,
+                        borderRightColor: 'var(--variant-outlinedBorder, currentColor)',
+                    },
+                    '& .MuiButton-outlined:first-child': {
+                        borderTopLeftRadius: theme.shape.borderRadius,
+                        borderBottomLeftRadius: theme.shape.borderRadius,
+                    },
+                    '& .MuiButton-containedPrimary:last-child': {
+                        borderTopRightRadius: theme.shape.borderRadius,
+                        borderBottomRightRadius: theme.shape.borderRadius,
+                        borderRightWidth: 0,
+                    },
+                    '& .MuiButton-containedPrimary:first-child': {
+                        borderTopLeftRadius: theme.shape.borderRadius,
+                        borderBottomLeftRadius: theme.shape.borderRadius,
+                    },
+                }),
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>;

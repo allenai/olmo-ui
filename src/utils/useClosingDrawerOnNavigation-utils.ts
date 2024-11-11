@@ -7,7 +7,7 @@ interface UseCloseDrawerOnNavigationProps {
 
 export const useCloseDrawerOnNavigation = ({
     handleDrawerClose,
-}: UseCloseDrawerOnNavigationProps) => {
+}: UseCloseDrawerOnNavigationProps): void => {
     const navigation = useNavigation();
     useEffect(() => {
         if (navigation.state === 'loading') {
