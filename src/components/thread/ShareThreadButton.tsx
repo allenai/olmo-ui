@@ -21,7 +21,9 @@ export const ShareThreadButton = ({
 
     const { isAuthenticated } = useUserAuthInfo();
 
-    if (!selectedThreadId || !isAuthenticated) {
+    const shouldHideShareButton = !selectedThreadId || !isAuthenticated;
+
+    if (shouldHideShareButton) {
         return null;
     }
 
