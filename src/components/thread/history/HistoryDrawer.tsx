@@ -3,7 +3,6 @@ import {
     Box,
     CircularProgress,
     IconButton,
-    Link,
     ListItem,
     ListItemText,
     ListSubheader,
@@ -11,16 +10,13 @@ import {
     Typography,
 } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { KeyboardEventHandler, ReactNode, useEffect, useState } from 'react';
+import { KeyboardEventHandler, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
-import { useLocation } from 'react-router-dom';
 
-import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { RemoteState } from '@/contexts/util';
-import { links } from '@/Links';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
