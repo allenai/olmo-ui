@@ -37,7 +37,7 @@ export const NewApp = () => {
 
     return (
         <AppLayout shouldShowTermsAndConditionsModal={shouldShowTermsAndConditionsModal}>
-            {process.env.NODE_ENV === 'development' && <Analytics />}
+            {process.env.NODE_ENV === 'production' && <Analytics />}
             {!isLoading && userInfo && schema ? <Outlet /> : null}
         </AppLayout>
     );
