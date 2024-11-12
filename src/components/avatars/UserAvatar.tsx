@@ -17,6 +17,10 @@ export const UserAvatar = () => {
             sx={(theme: Theme) => ({
                 padding: 0,
                 background: theme.palette.background.paper,
+                '& .MuiAvatar-fallback': {
+                    width: '26px',
+                    height: '26px',
+                },
             })}>
             <img src={`${userAvatarURL}`} alt="" className="MuiAvatar-fallback" />
         </ChatAvatar>
