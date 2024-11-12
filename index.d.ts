@@ -6,7 +6,7 @@ declare module '*.svg' {
 
 interface Window {
     // taken from https://developers.heap.io/reference/client-side-apis-overview#typescript-type-definitions
-    heap: {
+    heap?: {
         track: (event: string, properties?: object) => void;
         identify: (identity: string) => void;
         resetIdentity: () => void;
@@ -20,7 +20,7 @@ interface Window {
         config: unknown;
     };
 
-    Osano: {
+    Osano?: {
         cm?: {
             analytics: boolean;
             cmpVersion: string;

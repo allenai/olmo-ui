@@ -44,7 +44,7 @@ export interface AnalyticsEvent {
 
 export class AnalyticsClient {
     private get hasConsentToTrack() {
-        return window.Osano.cm?.analytics === true;
+        return window.Osano?.cm?.analytics === true;
     }
 
     /**
