@@ -42,7 +42,7 @@ export class AttributionClient extends ClientBase {
         const url = this.createURL(AttributionApiUrl);
 
         const request = {
-            prompt: prompt,
+            prompt,
             model_response: modelResponse,
             model_id: modelId,
             max_documents: maxDocuments,

@@ -6,7 +6,7 @@ test('redirects back to original URL', async ({ page }) => {
     }
 
     await page.goto('/thread/msg_A8E5H1X2O3');
-    await page.waitForLoadState('networkidle');
+    await page.getByRole('link', { name: 'Log in' }).click();
 
     await page.getByLabel('Email address').fill(process.env.E2E_TEST_USER);
     await page.getByLabel('Password').fill(process.env.E2E_TEST_PASSWORD);

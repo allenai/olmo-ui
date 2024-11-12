@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import { TestOptions } from 'e2e/playwright-utils';
 
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
@@ -16,7 +17,7 @@ const bypassCSP = {
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<TestOptions>({
     testDir: './e2e',
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -38,11 +39,6 @@ export default defineConfig({
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         // trace: 'on-first-retry',
         trace: 'retain-on-failure',
-
-        extraHTTPHeaders: {
-            'X-Auth-Request-User': 'foo',
-            'X-Auth-Request-Email': 'foo@bar.com',
-        },
     },
 
     /* Configure projects for major browsers */
@@ -58,6 +54,10 @@ export default defineConfig({
             use: bypassCSP,
         },
         {
+            name: 'anonymous-chromium',
+            use: { ...devices['Desktop Chrome'], isAnonymousTest: true },
+        },
+        {
             name: 'chromium',
             use: {
                 ...devices['Desktop Chrome'],
@@ -68,13 +68,19 @@ export default defineConfig({
 
         {
             name: 'firefox',
-            use: { ...devices['Desktop Firefox'], storageState: 'e2e/.auth/storageState.json' },
+            use: {
+                ...devices['Desktop Firefox'],
+                storageState: 'e2e/.auth/storageState.json',
+            },
             dependencies: ['setup'],
         },
 
         {
             name: 'webkit',
-            use: { ...devices['Desktop Safari'], storageState: 'e2e/.auth/storageState.json' },
+            use: {
+                ...devices['Desktop Safari'],
+                storageState: 'e2e/.auth/storageState.json',
+            },
             dependencies: ['setup'],
             // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
             testIgnore: ['*sticky-scroll*'],

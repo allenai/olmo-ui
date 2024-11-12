@@ -7,8 +7,8 @@ import {
     loginResultLoader,
     logoutAction,
     requireAuthorizationLoader,
-    userAuthInfoLoader,
 } from './api/auth/auth-loaders';
+import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -21,7 +21,6 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { NotFound } from './pages/NotFound';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -49,99 +48,91 @@ export const routes: RouteObject[] = [
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
                 <MetaTags title="AI2 Playground" />
-                <Outlet />
+                <NewApp />
             </VarnishedApp>
         ),
-        errorElement: <ErrorPage />,
+        errorElement: (
+            <VarnishedApp theme={uiRefreshOlmoTheme}>
+                <MetaTags title="AI2 Playground" />
+                <ErrorPage />
+            </VarnishedApp>
+        ),
+        loader: userInfoLoader,
         children: [
             {
-                id: 'auth-root',
-                path: '/',
-                loader: async (loaderProps) => {
-                    const requireAuthorizationResult =
-                        await requireAuthorizationLoader(loaderProps);
-
-                    if (requireAuthorizationResult != null) {
-                        return requireAuthorizationResult;
-                    }
-
-                    const userAuthInfo = await userAuthInfoLoader(loaderProps);
-                    return userAuthInfo;
-                },
-                element: <NewApp />,
+                path: links.playground,
+                element: <UIRefreshThreadPage />,
                 children: [
                     {
                         path: links.playground,
-                        element: <UIRefreshThreadPage />,
-                        children: [
-                            {
-                                path: links.playground,
-                                element: <ThreadPlaceholder />,
-                            },
-                            {
-                                path: '/thread',
-                                // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
-                                // We just redirect to the playground to make sure people going to /thread get what they want
-                                element: <Navigate to={links.playground} />,
-                            },
-                            {
-                                path: links.thread(':id'),
-                                element: <ThreadDisplay />,
-                                handle: {
-                                    title: 'Playground',
-                                },
-                                loader: selectedThreadLoader,
-                            },
-                        ],
+                        element: <ThreadPlaceholder />,
+                    },
+                    {
+                        path: links.playground + '/thread',
+                        // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
+                        // We just redirect to the playground to make sure people going to /thread get what they want
+                        element: <Navigate to={links.playground} />,
+                    },
+                    {
+                        path: links.thread(':id'),
+                        element: <ThreadDisplay />,
                         handle: {
                             title: 'Playground',
                         },
-                        loader: playgroundLoader,
-                        shouldRevalidate: handleRevalidation,
+                        loader: selectedThreadLoader,
                     },
+                ],
+                handle: {
+                    title: 'Playground',
+                },
+                loader: playgroundLoader,
+                shouldRevalidate: handleRevalidation,
+            },
+            {
+                element: <DolmaPage />,
+                children: [
                     {
-                        element: <DolmaPage />,
-                        children: [
-                            {
-                                path: links.document(':id'),
-                                element: <Document />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                            },
-                            {
-                                path: links.datasetExplorer,
-                                element: <DolmaExplorer />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                                loader: DolmaDataLoader,
-                            },
-                            {
-                                path: links.search,
-                                element: <Search />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                                loader: searchPageLoader,
-                            },
-                        ],
-                    },
-                    {
-                        path: links.faqs,
-                        element: <FAQsPage />,
+                        path: links.document(':id'),
+                        element: <Document />,
                         handle: {
-                            title: 'FAQs',
+                            title: 'Dataset Explorer',
                         },
+                    },
+                    {
+                        path: links.datasetExplorer,
+                        element: <DolmaExplorer />,
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                        loader: DolmaDataLoader,
+                    },
+                    {
+                        path: links.search,
+                        element: <Search />,
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                        loader: searchPageLoader,
                     },
                 ],
             },
             {
-                path: '/*',
-                element: <NotFound />,
+                path: links.faqs,
+                element: <FAQsPage />,
                 handle: {
-                    title: '',
+                    title: 'FAQs',
                 },
+            },
+            {
+                id: 'required-auth-root',
+                loader: async (loaderProps) => {
+                    const requireAuthorizationResult =
+                        await requireAuthorizationLoader(loaderProps);
+
+                    return requireAuthorizationResult ?? null;
+                },
+                element: <NewApp />,
+                children: [],
             },
             {
                 path: links.login(),
