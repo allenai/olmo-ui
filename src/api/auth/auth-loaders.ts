@@ -79,7 +79,12 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
         await userClient.migrateFromAnonymousUser(authenticatedUserInfo.sub);
 
         // HACK: this re-fetches user info after we log in. It'd be nice to have this happen automatically when someone logs in!
-        await getUserInfo();
+        const userInfo = await getUserInfo();
+
+        // Checking for just falsiness because an empty string also isn't valid
+        if (userInfo?.sub) {
+            window.heap.identify(userInfo.sub);
+        }
 
         return redirect(redirectTo);
     } else {
@@ -118,6 +123,7 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
 
 export const logoutAction: ActionFunction = async () => {
     await auth0Client.logout();
+    window.heap.resetIdentity();
 
     return null;
 };

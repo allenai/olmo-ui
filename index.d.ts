@@ -19,4 +19,23 @@ interface Window {
         identity: string | null;
         config: unknown;
     };
+
+    Osano: {
+        cm?: {
+            analytics: boolean;
+            cmpVersion: string;
+            drawerOpen: boolean;
+            dialogOpen: boolean;
+            jurisdiction: string;
+            locale: string;
+            marketing: boolean;
+            mode: string;
+            optOut: boolean;
+            personalization: boolean;
+            userData: string;
+
+            addEventListener: (eventName: string, callback: (...args: unknown[]) => void) => void;
+        };
+        (): (eventName: string, callback: (...args: unknown[]) => void) => void;
+    };
 }
