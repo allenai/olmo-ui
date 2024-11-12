@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { Analytics } from '@/analytics/Analytics';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 
 import { useAppContext } from '../AppContext';
@@ -36,6 +37,7 @@ export const NewApp = () => {
 
     return (
         <AppLayout shouldShowTermsAndConditionsModal={shouldShowTermsAndConditionsModal}>
+            {process.env.NODE_ENV === 'development' && <Analytics />}
             {!isLoading && userInfo && schema ? <Outlet /> : null}
         </AppLayout>
     );
