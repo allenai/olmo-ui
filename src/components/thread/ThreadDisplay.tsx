@@ -132,7 +132,6 @@ export const ThreadDisplay = (): JSX.Element => {
 
     useEffect(() => {
         const mutationObserver = new MutationObserver((mutationsList) => {
-            console.log('mutation', { shouldStickToBottom: shouldStickToBottom.current });
             if (
                 shouldStickToBottom.current &&
                 mutationsList.some((mutation) => mutation.type === 'characterData')
