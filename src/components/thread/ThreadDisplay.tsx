@@ -126,7 +126,7 @@ export const ThreadDisplay = (): JSX.Element => {
             console.log('mutation', { shouldStickToBottom: shouldStickToBottom.current });
             if (
                 shouldStickToBottom.current &&
-                mutationsList.some((mutation) => mutation.type === 'childList')
+                mutationsList.some((mutation) => mutation.type === 'characterData')
             ) {
                 scrollToBottom();
             }
@@ -134,8 +134,8 @@ export const ThreadDisplay = (): JSX.Element => {
 
         if (scrollContainerRef.current != null) {
             mutationObserver.observe(scrollContainerRef.current, {
-                childList: true,
                 subtree: true,
+                characterData: true,
             });
         }
 
@@ -148,7 +148,6 @@ export const ThreadDisplay = (): JSX.Element => {
     // We use it to see if we've scrolled to the bottom of this element
     const { ref: scrollAnchorRef } = useInView({
         root: scrollContainerRef.current,
-        rootMargin: '24px',
         initialInView: true,
         onChange: (inView) => {
             setIsScrollToBottomButtonVisible(!inView);
