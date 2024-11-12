@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 
 const OsanoSetup = (): ReactNode => (
-    <>
+    <Helmet>
         <script type="text/javascript" key="osano-setup">
             {/* This sets up window.Osano
                 https://developers.osano.com/cmp/javascript-api/developer-documentation-consent-javascript-api#-pre-load-and-windowosano */}
@@ -11,11 +11,11 @@ const OsanoSetup = (): ReactNode => (
         <script
             src="https://cmp.osano.com/AzqB4OUPPVD5j8EeT/004924d5-366d-4c89-9fb9-68f35f29550d/osano.js"
             key="osano-js"></script>
-    </>
+    </Helmet>
 );
 
 const HeapSetup = (): ReactNode => (
-    <>
+    <Helmet>
         <script type="text/javascript" key="heap-setup">
             {`
             console.log(${process.env.HEAP_ANALYTICS_ID})
@@ -33,12 +33,12 @@ const HeapSetup = (): ReactNode => (
             })
             `}
         </script>
-    </>
+    </Helmet>
 );
 
 export const Analytics = (): ReactNode => (
-    <Helmet>
+    <>
         <OsanoSetup />
         <HeapSetup />
-    </Helmet>
+    </>
 );

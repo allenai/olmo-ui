@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
+import { Analytics } from '@/analytics/Analytics';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
@@ -16,7 +17,8 @@ export const NewApp = () => {
         userAuthInfo.isAuthenticated;
 
     return (
-        <AppLayout>
+        <AppLayout >
+            {process.env.NODE_ENV === 'development' && <Analytics />}
             {shouldShowTermsAndConditionsModal && <TermsAndConditionsModal />}
             <Outlet />
         </AppLayout>
