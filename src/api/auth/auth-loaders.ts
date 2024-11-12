@@ -83,7 +83,7 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 
         // Checking for just falsiness because an empty string also isn't valid
         if (userInfo?.sub) {
-            window.heap.identify(userInfo.sub);
+            window.heap?.identify(userInfo.sub);
         }
 
         return redirect(redirectTo);
@@ -123,7 +123,7 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
 
 export const logoutAction: ActionFunction = async () => {
     await auth0Client.logout();
-    window.heap.resetIdentity();
+    window.heap?.resetIdentity();
 
     return null;
 };
