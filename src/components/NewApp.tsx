@@ -18,7 +18,7 @@ export const NewApp = () => {
 
     return (
         <AppLayout >
-            {process.env.NODE_ENV === 'development' && <Analytics />}
+            {process.env.NODE_ENV === 'production' && <Analytics />}
             {shouldShowTermsAndConditionsModal && <TermsAndConditionsModal />}
             <Outlet />
         </AppLayout>
