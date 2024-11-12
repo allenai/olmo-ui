@@ -67,6 +67,13 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 
     const isAuthenticated = await auth0Client.isAuthenticated();
     if (isAuthenticated) {
+        const userInfo = await auth0Client.getUserInfo();
+
+        // Checking for just falsiness because an empty string also isn't valid
+        if (userInfo?.sub) {
+            window.heap.identify(userInfo.sub);
+        }
+
         return redirect(redirectTo);
     } else {
         const responseData: LoginError['data'] = {
@@ -104,6 +111,7 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
 
 export const logoutAction: ActionFunction = async () => {
     await auth0Client.logout();
+    window.heap.resetIdentity();
 
     return null;
 };

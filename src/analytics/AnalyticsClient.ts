@@ -43,6 +43,10 @@ export interface AnalyticsEvent {
 }
 
 export class AnalyticsClient {
+    private get hasConsentToTrack() {
+        return window.Osano.cm?.analytics === true;
+    }
+
     /**
      * Enqueues an event to be tracked and returns true upon it being enqueued.
      * This does not block for the request to be sent (or for a response to be received).
@@ -50,10 +54,14 @@ export class AnalyticsClient {
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
     private track(e: AnalyticsEvent): boolean {
-        plausibleTrackEvent(e);
+        if (this.hasConsentToTrack) {
+            plausibleTrackEvent(e);
 
-        const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
-        return navigator.sendBeacon('/api/v1/event', data);
+            const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
+            return navigator.sendBeacon('/api/v1/event', data);
+        } else {
+            return false;
+        }
     }
 
     trackSearchQuery(details: SearchQueryDetails): boolean {
@@ -81,7 +89,9 @@ export class AnalyticsClient {
     }
 
     trackPageView(url: string): void {
-        plausibleTrackPageview({ url });
+        if (this.hasConsentToTrack) {
+            plausibleTrackPageview({ url });
+        }
     }
 }
 
