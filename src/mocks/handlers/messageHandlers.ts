@@ -20,6 +20,8 @@ const fakeFirstThreadResponse = {
         temperature: 1.0,
         top_p: 1.0,
     },
+    model_host: 'modal',
+    model_id: 'Tulu-v3-8-dpo-preview',
     root: firstThreadMessageId,
     created: '2024-03-20T18:45:58.032751+00:00',
     children: [
@@ -35,6 +37,8 @@ const fakeFirstThreadResponse = {
                 temperature: 1.0,
                 top_p: 1.0,
             },
+            model_host: 'modal',
+            model_id: 'Tulu-v3-8-dpo-preview',
             root: firstThreadMessageId,
             created: '2024-03-20T18:45:58.032751+00:00',
             children: [
@@ -59,6 +63,8 @@ const fakeFirstThreadResponse = {
                     role: Role.LLM,
                     root: firstThreadMessageId,
                     snippet: 'Ether',
+                    model_host: 'modal',
+                    model_id: 'Tulu-v3-8-dpo-preview',
                 },
             ],
             final: true,
@@ -69,7 +75,7 @@ const fakeFirstThreadResponse = {
     final: true,
     labels: [],
     private: false,
-};
+} satisfies JSONMessage;
 
 export const secondThreadMessageId = 'msg_A8E5H1X2O3';
 const fakeSecondThreadResponse = {
