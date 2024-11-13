@@ -59,32 +59,60 @@ describe('ThreadDisplay', () => {
                                 documents: {},
                                 spans: {
                                     0: {
-                                        documents: [0],
-                                        text: '(parens)',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '(parens)',
+                                            },
+                                        ],
                                     },
                                     1: {
-                                        documents: [0],
-                                        text: '[braces]',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '[braces]',
+                                            },
+                                        ],
                                     },
                                     2: {
-                                        documents: [0],
-                                        text: '.dot',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '.dot',
+                                            },
+                                        ],
                                     },
                                     3: {
-                                        documents: [0],
-                                        text: '*star',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '*star',
+                                            },
+                                        ],
                                     },
                                     4: {
-                                        documents: [0],
-                                        text: '|pipe',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '|pipe',
+                                            },
+                                        ],
                                     },
                                     5: {
-                                        documents: [0],
-                                        text: '\\backslash',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '\\backslash',
+                                            },
+                                        ],
                                     },
                                     6: {
-                                        documents: [0],
-                                        text: '"quotes"',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '"quotes"',
+                                            },
+                                        ],
                                     },
                                 },
                             },
