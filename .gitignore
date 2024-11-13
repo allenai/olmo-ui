@@ -21,3 +21,6 @@ api/service_account.json
 
 .env.local
 e2e/.auth/storageState.json
+
+.gcloudignore
+.cache
