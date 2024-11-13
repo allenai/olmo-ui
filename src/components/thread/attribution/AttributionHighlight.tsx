@@ -1,10 +1,9 @@
 import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { useAppContext } from '@/AppContext';
+import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
-import { chartTheme } from '@/components/dolma/sharedCharting';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 
@@ -56,17 +55,23 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         }
     });
 
-    const spanScorePercentile = useAppContext((state) => {
-        const messageId = state.attribution.selectedMessageId!;
+    const spanScorePercentile = useAppContext((state: AppContextState) => {
+        const messageId = state.attribution.selectedMessageId;
+        if (messageId == null || state.attribution.attributionsByMessageId[messageId] == null) {
+            return 0.0;
+        }
 
-        const spans = state.attribution.attributionsByMessageId[messageId]!.spans;
-        const documents = state.attribution.attributionsByMessageId[messageId]!.documents;
+        const spans = state.attribution.attributionsByMessageId[messageId].spans;
+        const documents = state.attribution.attributionsByMessageId[messageId].documents;
 
         // Compute the global max and min relevance score across all spans
         const maxRelevanceScore = Object.values(spans).reduce((acc, span) => {
+            if (span == null) {
+                return acc;
+            }
             return Math.max(
                 acc,
-                span!.nested_spans.reduce((acc, nestedSpan) => {
+                span.nested_spans.reduce((acc, nestedSpan) => {
                     return nestedSpan.documents.reduce((acc, documentIx) => {
                         const document = documents[documentIx];
                         return Math.max(acc, document?.relevance_score ?? 0.0);
@@ -75,9 +80,12 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             );
         }, 0.0);
         const minRelevanceScore = Object.values(spans).reduce((acc, span) => {
+            if (span == null) {
+                return acc;
+            }
             return Math.min(
                 acc,
-                span!.nested_spans.reduce((acc, nestedSpan) => {
+                span.nested_spans.reduce((acc, nestedSpan) => {
                     return nestedSpan.documents.reduce((acc, documentIx) => {
                         const document = documents[documentIx];
                         return Math.max(acc, document?.relevance_score ?? 0.0);
@@ -85,15 +93,28 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
                 }, 0.0)
             );
         }, 1000000.0);
+        if (maxRelevanceScore <= minRelevanceScore) { // shouldn't happen, but just in case
+            return 0.0;
+        }
 
-        const span = spans[spanIds];
-        const spanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
-            return nestedSpan.documents.reduce((acc, documentIx) => {
-                const document = documents[documentIx];
-                return Math.max(acc, document?.relevance_score ?? 0.0);
-            }, acc);
+        // I don't know why spanIds can be an array, but if it is, we'll just compute the max score
+        const spanIdsArray = Array.isArray(spanIds) ? spanIds : [spanIds];
+        const spanRelevanceScore = spanIdsArray.reduce((acc, spanId) => {
+            const span = spans[spanId];
+            if (span == null) {
+                return acc;
+            }
+            const spanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
+                return nestedSpan.documents.reduce((acc, documentIx) => {
+                    const document = documents[documentIx];
+                    return Math.max(acc, document?.relevance_score ?? 0.0);
+                }, acc);
+            }, 0.0);
+            return Math.max(acc, spanRelevanceScore);
         }, 0.0);
-        const spanScorePercentile = (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
+
+        const spanScorePercentile =
+            (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
         return spanScorePercentile;
     });
 
@@ -114,9 +135,18 @@ export interface AttributionHighlightProps extends PropsWithChildren {
 export const getHighlightColor = (theme, spanScorePercentile: number): string => {
     const color0 = theme.color['pink-20'].hex;
     const color1 = theme.color['pink-40'].hex;
-    const r = Math.round(parseInt(color0.slice(1, 3), 16) * (1 - spanScorePercentile) + parseInt(color1.slice(1, 3), 16) * spanScorePercentile).toString(16);
-    const g = Math.round(parseInt(color0.slice(3, 5), 16) * (1 - spanScorePercentile) + parseInt(color1.slice(3, 5), 16) * spanScorePercentile).toString(16);
-    const b = Math.round(parseInt(color0.slice(5, 7), 16) * (1 - spanScorePercentile) + parseInt(color1.slice(5, 7), 16) * spanScorePercentile).toString(16);
+    const r = Math.round(
+        parseInt(color0.slice(1, 3), 16) * (1 - spanScorePercentile) +
+        parseInt(color1.slice(1, 3), 16) * spanScorePercentile
+    ).toString(16);
+    const g = Math.round(
+        parseInt(color0.slice(3, 5), 16) * (1 - spanScorePercentile) +
+        parseInt(color1.slice(3, 5), 16) * spanScorePercentile
+    ).toString(16);
+    const b = Math.round(
+        parseInt(color0.slice(5, 7), 16) * (1 - spanScorePercentile) +
+        parseInt(color1.slice(5, 7), 16) * spanScorePercentile
+    ).toString(16);
     const color = `#${r}${g}${b}`;
     return color;
 }
@@ -126,8 +156,12 @@ export const AttributionHighlight = ({
     variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { isAttributionSpanFirstEnabled, toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
-        useAttributionHighlights(span);
+    const {
+        isAttributionSpanFirstEnabled,
+        toggleSelectedSpans,
+        shouldShowHighlight,
+        spanScorePercentile
+    } = useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
