@@ -51,7 +51,9 @@ functions.http(
 
         const iconAltText = 'Return to the Playground home page';
         const iconSelector = `img[alt="${iconAltText}"]`;
-        const iconExists = (await page.$(iconSelector)) !== null;
+        await page.waitForSelector(iconSelector, { timeout: 10000 }); // waits up to 10 seconds
+        const imageElement = await page.$(iconSelector);
+        const iconExists = imageElement !== null;
         assert.strictEqual(iconExists, true, 'Icon should exist');
 
         // Close the browser
