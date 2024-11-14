@@ -49,19 +49,67 @@ export const ThreadPageControlsNoSidebar = (): JSX.Element => {
     };
 
     return (
-        <Stack
-            direction="row"
-            justifyContent="right"
-            gap={2}
-            sx={{
-                height: 'auto',
-                alignItems: 'flex-start',
-            }}>
-            <NewThreadButton />
-            <DeleteThreadButton onClick={handleClickDelete} />
-            <ShareThreadButton />
-            <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
-        </Stack>
+        <>
+            <Stack
+                direction="row"
+                justifyContent="right"
+                gap={2}
+                sx={{
+                    height: 'auto',
+                    alignItems: 'flex-start',
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                        display: 'none',
+                    },
+                }}>
+                <NewThreadButton />
+                <DeleteThreadButton onClick={handleClickDelete} />
+                <ShareThreadButton />
+                <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
+            </Stack>
+            <Stack
+                direction="row"
+                justifyContent="right"
+                gap={2}
+                sx={{
+                    height: 'auto',
+                    alignItems: 'flex-start',
+                    display: 'none',
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                        display: 'block',
+                    },
+                }}>
+                <MoreButton
+                    variant="outlined"
+                    sx={(theme) => ({
+                        flexBasis: 'min-content',
+                        // copied from ResponsiveButton
+                        color: theme.palette.text.primary,
+                        borderColor: theme.palette.grey[300],
+                        '&:hover': {
+                            color: theme.palette.primary.contrastText,
+                            borderColor: theme.palette.grey[300],
+                        },
+                        height: '100%',
+                    })}>
+                    <NewThreadButton
+                        key="more-new-thread-button"
+                        variant="list"
+                        isResponsive={false}
+                    />
+                    <DeleteThreadButton
+                        key="more-delete-thread-button"
+                        variant="list"
+                        isResponsive={false}
+                        onClick={handleClickDelete}
+                    />
+                    <ShareThreadButton
+                        key="more-share-thread-button"
+                        variant="list"
+                        isResponsive={false}
+                    />
+                </MoreButton>
+            </Stack>
+        </>
     );
 };
 
@@ -92,8 +140,7 @@ export const ThreadPageControls = (): JSX.Element => {
                     height: 'auto',
                     alignItems: 'flex-start',
                     [SMALL_THREAD_CONTAINER_QUERY]: {
-                        gridColumn: noLinksOrParams ? undefined : '1 / -1',
-                        // justifyContent: 'right',
+                        gridColumn: '1 / -1',
                     },
                 }}>
                 <NewThreadButton />
@@ -114,16 +161,16 @@ export const ThreadPageControls = (): JSX.Element => {
                 <ButtonGroup size="large" variant="outlined" fullWidth>
                     {isCorpusLinkEnabled && <CorpusLinkButton />}
                     {isParametersEnabled && <ParameterButton />}
-                    {!isMediumLayout && !noLinksOrParams ? (
+                    {!isMediumLayout ? (
                         <MoreButton
                             sx={(theme) => ({
                                 flexBasis: 'min-content',
                                 // copied from ResponsiveButton
-                                borderColor: theme.palette.primary.contrastText,
                                 color: theme.palette.primary.contrastText,
+                                borderColor: theme.palette.grey[300],
                                 '&:hover': {
                                     color: theme.palette.primary.contrastText,
-                                    borderColor: theme.palette.primary.contrastText,
+                                    borderColor: theme.palette.grey[300],
                                 },
                             })}>
                             <NewThreadButton
@@ -145,7 +192,7 @@ export const ThreadPageControls = (): JSX.Element => {
                         </MoreButton>
                     ) : null}
                 </ButtonGroup>
-                {isMediumLayout || noLinksOrParams ? (
+                {isMediumLayout ? (
                     <ButtonGroup size="large" variant="outlined">
                         <NewThreadButton layout="icon" isResponsive={false} />
                         <DeleteThreadButton
@@ -162,12 +209,12 @@ export const ThreadPageControls = (): JSX.Element => {
     }
 };
 
-type MoreButtonProps = Pick<ButtonProps, 'sx'> & {
+type MoreButtonProps = Pick<ButtonProps, 'variant' | 'sx'> & {
     id?: string;
     children: ReactNode;
 };
 
-const MoreButton = ({ id = 'more-button', sx, children }: MoreButtonProps) => {
+const MoreButton = ({ id = 'more-button', variant, sx, children }: MoreButtonProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -186,6 +233,7 @@ const MoreButton = ({ id = 'more-button', sx, children }: MoreButtonProps) => {
                 aria-expanded={open ? 'true' : undefined}
                 aria-haspopup="true"
                 onClick={handleClick}
+                variant={variant}
                 sx={sx}>
                 <MoreHorizIcon />
             </Button>
@@ -210,6 +258,8 @@ const MoreButton = ({ id = 'more-button', sx, children }: MoreButtonProps) => {
                             ':last-child': {
                                 borderBottom: 'none',
                             },
+                            width: '100%',
+                            padding: 1.5,
                         },
                     }),
                 }}

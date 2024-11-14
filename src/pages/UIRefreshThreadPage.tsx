@@ -2,10 +2,14 @@ import { Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
+import { propsForNoSidebar } from '@/components/AppLayout';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
-import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
+import {
+    ModelSelectionDisplay,
+    ModelSelectionDisplayType,
+} from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
@@ -13,7 +17,6 @@ import { ThreadTabs } from '@/components/thread/ThreadTabs';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
-import { propsForNoSidebar } from '@/components/AppLayout';
 
 export const UIRefreshThreadPage = () => {
     const models = useAppContext((state) => state.models);
@@ -25,7 +28,7 @@ export const UIRefreshThreadPage = () => {
     };
 
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
-    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+    const hasLinksOrParams = isCorpusLinkEnabled || isParametersEnabled;
 
     const isDesktop = useDesktopOrUp();
 
@@ -38,7 +41,7 @@ export const UIRefreshThreadPage = () => {
                 sx={(theme) => ({
                     flexGrow: '1',
                     gridArea: 'content',
-                    gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
+                    gridColumnEnd: !hasLinksOrParams ? 'aisde' : undefined,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         ...propsForNoSidebar(),
                     },
@@ -67,23 +70,29 @@ export const UIRefreshThreadPage = () => {
                         sx={{
                             display: 'grid',
                             gridTemplateColumns: '1fr max-content',
-                            columnGap: 1,
+                            columnGap: 2,
                         }}>
                         <ModelSelectionDisplay
                             models={models}
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             label="Model"
-                            shouldOnlyShowAtDesktop={true}
+                            shouldShow={
+                                hasLinksOrParams
+                                    ? ModelSelectionDisplayType.Desktop
+                                    : ModelSelectionDisplayType.Always
+                            }
                         />
                         <ThreadPageControls />
-                        <ModelSelectionDisplay
-                            models={models}
-                            selectedModel={selectedModel}
-                            onModelChange={onModelChange}
-                            label="Model"
-                            shouldOnlyShowAtDesktop={false}
-                        />
+                        {hasLinksOrParams && (
+                            <ModelSelectionDisplay
+                                models={models}
+                                selectedModel={selectedModel}
+                                onModelChange={onModelChange}
+                                label="Model"
+                                shouldShow={ModelSelectionDisplayType.Mobile}
+                            />
+                        )}
                     </Box>
 
                     <Outlet />

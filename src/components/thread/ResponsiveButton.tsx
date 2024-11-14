@@ -49,6 +49,7 @@ const ResponsiveButtonBase = ({
             startIcon={layout === 'both' ? startIcon : undefined}
             sx={(theme: Theme) => ({
                 ...sizeStyles(),
+                height: '100%',
                 borderColor: theme.palette.primary.contrastText,
                 color: theme.palette.primary.contrastText,
                 '&:hover': {

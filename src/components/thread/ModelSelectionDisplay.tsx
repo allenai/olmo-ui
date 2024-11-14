@@ -16,19 +16,25 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
+export enum ModelSelectionDisplayType {
+    Always,
+    Desktop,
+    Mobile,
+}
+
 type ModelSelectionDisplayProps = {
     models: ModelList;
     selectedModel?: Model;
     onModelChange: (event: SelectChangeEvent) => void;
     label?: string;
-    shouldOnlyShowAtDesktop: boolean;
+    shouldShow: ModelSelectionDisplayType;
 };
 
 export const ModelSelectionDisplay = ({
     models,
     selectedModel,
     onModelChange,
-    shouldOnlyShowAtDesktop,
+    shouldShow,
     label = '',
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
@@ -36,28 +42,33 @@ export const ModelSelectionDisplay = ({
     const newModels = isPeteishModelEnabled
         ? models
         : models.filter((model) => model.name !== 'OLMo-peteish-dpo-preview');
+
+    const responsiveSx = (theme: Theme) => {
+        switch (shouldShow) {
+            case ModelSelectionDisplayType.Desktop:
+                return {
+                    display: 'none',
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        display: 'block',
+                    },
+                };
+            case ModelSelectionDisplayType.Mobile:
+                return {
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                        display: 'none',
+                    },
+                    gridColumn: '1 / -1',
+                };
+            default:
+                return {};
+        }
+    };
     return (
-        <Box
-            sx={(theme: Theme) => ({
-                // These responsive styles are mirrors to the ones below
-                // the display values should be flipped versions
-                //
-                display: shouldOnlyShowAtDesktop ? 'none' : 'block', // This is hidden by default (mobile first)
-                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                    // it is visible above the DESKTOP_LAYOUT_BREAKPOINT
-                    display: shouldOnlyShowAtDesktop ? 'block' : 'none',
-                },
-                [SMALL_THREAD_CONTAINER_QUERY]: {
-                    // Unlesss the container is too small, then it is hidden again
-                    display: shouldOnlyShowAtDesktop ? 'none' : 'block',
-                },
-                paddingTop: !shouldOnlyShowAtDesktop ? 2 : undefined,
-                gridColumn: !shouldOnlyShowAtDesktop ? '1 / -1' : '1',
-            })}>
+        <Box sx={responsiveSx}>
             {newModels.length > 1 ? (
                 <FormControl
                     sx={{
-                        width: !shouldOnlyShowAtDesktop ? '100%' : undefined,
+                        width: shouldShow === ModelSelectionDisplayType.Mobile ? '100%' : undefined,
                         maxWidth: '25rem',
                         justifySelf: 'center',
                     }}>
