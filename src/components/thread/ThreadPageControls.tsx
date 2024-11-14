@@ -84,10 +84,10 @@ export const ThreadPageControlsNoSidebar = (): JSX.Element => {
                         flexBasis: 'min-content',
                         // copied from ResponsiveButton
                         color: theme.palette.text.primary,
-                        borderColor: theme.palette.grey[300],
+                        borderColor: theme.palette.primary.contrastText,
                         '&:hover': {
                             color: theme.palette.primary.contrastText,
-                            borderColor: theme.palette.grey[300],
+                            borderColor: theme.palette.primary.contrastText,
                         },
                         height: '100%',
                     })}>
@@ -167,10 +167,10 @@ export const ThreadPageControls = (): JSX.Element => {
                                 flexBasis: 'min-content',
                                 // copied from ResponsiveButton
                                 color: theme.palette.primary.contrastText,
-                                borderColor: theme.palette.grey[300],
+                                borderColor: theme.palette.primary.contrastText,
                                 '&:hover': {
                                     color: theme.palette.primary.contrastText,
-                                    borderColor: theme.palette.grey[300],
+                                    borderColor: theme.palette.primary.contrastText,
                                 },
                             })}>
                             <NewThreadButton

@@ -7,6 +7,7 @@ import {
     Select,
     SelectChangeEvent,
     SxProps,
+    Theme,
     Typography,
 } from '@mui/material';
 import { useId } from 'react';
@@ -43,7 +44,7 @@ export const ModelSelectionDisplay = ({
         ? models
         : models.filter((model) => model.name !== 'OLMo-peteish-dpo-preview');
 
-    const responsiveSx: SxProps = (theme) => {
+    const responsiveSx: SxProps<Theme> = (theme: Theme) => {
         switch (shouldShow) {
             case ModelSelectionDisplayType.Desktop:
                 return {
@@ -51,11 +52,17 @@ export const ModelSelectionDisplay = ({
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         display: 'block',
                     },
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                        display: 'none',
+                    },
                 };
             case ModelSelectionDisplayType.Mobile:
                 return {
-                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         display: 'none',
+                    },
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                        display: 'block',
                     },
                     gridColumn: '1 / -1',
                 };
