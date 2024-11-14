@@ -10,12 +10,17 @@ import { useDesktopOrUp } from '../dolma/shared';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
+import { useFeatureToggles } from '@/FeatureToggleContext';
+import { propsForNoSidebar } from '../AppLayout';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const isDesktopOrUp = useDesktopOrUp();
+
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
+    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -44,6 +49,8 @@ export const OlmoAppBar = (): JSX.Element => {
                         paddingInline: 0,
 
                         backgroundColor: 'transparent',
+                        gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
+                        ...propsForNoSidebar()
                     },
                 })}>
                 <Toolbar
@@ -51,6 +58,7 @@ export const OlmoAppBar = (): JSX.Element => {
                     sx={{
                         display: 'grid',
                         gridTemplateColumns: '1fr max-content 1fr',
+
                     }}>
                     <Link
                         href={links.home}

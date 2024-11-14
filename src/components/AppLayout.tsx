@@ -2,6 +2,7 @@ import { Container, Paper, PaperProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar';
@@ -48,7 +49,23 @@ export const AppLayout = ({ children, shouldShowTermsAndConditionsModal }: AppLa
     );
 };
 
+export const propsForNoSidebar = () => {
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
+    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+
+    return noLinksOrParams
+        ? {
+              width: '100%',
+              maxWidth: '800px',
+              margin: '0 auto',
+          }
+        : {};
+};
+
 const OuterContainer = (props: PaperProps) => {
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
+    const eitherLinksOrParams = isCorpusLinkEnabled || isParametersEnabled;
+
     return (
         <Paper
             square
@@ -72,7 +89,7 @@ const OuterContainer = (props: PaperProps) => {
                         gridTemplateRows: 'auto minmax(0, 1fr)',
                         // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
                         gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
-                        columnGap: theme.spacing(8),
+                        columnGap: theme.spacing(eitherLinksOrParams ? 8 : 3),
                         rowGap: 2,
 
                         paddingInlineEnd: 3,

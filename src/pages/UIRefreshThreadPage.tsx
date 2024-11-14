@@ -11,7 +11,9 @@ import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { ThreadTabs } from '@/components/thread/ThreadTabs';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
+import { propsForNoSidebar } from '@/components/AppLayout';
 
 export const UIRefreshThreadPage = () => {
     const models = useAppContext((state) => state.models);
@@ -22,6 +24,9 @@ export const UIRefreshThreadPage = () => {
         setSelectedModel(event.target.value);
     };
 
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
+    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+
     const isDesktop = useDesktopOrUp();
 
     return (
@@ -30,10 +35,14 @@ export const UIRefreshThreadPage = () => {
             <Card
                 variant="elevation"
                 elevation={0}
-                sx={{
+                sx={(theme) => ({
                     flexGrow: '1',
                     gridArea: 'content',
-                }}>
+                    gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        ...propsForNoSidebar(),
+                    },
+                })}>
                 <Stack
                     gap={2}
                     sx={(theme) => ({

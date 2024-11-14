@@ -15,6 +15,7 @@ import { NewApp } from './components/NewApp';
 import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
+import { useFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { Document } from './pages/Document';
@@ -27,14 +28,21 @@ import {
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
+import { propsForNoSidebar } from './components/AppLayout';
 
 const DolmaPage = (): JSX.Element => {
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
+    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+
     return (
         <Box
             sx={{
                 // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
                 gridArea: 'content / content / aside / aside',
                 overflow: 'auto',
+
+                gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
+                ...propsForNoSidebar(),
             }}>
             <MetaTags title="AI2 Playground - Dataset Explorer" />
             <Outlet />

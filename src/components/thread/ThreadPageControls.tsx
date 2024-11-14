@@ -41,13 +41,42 @@ const NewThreadButton = ({
     );
 };
 
+export const ThreadPageControlsNoSidebar = (): JSX.Element => {
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const handleClickDelete = () => {
+        setDeleteDialogOpen(true);
+    };
+
+    return (
+        <Stack
+            direction="row"
+            justifyContent="right"
+            gap={2}
+            sx={{
+                height: 'auto',
+                alignItems: 'flex-start',
+            }}>
+            <NewThreadButton />
+            <DeleteThreadButton onClick={handleClickDelete} />
+            <ShareThreadButton />
+            <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
+        </Stack>
+    );
+};
+
 export const ThreadPageControls = (): JSX.Element => {
     const isDesktop = useDesktopOrUp();
     const isMediumLayout = useMediumLayoutOrUp();
 
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
+    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    if (noLinksOrParams) {
+        return <ThreadPageControlsNoSidebar />;
+    }
 
     const handleClickDelete = () => {
         setDeleteDialogOpen(true);
@@ -57,13 +86,14 @@ export const ThreadPageControls = (): JSX.Element => {
         return (
             <Stack
                 direction="row"
+                justifyContent="right"
                 gap={2}
                 sx={{
                     height: 'auto',
                     alignItems: 'flex-start',
                     [SMALL_THREAD_CONTAINER_QUERY]: {
-                        gridColumn: '1 / -1',
-                        justifyContent: 'right',
+                        gridColumn: noLinksOrParams ? undefined : '1 / -1',
+                        // justifyContent: 'right',
                     },
                 }}>
                 <NewThreadButton />
@@ -84,7 +114,7 @@ export const ThreadPageControls = (): JSX.Element => {
                 <ButtonGroup size="large" variant="outlined" fullWidth>
                     {isCorpusLinkEnabled && <CorpusLinkButton />}
                     {isParametersEnabled && <ParameterButton />}
-                    {!isMediumLayout ? (
+                    {!isMediumLayout && !noLinksOrParams ? (
                         <MoreButton
                             sx={(theme) => ({
                                 flexBasis: 'min-content',
@@ -115,7 +145,7 @@ export const ThreadPageControls = (): JSX.Element => {
                         </MoreButton>
                     ) : null}
                 </ButtonGroup>
-                {isMediumLayout ? (
+                {isMediumLayout || noLinksOrParams ? (
                     <ButtonGroup size="large" variant="outlined">
                         <NewThreadButton layout="icon" isResponsive={false} />
                         <DeleteThreadButton
