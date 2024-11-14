@@ -7,7 +7,7 @@
     ```
 4. Navigate to the localhost:8080 if you see json object with synthetic_generic_result_v1 oke true you are good.
 4. Raise PR for review.
-5. Once PR gets approval please merge the PR and run the command:
+5. Once PR gets approval please merge the PR and run the command (Make sure you are in the monitor directory before running this):
     ```
         gcloud functions deploy  Ai2-Playground-Monitor --gen2 --runtime=nodejs20 --region=us-west1 --source=. --entry-point=SyntheticFunction --memory=2G --timeout=60 --trigger-http
     ```
