@@ -29,6 +29,7 @@ services:
       - IS_ATTRIBUTION_SPAN_FIRST_ENABLED=true
       - IS_DATASET_EXPLORER_ENABLED=${IS_DATASET_EXPLORER_ENABLED:-false}
       - IS_PETEISH_MODEL_ENABLED=${IS_PETEISH_ENABLED:-false}
+      - IS_PARAMETERS_ENABLED=${IS_PARAMETERS_ENABLED:-false}
   nginx:
     image: nginx:1.25.1-alpine
     volumes:

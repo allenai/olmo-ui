@@ -13,7 +13,7 @@ const PARAMETERS_TAB_NAME: ThreadTabId = 'parameters';
 const DATASET_TAB_NAME: ThreadTabId = 'attribution';
 
 export const ThreadTabs = () => {
-    const { isCorpusLinkEnabled } = useFeatureToggles();
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const setCurrentOpenGlobalDrawer = useAppContext((state) => state.openDrawer);
 
     const currentOpenThreadTab = useAppContext((state): ThreadTabId => {
@@ -28,6 +28,10 @@ export const ThreadTabs = () => {
         }
     });
 
+    if (!isCorpusLinkEnabled && !isParametersEnabled) {
+        return null;
+    }
+
     return (
         <TabsWithOverflow
             value={currentOpenThreadTab}
@@ -37,11 +41,13 @@ export const ThreadTabs = () => {
                 }
             }}>
             <StickyTabsList>
-                <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
-                    <Typography variant="h4" component="span">
-                        Parameters
-                    </Typography>
-                </TabControl>
+                {isParametersEnabled && (
+                    <TabControl value={PARAMETERS_TAB_NAME} id="parameters-tab-control">
+                        <Typography variant="h4" component="span">
+                            Parameters
+                        </Typography>
+                    </TabControl>
+                )}
                 {isCorpusLinkEnabled && (
                     <TabControl value={DATASET_TAB_NAME} id="dataset-tab-control">
                         <Typography variant="h4" component="span">
@@ -50,20 +56,22 @@ export const ThreadTabs = () => {
                     </TabControl>
                 )}
             </StickyTabsList>
-            <TabPanelWithOverflow
-                value={PARAMETERS_TAB_NAME}
-                aria-labelledby="parameters-tab-control"
-                id="parameters-tabpanel"
-                sx={{
-                    borderTopLeftRadius: '0',
-                }}>
-                <ParameterContent />
-            </TabPanelWithOverflow>
+            {isParametersEnabled && (
+                <TabPanelWithOverflow
+                    value={PARAMETERS_TAB_NAME}
+                    aria-labelledby="parameters-tab-control"
+                    id="parameters-tabpanel"
+                    sx={{
+                        borderTopLeftRadius: '0',
+                    }}>
+                    <ParameterContent />
+                </TabPanelWithOverflow>
+            )}
             {isCorpusLinkEnabled && (
                 <TabPanelWithOverflow
                     value={DATASET_TAB_NAME}
                     aria-labelledby="dataset-tab-control"
-                    id="parameters-tabpanel"
+                    id="dataset-tabpanel"
                     sx={{
                         borderTopRightRadius: '0',
                     }}>

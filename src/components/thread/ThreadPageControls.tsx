@@ -45,7 +45,7 @@ export const ThreadPageControls = (): JSX.Element => {
     const isDesktop = useDesktopOrUp();
     const isMediumLayout = useMediumLayoutOrUp();
 
-    const { isCorpusLinkEnabled } = useFeatureToggles();
+    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -83,7 +83,7 @@ export const ThreadPageControls = (): JSX.Element => {
                 }}>
                 <ButtonGroup size="large" variant="outlined" fullWidth>
                     {isCorpusLinkEnabled && <CorpusLinkButton />}
-                    <ParameterButton />
+                    {isParametersEnabled && <ParameterButton />}
                     {!isMediumLayout ? (
                         <MoreButton
                             sx={(theme) => ({

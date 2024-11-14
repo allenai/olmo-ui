@@ -95,6 +95,7 @@ module.exports = (env) => ({
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
             IS_DATASET_EXPLORER_ENABLED: false,
             IS_PETEISH_MODEL_ENABLED: false,
+            IS_PARAMETERS_ENABLED: false,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
         new RetryChunkLoadPlugin({
