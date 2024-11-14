@@ -257,23 +257,23 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-                    <Stack direction="row" gap={2} alignItems="center">
-                        {isLimitReached && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You have reached maximum thread length. Please start a new thread.
-                            </Typography>
-                        )}
-                        {!canEditThread && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You cannot add a prompt because you are not the thread creator.
-                                Please submit your prompt in a new thread.
-                            </Typography>
-                        )}
-                    </Stack>
+                    {isLimitReached && (
+                        <Typography
+                            variant="subtitle2"
+                            alignSelf="center"
+                            color={(theme) => theme.palette.error.main}>
+                            You have reached maximum thread length. Please start a new thread.
+                        </Typography>
+                    )}
+                    {!canEditThread && (
+                        <Typography
+                            variant="subtitle2"
+                            alignSelf="center"
+                            color={(theme) => theme.palette.error.main}>
+                            You cannot add a prompt because you are not the thread creator. Please
+                            submit your prompt in a new thread.
+                        </Typography>
+                    )}
                 </Stack>
             </FormContainer>
         </Box>
