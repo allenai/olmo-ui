@@ -6,7 +6,7 @@ import {
     OutlinedInput,
     Select,
     SelectChangeEvent,
-    Theme,
+    SxProps,
     Typography,
 } from '@mui/material';
 import { useId } from 'react';
@@ -43,7 +43,7 @@ export const ModelSelectionDisplay = ({
         ? models
         : models.filter((model) => model.name !== 'OLMo-peteish-dpo-preview');
 
-    const responsiveSx = (theme: Theme) => {
+    const responsiveSx: SxProps = (theme) => {
         switch (shouldShow) {
             case ModelSelectionDisplayType.Desktop:
                 return {

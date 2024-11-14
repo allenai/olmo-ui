@@ -2,6 +2,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
@@ -10,8 +11,6 @@ import { useDesktopOrUp } from '../dolma/shared';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
-import { useFeatureToggles } from '@/FeatureToggleContext';
-import { propsForNoSidebar } from '../AppLayout';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
@@ -21,6 +20,14 @@ export const OlmoAppBar = (): JSX.Element => {
 
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+
+    const propsForNoSidebar = noLinksOrParams
+        ? {
+              width: '100%',
+              maxWidth: '800px',
+              margin: '0 auto',
+          }
+        : {};
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -50,7 +57,7 @@ export const OlmoAppBar = (): JSX.Element => {
 
                         backgroundColor: 'transparent',
                         gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
-                        ...propsForNoSidebar()
+                        ...propsForNoSidebar,
                     },
                 })}>
                 <Toolbar
@@ -58,7 +65,6 @@ export const OlmoAppBar = (): JSX.Element => {
                     sx={{
                         display: 'grid',
                         gridTemplateColumns: '1fr max-content 1fr',
-
                     }}>
                     <Link
                         href={links.home}

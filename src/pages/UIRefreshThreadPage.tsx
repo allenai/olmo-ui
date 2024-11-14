@@ -2,7 +2,6 @@ import { Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
-import { propsForNoSidebar } from '@/components/AppLayout';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
@@ -28,7 +27,14 @@ export const UIRefreshThreadPage = () => {
     };
 
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
-    const hasLinksOrParams = isCorpusLinkEnabled || isParametersEnabled;
+    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+    const propsForNoSidebar = noLinksOrParams
+        ? {
+              width: '100%',
+              maxWidth: '800px',
+              margin: '0 auto',
+          }
+        : {};
 
     const isDesktop = useDesktopOrUp();
 
@@ -41,9 +47,9 @@ export const UIRefreshThreadPage = () => {
                 sx={(theme) => ({
                     flexGrow: '1',
                     gridArea: 'content',
-                    gridColumnEnd: !hasLinksOrParams ? 'aisde' : undefined,
+                    gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        ...propsForNoSidebar(),
+                        ...propsForNoSidebar,
                     },
                 })}>
                 <Stack
@@ -78,13 +84,13 @@ export const UIRefreshThreadPage = () => {
                             onModelChange={onModelChange}
                             label="Model"
                             shouldShow={
-                                hasLinksOrParams
-                                    ? ModelSelectionDisplayType.Desktop
-                                    : ModelSelectionDisplayType.Always
+                                noLinksOrParams
+                                    ? ModelSelectionDisplayType.Always
+                                    : ModelSelectionDisplayType.Desktop
                             }
                         />
                         <ThreadPageControls />
-                        {hasLinksOrParams && (
+                        {!noLinksOrParams && (
                             <ModelSelectionDisplay
                                 models={models}
                                 selectedModel={selectedModel}

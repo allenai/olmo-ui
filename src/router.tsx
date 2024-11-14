@@ -28,11 +28,18 @@ import {
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-import { propsForNoSidebar } from './components/AppLayout';
 
 const DolmaPage = (): JSX.Element => {
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
+
+    const propsForNoSidebar = noLinksOrParams
+        ? {
+              width: '100%',
+              maxWidth: '800px',
+              margin: '0 auto',
+          }
+        : {};
 
     return (
         <Box
@@ -42,7 +49,7 @@ const DolmaPage = (): JSX.Element => {
                 overflow: 'auto',
 
                 gridColumnEnd: noLinksOrParams ? 'aisde' : undefined,
-                ...propsForNoSidebar(),
+                ...propsForNoSidebar,
             }}>
             <MetaTags title="AI2 Playground - Dataset Explorer" />
             <Outlet />

@@ -49,19 +49,6 @@ export const AppLayout = ({ children, shouldShowTermsAndConditionsModal }: AppLa
     );
 };
 
-export const propsForNoSidebar = () => {
-    const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
-    const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
-
-    return noLinksOrParams
-        ? {
-              width: '100%',
-              maxWidth: '800px',
-              margin: '0 auto',
-          }
-        : {};
-};
-
 const OuterContainer = (props: PaperProps) => {
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const eitherLinksOrParams = isCorpusLinkEnabled || isParametersEnabled;
