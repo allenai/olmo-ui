@@ -337,46 +337,68 @@ const streamResponseWithSystemMessage: Array<MessageStreamPart> = [
             'Consectetur euismod arcu felis convallis quis, facilisi eget pulvinar ullamcorper. Senectus mus condimentum himenaeos consectetur cubilia, senectus vestibulum. Pretium vehicula class lacus feugiat a curabitur. Lacus dis leo quis sagittis mattis et cubilia enim dapibus. Maximus conubia praesent magnis vulputate a euismod arcu. Posuere phasellus metus sociosqu euismod risus nisl etiam ultrices himenaeos. Praesent ornare tristique ante sem nascetur praesent commodo. Massa efficitur nullam placerat elementum tempor vitae rhoncus. Tempus suscipit montes pulvinar dis urna eget molestie.',
     },
     {
-        id: newMessageId,
-        content: 'User message',
-        snippet: 'User message',
+        id: newMessageWithSystemMessageId,
+        content: 'System message',
+        snippet: 'System message',
         creator: 'murphy@allenai.org',
-        role: Role.User,
+        role: Role.System,
         opts: {
             max_tokens: 2048,
-            temperature: 1,
             n: 1,
-            top_p: 1,
+            temperature: 1.0,
+            top_p: 1.0,
         },
-        root: newMessageId,
+        model_host: 'modal',
+        model_id: 'Tulu-v3-8-dpo-preview',
+        root: newMessageWithSystemMessageId,
         created: new Date().toDateString(),
+        final: true,
+        private: false,
+        labels: [],
         children: [
             {
-                id: 'msg_V6Y0U4H4O9',
-                content: 'This is the first response.',
-                snippet: 'This is the first response.',
+                id: 'msg_A8E5H1X3O5',
+                content: 'User message',
+                snippet: 'User message',
                 creator: 'murphy@allenai.org',
-                role: Role.LLM,
+                role: Role.User,
                 opts: {
                     max_tokens: 2048,
                     temperature: 1,
                     n: 1,
                     top_p: 1,
                 },
-                root: newMessageId,
+                root: newMessageWithSystemMessageId,
                 created: new Date().toDateString(),
-                parent: newMessageId,
-                logprobs: [],
-                completion: 'cpl_R5T5K6B4C9',
+                children: [
+                    {
+                        id: 'msg_V6Y0U4H4O9',
+                        content: 'This is the first response.',
+                        snippet: 'This is the first response.',
+                        creator: 'murphy@allenai.org',
+                        role: Role.LLM,
+                        opts: {
+                            max_tokens: 2048,
+                            temperature: 1,
+                            n: 1,
+                            top_p: 1,
+                        },
+                        root: newMessageWithSystemMessageId,
+                        created: new Date().toDateString(),
+                        parent: 'msg_A8E5H1X3O5',
+                        logprobs: [],
+                        completion: 'cpl_R5T5K6B4C9',
+                        final: true,
+                        private: false,
+                        model_type: 'chat',
+                        labels: [],
+                    },
+                ],
                 final: true,
                 private: false,
-                model_type: 'chat',
                 labels: [],
             },
         ],
-        final: true,
-        private: false,
-        labels: [],
     },
 ];
 
@@ -385,20 +407,12 @@ export const messageStreamHandlers = [
         const requestBody = (await request.json()) as Record<string, unknown>;
 
         let response: MessageStreamPart[];
-        switch (true) {
-            // followup message in a thread
-            case requestBody.parent != null:
-                response = fakeFollowupResponse(requestBody.parent as string);
-                break;
-
-            // include a system message in the response
-            case requestBody.content === 'include system message':
-                response = streamResponseWithSystemMessage;
-                break;
-
-            // new thread
-            default:
-                response = fakeNewThreadMessages;
+        if (requestBody.parent != null) {
+            response = fakeFollowupResponse(requestBody.parent as string);
+        } else if (requestBody.content === 'include system message') {
+            response = streamResponseWithSystemMessage;
+        } else {
+            response = fakeNewThreadMessages;
         }
 
         const stream = new ReadableStream({
