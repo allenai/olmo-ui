@@ -61,7 +61,9 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
     // This response is roughly the length where we start being able to scroll
     // So we wait for it to be this long then scroll to the bottom to trigger sticky scrolling
     await expect(
-        page.getByText('This is the second response.This is the second response.')
+        page.getByText(
+            'This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.'
+        )
     ).toBeAttached();
 
     // await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
