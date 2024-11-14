@@ -2,7 +2,6 @@ import { render, screen, waitFor } from '@test-utils';
 import * as reactRouter from 'react-router-dom';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
-import { JSONMessage } from '@/api/Message';
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
 import { links } from '@/Links';
