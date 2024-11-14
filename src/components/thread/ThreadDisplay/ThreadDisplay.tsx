@@ -1,24 +1,23 @@
 import { Box, Stack } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import { defer, LoaderFunction } from 'react-router-dom';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
-import { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
-import { appContext, AppContextState, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 
-import { useSpanHighlighting } from './attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from './ChatMessage';
-import { MarkdownRenderer } from './Markdown/MarkdownRenderer';
-import { MessageInteraction } from './MessageInteraction';
-import { ScrollToBottomButton } from './ScrollToBottomButton';
+import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
+import { ChatMessage } from '../ChatMessage';
+import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
+import { MessageInteraction } from '../MessageInteraction';
+import { ScrollToBottomButton } from '../ScrollToBottomButton';
+import { selectMessagesToShow } from './selectMessagesToShow';
 
 interface MessageViewProps {
     messageId: Message['id'];
 }
 
-const MessageView = ({ messageId }: MessageViewProps) => {
+const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     const {
         role,
         content,
@@ -26,6 +25,10 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
     const contentWithMarks = useSpanHighlighting(messageId);
+
+    if (role === Role.System) {
+        return null;
+    }
 
     return (
         <>
@@ -43,37 +46,7 @@ const MessageView = ({ messageId }: MessageViewProps) => {
     );
 };
 
-/**
- * This selector traveres the message tree to get the messages related to
- * the current thread. The intention is to optimize developing experience
- * by saving the jobs for maintaining a list of current viewing message IDs.
- * However, this could be compute-intensive as the message tree grows and
- * the number of components that rely on it increases.
- */
-export const selectMessagesToShow = (state: AppContextState): string[] => {
-    const getMessageIdsToShow = (
-        rootMessageId: string,
-        messagesById: Record<string, SelectedThreadMessage>,
-        messageIdList: string[] = []
-    ): string[] => {
-        const message = messagesById[rootMessageId];
-        if (message == null || rootMessageId == null) {
-            return [];
-        }
-
-        messageIdList.push(rootMessageId);
-        if (message.selectedChildId != null) {
-            const childMessage = messagesById[message.selectedChildId];
-            getMessageIdsToShow(childMessage.id, messagesById, messageIdList);
-        }
-
-        return messageIdList;
-    };
-
-    return getMessageIdsToShow(state.selectedThreadRootId, state.selectedThreadMessagesById);
-};
-
-export const ThreadDisplay = (): JSX.Element => {
+export const ThreadDisplay = (): ReactNode => {
     // useShallow is used here to prevent triggering re-render. However, it
     // doesn't save the job to traverse the whole message tree. If it
     // becomes a performance bottleneck, it's better to change back to
@@ -141,47 +114,4 @@ export const ThreadDisplay = (): JSX.Element => {
             </Box>
         </Stack>
     );
-};
-
-export const selectedThreadLoader: LoaderFunction = async ({ params }) => {
-    const {
-        getSelectedThread,
-        selectedThreadRootId,
-        getAttributionsForMessage,
-        selectMessage,
-        handleAttributionForChangingThread,
-    } = appContext.getState();
-
-    // get the latest state of the selectedThread if we're changing to a different thread
-    if (params.id != null && params.id !== selectedThreadRootId) {
-        handleAttributionForChangingThread();
-
-        const selectedThread = await getSelectedThread(params.id);
-
-        const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
-        const lastPromptId = selectedThreadMessages
-            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.User)
-            .at(-1);
-        const lastPrompt =
-            lastPromptId != null ? selectedThreadMessagesById[lastPromptId].content : '';
-        const lastResponseId = selectedThreadMessages
-            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
-            .at(-1);
-
-        if (lastResponseId != null) {
-            selectMessage(lastResponseId);
-        }
-
-        const attributionsPromise =
-            lastResponseId != null
-                ? getAttributionsForMessage(lastPrompt, lastResponseId)
-                : undefined;
-
-        return defer({
-            selectedThread,
-            attributions: attributionsPromise,
-        });
-    }
-
-    return null;
 };
