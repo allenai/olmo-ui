@@ -291,7 +291,7 @@ const streamResponseWithSystemMessage: Array<MessageStreamPart> = [
                         },
                         root: newMessageId,
                         created: new Date().toDateString(),
-                        parent: newMessageId,
+                        parent: 'msg_A8E5H1X3O5',
                         final: false,
                         private: false,
                         model_type: 'chat',
