@@ -243,6 +243,168 @@ const fakeFollowupResponse = (parentId: string): Array<MessageStreamPart> => [
     },
 ];
 
+export const newMessageWithSystemMessageId = 'msg_A8E5H1X3O4';
+const streamResponseWithSystemMessage: Array<MessageStreamPart> = [
+    {
+        id: newMessageWithSystemMessageId,
+        content: 'System message',
+        snippet: 'System message',
+        creator: 'murphy@allenai.org',
+        role: Role.System,
+        opts: {
+            max_tokens: 2048,
+            n: 1,
+            temperature: 1.0,
+            top_p: 1.0,
+        },
+        model_host: 'modal',
+        model_id: 'Tulu-v3-8-dpo-preview',
+        root: newMessageWithSystemMessageId,
+        created: new Date().toDateString(),
+        final: false,
+        private: false,
+        labels: [],
+        children: [
+            {
+                id: 'msg_A8E5H1X3O5',
+                content: 'User message',
+                snippet: 'User message',
+                creator: 'murphy@allenai.org',
+                role: Role.User,
+                opts: {
+                    max_tokens: 2048,
+                    temperature: 1,
+                    n: 1,
+                    top_p: 1,
+                },
+                root: newMessageId,
+                created: new Date().toDateString(),
+                children: [
+                    {
+                        id: 'msg_V6Y0U4H4O9',
+                        content: '',
+                        snippet: '',
+                        creator: 'murphy@allenai.org',
+                        role: Role.LLM,
+                        opts: {
+                            max_tokens: 2048,
+                            temperature: 1,
+                            n: 1,
+                            top_p: 1,
+                        },
+                        root: newMessageId,
+                        created: new Date().toDateString(),
+                        parent: 'msg_A8E5H1X3O5',
+                        final: false,
+                        private: false,
+                        model_type: 'chat',
+                        labels: [],
+                    },
+                ],
+                final: false,
+                private: false,
+                labels: [],
+            },
+        ],
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: '',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: '',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content:
+            'Lorem ipsum odor amet, consectetuer adipiscing elit. Mus ultricies laoreet ex leo ac nulla risus vulputate. Quam euismod dolor fames; tempus habitasse per efficitur rhoncus. Nisi laoreet quam est ante sollicitudin est. Volutpat mi hendrerit habitant curabitur rhoncus dui efficitur. Mauris massa habitant magna non praesent pulvinar laoreet. Enim posuere ex mauris fames lobortis. Eleifend vulputate litora amet semper justo orci odio dolor et. ',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content:
+            'Ut varius ante integer netus urna rutrum neque. Fermentum ultrices et mauris nulla lacus venenatis amet nunc massa. Id cras donec euismod dapibus senectus cubilia est dui. Risus auctor luctus, maximus mi nascetur congue. Luctus pellentesque curabitur tortor erat aenean lectus nullam efficitur venenatis. Conubia interdum id vestibulum senectus ligula hendrerit platea. Efficitur varius gravida cubilia molestie conubia.',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content: ' ',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content:
+            'Est rutrum penatibus dictumst tristique primis. Porta egestas lacus proin sollicitudin eget elementum eget morbi. Nunc commodo mollis tortor parturient eget imperdiet nam nisl. Aptent posuere ornare parturient nostra feugiat vel. Proin litora tellus volutpat molestie luctus taciti conubia nulla. Platea id ante natoque eu auctor donec. Laoreet accumsan sollicitudin platea, senectus maecenas euismod. Egestas etiam conubia nibh nibh mauris; felis arcu eleifend. Semper orci massa semper finibus enim lacus laoreet.',
+    },
+    {
+        message: 'msg_V6Y0U4H4O9',
+        content:
+            'Consectetur euismod arcu felis convallis quis, facilisi eget pulvinar ullamcorper. Senectus mus condimentum himenaeos consectetur cubilia, senectus vestibulum. Pretium vehicula class lacus feugiat a curabitur. Lacus dis leo quis sagittis mattis et cubilia enim dapibus. Maximus conubia praesent magnis vulputate a euismod arcu. Posuere phasellus metus sociosqu euismod risus nisl etiam ultrices himenaeos. Praesent ornare tristique ante sem nascetur praesent commodo. Massa efficitur nullam placerat elementum tempor vitae rhoncus. Tempus suscipit montes pulvinar dis urna eget molestie.',
+    },
+    {
+        id: newMessageWithSystemMessageId,
+        content: 'System message',
+        snippet: 'System message',
+        creator: 'murphy@allenai.org',
+        role: Role.System,
+        opts: {
+            max_tokens: 2048,
+            n: 1,
+            temperature: 1.0,
+            top_p: 1.0,
+        },
+        model_host: 'modal',
+        model_id: 'Tulu-v3-8-dpo-preview',
+        root: newMessageWithSystemMessageId,
+        created: new Date().toDateString(),
+        final: true,
+        private: false,
+        labels: [],
+        children: [
+            {
+                id: 'msg_A8E5H1X3O5',
+                content: 'User message',
+                snippet: 'User message',
+                creator: 'murphy@allenai.org',
+                role: Role.User,
+                opts: {
+                    max_tokens: 2048,
+                    temperature: 1,
+                    n: 1,
+                    top_p: 1,
+                },
+                root: newMessageWithSystemMessageId,
+                created: new Date().toDateString(),
+                children: [
+                    {
+                        id: 'msg_V6Y0U4H4O9',
+                        content: 'This is the first response.',
+                        snippet: 'This is the first response.',
+                        creator: 'murphy@allenai.org',
+                        role: Role.LLM,
+                        opts: {
+                            max_tokens: 2048,
+                            temperature: 1,
+                            n: 1,
+                            top_p: 1,
+                        },
+                        root: newMessageWithSystemMessageId,
+                        created: new Date().toDateString(),
+                        parent: 'msg_A8E5H1X3O5',
+                        logprobs: [],
+                        completion: 'cpl_R5T5K6B4C9',
+                        final: true,
+                        private: false,
+                        model_type: 'chat',
+                        labels: [],
+                    },
+                ],
+                final: true,
+                private: false,
+                labels: [],
+            },
+        ],
+    },
+];
+
 const formatMessage = (message: unknown) => {
     return JSON.stringify(message) + '\n';
 };
@@ -251,11 +413,14 @@ export const messageStreamHandlers = [
     http.post(`*/v3/message/stream`, async ({ request }) => {
         const requestBody = (await request.json()) as Record<string, unknown>;
 
-        // if this is a follow up to a thread use the thread response
-        const response =
-            requestBody.parent != null
-                ? fakeFollowupResponse(requestBody.parent as string)
-                : fakeNewThreadMessages;
+        let response: MessageStreamPart[];
+        if (requestBody.parent != null) {
+            response = fakeFollowupResponse(requestBody.parent as string);
+        } else if (requestBody.content === 'include system message') {
+            response = streamResponseWithSystemMessage;
+        } else {
+            response = fakeNewThreadMessages;
+        }
 
         const stream = new ReadableStream({
             async start(controller) {
