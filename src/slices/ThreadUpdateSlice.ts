@@ -11,6 +11,7 @@ import {
     StreamBadRequestError,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
+import { Role } from '@/api/Role';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -163,9 +164,18 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     // store the message id that olmo is generating reponse
                     // the first chunk in the message will have no content
-                    const streamingMessage = (parsedMessage.children || []).find(
-                        (childMessage) => childMessage.content.length === 0
+                    let targetMessageList;
+                    if (parsedMessage.role === Role.User) {
+                        targetMessageList = parsedMessage.children;
+                    } else if (parsedMessage.role === Role.System) {
+                        // system prompt message should only have 1 child
+                        targetMessageList = parsedMessage.children?.[0].children;
+                    }
+
+                    const streamingMessage = (targetMessageList || []).find(
+                        (message) => !message.final && message.content.length === 0
                     );
+
                     set({ streamingMessageId: streamingMessage?.id });
                 }
 
