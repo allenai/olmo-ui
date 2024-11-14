@@ -66,8 +66,6 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
         )
     ).toBeAttached();
 
-    // await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
-    //
     await page.getByRole('button', { name: 'Scroll to bottom' }).click();
 
     await secondStreamResponsePromise;
