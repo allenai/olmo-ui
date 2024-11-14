@@ -5,7 +5,7 @@ import { TestOptions } from 'e2e/playwright-utils';
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
 dotenv.config({
-    path: ['./.env.local', `./.env${envSuffix}`],
+    path: ['.env', `./.env${envSuffix}`, `./.env${envSuffix}.local`, '.env.local'],
 });
 
 const bypassCSP = {

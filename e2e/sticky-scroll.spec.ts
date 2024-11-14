@@ -61,21 +61,23 @@ test('should sticky-scroll only after the user scrolls', async ({ page }) => {
     // This response is roughly the length where we start being able to scroll
     // So we wait for it to be this long then scroll to the bottom to trigger sticky scrolling
     await expect(
-        page.getByText(
-            'This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.This is the second response.'
-        )
+        page.getByText('This is the second response.This is the second response.')
     ).toBeAttached();
 
-    await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
+    // await page.getByTestId('bottom-scroll-anchor').scrollIntoViewIfNeeded();
+    //
+    await page.getByRole('button', { name: 'Scroll to bottom' }).click();
 
     await secondStreamResponsePromise;
     await expect(page.getByLabel('Submit prompt')).toBeVisible();
 
-    expect(
-        await isElementVisibleInContainer({
-            page,
-            element: page.getByTestId('bottom-scroll-anchor'),
-            container: page.getByTestId('thread-display'),
+    await expect
+        .poll(async () => {
+            return await isElementVisibleInContainer({
+                page,
+                element: page.getByTestId('bottom-scroll-anchor'),
+                container: page.getByTestId('thread-display'),
+            });
         })
-    ).toBe(true);
+        .toBe(true);
 });

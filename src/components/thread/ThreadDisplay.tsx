@@ -91,6 +91,8 @@ export const ThreadDisplay = (): JSX.Element => {
     };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
+    const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
+    const hasUserScrolledSinceSendingMessage = useRef(false);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
@@ -102,6 +104,7 @@ export const ThreadDisplay = (): JSX.Element => {
 
     const location = useLocation();
 
+    // Scroll to the top when we change threads
     useEffect(() => {
         if (scrollContainerRef.current != null) {
             scrollContainerRef.current.scrollTo({
@@ -134,7 +137,8 @@ export const ThreadDisplay = (): JSX.Element => {
         const mutationObserver = new MutationObserver((mutationsList) => {
             if (
                 shouldStickToBottom.current &&
-                mutationsList.some((mutation) => mutation.type === 'characterData')
+                mutationsList.some((mutation) => mutation.type === 'characterData') &&
+                isUpdatingMessageContent
             ) {
                 scrollToBottom();
             }
@@ -150,7 +154,7 @@ export const ThreadDisplay = (): JSX.Element => {
         return () => {
             mutationObserver.disconnect();
         };
-    }, [scrollToBottom]);
+    }, [isUpdatingMessageContent, scrollToBottom]);
 
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
@@ -161,7 +165,10 @@ export const ThreadDisplay = (): JSX.Element => {
             setIsScrollToBottomButtonVisible(!inView);
 
             if (inView) {
-                if (!skipNextStickyScrollSetFromAnchor.current) {
+                if (
+                    !skipNextStickyScrollSetFromAnchor.current &&
+                    hasUserScrolledSinceSendingMessage.current
+                ) {
                     setShouldStickToBottom(inView);
                 } else {
                     // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
@@ -175,6 +182,10 @@ export const ThreadDisplay = (): JSX.Element => {
 
     const handleScrollToBottomButtonClick = () => {
         scrollToBottom();
+
+        if (isUpdatingMessageContent) {
+            setShouldStickToBottom(true);
+        }
     };
 
     return (
@@ -182,6 +193,9 @@ export const ThreadDisplay = (): JSX.Element => {
             gap={2}
             direction="column"
             data-testid="thread-display"
+            onScroll={(event) => {
+                hasUserScrolledSinceSendingMessage.current = true;
+            }}
             useFlexGap
             ref={scrollContainerRef}
             overflow="auto"

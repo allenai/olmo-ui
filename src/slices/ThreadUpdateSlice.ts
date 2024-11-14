@@ -53,6 +53,7 @@ export interface ThreadUpdateSlice {
     inferenceOpts: RequestInferenceOpts;
     updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
+    isUpdatingMessageContent: boolean;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
 }
@@ -62,6 +63,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
     streamingMessageId: null,
     inferenceOpts: {},
     streamPromptState: undefined,
+    isUpdatingMessageContent: false,
 
     updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
         set((state) => ({
@@ -100,6 +102,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     }
                 }
 
+                state.isUpdatingMessageContent = false;
                 state.abortController = null;
                 state.streamPromptState = RemoteState.Loaded;
                 state.streamingMessageId = null;
@@ -171,6 +174,12 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 if (isMessageChunk(message)) {
+                    if (!get().isUpdatingMessageContent) {
+                        set((state) => {
+                            state.isUpdatingMessageContent = true;
+                        });
+                    }
+
                     addContentToMessage(message.message, message.content);
                 }
 
