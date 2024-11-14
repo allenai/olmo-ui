@@ -49,6 +49,8 @@ export interface Message {
     template?: string | null;
     final: boolean;
     model?: string | null;
+    model_id?: string | null;
+    model_host?: string | null;
 }
 
 export interface MessageList {
