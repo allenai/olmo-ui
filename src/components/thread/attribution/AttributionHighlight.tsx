@@ -134,21 +134,21 @@ export interface AttributionHighlightProps extends PropsWithChildren {
 }
 
 export const getHighlightColor = (theme: Theme, spanScorePercentile: number): string => {
-    const color0: string = theme.color['pink-20'].hex;
-    const color1: string = theme.color['pink-40'].hex;
+    const color0 = theme.color['pink-20'].rgba;
+    const color1 = theme.color['pink-40'].rgba;
     const r = Math.round(
-        parseInt(color0.slice(1, 3), 16) * (1 - spanScorePercentile) +
-            parseInt(color1.slice(1, 3), 16) * spanScorePercentile
-    ).toString(16);
+        color0.r * (1 - spanScorePercentile) + color1.r * spanScorePercentile
+    );
     const g = Math.round(
-        parseInt(color0.slice(3, 5), 16) * (1 - spanScorePercentile) +
-            parseInt(color1.slice(3, 5), 16) * spanScorePercentile
-    ).toString(16);
+        color0.g * (1 - spanScorePercentile) + color1.g * spanScorePercentile
+    );
     const b = Math.round(
-        parseInt(color0.slice(5, 7), 16) * (1 - spanScorePercentile) +
-            parseInt(color1.slice(5, 7), 16) * spanScorePercentile
-    ).toString(16);
-    const color = `#${r}${g}${b}`;
+        color0.b * (1 - spanScorePercentile) + color1.b * spanScorePercentile
+    );
+    const a = Math.round(
+        color0.a * (1 - spanScorePercentile) + color1.a * spanScorePercentile
+    );
+    const color = `rgba(${r}, ${g}, ${b}, ${a})`;
     return color;
 };
 
