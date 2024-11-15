@@ -9,6 +9,7 @@ import {
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
 import { userInfoLoader } from './api/user-info-loader';
+import { NO_SIDEBAR_CONTENT_PROPS } from './components/AppLayout';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -33,13 +34,7 @@ const DolmaPage = (): JSX.Element => {
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
 
-    const propsForNoSidebar = noLinksOrParams
-        ? {
-              width: '100%',
-              maxWidth: '800px',
-              margin: '0 auto',
-          }
-        : {};
+    const propsForNoSidebar = noLinksOrParams ? NO_SIDEBAR_CONTENT_PROPS : {};
 
     return (
         <Box

@@ -2,6 +2,7 @@ import { Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
+import { NO_SIDEBAR_CONTENT_PROPS } from '@/components/AppLayout';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
@@ -28,13 +29,7 @@ export const UIRefreshThreadPage = () => {
 
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
-    const propsForNoSidebar = noLinksOrParams
-        ? {
-              width: '100%',
-              maxWidth: '800px',
-              margin: '0 auto',
-          }
-        : {};
+    const propsForNoSidebar = noLinksOrParams ? NO_SIDEBAR_CONTENT_PROPS : {};
 
     const isDesktop = useDesktopOrUp();
 

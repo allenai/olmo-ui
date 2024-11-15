@@ -7,6 +7,7 @@ import { links } from '@/Links';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 import { Ai2LogoFull } from '../Ai2LogoFull';
+import { NO_SIDEBAR_CONTENT_PROPS } from '../AppLayout';
 import { useDesktopOrUp } from '../dolma/shared';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
 import { NavigationDrawer } from './NavigationDrawer';
@@ -20,14 +21,7 @@ export const OlmoAppBar = (): JSX.Element => {
 
     const { isCorpusLinkEnabled, isParametersEnabled } = useFeatureToggles();
     const noLinksOrParams = !(isCorpusLinkEnabled || isParametersEnabled);
-
-    const propsForNoSidebar = noLinksOrParams
-        ? {
-              width: '100%',
-              maxWidth: '800px',
-              margin: '0 auto',
-          }
-        : {};
+    const propsForNoSidebar = noLinksOrParams ? NO_SIDEBAR_CONTENT_PROPS : {};
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);

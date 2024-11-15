@@ -1,4 +1,4 @@
-import { Container, Paper, PaperProps } from '@mui/material';
+import { Container, Paper, PaperProps, SxProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -7,6 +7,12 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
+
+export const NO_SIDEBAR_CONTENT_PROPS: SxProps = {
+    width: '100%',
+    maxWidth: '960px',
+    margin: '0 auto',
+};
 
 interface AppLayout extends PropsWithChildren {
     shouldShowTermsAndConditionsModal?: boolean;
