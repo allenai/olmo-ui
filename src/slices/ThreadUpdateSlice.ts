@@ -172,7 +172,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                         targetMessageList = parsedMessage.children?.[0].children;
                     }
 
-                    const streamingMessage = (targetMessageList || []).find(
+                    const streamingMessage = targetMessageList?.find(
                         (message) => !message.final && message.content.length === 0
                     );
 
