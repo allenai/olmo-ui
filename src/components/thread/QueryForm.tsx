@@ -184,11 +184,10 @@ export const QueryForm = (): JSX.Element => {
 
     const handleSubmit = async (data: { content: string }) => {
         // Token is missing: reCAPTCHA validation failed.
-        if (!token && process.env.NODE_ENV !== 'production') {
+        if (!token && process.env.NODE_ENV === 'production') {
             setRefreshReCaptcha(!refreshReCaptcha);
             return;
         }
-
         const request: MessagePost = { ...data, captchaToken: token };
 
         if (lastMessageId != null) {
