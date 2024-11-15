@@ -280,7 +280,7 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-                    {process.env.NODE_ENV !== 'test' && (
+                    {process.env.NODE_ENV === 'production' && (
                         <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
                     )}
 
