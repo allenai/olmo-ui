@@ -32,15 +32,24 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
         throw new Error('ReCaptcha Site Key not exists!');
     }
 
+    const GoogleReCaptchaWrapper = () => {
+        if (process.env.NODE_ENV === 'test') {
+            return <>{children}</>;
+        }
+        return (
+            <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
+                <GlobalStyle />
+                {children}
+            </GoogleReCaptchaProvider>
+        );
+    };
+
     return (
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
             <ThemeProvider theme={combinedTheme}>
                 <VarnishApp layout="left-aligned" theme={combinedTheme}>
-                    <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
-                        <GlobalStyle />
-                        {children}
-                    </GoogleReCaptchaProvider>
+                    <GoogleReCaptchaWrapper />
                 </VarnishApp>
                 <GlobalStyle />
             </ThemeProvider>
