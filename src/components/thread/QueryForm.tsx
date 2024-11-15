@@ -183,13 +183,13 @@ export const QueryForm = (): JSX.Element => {
     }, [firstResponseId, formContext]);
 
     const handleSubmit = async (data: { content: string }) => {
-        const request: MessagePost = { ...data };
-
         // Token is missing: reCAPTCHA validation failed.
         if (!token) {
             setRefreshReCaptcha(!refreshReCaptcha);
             return;
         }
+
+        const request: MessagePost = { ...data, captchaToken: token };
 
         if (lastMessageId != null) {
             request.parent = lastMessageId;

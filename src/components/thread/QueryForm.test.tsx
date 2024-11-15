@@ -7,6 +7,7 @@ import * as RouterDom from 'react-router-dom';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
+import { FakeGoogleReCaptchaProvider } from '@/utils/FakeGoogleRecaptchaProvider';
 
 import { QueryForm } from './QueryForm';
 
@@ -43,7 +44,9 @@ describe('QueryForm', () => {
 
         render(
             <FakeAppContextProvider initialState={initialStates}>
-                <QueryForm />
+                <FakeGoogleReCaptchaProvider>
+                    <QueryForm />
+                </FakeGoogleReCaptchaProvider>
             </FakeAppContextProvider>
         );
 
@@ -84,7 +87,9 @@ describe('QueryForm', () => {
 
         render(
             <FakeAppContextProvider initialState={initialStates}>
-                <QueryForm />
+                <FakeGoogleReCaptchaProvider>
+                    <QueryForm />
+                </FakeGoogleReCaptchaProvider>
             </FakeAppContextProvider>
         );
 
@@ -119,7 +124,9 @@ describe('QueryForm', () => {
 
         render(
             <FakeAppContextProvider initialState={initialState}>
-                <QueryForm />
+                <FakeGoogleReCaptchaProvider>
+                    <QueryForm />
+                </FakeGoogleReCaptchaProvider>
             </FakeAppContextProvider>
         );
 
