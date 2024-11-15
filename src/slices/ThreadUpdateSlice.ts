@@ -57,6 +57,7 @@ export interface ThreadUpdateSlice {
     isUpdatingMessageContent: boolean;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
+    abortPrompt: () => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
@@ -242,5 +243,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
             addSnackMessage(snackMessage);
         }
+    },
+
+    abortPrompt: () => {
+        get().abortController?.abort();
     },
 });

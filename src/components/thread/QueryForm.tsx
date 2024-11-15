@@ -118,6 +118,7 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
+
     const formContext = useForm({
         defaultValues: {
             content: '',
@@ -134,17 +135,17 @@ export const QueryForm = (): JSX.Element => {
         );
     });
 
-    const abortController = useAppContext((state) => state.abortController);
+    const abortPrompt = useAppContext((state) => state.abortPrompt);
     const canPauseThread = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading && abortController != null
+        (state) => state.streamPromptState === RemoteState.Loading && state.abortController != null
     );
 
     const onAbort = useCallback(
         (event: UIEvent) => {
             event.preventDefault();
-            abortController?.abort();
+            abortPrompt();
         },
-        [abortController]
+        [abortPrompt]
     );
 
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
@@ -179,15 +180,22 @@ export const QueryForm = (): JSX.Element => {
 
     // Clear form input after the client receive the first message
     useEffect(() => {
-        formContext.reset();
+        if (firstResponseId !== null) {
+            formContext.reset();
+        }
     }, [firstResponseId, formContext]);
 
     const handleSubmit = async (data: { content: string }) => {
+        if (!canEditThread || isSelectedThreadLoading) {
+            return;
+        }
+
         // Token is missing: reCAPTCHA validation failed.
         if (!token && process.env.NODE_ENV === 'production') {
             setRefreshReCaptcha(!refreshReCaptcha);
             return;
         }
+
         const request: MessagePost = { ...data, captchaToken: token };
 
         if (lastMessageId != null) {
@@ -257,7 +265,7 @@ export const QueryForm = (): JSX.Element => {
                         validation={{ pattern: /[^\s]+/ }}
                         // If we don't have a dense margin the label gets cut off!
                         margin="dense"
-                        disabled={!canEditThread || isSelectedThreadLoading}
+                        disabled={!canEditThread}
                         onKeyDown={handleOnKeyDown}
                         InputProps={{
                             sx: (theme) => ({
