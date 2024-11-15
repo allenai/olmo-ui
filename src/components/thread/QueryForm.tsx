@@ -184,7 +184,7 @@ export const QueryForm = (): JSX.Element => {
 
     const handleSubmit = async (data: { content: string }) => {
         // Token is missing: reCAPTCHA validation failed.
-        if (!token) {
+        if (!token && process.env.NODE_ENV !== 'test') {
             setRefreshReCaptcha(!refreshReCaptcha);
             return;
         }
@@ -280,7 +280,7 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-                    {process.env.ENABLE_MOCKING !== 'true' && (
+                    {process.env.NODE_ENV !== 'test' && (
                         <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
                     )}
 

@@ -30,7 +30,7 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
     const siteKey = process.env.RECAPTCHA_SITE_KEY;
 
     const GoogleReCaptchaWrapper = () => {
-        if (process.env.ENABLE_MOCKING || !siteKey) {
+        if (process.env.NODE_ENV === 'test' || !siteKey) {
             return <>{children}</>;
         }
         return (
