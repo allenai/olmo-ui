@@ -23,6 +23,7 @@ const extendedSchema = {
         span: [...(defaultSchema.attributes?.span || []), 'className'],
         div: [...(defaultSchema.attributes?.div || []), 'className', 'style'],
         code: [...(defaultSchema.attributes?.code || []), 'className'],
+        mark: [...(defaultSchema.attributes?.mark || []), 'variant', 'span'],
     },
 };
 
