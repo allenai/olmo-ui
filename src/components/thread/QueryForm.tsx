@@ -280,7 +280,9 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-                    <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
+                    {process.env.NODE_ENV !== 'test' && (
+                        <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
+                    )}
 
                     <Stack direction="row" gap={2} alignItems="center">
                         {isLimitReached && (
