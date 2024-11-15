@@ -1,4 +1,5 @@
 import CircleIcon from '@mui/icons-material/Circle';
+import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
 import {
     Box,
@@ -8,6 +9,7 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
+    Link,
     Stack,
     Typography,
     useMediaQuery,
@@ -175,6 +177,17 @@ export const TermsAndConditionsModal = () => {
                                         {section.submitButtonText}
                                     </Button>
                                 </Stack>
+                                <Button
+                                    component={Link}
+                                    href={links.logout}
+                                    variant="text"
+                                    startIcon={<LogoutIcon />}
+                                    underline="none"
+                                    sx={{
+                                        color: (theme) => theme.palette.text.primary,
+                                    }}>
+                                    Log out
+                                </Button>
                             </Stack>
                         </FormContainer>
                     </DialogActions>

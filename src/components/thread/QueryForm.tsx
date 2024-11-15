@@ -80,9 +80,11 @@ const SubmitPauseAdornment = ({
                 <QueryFormButton
                     aria-label="Stop response generation"
                     onKeyDown={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        onPause(event);
+                        if (event.key === 'Enter' || event.key === 'Space') {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            onPause(event);
+                        }
                     }}
                     onClick={(event) => {
                         onPause(event);

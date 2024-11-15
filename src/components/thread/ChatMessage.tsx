@@ -15,9 +15,11 @@ const sharedMessageStyle: SxProps = {
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
-    '&::after': {
+    // this assumes a response format like what's generated with react-markdown
+    // we wrap with a Typography element then inside the Typography element is the actual message
+    '&[data-is-streaming="true"] > * > :last-child::after': {
         borderRadius: 5,
-        bgcolor: 'primary.dark',
+        bgcolor: 'primary.main',
         content: '""',
         display: 'inline-block',
         height: '1em',
@@ -41,16 +43,17 @@ interface LLMMessageProps extends PropsWithChildren {
 }
 
 const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
-    const messageStyle = useAppContext((state) => {
-        const shouldShowStreamingIndicator =
+    const shouldShowStreamingIndicator = useAppContext(
+        (state) =>
             state.streamingMessageId === messageId &&
-            state.streamPromptState === RemoteState.Loading;
-
-        return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
-    });
+            state.streamPromptState === RemoteState.Loading
+    );
 
     return (
-        <Typography component="div" sx={messageStyle}>
+        <Typography
+            component="div"
+            sx={[sharedMessageStyle, streamingMessageIndicatorStyle]}
+            data-is-streaming={shouldShowStreamingIndicator}>
             {children}
         </Typography>
     );

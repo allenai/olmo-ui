@@ -27,6 +27,18 @@ module.exports = {
                 '@typescript-eslint/no-unnecessary-condition': 'warn',
                 // This interferes with simple-import-sort so it's disabled!
                 'import/order': 'off',
+                '@typescript-eslint/no-unused-vars': [
+                    'error',
+                    {
+                        args: 'all',
+                        argsIgnorePattern: '^_',
+                        caughtErrors: 'all',
+                        caughtErrorsIgnorePattern: '^_',
+                        destructuredArrayIgnorePattern: '^_',
+                        varsIgnorePattern: '^_',
+                        ignoreRestSiblings: true,
+                    },
+                ],
             },
         },
         {

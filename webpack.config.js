@@ -13,7 +13,9 @@ const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const { RetryChunkLoadPlugin } = require('webpack-retry-chunk-load-plugin');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: ['.env.local', '.env'] });
+const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
+
+dotenv.config({ path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'] });
 
 const path = require('path');
 

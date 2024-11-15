@@ -7,7 +7,9 @@ import {
     redirect,
     useRouteLoaderData,
 } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 
+import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { UserInfoLoaderResponse } from '../user-info-loader';
@@ -67,6 +69,11 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
 
     const isAuthenticated = await auth0Client.isAuthenticated();
     if (isAuthenticated) {
+        const { getUserInfo } = appContext.getState();
+
+        // HACK: this re-fetches user info after we log in. It'd be nice to have this happen automatically when someone logs in!
+        await getUserInfo();
+
         return redirect(redirectTo);
     } else {
         const responseData: LoginError['data'] = {
@@ -114,9 +121,10 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 
 export const useUserAuthInfo = (): UserAuthInfo => {
     const { userAuthInfo } = useRouteLoaderData('root') as UserInfoLoaderResponse;
+    const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
     return {
-        userInfo: userAuthInfo?.userInfo,
+        userInfo: userInfo ?? undefined,
         isAuthenticated: Boolean(userAuthInfo?.isAuthenticated),
     };
 };

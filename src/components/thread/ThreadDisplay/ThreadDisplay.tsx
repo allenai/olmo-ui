@@ -1,10 +1,13 @@
-import { Box, Stack } from '@mui/material';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { Stack } from '@mui/material';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
@@ -52,35 +55,114 @@ export const ThreadDisplay = (): ReactNode => {
     // becomes a performance bottleneck, it's better to change back to
     // maintain a message list in store.
     const childMessageIds = useAppContext(useShallow(selectMessagesToShow));
+
+    const previousStreamingMessageId = useRef<string | null>(null);
     const streamingMessageId = useAppContext((state) => state.streamingMessageId);
-    const stackRef = useRef<HTMLDivElement | null>(null);
+
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
-    const checkScrollVisibility = () => {
-        if (stackRef.current) {
-            const { scrollHeight, clientHeight, scrollTop } = stackRef.current;
-            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-            setIsScrollToBottomButtonVisible(!isAtBottom);
-        }
+    const shouldStickToBottom = useRef(false);
+
+    const setShouldStickToBottom = (newShouldStickToBottom: boolean) => {
+        shouldStickToBottom.current = newShouldStickToBottom;
     };
 
-    useEffect(() => {
-        checkScrollVisibility();
+    const skipNextStickyScrollSetFromAnchor = useRef(false);
+    const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
+    const hasUserScrolledSinceSendingMessage = useRef(false);
+
+    const scrollToBottom = useCallback(() => {
+        if (scrollContainerRef.current != null) {
+            scrollContainerRef.current.scrollTo({
+                top: scrollContainerRef.current.scrollHeight,
+            });
+        }
     }, []);
+
+    const location = useLocation();
+
+    // Scroll to the top when we change threads
+    useEffect(() => {
+        if (scrollContainerRef.current != null) {
+            scrollContainerRef.current.scrollTo({
+                top: 0,
+                behavior: 'instant',
+            });
+        }
+    }, [location.key]);
 
     // Scroll to the bottom when a new message is added
     useEffect(() => {
-        if (stackRef.current) {
-            stackRef.current.scrollTop = stackRef.current.scrollHeight;
-        }
-    }, [streamingMessageId]);
+        // we want to scroll to the bottom of the thread to see the new user message
+        // but we only want to do it if we're adding to the current thread, not visiting an existing thread
+        // we also want to make sure it's a new message so that we don't scroll to the bottom multiple times if scrollToBottom gets updated
+        if (
+            streamingMessageId != null &&
+            previousStreamingMessageId.current !== streamingMessageId
+        ) {
+            skipNextStickyScrollSetFromAnchor.current = true;
 
-    const handleScrollToBottom = () => {
-        if (stackRef.current) {
-            stackRef.current.scrollTo({
-                top: stackRef.current.scrollHeight,
-                behavior: 'smooth',
+            scrollToBottom();
+
+            setShouldStickToBottom(false);
+        }
+
+        previousStreamingMessageId.current = streamingMessageId;
+    }, [scrollToBottom, streamingMessageId]);
+
+    useEffect(() => {
+        const mutationObserver = new MutationObserver((mutationsList) => {
+            if (
+                shouldStickToBottom.current &&
+                mutationsList.some((mutation) => mutation.type === 'characterData') &&
+                isUpdatingMessageContent
+            ) {
+                scrollToBottom();
+            }
+        });
+
+        if (scrollContainerRef.current != null) {
+            mutationObserver.observe(scrollContainerRef.current, {
+                subtree: true,
+                characterData: true,
             });
+        }
+
+        return () => {
+            mutationObserver.disconnect();
+        };
+    }, [isUpdatingMessageContent, scrollToBottom]);
+
+    // This useInView is tied to the bottom-scroll-anchor
+    // We use it to see if we've scrolled to the bottom of this element
+    const { ref: scrollAnchorRef } = useInView({
+        root: scrollContainerRef.current,
+        initialInView: true,
+        onChange: (inView) => {
+            setIsScrollToBottomButtonVisible(!inView);
+
+            if (inView) {
+                if (
+                    !skipNextStickyScrollSetFromAnchor.current &&
+                    hasUserScrolledSinceSendingMessage.current
+                ) {
+                    setShouldStickToBottom(inView);
+                } else {
+                    // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
+                    // to prevent sticking right after that scroll, we ignore this event
+                    // we can't set that up in the effect because the browser is still sending scroll events even after the function returns
+                    skipNextStickyScrollSetFromAnchor.current = false;
+                }
+            }
+        },
+    });
+
+    const handleScrollToBottomButtonClick = () => {
+        scrollToBottom();
+
+        if (isUpdatingMessageContent) {
+            setShouldStickToBottom(true);
         }
     };
 
@@ -89,19 +171,30 @@ export const ThreadDisplay = (): ReactNode => {
             gap={2}
             direction="column"
             data-testid="thread-display"
+            onScroll={() => {
+                hasUserScrolledSinceSendingMessage.current = true;
+            }}
+            useFlexGap
+            ref={scrollContainerRef}
             overflow="auto"
-            ref={stackRef}
-            onScroll={checkScrollVisibility}>
+            sx={{
+                '@media (prefers-reduced-motion: no-preference)': {
+                    scrollBehavior: 'smooth',
+                },
+            }}>
             {childMessageIds.map((messageId) => (
                 <MessageView messageId={messageId} key={messageId} />
             ))}
-            <Box
+            <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
+            <Stack
+                justifyContent="center"
+                alignItems="center"
                 sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
                     bottom: '-1px',
-                    minHeight: (theme) => theme.spacing(6),
+                    minHeight: (theme) => ({
+                        xs: theme.spacing(6),
+                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
+                    }),
                     position: 'sticky',
                     background:
                         'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
@@ -109,9 +202,9 @@ export const ThreadDisplay = (): ReactNode => {
                 }}>
                 <ScrollToBottomButton
                     isVisible={isScrollToBottomButtonVisible}
-                    onScrollToBottom={handleScrollToBottom}
+                    onScrollToBottom={handleScrollToBottomButtonClick}
                 />
-            </Box>
+            </Stack>
         </Stack>
     );
 };
