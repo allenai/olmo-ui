@@ -10,14 +10,12 @@ import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 import { ThreadDisplay } from './ThreadDisplay';
 
 describe('ThreadDisplay', () => {
-    afterEach(() => {
-        vi.restoreAllMocks();
+    beforeEach(() => {
+        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(getFakeUseUserAuthInfo());
     });
 
     it('should highlight spans that contain special regex characters', () => {
-        vi.spyOn(appContext, 'useAppContext').mockImplementation(useFakeAppContext);
-        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(getFakeUseUserAuthInfo());
-
         render(
             <FakeAppContextProvider
                 initialState={{
@@ -61,30 +59,72 @@ describe('ThreadDisplay', () => {
                                     0: {
                                         documents: [0],
                                         text: '(parens)',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '(parens)',
+                                            },
+                                        ],
                                     },
                                     1: {
                                         documents: [0],
                                         text: '[braces]',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '[braces]',
+                                            },
+                                        ],
                                     },
                                     2: {
                                         documents: [0],
                                         text: '.dot',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '.dot',
+                                            },
+                                        ],
                                     },
                                     3: {
                                         documents: [0],
                                         text: '*star',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '*star',
+                                            },
+                                        ],
                                     },
                                     4: {
                                         documents: [0],
                                         text: '|pipe',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '|pipe',
+                                            },
+                                        ],
                                     },
                                     5: {
                                         documents: [0],
                                         text: '\\backslash',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '\\backslash',
+                                            },
+                                        ],
                                     },
                                     6: {
                                         documents: [0],
                                         text: '"quotes"',
+                                        nested_spans: [
+                                            {
+                                                documents: [0],
+                                                text: '"quotes"',
+                                            },
+                                        ],
                                     },
                                 },
                             },
@@ -113,5 +153,59 @@ describe('ThreadDisplay', () => {
         expect.soft(screen.getByText('|pipe')).toHaveRole('button');
         expect.soft(screen.getByText('\\backslash')).toHaveRole('button');
         expect.soft(screen.getByText('"quotes"')).toHaveRole('button');
+    });
+
+    it("shouldn't show system messages", () => {
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    userInfo: {
+                        client: 'currentUser',
+                        hasAcceptedTermsAndConditions: true,
+                    },
+                    selectedThreadRootId: 'systemMessage',
+                    selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
+                    selectedThreadMessagesById: {
+                        systemMessage: {
+                            id: 'systemMessaage',
+                            childIds: ['userMessage'],
+                            selectedChildId: 'userMessage',
+                            content: 'system message',
+                            role: Role.System,
+                            labels: [],
+                            creator: 'currentUser',
+                            isLimitReached: false,
+                            isOlderThan30Days: false,
+                        },
+                        userMessage: {
+                            id: 'userMessage',
+                            childIds: ['llmMessage'],
+                            selectedChildId: 'llmMessage',
+                            content: 'user prompt',
+                            role: Role.User,
+                            labels: [],
+                            creator: 'currentUser',
+                            isLimitReached: false,
+                            isOlderThan30Days: false,
+                        },
+                        llmMessage: {
+                            id: 'llmMessage',
+                            childIds: [],
+                            content: '(parens) [braces] .dot *star |pipe \\backslash "quotes"',
+                            role: Role.LLM,
+                            labels: [],
+                            creator: 'currentUser',
+                            isLimitReached: false,
+                            isOlderThan30Days: false,
+                            parent: 'userMessage',
+                        },
+                    },
+                }}>
+                <ThreadDisplay />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByText('user prompt')).toBeInTheDocument();
+        expect(screen.queryByText('system prompt')).not.toBeInTheDocument();
     });
 });

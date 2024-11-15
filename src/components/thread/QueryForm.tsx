@@ -17,7 +17,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { MessagePost, StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
-import { selectMessagesToShow } from '@/components/thread/ThreadDisplay';
+import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 

@@ -13,7 +13,8 @@ import { NO_SIDEBAR_CONTENT_PROPS } from './components/AppLayout';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
-import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
+import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
+import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
 import { useFeatureToggles } from './FeatureToggleContext';
@@ -89,7 +90,7 @@ export const routes: RouteObject[] = [
                         handle: {
                             title: 'Playground',
                         },
-                        loader: selectedThreadLoader,
+                        loader: selectedThreadPageLoader,
                     },
                 ],
                 handle: {
