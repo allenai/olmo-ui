@@ -4,6 +4,7 @@ import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-d
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
+import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
@@ -79,17 +80,7 @@ export const UIRefreshThreadPage = () => {
 
                     <Outlet />
                     <QueryForm />
-
-                    <Typography
-                        variant="caption"
-                        sx={(theme) => ({
-                            [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                display: 'none',
-                            },
-                        })}>
-                        Ai2 models are experimental and can make mistakes. Consider fact-checking
-                        your results.
-                    </Typography>
+                    <LegalNotice />
                 </Stack>
             </Card>
 
@@ -102,6 +93,51 @@ export const UIRefreshThreadPage = () => {
                 </>
             )}
         </>
+    );
+};
+
+export const LegalNotice = () => {
+    const userInfo = useAppContext((state) => state.userInfo);
+
+    return (
+        <Typography
+            component={Stack}
+            gap={1}
+            variant="caption"
+            sx={{
+                '> p': {
+                    margin: '0',
+                },
+            }}>
+            {!userInfo?.hasAcceptedTermsAndConditions ? (
+                <>
+                    <p>
+                        By using the Ai2 Playground, you agree to Ai2’s{' '}
+                        <TermAndConditionsLink link="https://allenai.org/terms">
+                            Terms of use
+                        </TermAndConditionsLink>
+                        ,{' '}
+                        <TermAndConditionsLink link="https://allenai.org/privacy-policy">
+                            Privacy policy
+                        </TermAndConditionsLink>
+                        , and{' '}
+                        <TermAndConditionsLink link="https://allenai.org/responsible-use">
+                            Responsible use guidelines
+                        </TermAndConditionsLink>
+                        .
+                    </p>
+                    <p>
+                        Ai2 Playground is a scientific research and educational tool provided to the
+                        general public at no cost pursuant to Ai2&apos;s mission as a 501(c)(3)
+                        organization.
+                    </p>
+                </>
+            ) : null}
+            <p>
+                Ai2 models are experimental and can make mistakes. Consider fact-checking your
+                results.
+            </p>
+        </Typography>
     );
 };
 

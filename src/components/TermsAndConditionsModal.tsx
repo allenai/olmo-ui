@@ -18,7 +18,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
-import { UserClient } from '@/api/User';
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { StandardModal } from './StandardModal';
@@ -43,17 +43,17 @@ export const TermsAndConditionsModal = () => {
         },
     });
     const { isValid } = useFormState({ control: formContext.control });
+    const acceptTermsAndConditions = useAppContext((state) => state.acceptTermsAndConditions);
 
     const handleSubmit = useCallback(async () => {
         if (activeStep + 1 === sections.length) {
-            const userClient: UserClient = new UserClient();
-            await userClient.acceptTermsAndConditions();
+            await acceptTermsAndConditions();
             setOpen(false);
         } else {
             setActiveStep(activeStep + 1);
             formContext.reset();
         }
-    }, [activeStep, formContext]);
+    }, [activeStep, formContext, acceptTermsAndConditions]);
 
     const handlePrevious = useCallback(() => {
         setActiveStep(Math.max(activeStep - 1, 0));
@@ -84,7 +84,7 @@ export const TermsAndConditionsModal = () => {
                         flex: 1,
                     }}
                     gap={1}>
-                    <DialogTitle id="modal-title" sx={{ p: 0, m: 0 }}>
+                    <DialogTitle component="div" id="modal-title" sx={{ p: 0, m: 0 }}>
                         <Typography
                             variant="overline"
                             color={(theme) => theme.palette.text.primary}>
@@ -105,7 +105,9 @@ export const TermsAndConditionsModal = () => {
                         </Typography>
                     </DialogTitle>
                     <DialogContent sx={{ p: 0, m: 0 }}>
-                        <Typography variant="body1">{section.contents}</Typography>
+                        <Typography component="div" variant="body1">
+                            {section.contents}
+                        </Typography>
                     </DialogContent>
                     <DialogActions sx={{ p: 0, justifyContent: 'flex-start' }}>
                         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -278,7 +280,7 @@ const Section2: TermsAndConditionsSection = {
                 }}>
                 The Ai2 Playground is intended for research and educational purposes in accordance
                 with our{' '}
-                <TermAndConditionsLink link="https://allenai.org/terms/2024-09-25">
+                <TermAndConditionsLink link="https://allenai.org/terms">
                     Terms of Use
                 </TermAndConditionsLink>
                 ,{' '}
@@ -286,7 +288,7 @@ const Section2: TermsAndConditionsSection = {
                     Responsible Use Guidelines
                 </TermAndConditionsLink>
                 , and{' '}
-                <TermAndConditionsLink link="https://allenai.org/privacy-policy/2022-07-21">
+                <TermAndConditionsLink link="https://allenai.org/privacy-policy">
                     Privacy Policy
                 </TermAndConditionsLink>
                 . You will have 30 days to delete your queries. After that, they will be stored and
@@ -304,7 +306,7 @@ const Section2: TermsAndConditionsSection = {
     acknowledgement: (
         <>
             I agree to Ai2’s{' '}
-            <TermAndConditionsLink link="https://allenai.org/terms/2024-09-25">
+            <TermAndConditionsLink link="https://allenai.org/terms">
                 Terms of Use
             </TermAndConditionsLink>
             ,{' '}
@@ -312,7 +314,7 @@ const Section2: TermsAndConditionsSection = {
                 Responsible Use Guidelines
             </TermAndConditionsLink>
             , and{' '}
-            <TermAndConditionsLink link="https://allenai.org/privacy-policy/2022-07-21">
+            <TermAndConditionsLink link="https://allenai.org/privacy-policy">
                 Privacy Policy
             </TermAndConditionsLink>
             .
