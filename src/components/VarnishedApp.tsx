@@ -28,12 +28,9 @@ interface VarnishedAppProps extends PropsWithChildren {
 export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
     const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
     const siteKey = process.env.RECAPTCHA_SITE_KEY;
-    if (!siteKey) {
-        throw new Error('ReCaptcha Site Key not exists!');
-    }
 
     const GoogleReCaptchaWrapper = () => {
-        if (process.env.NODE_ENV === 'test') {
+        if (process.env.ENABLE_MOCKING || !siteKey) {
             return <>{children}</>;
         }
         return (
