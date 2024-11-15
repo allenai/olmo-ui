@@ -1,4 +1,4 @@
-import { Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
+import { Box, Card, Link, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -77,10 +77,29 @@ export const UIRefreshThreadPage = () => {
                             shouldOnlyShowAtDesktop={false}
                         />
                     </Box>
-
                     <Outlet />
                     <QueryForm />
-                    <LegalNotice />
+                    <Typography
+                        variant="caption"
+                        sx={(theme) => ({
+                            [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                display: 'none',
+                            },
+                        })}>
+                        Ai2 models are experimental and can make mistakes. Consider fact-checking
+                        your results.
+                    </Typography>
+                    <Typography variant="body2">
+                        This site is protected by reCAPTCHA and the Google{' '}
+                        <Link href={links.googlePrivacy} target="_blank" rel="noopener noreferrer">
+                            Privacy Policy
+                        </Link>{' '}
+                        and{' '}
+                        <Link href={links.googleTerms} target="_blank" rel="noopener noreferrer">
+                            Terms of Service
+                        </Link>{' '}
+                        apply.
+                    </Typography>
                 </Stack>
             </Card>
 
