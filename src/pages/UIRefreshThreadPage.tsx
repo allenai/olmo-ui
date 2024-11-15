@@ -77,29 +77,10 @@ export const UIRefreshThreadPage = () => {
                             shouldOnlyShowAtDesktop={false}
                         />
                     </Box>
+
                     <Outlet />
                     <QueryForm />
-                    <Typography
-                        variant="caption"
-                        sx={(theme) => ({
-                            [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                display: 'none',
-                            },
-                        })}>
-                        Ai2 models are experimental and can make mistakes. Consider fact-checking
-                        your results.
-                    </Typography>
-                    <Typography variant="body2">
-                        This site is protected by reCAPTCHA and the Google{' '}
-                        <Link href={links.googlePrivacy} target="_blank" rel="noopener noreferrer">
-                            Privacy Policy
-                        </Link>{' '}
-                        and{' '}
-                        <Link href={links.googleTerms} target="_blank" rel="noopener noreferrer">
-                            Terms of Service
-                        </Link>{' '}
-                        apply.
-                    </Typography>
+                    <LegalNotice />
                 </Stack>
             </Card>
 
@@ -156,6 +137,17 @@ export const LegalNotice = () => {
                 Ai2 models are experimental and can make mistakes. Consider fact-checking your
                 results.
             </p>
+            <Typography variant="body2">
+                This site is protected by reCAPTCHA and the Google{' '}
+                <Link href={links.googlePrivacy} target="_blank" rel="noopener noreferrer">
+                    Privacy Policy
+                </Link>{' '}
+                and{' '}
+                <Link href={links.googleTerms} target="_blank" rel="noopener noreferrer">
+                    Terms of Service
+                </Link>{' '}
+                apply.
+            </Typography>
         </Typography>
     );
 };

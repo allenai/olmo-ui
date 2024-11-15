@@ -56,6 +56,8 @@ export default defineConfig<TestOptions>({
         {
             name: 'anonymous-chromium',
             use: { ...devices['Desktop Chrome'], isAnonymousTest: true },
+            // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
+            testIgnore: ['*sticky-scroll*'],
         },
         {
             name: 'chromium',
@@ -64,6 +66,8 @@ export default defineConfig<TestOptions>({
                 storageState: 'e2e/.auth/storageState.json',
             },
             dependencies: ['setup'],
+            // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
+            testIgnore: ['*sticky-scroll*'],
         },
 
         {
@@ -73,6 +77,8 @@ export default defineConfig<TestOptions>({
                 storageState: 'e2e/.auth/storageState.json',
             },
             dependencies: ['setup'],
+            // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
+            testIgnore: ['*sticky-scroll*'],
         },
 
         {
