@@ -106,17 +106,25 @@ export const UIRefreshThreadPage = () => {
 };
 
 export const playgroundLoader: LoaderFunction = async ({ params }) => {
-    const { models, getAllModels, resetSelectedThreadState, resetAttribution } =
+    const { models, getAllModels, resetSelectedThreadState, resetAttribution, getSchema, schema } =
         appContext.getState();
 
+    const promises = [];
+
     if (models.length === 0) {
-        await getAllModels();
+        promises.push(getAllModels());
+    }
+
+    if (schema == null) {
+        promises.push(getSchema());
     }
 
     if (params.id === undefined) {
         resetSelectedThreadState();
         resetAttribution();
     }
+
+    await Promise.all(promises);
 
     return null;
 };

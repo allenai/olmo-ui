@@ -5,18 +5,14 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar';
-import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 
-interface AppLayout extends PropsWithChildren {
-    shouldShowTermsAndConditionsModal?: boolean;
-}
+interface AppLayout extends PropsWithChildren {}
 
-export const AppLayout = ({ children, shouldShowTermsAndConditionsModal }: AppLayout) => {
+export const AppLayout = ({ children }: AppLayout) => {
     return (
         <OuterContainer>
             <OlmoAppBar />
             <GlobalSnackMessageList />
-            {shouldShowTermsAndConditionsModal && <TermsAndConditionsModal />}
             <Container
                 component="main"
                 sx={{
