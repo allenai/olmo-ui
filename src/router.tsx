@@ -12,7 +12,8 @@ import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
-import { selectedThreadLoader, ThreadDisplay } from './components/thread/ThreadDisplay';
+import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
+import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
@@ -79,7 +80,7 @@ export const routes: RouteObject[] = [
                         handle: {
                             title: 'Playground',
                         },
-                        loader: selectedThreadLoader,
+                        loader: selectedThreadPageLoader,
                     },
                 ],
                 handle: {
