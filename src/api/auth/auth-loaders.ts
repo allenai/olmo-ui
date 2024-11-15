@@ -7,7 +7,9 @@ import {
     redirect,
     useRouteLoaderData,
 } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { UserInfoLoaderResponse } from '../user-info-loader';
@@ -114,9 +116,10 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 
 export const useUserAuthInfo = (): UserAuthInfo => {
     const { userAuthInfo } = useRouteLoaderData('root') as UserInfoLoaderResponse;
+    const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
     return {
-        userInfo: userAuthInfo?.userInfo,
+        userInfo: userInfo ?? undefined,
         isAuthenticated: Boolean(userAuthInfo?.isAuthenticated),
     };
 };
