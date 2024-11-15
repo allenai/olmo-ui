@@ -32,7 +32,7 @@
         }
     ],
     "completion": null,
-    "content": "tell me about penguins in one paragaph",
+    "content": "tell me about penguins in one paragraph",
     "created": "2024-09-19T13:37:24.948567+00:00",
     "creator": "murphy@allenai.org",
     "deleted": null,
@@ -56,6 +56,6 @@
     "private": false,
     "role": "user",
     "root": "msg_duplicatedocuments",
-    "snippet": "tell me about penguins in one paragaph",
+    "snippet": "tell me about penguins in one paragraph",
     "template": null
 }

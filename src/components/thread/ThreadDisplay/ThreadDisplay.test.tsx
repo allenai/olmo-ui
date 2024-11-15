@@ -1,9 +1,14 @@
+// @vitest-environment happy-dom
+// jsdom doesn't support IntersectionObserver
+
 import { render, screen } from '@test-utils';
+import { MemoryRouter } from 'react-router-dom';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { links } from '@/Links';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 
@@ -131,7 +136,9 @@ describe('ThreadDisplay', () => {
                         },
                     },
                 }}>
-                <ThreadDisplay />
+                <MemoryRouter initialEntries={[links.thread('userMessage')]}>
+                    <ThreadDisplay />
+                </MemoryRouter>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
@@ -201,7 +208,9 @@ describe('ThreadDisplay', () => {
                         },
                     },
                 }}>
-                <ThreadDisplay />
+                <MemoryRouter initialEntries={[links.thread('userMessage')]}>
+                    <ThreadDisplay />
+                </MemoryRouter>
             </FakeAppContextProvider>
         );
 

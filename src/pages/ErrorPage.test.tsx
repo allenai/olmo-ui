@@ -1,3 +1,6 @@
+// @vitest-environment happy-dom
+// jsdom doesn't support IntersectionObserver
+
 import { render, screen, waitFor } from '@test-utils';
 import { createMemoryRouter, json, RouterProvider } from 'react-router-dom';
 
