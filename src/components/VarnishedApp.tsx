@@ -48,7 +48,6 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
                 <VarnishApp layout="left-aligned" theme={combinedTheme}>
                     <GoogleReCaptchaWrapper />
                 </VarnishApp>
-                <GlobalStyle />
             </ThemeProvider>
         </FeatureToggleProvider>
     );

@@ -109,7 +109,6 @@
     "msw": "^2.2.13",
     "playwright-msw": "^3.0.1",
     "prettier": "^3.2.5",
-    "react-google-recaptcha": "^3.1.0",
     "react-google-recaptcha-v3": "^1.10.1",
     "react-infinite-scroll-hook": "^4.1.1",
     "react-refresh": "^0.14.0",
