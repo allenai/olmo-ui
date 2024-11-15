@@ -31,7 +31,7 @@ export const ThreadTabs = () => {
     return (
         <TabsWithOverflow
             value={currentOpenThreadTab}
-            onChange={(e, value) => {
+            onChange={(_e, value) => {
                 if (value != null && typeof value === 'string') {
                     setCurrentOpenGlobalDrawer(value as ThreadTabId);
                 }
