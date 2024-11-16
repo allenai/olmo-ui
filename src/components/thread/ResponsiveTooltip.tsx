@@ -47,11 +47,11 @@ export const ResponsiveTooltip = ({
                 variant={isSmallLayoutOrUp ? 'subtitle2' : 'h6'}
                 component="p"
                 margin={0}
+                color="text.primary"
                 id={tooltipLabelId}
                 sx={{
                     // This is here instead of using the direct prop because it gets overridden as the prop and not here
                     paddingBlockEnd: 1,
-                    color: (theme) => theme.palette.text.primary,
                 }}>
                 {dialogTitle}
             </DialogTitle>
@@ -81,7 +81,7 @@ export const ResponsiveTooltip = ({
                         borderRadius: theme.spacing(1.5),
                         position: 'relative',
                         right: theme.spacing(2),
-                        background: (theme) => theme.palette.common.white,
+                        background: (theme) => theme.palette.background.default,
                     }),
                 },
                 popper: { anchorEl },

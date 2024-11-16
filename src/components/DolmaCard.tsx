@@ -15,7 +15,7 @@ export const DolmaCard = () => {
                         variant="h1"
                         align="center"
                         sx={(theme) => ({
-                            color: theme.palette.common.white,
+                            color: theme.palette.text.reversed,
                             marginBottom: theme.spacing(2),
                         })}>
                         OLMoE-Mix is proven, trusted, and fully open.
@@ -23,7 +23,7 @@ export const DolmaCard = () => {
                     <Typography
                         variant="subtitle1"
                         align="center"
-                        sx={{ color: (theme) => theme.palette.common.white }}>
+                        sx={{ color: (theme) => theme.palette.text.reversed }}>
                         <Link
                             href={links.olmoeMixAnnouncement}
                             target="_blank"

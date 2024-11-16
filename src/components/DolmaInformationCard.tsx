@@ -49,7 +49,7 @@ export const DolmaInformationCard = ({
                 <Typography
                     variant="h3"
                     sx={{
-                        color: (theme) => theme.palette.common.white,
+                        color: (theme) => theme.palette.text.reversed,
                         marginY: 1,
                     }}>
                     {title}

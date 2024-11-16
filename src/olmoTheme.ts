@@ -1,8 +1,14 @@
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { alpha, Palette, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+import { alpha, PaletteMode, Theme, ThemeOptions } from '@mui/material';
 
 declare module '@mui/material/styles' {
     interface TypeBackground {
+        drawer: {
+            primary?: string;
+            secondary?: string;
+        };
+    }
+    interface TypeText {
         drawer: {
             primary?: string;
             secondary?: string;
@@ -16,7 +22,13 @@ export const uiRefreshOlmoTheme = {
         background: {
             drawer: {
                 primary: varnishTheme.palette.background.reversed,
-                secondary: varnishTheme.palette.background.paper,
+                secondary: varnishTheme.palette.background.default,
+            },
+        },
+        text: {
+            drawer: {
+                primary: varnishTheme.palette.text.reversed,
+                secondary: varnishTheme.palette.text.primary,
             },
         },
     },
@@ -115,40 +127,86 @@ export const uiRefreshOlmoTheme = {
     },
 } satisfies Partial<ThemeOptions>;
 
-const darkPaletteFromTheme = ({ palette }: Theme): Palette => {
+const darkPaletteFromTheme = (theme: Theme): Theme => {
+    const { palette } = theme;
     const { background, text, primary } = palette;
-
     return {
-        ...palette,
-        mode: 'dark',
-        /*
-         * For each one that is overridden, either exhastively implement,
-         * or, comment out the current values and merge with incoming palette
-         */
-        background: {
-            paper: background.reversed ?? '#000',
-            reversed: background.paper,
-            default: background.reversed ?? '#000',
-            drawer: {
-                primary: '#0D4246',
-                secondary: '#0D4246',
-            },
-        },
-        text: {
-            primary: text.reversed ?? '#FFF',
-            reversed: text.primary,
+        ...theme,
+        palette: {
+            ...palette,
+            mode: 'dark',
 
-            secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
-            disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
-        },
-        primary: {
-            ...primary,
-            contrastText: 'rgba(10, 43, 53, 1)',
+            background: {
+                paper: background.reversed ?? '#000', // this is required
+                reversed: background.paper,
+                default: background.reversed ?? '#000', // background.reversed ?? '#000', // this is required -- in light mode this is white
+                drawer: {
+                    primary: '#0D4246',
+                    secondary: '#0D4246',
+                },
+            },
+            text: {
+                // ...text,
+                primary: text.reversed ?? '#FFF', // this is required
+                reversed: text.primary,
+
+                // sane-ish defaults? -- MUIs alpha() - ?
+                secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
+                disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
+
+                drawer: {
+                    primary: text.reversed,
+                    secondary: text.reversed,
+                },
+            },
+            primary: {
+                ...primary,
+
+                contrastText: text.reversed ?? '#FFF', // default
+                // main: 'rgba(240, 82, 156, 1)',
+                // light: 'rgba(243, 116, 175, 1)',
+                // dark: 'rgba(168, 57, 109, 1)',
+            },
+            secondary: {
+                ...palette.secondary,
+                contrastText: text.reversed ?? '#FFF', // default
+            },
+            tertiary: {
+                ...palette.tertiary,
+                contrastText: text.reversed ?? '#FFF', // default
+            },
+            error: {
+                ...palette.error,
+            },
+            warning: {
+                ...palette.warning,
+            },
+            info: {
+                ...palette.info,
+            },
+            success: {
+                ...palette.success,
+                contrastText: 'goldenrod',
+            },
+            // divider: '#333',  //rgba(52, 52, 52, 1
+            contrastThreshold: 3,
+            tonalOffset: 0.2,
+            action: {
+                active: 'rgba(255, 0, 0, 0.54)',
+                hover: 'rgba(0, 255, 0, 0.04)',
+                hoverOpacity: 0.04,
+                selected: 'rgba(0, 0, 255, 0.08)',
+                selectedOpacity: 0.08,
+                disabled: 'rgba(255, 255, 0, 0.26)',
+                disabledBackground: 'rgba(200, 0, 100, 0.12)',
+                disabledOpacity: 0.38,
+                focus: 'rgba(40, 50, 200, 0.12)',
+                focusOpacity: 0.12,
+                activatedOpacity: 0.12,
+            },
         },
     };
 };
 
-export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme => ({
-    ...theme,
-    palette: mode === 'dark' ? darkPaletteFromTheme(theme) : theme.palette,
-});
+export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme =>
+    mode === 'dark' ? darkPaletteFromTheme(theme) : theme;

@@ -166,7 +166,7 @@ export const TermsAndConditionsModal = () => {
                                             width: 'fit-content',
                                             whiteSpace: 'nowrap',
                                             backgroundColor: (theme) => theme.palette.text.primary,
-                                            color: 'white',
+                                            color: 'text.reversed',
                                             '&:hover': {
                                                 backgroundColor: theme.palette.text.primary,
                                             },
