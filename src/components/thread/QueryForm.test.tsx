@@ -94,6 +94,7 @@ describe('QueryForm', () => {
         expect(textfield).toBeVisible();
         // Keeping the text field enabled allows users to type during long generations and makes keeping focus on the text field easy
         expect(textfield).toBeEnabled();
+        expect(textfield).toHaveFocus();
         expect(screen.getByRole('button', { name: 'Stop response generation' })).toBeEnabled();
     });
 
