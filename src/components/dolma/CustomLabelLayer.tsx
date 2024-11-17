@@ -14,8 +14,8 @@ export const CustomLabelLayer = ({ bars }: BarCustomLayerProps<BarData>) => {
                 const isLongBar = bar.width > BarWithThresHold;
                 const labelX = isLongBar ? bar.x + bar.width / 2 : bar.x + bar.width + 5;
                 const textColor = isLongBar
-                    ? theme.palette.common.white
-                    : theme.palette.text.secondary;
+                    ? theme.palette.text.reversed
+                    : theme.palette.text.primary;
 
                 return (
                     <text

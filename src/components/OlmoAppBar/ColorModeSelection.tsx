@@ -17,7 +17,7 @@ export const ColorModeSelection = () => {
             <ButtonGroup
                 variant="outlined"
                 sx={{
-                    color: 'text.default',
+                    color: 'text.drawer.primary',
                     marginInline: 4,
                 }}>
                 <ModeSelectionButton
@@ -69,11 +69,11 @@ const ModeSelectionButton = ({
         <Button
             onClick={onClick}
             sx={(theme) => ({
-                borderColor: theme.palette.text.reversed,
-                color: theme.palette.text.reversed,
+                borderColor: theme.palette.text.drawer.primary,
+                color: theme.palette.text.drawer.primary,
                 '&:hover': {
-                    color: theme.palette.text.reversed,
-                    borderColor: theme.palette.text.reversed,
+                    color: theme.palette.text.drawer.primary,
+                    borderColor: theme.palette.text.drawer.primary,
                 },
             })}>
             {selected ? (

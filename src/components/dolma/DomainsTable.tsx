@@ -105,6 +105,7 @@ export const DomainsTable = () => {
                             sx={{
                                 '& .MuiPaginationItem-root': {
                                     '&.Mui-selected': {
+                                        // these can be hard coded -- they work with dark and light
                                         backgroundColor: (theme) => theme.color['dark-blue'].hex, // Background color for the selected item
                                         color: 'white', // Text color for the selected item
                                     },
@@ -131,7 +132,7 @@ export const DomainsTable = () => {
                         border: 0,
                     },
                     [`& .${gridClasses.row}:nth-of-type(odd) `]: {
-                        bgcolor: theme.color.N3.hex,
+                        bgcolor: theme.palette.background.paper,
                     },
                     [`& .${gridClasses.footerContainer}`]: {
                         justifyContent: 'flex-start',

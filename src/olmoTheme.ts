@@ -3,6 +3,7 @@ import { alpha, PaletteMode, Theme, ThemeOptions } from '@mui/material';
 
 declare module '@mui/material/styles' {
     interface TypeBackground {
+        code?: string;
         drawer: {
             primary?: string;
             secondary?: string;
@@ -20,6 +21,7 @@ declare module '@mui/material/styles' {
 export const uiRefreshOlmoTheme = {
     palette: {
         background: {
+            code: varnishTheme.palette.background.reversed,
             drawer: {
                 primary: varnishTheme.palette.background.reversed,
                 secondary: varnishTheme.palette.background.default,
@@ -129,7 +131,7 @@ export const uiRefreshOlmoTheme = {
 
 const darkPaletteFromTheme = (theme: Theme): Theme => {
     const { palette } = theme;
-    const { background, text, primary } = palette;
+    const { background, text, primary, action } = palette;
     return {
         ...theme,
         palette: {
@@ -137,13 +139,14 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
             mode: 'dark',
 
             background: {
-                paper: background.reversed ?? '#000', // this is required
+                paper: '#032629' ?? '#000',
                 reversed: background.paper,
-                default: background.reversed ?? '#000', // background.reversed ?? '#000', // this is required -- in light mode this is white
+                default: '#032629' ?? '#000',
                 drawer: {
-                    primary: '#0D4246',
-                    secondary: '#0D4246',
+                    primary: background.reversed,
+                    secondary: background.reversed,
                 },
+                code: background.reversed,
             },
             text: {
                 // ...text,
@@ -186,23 +189,12 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
             },
             success: {
                 ...palette.success,
-                contrastText: 'goldenrod',
             },
-            // divider: '#333',  //rgba(52, 52, 52, 1
-            contrastThreshold: 3,
-            tonalOffset: 0.2,
             action: {
-                active: 'rgba(255, 0, 0, 0.54)',
-                hover: 'rgba(0, 255, 0, 0.04)',
-                hoverOpacity: 0.04,
-                selected: 'rgba(0, 0, 255, 0.08)',
-                selectedOpacity: 0.08,
-                disabled: 'rgba(255, 255, 0, 0.26)',
-                disabledBackground: 'rgba(200, 0, 100, 0.12)',
-                disabledOpacity: 0.38,
-                focus: 'rgba(40, 50, 200, 0.12)',
-                focusOpacity: 0.12,
-                activatedOpacity: 0.12,
+                ...action,
+                active: 'rgba(255, 255, 255, 0.54)',
+                disabled: 'rgba(255, 255, 255, 0.26)',
+                disabledBackground: 'rgba(255, 255, 255, 0.12)',
             },
         },
     };
