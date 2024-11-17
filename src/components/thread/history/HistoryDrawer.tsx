@@ -123,7 +123,7 @@ export const HistoryDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ color: (theme) => theme.palette.common.white }}
+                            sx={{ color: (theme) => theme.palette.text.drawer.primary }}
                             aria-label="close history drawer">
                             <CloseIcon />
                         </IconButton>
