@@ -1,7 +1,25 @@
-import { alpha, ThemeOptions } from '@mui/material';
+import { varnishTheme } from '@allenai/varnish2/theme';
+import { alpha, Palette, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+
+declare module '@mui/material/styles' {
+    interface TypeBackground {
+        drawer: {
+            primary?: string;
+            secondary?: string;
+        };
+    }
+}
 
 // extended theme to hold olmo specific values and overrides
 export const uiRefreshOlmoTheme = {
+    palette: {
+        background: {
+            drawer: {
+                primary: varnishTheme.palette.background.reversed,
+                secondary: varnishTheme.palette.background.paper,
+            },
+        },
+    },
     components: {
         MuiButton: {},
         MuiListItemButton: {
@@ -96,3 +114,41 @@ export const uiRefreshOlmoTheme = {
         },
     },
 } satisfies Partial<ThemeOptions>;
+
+const darkPaletteFromTheme = ({ palette }: Theme): Palette => {
+    const { background, text, primary } = palette;
+
+    return {
+        ...palette,
+        mode: 'dark',
+        /*
+         * For each one that is overridden, either exhastively implement,
+         * or, comment out the current values and merge with incoming palette
+         */
+        background: {
+            paper: background.reversed ?? '#000',
+            reversed: background.paper,
+            default: background.reversed ?? '#000',
+            drawer: {
+                primary: '#0D4246',
+                secondary: '#0D4246',
+            },
+        },
+        text: {
+            primary: text.reversed ?? '#FFF',
+            reversed: text.primary,
+
+            secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
+            disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
+        },
+        primary: {
+            ...primary,
+            contrastText: 'rgba(10, 43, 53, 1)',
+        },
+    };
+};
+
+export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme => ({
+    ...theme,
+    palette: mode === 'dark' ? darkPaletteFromTheme(theme) : theme.palette,
+});

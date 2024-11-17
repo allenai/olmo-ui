@@ -22,6 +22,7 @@ import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
+import { ColorModeSelection } from './ColorModeSelection';
 import { NavigationLink } from './NavigationLink';
 
 const Auth0LoginLink = () => {
@@ -173,6 +174,7 @@ export const NavigationDrawer = ({
                         variant="footer">
                         Responsible use policy
                     </NavigationLink>
+                    <ColorModeSelection />
                     <Auth0LoginLink />
                 </Stack>
             </Stack>
