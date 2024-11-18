@@ -33,4 +33,6 @@ export const links = {
     responsibleUsePolicy: 'https://allenai.org/responsible-use',
     molmo: 'https://molmo.allenai.org',
     documentation: 'http://allenai.org/documentation',
+    googlePrivacy: 'https://policies.google.com/privacy',
+    googleTerms: 'https://policies.google.com/terms',
 } as const;

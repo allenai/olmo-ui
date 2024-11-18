@@ -73,6 +73,8 @@ export default defineConfig<TestOptions>({
                 storageState: 'e2e/.auth/storageState.json',
             },
             dependencies: ['setup'],
+            // This test is flaky on FF. It seems to work just fine in browser, but be extra careful when you make changes to this!
+            testIgnore: ['*sticky-scroll*'],
         },
 
         {

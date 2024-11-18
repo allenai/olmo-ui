@@ -10,7 +10,15 @@ import {
     svgIconClasses,
     Typography,
 } from '@mui/material';
-import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
+import React, {
+    ComponentProps,
+    PropsWithChildren,
+    UIEvent,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
+import { GoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -104,10 +112,13 @@ const SubmitPauseAdornment = ({
 };
 
 export const QueryForm = (): JSX.Element => {
+    const [token, setToken] = useState('');
+    const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
     const navigation = useNavigation();
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
+
     const formContext = useForm({
         defaultValues: {
             content: '',
@@ -124,17 +135,17 @@ export const QueryForm = (): JSX.Element => {
         );
     });
 
-    const abortController = useAppContext((state) => state.abortController);
+    const abortPrompt = useAppContext((state) => state.abortPrompt);
     const canPauseThread = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading && abortController != null
+        (state) => state.streamPromptState === RemoteState.Loading && state.abortController != null
     );
 
     const onAbort = useCallback(
         (event: UIEvent) => {
             event.preventDefault();
-            abortController?.abort();
+            abortPrompt();
         },
-        [abortController]
+        [abortPrompt]
     );
 
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
@@ -169,11 +180,23 @@ export const QueryForm = (): JSX.Element => {
 
     // Clear form input after the client receive the first message
     useEffect(() => {
-        formContext.reset();
+        if (firstResponseId !== null) {
+            formContext.reset();
+        }
     }, [firstResponseId, formContext]);
 
     const handleSubmit = async (data: { content: string }) => {
-        const request: MessagePost = { ...data };
+        if (!canEditThread || isSelectedThreadLoading) {
+            return;
+        }
+
+        // Token is missing: reCAPTCHA validation failed.
+        if (!token && process.env.NODE_ENV === 'production') {
+            setRefreshReCaptcha(!refreshReCaptcha);
+            return;
+        }
+
+        const request: MessagePost = { ...data, captchaToken: token };
 
         if (lastMessageId != null) {
             request.parent = lastMessageId;
@@ -182,6 +205,7 @@ export const QueryForm = (): JSX.Element => {
         try {
             await streamPrompt(request);
         } catch (e) {
+            setRefreshReCaptcha(!refreshReCaptcha);
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
                     type: 'inappropriate',
@@ -198,6 +222,10 @@ export const QueryForm = (): JSX.Element => {
             await formContext.handleSubmit(handleSubmit)();
         }
     };
+
+    const onVerify = useCallback((token: string) => {
+        setToken(token);
+    }, []);
 
     return (
         <Box marginBlockStart="auto" width={1}>
@@ -237,7 +265,7 @@ export const QueryForm = (): JSX.Element => {
                         validation={{ pattern: /[^\s]+/ }}
                         // If we don't have a dense margin the label gets cut off!
                         margin="dense"
-                        disabled={!canEditThread || isSelectedThreadLoading}
+                        disabled={!canEditThread}
                         onKeyDown={handleOnKeyDown}
                         InputProps={{
                             sx: (theme) => ({
@@ -259,23 +287,27 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-                    {isLimitReached && (
-                        <Typography
-                            variant="subtitle2"
-                            alignSelf="center"
-                            color={(theme) => theme.palette.error.main}>
-                            You have reached maximum thread length. Please start a new thread.
-                        </Typography>
+                    {process.env.NODE_ENV === 'production' && (
+                        <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
                     )}
-                    {!canEditThread && (
-                        <Typography
-                            variant="subtitle2"
-                            alignSelf="center"
-                            color={(theme) => theme.palette.error.main}>
-                            You cannot add a prompt because you are not the thread creator. Please
-                            submit your prompt in a new thread.
-                        </Typography>
-                    )}
+
+                    <Stack direction="row" gap={2} alignItems="center">
+                        {isLimitReached && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You have reached maximum thread length. Please start a new thread.
+                            </Typography>
+                        )}
+                        {!canEditThread && (
+                            <Typography
+                                variant="subtitle2"
+                                color={(theme) => theme.palette.error.main}>
+                                You cannot add a prompt because you are not the thread creator.
+                                Please submit your prompt in a new thread.
+                            </Typography>
+                        )}
+                    </Stack>
                 </Stack>
             </FormContainer>
         </Box>
