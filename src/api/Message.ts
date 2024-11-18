@@ -25,6 +25,7 @@ export interface MessagePost {
     prompt_template_id?: string;
     opts?: RequestInferenceOpts;
     model?: string;
+    captchaToken?: string;
 }
 
 export interface Message {
