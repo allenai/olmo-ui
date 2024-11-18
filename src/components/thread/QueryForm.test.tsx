@@ -182,6 +182,6 @@ describe('QueryForm', () => {
             await user.click(screen.getByRole('button', { name: 'Submit prompt' }));
         });
 
-        expect(textfield).toHaveTextContent('FirstMessage');
+        expect(textfield).toHaveTextContent('write a poem');
     });
 });
