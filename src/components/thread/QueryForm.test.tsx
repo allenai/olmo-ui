@@ -67,7 +67,7 @@ describe('QueryForm', () => {
         expect(mockStreamPrompt).toHaveBeenCalled();
     });
 
-    it('should be disabled when streaming', async () => {
+    it('should show the stop button when streaming', () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
             pathname: '/',
             search: '',
@@ -80,6 +80,7 @@ describe('QueryForm', () => {
 
         const initialStates = {
             streamPromptState: RemoteState.Loading,
+            abortController: new AbortController(),
         };
 
         render(
@@ -91,7 +92,10 @@ describe('QueryForm', () => {
         const textfield = screen.getByRole('textbox', { name: 'Prompt' });
 
         expect(textfield).toBeVisible();
-        expect(textfield).toBeDisabled();
+        // Keeping the text field enabled allows users to type during long generations and makes keeping focus on the text field easy
+        expect(textfield).toBeEnabled();
+        expect(textfield).toHaveFocus();
+        expect(screen.getByRole('button', { name: 'Stop response generation' })).toBeEnabled();
     });
 
     it('should clear out prompt after receiving the first message from the response', async () => {
@@ -136,5 +140,48 @@ describe('QueryForm', () => {
 
         expect(textfield).toHaveTextContent('');
         expect(fakeStreamPrompt).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not clear out prompt after the stream finishes', async () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
+            set
+        ) => ({
+            streamingMessageId: 'FirstMessage',
+            // This isn't how the prompt streaming actually works but it's convenient for this test
+            streamPrompt: () => {
+                set({ streamingMessageId: null });
+
+                return Promise.resolve();
+            },
+        });
+
+        render(
+            <FakeAppContextProvider initialState={initialState}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+
+        expect(textfield).toBeVisible();
+
+        const user = userEvent.setup();
+        await act(async () => {
+            await user.click(textfield);
+            await user.keyboard('write a poem');
+            await user.click(screen.getByRole('button', { name: 'Submit prompt' }));
+        });
+
+        expect(textfield).toHaveTextContent('write a poem');
     });
 });
