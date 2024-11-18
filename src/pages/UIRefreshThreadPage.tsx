@@ -31,10 +31,14 @@ export const UIRefreshThreadPage = () => {
             <Card
                 variant="elevation"
                 elevation={0}
-                sx={{
+                sx={(theme) => ({
                     flexGrow: '1',
                     gridArea: 'content',
-                }}>
+                    paddingBlockStart: 2,
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        paddingBlockStart: 0,
+                    },
+                })}>
                 <Stack
                     gap={2}
                     sx={(theme) => ({
@@ -61,6 +65,9 @@ export const UIRefreshThreadPage = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: 1,
                             paddingInline: 2,
+                            width: '100%',
+                            maxWidth: '750px',
+                            margin: '0 auto',
                         }}>
                         <ModelSelectionDisplay
                             models={models}
@@ -83,6 +90,9 @@ export const UIRefreshThreadPage = () => {
                         gap={2}
                         sx={{
                             paddingInline: 2,
+                            width: '100%',
+                            maxWidth: '750px',
+                            margin: '0 auto',
                         }}>
                         <QueryForm />
                         <LegalNotice />

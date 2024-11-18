@@ -46,10 +46,15 @@ export const OlmoAppBar = (): JSX.Element => {
                 })}>
                 <Toolbar
                     disableGutters
-                    sx={{
+                    sx={(theme) => ({
                         display: 'grid',
                         gridTemplateColumns: '1fr max-content 1fr',
-                    }}>
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            width: '100%',
+                            maxWidth: '750px',
+                            margin: '0 auto',
+                        },
+                    })}>
                     <Link
                         href={links.home}
                         lineHeight={1}
