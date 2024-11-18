@@ -43,14 +43,14 @@ export const UIRefreshThreadPage = () => {
 
                         backgroundColor: 'transparent',
 
-                        paddingBlockStart: 1,
-                        paddingBlockEnd: 2,
-                        paddingInline: 2,
+                        // paddingBlockStart: 1,
+                        // paddingBlockEnd: 2,
+                        // paddingInline: 2,
 
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            paddingBlockStart: 2,
-                            paddingBlockEnd: 4,
-                            paddingInline: 0,
+                            // paddingBlockStart: 2,
+                            // paddingBlockEnd: 4,
+                            // paddingInline: 0,
                         },
 
                         height: 1,
@@ -60,6 +60,7 @@ export const UIRefreshThreadPage = () => {
                             display: 'grid',
                             gridTemplateColumns: '1fr max-content',
                             columnGap: 1,
+                            paddingInline: 2,
                         }}>
                         <ModelSelectionDisplay
                             models={models}
@@ -77,10 +78,15 @@ export const UIRefreshThreadPage = () => {
                             shouldOnlyShowAtDesktop={false}
                         />
                     </Box>
-
                     <Outlet />
-                    <QueryForm />
-                    <LegalNotice />
+                    <Stack
+                        gap={2}
+                        sx={{
+                            paddingInline: 2,
+                        }}>
+                        <QueryForm />
+                        <LegalNotice />
+                    </Stack>
                 </Stack>
             </Card>
 

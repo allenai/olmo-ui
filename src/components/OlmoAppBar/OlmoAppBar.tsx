@@ -41,8 +41,6 @@ export const OlmoAppBar = (): JSX.Element => {
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         paddingBlockStart: 4,
-                        paddingInline: 0,
-
                         backgroundColor: 'transparent',
                     },
                 })}>

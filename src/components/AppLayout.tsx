@@ -21,7 +21,7 @@ export const AppLayout = ({ children }: AppLayout) => {
 
                     overflow: 'auto',
 
-                    paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
+                    // paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
 
                     height: 1,
 
@@ -67,11 +67,12 @@ const OuterContainer = (props: PaperProps) => {
                             'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
                         // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
-                        gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
-                        columnGap: theme.spacing(8),
-                        rowGap: 2,
+                        // gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
+                        gridTemplateColumns: 'auto 1fr auto',
+                        // columnGap: theme.spacing(8),
+                        rowGap: 2, // keep?
 
-                        paddingInlineEnd: 3,
+                        // paddingInlineEnd: 3,
                     },
                 }),
             ]}

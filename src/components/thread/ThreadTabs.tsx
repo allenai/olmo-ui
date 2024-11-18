@@ -112,6 +112,7 @@ const TabsWithOverflow = styled(Tabs)(() => ({
     flexFlow: 'column nowrap',
     height: '100%',
     gridArea: 'aside',
+    width: '320px',
 }));
 
 const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({
