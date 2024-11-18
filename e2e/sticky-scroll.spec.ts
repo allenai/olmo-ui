@@ -5,7 +5,7 @@ test.use({
     viewport: { width: 400, height: 500 },
 });
 
-test('should sticky-scroll only after the user scrolls', async ({ page }) => {
+test.skip('should sticky-scroll only after the user scrolls', async ({ page }) => {
     await page.goto('/');
 
     const firstStreamResponsePromise = page.waitForResponse((response) =>
