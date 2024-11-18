@@ -1,5 +1,5 @@
 import { Drawer, DrawerProps, GlobalStyles, SxProps, Theme } from '@mui/material';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { useDesktopOrUp } from './dolma/shared';
 
@@ -32,7 +32,7 @@ const GlobalStyle = () => (
 );
 
 const sharedDrawerStyle: SxProps<Theme> = (theme) => ({
-    backgroundColor: theme.palette.background.reversed,
+    background: theme.palette.background.drawer.primary,
 });
 
 export const ResponsiveDrawer = ({
@@ -96,7 +96,6 @@ export const ResponsiveDrawer = ({
                             sharedDrawerStyle,
                             {
                                 width: 'clamp(18rem, 100vw - 44px, 23rem)',
-                                color: (theme) => theme.palette.common.white,
                             },
                         ],
                     }}

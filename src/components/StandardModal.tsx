@@ -13,7 +13,7 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
                     maxWidth: `${DEFAULT_MODAL_WIDTH}px`,
                     padding: 3.75,
                     margin: '0 auto',
-                    backgroundColor: (theme) => theme.color.N1.hex,
+                    backgroundColor: 'background.paper',
                 },
             }}
             {...rest}

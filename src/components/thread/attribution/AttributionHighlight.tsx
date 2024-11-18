@@ -180,10 +180,9 @@ export const AttributionHighlight = ({
                             ? getHighlightColor(theme, spanScorePercentile)
                             : theme.palette.tertiary.light,
 
+                    // color is hard coded (not theme dependant), because background is always some variation of pink
                     color: (theme) =>
-                        isPrimaryVariant
-                            ? theme.palette.text.primary
-                            : theme.palette.tertiary.contrastText,
+                        isPrimaryVariant ? theme.color['dark-teal'] : theme.color['dark-blue'],
 
                     ':focus-visible': {
                         outlineStyle: 'solid',

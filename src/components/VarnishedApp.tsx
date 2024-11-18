@@ -1,14 +1,10 @@
-import { VarnishApp } from '@allenai/varnish2/components';
-import { getTheme } from '@allenai/varnish2/theme';
-import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
 import { GlobalStyles, ThemeOptions } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
-import { Link } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
+import { ColorModeProvider } from './ColorModeProvider';
 import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';
 
 const GlobalStyle = () => (
@@ -26,7 +22,6 @@ interface VarnishedAppProps extends PropsWithChildren {
 }
 
 export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
-    const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
     const siteKey = process.env.RECAPTCHA_SITE_KEY;
 
     const GoogleReCaptchaWrapper = () => {
@@ -44,11 +39,9 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
     return (
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
-            <ThemeProvider theme={combinedTheme}>
-                <VarnishApp layout="left-aligned" theme={combinedTheme}>
-                    <GoogleReCaptchaWrapper />
-                </VarnishApp>
-            </ThemeProvider>
+            <ColorModeProvider theme={theme}>
+                <GoogleReCaptchaWrapper />
+            </ColorModeProvider>
         </FeatureToggleProvider>
     );
 };

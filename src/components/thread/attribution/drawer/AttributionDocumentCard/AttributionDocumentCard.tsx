@@ -26,7 +26,8 @@ const AttributionDocumentCardBase = ({
             component="li"
             sx={{
                 // this bgcolor is the varnish off-white with 80% opacity
-                bgcolor: '#F8F0E780',
+                bgcolor: (theme) =>
+                    `color-mix(in srgb, ${theme.palette.background.paper} 80%, transparent)`,
                 listStyle: 'none',
 
                 borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,

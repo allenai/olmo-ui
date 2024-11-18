@@ -34,7 +34,7 @@ export const OlmoAppBar = (): JSX.Element => {
                 sx={(theme) => ({
                     gridArea: 'app-bar',
 
-                    backgroundColor: theme.palette.background.reversed,
+                    backgroundColor: theme.palette.background.drawer.primary,
 
                     paddingBlock: 1,
                     paddingInline: 2,
