@@ -63,7 +63,7 @@ export const NavigationLink = ({
                     paddingBlock: 1,
                     paddingInline: 4,
                     gap: theme.spacing(2),
-                    color: theme.palette.text.reversed,
+                    color: theme.palette.text.drawer.primary,
 
                     ':hover': {
                         backgroundColor: 'transparent',

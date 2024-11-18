@@ -196,8 +196,8 @@ export const ThreadDisplay = (): ReactNode => {
                         [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
                     }),
                     position: 'sticky',
-                    background:
-                        'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 57.5%);',
+                    background: (theme) =>
+                        `linear-gradient(0deg, ${theme.palette.background.paper} 0%, #0000 42.5%)`,
                     marginTop: (theme) => theme.spacing(-3),
                 }}>
                 <ScrollToBottomButton

@@ -74,11 +74,11 @@ export const ThreadTabs = () => {
     );
 };
 
-const StickyTabsList = styled(TabsList)(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
+const StickyTabsList = styled(TabsList)({
+    backgroundColor: 'transparent',
     width: '100%',
     display: 'flex',
-}));
+});
 
 const TabControl = styled(Tab)(({ theme }) => ({
     paddingBlock: theme.spacing(3),
@@ -87,7 +87,7 @@ const TabControl = styled(Tab)(({ theme }) => ({
     flexGrow: 1,
 
     color: theme.palette.primary.dark,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'inherit',
 
     cursor: 'pointer',
     position: 'relative',
@@ -97,7 +97,7 @@ const TabControl = styled(Tab)(({ theme }) => ({
     },
 
     '&[aria-selected="true"]': {
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.drawer.secondary,
         color: 'inherit',
         borderTopLeftRadius: theme.shape.borderRadius,
         borderTopRightRadius: theme.shape.borderRadius,
@@ -118,7 +118,7 @@ const TabPanelWithOverflow = styled(TabPanel)(({ theme }) => ({
     minHeight: 0,
     borderRadius: theme.spacing(0.5),
     paddingBlock: theme.spacing(2),
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.drawer.secondary,
     flexGrow: 1,
     '& > *': {
         paddingInline: theme.spacing(2),

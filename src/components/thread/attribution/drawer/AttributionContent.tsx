@@ -50,7 +50,9 @@ export const AttributionContent = () => {
                             padding: (theme) => theme.spacing(2),
                         },
                     }}>
-                    <Typography color="white">Want to see more pre-training data?</Typography>
+                    <Typography color="text.reversed">
+                        Want to see more pre-training data?
+                    </Typography>
                     <Button
                         variant="contained"
                         href={links.datasetExplorer}
@@ -58,10 +60,10 @@ export const AttributionContent = () => {
                         sx={(theme) => ({
                             backgroundColor: theme.palette.secondary.light,
                             '&:hover': {
-                                backgroundColor: theme.color['green-20'].hex,
+                                backgroundColor: `color-mix(in srgb, ${theme.palette.secondary.light} 80%, white)`,
                             },
                             '&:focus-visible': {
-                                backgroundColor: theme.color['green-20'].hex,
+                                backgroundColor: `color-mix(in srgb, ${theme.palette.secondary.light} 80%, white)`,
                             },
                             marginTop: theme.spacing(2),
                         })}>

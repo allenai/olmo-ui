@@ -1,4 +1,5 @@
 import {
+    Box,
     LinearProgress,
     Table,
     TableBody,
@@ -11,7 +12,7 @@ import {
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { AxisTickProps } from '@nivo/axes'; // Import correct types
-import { ComputedDatum, ResponsiveBar } from '@nivo/bar';
+import { BarDatum, BarTooltipProps, ComputedDatum, ResponsiveBar } from '@nivo/bar';
 import { useLoaderData, useNavigation } from 'react-router-dom';
 
 import { formatValueAsPercentage } from '@/util';
@@ -93,7 +94,7 @@ export const SourcesBarChart = () => {
                     labelSkipWidth={0}
                     labelSkipHeight={0}
                     padding={0.1}
-                    colors={theme.color['teal-100'].hex}
+                    colors={theme.palette.background.reversed}
                     margin={{ top: 50, right: 30, bottom: 100, left: 110 }}
                     groupMode="grouped"
                     axisLeft={{
@@ -103,7 +104,25 @@ export const SourcesBarChart = () => {
                         legendPosition: 'middle',
                         legendOffset: -70,
                         format: (value) => value,
+                        renderTick: (props: AxisTickProps<string | number>) => {
+                            const { x, y, value } = props;
+                            return (
+                                <g transform={`translate(${x + 5}, ${y})`}>
+                                    <text
+                                        dominantBaseline="central"
+                                        textAnchor="end"
+                                        transform="translate(-25, 0)"
+                                        style={{
+                                            fontSize: '11px',
+                                            fill: theme.palette.primary.contrastText,
+                                        }}>
+                                        {value}
+                                    </text>
+                                </g>
+                            );
+                        },
                     }}
+                    labelTextColor={theme.palette.primary.contrastText}
                     axisBottom={{
                         tickSize: 0,
                         tickPadding: 20,
@@ -121,7 +140,7 @@ export const SourcesBarChart = () => {
                                             fontSize: theme.typography.body2.fontSize,
                                             fontFamily: theme.typography.body2.fontFamily,
                                             fontWeight: theme.typography.body2.fontWeight,
-                                            fill: theme.palette.text.secondary,
+                                            fill: theme.palette.primary.contrastText,
                                         }}>
                                         {formatValueAsPercentage(value as number, totalSum)}
                                     </text>
@@ -129,6 +148,7 @@ export const SourcesBarChart = () => {
                             );
                         },
                     }}
+                    tooltip={SourcesTooltip}
                     enableGridX={true}
                     enableGridY={false}
                     enableLabel={false}
@@ -147,7 +167,12 @@ export const SourcesBarChart = () => {
                     isFocusable={true}
                 />
             </ChartContainerSansLegend>
-            <Divider />
+            <Divider
+                sx={{
+                    borderColor: (theme) =>
+                        `color-mix(in srgb, ${theme.palette.background.reversed} 50%, transparent)`,
+                }}
+            />
             <TableContainer>
                 <Table>
                     <TableHead>
@@ -191,7 +216,7 @@ export const SourcesBarChart = () => {
                                     <Typography
                                         variant="body1"
                                         sx={{
-                                            color: (theme) => theme.color['teal-90'].hex,
+                                            color: (theme) => theme.palette.text.primary,
                                         }}>
                                         {formatNumberWithCommas(data.value)}
                                     </Typography>
@@ -202,5 +227,41 @@ export const SourcesBarChart = () => {
                 </Table>
             </TableContainer>
         </ResponsiveCard>
+    );
+};
+
+export const SourcesTooltip = ({ value, color, label }: BarTooltipProps<BarDatum>) => {
+    return (
+        <Box
+            sx={{
+                background: (theme) => theme.palette.background.drawer.primary,
+                color: 'text.primary',
+                fontSize: 'inherit',
+                borderRadius: '2px',
+                boxShadow: 'rgba(0, 0, 0, 0.25) 0px 1px 2px',
+                padding: '5px 9px',
+            }}>
+            <Box
+                sx={{
+                    whiteSpace: 'pre',
+                    display: 'flex',
+                    alignItems: 'center',
+                }}>
+                <Box
+                    sx={{
+                        display: 'block',
+                        width: '12px',
+                        height: '12px',
+                        marginRight: '7px',
+                    }}
+                    style={{
+                        background: color,
+                    }}
+                />
+                <Box>
+                    value - {label}: <strong>{value}</strong>
+                </Box>
+            </Box>
+        </Box>
     );
 };

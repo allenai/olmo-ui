@@ -1,7 +1,39 @@
-import { alpha, ThemeOptions } from '@mui/material';
+import { varnishTheme } from '@allenai/varnish2/theme';
+import { alpha, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+
+declare module '@mui/material/styles' {
+    interface TypeBackground {
+        code?: string;
+        drawer: {
+            primary?: string;
+            secondary?: string;
+        };
+    }
+    interface TypeText {
+        drawer: {
+            primary?: string;
+            secondary?: string;
+        };
+    }
+}
 
 // extended theme to hold olmo specific values and overrides
 export const uiRefreshOlmoTheme = {
+    palette: {
+        background: {
+            code: varnishTheme.palette.background.reversed,
+            drawer: {
+                primary: varnishTheme.palette.background.reversed,
+                secondary: varnishTheme.palette.background.default,
+            },
+        },
+        text: {
+            drawer: {
+                primary: varnishTheme.palette.text.reversed,
+                secondary: varnishTheme.palette.text.primary,
+            },
+        },
+    },
     components: {
         MuiButton: {},
         MuiListItemButton: {
@@ -96,3 +128,77 @@ export const uiRefreshOlmoTheme = {
         },
     },
 } satisfies Partial<ThemeOptions>;
+
+const darkPaletteFromTheme = (theme: Theme): Theme => {
+    const { palette } = theme;
+    const { background, text, primary, action } = palette;
+    return {
+        ...theme,
+        palette: {
+            ...palette,
+            mode: 'dark',
+
+            background: {
+                paper: '#032629' ?? '#000',
+                reversed: background.paper,
+                default: '#032629' ?? '#000',
+                drawer: {
+                    primary: background.reversed,
+                    secondary: background.reversed,
+                },
+                code: background.reversed,
+            },
+            text: {
+                // ...text,
+                primary: text.reversed ?? '#FFF', // this is required
+                reversed: text.primary,
+
+                // sane-ish defaults? -- MUIs alpha() - ?
+                secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
+                disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
+
+                drawer: {
+                    primary: text.reversed,
+                    secondary: text.reversed,
+                },
+            },
+            primary: {
+                ...primary,
+
+                contrastText: text.reversed ?? '#FFF', // default
+                // main: 'rgba(240, 82, 156, 1)',
+                // light: 'rgba(243, 116, 175, 1)',
+                // dark: 'rgba(168, 57, 109, 1)',
+            },
+            secondary: {
+                ...palette.secondary,
+                contrastText: text.reversed ?? '#FFF', // default
+            },
+            tertiary: {
+                ...palette.tertiary,
+                contrastText: text.reversed ?? '#FFF', // default
+            },
+            error: {
+                ...palette.error,
+            },
+            warning: {
+                ...palette.warning,
+            },
+            info: {
+                ...palette.info,
+            },
+            success: {
+                ...palette.success,
+            },
+            action: {
+                ...action,
+                active: 'rgba(255, 255, 255, 0.54)',
+                disabled: 'rgba(255, 255, 255, 0.26)',
+                disabledBackground: 'rgba(255, 255, 255, 0.12)',
+            },
+        },
+    };
+};
+
+export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme =>
+    mode === 'dark' ? darkPaletteFromTheme(theme) : theme;
