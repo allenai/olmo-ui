@@ -41,7 +41,7 @@ export const UIRefreshThreadPage = () => {
                         containerName: 'thread-page',
                         containerType: 'inline-size',
 
-                        backgroundColor: 'background.default',
+                        backgroundColor: 'transparent',
 
                         paddingBlockStart: 1,
                         paddingBlockEnd: 2,
@@ -50,7 +50,7 @@ export const UIRefreshThreadPage = () => {
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                             paddingBlockStart: 2,
                             paddingBlockEnd: 4,
-                            paddingInline: 4,
+                            paddingInline: 0,
                         },
 
                         height: 1,

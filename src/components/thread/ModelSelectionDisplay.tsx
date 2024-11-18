@@ -64,7 +64,7 @@ export const ModelSelectionDisplay = ({
                     <InputLabel
                         htmlFor={selectId}
                         sx={(theme) => ({
-                            background: theme.palette.background.default,
+                            background: theme.palette.background.paper,
                             paddingX: 1,
                         })}>
                         {label}

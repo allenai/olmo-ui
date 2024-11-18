@@ -5,7 +5,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 type ThreadPageCardProps = Pick<CardProps, 'sx' | 'children'>;
 
 const ResponsiveCardBase = styled(Card)(({ theme }) => ({
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.drawer.secondary,
     border: 0, // This removes the border from the outlined version of the component.
     borderRadius: 0,
     paddingBlock: theme.spacing(2),

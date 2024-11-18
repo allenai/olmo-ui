@@ -81,7 +81,7 @@ export const ResponsiveTooltip = ({
                         borderRadius: theme.spacing(1.5),
                         position: 'relative',
                         right: theme.spacing(2),
-                        background: (theme) => theme.palette.background.default,
+                        background: (theme) => theme.palette.background.drawer.secondary,
                     }),
                 },
                 popper: { anchorEl },

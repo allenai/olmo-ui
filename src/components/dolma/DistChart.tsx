@@ -1,8 +1,8 @@
-import { Typography, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
 import { ResponsiveBar } from '@nivo/bar';
 import { useTheme } from '@nivo/core';
-import { Chip, TableTooltip } from '@nivo/tooltip';
-import { useEffect, useState } from 'react';
+import { Chip } from '@nivo/tooltip';
+import { CSSProperties, useEffect, useState } from 'react';
 
 import { staticData } from '../../api/dolma/staticData';
 import {
@@ -148,33 +148,48 @@ function DistChartTooltip({
     mapData,
     value,
 }: DistChartTooltipProps): JSX.Element {
-    const theme = useTheme();
+    const nivoTheme = useTheme();
+    const tableStyle = {
+        width: '100%',
+        borderCollapse: 'collapse' as CSSProperties['borderCollapse'],
+    };
+    // Implementation taken from: https://github.com/plouc/nivo/blob/master/packages/tooltip/src/TableTooltip.tsx
     return (
-        <TableTooltip
-            title={
-                <div>
-                    {categoryLabel}: {data.bucket}
-                </div>
-            }
-            rows={[
-                [
-                    <Chip key="chip" color={color} style={theme.tooltip.chip} />,
-                    <Typography key="label" sx={{ textAlign: 'left' }}>
-                        {sourceMap[id.toString()].label}
-                    </Typography>,
-                    <Typography key="docCount" sx={{ textAlign: 'right' }}>
-                        <span key="value" style={theme.tooltip.tableCellValue}>
-                            {mapData[data.bucket][id.toString()].doc_count.toLocaleString()}
-                            docs
-                        </span>
-                    </Typography>,
-                    <Typography key="value2Container" sx={{ textAlign: 'left' }}>
-                        <span key="value2" style={theme.tooltip.tableCellValue}>
-                            {percentValueFormat(value)}
-                        </span>
-                    </Typography>,
-                ],
-            ]}
-        />
+        <Box
+            sx={{
+                ...nivoTheme.tooltip.container,
+                background: (theme) => theme.palette.background.drawer.secondary,
+            }}>
+            {categoryLabel}: {data.bucket}
+            <table style={{ ...tableStyle, ...nivoTheme.tooltip.table }}>
+                <tbody>
+                    <tr>
+                        <td style={nivoTheme.tooltip.tableCell}>
+                            <Chip key="chip" color={color} style={nivoTheme.tooltip.chip} />
+                        </td>
+                        <td style={nivoTheme.tooltip.tableCell}>
+                            <Typography key="label" sx={{ textAlign: 'left' }}>
+                                {sourceMap[id.toString()].label}
+                            </Typography>
+                        </td>
+                        <td style={nivoTheme.tooltip.tableCell}>
+                            <Typography key="docCount" sx={{ textAlign: 'right' }}>
+                                <span key="value" style={nivoTheme.tooltip.tableCellValue}>
+                                    {mapData[data.bucket][id.toString()].doc_count.toLocaleString()}
+                                    docs
+                                </span>
+                            </Typography>
+                        </td>
+                        <td style={nivoTheme.tooltip.tableCell}>
+                            <Typography key="value2Container" sx={{ textAlign: 'left' }}>
+                                <span key="value2" style={nivoTheme.tooltip.tableCellValue}>
+                                    {percentValueFormat(value)}
+                                </span>
+                            </Typography>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </Box>
     );
 }
