@@ -41,24 +41,13 @@ export const UIRefreshThreadPage = () => {
                 })}>
                 <Stack
                     gap={2}
-                    sx={(theme) => ({
+                    sx={{
                         containerName: 'thread-page',
                         containerType: 'inline-size',
 
                         backgroundColor: 'transparent',
-
-                        // paddingBlockStart: 1,
-                        // paddingBlockEnd: 2,
-                        // paddingInline: 2,
-
-                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            // paddingBlockStart: 2,
-                            // paddingBlockEnd: 4,
-                            // paddingInline: 0,
-                        },
-
                         height: 1,
-                    })}>
+                    }}>
                     <Box
                         sx={{
                             display: 'grid',

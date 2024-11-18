@@ -53,6 +53,8 @@ const OuterContainer = (props: PaperProps) => {
                 (theme) => ({
                     height: '100dvh',
                     width: '100%',
+                    border: 0,
+                    position: 'fixed',
 
                     display: 'grid',
                     gridTemplateAreas: `
@@ -66,13 +68,8 @@ const OuterContainer = (props: PaperProps) => {
                             'nav app-bar aside'
                             'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
-                        // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
-                        // gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
                         gridTemplateColumns: 'auto 1fr auto',
-                        // columnGap: theme.spacing(8),
                         rowGap: 2, // keep?
-
-                        // paddingInlineEnd: 3,
                     },
                 }),
             ]}
