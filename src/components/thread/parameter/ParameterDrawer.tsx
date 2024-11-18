@@ -63,6 +63,10 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 export const ParameterContent = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
 
+    const optsFromTheRealMessage = useAppContext((state) => state.inferenceOpts);
+
+    console.log(optsFromTheRealMessage);
+
     const schemaData = useAppContext((state) => state.schema);
 
     if (schemaData == null) {
@@ -70,6 +74,11 @@ export const ParameterContent = () => {
     }
 
     const opts = schemaData.Message.InferenceOpts;
+
+    const initialTemperature =
+        optsFromTheRealMessage.temperature ?? opts.temperature.default ?? undefined;
+
+    console.log(`Initial Temperature: ${initialTemperature}`);
 
     return (
         <Stack>
@@ -80,7 +89,11 @@ export const ParameterContent = () => {
                         min={opts.temperature.min}
                         max={opts.temperature.max}
                         step={opts.temperature.step}
-                        initialValue={opts.temperature.default ?? undefined}
+                        initialValue={
+                            optsFromTheRealMessage.temperature ??
+                            opts.temperature.default ??
+                            undefined
+                        }
                         onChange={(v) => {
                             updateInferenceOpts({ temperature: v });
                         }}
@@ -95,7 +108,9 @@ export const ParameterContent = () => {
                         min={opts.top_p.min}
                         max={opts.top_p.max}
                         step={opts.top_p.step}
-                        initialValue={opts.top_p.default ?? undefined}
+                        initialValue={
+                            optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined
+                        }
                         onChange={(v) => {
                             updateInferenceOpts({ top_p: v });
                         }}
