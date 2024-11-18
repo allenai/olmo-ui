@@ -9,6 +9,11 @@ export interface User {
     hasAcceptedTermsAndConditions: boolean;
 }
 
+interface MigrationResponse {
+    updated_user?: User | null;
+    messages_updated_count: number;
+}
+
 export class UserClient extends ClientBase {
     whoAmI = () => {
         const url = this.createURL(WhoamiApiUrl);
@@ -45,7 +50,7 @@ export class UserClient extends ClientBase {
             new_user_id: authenticatedUserId,
         };
 
-        const response = await this.fetch(url, {
+        const response = await this.fetch<MigrationResponse>(url, {
             method: 'PUT',
             body: JSON.stringify(request),
         });
