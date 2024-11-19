@@ -16,7 +16,7 @@ import { ThemeProvider } from 'styled-components';
 
 import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '../olmoTheme';
 
-type ColorPreference = PaletteMode | 'system';
+export type ColorPreference = PaletteMode | 'system';
 
 type ColorModeContextValues = [ColorPreference, (color: ColorPreference) => void];
 
