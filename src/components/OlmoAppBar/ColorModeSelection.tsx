@@ -1,86 +1,92 @@
-import { SvgIconComponent } from '@mui/icons-material';
-import DarkModeFilledIcon from '@mui/icons-material/DarkMode';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import LightModeFilledIcon from '@mui/icons-material/LightMode';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import SystemFilledIcon from '@mui/icons-material/SettingsBrightness';
-import SystemOutlinedIcon from '@mui/icons-material/SettingsBrightnessOutlined';
-import { Button, ButtonGroup, ListItem } from '@mui/material';
+import { Check } from '@mui/icons-material';
+import TVOutlinedIcon from '@mui/icons-material/TvOutlined';
+import { Box, ListItemIcon, Menu, MenuItem } from '@mui/material';
+import { useState } from 'react';
 
-import { useColorMode } from '../ColorModeProvider';
+import { ColorPreference, useColorMode } from '../ColorModeProvider';
+import { NavigationLink } from './NavigationLink';
 
-export const ColorModeSelection = () => {
-    const [colorMode, setColorMode] = useColorMode();
-
-    return (
-        <ListItem disablePadding disableGutters dense>
-            <ButtonGroup
-                variant="outlined"
-                sx={{
-                    color: 'text.drawer.primary',
-                    marginInline: 4,
-                }}>
-                <ModeSelectionButton
-                    // reverse color on select, and fill the button instead
-                    onClick={() => {
-                        setColorMode('system');
-                    }}
-                    SelectedIcon={SystemFilledIcon}
-                    DefaultIcon={SystemOutlinedIcon}
-                    selected={colorMode === 'system'}
-                />
-                <ModeSelectionButton
-                    // reverse color on select, and fill the button instead
-                    onClick={() => {
-                        setColorMode('light');
-                    }}
-                    SelectedIcon={LightModeFilledIcon}
-                    DefaultIcon={LightModeOutlinedIcon}
-                    selected={colorMode === 'light'}
-                />
-                <ModeSelectionButton
-                    // reverse color on select, and fill the button instead
-                    onClick={() => {
-                        setColorMode('dark');
-                    }}
-                    SelectedIcon={DarkModeFilledIcon}
-                    DefaultIcon={DarkModeOutlinedIcon}
-                    selected={colorMode === 'dark'}
-                />
-            </ButtonGroup>
-        </ListItem>
-    );
-};
-
-interface ModeSelectionButtonProps {
-    DefaultIcon: SvgIconComponent;
-    SelectedIcon: SvgIconComponent;
-    selected: boolean;
-    onClick: () => void;
+interface ColorModeSelectionMenuItemProps {
+    title: string;
+    name: ColorPreference;
 }
 
-const ModeSelectionButton = ({
-    DefaultIcon,
-    SelectedIcon,
-    selected = false,
-    onClick,
-}: ModeSelectionButtonProps) => {
+export const ColorModeSelection = () => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [colorMode, setColorMode] = useColorMode();
+    const open = Boolean(anchorEl);
+
+    const changeColorMode = (mode: ColorPreference) => {
+        setColorMode(mode);
+        handleClose();
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const ColorModeSelectionMenuItem = ({ title, name }: ColorModeSelectionMenuItemProps) => (
+        <MenuItem
+            onClick={() => {
+                changeColorMode(name);
+            }}>
+            <Box flexGrow={1}>{title}</Box>
+            {colorMode === name ? (
+                <ListItemIcon
+                    sx={{
+                        flexDirection: 'row-reverse',
+                        justifySelf: 'end',
+                    }}>
+                    <Check />
+                </ListItemIcon>
+            ) : null}
+        </MenuItem>
+    );
+
     return (
-        <Button
-            onClick={onClick}
-            sx={(theme) => ({
-                borderColor: theme.palette.text.drawer.primary,
-                color: theme.palette.text.drawer.primary,
-                '&:hover': {
-                    color: theme.palette.text.drawer.primary,
-                    borderColor: theme.palette.text.drawer.primary,
-                },
-            })}>
-            {selected ? (
-                <SelectedIcon sx={{ color: 'text.default' }} />
-            ) : (
-                <DefaultIcon sx={{ color: 'text.default' }} />
-            )}
-        </Button>
+        <>
+            <NavigationLink
+                onClick={onClick}
+                icon={<TVOutlinedIcon />}
+                inset
+                linkProps={{
+                    id: 'appearance-menu-button',
+                    'aria-controls': open ? 'appearance-menu' : undefined,
+                    'aria-haspopup': true,
+                    'aria-expanded': open ? 'true' : undefined,
+                }}>
+                Appearance
+            </NavigationLink>
+            <Menu
+                id="appearance-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                    dense: true,
+                    disablePadding: true,
+                    'aria-labelledby': 'appearance-menu-button',
+                }}
+                anchorOrigin={{
+                    horizontal: 'center',
+                    vertical: 'top',
+                }}
+                transformOrigin={{
+                    horizontal: 'center',
+                    vertical: 'bottom',
+                }}
+                PaperProps={{
+                    style: {
+                        width: '12rem',
+                    },
+                }}>
+                <ColorModeSelectionMenuItem title="System" name="system" />
+                <ColorModeSelectionMenuItem title="Light" name="light" />
+                <ColorModeSelectionMenuItem title="Dark" name="dark" />
+            </Menu>
+        </>
     );
 };

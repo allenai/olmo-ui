@@ -1,5 +1,11 @@
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import {
+    ListItem,
+    ListItemButton,
+    ListItemButtonProps,
+    ListItemIcon,
+    ListItemText,
+} from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
@@ -18,6 +24,7 @@ const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItem
 );
 
 type NavigationLinkProps = PropsWithChildren & {
+    buttonId?: string;
     icon?: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
@@ -25,6 +32,7 @@ type NavigationLinkProps = PropsWithChildren & {
     iconVariant?: 'internal' | 'external';
     inset?: boolean;
     dense?: boolean;
+    linkProps: Partial<ListItemButtonProps>;
 } & (
         | {
               href?: never;
@@ -42,14 +50,17 @@ export const NavigationLink = ({
     variant = 'default',
     iconVariant = 'internal',
     inset,
+    linkProps,
 }: NavigationLinkProps) => {
-    const linkProps =
-        href == null
+    const linkPropsMerged = {
+        ...linkProps,
+        ...(href == null
             ? {}
             : {
                   href,
                   target: href == null ? undefined : href.startsWith('/') ? '_self' : '_blank',
-              };
+              }),
+    };
 
     return (
         <ListItem disablePadding disableGutters dense>
@@ -88,7 +99,7 @@ export const NavigationLink = ({
                         color: theme.palette.secondary.contrastText,
                     },
                 })}
-                {...linkProps}>
+                {...linkPropsMerged}>
                 <NavigationListItemIcon
                     sx={{
                         height: '1.25rem',

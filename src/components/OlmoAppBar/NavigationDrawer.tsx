@@ -82,7 +82,25 @@ export const NavigationDrawer = ({
     useCloseDrawerOnNavigation({
         handleDrawerClose: onClose,
     });
+    /*
 
+grid-column width: 1fr -> 0 for better width
+    
+actual drawer:
+    transition: 300ms width ease-in-out;
+    overflow-x: hidden
+    width: 0 -> 320px
+inside drawer:
+    width: 320px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: auto;
+
+
+same thing for right sidebar
+
+*/
     return (
         <ResponsiveDrawer
             {...props}
