@@ -2,10 +2,16 @@ import { ClientBase } from './ClientBase';
 
 export const WhoamiApiUrl = `/v3/whoami`;
 export const AcceptTermsAndConditionsUrl = `/v3/user`;
+export const MigrateFromAnonymousUserUrl = '/v3/migrate-user';
 
 export interface User {
     client: string;
     hasAcceptedTermsAndConditions: boolean;
+}
+
+interface MigrationResponse {
+    updated_user?: User | null;
+    messages_updated_count: number;
 }
 
 export class UserClient extends ClientBase {
@@ -34,5 +40,21 @@ export class UserClient extends ClientBase {
         } catch (e: unknown) {
             console.error(e);
         }
+    };
+
+    migrateFromAnonymousUser = async (authenticatedUserId: string) => {
+        const url = this.createURL(MigrateFromAnonymousUserUrl);
+
+        const request = {
+            anonymous_user_id: this.anonymousUserId,
+            new_user_id: authenticatedUserId,
+        };
+
+        const response = await this.fetch<MigrationResponse>(url, {
+            method: 'PUT',
+            body: JSON.stringify(request),
+        });
+
+        return response;
     };
 }
