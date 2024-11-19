@@ -21,7 +21,7 @@ export const LegalNotice = () => {
             })}>
             <>
                 Ai2 Playground is a free scientific research and educational tool; always fact-check
-                your results
+                your results.{' '}
             </>
             {!userInfo?.hasAcceptedTermsAndConditions ? (
                 <>
@@ -37,7 +37,7 @@ export const LegalNotice = () => {
                     <TermAndConditionsLink link="https://allenai.org/responsible-use">
                         Responsible use guidelines
                     </TermAndConditionsLink>
-                    .
+                    .{' '}
                 </>
             ) : null}
             <>
