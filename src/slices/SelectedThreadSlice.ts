@@ -95,6 +95,8 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             creator: rootMessage.creator,
             isLimitReached: rootMessage.finish_reason === MessageStreamErrorReason.LENGTH,
             isOlderThan30Days: isOlderThan30Days(rootMessage.created),
+            model_id: rootMessage.model_id,
+            opts: rootMessage.opts,
         };
 
         const mappedMessages = mapMessages(rootMessage);

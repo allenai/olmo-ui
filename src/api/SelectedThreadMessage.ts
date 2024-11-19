@@ -1,7 +1,10 @@
 import { Label } from '@/api/Label';
 import { Message, MessageStreamErrorReason } from '@/api/Message';
 import { Role } from '@/api/Role';
+import { NullishPartial } from '@/util';
 import { isOlderThan30Days } from '@/utils/date-utils';
+
+import { InferenceOpts } from './Schema';
 
 export interface SelectedThreadMessage {
     id: string;
@@ -14,6 +17,8 @@ export interface SelectedThreadMessage {
     isLimitReached: boolean;
     isOlderThan30Days: boolean;
     parent?: string;
+    model_id: string | null | undefined;
+    opts: NullishPartial<InferenceOpts>;
 }
 
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
@@ -29,6 +34,8 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         isLimitReached: message.finish_reason === MessageStreamErrorReason.LENGTH,
         isOlderThan30Days: isOlderThan30Days(message.created),
         parent: message.parent ?? undefined,
+        model_id: message.model_id,
+        opts: message.opts,
     };
 };
 

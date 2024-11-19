@@ -3,7 +3,7 @@
  */
 
 import { Box, Input, Slider } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
@@ -34,10 +34,10 @@ export const ParameterSlider = ({
     onChange,
     id,
 }: Props) => {
-    const clipToMinMax = (val: number) => {
-        return Math.min(Math.max(val, min), max);
-    };
-    const [value, setValue] = useState<number>(clipToMinMax(initialValue));
+    const clipToMinMax = (val: number) => Math.min(Math.max(val, min), max);
+
+    const value = clipToMinMax(initialValue);
+
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const addSnackMessageDebounce = useDebouncedCallback(() => {
         addSnackMessage({
@@ -48,36 +48,24 @@ export const ParameterSlider = ({
     }, 800);
 
     const handleChange = useCallback(
-        (value: number) => {
-            if (onChange != null) {
-                onChange(value);
+        (newValue: number) => {
+            const clippedValue = clipToMinMax(newValue);
+            if (onChange) {
+                onChange(clippedValue);
             }
-
             addSnackMessageDebounce();
         },
         [onChange, addSnackMessage]
     );
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
-        // this component will only have 1 value
-        // if we add a second, we should rework this
         const value = Array.isArray(newValue) ? newValue[0] : newValue;
-
-        setValue(value);
         handleChange(value);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number(event.target.value);
-        setValue(value);
-        handleChange(value);
-    };
-
-    const handleBlur = () => {
-        const clippedValue = clipToMinMax(value);
-        if (value !== clippedValue) {
-            setValue(clippedValue);
-        }
+        const newValue = Number(event.target.value);
+        handleChange(newValue);
     };
 
     return (
@@ -106,7 +94,9 @@ export const ParameterSlider = ({
                             value={value}
                             size="small"
                             onChange={handleInputChange}
-                            onBlur={handleBlur}
+                            onBlur={() => {
+                                handleChange(value);
+                            }} // Ensure value is clipped on blur
                             sx={(theme) => ({
                                 ...theme.typography.caption,
                                 border: 'none',

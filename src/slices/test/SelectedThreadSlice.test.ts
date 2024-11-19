@@ -21,6 +21,15 @@ describe('SelectedThreadSlice', () => {
             isLimitReached: false,
             isOlderThan30Days: true,
             parent: undefined,
+            model_id: undefined,
+            opts: {
+                logprobs: undefined,
+                max_tokens: 2048,
+                n: 1,
+                stop: undefined,
+                temperature: 1,
+                top_p: 1,
+            },
         };
         expect(appContext.getState().selectedThreadMessagesById[thread.id]).toEqual(
             expectedMessage
@@ -37,6 +46,15 @@ describe('SelectedThreadSlice', () => {
             isLimitReached: false,
             isOlderThan30Days: true,
             parent: 'msg_W1O3Y8E0J4',
+            model_id: undefined,
+            opts: {
+                logprobs: undefined,
+                max_tokens: 2048,
+                n: 1,
+                stop: undefined,
+                temperature: 1,
+                top_p: 1,
+            },
         };
         expect(appContext.getState().selectedThreadMessagesById.msg_X2T9X3L5M0).toEqual(
             expectedLastChild
