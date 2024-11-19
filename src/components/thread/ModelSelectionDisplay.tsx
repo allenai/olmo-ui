@@ -17,6 +17,8 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
 
+import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
+
 type ModelSelectionDisplayProps = {
     models: ModelList;
     selectedModel?: Model;
