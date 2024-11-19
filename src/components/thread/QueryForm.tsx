@@ -23,7 +23,7 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
 import { getFAQIdByShortId } from '../faq/faq-utils';
-import { AutoSizedInput } from './AutoSizedInput';
+import { PromptInput } from './PromptInput';
 
 interface QueryFormButtonProps
     extends PropsWithChildren,
@@ -106,7 +106,15 @@ const SubmitPauseAdornment = ({
 };
 
 export const QueryForm = () => {
-    return <AutoSizedInput />;
+    return (
+        <PromptInput
+            placeholder="Prompt"
+            aria-label="Prompt"
+            onChange={(e) => {
+                console.log(e.target.value);
+            }}
+        />
+    );
 };
 
 // export const QueryForm =(): JSX.Element => {
