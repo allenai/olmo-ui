@@ -38,7 +38,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
                     marginBlockEnd: '1em',
                 },
                 '& a, & a:visited': {
-                    color: theme.palette.text.defaultLink,
+                    color: theme.palette.primary.main,
                 },
             })}
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}

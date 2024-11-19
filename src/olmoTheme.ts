@@ -14,7 +14,6 @@ declare module '@mui/material/styles' {
             primary?: string;
             secondary?: string;
         };
-        defaultLink?: string;
     }
 }
 
@@ -33,7 +32,6 @@ export const uiRefreshOlmoTheme = {
                 primary: varnishTheme.palette.text.reversed,
                 secondary: varnishTheme.palette.primary.dark,
             },
-            defaultLink: '#0000FF',
         },
     },
     components: {
@@ -163,7 +161,6 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
                     primary: text.reversed,
                     secondary: palette.secondary.main,
                 },
-                defaultLink: '#3366FF',
             },
             primary: {
                 ...primary,
