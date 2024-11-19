@@ -44,7 +44,6 @@ export interface AnalyticsEvent {
         | SearchResultClickDetails
         | DocumentEventDetails
         | PromptMessageDetails
-        | ParametersUpdateDetails
         | Record<string, unknown>;
 }
 
@@ -90,7 +89,36 @@ export class AnalyticsClient {
         plausibleTrackPageview({ url });
     }
 
-    trackParametersUpdate(details: {});
+    trackParametersUpdate(details: { parameterUpdated: string }): boolean {
+        return this.track({
+            type: EventType.ParametersUpdate,
+            occurred: new Date(),
+            details,
+        });
+    }
+
+    trackModelUpdate(details: { modelChosen: string }): boolean {
+        return this.track({
+            type: EventType.ModelUpdate,
+            occurred: new Date(),
+            details,
+        });
+    }
+
+    trackExternalNavigationLinkClick(details: { url: string }): boolean {
+        return this.track({
+            type: EventType.ExternalNavigationLinkClick,
+            occurred: new Date(),
+            details,
+        });
+    }
+
+    trackTermsLogOut(): boolean {
+        return this.track({
+            type: EventType.TermsLogOut,
+            occurred: new Date(),
+        });
+    }
 }
 
 export const analyticsClient = new AnalyticsClient();

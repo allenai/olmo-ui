@@ -12,16 +12,6 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
-const trackParametersChange = (fieldUpdated: string) => {
-    analyticsClient.track({
-        type: EventType.ParametersUpdate,
-        occurred: new Date(),
-        details: {
-            fieldUpdated,
-        },
-    });
-};
-
 interface Props {
     label: string;
     step?: number;
@@ -52,9 +42,7 @@ export const ParameterSlider = ({
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const handleChange = useDebouncedCallback((value: number) => {
-        if (onChange != null) {
-            onChange(value);
-        }
+        onChange?.(value);
 
         addSnackMessage({
             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),

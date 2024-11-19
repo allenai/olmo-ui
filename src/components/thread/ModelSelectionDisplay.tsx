@@ -12,6 +12,7 @@ import {
 import { useEffect, useId } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Model, ModelList } from '@/api/Model';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -61,6 +62,11 @@ export const ModelSelectionDisplay = ({
             }
         }
     }, [viewingMessageIds]);
+    
+    const handleModelChange = (event: SelectChangeEvent) => {
+        analyticsClient.trackModelUpdate({ modelChosen: event.target.value });
+        onModelChange(event);
+    };
 
     return (
         <Box
@@ -74,7 +80,7 @@ export const ModelSelectionDisplay = ({
                     display: shouldOnlyShowAtDesktop ? 'block' : 'none',
                 },
                 [SMALL_THREAD_CONTAINER_QUERY]: {
-                    // Unlesss the container is too small, then it is hidden again
+                    // Unless the container is too small, then it is hidden again
                     display: shouldOnlyShowAtDesktop ? 'none' : 'block',
                 },
                 paddingTop: !shouldOnlyShowAtDesktop ? 2 : undefined,
@@ -99,7 +105,7 @@ export const ModelSelectionDisplay = ({
                         id={selectId}
                         fullWidth
                         size="small"
-                        onChange={onModelChange}
+                        onChange={handleModelChange}
                         input={<OutlinedInput />}
                         value={(selectedModel && selectedModel.id) || ''}>
                         {newModels.map((model) => (
