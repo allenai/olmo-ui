@@ -8,6 +8,7 @@ import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+import SortIcon from '@mui/icons-material/Sort';
 import { IconButton, Link, Stack } from '@mui/material';
 import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
@@ -102,27 +103,15 @@ export const NavigationDrawer = ({
                     href={links.playground}
                     icon={<ChatIcon />}
                     selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                    Playground
+                    Chat
                 </NavigationLink>
                 <NavigationLink
                     onClick={() => {
                         toggleDrawer(HISTORY_DRAWER_ID);
                     }}
+                    icon={<SortIcon />}
                     inset>
                     Thread history
-                </NavigationLink>
-                <NavigationLink
-                    href={links.molmo}
-                    selected={curriedDoesMatchPath(links.molmo)}
-                    iconVariant="external">
-                    Molmo
-                </NavigationLink>
-                <NavigationLink
-                    href={links.ourModels}
-                    selected={curriedDoesMatchPath(links.ourModels)}
-                    iconVariant="external"
-                    inset>
-                    Ai2&apos;s models
                 </NavigationLink>
                 {isDatasetExplorerEnabled && (
                     <>
@@ -146,19 +135,19 @@ export const NavigationDrawer = ({
                     </>
                 )}
                 <NavigationLink
-                    href={links.documentation}
-                    icon={<LanguageIcon />}
-                    selected={curriedDoesMatchPath(links.documentation)}
-                    iconVariant="external">
-                    Documentation
+                    icon={<HelpCenterIcon />}
+                    selected={curriedDoesMatchPath(links.faqs)}
+                    href={links.faqs}
+                    variant="footer">
+                    FAQ
                 </NavigationLink>
                 <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
                     <NavigationLink
-                        icon={<HelpCenterIcon />}
-                        selected={curriedDoesMatchPath(links.faqs)}
-                        href={links.faqs}
-                        variant="footer">
-                        FAQ
+                        href={links.documentation}
+                        icon={<LanguageIcon />}
+                        selected={curriedDoesMatchPath(links.documentation)}
+                        iconVariant="external">
+                        Documentation
                     </NavigationLink>
                     <NavigationLink
                         icon={<RateReviewOutlined />}

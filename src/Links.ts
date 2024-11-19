@@ -1,7 +1,6 @@
 export const links = {
     home: '/',
     playground: '/',
-    ourModels: 'https://huggingface.co/collections/allenai/olmo-suite-65aeaae8fe5b6b2122b46778',
     datasetExplorer: '/dolma',
     ourDatasets: 'https://huggingface.co/datasets/allenai/dolma',
     thread: (threadId: string) => `/thread/${threadId}`,
@@ -31,7 +30,6 @@ export const links = {
     olmoeMixDownload: 'https://huggingface.co/datasets/allenai/OLMoE-mix-0924',
     odc: 'https://blog.allenai.org/making-a-switch-dolma-moves-to-odc-by-8f0e73852f44',
     responsibleUsePolicy: 'https://allenai.org/responsible-use',
-    molmo: 'https://molmo.allenai.org',
     documentation: 'http://allenai.org/documentation',
     googlePrivacy: 'https://policies.google.com/privacy',
     googleTerms: 'https://policies.google.com/terms',
