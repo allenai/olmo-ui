@@ -21,8 +21,6 @@ export const AppLayout = ({ children }: AppLayout) => {
 
                     overflow: 'auto',
 
-                    // paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
-
                     height: 1,
 
                     gridArea: {
@@ -31,11 +29,7 @@ export const AppLayout = ({ children }: AppLayout) => {
                     },
                     gridTemplateColumns: 'subgrid',
                     gridTemplateRows: 'subgrid',
-
-                    backgroundColor: (theme) => ({
-                        xs: theme.palette.background.default,
-                        [DESKTOP_LAYOUT_BREAKPOINT]: 'transparent',
-                    }),
+                    backgroundColor: 'transparent',
                 }}
                 maxWidth={false}>
                 {children}
