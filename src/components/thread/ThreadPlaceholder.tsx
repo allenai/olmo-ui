@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { Ai2LogoMarkSpinner } from '@/components/Ai2LogoMarkSpinner';
