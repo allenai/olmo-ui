@@ -45,7 +45,15 @@ export const LegalNotice = () => {
                 <TermAndConditionsLink link="https://www.llama.com/llama3_1/license/">
                     Llama 3.1 Community License Agreement
                 </TermAndConditionsLink>
-                .
+                . This site is protected by reCAPTCHA and the Google{' '}
+                <TermAndConditionsLink link="https://policies.google.com/privacy">
+                    Privacy Policy
+                </TermAndConditionsLink>{' '}
+                and{' '}
+                <TermAndConditionsLink link="https://policies.google.com/terms">
+                    Terms of Service
+                </TermAndConditionsLink>{' '}
+                apply.
             </>
         </Typography>
     );
