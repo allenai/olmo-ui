@@ -34,6 +34,11 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                             fontWeight: 'normal',
                         },
                     },
+
+                    '&.Mui-focusVisible': (theme) => ({
+                        backgroundColor: theme.palette.secondary.light,
+                        color: theme.palette.secondary.contrastText,
+                    }),
                 }}
                 component={Link}
                 href={links.thread(id)}>
