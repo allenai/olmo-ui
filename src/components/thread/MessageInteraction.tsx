@@ -128,11 +128,18 @@ const MessageInteractionIcon = ({
         <Tooltip
             title={tooltip}
             placement="top"
+            arrow
             slotProps={{
                 tooltip: {
                     sx: (theme) => ({
                         backgroundColor: theme.color['dark-teal'].hex,
                         color: theme.color['off-white'].hex,
+                        boxShadow: 'none',
+                    }),
+                },
+                arrow: {
+                    sx: (theme) => ({
+                        color: theme.color['dark-teal'].hex,
                         boxShadow: 'none',
                     }),
                 },
