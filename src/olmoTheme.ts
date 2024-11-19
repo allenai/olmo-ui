@@ -30,7 +30,7 @@ export const uiRefreshOlmoTheme = {
         text: {
             drawer: {
                 primary: varnishTheme.palette.text.reversed,
-                secondary: varnishTheme.palette.text.primary,
+                secondary: varnishTheme.palette.primary.dark,
             },
         },
     },
@@ -139,9 +139,9 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
             mode: 'dark',
 
             background: {
-                paper: '#032629' ?? '#000',
+                paper: '#032629',
                 reversed: background.paper,
-                default: '#032629' ?? '#000',
+                default: '#032629',
                 drawer: {
                     primary: background.reversed,
                     secondary: background.reversed,
@@ -159,24 +159,19 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
 
                 drawer: {
                     primary: text.reversed,
-                    secondary: text.reversed,
+                    secondary: palette.secondary.main,
                 },
             },
             primary: {
                 ...primary,
 
                 contrastText: text.reversed ?? '#FFF', // default
-                // main: 'rgba(240, 82, 156, 1)',
-                // light: 'rgba(243, 116, 175, 1)',
-                // dark: 'rgba(168, 57, 109, 1)',
             },
             secondary: {
                 ...palette.secondary,
-                contrastText: text.reversed ?? '#FFF', // default
             },
             tertiary: {
                 ...palette.tertiary,
-                contrastText: text.reversed ?? '#FFF', // default
             },
             error: {
                 ...palette.error,
