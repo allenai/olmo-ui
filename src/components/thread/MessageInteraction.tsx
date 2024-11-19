@@ -87,7 +87,7 @@ export const MessageInteraction = ({
                 <MessageInteractionIcon
                     tooltip="Inapproriate response"
                     Icon={FlagIcon}
-                    selected={currentLabel?.rating === LabelRating.Positive}
+                    selected={currentLabel?.rating === LabelRating.Flag}
                     onClick={async () => {
                         await rateMessage(LabelRating.Flag);
                     }}
