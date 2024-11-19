@@ -125,13 +125,6 @@ export const NavigationDrawer = ({
                             }>
                             Dataset Explorer
                         </NavigationLink>
-                        <NavigationLink
-                            href={links.ourDatasets}
-                            selected={curriedDoesMatchPath(links.ourDatasets)}
-                            iconVariant="external"
-                            inset>
-                            Ai2&apos;s datasets
-                        </NavigationLink>
                     </>
                 )}
                 <NavigationLink
