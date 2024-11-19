@@ -98,6 +98,7 @@ module.exports = (env) => ({
             IS_DATASET_EXPLORER_ENABLED: false,
             IS_PETEISH_MODEL_ENABLED: false,
             RECAPTCHA_SITE_KEY: '6LcTKX8qAAAAAEn1zu3oVu-GIdC5JkW9IR7VQaA9',
+            IS_RECAPTCHA_ENABLED: true,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
         new RetryChunkLoadPlugin({

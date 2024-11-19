@@ -10,15 +10,8 @@ import {
     svgIconClasses,
     Typography,
 } from '@mui/material';
-import React, {
-    ComponentProps,
-    PropsWithChildren,
-    UIEvent,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
-import { GoogleReCaptcha } from 'react-google-recaptcha-v3';
+import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -112,12 +105,12 @@ const SubmitPauseAdornment = ({
 };
 
 export const QueryForm = (): JSX.Element => {
-    const [token, setToken] = useState('');
-    const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
     const navigation = useNavigation();
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
+
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     const formContext = useForm({
         defaultValues: {
@@ -190,11 +183,11 @@ export const QueryForm = (): JSX.Element => {
             return;
         }
 
-        // Token is missing: reCAPTCHA validation failed.
-        if (!token && process.env.NODE_ENV === 'production') {
-            setRefreshReCaptcha(!refreshReCaptcha);
-            return;
-        }
+        // TODO: Make sure executeRecaptcha is present when we require recaptchas
+        const token =
+            process.env.IS_RECAPTCHA_ENABLED === 'true'
+                ? await executeRecaptcha?.('prompt_submission')
+                : undefined;
 
         const request: MessagePost = { ...data, captchaToken: token };
 
@@ -205,7 +198,6 @@ export const QueryForm = (): JSX.Element => {
         try {
             await streamPrompt(request);
         } catch (e) {
-            setRefreshReCaptcha(!refreshReCaptcha);
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
                     type: 'inappropriate',
@@ -222,10 +214,6 @@ export const QueryForm = (): JSX.Element => {
             await formContext.handleSubmit(handleSubmit)();
         }
     };
-
-    const onVerify = useCallback((token: string) => {
-        setToken(token);
-    }, []);
 
     return (
         <Box marginBlockStart="auto" width={1}>
@@ -287,9 +275,6 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-                    {process.env.NODE_ENV === 'production' && (
-                        <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
-                    )}
 
                     <Stack direction="row" gap={2} alignItems="center">
                         {isLimitReached && (
