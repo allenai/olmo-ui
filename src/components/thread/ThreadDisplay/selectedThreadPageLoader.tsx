@@ -12,6 +12,7 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         handleAttributionForChangingThread,
         setSelectedModel,
         updateInferenceOpts,
+        models,
     } = appContext.getState();
 
     // get the latest state of the selectedThread if we're changing to a different thread
@@ -33,8 +34,12 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         if (lastResponseId != null) {
             selectMessage(lastResponseId);
             const lastThreadContent = selectedThreadMessagesById[lastResponseId];
+            const modelIdList = models.map((model) => model.id);
             if (lastThreadContent) {
-                if (lastThreadContent.model_id) {
+                if (
+                    lastThreadContent.model_id &&
+                    modelIdList.includes(lastThreadContent.model_id)
+                ) {
                     setSelectedModel(lastThreadContent.model_id);
                 }
                 if (lastThreadContent.opts) {

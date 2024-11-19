@@ -78,7 +78,10 @@ export const ParameterContent = () => {
     const initialTemperature =
         optsFromTheRealMessage.temperature ?? opts.temperature.default ?? undefined;
 
+    const initialTopP = optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined;
+
     console.log(`Initial Temperature: ${initialTemperature}`);
+    console.log(`Initial Top P: ${initialTopP}`);
 
     return (
         <Stack>
@@ -89,11 +92,7 @@ export const ParameterContent = () => {
                         min={opts.temperature.min}
                         max={opts.temperature.max}
                         step={opts.temperature.step}
-                        initialValue={
-                            optsFromTheRealMessage.temperature ??
-                            opts.temperature.default ??
-                            undefined
-                        }
+                        initialValue={initialTemperature}
                         onChange={(v) => {
                             updateInferenceOpts({ temperature: v });
                         }}
@@ -108,9 +107,7 @@ export const ParameterContent = () => {
                         min={opts.top_p.min}
                         max={opts.top_p.max}
                         step={opts.top_p.step}
-                        initialValue={
-                            optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined
-                        }
+                        initialValue={initialTopP}
                         onChange={(v) => {
                             updateInferenceOpts({ top_p: v });
                         }}
