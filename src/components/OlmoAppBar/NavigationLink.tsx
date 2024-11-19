@@ -32,7 +32,7 @@ type NavigationLinkProps = PropsWithChildren & {
     iconVariant?: 'internal' | 'external';
     inset?: boolean;
     dense?: boolean;
-    linkProps: Partial<ListItemButtonProps>;
+    linkProps?: Partial<ListItemButtonProps>;
 } & (
         | {
               href?: never;
@@ -50,7 +50,7 @@ export const NavigationLink = ({
     variant = 'default',
     iconVariant = 'internal',
     inset,
-    linkProps,
+    linkProps = {},
 }: NavigationLinkProps) => {
     const linkPropsMerged = {
         ...linkProps,
