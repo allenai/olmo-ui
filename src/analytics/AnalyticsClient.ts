@@ -12,6 +12,7 @@ export enum EventType {
     ModelUpdate = 'prompt.model.update',
     ExternalNavigationLinkClick = 'navigation.external',
     TermsLogOut = 'terms.logout',
+    ColorModeChange = 'color.mode.change',
 }
 
 export type SearchQueryDetails = {
@@ -117,6 +118,14 @@ export class AnalyticsClient {
         return this.track({
             type: EventType.TermsLogOut,
             occurred: new Date(),
+        });
+    }
+
+    trackColorModeChange(details: { colorMode: string }): boolean {
+        return this.track({
+            type: EventType.ColorModeChange,
+            occurred: new Date(),
+            details,
         });
     }
 }
