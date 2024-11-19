@@ -179,17 +179,16 @@ export const ThreadDisplay = (): ReactNode => {
                     scrollBehavior: 'smooth',
                 },
             }}>
-            <Stack
-                gap={2}
-                direction="column"
-                useFlexGap
+            <Box
                 sx={{
                     maxWidth: '750px',
                     margin: '0 auto',
                 }}>
-                {childMessageIds.map((messageId) => (
-                    <MessageView messageId={messageId} key={messageId} />
-                ))}
+                <Stack gap={2} direction="column" useFlexGap>
+                    {childMessageIds.map((messageId) => (
+                        <MessageView messageId={messageId} key={messageId} />
+                    ))}
+                </Stack>
                 <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
                 <Stack
                     justifyContent="center"
@@ -210,7 +209,7 @@ export const ThreadDisplay = (): ReactNode => {
                         onScrollToBottom={handleScrollToBottomButtonClick}
                     />
                 </Stack>
-            </Stack>
+            </Box>
         </Box>
     );
 };
