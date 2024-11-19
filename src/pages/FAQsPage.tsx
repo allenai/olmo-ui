@@ -81,8 +81,9 @@ export const FAQsPage = (): JSX.Element => {
                                 type="submit"
                                 variant="contained"
                                 sx={{
-                                    backgroundColor: (theme) => theme.palette.background.reversed,
-                                    color: (theme) => theme.palette.secondary.main,
+                                    backgroundColor: (theme) =>
+                                        theme.palette.background.drawer.primary,
+                                    color: (theme) => theme.palette.text.drawer.primary,
                                     '&:hover': {
                                         backgroundColor: (theme) => theme.color['teal-100'].hex,
                                     },
