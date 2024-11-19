@@ -32,12 +32,15 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
-            sx={{
+            sx={(theme) => ({
                 '& p': {
                     margin: 0,
                     marginBlockEnd: '1em',
                 },
-            }}
+                '& a, & a:visited': {
+                    color: theme.palette.text.defaultLink,
+                },
+            })}
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
