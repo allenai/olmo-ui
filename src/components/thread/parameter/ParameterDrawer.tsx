@@ -65,8 +65,6 @@ export const ParameterContent = () => {
 
     const optsFromTheRealMessage = useAppContext((state) => state.inferenceOpts);
 
-    console.log(optsFromTheRealMessage);
-
     const schemaData = useAppContext((state) => state.schema);
 
     if (schemaData == null) {
@@ -79,9 +77,6 @@ export const ParameterContent = () => {
         optsFromTheRealMessage.temperature ?? opts.temperature.default ?? undefined;
 
     const initialTopP = optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined;
-
-    console.log(`Initial Temperature: ${initialTemperature}`);
-    console.log(`Initial Top P: ${initialTopP}`);
 
     return (
         <Stack>

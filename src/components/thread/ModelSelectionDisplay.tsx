@@ -9,12 +9,16 @@ import {
     Theme,
     Typography,
 } from '@mui/material';
-import { useId } from 'react';
+import { useEffect, useId } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { Model, ModelList } from '@/api/Model';
+import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
+
+import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
 
 type ModelSelectionDisplayProps = {
     models: ModelList;
@@ -36,6 +40,22 @@ export const ModelSelectionDisplay = ({
     const newModels = isPeteishModelEnabled
         ? models
         : models.filter((model) => model.name !== 'OLMo-peteish-dpo-preview');
+
+    const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
+
+    const { selectedThreadMessagesById, setSelectedModel } = useAppContext();
+
+    const latestThreadId = viewingMessageIds[viewingMessageIds.length - 1];
+
+    useEffect(() => {
+        const latestThreadContent = selectedThreadMessagesById[latestThreadId];
+        if (latestThreadContent) {
+            if (latestThreadContent.model_id) {
+                setSelectedModel(latestThreadContent.model_id);
+            }
+        }
+    }, [viewingMessageIds]);
+
     return (
         <Box
             sx={(theme: Theme) => ({
