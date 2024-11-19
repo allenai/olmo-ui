@@ -1,6 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { useCallback } from 'react';
 
+import { analyticsClient, EventType } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
@@ -89,6 +91,7 @@ export const ParameterContent = () => {
                         step={opts.temperature.step}
                         initialValue={initialTemperature}
                         onChange={(v) => {
+                            trackParametersChange('temperature');
                             updateInferenceOpts({ temperature: v });
                         }}
                         dialogContent={TEMPERATURE_INFO}
@@ -104,6 +107,7 @@ export const ParameterContent = () => {
                         step={opts.top_p.step}
                         initialValue={initialTopP}
                         onChange={(v) => {
+                            trackParametersChange('top_p');
                             updateInferenceOpts({ top_p: v });
                         }}
                         dialogContent={TOP_P_INFO}

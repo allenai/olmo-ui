@@ -8,6 +8,10 @@ export enum EventType {
     DocumentShare = 'document.share',
     NewPrompt = 'prompt.new',
     FollowUpPrompt = 'prompt.followup',
+    ParametersUpdate = 'prompt.parameters.update',
+    ModelUpdate = 'prompt.model.update',
+    ExternalNavigationLinkClick = 'navigation.external',
+    TermsLogOut = 'terms.logout',
 }
 
 export type SearchQueryDetails = {
@@ -39,7 +43,9 @@ export interface AnalyticsEvent {
         | SearchQueryDetails
         | SearchResultClickDetails
         | DocumentEventDetails
-        | PromptMessageDetails;
+        | PromptMessageDetails
+        | ParametersUpdateDetails
+        | Record<string, unknown>;
 }
 
 export class AnalyticsClient {
@@ -49,7 +55,7 @@ export class AnalyticsClient {
      * Rather it enqueues the request for eventual, background delivery by the browser.
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
-    private track(e: AnalyticsEvent): boolean {
+    track(e: AnalyticsEvent): boolean {
         plausibleTrackEvent(e);
 
         const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
@@ -83,6 +89,8 @@ export class AnalyticsClient {
     trackPageView(url: string): void {
         plausibleTrackPageview({ url });
     }
+
+    trackParametersUpdate(details: {});
 }
 
 export const analyticsClient = new AnalyticsClient();

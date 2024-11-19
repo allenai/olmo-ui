@@ -3,13 +3,24 @@
  */
 
 import { Box, Input, Slider } from '@mui/material';
-import { useCallback } from 'react';
+import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
+
+const trackParametersChange = (fieldUpdated: string) => {
+    analyticsClient.track({
+        type: EventType.ParametersUpdate,
+        occurred: new Date(),
+        details: {
+            fieldUpdated,
+        },
+    });
+};
 
 interface Props {
     label: string;
@@ -39,24 +50,18 @@ export const ParameterSlider = ({
     const value = clipToMinMax(initialValue);
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-    const addSnackMessageDebounce = useDebouncedCallback(() => {
+
+    const handleChange = useDebouncedCallback((value: number) => {
+        if (onChange != null) {
+            onChange(value);
+        }
+
         addSnackMessage({
             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
             type: SnackMessageType.Brief,
             message: 'Parameters Saved',
         });
     }, 800);
-
-    const handleChange = useCallback(
-        (newValue: number) => {
-            const clippedValue = clipToMinMax(newValue);
-            if (onChange) {
-                onChange(clippedValue);
-            }
-            addSnackMessageDebounce();
-        },
-        [onChange, addSnackMessage]
-    );
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         const value = Array.isArray(newValue) ? newValue[0] : newValue;
