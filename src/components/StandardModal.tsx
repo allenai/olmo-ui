@@ -14,6 +14,7 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
                     padding: 3.75,
                     margin: '0 auto',
                     backgroundColor: 'background.paper',
+                    backgroundImage: 'none',
                 },
             }}
             {...rest}

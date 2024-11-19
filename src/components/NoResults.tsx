@@ -6,7 +6,7 @@ interface NoResultsProps {
 }
 
 export const NoResults = ({ request, resultsType }: NoResultsProps) => (
-    <Box sx={{ p: 4, borderRadius: '12px', backgroundColor: (theme) => theme.color.N2.hex }}>
+    <Box sx={{ p: 4, borderRadius: '12px', backgroundColor: 'transparent' }}>
         <Typography
             variant="h6"
             sx={{ mt: 0, mb: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>

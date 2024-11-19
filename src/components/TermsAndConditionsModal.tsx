@@ -99,7 +99,7 @@ export const TermsAndConditionsModal = () => {
                         </Typography>
                         <Typography
                             variant="body1"
-                            color={(theme) => theme.palette.primary.dark}
+                            color={(theme) => theme.palette.text.drawer.secondary}
                             sx={{ mt: 1.5, alignItems: 'center', display: 'inline-flex' }}>
                             Please read carefully
                         </Typography>
