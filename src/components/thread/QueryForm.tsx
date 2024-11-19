@@ -23,6 +23,7 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
 import { getFAQIdByShortId } from '../faq/faq-utils';
+import { AutoSizedInput } from './AutoSizedInput';
 
 interface QueryFormButtonProps
     extends PropsWithChildren,
@@ -104,197 +105,201 @@ const SubmitPauseAdornment = ({
     );
 };
 
-export const QueryForm = (): JSX.Element => {
-    const navigation = useNavigation();
-    const location = useLocation();
-    const streamPrompt = useAppContext((state) => state.streamPrompt);
-    const firstResponseId = useAppContext((state) => state.streamingMessageId);
-
-    const { executeRecaptcha } = useGoogleReCaptcha();
-
-    const formContext = useForm({
-        defaultValues: {
-            content: '',
-            private: false,
-        },
-    });
-
-    const canEditThread = useAppContext((state) => {
-        // check for new thread & thread creator
-        return (
-            state.selectedThreadRootId === '' ||
-            state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
-                state.userInfo?.client
-        );
-    });
-
-    const abortPrompt = useAppContext((state) => state.abortPrompt);
-    const canPauseThread = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading && state.abortController != null
-    );
-
-    const onAbort = useCallback(
-        (event: UIEvent) => {
-            event.preventDefault();
-            abortPrompt();
-        },
-        [abortPrompt]
-    );
-
-    const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
-
-    const isLimitReached = useAppContext((state) => {
-        // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
-        return viewingMessageIds.some(
-            (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
-        );
-    });
-
-    const isSelectedThreadLoading = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading
-    );
-
-    const lastMessageId =
-        viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
-
-    // Autofocus the input if we're on a new thread
-    useEffect(() => {
-        if (location.pathname === links.playground) {
-            formContext.setFocus('content');
-        }
-    }, [location.pathname, formContext]);
-
-    // Clear errors when we navigate between pages
-    useEffect(() => {
-        if (navigation.state === 'loading') {
-            formContext.clearErrors();
-        }
-    }, [formContext, navigation.state]);
-
-    // Clear form input after the client receive the first message
-    useEffect(() => {
-        if (firstResponseId !== null) {
-            formContext.reset();
-        }
-    }, [firstResponseId, formContext]);
-
-    const handleSubmit = async (data: { content: string }) => {
-        if (!canEditThread || isSelectedThreadLoading) {
-            return;
-        }
-
-        // TODO: Make sure executeRecaptcha is present when we require recaptchas
-        const token =
-            process.env.IS_RECAPTCHA_ENABLED === 'true'
-                ? await executeRecaptcha?.('prompt_submission')
-                : undefined;
-
-        const request: MessagePost = { ...data, captchaToken: token };
-
-        if (lastMessageId != null) {
-            request.parent = lastMessageId;
-        }
-
-        try {
-            await streamPrompt(request);
-        } catch (e) {
-            if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
-                formContext.setError('content', {
-                    type: 'inappropriate',
-                });
-            } else {
-                throw e;
-            }
-        }
-    };
-
-    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
-            await formContext.handleSubmit(handleSubmit)();
-        }
-    };
-
-    return (
-        <Box marginBlockStart="auto" width={1}>
-            <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <Stack gap={1.5} alignItems="flex-start">
-                    <TextFieldElement
-                        name="content"
-                        label="Prompt"
-                        placeholder="Enter prompt"
-                        InputLabelProps={{
-                            shrink: true,
-                            // This gets rid of the * by the label
-                            required: false,
-                            // @ts-expect-error - text is valid but isn't typed
-                            color: 'text',
-                        }}
-                        fullWidth
-                        required
-                        parseError={(error) => {
-                            if (error.type === 'inappropriate') {
-                                return (
-                                    <>
-                                        This prompt was flagged as inappropriate. Please change your
-                                        prompt and resubmit.{' '}
-                                        <Link
-                                            href={
-                                                links.faqs + getFAQIdByShortId('wildguard-intro')
-                                            }>
-                                            Learn why
-                                        </Link>
-                                    </>
-                                );
-                            }
-
-                            return error.message;
-                        }}
-                        validation={{ pattern: /[^\s]+/ }}
-                        // If we don't have a dense margin the label gets cut off!
-                        margin="dense"
-                        disabled={!canEditThread}
-                        onKeyDown={handleOnKeyDown}
-                        InputProps={{
-                            sx: (theme) => ({
-                                [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-                                    borderColor: theme.palette.text.primary,
-                                },
-                            }),
-                            endAdornment: (
-                                <SubmitPauseAdornment
-                                    canPause={canPauseThread}
-                                    onPause={onAbort}
-                                    isSubmitDisabled={
-                                        isSelectedThreadLoading || isLimitReached || !canEditThread
-                                    }
-                                />
-                            ),
-                            maxRows: 5,
-                            multiline: true,
-                            inputComponent: 'textarea',
-                        }}
-                    />
-
-                    <Stack direction="row" gap={2} alignItems="center">
-                        {isLimitReached && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You have reached maximum thread length. Please start a new thread.
-                            </Typography>
-                        )}
-                        {!canEditThread && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You cannot add a prompt because you are not the thread creator.
-                                Please submit your prompt in a new thread.
-                            </Typography>
-                        )}
-                    </Stack>
-                </Stack>
-            </FormContainer>
-        </Box>
-    );
+export const QueryForm = () => {
+    return <AutoSizedInput />;
 };
+
+// export const QueryForm =(): JSX.Element => {
+//     const navigation = useNavigation();
+//     const location = useLocation();
+//     const streamPrompt = useAppContext((state) => state.streamPrompt);
+//     const firstResponseId = useAppContext((state) => state.streamingMessageId);
+
+//     const { executeRecaptcha } = useGoogleReCaptcha();
+
+//     const formContext = useForm({
+//         defaultValues: {
+//             content: '',
+//             private: false,
+//         },
+//     });
+
+//     const canEditThread = useAppContext((state) => {
+//         // check for new thread & thread creator
+//         return (
+//             state.selectedThreadRootId === '' ||
+//             state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
+//                 state.userInfo?.client
+//         );
+//     });
+
+//     const abortPrompt = useAppContext((state) => state.abortPrompt);
+//     const canPauseThread = useAppContext(
+//         (state) => state.streamPromptState === RemoteState.Loading && state.abortController != null
+//     );
+
+//     const onAbort = useCallback(
+//         (event: UIEvent) => {
+//             event.preventDefault();
+//             abortPrompt();
+//         },
+//         [abortPrompt]
+//     );
+
+//     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
+
+//     const isLimitReached = useAppContext((state) => {
+//         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
+//         return viewingMessageIds.some(
+//             (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
+//         );
+//     });
+
+//     const isSelectedThreadLoading = useAppContext(
+//         (state) => state.streamPromptState === RemoteState.Loading
+//     );
+
+//     const lastMessageId =
+//         viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
+
+//     // Autofocus the input if we're on a new thread
+//     useEffect(() => {
+//         if (location.pathname === links.playground) {
+//             formContext.setFocus('content');
+//         }
+//     }, [location.pathname, formContext]);
+
+//     // Clear errors when we navigate between pages
+//     useEffect(() => {
+//         if (navigation.state === 'loading') {
+//             formContext.clearErrors();
+//         }
+//     }, [formContext, navigation.state]);
+
+//     // Clear form input after the client receive the first message
+//     useEffect(() => {
+//         if (firstResponseId !== null) {
+//             formContext.reset();
+//         }
+//     }, [firstResponseId, formContext]);
+
+//     const handleSubmit = async (data: { content: string }) => {
+//         if (!canEditThread || isSelectedThreadLoading) {
+//             return;
+//         }
+
+//         // TODO: Make sure executeRecaptcha is present when we require recaptchas
+//         const token =
+//             process.env.IS_RECAPTCHA_ENABLED === 'true'
+//                 ? await executeRecaptcha?.('prompt_submission')
+//                 : undefined;
+
+//         const request: MessagePost = { ...data, captchaToken: token };
+
+//         if (lastMessageId != null) {
+//             request.parent = lastMessageId;
+//         }
+
+//         try {
+//             await streamPrompt(request);
+//         } catch (e) {
+//             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
+//                 formContext.setError('content', {
+//                     type: 'inappropriate',
+//                 });
+//             } else {
+//                 throw e;
+//             }
+//         }
+//     };
+
+//     const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
+//         if (event.key === 'Enter' && !event.shiftKey) {
+//             event.preventDefault();
+//             await formContext.handleSubmit(handleSubmit)();
+//         }
+//     };
+
+//     return (
+//         <Box marginBlockStart="auto" width={1}>
+//             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+//                 <Stack gap={1.5} alignItems="flex-start">
+//                     <TextFieldElement
+//                         name="content"
+//                         label="Prompt"
+//                         placeholder="Enter prompt"
+//                         InputLabelProps={{
+//                             shrink: true,
+//                             // This gets rid of the * by the label
+//                             required: false,
+//                             // @ts-expect-error - text is valid but isn't typed
+//                             color: 'text',
+//                         }}
+//                         fullWidth
+//                         required
+//                         parseError={(error) => {
+//                             if (error.type === 'inappropriate') {
+//                                 return (
+//                                     <>
+//                                         This prompt was flagged as inappropriate. Please change your
+//                                         prompt and resubmit.{' '}
+//                                         <Link
+//                                             href={
+//                                                 links.faqs + getFAQIdByShortId('wildguard-intro')
+//                                             }>
+//                                             Learn why
+//                                         </Link>
+//                                     </>
+//                                 );
+//                             }
+
+//                             return error.message;
+//                         }}
+//                         validation={{ pattern: /[^\s]+/ }}
+//                         // If we don't have a dense margin the label gets cut off!
+//                         margin="dense"
+//                         disabled={!canEditThread}
+//                         onKeyDown={handleOnKeyDown}
+//                         InputProps={{
+//                             sx: (theme) => ({
+//                                 [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
+//                                     borderColor: theme.palette.text.primary,
+//                                 },
+//                             }),
+//                             endAdornment: (
+//                                 <SubmitPauseAdornment
+//                                     canPause={canPauseThread}
+//                                     onPause={onAbort}
+//                                     isSubmitDisabled={
+//                                         isSelectedThreadLoading || isLimitReached || !canEditThread
+//                                     }
+//                                 />
+//                             ),
+//                             maxRows: 5,
+//                             multiline: true,
+//                             inputComponent: 'textarea',
+//                         }}
+//                     />
+
+//                     <Stack direction="row" gap={2} alignItems="center">
+//                         {isLimitReached && (
+//                             <Typography
+//                                 variant="subtitle2"
+//                                 color={(theme) => theme.palette.error.main}>
+//                                 You have reached maximum thread length. Please start a new thread.
+//                             </Typography>
+//                         )}
+//                         {!canEditThread && (
+//                             <Typography
+//                                 variant="subtitle2"
+//                                 color={(theme) => theme.palette.error.main}>
+//                                 You cannot add a prompt because you are not the thread creator.
+//                                 Please submit your prompt in a new thread.
+//                             </Typography>
+//                         )}
+//                     </Stack>
+//                 </Stack>
+//             </FormContainer>
+//         </Box>
+//     );
+// };
