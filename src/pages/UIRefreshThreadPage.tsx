@@ -47,17 +47,20 @@ export const UIRefreshThreadPage = () => {
 
                         backgroundColor: 'transparent',
                         height: 1,
+                        paddingBlockStart: 1,
                     }}>
                     <Box
-                        sx={{
+                        sx={(theme) => ({
                             display: 'grid',
                             gridTemplateColumns: '1fr max-content',
                             columnGap: 1,
-                            paddingInline: 2,
                             width: '100%',
-                            maxWidth: '750px',
                             margin: '0 auto',
-                        }}>
+                            paddingInline: 2,
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                paddingInline: 5,
+                            },
+                        })}>
                         <ModelSelectionDisplay
                             models={models}
                             selectedModel={selectedModel}
@@ -82,6 +85,7 @@ export const UIRefreshThreadPage = () => {
                             width: '100%',
                             maxWidth: '750px',
                             margin: '0 auto',
+                            paddingBlockEnd: 2,
                         }}>
                         <QueryForm />
                         <LegalNotice />

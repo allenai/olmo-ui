@@ -40,7 +40,7 @@ export const OlmoAppBar = (): JSX.Element => {
                     paddingInline: 2,
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 4,
+                        paddingBlockStart: 1.5,
                         backgroundColor: 'transparent',
                     },
                 })}>
@@ -51,8 +51,8 @@ export const OlmoAppBar = (): JSX.Element => {
                         gridTemplateColumns: '1fr max-content 1fr',
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                             width: '100%',
-                            maxWidth: '750px',
                             margin: '0 auto',
+                            paddingInline: 3,
                         },
                     })}>
                     <Link
