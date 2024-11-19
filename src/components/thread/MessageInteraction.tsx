@@ -69,7 +69,7 @@ export const MessageInteraction = ({
         <Stack direction="row" gap={0} alignItems="start">
             <ButtonGroup aria-label="Thread feedback buttons">
                 <MessageInteractionIcon
-                    tooltip="Indicate good response"
+                    tooltip="Good response"
                     Icon={GoodIcon}
                     selected={currentLabel?.rating === LabelRating.Positive}
                     onClick={async () => {
@@ -77,16 +77,15 @@ export const MessageInteraction = ({
                     }}
                 />
                 <MessageInteractionIcon
-                    tooltip="Indicate bad response"
+                    tooltip="Bad response"
                     Icon={BadIcon}
                     selected={currentLabel?.rating === LabelRating.Positive}
                     onClick={async () => {
                         await rateMessage(LabelRating.Negative);
                     }}
                 />
-
                 <MessageInteractionIcon
-                    tooltip="Flag as inappropriate"
+                    tooltip="Inapproriate response"
                     Icon={FlagIcon}
                     selected={currentLabel?.rating === LabelRating.Positive}
                     onClick={async () => {
@@ -94,11 +93,7 @@ export const MessageInteraction = ({
                     }}
                 />
             </ButtonGroup>
-            <MessageInteractionIcon
-                tooltip="Copy content"
-                Icon={ContentCopy}
-                onClick={copyMessage}
-            />
+            <MessageInteractionIcon tooltip="Copy" Icon={ContentCopy} onClick={copyMessage} />
             <Snackbar // TODO: convert to using AlertSlice once PR #396 gets merged.
                 open={copySnackbarOpen}
                 autoHideDuration={500}
