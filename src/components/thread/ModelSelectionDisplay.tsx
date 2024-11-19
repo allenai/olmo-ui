@@ -49,9 +49,12 @@ export const ModelSelectionDisplay = ({
 
     useEffect(() => {
         const latestThreadContent = selectedThreadMessagesById[latestThreadId];
+        const modelIdList = models.map((mode) => mode.id);
         if (latestThreadContent) {
-            if (latestThreadContent.model_id) {
+            if (latestThreadContent.model_id && modelIdList.indexOf(latestThreadContent.model_id)) {
                 setSelectedModel(latestThreadContent.model_id);
+            } else {
+                setSelectedModel(modelIdList[0]);
             }
         }
     }, [viewingMessageIds]);
