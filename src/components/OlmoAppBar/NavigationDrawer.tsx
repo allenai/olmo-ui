@@ -1,8 +1,4 @@
-import {
-    LoginOutlined as LoginIcon,
-    PolicyOutlined,
-    RateReviewOutlined,
-} from '@mui/icons-material';
+import { LoginOutlined as LoginIcon, RateReviewOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
@@ -148,13 +144,6 @@ export const NavigationDrawer = ({
                         iconVariant="external"
                         variant="footer">
                         Give feedback
-                    </NavigationLink>
-                    <NavigationLink
-                        icon={<PolicyOutlined />}
-                        href={links.responsibleUsePolicy}
-                        iconVariant="external"
-                        variant="footer">
-                        Responsible use policy
                     </NavigationLink>
                     <ColorModeSelection />
                     <Auth0LoginLink />
