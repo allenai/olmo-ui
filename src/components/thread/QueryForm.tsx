@@ -218,7 +218,7 @@ export const QueryForm = (): JSX.Element => {
     return (
         <Box marginBlockStart="auto" width={1}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <Stack gap={1.5} alignItems="flex-start">
+                <Stack gap={1} alignItems="flex-start">
                     <TextFieldElement
                         name="content"
                         label="Prompt"
@@ -275,24 +275,17 @@ export const QueryForm = (): JSX.Element => {
                             inputComponent: 'textarea',
                         }}
                     />
-
-                    <Stack direction="row" gap={2} alignItems="center">
-                        {isLimitReached && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You have reached maximum thread length. Please start a new thread.
-                            </Typography>
-                        )}
-                        {!canEditThread && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You cannot add a prompt because you are not the thread creator.
-                                Please submit your prompt in a new thread.
-                            </Typography>
-                        )}
-                    </Stack>
+                    {isLimitReached && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            You have reached maximum thread length. Please start a new thread.
+                        </Typography>
+                    )}
+                    {!canEditThread && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            You cannot add a prompt because you are not the thread creator. Please
+                            submit your prompt in a new thread.
+                        </Typography>
+                    )}
                 </Stack>
             </FormContainer>
         </Box>
