@@ -84,7 +84,7 @@ export const ChatMessage = ({
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
-        <Stack direction="row" gap={3} alignItems="start">
+        <Stack direction="row" gap={3} alignItems="start" paddingInline={2}>
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>

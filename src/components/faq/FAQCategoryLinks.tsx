@@ -17,6 +17,7 @@ export const FAQCategoryLinks = (): JSX.Element => {
                     backgroundColor: 'background.default',
                     padding: (theme) => theme.spacing(1),
                     gridArea: 'aside',
+                    width: '320px',
                 }}>
                 <CardContent>
                     <Typography variant="body1" fontWeight="bold" component="h2" marginBlockEnd={6}>

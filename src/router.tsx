@@ -36,6 +36,8 @@ const DolmaPage = (): JSX.Element => {
                 // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
                 gridArea: 'content / content / aside / aside',
                 overflow: 'auto',
+                paddingInline: 2,
+                paddingBlockEnd: 2,
             }}>
             <MetaTags title="AI2 Playground - Dataset Explorer" />
             <Outlet />

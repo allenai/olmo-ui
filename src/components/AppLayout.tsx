@@ -21,8 +21,6 @@ export const AppLayout = ({ children }: AppLayout) => {
 
                     overflow: 'auto',
 
-                    paddingBlock: { [DESKTOP_LAYOUT_BREAKPOINT]: 3 },
-
                     height: 1,
 
                     gridArea: {
@@ -31,11 +29,7 @@ export const AppLayout = ({ children }: AppLayout) => {
                     },
                     gridTemplateColumns: 'subgrid',
                     gridTemplateRows: 'subgrid',
-
-                    backgroundColor: (theme) => ({
-                        xs: theme.palette.background.default,
-                        [DESKTOP_LAYOUT_BREAKPOINT]: 'transparent',
-                    }),
+                    backgroundColor: 'transparent',
                 }}
                 maxWidth={false}>
                 {children}
@@ -53,6 +47,8 @@ const OuterContainer = (props: PaperProps) => {
                 (theme) => ({
                     height: '100dvh',
                     width: '100%',
+                    border: 0,
+                    position: 'fixed',
 
                     display: 'grid',
                     gridTemplateAreas: `
@@ -66,12 +62,8 @@ const OuterContainer = (props: PaperProps) => {
                             'nav app-bar aside'
                             'nav content aside'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
-                        // clamp will keep it between 23rem and 28rem while adjusting to be 25% of the viewport width
-                        gridTemplateColumns: 'auto minmax(0, 1fr) clamp(23rem, 25svw, 28rem)',
-                        columnGap: theme.spacing(8),
-                        rowGap: 2,
-
-                        paddingInlineEnd: 3,
+                        gridTemplateColumns: 'auto 1fr auto',
+                        rowGap: 2, // keep?
                     },
                 }),
             ]}

@@ -31,36 +31,36 @@ export const UIRefreshThreadPage = () => {
             <Card
                 variant="elevation"
                 elevation={0}
-                sx={{
+                sx={(theme) => ({
                     flexGrow: '1',
                     gridArea: 'content',
-                }}>
+                    paddingBlockStart: 2,
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        paddingBlockStart: 0,
+                    },
+                })}>
                 <Stack
                     gap={2}
-                    sx={(theme) => ({
+                    sx={{
                         containerName: 'thread-page',
                         containerType: 'inline-size',
 
                         backgroundColor: 'transparent',
-
-                        paddingBlockStart: 1,
-                        paddingBlockEnd: 2,
-                        paddingInline: 2,
-
-                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            paddingBlockStart: 2,
-                            paddingBlockEnd: 4,
-                            paddingInline: 0,
-                        },
-
                         height: 1,
-                    })}>
+                        paddingBlockStart: 1,
+                    }}>
                     <Box
-                        sx={{
+                        sx={(theme) => ({
                             display: 'grid',
                             gridTemplateColumns: '1fr max-content',
                             columnGap: 1,
-                        }}>
+                            width: '100%',
+                            margin: '0 auto',
+                            paddingInline: 2,
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                paddingInline: 5,
+                            },
+                        })}>
                         <ModelSelectionDisplay
                             models={models}
                             selectedModel={selectedModel}
@@ -77,10 +77,19 @@ export const UIRefreshThreadPage = () => {
                             shouldOnlyShowAtDesktop={false}
                         />
                     </Box>
-
                     <Outlet />
-                    <QueryForm />
-                    <LegalNotice />
+                    <Stack
+                        gap={2}
+                        sx={{
+                            paddingInline: 2,
+                            width: '100%',
+                            maxWidth: '750px',
+                            margin: '0 auto',
+                            paddingBlockEnd: 2,
+                        }}>
+                        <QueryForm />
+                        <LegalNotice />
+                    </Stack>
                 </Stack>
             </Card>
 

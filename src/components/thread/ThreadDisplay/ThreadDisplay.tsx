@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -167,14 +167,11 @@ export const ThreadDisplay = (): ReactNode => {
     };
 
     return (
-        <Stack
-            gap={2}
-            direction="column"
+        <Box
             data-testid="thread-display"
             onScroll={() => {
                 hasUserScrolledSinceSendingMessage.current = true;
             }}
-            useFlexGap
             ref={scrollContainerRef}
             overflow="auto"
             sx={{
@@ -182,29 +179,38 @@ export const ThreadDisplay = (): ReactNode => {
                     scrollBehavior: 'smooth',
                 },
             }}>
-            {childMessageIds.map((messageId) => (
-                <MessageView messageId={messageId} key={messageId} />
-            ))}
-            <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
             <Stack
-                justifyContent="center"
-                alignItems="center"
+                gap={2}
+                direction="column"
+                useFlexGap
                 sx={{
-                    bottom: '-1px',
-                    minHeight: (theme) => ({
-                        xs: theme.spacing(6),
-                        [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
-                    }),
-                    position: 'sticky',
-                    background: (theme) =>
-                        `linear-gradient(0deg, ${theme.palette.background.paper} 0%, #0000 42.5%)`,
-                    marginTop: (theme) => theme.spacing(-3),
+                    maxWidth: '750px',
+                    margin: '0 auto',
                 }}>
-                <ScrollToBottomButton
-                    isVisible={isScrollToBottomButtonVisible}
-                    onScrollToBottom={handleScrollToBottomButtonClick}
-                />
+                {childMessageIds.map((messageId) => (
+                    <MessageView messageId={messageId} key={messageId} />
+                ))}
+                <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
+                <Stack
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                        bottom: '-1px',
+                        minHeight: (theme) => ({
+                            xs: theme.spacing(6),
+                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
+                        }),
+                        position: 'sticky',
+                        background: (theme) =>
+                            `linear-gradient(0deg, ${theme.palette.background.paper} 0%, #0000 42.5%)`,
+                        marginTop: (theme) => theme.spacing(-3),
+                    }}>
+                    <ScrollToBottomButton
+                        isVisible={isScrollToBottomButtonVisible}
+                        onScrollToBottom={handleScrollToBottomButtonClick}
+                    />
+                </Stack>
             </Stack>
-        </Stack>
+        </Box>
     );
 };

@@ -40,18 +40,21 @@ export const OlmoAppBar = (): JSX.Element => {
                     paddingInline: 2,
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 4,
-                        paddingInline: 0,
-
+                        paddingBlockStart: 1.5,
                         backgroundColor: 'transparent',
                     },
                 })}>
                 <Toolbar
                     disableGutters
-                    sx={{
+                    sx={(theme) => ({
                         display: 'grid',
                         gridTemplateColumns: '1fr max-content 1fr',
-                    }}>
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            width: '100%',
+                            margin: '0 auto',
+                            paddingInline: 3,
+                        },
+                    })}>
                     <Link
                         href={links.home}
                         lineHeight={1}
