@@ -232,11 +232,14 @@ export const QueryForm = (): JSX.Element => {
     return (
         <Box marginBlockStart="auto" width={1}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <DevTool control={formContext.control} />
                 <Stack gap={1.5} alignItems="flex-start" width={1}>
                     <Controller
                         control={formContext.control}
                         name="content"
+                        rules={{
+                            required: true,
+                            pattern: /[^\s]+/,
+                        }}
                         render={({
                             field: { onChange, value, ref, name },
                             fieldState: { error },
@@ -267,62 +270,6 @@ export const QueryForm = (): JSX.Element => {
                             />
                         )}
                     />
-                    {/* <TextFieldElement
-                        name="content"
-                        label="Prompt"
-                        placeholder="Enter prompt"
-                        InputLabelProps={{
-                            shrink: true,
-                            // This gets rid of the * by the label
-                            required: false,
-                            // @ts-expect-error - text is valid but isn't typed
-                            color: 'text',
-                        }}
-                        fullWidth
-                        required
-                        parseError={(error) => {
-                            if (error.type === 'inappropriate') {
-                                return (
-                                    <>
-                                        This prompt was flagged as inappropriate. Please change your
-                                        prompt and resubmit.{' '}
-                                        <Link
-                                            href={
-                                                links.faqs + getFAQIdByShortId('wildguard-intro')
-                                            }>
-                                            Learn why
-                                        </Link>
-                                    </>
-                                );
-                            }
-
-                            return error.message;
-                        }}
-                        validation={{ pattern: /[^\s]+/ }}
-                        // If we don't have a dense margin the label gets cut off!
-                        margin="dense"
-                        disabled={!canEditThread}
-                        onKeyDown={handleOnKeyDown}
-                        InputProps={{
-                            sx: (theme) => ({
-                                [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-                                    borderColor: theme.palette.text.primary,
-                                },
-                            }),
-                            endAdornment: (
-                                <SubmitPauseAdornment
-                                    canPause={canPauseThread}
-                                    onPause={onAbort}
-                                    isSubmitDisabled={
-                                        isSelectedThreadLoading || isLimitReached || !canEditThread
-                                    }
-                                />
-                            ),
-                            maxRows: 5,
-                            multiline: true,
-                            inputComponent: 'textarea',
-                        }}
-                    /> */}
 
                     <Stack direction="row" gap={2} alignItems="center">
                         {isLimitReached && (

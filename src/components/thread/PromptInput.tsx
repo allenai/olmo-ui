@@ -108,9 +108,9 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         }}
                     />
                     {/* 
-                This div keeps the same contents as the input so it resizes whenever it changes
-                whenever it resizes it'll expand the parent, which also expands the input
-            */}
+                        This div keeps the same contents as the input so it resizes whenever it changes
+                        whenever it resizes it'll expand the parent, which also expands the input
+                    */}
                     <Box
                         aria-hidden
                         sx={{
