@@ -59,7 +59,7 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'Which models are served in the Playground?',
-                answer: '[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B. ',
+                answer: '[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B.',
             },
             {
                 question: 'What type of data is used to train the models?',
@@ -80,7 +80,7 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How is my data used to improve the Playground’s performance?',
-                answer: 'Your data helps us understand how users interact with the Playground and the models it serves.  We use this interaction data to identify areas for improvement and to develop new features that advance the scientific and educational purposes of Ai2. We analyze aggregated data to inform updates and enhancements to ensure our models remain effective and relevant for scientific research and education in the public interest. Please see our [Terms of Use](https://allenai.org/terms/2024-09-25) and [Privacy Policy](https://allenai.org/privacy-policy/2022-07-21) for more information.',
+                answer: 'Your data helps us understand how users interact with the Playground and the models it serves. We use this interaction data to identify areas for improvement and to develop new features that advance the scientific and educational purposes of Ai2. We analyze aggregated data to inform updates and enhancements to ensure our models remain effective and relevant for scientific research and education in the public interest. Please see our [Terms of Use](https://allenai.org/terms/2024-09-25) and [Privacy Policy](https://allenai.org/privacy-policy/2022-07-21) for more information.',
             },
             {
                 question: 'How can I opt out of Ai2 using my Playground data?',
