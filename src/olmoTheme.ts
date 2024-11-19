@@ -169,17 +169,12 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
                 ...primary,
 
                 contrastText: text.reversed ?? '#FFF', // default
-                // main: 'rgba(240, 82, 156, 1)',
-                // light: 'rgba(243, 116, 175, 1)',
-                // dark: 'rgba(168, 57, 109, 1)',
             },
             secondary: {
                 ...palette.secondary,
-                contrastText: text.reversed ?? '#FFF', // default
             },
             tertiary: {
                 ...palette.tertiary,
-                contrastText: text.reversed ?? '#FFF', // default
             },
             error: {
                 ...palette.error,
