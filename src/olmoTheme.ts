@@ -141,9 +141,9 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
             mode: 'dark',
 
             background: {
-                paper: '#032629' ?? '#000',
+                paper: '#032629',
                 reversed: background.paper,
-                default: '#032629' ?? '#000',
+                default: '#032629',
                 drawer: {
                     primary: background.reversed,
                     secondary: background.reversed,
