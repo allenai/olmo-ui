@@ -25,7 +25,7 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
     const siteKey = process.env.RECAPTCHA_SITE_KEY;
 
     const GoogleReCaptchaWrapper = () => {
-        if (process.env.NODE_ENV !== 'production' || !siteKey) {
+        if (process.env.IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
             return <>{children}</>;
         }
         return (
