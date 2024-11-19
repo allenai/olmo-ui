@@ -6,7 +6,6 @@ import { Box, Input, Slider } from '@mui/material';
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
