@@ -38,7 +38,6 @@
     "@nivo/tooltip": "^0.84.0",
     "@nivo/treemap": "^0.84.0",
     "@types/jest": "^29.5.12",
-    "clsx": "^2.1.1",
     "dayjs": "^1.8.30",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.0.6",
@@ -66,6 +65,7 @@
   "devDependencies": {
     "@allenai/eslint-config-varnish": "^2.0.3",
     "@happy-dom/jest-environment": "^15.7.4",
+    "@hookform/devtools": "^4.3.1",
     "@playwright/test": "^1.46.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@testing-library/dom": "^10.4.0",
