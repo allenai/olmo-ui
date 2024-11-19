@@ -34,13 +34,17 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         if (lastResponseId != null) {
             selectMessage(lastResponseId);
             const lastThreadContent = selectedThreadMessagesById[lastResponseId];
-            const modelIdList = models.map((model) => model.id);
+            const modelIdList = models
+                .filter((model) => model.model_type === 'chat' && !model.is_deprecated)
+                .map((model) => model.id);
             if (lastThreadContent) {
                 if (
                     lastThreadContent.model_id &&
                     modelIdList.includes(lastThreadContent.model_id)
                 ) {
                     setSelectedModel(lastThreadContent.model_id);
+                } else {
+                    setSelectedModel(modelIdList[0]);
                 }
                 if (lastThreadContent.opts) {
                     updateInferenceOpts(lastThreadContent.opts);
