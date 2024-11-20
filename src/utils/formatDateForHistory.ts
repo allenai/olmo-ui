@@ -6,11 +6,7 @@ import {
     todayDateFormatter,
 } from '../utils/date-utils';
 
-interface TimeDisplayProps {
-    timeStamp: Date;
-}
-
-export const TimeDisplay = ({ timeStamp }: TimeDisplayProps) => {
+export const formatDateForHistory = (timeStamp: Date) => {
     if (isCurrentDay(timeStamp)) {
         return todayDateFormatter.format(timeStamp);
     } else if (isPastWeek(timeStamp)) {

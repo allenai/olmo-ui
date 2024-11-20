@@ -3,6 +3,7 @@ import { Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
@@ -40,6 +41,8 @@ const NewThreadButton = ({
 export const ThreadPageControls = (): React.ReactNode => {
     const isDesktop = useDesktopOrUp();
 
+    const currentThreadId = useAppContext((state) => state.selectedThreadRootId);
+
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const handleClickDelete = () => {
@@ -62,24 +65,14 @@ export const ThreadPageControls = (): React.ReactNode => {
                 <NewThreadButton />
                 <DeleteThreadButton onClick={handleClickDelete} />
                 <ShareThreadButton />
-                <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
+                <DeleteDialog
+                    threadId={currentThreadId}
+                    openDialog={isDeleteDialogOpen}
+                    setOpenDialog={setDeleteDialogOpen}
+                />
             </Stack>
         );
     } else {
-        return (
-            <Stack
-                direction="row"
-                gap={2}
-                sx={{
-                    height: 'auto',
-                    alignItems: 'flex-start',
-                    [SMALL_THREAD_CONTAINER_QUERY]: {
-                        justifyContent: 'right',
-                    },
-                }}>
-                <DeleteThreadButton onClick={handleClickDelete} />
-                <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
-            </Stack>
-        );
+        return null;
     }
 };
