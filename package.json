@@ -65,6 +65,7 @@
   "devDependencies": {
     "@allenai/eslint-config-varnish": "^2.0.3",
     "@happy-dom/jest-environment": "^15.7.4",
+    "@hookform/devtools": "^4.3.1",
     "@playwright/test": "^1.46.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@testing-library/dom": "^10.4.0",
