@@ -107,8 +107,7 @@ export const HistoryDrawer = (): JSX.Element => {
                 <Box
                     sx={{
                         position: 'sticky',
-                        paddingInline: (theme) => theme.spacing(2),
-                        paddingBlock: (theme) => theme.spacing(4),
+                        padding: 3,
                         backgroundColor: 'inherit',
                     }}>
                     <Stack
@@ -123,7 +122,10 @@ export const HistoryDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ color: (theme) => theme.palette.text.drawer.primary }}
+                            sx={{
+                                color: (theme) => theme.palette.text.drawer.primary,
+                                opacity: 0.5,
+                            }}
                             aria-label="close history drawer">
                             <CloseIcon />
                         </IconButton>

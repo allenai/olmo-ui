@@ -45,7 +45,8 @@ export const FullScreenDrawer = ({
             PaperProps={{
                 sx: {
                     backgroundColor: (theme) => theme.palette.background.default,
-                    width: fullWidth ? '100vw' : undefined,
+                    backgroundImage: 'none', // Mui adds a linear-gradient of opacity white
+                    width: fullWidth ? 'clamp(20rem, 100vw - 44px, 23rem)' : undefined,
                 },
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}

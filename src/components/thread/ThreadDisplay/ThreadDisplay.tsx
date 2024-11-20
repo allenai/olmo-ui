@@ -168,6 +168,7 @@ export const ThreadDisplay = (): ReactNode => {
 
     return (
         <Box
+            height={1}
             data-testid="thread-display"
             onScroll={() => {
                 hasUserScrolledSinceSendingMessage.current = true;
@@ -183,6 +184,7 @@ export const ThreadDisplay = (): ReactNode => {
                 gap={2}
                 direction="column"
                 useFlexGap
+                height={1}
                 sx={{
                     maxWidth: '750px',
                     margin: '0 auto',

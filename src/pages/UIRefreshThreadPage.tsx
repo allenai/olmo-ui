@@ -66,16 +66,8 @@ export const UIRefreshThreadPage = () => {
                             selectedModel={selectedModel}
                             onModelChange={onModelChange}
                             label="Model"
-                            shouldOnlyShowAtDesktop={true}
                         />
                         <ThreadPageControls />
-                        <ModelSelectionDisplay
-                            models={models}
-                            selectedModel={selectedModel}
-                            onModelChange={onModelChange}
-                            label="Model"
-                            shouldOnlyShowAtDesktop={false}
-                        />
                     </Box>
                     <Outlet />
                     <Stack
