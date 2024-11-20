@@ -65,7 +65,7 @@ const OuterContainer = (props: PaperProps) => {
                             'nav content aside controls'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
                         gridTemplateColumns: 'auto 1fr auto auto',
-                        rowGap: 2, // keep?
+                        rowGap: 2,
                     },
                 }),
             ]}
