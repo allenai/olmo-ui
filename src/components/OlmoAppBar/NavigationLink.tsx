@@ -8,6 +8,8 @@ import {
 } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
+
 const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
     <ListItemIcon
         sx={[
@@ -52,14 +54,24 @@ export const NavigationLink = ({
     inset,
     linkProps = {},
 }: NavigationLinkProps) => {
+    const isInternalLink = href != null && href.startsWith('/');
+
     const linkPropsMerged = {
         ...linkProps,
         ...(href == null
             ? {}
             : {
                   href,
-                  target: href == null ? undefined : href.startsWith('/') ? '_self' : '_blank',
+                  target: href == null ? undefined : isInternalLink ? '_self' : '_blank',
               }),
+    };
+
+    const handleClick: MouseEventHandler<HTMLElement> = (event) => {
+        if (href != null && !isInternalLink) {
+            analyticsClient.trackExternalNavigationLinkClick({ url: href });
+        }
+
+        onClick?.(event);
     };
 
     return (
@@ -69,7 +81,7 @@ export const NavigationLink = ({
                 selected={selected}
                 disableGutters
                 dense={variant === 'footer'}
-                onClick={onClick}
+                onClick={handleClick}
                 sx={(theme) => ({
                     paddingBlock: 1,
                     paddingInline: 4,

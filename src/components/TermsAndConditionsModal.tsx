@@ -18,6 +18,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
@@ -181,6 +182,9 @@ export const TermsAndConditionsModal = () => {
                                 <Button
                                     component={Link}
                                     href={links.logout}
+                                    onClick={() => {
+                                        analyticsClient.trackTermsLogOut();
+                                    }}
                                     variant="text"
                                     startIcon={<LogoutIcon />}
                                     underline="none"
