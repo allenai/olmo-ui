@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm';
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
 
 import { CodeBlock } from '../CodeBlock';
-import { CustomLink, CustomParagraph, HorizontalRule } from './CustomComponents';
+import { CustomDivider, CustomLink, CustomParagraph } from './CustomComponents';
 
 interface MarkdownRendererProps {
     children: string;
@@ -36,10 +36,10 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
-                a: CustomLink,
                 code: CodeBlock,
-                hr: HorizontalRule,
                 p: CustomParagraph,
+                hr: CustomDivider,
+                a: CustomLink,
                 'attribution-highlight': AttributionHighlight,
             }}>
             {markdown}
