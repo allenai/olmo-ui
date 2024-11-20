@@ -6,7 +6,7 @@ import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 
 interface ParameterDrawerInputWrapperProps {
     label: string;
-    ariaLabel: string;
+    ariaLabel?: string;
     inputId: string;
     children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
     tooltipContent?: string;

@@ -12,7 +12,7 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
 interface Props {
-    ariaLabel: string;
+    ariaLabel?: string;
     label: string;
     step?: number;
     min?: number;
