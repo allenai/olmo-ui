@@ -3,7 +3,7 @@ import { http, HttpResponse, passthrough } from 'msw';
 import { ModelApiUrl, ModelList } from '@/api/Model';
 import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 import { Schema, SchemaApiUrl } from '@/api/Schema';
-import { WhoamiApiUrl } from '@/api/User';
+import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
 import { attributionHandlers } from './attributionHandlers';
 import { datasetDocumentResponse } from './datasetDocumentResponse';
@@ -26,6 +26,16 @@ export const handlers = [
         return HttpResponse.json({
             client: 'murphy@allenai.org',
             hasAcceptedTermsAndConditions: true,
+        });
+    }),
+
+    http.put(`${process.env.LLMX_API_URL}${MigrateFromAnonymousUserUrl}`, () => {
+        return HttpResponse.json({
+            updated_user: {
+                client: 'murphy@allenai.org',
+                hasAcceptedTermsAndConditions: true,
+            },
+            messages_updated_count: 0,
         });
     }),
 

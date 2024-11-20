@@ -12,6 +12,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
+import { UserClient } from '../User';
 import { UserInfoLoaderResponse } from '../user-info-loader';
 import { createLoginRedirectURL } from './auth-utils';
 import { auth0Client } from './auth0Client';
@@ -63,13 +64,19 @@ export interface LoginError extends ErrorResponse {
     };
 }
 
+const userClient = new UserClient();
+
 export const loginResultLoader: LoaderFunction = async ({ request }) => {
     await auth0Client.handleLoginRedirect();
     const redirectTo = new URL(request.url).searchParams.get('redirectTo') || links.playground;
 
     const isAuthenticated = await auth0Client.isAuthenticated();
-    if (isAuthenticated) {
+    const authenticatedUserInfo = await auth0Client.getUserInfo();
+
+    if (isAuthenticated && authenticatedUserInfo?.sub != null) {
         const { getUserInfo } = appContext.getState();
+
+        await userClient.migrateFromAnonymousUser(authenticatedUserInfo.sub);
 
         // HACK: this re-fetches user info after we log in. It'd be nice to have this happen automatically when someone logs in!
         await getUserInfo();

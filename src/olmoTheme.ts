@@ -1,5 +1,5 @@
 import { varnishTheme } from '@allenai/varnish2/theme';
-import { alpha, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+import { alpha, createTheme, PaletteMode, Theme, ThemeOptions } from '@mui/material';
 
 declare module '@mui/material/styles' {
     interface TypeBackground {
@@ -129,6 +129,14 @@ export const uiRefreshOlmoTheme = {
     },
 } satisfies Partial<ThemeOptions>;
 
+const lightPaletteFromTheme = (theme: Theme): Theme => {
+    return createTheme(theme, {
+        palette: {
+            error: theme.palette.augmentColor({ color: { main: '#d50000' } }),
+        },
+    });
+};
+
 const darkPaletteFromTheme = (theme: Theme): Theme => {
     const { palette } = theme;
     const { background, text, primary, action } = palette;
@@ -173,9 +181,7 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
             tertiary: {
                 ...palette.tertiary,
             },
-            error: {
-                ...palette.error,
-            },
+            error: theme.palette.augmentColor({ color: { main: '#fe3e3e' } }),
             warning: {
                 ...palette.warning,
             },
@@ -196,4 +202,4 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
 };
 
 export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme =>
-    mode === 'dark' ? darkPaletteFromTheme(theme) : theme;
+    mode === 'dark' ? darkPaletteFromTheme(theme) : lightPaletteFromTheme(theme);

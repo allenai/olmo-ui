@@ -83,7 +83,7 @@ export const ThreadPageControls = (): JSX.Element => {
                 }}>
                 <ButtonGroup size="large" variant="outlined" fullWidth>
                     {isCorpusLinkEnabled && <CorpusLinkButton />}
-                    <ParameterButton />
+                    <NewThreadButton />
                     {!isMediumLayout ? (
                         <MoreButton
                             sx={(theme) => ({
@@ -96,10 +96,11 @@ export const ThreadPageControls = (): JSX.Element => {
                                     borderColor: theme.palette.primary.contrastText,
                                 },
                             })}>
-                            <NewThreadButton
-                                key="more-new-thread-button"
+                            <ParameterButton
+                                key="more-parameter-button"
                                 variant="list"
                                 isResponsive={false}
+                                layout="both"
                             />
                             <DeleteThreadButton
                                 key="more-delete-thread-button"
