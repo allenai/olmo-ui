@@ -3,6 +3,8 @@ import TVOutlinedIcon from '@mui/icons-material/TvOutlined';
 import { Box, ListItemIcon, Menu, MenuItem, MenuItemProps } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
+
 import { ColorPreference, useColorMode } from '../ColorModeProvider';
 import { NavigationLink } from './NavigationLink';
 
@@ -26,6 +28,7 @@ const ColorModeSelectionMenuItem = ({
         <MenuItem
             {...menuItemProps}
             onClick={(e) => {
+                analyticsClient.trackColorModeChange({ colorMode: name });
                 setColorMode(mode);
                 onClick?.(e);
             }}>

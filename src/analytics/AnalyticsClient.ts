@@ -8,6 +8,11 @@ export enum EventType {
     DocumentShare = 'document.share',
     NewPrompt = 'prompt.new',
     FollowUpPrompt = 'prompt.followup',
+    ParametersUpdate = 'prompt.parameters.update',
+    ModelUpdate = 'prompt.model.update',
+    ExternalNavigationLinkClick = 'navigation.external',
+    TermsLogOut = 'terms.logout',
+    ColorModeChange = 'color.mode.change',
 }
 
 export type SearchQueryDetails = {
@@ -39,7 +44,8 @@ export interface AnalyticsEvent {
         | SearchQueryDetails
         | SearchResultClickDetails
         | DocumentEventDetails
-        | PromptMessageDetails;
+        | PromptMessageDetails
+        | Record<string, unknown>;
 }
 
 export class AnalyticsClient {
@@ -49,7 +55,7 @@ export class AnalyticsClient {
      * Rather it enqueues the request for eventual, background delivery by the browser.
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
-    private track(e: AnalyticsEvent): boolean {
+    track(e: AnalyticsEvent): boolean {
         plausibleTrackEvent(e);
 
         const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
@@ -82,6 +88,45 @@ export class AnalyticsClient {
 
     trackPageView(url: string): void {
         plausibleTrackPageview({ url });
+    }
+
+    trackParametersUpdate(details: { parameterUpdated: string }): boolean {
+        return this.track({
+            type: EventType.ParametersUpdate,
+            occurred: new Date(),
+            details,
+        });
+    }
+
+    trackModelUpdate(details: { modelChosen: string }): boolean {
+        return this.track({
+            type: EventType.ModelUpdate,
+            occurred: new Date(),
+            details,
+        });
+    }
+
+    trackExternalNavigationLinkClick(details: { url: string }): boolean {
+        return this.track({
+            type: EventType.ExternalNavigationLinkClick,
+            occurred: new Date(),
+            details,
+        });
+    }
+
+    trackTermsLogOut(): boolean {
+        return this.track({
+            type: EventType.TermsLogOut,
+            occurred: new Date(),
+        });
+    }
+
+    trackColorModeChange(details: { colorMode: string }): boolean {
+        return this.track({
+            type: EventType.ColorModeChange,
+            occurred: new Date(),
+            details,
+        });
     }
 }
 

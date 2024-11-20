@@ -11,6 +11,7 @@ import {
 import { useEffect, useId } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Model, ModelList } from '@/api/Model';
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -40,7 +41,8 @@ export const ModelSelectionDisplay = ({
 
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
 
-    const { selectedThreadMessagesById, setSelectedModel } = useAppContext();
+    const selectedThreadMessagesById = useAppContext((state) => state.selectedThreadMessagesById);
+    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
 
     const latestThreadId = viewingMessageIds[viewingMessageIds.length - 1];
 
@@ -58,6 +60,11 @@ export const ModelSelectionDisplay = ({
             }
         }
     }, [viewingMessageIds]);
+
+    const handleModelChange = (event: SelectChangeEvent) => {
+        analyticsClient.trackModelUpdate({ modelChosen: event.target.value });
+        onModelChange(event);
+    };
 
     return (
         <Box>
@@ -79,7 +86,7 @@ export const ModelSelectionDisplay = ({
                         id={selectId}
                         fullWidth
                         size="small"
-                        onChange={onModelChange}
+                        onChange={handleModelChange}
                         input={<OutlinedInput />}
                         value={(selectedModel && selectedModel.id) || ''}>
                         {newModels.map((model) => (
