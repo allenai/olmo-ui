@@ -11,7 +11,7 @@ export const UserAvatar = () => {
             color="primary"
             sx={(theme: Theme) => ({
                 background: theme.palette.secondary.main,
-                borderColor: theme.palette.secondary.main,
+                border: 'none',
             })}
         />
     );
