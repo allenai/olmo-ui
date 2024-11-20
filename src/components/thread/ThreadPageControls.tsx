@@ -27,7 +27,7 @@ const NewThreadButton = ({
     return (
         <ResponsiveButton
             startIcon={<PlusIcon />}
-            title="New Thread"
+            title="Create a new thread"
             variant={variant}
             layout={layout}
             isResponsive={isResponsive}

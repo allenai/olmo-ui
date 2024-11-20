@@ -2,6 +2,7 @@ import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-mater
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, ButtonGroup, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useMatch } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
@@ -26,6 +27,8 @@ export const OlmoAppBar = (): JSX.Element => {
     const handleDrawerClose = () => {
         setIsDrawerOpen(false);
     };
+
+    const isOnThreadPage = useMatch({ path: links.thread(':id') });
 
     return (
         <>
@@ -57,15 +60,7 @@ export const OlmoAppBar = (): JSX.Element => {
                             display: 'none',
                         },
                     })}>
-                    <IconButton
-                        onClick={handleDrawerToggle}
-                        color="primary"
-                        sx={{
-                            justifySelf: 'start',
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                        }}>
-                        <MenuIcon />
-                    </IconButton>
+                    <MenuIconButton onClick={handleDrawerToggle} />
                     <Link
                         href={links.home}
                         sx={(theme) => ({
@@ -83,11 +78,13 @@ export const OlmoAppBar = (): JSX.Element => {
                             justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
-                        <ShareThreadIconButton />
-                        <ParameterIconButton />
-                        <IconButton color="primary" href={links.playground}>
-                            <AddBoxOutlined />
-                        </IconButton>
+                        {isOnThreadPage && (
+                            <>
+                                <ShareThreadIconButton />
+                                <ParameterIconButton />
+                            </>
+                        )}
+                        <NewThreadIconButton />
                     </ButtonGroup>
                 </Toolbar>
                 <Typography
@@ -116,26 +113,13 @@ export const OlmoAppBar = (): JSX.Element => {
 
 export const ParameterIconButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-    const canUseParameterButton = useAppContext(
-        (state) =>
-            state.selectedThreadRootId === '' ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            state.selectedThreadMessagesById[state.selectedThreadRootId]?.creator ===
-                state.userInfo?.client
-    );
+
     const toggleParametersDrawer = () => {
         toggleDrawer(PARAMETERS_DRAWER_ID);
     };
 
-    if (!canUseParameterButton) {
-        return null;
-    }
-
     return (
-        <IconButton
-            color="primary"
-            onClick={toggleParametersDrawer}
-            disabled={!canUseParameterButton}>
+        <IconButton color="primary" onClick={toggleParametersDrawer} aria-label="Show parameters">
             <TuneOutlined />
         </IconButton>
     );
@@ -159,13 +143,40 @@ export const ShareThreadIconButton = () => {
     };
 
     return (
-        <IconButton color="primary" onClick={handleShareThread} disabled={shouldDisableShareButton}>
+        <IconButton
+            color="primary"
+            onClick={handleShareThread}
+            disabled={shouldDisableShareButton}
+            aria-label="Share this thread">
             <IosShareOutlined
                 sx={{
                     // This Icon looks visually off when centered
                     transform: 'translateY(-2px)',
                 }}
             />
+        </IconButton>
+    );
+};
+
+const NewThreadIconButton = () => {
+    return (
+        <IconButton color="primary" href={links.playground} aria-label="Create a new thread">
+            <AddBoxOutlined />
+        </IconButton>
+    );
+};
+
+const MenuIconButton = ({ onClick }: { onClick: () => void }) => {
+    return (
+        <IconButton
+            onClick={onClick}
+            color="primary"
+            aria-label="Open the navigation menu"
+            sx={{
+                justifySelf: 'start',
+                display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+            }}>
+            <MenuIcon />
         </IconButton>
     );
 };
