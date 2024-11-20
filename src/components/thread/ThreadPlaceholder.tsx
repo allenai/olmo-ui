@@ -1,30 +1,28 @@
-import { Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { Ai2LogoMarkSpinner } from '@/components/Ai2LogoMarkSpinner';
 import { RemoteState } from '@/contexts/util';
 
+import { LegalNotice } from './LegalNotice';
+
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
     return (
-        <Stack
-            marginBlockStart="auto"
-            alignSelf="center"
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            flexGrow={1}
-            gap={2}>
-            <Ai2LogoMarkSpinner isAnimating={isLoading} width={70} height={70} alt="" />
-            {/*
+        <Stack flex={1} alignItems="center" spacing={4}>
+            <Box textAlign="center" maxWidth="80%" mt={2}>
+                <LegalNotice />
+            </Box>
+            <Box display="flex" justifyContent="center" alignItems="center" flex={1}>
+                <Ai2LogoMarkSpinner isAnimating={isLoading} width={70} height={70} alt="" />
+            </Box>
             <Typography variant="body1">
                 <br />
                 {/* TODO: This still working text will need to show up at some point when we add the loading states
                     We need  
-                
-                 {* Still working... 
+                */}
+                {/* Still working... */}
             </Typography>
-            */}
         </Stack>
     );
 };
