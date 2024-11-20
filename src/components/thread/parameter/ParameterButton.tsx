@@ -2,10 +2,18 @@ import GearIcon from '@mui/icons-material/SettingsOutlined';
 
 import { useAppContext } from '@/AppContext';
 
-import { ResponsiveButton } from '../ResponsiveButton';
+import { ResponsiveButton, ResponsiveButtonProps } from '../ResponsiveButton';
 import { PARAMETERS_DRAWER_ID } from './ParameterDrawer';
 
-export const ParameterButton = () => {
+type ParameterButtonProps = Partial<
+    Pick<ResponsiveButtonProps, 'isResponsive' | 'variant' | 'layout'>
+>;
+
+export const ParameterButton = ({
+    variant = 'outlined',
+    isResponsive = true,
+    layout = 'text',
+}: ParameterButtonProps) => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const canUseParameterButton = useAppContext(
         (state) =>
@@ -19,9 +27,9 @@ export const ParameterButton = () => {
     };
     return (
         <ResponsiveButton
-            variant="outlined"
-            isResponsive={false}
-            layout="text"
+            variant={variant}
+            isResponsive={isResponsive}
+            layout={layout}
             startIcon={<GearIcon />}
             title="Parameters"
             onClick={toggleParametersDrawer}
