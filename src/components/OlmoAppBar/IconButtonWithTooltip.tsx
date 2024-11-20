@@ -28,7 +28,7 @@ export const IconButtonWithTooltip = ({
 }: IconButtonWithTooltipProps) => {
     return (
         <StyledTooltip title={label} arrow={arrow}>
-            <IconButton {...rest} color={color} sx={sx}>
+            <IconButton {...rest} aria-label={label} color={color} sx={sx}>
                 {children}
             </IconButton>
         </StyledTooltip>
