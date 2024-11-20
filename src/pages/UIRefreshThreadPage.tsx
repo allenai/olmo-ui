@@ -5,7 +5,6 @@ import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
-import { LegalNotice } from '@/components/thread/LegalNotice';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
@@ -88,7 +87,6 @@ export const UIRefreshThreadPage = () => {
                             paddingBlockEnd: 2,
                         }}>
                         <QueryForm />
-                        <LegalNotice />
                     </Stack>
                 </Stack>
             </Card>

@@ -11,6 +11,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
+import { LegalNotice } from '../LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
@@ -187,6 +188,8 @@ export const ThreadDisplay = (): ReactNode => {
                     maxWidth: '750px',
                     margin: '0 auto',
                 }}>
+                <LegalNotice />
+
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
