@@ -2,9 +2,10 @@ import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
+import { formatDateForHistory } from '../utils/formatDateForHistory';
 import { ChevronIcon } from './assets/ChevronIcon';
 import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
-import { timeDisplay } from './TimeDisplay';
+
 interface ThreadLinkProps {
     content: string;
     created: Date;
@@ -24,7 +25,7 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
             <ListItemButton
                 alignItems="center"
                 selected={isSelected}
-                title={timeDisplay(created)}
+                title={formatDateForHistory(created)}
                 sx={{
                     minHeight: (theme) => theme.spacing(5),
                     gap: (theme) => theme.spacing(1),
