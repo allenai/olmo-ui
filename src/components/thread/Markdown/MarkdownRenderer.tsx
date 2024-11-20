@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
 
 import { CodeBlock } from '../CodeBlock';
+import { CustomLink, CustomParagraph, HorizontalRule } from './CustomComponents';
 
 interface MarkdownRendererProps {
     children: string;
@@ -32,19 +33,13 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
-            sx={(theme) => ({
-                '& p': {
-                    margin: 0,
-                    marginBlockEnd: '1em',
-                },
-                '& a, & a:visited': {
-                    color: theme.palette.primary.main,
-                },
-            })}
             remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
+                a: CustomLink,
                 code: CodeBlock,
+                hr: HorizontalRule,
+                p: CustomParagraph,
                 'attribution-highlight': AttributionHighlight,
             }}>
             {markdown}
