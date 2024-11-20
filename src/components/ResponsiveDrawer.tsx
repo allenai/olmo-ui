@@ -95,7 +95,7 @@ export const ResponsiveDrawer = ({
                         sx: [
                             sharedDrawerStyle,
                             {
-                                width: 'clamp(18rem, 100vw - 44px, 23rem)',
+                                width: 'clamp(20rem, 100vw - 44px, 23rem)',
                             },
                         ],
                     }}

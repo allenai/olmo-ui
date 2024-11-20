@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
@@ -36,12 +36,11 @@ export const ParameterDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={onDrawerClose}
-                            sx={{ color: 'inherit' }}
+                            sx={{ color: 'inherit', opacity: 0.5 }}
                             aria-label="close parameters drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>
-                    <Divider />
                 </FullScreenDrawerHeader>
             )}>
             <ParameterContent />

@@ -42,7 +42,7 @@ export const ShareThreadButton = ({
             layout={layout}
             isResponsive={isResponsive}
             startIcon={<ShareOutlinedIcon />}
-            title="Share Thread"
+            title="Share this thread"
             onClick={handleShareThread}
         />
     );
