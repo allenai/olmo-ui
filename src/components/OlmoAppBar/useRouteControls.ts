@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useMatches } from 'react-router-dom';
 
-interface HandleWithTitle {
-    title?: string;
+interface HandleWithRouteControls {
+    Controls?: ReactNode;
 }
 
-export const useRouteTitle = () => {
+export const useRouteControls = () => {
     const matches = useMatches();
 
     const lowestHandle = useMemo(
@@ -15,12 +15,13 @@ export const useRouteTitle = () => {
                 // I don't think there's a way to properly type this
                 .filter(
                     (match) =>
-                        Boolean(match.handle) && (match.handle as HandleWithTitle).title != null
+                        Boolean(match.handle) &&
+                        (match.handle as HandleWithRouteControls).Controls != null
                 )
-                .map((match) => match.handle as HandleWithTitle)
+                .map((match) => match.handle as HandleWithRouteControls)
                 .at(-1),
         [matches]
     );
 
-    return lowestHandle?.title;
+    return lowestHandle?.Controls;
 };

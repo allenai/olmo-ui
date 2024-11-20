@@ -1,24 +1,20 @@
-import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, ButtonGroup, Link, Toolbar, Typography } from '@mui/material';
+import { AppBar, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useMatch } from 'react-router-dom';
 
-import { useUserAuthInfo } from '@/api/auth/auth-loaders';
-import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
-import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
+import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
 import { Ai2MarkLogoSVG } from '../svg/Ai2MarkLogoSVG';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
-import { PARAMETERS_DRAWER_ID } from '../thread/parameter/ParameterDrawer';
-import { IconButtonWithTooltip } from './IconButtonWithTooltip';
 import { NavigationDrawer } from './NavigationDrawer';
+import { useRouteControls } from './useRouteControls';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
-    const { title } = useRouteTitle();
+    const title = useRouteTitle();
+    const Controls = useRouteControls();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -28,8 +24,6 @@ export const OlmoAppBar = (): JSX.Element => {
     const handleDrawerClose = () => {
         setIsDrawerOpen(false);
     };
-
-    const isOnThreadPage = useMatch({ path: links.thread(':id') });
 
     return (
         <>
@@ -74,21 +68,9 @@ export const OlmoAppBar = (): JSX.Element => {
                         })}>
                         <Ai2MarkLogoSVG width={30} />
                     </Link>
-                    <ButtonGroup
-                        sx={{
-                            justifySelf: 'end',
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                        }}>
-                        {isOnThreadPage && (
-                            <>
-                                <ShareThreadIconButton />
-                                <ParameterIconButton />
-                            </>
-                        )}
-                        <NewThreadIconButton />
-                    </ButtonGroup>
+                    {Controls != null && Controls}
                 </Toolbar>
-                {title !== null && (
+                {title != null && (
                     <Typography
                         variant="h1"
                         component="h1"
@@ -110,60 +92,6 @@ export const OlmoAppBar = (): JSX.Element => {
                 onDrawerToggle={handleDrawerToggle}
             />
         </>
-    );
-};
-
-export const ParameterIconButton = () => {
-    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-
-    const toggleParametersDrawer = () => {
-        toggleDrawer(PARAMETERS_DRAWER_ID);
-    };
-
-    return (
-        <IconButtonWithTooltip onClick={toggleParametersDrawer} label="Show parameters">
-            <TuneOutlined />
-        </IconButtonWithTooltip>
-    );
-};
-
-export const ShareThreadIconButton = () => {
-    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-
-    const { isAuthenticated } = useUserAuthInfo();
-
-    const shouldDisableShareButton = !selectedThreadId || !isAuthenticated;
-
-    const handleShareThread = async () => {
-        await navigator.clipboard.writeText(location.origin + links.thread(selectedThreadId));
-        addSnackMessage({
-            id: `thread-copy-${new Date().getTime()}`.toLowerCase(),
-            type: SnackMessageType.Brief,
-            message: 'Link Copied',
-        });
-    };
-
-    return (
-        <IconButtonWithTooltip
-            onClick={handleShareThread}
-            disabled={shouldDisableShareButton}
-            label="Share this thread">
-            <IosShareOutlined
-                sx={{
-                    // This Icon looks visually off when centered
-                    transform: 'translateY(-2px)',
-                }}
-            />
-        </IconButtonWithTooltip>
-    );
-};
-
-const NewThreadIconButton = () => {
-    return (
-        <IconButtonWithTooltip href={links.playground} label="Create a new thread">
-            <AddBoxOutlined />
-        </IconButtonWithTooltip>
     );
 };
 
