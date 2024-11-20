@@ -1,7 +1,7 @@
 import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, ButtonGroup, IconButton, Link, Toolbar, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
@@ -28,7 +28,7 @@ export const OlmoAppBar = (): JSX.Element => {
         setIsDrawerOpen(false);
     };
 
-    const isOnThreadPage = useMatch({ path: '/thread/*' });
+    const isOnThreadPage = useMatch({ path: links.thread(':id') });
 
     return (
         <>
@@ -60,15 +60,7 @@ export const OlmoAppBar = (): JSX.Element => {
                             display: 'none',
                         },
                     })}>
-                    <IconButton
-                        onClick={handleDrawerToggle}
-                        color="primary"
-                        sx={{
-                            justifySelf: 'start',
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                        }}>
-                        <MenuIcon />
-                    </IconButton>
+                    <MenuIconButton onClick={handleDrawerToggle} />
                     <Link
                         href={links.home}
                         sx={(theme) => ({
@@ -170,6 +162,21 @@ const NewThreadIconButton = () => {
     return (
         <IconButton color="primary" href={links.playground} aria-label="Create a new thread">
             <AddBoxOutlined />
+        </IconButton>
+    );
+};
+
+const MenuIconButton = ({ onClick }: { onClick: () => void }) => {
+    return (
+        <IconButton
+            onClick={onClick}
+            color="primary"
+            aria-label="Open the navigation menu"
+            sx={{
+                justifySelf: 'start',
+                display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+            }}>
+            <MenuIcon />
         </IconButton>
     );
 };
