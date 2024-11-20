@@ -1,8 +1,7 @@
 import { useMatches } from 'react-router-dom';
 
 interface HandleWithTitle {
-    title: string;
-    showTitle?: boolean;
+    title?: string;
 }
 
 export const useRouteTitle = () => {
@@ -16,6 +15,5 @@ export const useRouteTitle = () => {
 
     const lowestHandle = handles[handles.length - 1];
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    return { ...lowestHandle, showTitle: lowestHandle?.showTitle ?? true };
+    return { ...lowestHandle };
 };

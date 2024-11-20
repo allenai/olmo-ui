@@ -18,7 +18,7 @@ import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
-    const { title, showTitle } = useRouteTitle();
+    const { title } = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -88,19 +88,20 @@ export const OlmoAppBar = (): JSX.Element => {
                         <NewThreadIconButton />
                     </ButtonGroup>
                 </Toolbar>
-                <Typography
-                    variant="h1"
-                    component="h1"
-                    color="primary"
-                    data-heading-below="true"
-                    sx={{
-                        background: 'transparent',
-                        margin: '1rem 1rem 0',
-                        textAlign: 'left',
-                        display: showTitle ? 'block' : 'none',
-                    }}>
-                    {title}
-                </Typography>
+                {title !== null && (
+                    <Typography
+                        variant="h1"
+                        component="h1"
+                        color="primary"
+                        data-heading-below="true"
+                        sx={{
+                            background: 'transparent',
+                            margin: '1rem 1rem 0',
+                            textAlign: 'left',
+                        }}>
+                        {title}
+                    </Typography>
+                )}
             </AppBar>
             <HistoryDrawer />
             <NavigationDrawer

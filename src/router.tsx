@@ -79,17 +79,10 @@ export const routes: RouteObject[] = [
                     {
                         path: links.thread(':id'),
                         element: <ThreadDisplay />,
-                        handle: {
-                            showTitle: false,
-                            title: 'Playground',
-                        },
                         loader: selectedThreadPageLoader,
                     },
                 ],
-                handle: {
-                    showTitle: false,
-                    title: 'Playground',
-                },
+                handle: {},
                 loader: playgroundLoader,
                 shouldRevalidate: handleRevalidation,
             },
