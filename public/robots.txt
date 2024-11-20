@@ -8,6 +8,8 @@
 # Privacy Policy: https://allenai.org/privacy-policy.html
 # Terms and Conditions of use: https://allenai.org/terms.html
 
-# At this point we don't want any URLs indexed.
 User-agent: *
-Disallow: /
+Disallow: /thread
+Disallow: /dolma
+Disallow: /admin
+Disallow: /search
