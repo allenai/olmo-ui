@@ -1,6 +1,8 @@
 import { Stack } from '@mui/material';
 import { ReactNode } from 'react';
 
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+
 import { useRouteControls } from './OlmoAppBar/useRouteControls';
 
 export const DesktopPageControls = (): ReactNode => {
@@ -13,7 +15,10 @@ export const DesktopPageControls = (): ReactNode => {
             gap={1}
             paddingInline={3}
             paddingBlock={2.5}
-            sx={{ gridArea: 'controls' }}>
+            sx={{
+                gridArea: 'controls',
+                display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'flex' },
+            }}>
             {controls}
         </Stack>
     );

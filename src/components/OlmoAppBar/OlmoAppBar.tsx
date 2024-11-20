@@ -1,5 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Link, Toolbar, Typography } from '@mui/material';
+import { AppBar, Link, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { links } from '@/Links';
@@ -14,7 +14,7 @@ import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
-    const Controls = useRouteControls();
+    const controls = useRouteControls();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -68,7 +68,16 @@ export const OlmoAppBar = (): JSX.Element => {
                         })}>
                         <Ai2MarkLogoSVG width={30} />
                     </Link>
-                    {Controls != null && Controls}
+                    {controls != null && (
+                        <Stack
+                            direction="row"
+                            sx={{
+                                justifySelf: 'end',
+                                display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+                            }}>
+                            {controls}
+                        </Stack>
+                    )}
                 </Toolbar>
                 {title != null && (
                     <Typography
