@@ -54,8 +54,7 @@ export const OlmoAppBar = (): JSX.Element => {
                             margin: '0 auto',
                             paddingInline: 5,
                             paddingBlockStart: 1.5,
-                            backgroundColor: 'transparent',
-                            display: showTitle ? 'grid' : 'none',
+                            display: 'none',
                         },
                     })}>
                     <IconButton
@@ -67,22 +66,6 @@ export const OlmoAppBar = (): JSX.Element => {
                         }}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h1"
-                        component="h1"
-                        color="primary"
-                        data-heading-above="true"
-                        sx={(theme) => ({
-                            margin: 0,
-                            textAlign: 'center',
-                            display: 'none',
-                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                display: showTitle ? 'block' : 'none',
-                                textAlign: 'left',
-                            },
-                        })}>
-                        {title}
-                    </Typography>
                     <Link
                         href={links.home}
                         sx={(theme) => ({
@@ -112,14 +95,12 @@ export const OlmoAppBar = (): JSX.Element => {
                     component="h1"
                     color="primary"
                     data-heading-below="true"
-                    sx={(theme) => ({
+                    sx={{
+                        background: 'transparent',
                         margin: '1rem 1rem 0',
                         textAlign: 'left',
                         display: showTitle ? 'block' : 'none',
-                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            display: 'none',
-                        },
-                    })}>
+                    }}>
                     {title}
                 </Typography>
             </AppBar>
