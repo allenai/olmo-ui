@@ -1,9 +1,10 @@
-import { useUserAuthInfo } from "@/api/auth/auth-loaders";
-import { useAppContext } from "@/AppContext";
-import { IconButtonWithTooltip } from "@/components/IconButtonWithTooltip";
-import { links } from "@/Links";
-import { SnackMessageType } from "@/slices/SnackMessageSlice";
-import { IosShareOutlined } from "@mui/icons-material";
+import { IosShareOutlined } from '@mui/icons-material';
+
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { useAppContext } from '@/AppContext';
+import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
+import { links } from '@/Links';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 export const ShareThreadIconButton = () => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
@@ -31,7 +32,8 @@ export const ShareThreadIconButton = () => {
                 sx={{
                     // This Icon looks visually off when centered
                     transform: 'translateY(-2px)',
-                }} />
+                }}
+            />
         </IconButtonWithTooltip>
     );
 };

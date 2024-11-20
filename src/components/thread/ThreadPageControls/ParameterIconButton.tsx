@@ -1,7 +1,9 @@
-import { useAppContext } from "@/AppContext";
-import { IconButtonWithTooltip } from "@/components/IconButtonWithTooltip";
-import { TuneOutlined } from "@mui/icons-material";
-import { PARAMETERS_DRAWER_ID } from "../parameter/ParameterDrawer";
+import { TuneOutlined } from '@mui/icons-material';
+
+import { useAppContext } from '@/AppContext';
+import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
+
+import { PARAMETERS_DRAWER_ID } from '../parameter/ParameterDrawer';
 
 export const ParameterIconButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
