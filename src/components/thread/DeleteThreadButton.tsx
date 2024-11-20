@@ -42,7 +42,7 @@ export const DeleteThreadButton = ({
                 isResponsive={isResponsive}
                 layout={layout}
                 startIcon={<DeleteOutlinedIcon />}
-                title="Delete Thread"
+                title="Delete this thread"
                 onClick={onClick}
                 disabled={!canUseDeleteButton}
             />

@@ -1,4 +1,4 @@
-import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
+import { SvgIconComponent } from '@mui/icons-material';
 import {
     ListItem,
     ListItemButton,
@@ -29,7 +29,7 @@ type NavigationLinkProps = PropsWithChildren & {
     selected?: boolean;
     isExternalLink?: boolean;
     variant?: 'default' | 'footer';
-    iconVariant?: 'internal' | 'external';
+    DisclosureIcon?: SvgIconComponent;
     inset?: boolean;
     dense?: boolean;
     linkProps?: Partial<ListItemButtonProps>;
@@ -48,7 +48,7 @@ export const NavigationLink = ({
     onClick,
     selected,
     variant = 'default',
-    iconVariant = 'internal',
+    DisclosureIcon,
     inset,
     linkProps = {},
 }: NavigationLinkProps) => {
@@ -122,14 +122,14 @@ export const NavigationLink = ({
                     {children}
                 </ListItemText>
                 <NavigationListItemIcon>
-                    {iconVariant === 'external' && (
-                        <LaunchOutlinedIcon
+                    {DisclosureIcon ? (
+                        <DisclosureIcon
                             sx={{
                                 fontSize: '1rem',
                                 opacity: 0.5,
                             }}
                         />
-                    )}
+                    ) : null}
                 </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>
