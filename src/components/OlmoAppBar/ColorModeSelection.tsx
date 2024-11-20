@@ -1,40 +1,32 @@
 import { Check } from '@mui/icons-material';
 import TVOutlinedIcon from '@mui/icons-material/TvOutlined';
 import { Box, ListItemIcon, Menu, MenuItem } from '@mui/material';
-import { useState } from 'react';
+import { MouseEventHandler, ReactNode, useState } from 'react';
 
 import { ColorPreference, useColorMode } from '../ColorModeProvider';
 import { NavigationLink } from './NavigationLink';
 
 interface ColorModeSelectionMenuItemProps {
     title: string;
-    name: ColorPreference;
+    mode: ColorPreference;
+    onClick: MouseEventHandler;
+    selected?: boolean;
 }
 
-export const ColorModeSelection = () => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const ColorModeSelectionMenuItem = ({
+    title,
+    mode,
+}: ColorModeSelectionMenuItemProps): ReactNode => {
     const [colorMode, setColorMode] = useColorMode();
-    const open = Boolean(anchorEl);
+    const isSelected = mode === colorMode;
 
-    const changeColorMode = (mode: ColorPreference) => {
-        setColorMode(mode);
-        handleClose();
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const ColorModeSelectionMenuItem = ({ title, name }: ColorModeSelectionMenuItemProps) => (
+    return (
         <MenuItem
             onClick={() => {
-                changeColorMode(name);
+                setColorMode(mode);
             }}>
             <Box flexGrow={1}>{title}</Box>
-            {colorMode === name ? (
+            {isSelected ? (
                 <ListItemIcon
                     sx={{
                         flexDirection: 'row-reverse',
@@ -45,17 +37,34 @@ export const ColorModeSelection = () => {
             ) : null}
         </MenuItem>
     );
+};
+
+export const ColorModeSelection = () => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleMenuItemClick = () => {
+        handleClose();
+    };
+
+    const handleAppearanceButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
 
     return (
         <>
             <NavigationLink
-                onClick={onClick}
+                onClick={handleAppearanceButtonClick}
                 icon={<TVOutlinedIcon />}
                 inset
                 linkProps={{
                     id: 'appearance-menu-button',
-                    'aria-controls': open ? 'appearance-menu' : undefined,
-                    'aria-haspopup': true,
+                    'aria-controls': 'appearance-menu',
+                    'aria-haspopup': 'listbox',
                     'aria-expanded': open ? 'true' : undefined,
                 }}>
                 Appearance
@@ -65,10 +74,12 @@ export const ColorModeSelection = () => {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
+                variant="menu"
                 MenuListProps={{
                     dense: true,
                     disablePadding: true,
                     'aria-labelledby': 'appearance-menu-button',
+                    role: 'listbox',
                 }}
                 anchorOrigin={{
                     horizontal: 'center',
@@ -78,14 +89,30 @@ export const ColorModeSelection = () => {
                     horizontal: 'center',
                     vertical: 'bottom',
                 }}
-                PaperProps={{
-                    style: {
-                        width: '12rem',
+                slotProps={{
+                    paper: {
+                        style: {
+                            minWidth: '12rem',
+                        },
                     },
                 }}>
-                <ColorModeSelectionMenuItem title="System" name="system" />
-                <ColorModeSelectionMenuItem title="Light" name="light" />
-                <ColorModeSelectionMenuItem title="Dark" name="dark" />
+                <MenuItem onClick={() => {}}>foo</MenuItem>
+                <MenuItem>bar</MenuItem>
+                {/* <ColorModeSelectionMenuItem
+                    title="System"
+                    mode="system"
+                    onClick={handleMenuItemClick}
+                />
+                <ColorModeSelectionMenuItem
+                    title="Light"
+                    mode="light"
+                    onClick={handleMenuItemClick}
+                />
+                <ColorModeSelectionMenuItem
+                    title="Dark"
+                    mode="dark"
+                    onClick={handleMenuItemClick}
+                /> */}
             </Menu>
         </>
     );
