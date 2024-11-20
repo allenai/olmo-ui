@@ -147,11 +147,7 @@ export const ShareThreadIconButton = () => {
 
     const { isAuthenticated } = useUserAuthInfo();
 
-    const shouldHideShareButton = !selectedThreadId || !isAuthenticated;
-
-    if (shouldHideShareButton) {
-        return null;
-    }
+    const shouldDisableShareButton = !selectedThreadId || !isAuthenticated;
 
     const handleShareThread = async () => {
         await navigator.clipboard.writeText(location.origin + links.thread(selectedThreadId));
@@ -163,7 +159,7 @@ export const ShareThreadIconButton = () => {
     };
 
     return (
-        <IconButton color="primary" onClick={handleShareThread}>
+        <IconButton color="primary" onClick={handleShareThread} disabled={shouldDisableShareButton}>
             <IosShareOutlined
                 sx={{
                     // This Icon looks visually off when centered
