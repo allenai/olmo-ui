@@ -1,4 +1,11 @@
-import { Box, FormControl, FormHelperText, SxProps, Theme } from '@mui/material';
+import {
+    Box,
+    FormControl,
+    FormHelperText,
+    formHelperTextClasses,
+    SxProps,
+    Theme,
+} from '@mui/material';
 import { ChangeEventHandler, forwardRef, KeyboardEventHandler, ReactNode } from 'react';
 
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
@@ -71,8 +78,14 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         background: theme.palette.background.drawer.secondary,
                         border: '2px solid transparent',
 
-                        [`:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
+                        [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
                             borderColor: (theme) => theme.palette.primary.main,
+                        },
+
+                        '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
+                            ':focus-within': {
+                                borderColor: (theme) => theme.palette.primary.main,
+                            },
                         },
                     })}>
                     <Box
@@ -126,7 +139,12 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                     </Box>
                     <Box sx={{ gridArea: 'adornment', alignSelf: 'end' }}>{endAdornment}</Box>
                 </Box>
-                <FormHelperText>{errorMessage}</FormHelperText>
+                <FormHelperText
+                    sx={{
+                        [formHelperTextClasses.error]: {},
+                    }}>
+                    {errorMessage}
+                </FormHelperText>
             </FormControl>
         );
     }
