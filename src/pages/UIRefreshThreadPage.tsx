@@ -80,7 +80,6 @@ export const UIRefreshThreadPage = () => {
                             paddingBlockEnd: 2,
                         }}>
                         <QueryForm />
-                        <LegalNotice />
                     </Stack>
                 </Stack>
             </Card>
