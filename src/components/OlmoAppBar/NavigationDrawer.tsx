@@ -170,7 +170,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
                 sx={{
                     transform: 'translateY(5px)',
                 }}>
-                <Ai2LogoPlaygroundSVG width={214} />
+                <Ai2LogoPlaygroundSVG width={214} title="Return to the Playground home page" />
             </Link>
             <IconButton
                 onClick={onClose}
@@ -185,7 +185,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 const DesktopHeading = (): JSX.Element => {
     return (
         <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
-            <Ai2LogoPlaygroundSVG />
+            <Ai2LogoPlaygroundSVG title="Return to the Playground home page" />
         </Link>
     );
 };
