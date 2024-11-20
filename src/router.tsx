@@ -83,7 +83,7 @@ export const routes: RouteObject[] = [
                         loader: selectedThreadPageLoader,
                     },
                 ],
-                handle: { Controls: <ThreadPageControls /> },
+                handle: { pageControls: <ThreadPageControls /> },
                 loader: playgroundLoader,
                 shouldRevalidate: handleRevalidation,
             },
