@@ -1,18 +1,17 @@
-import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import Send from '@mui/icons-material/Send';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import {
     Box,
     IconButton,
     InputAdornment,
     Link,
-    outlinedInputClasses,
     Stack,
     svgIconClasses,
     Typography,
 } from '@mui/material';
 import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -23,6 +22,7 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
 import { getFAQIdByShortId } from '../faq/faq-utils';
+import { PromptInput } from './PromptInput';
 
 interface QueryFormButtonProps
     extends PropsWithChildren,
@@ -41,6 +41,7 @@ const QueryFormButton = ({
 }: QueryFormButtonProps) => {
     return (
         <IconButton
+            size="medium"
             type={type}
             aria-label={ariaLabel}
             color="inherit"
@@ -76,7 +77,7 @@ const SubmitPauseAdornment = ({
     isSubmitDisabled,
 }: SubmitPauseAdornmentProps) => {
     return (
-        <InputAdornment position="end" sx={{ color: 'text.primary' }}>
+        <InputAdornment position="end" sx={{ color: 'primary.main', height: 'auto' }}>
             {canPause ? (
                 <QueryFormButton
                     aria-label="Stop response generation"
@@ -90,19 +91,31 @@ const SubmitPauseAdornment = ({
                     onClick={(event) => {
                         onPause(event);
                     }}>
-                    <StopCircleOutlinedIcon fontSize="large" />
+                    <StopCircleOutlinedIcon />
                 </QueryFormButton>
             ) : (
                 <QueryFormButton
                     type="submit"
                     aria-label="Submit prompt"
                     disabled={isSubmitDisabled}>
-                    <ArrowCircleUpIcon fontSize="large" />
+                    <Send />
                 </QueryFormButton>
             )}
         </InputAdornment>
     );
 };
+
+// export const QueryForm = () => {
+//     return (
+//         <PromptInput
+//             placeholder="Prompt"
+//             aria-label="Prompt"
+//             onChange={(e) => {
+//                 console.log(e.target.value);
+//             }}
+//         />
+//     );
+// };
 
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
@@ -208,7 +221,7 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
-    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
+    const handleKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             await formContext.handleSubmit(handleSubmit)();
@@ -218,62 +231,54 @@ export const QueryForm = (): JSX.Element => {
     return (
         <Box marginBlockStart="auto" width={1}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <Stack gap={1.5} alignItems="flex-start">
-                    <TextFieldElement
+                <Stack gap={1.5} alignItems="flex-start" width={1}>
+                    <Controller
+                        control={formContext.control}
                         name="content"
-                        label="Prompt"
-                        placeholder="Enter prompt"
-                        InputLabelProps={{
-                            shrink: true,
-                            // This gets rid of the * by the label
-                            required: false,
-                            // @ts-expect-error - text is valid but isn't typed
-                            color: 'text',
+                        rules={{
+                            required: true,
+                            pattern: /[^\s]+/,
                         }}
-                        fullWidth
-                        required
-                        parseError={(error) => {
-                            if (error.type === 'inappropriate') {
-                                return (
-                                    <>
-                                        This prompt was flagged as inappropriate. Please change your
-                                        prompt and resubmit.{' '}
-                                        <Link
-                                            href={
-                                                links.faqs + getFAQIdByShortId('wildguard-intro')
-                                            }>
-                                            Learn why
-                                        </Link>
-                                    </>
-                                );
-                            }
-
-                            return error.message;
-                        }}
-                        validation={{ pattern: /[^\s]+/ }}
-                        // If we don't have a dense margin the label gets cut off!
-                        margin="dense"
-                        disabled={!canEditThread}
-                        onKeyDown={handleOnKeyDown}
-                        InputProps={{
-                            sx: (theme) => ({
-                                [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-                                    borderColor: theme.palette.text.primary,
-                                },
-                            }),
-                            endAdornment: (
-                                <SubmitPauseAdornment
-                                    canPause={canPauseThread}
-                                    onPause={onAbort}
-                                    isSubmitDisabled={
-                                        isSelectedThreadLoading || isLimitReached || !canEditThread
-                                    }
-                                />
-                            ),
-                            maxRows: 5,
-                            multiline: true,
-                            inputComponent: 'textarea',
-                        }}
+                        render={({
+                            field: { onChange, value, ref, name },
+                            fieldState: { error },
+                        }) => (
+                            <PromptInput
+                                name={name}
+                                onChange={onChange}
+                                errorMessage={
+                                    error?.type === 'inappropriate' ? (
+                                        <>
+                                            This prompt was flagged as inappropriate. Please change
+                                            your prompt and resubmit.{' '}
+                                            <Link
+                                                href={
+                                                    links.faqs +
+                                                    getFAQIdByShortId('wildguard-intro')
+                                                }>
+                                                Learn why
+                                            </Link>
+                                        </>
+                                    ) : null
+                                }
+                                value={value}
+                                ref={ref}
+                                onKeyDown={handleKeyDown}
+                                aria-label="Prompt"
+                                placeholder="Prompt"
+                                endAdornment={
+                                    <SubmitPauseAdornment
+                                        canPause={canPauseThread}
+                                        onPause={onAbort}
+                                        isSubmitDisabled={
+                                            isSelectedThreadLoading ||
+                                            isLimitReached ||
+                                            !canEditThread
+                                        }
+                                    />
+                                }
+                            />
+                        )}
                     />
 
                     <Stack direction="row" gap={2} alignItems="center">
