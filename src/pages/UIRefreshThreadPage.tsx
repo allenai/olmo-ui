@@ -1,4 +1,4 @@
-import { Box, Card, SelectChangeEvent, Stack } from '@mui/material';
+import { alpha, Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -80,6 +80,23 @@ export const UIRefreshThreadPage = () => {
                             paddingBlockEnd: 2,
                         }}>
                         <QueryForm />
+                        <Typography
+                            component="p"
+                            variant="caption"
+                            textAlign="center"
+                            sx={(theme) => ({
+                                display: 'block',
+                                fontSize: '0.7rem',
+                                lineHeight: '1.5',
+                                margin: '0',
+                                color: alpha(
+                                    theme.palette.text.primary,
+                                    theme.palette.mode === 'dark' ? 0.5 : 0.75
+                                ),
+                            })}>
+                            Ai2 Playground is a free scientific research and educational tool;
+                            always fact-check your results.
+                        </Typography>
                     </Stack>
                 </Stack>
             </Card>

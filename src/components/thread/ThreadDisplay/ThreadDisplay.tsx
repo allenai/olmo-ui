@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -35,7 +35,7 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     }
 
     return (
-        <>
+        <Box sx={{ width: '100%' }}>
             <ChatMessage role={role} messageId={messageId}>
                 <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
 
@@ -46,7 +46,7 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
                     messageId={messageId}
                 />
             </ChatMessage>
-        </>
+        </Box>
     );
 };
 
@@ -191,12 +191,34 @@ export const ThreadDisplay = (): ReactNode => {
                     margin: '0 auto',
                     alignItems: 'flex-start',
                 }}>
-                <Box ml={2}>
-                    <LegalNotice />
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr',
+                        gap: 2,
+                        paddingInlineStart: 'calc(16px + 24px + 28px)',
+                        width: '100%',
+                    }}>
+                    <Box sx={{ gridColumn: '1 / -1', width: '100%' }}>
+                        <LegalNotice />
+                    </Box>
+
+                    <Box sx={{ gridColumn: '1 / -1', width: '100%' }}>
+                        <Divider />
+                    </Box>
                 </Box>
-                {childMessageIds.map((messageId) => (
-                    <MessageView messageId={messageId} key={messageId} />
-                ))}
+
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr',
+                        gap: 2,
+                        width: '100%',
+                    }}>
+                    {childMessageIds.map((messageId) => (
+                        <MessageView messageId={messageId} key={messageId} />
+                    ))}
+                </Box>
                 <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
                 <Stack
                     justifyContent="center"
