@@ -14,7 +14,7 @@ type IconButtonWithTooltipProps = PropsWithChildren & {
     color?: IconButtonOwnProps['color'];
     disabled?: IconButtonOwnProps['disabled'];
     label: string;
-    arrow: TooltipProps['arrow'];
+    arrow?: TooltipProps['arrow'];
     sx?: SxProps<Theme>;
 } & ({ href?: never; onClick: MouseEventHandler<HTMLElement> } | { href: string; onClick?: never });
 

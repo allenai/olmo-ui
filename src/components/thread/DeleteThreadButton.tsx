@@ -94,7 +94,7 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
                         : theme.palette.text.drawer.primary,
                     opacity: isSelectedThread ? 1 : 0,
                     transition: '300ms opacity ease-in-out',
-                    'li:hover &': {
+                    '&.Mui-focusVisible, li:hover &': {
                         opacity: 1,
                     },
                 })}
