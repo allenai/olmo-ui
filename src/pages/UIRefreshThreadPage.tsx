@@ -9,7 +9,6 @@ import { LegalNotice } from '@/components/thread/LegalNotice';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
-import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
 import { ThreadTabs } from '@/components/thread/ThreadTabs';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
@@ -67,7 +66,6 @@ export const UIRefreshThreadPage = () => {
                             onModelChange={onModelChange}
                             label="Model"
                         />
-                        <ThreadPageControls />
                     </Box>
                     <Outlet />
                     <Stack
