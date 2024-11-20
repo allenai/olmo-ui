@@ -23,6 +23,9 @@ const textareaStyles: SxProps<Theme> = {
     outline: 'none',
     border: 'none',
 
+    paddingBlock: '4px',
+    paddingInlineStart: 2,
+
     background: 'none',
 
     ':focus, :focus-visible': {
@@ -68,23 +71,25 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         ...theme.typography.body1,
                         cursor: 'text',
                         lineHeight: '1.4375em',
+
                         // end styles stolen from MUI
 
                         display: 'grid',
                         gridTemplateColumns: '1fr auto',
                         gridTemplateAreas: '"prompt adornment"',
-                        borderRadius: theme.spacing(1.5),
+                        borderRadius: theme.spacing(3.5),
                         padding: 1,
+                        paddingInlineEnd: '14px', // eyeball adjustment
                         background: theme.palette.background.drawer.secondary,
-                        border: '2px solid transparent',
+                        border: (theme) => `1px solid ${theme.palette.secondary.main}`,
 
                         [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
-                            borderColor: (theme) => theme.palette.primary.main,
+                            // borderColor: (theme) => theme.palette.secondary.main,
                         },
 
                         '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
                             ':focus-within': {
-                                borderColor: (theme) => theme.palette.primary.main,
+                                // borderColor: (theme) => theme.palette.secondary.main,
                             },
                         },
                     })}>
