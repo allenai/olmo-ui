@@ -1,20 +1,7 @@
 import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-    AppBar,
-    ButtonGroup,
-    IconButton,
-    IconButtonOwnProps,
-    IconButtonProps,
-    Link,
-    SxProps,
-    Theme,
-    Toolbar,
-    Tooltip,
-    TooltipProps,
-    Typography,
-} from '@mui/material';
-import { MouseEventHandler, PropsWithChildren, useState } from 'react';
+import { AppBar, ButtonGroup, Link, Toolbar, Typography } from '@mui/material';
+import { useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
