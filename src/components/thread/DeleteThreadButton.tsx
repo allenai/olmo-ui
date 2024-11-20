@@ -1,6 +1,5 @@
 import { DeleteOutlined } from '@mui/icons-material';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +8,7 @@ import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { isOlderThan30Days } from '@/utils/date-utils';
 
+import { IconButtonWithTooltip } from '../OlmoAppBar/IconButtonWithTooltip';
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
 
@@ -87,7 +87,7 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
                 openDialog={isDeleteDialogOpen}
                 setOpenDialog={setDeleteDialogOpen}
             />
-            <IconButton
+            <IconButtonWithTooltip
                 sx={(theme) => ({
                     color: isSelectedThread
                         ? theme.color['dark-teal'].hex
@@ -100,9 +100,9 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
                 })}
                 onClick={handleClickDelete}
                 disabled={!canUseDeleteButton}
-                title="Delete Thread">
+                label="Delete thread">
                 <DeleteOutlined />
-            </IconButton>
+            </IconButtonWithTooltip>
         </>
     );
 };

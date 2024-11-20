@@ -14,6 +14,7 @@ type IconButtonWithTooltipProps = PropsWithChildren & {
     color?: IconButtonOwnProps['color'];
     disabled?: IconButtonOwnProps['disabled'];
     label: string;
+    arrow: TooltipProps['arrow'];
     sx?: SxProps<Theme>;
 } & ({ href?: never; onClick: MouseEventHandler<HTMLElement> } | { href: string; onClick?: never });
 
@@ -21,11 +22,12 @@ export const IconButtonWithTooltip = ({
     color = 'primary',
     label,
     sx,
+    arrow = true,
     children,
     ...rest
 }: IconButtonWithTooltipProps) => {
     return (
-        <StyledTooltip title={label}>
+        <StyledTooltip title={label} arrow={arrow}>
             <IconButton {...rest} color={color} sx={sx}>
                 {children}
             </IconButton>
@@ -40,5 +42,8 @@ const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
         ...theme.typography.caption,
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
+    },
+    [`& .${tooltipClasses.arrow}`]: {
+        color: theme.palette.background.default,
     },
 }));
