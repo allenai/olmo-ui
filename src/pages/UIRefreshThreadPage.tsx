@@ -33,10 +33,13 @@ export const UIRefreshThreadPage = () => {
                 elevation={0}
                 sx={(theme) => ({
                     flexGrow: '1',
-                    gridArea: 'content',
                     paddingBlockStart: 2,
+                    // At "mobile" breakpoint, the parent is the whole gridArea
+                    // we dont need a gridArea for mobile, just desktop
+                    // this fixes iOS 16 rendering of the grid
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         paddingBlockStart: 0,
+                        gridArea: 'content',
                     },
                 })}>
                 <Stack
