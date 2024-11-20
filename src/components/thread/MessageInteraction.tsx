@@ -139,7 +139,7 @@ const MessageInteractionIcon = ({
                     }),
                 },
             }}>
-            <IconButton onClick={onClick} aria-pressed={selected} title={tooltip}>
+            <IconButton onClick={onClick} aria-pressed={selected} aria-label={tooltip}>
                 <Icon color="primary" />
             </IconButton>
         </Tooltip>
