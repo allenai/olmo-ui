@@ -1,6 +1,7 @@
-import { IconButtonWithTooltip } from "@/components/IconButtonWithTooltip";
-import { links } from "@/Links";
-import { AddBoxOutlined } from "@mui/icons-material";
+import { AddBoxOutlined } from '@mui/icons-material';
+
+import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
+import { links } from '@/Links';
 
 export const NewThreadIconButton = () => {
     return (
