@@ -189,8 +189,11 @@ export const ThreadDisplay = (): ReactNode => {
                 sx={{
                     maxWidth: '750px',
                     margin: '0 auto',
+                    alignItems: 'flex-start',
                 }}>
-                <LegalNotice />
+                <Box ml={2}>
+                    <LegalNotice />
+                </Box>
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
