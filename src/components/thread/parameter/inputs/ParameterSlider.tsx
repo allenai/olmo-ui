@@ -3,7 +3,7 @@
  */
 
 import { Box, Input, Slider } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
@@ -36,7 +36,15 @@ export const ParameterSlider = ({
 }: Props) => {
     const clipToMinMax = (val: number) => Math.min(Math.max(val, min), max);
 
-    const value = clipToMinMax(initialValue);
+    const [value, _setValue] = useState(clipToMinMax(initialValue));
+
+    const setValue = (newValue: number) => {
+        _setValue(clipToMinMax(newValue));
+    };
+
+    useEffect(() => {
+        _setValue(initialValue);
+    }, [initialValue]);
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
@@ -52,11 +60,13 @@ export const ParameterSlider = ({
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
         const value = Array.isArray(newValue) ? newValue[0] : newValue;
+        setValue(value);
         handleChange(value);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = Number(event.target.value);
+        setValue(value);
         handleChange(newValue);
     };
 

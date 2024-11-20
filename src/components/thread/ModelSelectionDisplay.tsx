@@ -44,7 +44,8 @@ export const ModelSelectionDisplay = ({
 
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
 
-    const { selectedThreadMessagesById, setSelectedModel } = useAppContext();
+    const selectedThreadMessagesById = useAppContext((state) => state.selectedThreadMessagesById);
+    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
 
     const latestThreadId = viewingMessageIds[viewingMessageIds.length - 1];
 
@@ -62,7 +63,7 @@ export const ModelSelectionDisplay = ({
             }
         }
     }, [viewingMessageIds]);
-    
+
     const handleModelChange = (event: SelectChangeEvent) => {
         analyticsClient.trackModelUpdate({ modelChosen: event.target.value });
         onModelChange(event);
