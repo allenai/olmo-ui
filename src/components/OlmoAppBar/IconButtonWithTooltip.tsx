@@ -1,4 +1,13 @@
-import { IconButton, IconButtonOwnProps, SxProps, Theme, Tooltip } from '@mui/material';
+import {
+    IconButton,
+    IconButtonOwnProps,
+    styled,
+    SxProps,
+    Theme,
+    Tooltip,
+    tooltipClasses,
+    TooltipProps,
+} from '@mui/material';
 import { MouseEventHandler, PropsWithChildren } from 'react';
 
 type IconButtonWithTooltipProps = PropsWithChildren & {
@@ -16,10 +25,20 @@ export const IconButtonWithTooltip = ({
     ...rest
 }: IconButtonWithTooltipProps) => {
     return (
-        <Tooltip title={label}>
+        <StyledTooltip title={label}>
             <IconButton {...rest} color={color} sx={sx}>
                 {children}
             </IconButton>
-        </Tooltip>
+        </StyledTooltip>
     );
 };
+
+const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        ...theme.typography.caption,
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+    },
+}));
