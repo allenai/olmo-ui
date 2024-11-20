@@ -1,19 +1,18 @@
-import { DevTool } from '@hookform/devtools';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import Send from '@mui/icons-material/Send';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import {
     Box,
     IconButton,
     InputAdornment,
     Link,
-    outlinedInputClasses,
     Stack,
     svgIconClasses,
     Typography,
 } from '@mui/material';
 import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { Controller, FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -43,6 +42,7 @@ const QueryFormButton = ({
 }: QueryFormButtonProps) => {
     return (
         <IconButton
+            size="medium"
             type={type}
             aria-label={ariaLabel}
             color="inherit"
@@ -78,7 +78,7 @@ const SubmitPauseAdornment = ({
     isSubmitDisabled,
 }: SubmitPauseAdornmentProps) => {
     return (
-        <InputAdornment position="end" sx={{ color: 'text.primary' }}>
+        <InputAdornment position="end" sx={{ color: 'primary.main', height: 'auto' }}>
             {canPause ? (
                 <QueryFormButton
                     aria-label="Stop response generation"
@@ -92,14 +92,14 @@ const SubmitPauseAdornment = ({
                     onClick={(event) => {
                         onPause(event);
                     }}>
-                    <StopCircleOutlinedIcon fontSize="large" />
+                    <StopCircleOutlinedIcon />
                 </QueryFormButton>
             ) : (
                 <QueryFormButton
                     type="submit"
                     aria-label="Submit prompt"
                     disabled={isSubmitDisabled}>
-                    <ArrowCircleUpIcon fontSize="large" />
+                    <Send />
                 </QueryFormButton>
             )}
         </InputAdornment>
@@ -222,7 +222,7 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
-    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
+    const handleKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             await formContext.handleSubmit(handleSubmit)();
@@ -264,9 +264,20 @@ export const QueryForm = (): JSX.Element => {
                                 }
                                 value={value}
                                 ref={ref}
-                                onKeyDown={handleOnKeyDown}
+                                onKeyDown={handleKeyDown}
                                 aria-label="Prompt"
                                 placeholder="Prompt"
+                                endAdornment={
+                                    <SubmitPauseAdornment
+                                        canPause={canPauseThread}
+                                        onPause={onAbort}
+                                        isSubmitDisabled={
+                                            isSelectedThreadLoading ||
+                                            isLimitReached ||
+                                            !canEditThread
+                                        }
+                                    />
+                                }
                             />
                         )}
                     />

@@ -1,9 +1,17 @@
-import { Box, FormControl, FormHelperText, SxProps, Theme } from '@mui/material';
+import {
+    Box,
+    FormControl,
+    FormHelperText,
+    InputAdornment,
+    Stack,
+    SxProps,
+    Theme,
+} from '@mui/material';
 import { ChangeEventHandler, forwardRef, KeyboardEventHandler, ReactNode } from 'react';
 
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
 const textareaStyles: SxProps<Theme> = {
-    gridArea: '1 / 1 / 2 / 2',
+    gridArea: 'prompt',
     height: 'unset',
     resize: 'none',
     maxWidth: '100%',
@@ -34,6 +42,7 @@ interface AutoSizedInputProps {
     value: string;
     errorMessage?: ReactNode;
     onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
+    endAdornment?: ReactNode;
 }
 
 // taken from https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
@@ -47,11 +56,12 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
             onKeyDown,
             name,
             errorMessage,
+            endAdornment,
         },
         ref
     ) {
         return (
-            <FormControl fullWidth>
+            <FormControl fullWidth error={errorMessage != null}>
                 <Box
                     data-text-value={value}
                     sx={(theme) => ({
@@ -62,6 +72,8 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         // end styles stolen from MUI
 
                         display: 'grid',
+                        gridTemplateColumns: '1fr auto',
+                        gridTemplateAreas: '"prompt adornment"',
                         borderRadius: theme.spacing(1.5),
                         padding: 1,
                         background: theme.palette.background.drawer.secondary,
@@ -120,6 +132,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         {/* This intentionally has a space at the end, the css-tricks article says it helps it be smoother */}
                         {value}{' '}
                     </Box>
+                    <Box sx={{ gridArea: 'adornment', alignSelf: 'end' }}>{endAdornment}</Box>
                 </Box>
                 <FormHelperText>{errorMessage}</FormHelperText>
             </FormControl>
