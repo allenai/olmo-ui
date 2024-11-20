@@ -48,6 +48,8 @@ export const UIRefreshThreadPage = () => {
                         backgroundColor: 'transparent',
                         height: 1,
                         paddingBlockStart: 1,
+
+                        position: 'relative',
                     }}>
                     <Box
                         sx={(theme) => ({

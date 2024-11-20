@@ -1,5 +1,6 @@
-import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
 import { IconButton } from '@mui/material';
+
+import { DownToBottomArrowIcon } from '@/components/assets/DownToBottomArrowIcon';
 
 interface ScrollToBottomButtonProps {
     isVisible: boolean;
@@ -14,11 +15,14 @@ export const ScrollToBottomButton = ({
         <IconButton
             onClick={onScrollToBottom}
             sx={{
+                position: 'absolute',
+                right: '30px',
+                bottom: '26px',
                 visibility: isVisible ? 'visible' : 'hidden',
                 color: (theme) => theme.palette.text.secondary,
             }}
             aria-label="Scroll to bottom">
-            <ArrowCircleDownOutlinedIcon sx={{ width: '36px', height: '36px' }} />
+            <DownToBottomArrowIcon sx={{ fill: (theme) => theme.palette.primary.main }} />
         </IconButton>
     );
 };

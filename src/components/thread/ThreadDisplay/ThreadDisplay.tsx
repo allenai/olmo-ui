@@ -1,4 +1,5 @@
 import { Box, Stack } from '@mui/material';
+import { borderBottom } from '@mui/system';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -179,6 +180,7 @@ export const ThreadDisplay = (): ReactNode => {
                 '@media (prefers-reduced-motion: no-preference)': {
                     scrollBehavior: 'smooth',
                 },
+                // paddingBlockEnd: 6,
             }}>
             <Stack
                 gap={2}
@@ -189,29 +191,38 @@ export const ThreadDisplay = (): ReactNode => {
                     maxWidth: '750px',
                     margin: '0 auto',
                 }}>
+                <Box
+                    sx={{
+                        pointerEvents: 'none',
+                        top: '-1px',
+                        position: 'sticky',
+                        boxShadow: (theme) => `0 12px 50px 12px ${theme.palette.background.paper}`,
+                    }}
+                />
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
-                <Stack
-                    justifyContent="center"
-                    alignItems="center"
+                <Box
+                    ref={scrollAnchorRef}
+                    data-testid="bottom-scroll-anchor"
+                    aria-hidden
                     sx={{
+                        marginBlockStart: 2, // more?
+                        paddingBlockEnd: 1,
+                    }}
+                />
+                <Box
+                    sx={{
+                        pointerEvents: 'none',
                         bottom: '-1px',
-                        minHeight: (theme) => ({
-                            xs: theme.spacing(6),
-                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
-                        }),
                         position: 'sticky',
-                        background: (theme) =>
-                            `linear-gradient(0deg, ${theme.palette.background.paper} 0%, #0000 42.5%)`,
-                        marginTop: (theme) => theme.spacing(-3),
-                    }}>
-                    <ScrollToBottomButton
-                        isVisible={isScrollToBottomButtonVisible}
-                        onScrollToBottom={handleScrollToBottomButtonClick}
-                    />
-                </Stack>
+                        boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
+                    }}
+                />
+                <ScrollToBottomButton
+                    isVisible={isScrollToBottomButtonVisible}
+                    onScrollToBottom={handleScrollToBottomButtonClick}
+                />
             </Stack>
         </Box>
     );
