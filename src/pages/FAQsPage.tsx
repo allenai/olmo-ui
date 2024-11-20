@@ -62,7 +62,6 @@ export const FAQsPage = (): JSX.Element => {
                 sx={{
                     gridArea: 'content',
                     overflow: 'auto',
-                    backgroundColor: 'transparent',
                     paddingInline: 2,
                 }}>
                 <CardContent
