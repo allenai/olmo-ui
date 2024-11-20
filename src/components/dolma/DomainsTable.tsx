@@ -1,8 +1,9 @@
-import { Pagination, Paper, Stack, Typography } from '@mui/material';
+import { Pagination, Stack, Typography } from '@mui/material';
 import { DataGrid, gridClasses, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 
+import { ResponsiveCard } from '../ResponsiveCard';
 import { DolmaResponse } from './DolmaTabs';
 import { DomainLink } from './DomainLink';
 import { useSmallLayoutOrUp } from './shared';
@@ -88,21 +89,8 @@ export const DomainsTable = () => {
           };
 
     return (
-        <Paper
-            elevation={isSmallLayoutOrUp ? 2 : 0}
-            sx={(theme) => ({
-                background: theme.palette.background.default,
-                borderRadius: isSmallLayoutOrUp ? theme.spacing(1.5) : 0,
-                padding: isSmallLayoutOrUp ? theme.spacing(4) : 0,
-            })}>
-            <Typography
-                variant="h3"
-                sx={(theme) => ({
-                    marginTop: theme.spacing(4),
-                    marginBottom: theme.spacing(2),
-                })}>
-                Domains
-            </Typography>
+        <ResponsiveCard>
+            <Typography variant="h3">Web Domains</Typography>
             <DataGrid
                 {...dataGridConfig}
                 getRowId={(row) => `${row.source}-${row.domain}`}
@@ -114,6 +102,15 @@ export const DomainsTable = () => {
                             page={page}
                             size={isSmallLayoutOrUp ? 'medium' : 'small'}
                             onChange={onPageChange}
+                            sx={{
+                                '& .MuiPaginationItem-root': {
+                                    '&.Mui-selected': {
+                                        // these can be hard coded -- they work with dark and light
+                                        backgroundColor: (theme) => theme.color['dark-blue'].hex, // Background color for the selected item
+                                        color: 'white', // Text color for the selected item
+                                    },
+                                },
+                            }}
                             showFirstButton
                             showLastButton
                         />
@@ -142,6 +139,6 @@ export const DomainsTable = () => {
                     },
                 })}
             />
-        </Paper>
+        </ResponsiveCard>
     );
 };

@@ -15,7 +15,11 @@ describe('Dataset Explorer Search', () => {
         render(<RouterProvider router={router} />);
 
         await waitFor(() => {
-            expect(screen.getByText('b1277a5bbd120574d3abea306025f274da483a47')).toBeVisible();
+            expect(
+                screen.getByText(
+                    'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
+                )
+            ).toBeVisible();
         });
 
         expect(screen.queryByTestId('search-progress-bar')).not.toBeInTheDocument();

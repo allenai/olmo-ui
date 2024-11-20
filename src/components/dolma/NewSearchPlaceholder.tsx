@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -6,11 +6,14 @@ import { search } from '../../api/dolma/search';
 import { NoPaddingGrid } from './shared';
 
 export const NewSearchPlaceholder = () => {
-    const exampleQueries = ['Economic Growth', 'Linda Tuhiwai Smith', 'Stoichiometry'];
+    const exampleQueries = ['Economic growth', 'Linda Tuhiwai Smith', 'Stoichiometry'];
+    const theme = useTheme();
 
     return (
         <NoPaddingGrid item>
-            <p>Or try one of these queries:</p>
+            <Typography variant="body1" sx={{ color: (theme) => theme.palette.text.primary }}>
+                Or try one of these queries:
+            </Typography>
             <Stack style={{ justifyContent: 'center' }} direction="row" spacing={1.5}>
                 {exampleQueries.map((queryText, i) => (
                     <Fragment key={queryText}>
@@ -19,7 +22,8 @@ export const NewSearchPlaceholder = () => {
                                 to={`/search?${search.toQueryString({
                                     query: queryText,
                                     offset: 0,
-                                })}`}>
+                                })}`}
+                                style={{ color: theme.palette.primary.main }}>
                                 {queryText}
                             </Link>
                         </span>

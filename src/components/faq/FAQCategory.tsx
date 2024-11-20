@@ -1,12 +1,10 @@
 import { Stack, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-import type { FAQ as FAQType } from '@/assets/faq-list';
+import type { FAQ as FAQType } from '@/components/faq/faq-list';
 
-import { createFAQId } from './createFAQId';
 import { FAQ } from './FAQ';
-
-const FAQ_GAP = 1;
+import { createFAQId } from './faq-utils';
 
 interface FAQCategoryProps {
     categoryName: string;
@@ -22,25 +20,29 @@ export const FAQCategory = ({ categoryName, questions }: FAQCategoryProps): Reac
         <Stack
             id={createFAQId(categoryName)}
             direction="column"
-            gap={FAQ_GAP}
+            gap={2}
             className="faq-category"
             sx={{
                 '&+&': {
-                    borderBlockStart: (theme) => `1px solid ${theme.palette.divider}`,
-                    paddingBlockStart: FAQ_GAP,
+                    borderBlockStart: (theme) => `1px solid ${theme.color.N6}`,
+                    paddingBlockStart: 3.5,
                 },
             }}>
             <Typography variant="h5" component="h2">
                 {categoryName}
             </Typography>
-            <Stack direction="column" gap={2}>
-                {questions.map((question) => (
-                    <FAQ
-                        question={question.question}
-                        answer={question.answer}
-                        key={categoryName + question.question}
-                    />
-                ))}
+            <Stack direction="column" gap={0}>
+                {questions.map((question) => {
+                    const answer: string =
+                        typeof question.answer === 'string' ? question.answer : question.answer();
+                    return (
+                        <FAQ
+                            question={question.question}
+                            answer={answer}
+                            key={categoryName + question.question}
+                        />
+                    );
+                })}
             </Stack>
         </Stack>
     );

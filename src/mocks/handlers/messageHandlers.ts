@@ -1,54 +1,81 @@
 import { http, HttpResponse } from 'msw';
 
-import { MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
+import { JSONMessage, MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
+import duplicateDocumentsResponse from './duplicateDocumentMessageResponse.json';
 import highlightStressTestMessage from './highlightStressTestMessage';
 import { newMessageId } from './messageStreamHandlers';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
 const fakeFirstThreadResponse = {
     id: firstThreadMessageId,
-    content: 'First existing message',
-    snippet: 'First existing message',
+    content: 'System message',
+    snippet: 'System message',
     creator: 'murphy@allenai.org',
-    role: Role.User,
+    role: Role.System,
     opts: {
         max_tokens: 2048,
         n: 1,
         temperature: 1.0,
         top_p: 1.0,
     },
+    model_host: 'modal',
+    model_id: 'Tulu-v3-8-dpo-preview',
     root: firstThreadMessageId,
     created: '2024-03-20T18:45:58.032751+00:00',
     children: [
         {
-            completion: 'cpl_K4T8N7R4S8',
-            content: 'Ether',
-            created: '2024-03-20T18:45:58.040176+00:00',
+            id: 'msg_G8D2Q9Y8Q4',
+            content: 'First existing message',
+            snippet: 'First existing message',
             creator: 'murphy@allenai.org',
-            final: true,
-            id: 'msg_D6H1N4L6L2',
-            labels: [],
-            logprobs: [],
-            model_type: 'chat',
+            role: Role.User,
             opts: {
                 max_tokens: 2048,
                 n: 1,
                 temperature: 1.0,
                 top_p: 1.0,
             },
-            parent: firstThreadMessageId,
-            private: false,
-            role: Role.LLM,
+            model_host: 'modal',
+            model_id: 'Tulu-v3-8-dpo-preview',
             root: firstThreadMessageId,
-            snippet: 'Ether',
+            created: '2024-03-20T18:45:58.032751+00:00',
+            children: [
+                {
+                    completion: 'cpl_K4T8N7R4S8',
+                    content: 'Ether',
+                    created: '2024-03-20T18:45:58.040176+00:00',
+                    creator: 'murphy@allenai.org',
+                    final: true,
+                    id: 'msg_D6H1N4L6L2',
+                    labels: [],
+                    logprobs: [],
+                    model_type: 'chat',
+                    opts: {
+                        max_tokens: 2048,
+                        n: 1,
+                        temperature: 1.0,
+                        top_p: 1.0,
+                    },
+                    parent: firstThreadMessageId,
+                    private: false,
+                    role: Role.LLM,
+                    root: firstThreadMessageId,
+                    snippet: 'Ether',
+                    model_host: 'modal',
+                    model_id: 'Tulu-v3-8-dpo-preview',
+                },
+            ],
+            final: true,
+            labels: [],
+            private: false,
         },
     ],
     final: true,
     labels: [],
     private: false,
-};
+} satisfies JSONMessage;
 
 export const secondThreadMessageId = 'msg_A8E5H1X2O3';
 const fakeSecondThreadResponse = {
@@ -111,7 +138,7 @@ const highlightStressTestResponse = {
     created: '2024-08-20T22:34:03.342086+00:00',
     children: [
         {
-            id: 'msg_V6Y0U4H4O9',
+            id: highlightStressTestMessageId + 'response',
             content: highlightStressTestMessage,
             snippet: 'HighlightStressTest',
             creator: 'murphy@allenai.org',
@@ -139,8 +166,13 @@ const highlightStressTestResponse = {
 };
 
 const fakeGetAllThreadsResponse: MessagesResponse = {
-    messages: [fakeFirstThreadResponse, fakeSecondThreadResponse],
-    meta: { limit: 10, offset: 0, total: 2 },
+    messages: [
+        fakeFirstThreadResponse,
+        fakeSecondThreadResponse,
+        highlightStressTestResponse,
+        duplicateDocumentsResponse as JSONMessage,
+    ],
+    meta: { limit: 10, offset: 0, total: 4 },
 };
 
 export const messageHandlers = [
@@ -162,5 +194,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/${highlightStressTestMessageId}`, () => {
         return HttpResponse.json(highlightStressTestResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/msg_duplicatedocuments`, () => {
+        return HttpResponse.json(duplicateDocumentsResponse);
     }),
 ];

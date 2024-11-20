@@ -1,12 +1,19 @@
 import { ClientBase } from './ClientBase';
+export interface AttributionDocumentSnippet {
+    text: string;
+    corresponding_span_text: string;
+}
 
 export interface Document {
     text: string;
+    snippets: AttributionDocumentSnippet[];
     corresponding_spans: number[];
     corresponding_span_texts: string[];
     index: string;
+    url?: string;
     source: string;
-    title: string;
+    title?: string;
+    relevance_score: number;
 }
 
 export interface AttributionSpan {
@@ -27,6 +34,7 @@ const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';
 
 export class AttributionClient extends ClientBase {
     getAttributionDocuments = async (
+        prompt: string,
         modelResponse: string,
         modelId: string,
         maxDocuments: number = 10
@@ -34,6 +42,7 @@ export class AttributionClient extends ClientBase {
         const url = this.createURL(AttributionApiUrl);
 
         const request = {
+            prompt,
             model_response: modelResponse,
             model_id: modelId,
             max_documents: maxDocuments,

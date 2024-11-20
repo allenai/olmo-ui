@@ -13,11 +13,14 @@ export const FAQCategoriesButton = () => {
 
     return (
         <Button
-            size="small"
-            component="label"
             variant="outlined"
+            color="inherit"
             startIcon={<FilterListIcon />}
-            onClick={openCategoryDrawer}>
+            onClick={openCategoryDrawer}
+            sx={{
+                alignSelf: 'flex-start',
+                marginTop: -2,
+            }}>
             Categories
         </Button>
     );

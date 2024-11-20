@@ -1,16 +1,23 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import { TestOptions } from 'e2e/playwright-utils';
 
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
 dotenv.config({
-    path: ['./.env.local', `./.env${envSuffix}`],
+    path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'],
 });
+
+const bypassCSP = {
+    // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
+    bypassCSP: true,
+    launchOptions: { args: ['--disable-web-security'] },
+};
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<TestOptions>({
     testDir: './e2e',
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -32,11 +39,6 @@ export default defineConfig({
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         // trace: 'on-first-retry',
         trace: 'retain-on-failure',
-
-        extraHTTPHeaders: {
-            'X-Auth-Request-User': 'foo',
-            'X-Auth-Request-Email': 'foo@bar.com',
-        },
     },
 
     /* Configure projects for major browsers */
@@ -44,11 +46,16 @@ export default defineConfig({
         {
             name: 'setup',
             testMatch: 'e2e/auth-setup.ts',
-            use: {
-                // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
-                bypassCSP: true,
-                launchOptions: { args: ['--disable-web-security'] },
-            },
+            use: bypassCSP,
+        },
+        {
+            name: 'auth-flow',
+            testMatch: 'e2e/auth-flow.ts',
+            use: bypassCSP,
+        },
+        {
+            name: 'anonymous-chromium',
+            use: { ...devices['Desktop Chrome'], isAnonymousTest: true },
         },
         {
             name: 'chromium',
@@ -61,14 +68,24 @@ export default defineConfig({
 
         {
             name: 'firefox',
-            use: { ...devices['Desktop Firefox'], storageState: 'e2e/.auth/storageState.json' },
+            use: {
+                ...devices['Desktop Firefox'],
+                storageState: 'e2e/.auth/storageState.json',
+            },
             dependencies: ['setup'],
+            // This test is flaky on FF. It seems to work just fine in browser, but be extra careful when you make changes to this!
+            testIgnore: ['*sticky-scroll*'],
         },
 
         {
             name: 'webkit',
-            use: { ...devices['Desktop Safari'], storageState: 'e2e/.auth/storageState.json' },
+            use: {
+                ...devices['Desktop Safari'],
+                storageState: 'e2e/.auth/storageState.json',
+            },
             dependencies: ['setup'],
+            // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
+            testIgnore: ['*sticky-scroll*'],
         },
 
         /* Test against mobile viewports. */

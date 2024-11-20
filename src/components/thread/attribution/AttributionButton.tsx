@@ -5,22 +5,20 @@ import { useAppContext } from '@/AppContext';
 import { ResponsiveButton } from '../ResponsiveButton';
 import { ATTRIBUTION_DRAWER_ID } from './drawer/AttributionDrawer';
 
-export const AttributionButton = () => {
+export const CorpusLinkButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-    const toggleHistoryDrawer = () => {
+    const toggleAttributionDrawer = () => {
         toggleDrawer(ATTRIBUTION_DRAWER_ID);
     };
 
-    const isAttributionDrawerOpen = useAppContext(
-        (state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID
-    );
-
     return (
         <ResponsiveButton
-            variant={isAttributionDrawerOpen ? 'contained' : 'outlined'}
+            variant="outlined"
+            isResponsive={false}
+            layout="text"
             startIcon={<ArticleIcon />}
-            title="Attribution"
-            onClick={toggleHistoryDrawer}
+            title="CorpusLink"
+            onClick={toggleAttributionDrawer}
         />
     );
 };

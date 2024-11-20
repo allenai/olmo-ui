@@ -1,5 +1,6 @@
 import { CardContent, Link, Stack, Typography } from '@mui/material';
 
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
 import { DolmaInformationCard } from './DolmaInformationCard';
@@ -8,43 +9,47 @@ import { ResponsiveCard } from './ResponsiveCard';
 export const DolmaCard = () => {
     return (
         <>
-            <ResponsiveCard>
+            <ResponsiveCard sx={{ backgroundColor: (theme) => theme.palette.background.reversed }}>
                 <CardContent sx={{ padding: (theme) => theme.spacing(4, 2) }}>
-                    <Typography variant="h1" align="center">
-                        Dolma is proven, trusted, and fully open.
+                    <Typography
+                        variant="h1"
+                        align="center"
+                        sx={(theme) => ({
+                            color: theme.palette.text.reversed,
+                            marginBottom: theme.spacing(2),
+                        })}>
+                        OLMoE-Mix is proven, trusted, and fully open.
                     </Typography>
-                    <Typography variant="h5" align="center">
-                        <Link href={links.dolma7B} target="_blank">
-                            Dolma 1.7-7B
+                    <Typography
+                        variant="subtitle1"
+                        align="center"
+                        sx={{ color: (theme) => theme.palette.text.reversed }}>
+                        <Link
+                            href={links.olmoeMixAnnouncement}
+                            target="_blank"
+                            sx={{ color: (theme) => theme.palette.secondary.light }}>
+                            OLMoE-Mix
                         </Link>{' '}
-                        is a dataset of 2.05 trillion tokens from a diverse mix of web content,
-                        academic publications, code, books, and encyclopedic materials. It is openly
-                        available for download on{' '}
-                        <Link href={links.ourDatasets} target="_blank">
-                            Hugging Face{' '}
-                        </Link>{' '}
-                        under the{' '}
-                        <Link href={links.odc} target="_blank">
-                            ODC-By
-                        </Link>{' '}
-                        license.
+                        is a dataset of 4.07 trillion tokens from a diverse mix of web content,
+                        academic publications, code, math, and encyclopedic materials. It is openly
+                        available for download under the ODC-By license.
                     </Typography>
                 </CardContent>
             </ResponsiveCard>
-            <Stack direction="row" flexWrap="wrap" sx={{ columnGap: 4, rowGap: 2 }}>
+            <Stack direction="row" flexWrap="wrap" gap={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 4 }}>
                 <DolmaInformationCard
-                    linkText="Learn More"
+                    linkText="Learn more"
                     linkUrl="#"
-                    title="How was Dolma Created?"
-                    buttonText="Read the Blog"
-                    buttonUrl={links.dolmaBlog}
+                    title="How was OLMoE-Mix Created?"
+                    buttonText="Read the blog"
+                    buttonUrl={links.olmoeMixAnnouncement}
                 />
                 <DolmaInformationCard
                     linkText="Research"
                     linkUrl="#"
                     title="Access the Dataset on Hugging Face"
-                    buttonText="Get Started"
-                    buttonUrl={links.ourDatasets}
+                    buttonText="Download OLMoE-Mix"
+                    buttonUrl={links.olmoeMixDownload}
                 />
             </Stack>
         </>

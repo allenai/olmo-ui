@@ -1,5 +1,4 @@
 import {
-    InferenceOpts,
     isFinalMessage,
     isFirstMessage,
     isMessageChunk,
@@ -8,9 +7,11 @@ import {
     MessageStreamError,
     MessageStreamErrorReason,
     parseMessage,
+    RequestInferenceOpts,
     StreamBadRequestError,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
+import { Role } from '@/api/Role';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -49,21 +50,24 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
-    streamingMessageId: string;
-    inferenceOpts: InferenceOpts;
-    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => void;
+    streamingMessageId: string | null;
+    inferenceOpts: RequestInferenceOpts;
+    updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
+    isUpdatingMessageContent: boolean;
     streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
+    abortPrompt: () => void;
 }
 
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
-    streamingMessageId: '',
+    streamingMessageId: null,
     inferenceOpts: {},
     streamPromptState: undefined,
+    isUpdatingMessageContent: false,
 
-    updateInferenceOpts: (newOptions: Partial<InferenceOpts>) => {
+    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
         set((state) => ({
             inferenceOpts: { ...state.inferenceOpts, ...newOptions },
         }));
@@ -100,8 +104,10 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     }
                 }
 
+                state.isUpdatingMessageContent = false;
                 state.abortController = null;
                 state.streamPromptState = RemoteState.Loaded;
+                state.streamingMessageId = null;
             },
             false,
             'threadUpdate/finishCreateNewThread'
@@ -139,6 +145,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
 
         resetAttribution();
+        set({ currentOpenThreadTab: 'attribution' });
 
         try {
             const messageChunks = postMessageGenerator(
@@ -162,13 +169,28 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     // store the message id that olmo is generating reponse
                     // the first chunk in the message will have no content
-                    const streamingMessage = (parsedMessage.children || []).find(
-                        (childMessage) => childMessage.content.length === 0
+                    let targetMessageList;
+                    if (parsedMessage.role === Role.User) {
+                        targetMessageList = parsedMessage.children;
+                    } else if (parsedMessage.role === Role.System) {
+                        // system prompt message should only have 1 child
+                        targetMessageList = parsedMessage.children?.[0].children;
+                    }
+
+                    const streamingMessage = targetMessageList?.find(
+                        (message) => !message.final && message.content.length === 0
                     );
+
                     set({ streamingMessageId: streamingMessage?.id });
                 }
 
                 if (isMessageChunk(message)) {
+                    if (!get().isUpdatingMessageContent) {
+                        set((state) => {
+                            state.isUpdatingMessageContent = true;
+                        });
+                    }
+
                     addContentToMessage(message.message, message.content);
                 }
 
@@ -182,7 +204,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     }
 
                     selectMessage(finalMessageId);
-                    await getAttributionsForMessage(finalMessageId);
+                    await getAttributionsForMessage(promptMessage.content, finalMessageId);
                 }
             }
         } catch (err) {
@@ -221,5 +243,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
             addSnackMessage(snackMessage);
         }
+    },
+
+    abortPrompt: () => {
+        get().abortController?.abort();
     },
 });

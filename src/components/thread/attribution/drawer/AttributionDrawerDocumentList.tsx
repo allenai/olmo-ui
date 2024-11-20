@@ -1,5 +1,7 @@
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { useMemo } from 'react';
 
+import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
@@ -7,9 +9,12 @@ import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selec
 import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard';
-import { messageAttributionDocumentsSelector } from './message-attribution-documents-selector';
+} from './AttributionDocumentCard/AttributionDocumentCard';
+import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
+interface DedupedDocument extends Document {
+    duplicateDocumentIndexes: string[];
+}
 interface MatchingDocumentsTextProps {
     documentCount: number;
 }
@@ -36,8 +41,8 @@ const NoDocumentsCard = (): JSX.Element => {
 
     const message = isThereASelectedThread ? (
         <>
-            There are no documents that can be attributed to this response. This will happen often
-            on short responses.
+            There are no documents from the training set that contain exact text matches to sections
+            of the model response. This will often happen on short responses.
         </>
     ) : (
         <>Start a new thread or select an existing one to see response attributions.</>
@@ -51,7 +56,7 @@ const NoDocumentsCard = (): JSX.Element => {
 };
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
-    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
+    const attributionForMessage = useAttributionDocumentsForMessage();
 
     const { documents, loadingState } = attributionForMessage;
 
@@ -59,12 +64,44 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         (state) => state.streamPromptState === RemoteState.Loading
     );
 
+    const deduplicatedDocuments = useMemo(() => {
+        // the key to this map is either the URL or the document index
+        const documentsDedupedByUrl = new Map<string, DedupedDocument>();
+        documents.forEach((currentDocument) => {
+            if (currentDocument.url != null) {
+                if (documentsDedupedByUrl.has(currentDocument.url)) {
+                    documentsDedupedByUrl
+                        .get(currentDocument.url)
+                        ?.duplicateDocumentIndexes.push(currentDocument.index);
+                } else {
+                    documentsDedupedByUrl.set(currentDocument.url, {
+                        ...currentDocument,
+                        duplicateDocumentIndexes: [],
+                    });
+                }
+            } else {
+                if (documentsDedupedByUrl.has(currentDocument.index)) {
+                    documentsDedupedByUrl
+                        .get(currentDocument.index)
+                        ?.duplicateDocumentIndexes.push(currentDocument.index);
+                } else {
+                    documentsDedupedByUrl.set(currentDocument.index, {
+                        ...currentDocument,
+                        duplicateDocumentIndexes: [],
+                    });
+                }
+            }
+        });
+
+        return Array.from(documentsDedupedByUrl.values());
+    }, [documents]);
+
     if (isPromptLoading) {
         return (
             <Card>
                 <CardContent>
-                    Once the response has been fully generated, documents that can be attributed to
-                    this response will display.
+                    Once the response has been fully generated, documents from the training set that
+                    contain exact text matches to sections of the model response will be displayed.
                 </CardContent>
             </Card>
         );
@@ -99,22 +136,26 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     return (
         <>
-            {/* 
-                MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole. 
+            {/*
+                MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole.
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            {documents.map((document) => {
-                return (
-                    <AttributionDocumentCard
-                        key={document.index}
-                        documentIndex={document.index}
-                        title={document.title}
-                        text={document.text}
-                        source={document.source}
-                    />
-                );
-            })}
+            <Box p={0} m={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+                {deduplicatedDocuments.map((document) => {
+                    return (
+                        <AttributionDocumentCard
+                            key={document.index}
+                            documentIndex={document.index}
+                            documentUrl={document.url}
+                            source={document.source}
+                            // This has a +1 because the repeated document count should include this document we're showing here
+                            // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
+                            repeatedDocumentCount={document.duplicateDocumentIndexes.length + 1}
+                        />
+                    );
+                })}
+            </Box>
         </>
     );
 };

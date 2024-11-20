@@ -1,11 +1,11 @@
-import { Drawer } from '@mui/material';
-import { KeyboardEventHandler, PropsWithChildren, ReactNode } from 'react';
+import { Box, Drawer } from '@mui/material';
+import { KeyboardEvent, KeyboardEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-interface TemporaryDrawerProps extends PropsWithChildren {
+interface FullScreenDrawerProps extends PropsWithChildren {
     drawerId: DrawerId;
     header: ReactNode | (({ onDrawerClose }: { onDrawerClose: () => void }) => ReactNode);
     fullWidth?: boolean;
@@ -16,7 +16,7 @@ export const FullScreenDrawer = ({
     header,
     children,
     fullWidth,
-}: TemporaryDrawerProps) => {
+}: FullScreenDrawerProps) => {
     const closeDrawer = useAppContext((state) => state.closeDrawer);
 
     const isDrawerOpen = useAppContext((state) => state.currentOpenDrawer === drawerId);
@@ -29,9 +29,7 @@ export const FullScreenDrawer = ({
         handleDrawerClose,
     });
 
-    const onKeyDownEscapeHandler: KeyboardEventHandler = (
-        event: React.KeyboardEvent<HTMLDivElement>
-    ) => {
+    const onKeyDownEscapeHandler: KeyboardEventHandler = (event: KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Escape') {
             handleDrawerClose();
         }
@@ -46,14 +44,31 @@ export const FullScreenDrawer = ({
             anchor="right"
             PaperProps={{
                 sx: {
-                    paddingBlock: 1,
-                    paddingInline: 2,
                     backgroundColor: (theme) => theme.palette.background.default,
                     width: fullWidth ? '100vw' : undefined,
                 },
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
-            {children}
+            {/* minHeight here helps the children overflow properly */}
+            <Box paddingBlockEnd={1} paddingInline={2} minHeight={0}>
+                {children}
+            </Box>
         </Drawer>
+    );
+};
+
+export const FullScreenDrawerHeader = ({ children }: PropsWithChildren) => {
+    return (
+        <Box
+            sx={{
+                position: 'sticky',
+                top: 0,
+                backgroundColor: 'inherit',
+                paddingBlockStart: 1,
+                paddingInline: 2,
+                zIndex: 1,
+            }}>
+            {children}
+        </Box>
     );
 };

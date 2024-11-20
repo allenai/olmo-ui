@@ -39,7 +39,6 @@ export namespace search {
 
     export interface Document {
         id: string;
-        dolma_id: string;
         source: Source;
         title: string;
         snippets: Snippet[];

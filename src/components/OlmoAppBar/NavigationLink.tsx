@@ -1,5 +1,11 @@
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import {
+    ListItem,
+    ListItemButton,
+    ListItemButtonProps,
+    ListItemIcon,
+    ListItemText,
+} from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
@@ -18,6 +24,7 @@ const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItem
 );
 
 type NavigationLinkProps = PropsWithChildren & {
+    buttonId?: string;
     icon?: ReactNode;
     selected?: boolean;
     isExternalLink?: boolean;
@@ -25,6 +32,7 @@ type NavigationLinkProps = PropsWithChildren & {
     iconVariant?: 'internal' | 'external';
     inset?: boolean;
     dense?: boolean;
+    linkProps?: Partial<ListItemButtonProps>;
 } & (
         | {
               href?: never;
@@ -42,17 +50,20 @@ export const NavigationLink = ({
     variant = 'default',
     iconVariant = 'internal',
     inset,
+    linkProps = {},
 }: NavigationLinkProps) => {
-    const linkProps =
-        href == null
+    const linkPropsMerged = {
+        ...linkProps,
+        ...(href == null
             ? {}
             : {
                   href,
                   target: href == null ? undefined : href.startsWith('/') ? '_self' : '_blank',
-              };
+              }),
+    };
 
     return (
-        <ListItem disableGutters dense={variant === 'footer'}>
+        <ListItem disablePadding disableGutters dense>
             <ListItemButton
                 alignItems="center"
                 selected={selected}
@@ -60,8 +71,14 @@ export const NavigationLink = ({
                 dense={variant === 'footer'}
                 onClick={onClick}
                 sx={(theme) => ({
+                    paddingBlock: 1,
+                    paddingInline: 4,
                     gap: theme.spacing(2),
-                    color: theme.palette.text.reversed,
+                    color: theme.palette.text.drawer.primary,
+
+                    ':hover': {
+                        backgroundColor: 'transparent',
+                    },
 
                     '&.Mui-selected': {
                         backgroundColor: 'transparent',
@@ -82,9 +99,15 @@ export const NavigationLink = ({
                         color: theme.palette.secondary.contrastText,
                     },
                 })}
-                {...linkProps}>
+                {...linkPropsMerged}>
                 <NavigationListItemIcon
-                    sx={{ height: '1.25rem', width: '1.25rem', '& svg': { fontSize: '1.25rem' } }}>
+                    sx={{
+                        height: '1.25rem',
+                        width: '1.25rem',
+                        '& svg': { fontSize: '1.25rem' },
+                        opacity: 0.5,
+                        '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
+                    }}>
                     {/* We need something to take up space if this item is inset */}
                     {inset && icon == null && <div />}
                     {icon}
@@ -92,13 +115,21 @@ export const NavigationLink = ({
                 <ListItemText
                     sx={{ margin: 0, marginInlineEnd: 'auto' }}
                     primaryTypographyProps={{
-                        variant: variant === 'default' ? 'h4' : 'body1',
+                        variant: 'body1',
+                        fontWeight: 500,
                         component: 'span',
                     }}>
                     {children}
                 </ListItemText>
                 <NavigationListItemIcon>
-                    {iconVariant === 'external' && <LaunchOutlinedIcon sx={{ fontSize: '1rem' }} />}
+                    {iconVariant === 'external' && (
+                        <LaunchOutlinedIcon
+                            sx={{
+                                fontSize: '1rem',
+                                opacity: 0.5,
+                            }}
+                        />
+                    )}
                 </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>

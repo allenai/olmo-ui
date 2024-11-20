@@ -1,42 +1,47 @@
-import { VarnishApp } from '@allenai/varnish2/components';
-import { getTheme } from '@allenai/varnish2/theme';
-import { getRouterOverriddenTheme } from '@allenai/varnish2/utils';
-import { ThemeOptions } from '@mui/material';
+import { GlobalStyles, ThemeOptions } from '@mui/material';
 import { PropsWithChildren } from 'react';
-import { Link } from 'react-router-dom';
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
+import { ColorModeProvider } from './ColorModeProvider';
 import { ScrollToTopOnPageChange } from './ScrollToTopOnPageChange';
 
-export const GlobalStyle = createGlobalStyle`
-    html {
-        background: transparent;
-
-        // force chip selector to be on top
-        #typeahead-menu {
-            z-index: 999;
-        }
-    }
-`;
+const GlobalStyle = () => (
+    <GlobalStyles
+        styles={{
+            '.grecaptcha-badge': {
+                visibility: 'hidden',
+            },
+        }}
+    />
+);
 
 interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
 
 export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
-    const combinedTheme = getTheme(getRouterOverriddenTheme(Link, theme));
+    const siteKey = process.env.RECAPTCHA_SITE_KEY;
+
+    const GoogleReCaptchaWrapper = () => {
+        if (process.env.IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
+            return <>{children}</>;
+        }
+        return (
+            <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
+                <GlobalStyle />
+                {children}
+            </GoogleReCaptchaProvider>
+        );
+    };
 
     return (
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
-            <ThemeProvider theme={combinedTheme}>
-                <VarnishApp layout="left-aligned" theme={combinedTheme}>
-                    <GlobalStyle />
-                    {children}
-                </VarnishApp>
-            </ThemeProvider>
+            <ColorModeProvider theme={theme}>
+                <GoogleReCaptchaWrapper />
+            </ColorModeProvider>
         </FeatureToggleProvider>
     );
 };

@@ -1,7 +1,7 @@
-import { Button } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import { useAttributionHighlights } from './attribution/AttributionHighlight';
 
@@ -24,6 +24,7 @@ export const CodeBlock = ({
     ...props
 }: CodeBlockProps) => {
     const match = /language-(\w+)/.exec(className || '');
+    const theme = useTheme();
 
     const spansInsideThisCodeBlock =
         typeof children === 'string'
@@ -50,7 +51,8 @@ export const CodeBlock = ({
             return (
                 <>
                     <SyntaxHighlighter
-                        style={dracula}
+                        style={atomDark}
+                        customStyle={{ background: theme.palette.background.code }}
                         PreTag="div"
                         language={match[1]}
                         {...props}

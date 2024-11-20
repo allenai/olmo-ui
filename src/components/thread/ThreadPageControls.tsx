@@ -1,18 +1,29 @@
 import PlusIcon from '@mui/icons-material/Add';
-import { ButtonGroup, Card, Stack } from '@mui/material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Button, ButtonGroup, ButtonProps, Menu, Stack } from '@mui/material';
+import { MouseEvent, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 
-import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
-import { biggerContainerQuery, smallerContainerQuery } from '@/utils/container-query-utils';
+import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
-import { AttributionButton } from './attribution/AttributionButton';
-import { DeleteThreadButton } from './DeleteThreadButton';
+import { useDesktopOrUp, useMediumLayoutOrUp } from '../dolma/shared';
+import { CorpusLinkButton } from './attribution/AttributionButton';
+import { DeleteDialog, DeleteThreadButton } from './DeleteThreadButton';
 import { ParameterButton } from './parameter/ParameterButton';
-import { ResponsiveButton } from './ResponsiveButton';
+import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
 import { ShareThreadButton } from './ShareThreadButton';
 
-const NewThreadButton = () => {
+type NewThreadButtonProps = Partial<
+    Pick<ResponsiveButtonProps, 'isResponsive' | 'variant' | 'layout'>
+>;
+
+const NewThreadButton = ({
+    variant = 'outlined',
+    isResponsive = true,
+    layout = 'both',
+}: NewThreadButtonProps) => {
     const playgroundRoute = useMatch({
         path: links.playground,
     });
@@ -21,73 +32,165 @@ const NewThreadButton = () => {
         <ResponsiveButton
             startIcon={<PlusIcon />}
             title="New Thread"
-            smallerVariant="outlined"
-            biggerVariant="outlined"
+            variant={variant}
+            layout={layout}
+            isResponsive={isResponsive}
             href={links.playground}
             disabled={playgroundRoute?.pathname === links.playground}
         />
     );
 };
 
-const ThreadButtonGroup = (): JSX.Element => {
-    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
+export const ThreadPageControls = (): JSX.Element => {
+    const isDesktop = useDesktopOrUp();
+    const isMediumLayout = useMediumLayoutOrUp();
 
-    if (!selectedThreadRootId) {
-        return <></>;
-    }
+    const { isCorpusLinkEnabled } = useFeatureToggles();
 
-    return (
-        <>
-            {/* Wide screens */}
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const handleClickDelete = () => {
+        setDeleteDialogOpen(true);
+    };
+
+    if (isDesktop) {
+        return (
             <Stack
                 direction="row"
                 gap={2}
-                sx={(theme) => ({
-                    [smallerContainerQuery(theme)]: {
-                        display: 'none',
+                sx={{
+                    height: 'auto',
+                    alignItems: 'flex-start',
+                    [SMALL_THREAD_CONTAINER_QUERY]: {
+                        gridColumn: '1 / -1',
+                        justifyContent: 'right',
                     },
-                })}>
+                }}>
                 <NewThreadButton />
-                <DeleteThreadButton />
+                <DeleteThreadButton onClick={handleClickDelete} />
                 <ShareThreadButton />
+                <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
             </Stack>
-
-            {/* Small screens */}
-            <ButtonGroup
-                size="large"
-                variant="outlined"
-                sx={(theme) => ({
-                    [biggerContainerQuery(theme)]: {
-                        display: 'none',
-                    },
-                })}>
-                <NewThreadButton />
-                <DeleteThreadButton />
-                <ShareThreadButton />
-                <ParameterButton />
-                <AttributionButton />
-            </ButtonGroup>
-        </>
-    );
+        );
+    } else {
+        return (
+            <Stack
+                direction="row"
+                gap={2}
+                sx={{
+                    width: '100%',
+                    gridColumn: '1 / -1',
+                }}>
+                <ButtonGroup size="large" variant="outlined" fullWidth>
+                    {isCorpusLinkEnabled && <CorpusLinkButton />}
+                    <NewThreadButton />
+                    {!isMediumLayout ? (
+                        <MoreButton
+                            sx={(theme) => ({
+                                flexBasis: 'min-content',
+                                // copied from ResponsiveButton
+                                borderColor: theme.palette.primary.contrastText,
+                                color: theme.palette.primary.contrastText,
+                                '&:hover': {
+                                    color: theme.palette.primary.contrastText,
+                                    borderColor: theme.palette.primary.contrastText,
+                                },
+                            })}>
+                            <ParameterButton
+                                key="more-parameter-button"
+                                variant="list"
+                                isResponsive={false}
+                                layout="both"
+                            />
+                            <DeleteThreadButton
+                                key="more-delete-thread-button"
+                                variant="list"
+                                isResponsive={false}
+                                onClick={handleClickDelete}
+                            />
+                            <ShareThreadButton
+                                key="more-share-thread-button"
+                                variant="list"
+                                isResponsive={false}
+                            />
+                        </MoreButton>
+                    ) : null}
+                </ButtonGroup>
+                {isMediumLayout ? (
+                    <ButtonGroup size="large" variant="outlined">
+                        <NewThreadButton layout="icon" isResponsive={false} />
+                        <DeleteThreadButton
+                            layout="icon"
+                            isResponsive={false}
+                            onClick={handleClickDelete}
+                        />
+                        <ShareThreadButton layout="icon" isResponsive={false} />
+                    </ButtonGroup>
+                ) : null}
+                <DeleteDialog openDialog={isDeleteDialogOpen} setOpenDialog={setDeleteDialogOpen} />
+            </Stack>
+        );
+    }
 };
 
-export const ThreadPageControls = (): JSX.Element => {
+type MoreButtonProps = Pick<ButtonProps, 'sx'> & {
+    id?: string;
+    children: ReactNode;
+};
+
+const MoreButton = ({ id = 'more-button', sx, children }: MoreButtonProps) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
-        <Card
-            component={Stack}
-            direction="row"
-            gap={2}
-            sx={(theme) => ({
-                padding: 2,
-                backgroundColor: 'transparent',
-                [smallerContainerQuery(theme)]: {
-                    border: 0,
-                    backgroundColor: 'transparent',
-                    padding: 0,
-                    borderRadius: 'unset',
-                },
-            })}>
-            <ThreadButtonGroup />
-        </Card>
+        <>
+            <Button
+                aria-label="more"
+                id={`${id}-button`}
+                aria-controls={open ? `${id}-menu` : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+                sx={sx}>
+                <MoreHorizIcon />
+            </Button>
+            <Menu
+                id={`${id}-menu`}
+                aria-labelledby={`${id}-button`}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                MenuListProps={{
+                    dense: true,
+                    disablePadding: true,
+                    component: 'div',
+                    sx: (theme) => ({
+                        '& > .MuiButton-root': {
+                            borderBottom: `1px solid ${theme.palette.grey[300]}`,
+                            borderRadius: 0,
+                            '&:hover': {
+                                borderColor: theme.palette.grey[300],
+                            },
+                            ':last-child': {
+                                borderBottom: 'none',
+                            },
+                        },
+                    }),
+                }}
+                PaperProps={{
+                    style: {
+                        width: '12rem',
+                    },
+                }}>
+                {children}
+            </Menu>
+        </>
     );
 };

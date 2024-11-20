@@ -75,11 +75,28 @@ to the production API to get things working.
     ```
     docker compose up --build
     ```
+
 ### Running Tests
-To start running E2E tests following the steps below:
-- Navigate `e2e` folder
-- Run the command below `yarn test:e2e` to run all the e2e tests
+
+#### E2E Tests
+
+To start running E2E tests follow the steps below:
+- Copy the E2E_TEST_USER and E2E_TEST_PASSWORD to .env.local
+    they can be found here: https://start.1password.com/open/i?a=DES74C5MCVDCTGGUDF3CJBUJC4&v=i2t3yrat34bj23pimhovzdorpu&i=wxfuwokc7qmolsjft2d7bsscuu&h=allenai.1password.com
+- Set the AUTH0_CLIENT_ID and AUTH0_DOMAIN to point at our dev environment in .env.local
+    ```
+    AUTH0_CLIENT_ID=9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd
+    AUTH0_DOMAIN=allenai-public-dev.us.auth0.com
+    ```
+- Make sure mocking is enabled when running the dev server: `ENABLE_MOCKING=true docker compose up --build`
+- Run `yarn test:e2e` to run all the e2e tests
 - More commands: https://playwright.dev/docs/test-cli
+
+To update e2e test screenshots for CI:
+- `docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v{CURRENT_PLAYWRIGHT_VERSION}-focal /bin/bash`
+- `yarn test:e2e --update-screenshots`
+
+#### Unit Tests
 
 To start running unit tests use the command belows:  
 - Run the command `yarn test` will perform a single run without watch node
@@ -96,6 +113,12 @@ USER_EMAIL=grasshopper@allenai.org docker compose up --build
 ```
 
 ## Mocking network requests
-We use MSW to mock network requests. To enable it, add `ENABLE_MOCKING: true` to the `env` for `ui` in `docker-compose.yaml`. Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
+We use MSW to mock network requests for testing and local development. To enable it, have `ENABLE_MOCKING=true` as an env variable when you're starting the server. If you're starting with `docker compose`, that would look like this: `ENABLE_MOCKING=true docker compose up --build`.
+
+ Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
 
 ## Setting up to use the Dolma API
+    Generate a local config.json file:
+    ```
+    ./bin/bootstrap
+    ```

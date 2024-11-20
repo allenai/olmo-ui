@@ -6,8 +6,6 @@ import {
     Container,
     Grid,
     IconButton,
-    Paper,
-    PaperProps,
     Snackbar,
     useMediaQuery,
     useTheme,
@@ -16,7 +14,11 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
+import {
+    DESKTOP_LAYOUT_BREAKPOINT,
+    MEDIUM_LAYOUT_BREAKPOINT,
+    SMALL_LAYOUT_BREAKPOINT,
+} from '@/constants';
 
 export const ScrollToTopOnPageChange = () => {
     const location = useLocation();
@@ -58,10 +60,8 @@ export const InfoParagraph = styled.p`
     padding-bottom: ${({ theme }) => theme.spacing(1)};
 `;
 
-export const ElevatedCard = ({ children, ...cardProps }: CardProps) => (
+export const BaseCard = ({ children, ...cardProps }: CardProps) => (
     <Card
-        variant="elevation"
-        elevation={1}
         sx={{
             padding: (theme) => theme.spacing(2.25),
             backgroundColor: (theme) => theme.palette.background.default,
@@ -69,19 +69,6 @@ export const ElevatedCard = ({ children, ...cardProps }: CardProps) => (
         {...cardProps}>
         {children}
     </Card>
-);
-
-export const ElevatedPaper = ({ children, ...paperProps }: PaperProps) => (
-    <Paper
-        elevation={1}
-        sx={{
-            padding: (theme) => theme.spacing(2.25),
-            borderRadius: '12px',
-            backgroundColor: (theme) => theme.palette.background.default,
-        }}
-        {...paperProps}>
-        {children}
-    </Paper>
 );
 
 interface CopyToClipboardButtonProps {
@@ -107,7 +94,7 @@ export function CopyToClipboardButton({
     };
 
     return (
-        <Box sx={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
+        <Box sx={{ display: 'inline-flex', whiteSpace: 'nowrap', alignItems: 'center' }}>
             <IconButton
                 size="small"
                 aria-label={ariaLabel || 'Copy'}
@@ -141,6 +128,11 @@ export const useIsOnlyBreakpoint = (breakpoint: Breakpoint): boolean => {
 export const useDesktopOrUp = (): boolean => {
     const theme = useTheme();
     return useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
+};
+
+export const useMediumLayoutOrUp = (): boolean => {
+    const theme = useTheme();
+    return useMediaQuery(theme.breakpoints.up(MEDIUM_LAYOUT_BREAKPOINT));
 };
 
 export const useSmallLayoutOrUp = (): boolean => {

@@ -1,10 +1,10 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider, IconButton, ListSubheader, Typography } from '@mui/material';
-import { Box, Stack } from '@mui/system';
+import { Stack } from '@mui/system';
 
 import { DrawerId } from '@/slices/DrawerSlice';
 
-import { FullScreenDrawer } from '../TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '../FullScreenDrawer';
 import { FAQCategorySection } from './FAQCategorySection';
 
 export const CATEGORY_DRAWER_ID: DrawerId = 'category';
@@ -15,12 +15,7 @@ export const FAQCategoriesDrawer = () => {
             drawerId="category"
             fullWidth
             header={({ onDrawerClose }) => (
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        backgroundColor: 'inherit',
-                    }}>
+                <FullScreenDrawerHeader>
                     <Stack
                         justifyContent="space-between"
                         direction="row"
@@ -39,7 +34,7 @@ export const FAQCategoriesDrawer = () => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </Box>
+                </FullScreenDrawerHeader>
             )}>
             <FAQCategorySection />
         </FullScreenDrawer>

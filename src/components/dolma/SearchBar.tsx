@@ -1,5 +1,5 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Button, ButtonProps, IconButton, Stack, styled, Tooltip } from '@mui/material';
+import { Button, ButtonProps, IconButton, Stack, styled, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,8 @@ import { search } from '@/api/dolma/search';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
+
+import { getFAQIdByShortId } from '../faq/faq-utils';
 
 interface SearchBarProps {
     defaultValue?: string;
@@ -52,7 +54,9 @@ export const SearchBar = ({
     return (
         <FormContainer formContext={formContext} onSuccess={submitSearch}>
             <Stack gap={1.5} alignItems="flex-start">
-                {title}
+                <Typography variant="h3" sx={{ alignSelf: 'center' }}>
+                    {title}
+                </Typography>
                 <SearchTextField
                     name="queryText"
                     inputProps={{
@@ -74,7 +78,20 @@ export const SearchBar = ({
                         type="submit"
                         variant="contained"
                         {...submitButtonProps}
-                        disabled={disabled}>
+                        disabled={disabled}
+                        disableRipple={true}
+                        sx={{
+                            backgroundColor: (theme) => theme.palette.background.reversed,
+                            color: (theme) => theme.palette.secondary.light,
+                            '&:hover': {
+                                backgroundColor: (theme) => theme.color['teal-100'].hex,
+                                color: (theme) => theme.palette.secondary.light,
+                            },
+                            '&:focus-visible': {
+                                background: (theme) => theme.color['teal-90'].hex,
+                                color: (theme) => theme.palette.secondary.light,
+                            },
+                        }}>
                         Submit
                     </Button>
                     {showTooltip && (
@@ -84,7 +101,7 @@ export const SearchBar = ({
                             <IconButton
                                 aria-label="About Dataset Explorer"
                                 size="large"
-                                href={links.faqs}
+                                href={links.faqs + getFAQIdByShortId('dataset-explorer-intro')}
                                 sx={{
                                     color: (theme) => theme.palette.text.primary,
                                     padding: 1,

@@ -2,23 +2,18 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { useDesktopOrUp } from '../dolma/shared';
-import { HISTORY_DRAWER_ID, HistoryDrawer } from '../thread/history/HistoryDrawer';
+import { HistoryDrawer } from '../thread/history/HistoryDrawer';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
     const title = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    const isHistoryDrawerOpen = useAppContext(
-        (state) => state.currentOpenDrawer === HISTORY_DRAWER_ID
-    );
 
     const isDesktopOrUp = useDesktopOrUp();
 
@@ -39,31 +34,39 @@ export const OlmoAppBar = (): JSX.Element => {
                 sx={(theme) => ({
                     gridArea: 'app-bar',
 
-                    backgroundColor: theme.palette.background.reversed,
+                    backgroundColor: theme.palette.background.drawer.primary,
 
                     paddingBlock: 1,
                     paddingInline: 2,
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 4,
-                        paddingInline: 4,
-
+                        paddingBlockStart: 1.5,
                         backgroundColor: 'transparent',
                     },
                 })}>
                 <Toolbar
                     disableGutters
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                    }}>
+                    sx={(theme) => ({
+                        display: 'grid',
+                        gridTemplateColumns: '1fr max-content 1fr',
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            width: '100%',
+                            margin: '0 auto',
+                            paddingInline: 3,
+                        },
+                    })}>
                     <Link
                         href={links.home}
                         lineHeight={1}
-                        sx={{
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                        }}>
+                        sx={(theme) => ({
+                            justifySelf: 'left',
+                            alignItems: 'center',
+                            height: '100%',
+                            display: 'flex',
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                display: 'none',
+                            },
+                        })}>
                         <Ai2LogoFull
                             height={18.5}
                             width={60}
@@ -74,26 +77,29 @@ export const OlmoAppBar = (): JSX.Element => {
                         variant={isDesktopOrUp ? 'h1' : 'h3'}
                         component="h1"
                         color="primary"
-                        sx={{
+                        sx={(theme) => ({
                             margin: 0,
-
                             textAlign: 'center',
-                        }}>
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                textAlign: 'left',
+                            },
+                        })}>
                         {title}
                     </Typography>
                     <IconButton
                         onClick={handleDrawerToggle}
                         color="secondary"
                         sx={{
+                            justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
                         <MenuIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            {isHistoryDrawerOpen && <HistoryDrawer />}
+            <HistoryDrawer />
             <NavigationDrawer
-                open={isDrawerOpen && !isHistoryDrawerOpen}
+                open={isDrawerOpen}
                 onClose={handleDrawerClose}
                 onDrawerToggle={handleDrawerToggle}
             />

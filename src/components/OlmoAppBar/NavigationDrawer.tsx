@@ -1,25 +1,25 @@
-import {
-    LoginOutlined as LoginIcon,
-    PolicyOutlined,
-    RateReviewOutlined,
-} from '@mui/icons-material';
+import { LoginOutlined as LoginIcon, RateReviewOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+import SortIcon from '@mui/icons-material/Sort';
 import { IconButton, Link, Stack } from '@mui/material';
-import { ComponentProps, useEffect } from 'react';
+import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { ChatIcon } from '@/components/assets/ChatIcon';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
+import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
+import { ColorModeSelection } from './ColorModeSelection';
 import { NavigationLink } from './NavigationLink';
 
 const Auth0LoginLink = () => {
@@ -72,12 +72,13 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
+    const { isDatasetExplorerEnabled } = useFeatureToggles();
+
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
-    useEffect(() => {
-        if (!location.pathname.includes('thread')) {
-            onClose();
-        }
-    }, [location.pathname]);
+
+    useCloseDrawerOnNavigation({
+        handleDrawerClose: onClose,
+    });
 
     return (
         <ResponsiveDrawer
@@ -92,62 +93,50 @@ export const NavigationDrawer = ({
                 sx={{
                     height: 1,
                     overflowX: 'hidden',
-                    paddingInline: 4,
                     paddingBlockEnd: 2,
                 }}>
                 <NavigationLink
                     href={links.playground}
                     icon={<ChatIcon />}
                     selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                    Playground
+                    Chat
                 </NavigationLink>
                 <NavigationLink
                     onClick={() => {
                         toggleDrawer(HISTORY_DRAWER_ID);
                     }}
+                    icon={<SortIcon />}
                     inset>
                     Thread history
                 </NavigationLink>
+                {isDatasetExplorerEnabled && (
+                    <>
+                        <NavigationLink
+                            href={links.datasetExplorer}
+                            icon={<ExploreIcon />}
+                            selected={
+                                curriedDoesMatchPath(links.datasetExplorer) ||
+                                curriedDoesMatchPath(links.search) ||
+                                curriedDoesMatchPath(links.document(''))
+                            }>
+                            Dataset Explorer
+                        </NavigationLink>
+                    </>
+                )}
                 <NavigationLink
-                    href={links.molmo}
-                    selected={curriedDoesMatchPath(links.molmo)}
-                    iconVariant="external">
-                    Molmo
-                </NavigationLink>
-                <NavigationLink
-                    href={links.ourModels}
-                    selected={curriedDoesMatchPath(links.ourModels)}
-                    iconVariant="external"
-                    inset>
-                    Ai2&apos;s models
-                </NavigationLink>
-                <NavigationLink
-                    href={links.datasetExplorer}
-                    icon={<ExploreIcon />}
-                    selected={
-                        curriedDoesMatchPath(links.datasetExplorer) ||
-                        curriedDoesMatchPath(links.search) ||
-                        curriedDoesMatchPath(links.document(''))
-                    }>
-                    Dataset Explorer
-                </NavigationLink>
-                <NavigationLink
-                    href={links.ourDatasets}
-                    selected={curriedDoesMatchPath(links.ourDatasets)}
-                    iconVariant="external"
-                    inset>
-                    Ai2&apos;s datasets
-                </NavigationLink>
-                <NavigationLink
-                    href={links.documentation}
-                    icon={<LanguageIcon />}
-                    selected={curriedDoesMatchPath(links.documentation)}
-                    iconVariant="external">
-                    Documentation
+                    icon={<HelpCenterIcon />}
+                    selected={curriedDoesMatchPath(links.faqs)}
+                    href={links.faqs}
+                    variant="footer">
+                    FAQ
                 </NavigationLink>
                 <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
-                    <NavigationLink icon={<HelpCenterIcon />} href={links.faqs} variant="footer">
-                        FAQ
+                    <NavigationLink
+                        href={links.documentation}
+                        icon={<LanguageIcon />}
+                        selected={curriedDoesMatchPath(links.documentation)}
+                        iconVariant="external">
+                        Documentation
                     </NavigationLink>
                     <NavigationLink
                         icon={<RateReviewOutlined />}
@@ -156,13 +145,7 @@ export const NavigationDrawer = ({
                         variant="footer">
                         Give feedback
                     </NavigationLink>
-                    <NavigationLink
-                        icon={<PolicyOutlined />}
-                        href={links.responsibleUsePolicy}
-                        iconVariant="external"
-                        variant="footer">
-                        Responsible use policy
-                    </NavigationLink>
+                    <ColorModeSelection />
                     <Auth0LoginLink />
                 </Stack>
             </Stack>
@@ -198,7 +181,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 
 const DesktopHeading = (): JSX.Element => {
     return (
-        <Link paddingInline={2} paddingBlock={4} href={links.home}>
+        <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
             <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
         </Link>
     );

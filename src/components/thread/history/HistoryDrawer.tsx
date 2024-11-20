@@ -2,7 +2,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import {
     Box,
     CircularProgress,
-    Divider,
     IconButton,
     ListItem,
     ListItemText,
@@ -22,7 +21,8 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { isCurrentDay, isPastWeek } from '@/utils/date-utils';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { HistoryDrawerSection } from './HistoryDrawerSection';
+import { AnonymousUserExpirationMessage } from './AnonymousUserExpirationMessage';
+import { HistoryDivider, HistoryDrawerSection } from './HistoryDrawerSection';
 
 const LIMIT = 10;
 const PAGE_SIZE = 10;
@@ -49,6 +49,7 @@ export const HistoryDrawer = (): JSX.Element => {
     const creator = userInfo?.client;
 
     useEffect(() => {
+        // load messages when its open
         if (creator) {
             getMessageList(offset, creator, LIMIT);
         }
@@ -122,48 +123,50 @@ export const HistoryDrawer = (): JSX.Element => {
                         </ListSubheader>
                         <IconButton
                             onClick={handleDrawerClose}
-                            sx={{ color: (theme) => theme.palette.common.white }}
+                            sx={{ color: (theme) => theme.palette.text.drawer.primary }}
                             aria-label="close history drawer">
                             <CloseIcon />
                         </IconButton>
                     </Stack>
-                    <Divider />
                 </Box>
             }
             desktopDrawerSx={{ gridArea: 'nav', width: (theme) => theme.spacing(40) }}>
             <Stack direction="column" ref={rootRef} sx={{ overflowY: 'auto' }}>
-                <HistoryDrawerSection heading="Today" threads={threadsFromToday} />
+                <AnonymousUserExpirationMessage />
+                <HistoryDrawerSection heading="Today" threads={threadsFromToday} hasDivider />
                 <HistoryDrawerSection
                     heading="Previous 7 Days"
                     threads={threadsFromThisWeek}
                     hasDivider
                 />
-                <HistoryDrawerSection
-                    heading="Older Than A Week"
-                    threads={threadsOlderThanAWeek}
-                    hasDivider
-                />
+                <HistoryDrawerSection heading="Older Than A Week" threads={threadsOlderThanAWeek} />
                 {(hasMoreThreadsToFetch || messageListState === RemoteState.Loading) && (
-                    <CircularProgress
-                        sx={{
-                            color: (theme) => theme.palette.secondary.light,
-                            marginLeft: (theme) => theme.spacing(3),
-                        }}
-                    />
+                    <>
+                        <HistoryDivider />
+                        <CircularProgress
+                            sx={{
+                                color: (theme) => theme.palette.secondary.light,
+                                marginLeft: (theme) => theme.spacing(3),
+                            }}
+                        />
+                    </>
                 )}
                 {(hasMoreThreadsToFetch || messageListState === RemoteState.Loaded) && (
-                    <ListItem ref={sentryRef}>
-                        <ListItemText
-                            sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}
-                            primaryTypographyProps={{
-                                variant: 'caption',
-                                color: 'inherit',
-                                fontWeight: 'bold',
-                                sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
-                            }}>
-                            <Skeleton animation="wave" variant="text" />
-                        </ListItemText>
-                    </ListItem>
+                    <>
+                        <HistoryDivider />
+                        <ListItem ref={sentryRef}>
+                            <ListItemText
+                                sx={{ marginInlineStart: 'auto', flex: '0 0 auto', width: 1 }}
+                                primaryTypographyProps={{
+                                    variant: 'caption',
+                                    color: 'inherit',
+                                    fontWeight: 'bold',
+                                    sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
+                                }}>
+                                <Skeleton animation="wave" variant="text" />
+                            </ListItemText>
+                        </ListItem>
+                    </>
                 )}
             </Stack>
         </ResponsiveDrawer>

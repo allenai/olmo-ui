@@ -1,9 +1,9 @@
 import { Card, CardContent, Link, Stack, Typography } from '@mui/material';
 
-import { faqs } from '@/assets/faq-list';
+import { faqs } from '@/components/faq/faq-list';
 
 import { useDesktopOrUp } from '../dolma/shared';
-import { createFAQId } from './createFAQId';
+import { createFAQId } from './faq-utils';
 import { FAQCategoriesDrawer } from './FAQDrawer';
 
 export const FAQCategoryLinks = (): JSX.Element => {
@@ -17,6 +17,7 @@ export const FAQCategoryLinks = (): JSX.Element => {
                     backgroundColor: 'background.default',
                     padding: (theme) => theme.spacing(1),
                     gridArea: 'aside',
+                    width: '320px',
                 }}>
                 <CardContent>
                     <Typography variant="body1" fontWeight="bold" component="h2" marginBlockEnd={6}>

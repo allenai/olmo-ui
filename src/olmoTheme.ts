@@ -1,7 +1,39 @@
-import { alpha, ThemeOptions } from '@mui/material';
+import { varnishTheme } from '@allenai/varnish2/theme';
+import { alpha, createTheme, PaletteMode, Theme, ThemeOptions } from '@mui/material';
+
+declare module '@mui/material/styles' {
+    interface TypeBackground {
+        code?: string;
+        drawer: {
+            primary?: string;
+            secondary?: string;
+        };
+    }
+    interface TypeText {
+        drawer: {
+            primary?: string;
+            secondary?: string;
+        };
+    }
+}
 
 // extended theme to hold olmo specific values and overrides
 export const uiRefreshOlmoTheme = {
+    palette: {
+        background: {
+            code: varnishTheme.palette.background.reversed,
+            drawer: {
+                primary: varnishTheme.palette.background.reversed,
+                secondary: varnishTheme.palette.background.default,
+            },
+        },
+        text: {
+            drawer: {
+                primary: varnishTheme.palette.text.reversed,
+                secondary: varnishTheme.palette.primary.dark,
+            },
+        },
+    },
     components: {
         MuiButton: {},
         MuiListItemButton: {
@@ -68,5 +100,106 @@ export const uiRefreshOlmoTheme = {
                 animation: 'wave',
             },
         },
+        MuiButtonGroup: {
+            // These x-child overrides fix issues with conditional rendering inside a ButtonGroup
+            // https://github.com/mui/material-ui/issues/39488#issuecomment-2410727625
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    '& .MuiButton-outlined:last-child': {
+                        borderTopRightRadius: theme.shape.borderRadius,
+                        borderBottomRightRadius: theme.shape.borderRadius,
+                        borderRightColor: 'var(--variant-outlinedBorder, currentColor)',
+                    },
+                    '& .MuiButton-outlined:first-child': {
+                        borderTopLeftRadius: theme.shape.borderRadius,
+                        borderBottomLeftRadius: theme.shape.borderRadius,
+                    },
+                    '& .MuiButton-containedPrimary:last-child': {
+                        borderTopRightRadius: theme.shape.borderRadius,
+                        borderBottomRightRadius: theme.shape.borderRadius,
+                        borderRightWidth: 0,
+                    },
+                    '& .MuiButton-containedPrimary:first-child': {
+                        borderTopLeftRadius: theme.shape.borderRadius,
+                        borderBottomLeftRadius: theme.shape.borderRadius,
+                    },
+                }),
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>;
+
+const lightPaletteFromTheme = (theme: Theme): Theme => {
+    return createTheme(theme, {
+        palette: {
+            error: theme.palette.augmentColor({ color: { main: '#d50000' } }),
+        },
+    });
+};
+
+const darkPaletteFromTheme = (theme: Theme): Theme => {
+    const { palette } = theme;
+    const { background, text, primary, action } = palette;
+    return {
+        ...theme,
+        palette: {
+            ...palette,
+            mode: 'dark',
+
+            background: {
+                paper: '#032629',
+                reversed: background.paper,
+                default: '#032629',
+                drawer: {
+                    primary: background.reversed,
+                    secondary: background.reversed,
+                },
+                code: background.reversed,
+            },
+            text: {
+                // ...text,
+                primary: text.reversed ?? '#FFF', // this is required
+                reversed: text.primary,
+
+                // sane-ish defaults? -- MUIs alpha() - ?
+                secondary: `color-mix(in srgb, ${text.reversed} 60%, white)`, // 'rgba(0, 0, 0, 0.6)',
+                disabled: `color-mix(in srgb, ${text.reversed} 38%, white)`, // 'rgba(0, 0, 0, 0.38)',
+
+                drawer: {
+                    primary: text.reversed,
+                    secondary: palette.secondary.main,
+                },
+            },
+            primary: {
+                ...primary,
+
+                contrastText: text.reversed ?? '#FFF', // default
+            },
+            secondary: {
+                ...palette.secondary,
+            },
+            tertiary: {
+                ...palette.tertiary,
+            },
+            error: theme.palette.augmentColor({ color: { main: '#fe3e3e' } }),
+            warning: {
+                ...palette.warning,
+            },
+            info: {
+                ...palette.info,
+            },
+            success: {
+                ...palette.success,
+            },
+            action: {
+                ...action,
+                active: 'rgba(255, 255, 255, 0.54)',
+                disabled: 'rgba(255, 255, 255, 0.26)',
+                disabledBackground: 'rgba(255, 255, 255, 0.12)',
+            },
+        },
+    };
+};
+
+export const olmoThemePaletteMode = (theme: Theme, mode: PaletteMode): Theme =>
+    mode === 'dark' ? darkPaletteFromTheme(theme) : lightPaletteFromTheme(theme);

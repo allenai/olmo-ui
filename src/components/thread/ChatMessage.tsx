@@ -6,7 +6,7 @@ import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
-import { RobotAvatar } from '../avatars/RobotAvatar';
+import { Ai2Avatar } from '../avatars/Ai2Avatar';
 import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
@@ -15,9 +15,11 @@ const sharedMessageStyle: SxProps = {
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
-    '&::after': {
+    // this assumes a response format like what's generated with react-markdown
+    // we wrap with a Typography element then inside the Typography element is the actual message
+    '&[data-is-streaming="true"] > * > :last-child::after': {
         borderRadius: 5,
-        bgcolor: 'primary.dark',
+        bgcolor: 'primary.main',
         content: '""',
         display: 'inline-block',
         height: '1em',
@@ -30,7 +32,7 @@ const streamingMessageIndicatorStyle: SxProps = {
 
 const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     return (
-        <Typography fontWeight="bold" sx={sharedMessageStyle}>
+        <Typography component="div" fontWeight="bold" sx={sharedMessageStyle}>
             {children}
         </Typography>
     );
@@ -41,15 +43,21 @@ interface LLMMessageProps extends PropsWithChildren {
 }
 
 const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
-    const messageStyle = useAppContext((state) => {
-        const shouldShowStreamingIndicator =
+    const shouldShowStreamingIndicator = useAppContext(
+        (state) =>
             state.streamingMessageId === messageId &&
-            state.streamPromptState === RemoteState.Loading;
+            state.streamPromptState === RemoteState.Loading
+    );
 
-        return [sharedMessageStyle, shouldShowStreamingIndicator && streamingMessageIndicatorStyle];
-    });
-
-    return <Typography sx={messageStyle}>{children}</Typography>;
+    return (
+        <Typography
+            component="div"
+            paddingBlockEnd={2}
+            sx={[sharedMessageStyle, streamingMessageIndicatorStyle]}
+            data-is-streaming={shouldShowStreamingIndicator}>
+            {children}
+        </Typography>
+    );
 };
 
 interface ChatMessageProps extends PropsWithChildren {
@@ -74,10 +82,10 @@ export const ChatMessage = ({
     });
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
-    const icon = variant === Role.User ? <UserAvatar /> : <RobotAvatar />;
+    const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
-        <Stack direction="row" gap={3} alignItems="start">
+        <Stack direction="row" gap={3} alignItems="start" paddingInline={2}>
             <Box id="icon" width={28} height={28}>
                 {icon}
             </Box>

@@ -2,8 +2,8 @@
  * A slider with a number control next to it.
  */
 
-import { Box, Input, Slider, Stack } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { Box, Input, Slider } from '@mui/material';
+import { useCallback } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
@@ -34,10 +34,10 @@ export const ParameterSlider = ({
     onChange,
     id,
 }: Props) => {
-    const clipToMinMax = (val: number) => {
-        return Math.min(Math.max(val, min), max);
-    };
-    const [value, setValue] = useState<number>(clipToMinMax(initialValue));
+    const clipToMinMax = (val: number) => Math.min(Math.max(val, min), max);
+
+    const value = clipToMinMax(initialValue);
+
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const addSnackMessageDebounce = useDebouncedCallback(() => {
         addSnackMessage({
@@ -48,36 +48,24 @@ export const ParameterSlider = ({
     }, 800);
 
     const handleChange = useCallback(
-        (value: number) => {
-            if (onChange != null) {
-                onChange(value);
+        (newValue: number) => {
+            const clippedValue = clipToMinMax(newValue);
+            if (onChange) {
+                onChange(clippedValue);
             }
-
             addSnackMessageDebounce();
         },
         [onChange, addSnackMessage]
     );
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
-        // this component will only have 1 value
-        // if we add a second, we should rework this
         const value = Array.isArray(newValue) ? newValue[0] : newValue;
-
-        setValue(value);
         handleChange(value);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number(event.target.value);
-        setValue(value);
-        handleChange(value);
-    };
-
-    const handleBlur = () => {
-        const clippedValue = clipToMinMax(value);
-        if (value !== clippedValue) {
-            setValue(clippedValue);
-        }
+        const newValue = Number(event.target.value);
+        handleChange(newValue);
     };
 
     return (
@@ -87,10 +75,8 @@ export const ParameterSlider = ({
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
             {({ inputLabelId }) => (
-                // The result of this ends up being pretty similar to MUI's Grid component
-                // I had trouble getting Grid to add a column gap so I used flex stuff instead
-                <Stack flexWrap="wrap" direction="row" sx={{ mt: (theme) => theme.spacing(-2) }}>
-                    <Box flexGrow={2} flexShrink={1} flexBasis="12rem">
+                <>
+                    <Box gridColumn={1}>
                         <Slider
                             value={value}
                             onChange={handleSliderChange}
@@ -103,19 +89,14 @@ export const ParameterSlider = ({
                             }}
                         />
                     </Box>
-                    {/* The basis here accounts for roughly three characters and a decimal point at the minimum width. 
-                    If we make a slider that needs more we'll need to change this basis or make it configurable */}
-                    <Box
-                        flexGrow={1}
-                        flexShrink={1}
-                        flexBasis="calc(4ch + 1rem)"
-                        display="flex"
-                        justifyContent="flex-end">
+                    <Box gridColumn={2} justifySelf="right">
                         <Input
                             value={value}
                             size="small"
                             onChange={handleInputChange}
-                            onBlur={handleBlur}
+                            onBlur={() => {
+                                handleChange(value);
+                            }} // Ensure value is clipped on blur
                             sx={(theme) => ({
                                 ...theme.typography.caption,
                                 border: 'none',
@@ -129,7 +110,6 @@ export const ParameterSlider = ({
                                     borderBottom: 'none', // Remove hover underline
                                 },
                                 color: (theme) => theme.palette.text.primary,
-                                mr: (theme) => theme.spacing(-5),
                             })}
                             inputProps={{
                                 step,
@@ -137,11 +117,15 @@ export const ParameterSlider = ({
                                 max,
                                 type: 'number',
                                 id,
-                                sx: { textAlign: 'right' },
+                                sx: {
+                                    textAlign: 'right',
+                                    width: 'auto',
+                                    height: '100%',
+                                },
                             }}
                         />
                     </Box>
-                </Stack>
+                </>
             )}
         </ParameterDrawerInputWrapper>
     );

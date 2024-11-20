@@ -21,12 +21,14 @@ services:
       - ./src:/ui/src
       - ./public:/ui/public
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV:-development}
       - LLMX_API_URL
-      - DOLMA_API_URL=/api
-      # - ENABLE_MOCKING=true
-      - IS_ATTRIBUTION_ENABLED=true
-      - IS_ATTRIBUTION_SPAN_FIRST_ENABLED=true
+      - DOLMA_API_URL
+      - ENABLE_MOCKING
+      - IS_CORPUS_LINK_ENABLED
+      - IS_ATTRIBUTION_SPAN_FIRST_ENABLED
+      - IS_DATASET_EXPLORER_ENABLED
+      - IS_PETEISH_MODEL_ENABLED
   nginx:
     image: nginx:1.25.1-alpine
     volumes:

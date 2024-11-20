@@ -1,19 +1,30 @@
 import { ClientBase } from './ClientBase';
-import { InferenceOpts } from './Message';
 
 export const SchemaApiUrl = `/v3/schema`;
 
-export interface Field {
+export interface InferenceOpts {
+    max_tokens: number;
+    temperature: number;
+    n: number;
+    top_p: number;
+    logprobs: number;
+    stop: string[];
+}
+
+interface Field<TDefault = unknown> {
     name: string;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    default: any;
+    default?: TDefault | null;
     min?: number;
     max?: number;
     step?: number;
 }
 
+type MessageSchemaInferenceOpts = {
+    [K in keyof InferenceOpts]: Field<NonNullable<InferenceOpts[K]>>;
+};
+
 export interface MessageSchema {
-    InferenceOpts: Record<keyof InferenceOpts, Field>;
+    InferenceOpts: MessageSchemaInferenceOpts;
 }
 
 export interface Schema {

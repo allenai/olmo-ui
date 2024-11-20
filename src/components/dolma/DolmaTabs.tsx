@@ -1,9 +1,10 @@
-import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Stack, styled, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { json, LoaderFunction } from 'react-router-dom';
 
 import { staticData } from '@/api/dolma/staticData';
 import { StaticDataClient } from '@/api/dolma/StaticDataClient';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { ResponsiveCard } from '../ResponsiveCard';
 import { DomainData, DomainsTable } from './DomainsTable';
@@ -12,7 +13,15 @@ import { DistData, getDistAndMapDistData, MapDistData } from './sharedCharting';
 import { BarData, SourcesBarChart } from './SourcesBarChart';
 import { WordDist } from './WordDist';
 
+const ScrollToBox = styled(Box)(({ theme }) => ({
+    scrollMarginBlockStart: '48px',
+    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+        scrollMarginBlockStart: '40px',
+    },
+}));
+
 export const DolmaTabs = () => {
+    const theme = useTheme();
     const [tabNumber, setTabNumber] = useState<number>(0);
     const tabContentRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null]);
 
@@ -63,21 +72,35 @@ export const DolmaTabs = () => {
     return (
         <Box sx={{ width: '100%' }}>
             <Box
-                sx={{
+                sx={(theme) => ({
                     position: 'sticky',
                     top: 0,
-                    marginBottom: (theme) => theme.spacing(2),
+                    marginBottom: 2,
+                    background: theme.palette.background.default,
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        marginBottom: 4,
+                        background: theme.palette.background.paper,
+                    },
+                    borderBottom: `1px solid ${theme.palette.grey[600]}`,
                     zIndex: 1000,
-                    background: (theme) => theme.color2.N1.hex,
-                }}>
+                })}>
                 <Tabs
                     value={tabNumber}
                     onChange={handleTabChange}
-                    aria-label="Dataset Explorer Pages">
+                    aria-label="Dataset Explorer Pages"
+                    variant="scrollable"
+                    sx={{
+                        // This keeps the border of the selected tab
+                        // on top (z-axis) of the borderBottom of the tab list (defined on Box above)
+                        marginBottom: '-1px',
+                    }}>
                     <Tab
-                        label="Search Dataset"
+                        label="Search dataset"
                         onClick={(event) => {
                             handleTabClick(event, 'search-dataset');
+                        }}
+                        sx={{
+                            ...theme.typography.subtitle2,
                         }}
                     />
                     <Tab
@@ -85,53 +108,66 @@ export const DolmaTabs = () => {
                         onClick={(event) => {
                             handleTabClick(event, 'sources');
                         }}
-                    />
-                    <Tab
-                        label="Domains"
-                        onClick={(event) => {
-                            handleTabClick(event, 'domains');
+                        sx={{
+                            ...theme.typography.subtitle2,
                         }}
                     />
                     <Tab
-                        label="Document Length"
+                        label="Web domains"
+                        onClick={(event) => {
+                            handleTabClick(event, 'domains');
+                        }}
+                        sx={{
+                            ...theme.typography.subtitle2,
+                        }}
+                    />
+                    <Tab
+                        label="Document length"
                         onClick={(event) => {
                             handleTabClick(event, 'document-length');
+                        }}
+                        sx={{
+                            ...theme.typography.subtitle2,
                         }}
                     />
                 </Tabs>
             </Box>
-            <Stack gap={2}>
-                <Box
+            <Stack gap={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 4 }}>
+                <ScrollToBox
                     id="search-dataset"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[0] = element;
                     }}>
                     <SearchForm />
-                </Box>
-                <Box
+                </ScrollToBox>
+                <ScrollToBox
                     id="sources"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[1] = element;
                     }}>
                     <SourcesBarChart />
-                </Box>
-                <Box
+                </ScrollToBox>
+                <ScrollToBox
                     id="domains"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[2] = element;
                     }}>
                     <DomainsTable />
-                </Box>
-                <Box
+                </ScrollToBox>
+                <ScrollToBox
                     id="document-length"
                     ref={(element: HTMLDivElement) => {
                         tabContentRefs.current[3] = element;
                     }}>
                     <ResponsiveCard>
-                        <Typography variant="h3">Document Length</Typography>
+                        <Typography
+                            variant="h3"
+                            sx={{ color: (theme) => theme.palette.text.primary }}>
+                            Document Length
+                        </Typography>
                         <WordDist />
                     </ResponsiveCard>
-                </Box>
+                </ScrollToBox>
             </Stack>
         </Box>
     );

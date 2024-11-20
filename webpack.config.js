@@ -13,7 +13,9 @@ const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const { RetryChunkLoadPlugin } = require('webpack-retry-chunk-load-plugin');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: ['.env.local', '.env'] });
+const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
+
+dotenv.config({ path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'] });
 
 const path = require('path');
 
@@ -88,11 +90,15 @@ module.exports = (env) => ({
             LLMX_API_URL: 'http://localhost:8080',
             DOLMA_API_URL: '/api',
             ENABLE_MOCKING: false,
-            IS_ATTRIBUTION_ENABLED: true,
+            IS_CORPUS_LINK_ENABLED: false,
             AUTH0_DOMAIN: 'allenai-public.us.auth0.com',
             AUTH0_CLIENT_ID: 'CmIxLlwn0miZ8kaQgDAK37pG0L6vrQEm',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
+            IS_DATASET_EXPLORER_ENABLED: false,
+            IS_PETEISH_MODEL_ENABLED: false,
+            RECAPTCHA_SITE_KEY: '6LcTKX8qAAAAAEn1zu3oVu-GIdC5JkW9IR7VQaA9',
+            IS_RECAPTCHA_ENABLED: true,
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
         new RetryChunkLoadPlugin({

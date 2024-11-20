@@ -1,19 +1,14 @@
+import { NullishPartial } from '@/util';
+
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
 import { Role } from './Role';
-import { PaginationData } from './Schema';
+import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 
-export interface InferenceOpts {
-    max_tokens?: number;
-    temperature?: number;
-    n?: number;
-    top_p?: number;
-    logprobs?: number;
-    stop?: string[];
-}
+export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
 export interface Logprob {
     token: string;
@@ -28,32 +23,35 @@ export interface MessagePost {
     parent?: string;
     private?: boolean;
     prompt_template_id?: string;
-    opts?: InferenceOpts;
+    opts?: RequestInferenceOpts;
     model?: string;
+    captchaToken?: string;
 }
 
 export interface Message {
-    children?: Message[];
+    children?: Message[] | null;
     content: string;
     snippet: string;
     created: Date;
     creator: string;
-    deleted?: Date;
+    deleted?: Date | null;
     id: string;
     labels: Label[];
-    completion?: string;
-    logprobs?: Logprob[];
-    model_type?: string;
-    finish_reason?: string;
-    opts: InferenceOpts;
+    completion?: string | null;
+    logprobs?: Logprob[] | null;
+    model_type?: string | null;
+    finish_reason?: string | null;
+    opts: RequestInferenceOpts;
     original?: string | null;
-    parent?: string;
-    private?: boolean;
+    parent?: string | null;
+    private?: boolean | null;
     role: Role;
     root: string;
-    template?: string;
+    template?: string | null;
     final: boolean;
-    model?: string;
+    model?: string | null;
+    model_id?: string | null;
+    model_host?: string | null;
 }
 
 export interface MessageList {
@@ -64,8 +62,8 @@ export interface MessageList {
 // The serialized representation, where certain fields (dates) are encoded as strings.
 export interface JSONMessage extends Omit<Message, 'created' | 'deleted' | 'children'> {
     created: string;
-    deleted?: string;
-    children?: JSONMessage[];
+    deleted?: string | null;
+    children?: JSONMessage[] | null;
 }
 
 export interface MessagesResponse {
@@ -198,7 +196,7 @@ export class MessageClient extends ClientBase {
 
     sendMessage = async (
         newMessage: MessagePost,
-        inferenceOptions: InferenceOpts,
+        inferenceOptions: RequestInferenceOpts,
         abortController: AbortController,
         parentMessageId?: string
     ) => {

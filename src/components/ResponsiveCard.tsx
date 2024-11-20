@@ -1,40 +1,32 @@
-import { Card, Stack } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { Card, CardProps, Stack, styled } from '@mui/material';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
-import { useDesktopOrUp } from './dolma/shared';
+type ThreadPageCardProps = Pick<CardProps, 'sx' | 'children'>;
 
-interface ThreadPageCardProps extends PropsWithChildren {}
+const ResponsiveCardBase = styled(Card)(({ theme }) => ({
+    backgroundColor: theme.palette.background.drawer.secondary,
+    border: 0, // This removes the border from the outlined version of the component.
+    borderRadius: 0,
+    paddingBlock: theme.spacing(2),
 
-export const ResponsiveCard = ({ children }: ThreadPageCardProps): JSX.Element => {
-    const isDesktopOrUp = useDesktopOrUp();
+    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+        paddingInline: theme.spacing(2),
+        paddingBlock: theme.spacing(4),
+        borderRadius: theme.spacing(1),
+    },
+}));
 
+export const ResponsiveCard = ({ sx = undefined, children }: ThreadPageCardProps): JSX.Element => {
     return (
-        <Card
-            variant={isDesktopOrUp ? 'elevation' : 'outlined'}
-            sx={(theme) => ({
-                borderRadius: 0,
-                // This component uses screen size rather than container queries
-                // We want it to always be a card on desktop and always be flat on mobile
-                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                    padding: 2,
-                    borderRadius: '12px',
-                },
-
-                backgroundColor: (theme) => theme.palette.background.default,
-
-                // This removes the border from the outlined version of the component. Doesn't affect the elevated version.
-                border: 0,
-            })}>
+        <ResponsiveCardBase sx={sx}>
             <Stack
-                component={Stack}
                 gap={2}
                 sx={{
                     padding: 0,
                 }}>
                 {children}
             </Stack>
-        </Card>
+        </ResponsiveCardBase>
     );
 };

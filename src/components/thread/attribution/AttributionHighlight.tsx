@@ -1,7 +1,7 @@
-import { Box } from '@mui/material';
+import { Box, Theme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { useAppContext } from '@/AppContext';
+import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -39,7 +39,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     };
 
     const shouldShowHighlight = useAppContext((state) => {
-        if (!state.isAllHighlightVisible) {
+        if (!state.attribution.isAllHighlightVisible) {
             return false;
         }
 
@@ -55,25 +55,106 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         }
     });
 
+    const spanScorePercentile = useAppContext((state: AppContextState) => {
+        const messageId = state.attribution.selectedMessageId;
+        if (messageId == null || state.attribution.attributionsByMessageId[messageId] == null) {
+            return 0.0;
+        }
+
+        const spans = state.attribution.attributionsByMessageId[messageId].spans;
+        const documents = state.attribution.attributionsByMessageId[messageId].documents;
+
+        // Compute the global max and min relevance score across all spans
+        const maxRelevanceScore = Object.values(spans).reduce((acc, span) => {
+            if (span == null) {
+                return acc;
+            }
+            return Math.max(
+                acc,
+                span.nested_spans.reduce((acc, nestedSpan) => {
+                    return nestedSpan.documents.reduce((acc, documentIx) => {
+                        const document = documents[documentIx];
+                        return Math.max(acc, document?.relevance_score ?? 0.0);
+                    }, acc);
+                }, 0.0)
+            );
+        }, 0.0);
+        const minRelevanceScore = Object.values(spans).reduce((acc, span) => {
+            if (span == null) {
+                return acc;
+            }
+            return Math.min(
+                acc,
+                span.nested_spans.reduce((acc, nestedSpan) => {
+                    return nestedSpan.documents.reduce((acc, documentIx) => {
+                        const document = documents[documentIx];
+                        return Math.max(acc, document?.relevance_score ?? 0.0);
+                    }, acc);
+                }, 0.0)
+            );
+        }, 1000000.0);
+        // shouldn't happen, but just in case
+        if (maxRelevanceScore <= minRelevanceScore) {
+            return 0.0;
+        }
+
+        // I don't know why spanIds can be an array, but if it is, we'll just compute the max score
+        const spanIdsArray = Array.isArray(spanIds) ? spanIds : [spanIds];
+        const spanRelevanceScore = spanIdsArray.reduce((acc, spanId) => {
+            const span = spans[spanId];
+            if (span == null) {
+                return acc;
+            }
+            const spanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
+                return nestedSpan.documents.reduce((acc, documentIx) => {
+                    const document = documents[documentIx];
+                    return Math.max(acc, document?.relevance_score ?? 0.0);
+                }, acc);
+            }, 0.0);
+            return Math.max(acc, spanRelevanceScore);
+        }, 0.0);
+
+        const spanScorePercentile =
+            (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
+        return spanScorePercentile;
+    });
+
     return {
         shouldShowHighlight,
         isAttributionSpanFirstEnabled,
         toggleSelectedSpans,
+        spanScorePercentile,
     };
 };
 
 export interface AttributionHighlightProps extends PropsWithChildren {
     span: string | string[];
     variant?: AttributionHighlightVariant;
+    spanScorePercentile: number;
 }
+
+export const getHighlightColor = (theme: Theme, spanScorePercentile: number): string => {
+    const color0 = theme.color['pink-20'].rgba;
+    const color1 = theme.color['pink-40'].rgba;
+    const r = Math.round(color0.r * (1 - spanScorePercentile) + color1.r * spanScorePercentile);
+    const g = Math.round(color0.g * (1 - spanScorePercentile) + color1.g * spanScorePercentile);
+    const b = Math.round(color0.b * (1 - spanScorePercentile) + color1.b * spanScorePercentile);
+    const a = Math.round(color0.a * (1 - spanScorePercentile) + color1.a * spanScorePercentile);
+    const color = `rgba(${r}, ${g}, ${b}, ${a})`;
+    return color;
+};
 
 export const AttributionHighlight = ({
     span,
     variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { isAttributionSpanFirstEnabled, toggleSelectedSpans, shouldShowHighlight } =
-        useAttributionHighlights(span);
+    const {
+        isAttributionSpanFirstEnabled,
+        toggleSelectedSpans,
+        shouldShowHighlight,
+        spanScorePercentile,
+    } = useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
@@ -96,13 +177,12 @@ export const AttributionHighlight = ({
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
-                            ? theme.color['pink-30'].hex
+                            ? getHighlightColor(theme, spanScorePercentile)
                             : theme.palette.tertiary.light,
 
+                    // color is hard coded (not theme dependant), because background is always some variation of pink
                     color: (theme) =>
-                        isPrimaryVariant
-                            ? theme.palette.text.primary
-                            : theme.palette.tertiary.contrastText,
+                        isPrimaryVariant ? theme.color['dark-teal'] : theme.color['dark-blue'],
 
                     ':focus-visible': {
                         outlineStyle: 'solid',

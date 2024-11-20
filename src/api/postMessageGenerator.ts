@@ -1,5 +1,4 @@
 import {
-    InferenceOpts,
     isFirstMessage,
     isMessageStreamError,
     Message,
@@ -7,6 +6,7 @@ import {
     MessagePost,
     MessageStreamError,
     MessageStreamPart,
+    RequestInferenceOpts,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
 
@@ -15,7 +15,7 @@ const messageClient = new MessageClient();
 // This is a generator function. for more info, see MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 export const postMessageGenerator = async function* (
     newMessage: MessagePost,
-    inferenceOptions: InferenceOpts,
+    inferenceOptions: RequestInferenceOpts,
     abortController: AbortController,
     parentMessageId?: Message['id']
 ) {

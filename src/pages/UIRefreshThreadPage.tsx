@@ -1,19 +1,12 @@
-import {
-    Card,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    SelectChangeEvent,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Card, SelectChangeEvent, Stack } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
-import { HistoryDrawer } from '@/components/thread/history/HistoryDrawer';
+import { LegalNotice } from '@/components/thread/LegalNotice';
+import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
 import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
@@ -38,70 +31,65 @@ export const UIRefreshThreadPage = () => {
             <Card
                 variant="elevation"
                 elevation={0}
-                sx={{
+                sx={(theme) => ({
                     flexGrow: '1',
                     gridArea: 'content',
-                }}>
+                    paddingBlockStart: 2,
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        paddingBlockStart: 0,
+                    },
+                })}>
                 <Stack
                     gap={2}
-                    sx={(theme) => ({
+                    sx={{
                         containerName: 'thread-page',
                         containerType: 'inline-size',
 
-                        backgroundColor: 'background.default',
-
-                        paddingBlockStart: 1,
-                        paddingBlockEnd: 2,
-                        paddingInline: 2,
-
-                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            paddingBlockStart: 2,
-                            paddingBlockEnd: 4,
-                            paddingInline: 4,
-                        },
-
+                        backgroundColor: 'transparent',
                         height: 1,
-                    })}>
-                    <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                        justifyContent="space-between">
-                        <>
-                            {models.length > 1 ? (
-                                <Select
-                                    id="model-select"
-                                    sx={{ width: { xs: '75%', md: '35%' } }}
-                                    size="small"
-                                    onChange={onModelChange}
-                                    input={<OutlinedInput />}
-                                    value={(selectedModel && selectedModel.id) || ''}>
-                                    {models.map((model) => (
-                                        <MenuItem key={model.name} value={model.id}>
-                                            {model.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            ) : (
-                                <Typography key={models[0].name}>{models[0].name}</Typography>
-                            )}
-                        </>
-                        <ThreadPageControls />
-                    </Stack>
-
-                    <Outlet />
-                    <QueryForm />
-
-                    <Typography
-                        variant="caption"
+                        paddingBlockStart: 1,
+                    }}>
+                    <Box
                         sx={(theme) => ({
-                            [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                display: 'none',
+                            display: 'grid',
+                            gridTemplateColumns: '1fr max-content',
+                            columnGap: 1,
+                            width: '100%',
+                            margin: '0 auto',
+                            paddingInline: 2,
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                paddingInline: 5,
                             },
                         })}>
-                        OLMo is experimental and can make mistakes. Consider fact-checking your
-                        results.
-                    </Typography>
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            label="Model"
+                            shouldOnlyShowAtDesktop={true}
+                        />
+                        <ThreadPageControls />
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            label="Model"
+                            shouldOnlyShowAtDesktop={false}
+                        />
+                    </Box>
+                    <Outlet />
+                    <Stack
+                        gap={1}
+                        sx={{
+                            paddingInline: 2,
+                            width: '100%',
+                            maxWidth: '750px',
+                            margin: '0 auto',
+                            paddingBlockEnd: 2,
+                        }}>
+                        <QueryForm />
+                        <LegalNotice />
+                    </Stack>
                 </Stack>
             </Card>
 
@@ -109,7 +97,6 @@ export const UIRefreshThreadPage = () => {
                 <ThreadTabs />
             ) : (
                 <>
-                    <HistoryDrawer />
                     <AttributionDrawer />
                     <ParameterDrawer />
                 </>
@@ -119,17 +106,25 @@ export const UIRefreshThreadPage = () => {
 };
 
 export const playgroundLoader: LoaderFunction = async ({ params }) => {
-    const { models, getAllModels, resetSelectedThreadState, resetAttribution } =
+    const { models, getAllModels, resetSelectedThreadState, resetAttribution, getSchema, schema } =
         appContext.getState();
 
+    const promises = [];
+
     if (models.length === 0) {
-        await getAllModels();
+        promises.push(getAllModels());
+    }
+
+    if (schema == null) {
+        promises.push(getSchema());
     }
 
     if (params.id === undefined) {
         resetSelectedThreadState();
         resetAttribution();
     }
+
+    await Promise.all(promises);
 
     return null;
 };

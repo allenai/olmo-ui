@@ -1,17 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-    Box,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
-    ListSubheader,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { FullScreenDrawer } from '@/components/TemporaryDrawer';
+import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -27,21 +18,19 @@ export const ParameterDrawer = (): JSX.Element => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
+            fullWidth
             header={({ onDrawerClose }) => (
-                <Box
-                    sx={{
-                        position: 'sticky',
-                        top: 0,
-                        background: 'inherit',
-                        zIndex: 1,
-                    }}>
+                <FullScreenDrawerHeader>
                     <Stack
                         justifyContent="space-between"
                         direction="row"
                         gap={2}
                         alignItems="center">
                         <ListSubheader sx={{ paddingBlock: 2, backgroundColor: 'transparent' }}>
-                            <Typography variant="h5" margin={0} color="primary">
+                            <Typography
+                                variant="h5"
+                                margin={0}
+                                color={(theme) => theme.palette.text.primary}>
                                 Parameters
                             </Typography>
                         </ListSubheader>
@@ -53,15 +42,28 @@ export const ParameterDrawer = (): JSX.Element => {
                         </IconButton>
                     </Stack>
                     <Divider />
-                </Box>
+                </FullScreenDrawerHeader>
             )}>
             <ParameterContent />
         </FullScreenDrawer>
     );
 };
 
+const ParametersList = ({ children }: React.PropsWithChildren) => (
+    <Box component="ul" margin="0" padding="0" display="grid" gridTemplateColumns="1fr auto">
+        {children}
+    </Box>
+);
+const ParametersListItem = ({ children }: React.PropsWithChildren) => (
+    <Box component="li" display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1">
+        {children}
+    </Box>
+);
+
 export const ParameterContent = () => {
     const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
+
+    const optsFromTheRealMessage = useAppContext((state) => state.inferenceOpts);
 
     const schemaData = useAppContext((state) => state.schema);
 
@@ -71,16 +73,21 @@ export const ParameterContent = () => {
 
     const opts = schemaData.Message.InferenceOpts;
 
+    const initialTemperature =
+        optsFromTheRealMessage.temperature ?? opts.temperature.default ?? undefined;
+
+    const initialTopP = optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined;
+
     return (
-        <Stack direction="column">
-            <List>
-                <ListItem>
+        <Stack>
+            <ParametersList>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
                         max={opts.temperature.max}
                         step={opts.temperature.step}
-                        initialValue={opts.temperature.default}
+                        initialValue={initialTemperature}
                         onChange={(v) => {
                             updateInferenceOpts({ temperature: v });
                         }}
@@ -88,14 +95,14 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </ListItem>
-                <ListItem>
+                </ParametersListItem>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
                         max={opts.top_p.max}
                         step={opts.top_p.step}
-                        initialValue={opts.top_p.default}
+                        initialValue={initialTopP}
                         onChange={(v) => {
                             updateInferenceOpts({ top_p: v });
                         }}
@@ -103,8 +110,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </ListItem>
-            </List>
+                </ParametersListItem>
+            </ParametersList>
         </Stack>
     );
 };

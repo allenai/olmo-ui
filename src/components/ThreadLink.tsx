@@ -22,7 +22,7 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                 sx={{
                     minHeight: (theme) => theme.spacing(7),
                     gap: (theme) => theme.spacing(1),
-                    color: (theme) => theme.palette.common.white,
+                    color: (theme) => theme.palette.text.drawer.primary,
                     '&.Mui-selected': {
                         backgroundColor: (theme) => theme.palette.secondary.light,
                         color: (theme) => theme.palette.text.primary,
@@ -34,6 +34,11 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                             fontWeight: 'normal',
                         },
                     },
+
+                    '&.Mui-focusVisible': (theme) => ({
+                        backgroundColor: theme.palette.secondary.light,
+                        color: theme.palette.secondary.contrastText,
+                    }),
                 }}
                 component={Link}
                 href={links.thread(id)}>

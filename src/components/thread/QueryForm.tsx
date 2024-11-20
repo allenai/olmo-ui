@@ -1,25 +1,28 @@
-import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import Send from '@mui/icons-material/Send';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import {
     Box,
     IconButton,
     InputAdornment,
     Link,
-    outlinedInputClasses,
     Stack,
     svgIconClasses,
     Typography,
 } from '@mui/material';
 import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
-import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 
 import { MessagePost, StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
+import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
-import { getSelectedMessagesToShow } from './ThreadDisplay';
+import { getFAQIdByShortId } from '../faq/faq-utils';
+import { PromptInput } from './PromptInput';
 
 interface QueryFormButtonProps
     extends PropsWithChildren,
@@ -33,9 +36,12 @@ const QueryFormButton = ({
     type,
     'aria-label': ariaLabel,
     disabled,
+    onClick,
+    onKeyDown,
 }: QueryFormButtonProps) => {
     return (
         <IconButton
+            size="medium"
             type={type}
             aria-label={ariaLabel}
             color="inherit"
@@ -51,7 +57,9 @@ const QueryFormButton = ({
                     borderRadius: '50%',
                 },
             })}
-            disabled={disabled}>
+            disabled={disabled}
+            onClick={onClick}
+            onKeyDown={onKeyDown}>
             {children}
         </IconButton>
     );
@@ -69,38 +77,53 @@ const SubmitPauseAdornment = ({
     isSubmitDisabled,
 }: SubmitPauseAdornmentProps) => {
     return (
-        <InputAdornment position="end" sx={{ color: 'text.primary' }}>
+        <InputAdornment position="end" sx={{ color: 'primary.main', height: 'auto' }}>
             {canPause ? (
                 <QueryFormButton
                     aria-label="Stop response generation"
                     onKeyDown={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        onPause(event);
+                        if (event.key === 'Enter' || event.key === 'Space') {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            onPause(event);
+                        }
                     }}
                     onClick={(event) => {
                         onPause(event);
                     }}>
-                    <StopCircleOutlinedIcon fontSize="large" />
+                    <StopCircleOutlinedIcon />
                 </QueryFormButton>
             ) : (
                 <QueryFormButton
                     type="submit"
                     aria-label="Submit prompt"
                     disabled={isSubmitDisabled}>
-                    <ArrowCircleUpIcon fontSize="large" />
+                    <Send />
                 </QueryFormButton>
             )}
         </InputAdornment>
     );
 };
 
-export const QueryForm = (): JSX.Element => {
-    const streamPrompt = useAppContext((state) => state.streamPrompt);
+// export const QueryForm = () => {
+//     return (
+//         <PromptInput
+//             placeholder="Prompt"
+//             aria-label="Prompt"
+//             onChange={(e) => {
+//                 console.log(e.target.value);
+//             }}
+//         />
+//     );
+// };
 
-    const handlePromptSubmission = async (data: { content: string; parent?: string }) => {
-        await streamPrompt(data);
-    };
+export const QueryForm = (): JSX.Element => {
+    const navigation = useNavigation();
+    const location = useLocation();
+    const streamPrompt = useAppContext((state) => state.streamPrompt);
+    const firstResponseId = useAppContext((state) => state.streamingMessageId);
+
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     const formContext = useForm({
         defaultValues: {
@@ -108,8 +131,6 @@ export const QueryForm = (): JSX.Element => {
             private: false,
         },
     });
-
-    const location = useLocation();
 
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
@@ -120,54 +141,75 @@ export const QueryForm = (): JSX.Element => {
         );
     });
 
-    const abortController = useAppContext((state) => state.abortController);
+    const abortPrompt = useAppContext((state) => state.abortPrompt);
     const canPauseThread = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading && abortController != null
+        (state) => state.streamPromptState === RemoteState.Loading && state.abortController != null
     );
 
     const onAbort = useCallback(
         (event: UIEvent) => {
             event.preventDefault();
-            abortController?.abort();
+            abortPrompt();
         },
-        [abortController]
+        [abortPrompt]
     );
+
+    const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
 
     const isLimitReached = useAppContext((state) => {
         // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
-        const viewingMessageIds = getSelectedMessagesToShow(state);
-        const isLimitReached = viewingMessageIds.some(
+        return viewingMessageIds.some(
             (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
         );
-
-        return isLimitReached;
     });
 
     const isSelectedThreadLoading = useAppContext(
         (state) => state.streamPromptState === RemoteState.Loading
     );
 
-    const lastMessageId = useAppContext((state) => {
-        const messagesToShow = getSelectedMessagesToShow(state);
+    const lastMessageId =
+        viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
-        if (messagesToShow.length === 0) {
-            return undefined;
+    // Autofocus the input if we're on a new thread
+    useEffect(() => {
+        if (location.pathname === links.playground) {
+            formContext.setFocus('content');
         }
+    }, [location.pathname, formContext]);
 
-        const lastMessage = messagesToShow[messagesToShow.length - 1];
-        return lastMessage;
-    });
+    // Clear errors when we navigate between pages
+    useEffect(() => {
+        if (navigation.state === 'loading') {
+            formContext.clearErrors();
+        }
+    }, [formContext, navigation.state]);
+
+    // Clear form input after the client receive the first message
+    useEffect(() => {
+        if (firstResponseId !== null) {
+            formContext.reset();
+        }
+    }, [firstResponseId, formContext]);
 
     const handleSubmit = async (data: { content: string }) => {
-        const request: MessagePost = { ...data };
+        if (!canEditThread || isSelectedThreadLoading) {
+            return;
+        }
+
+        // TODO: Make sure executeRecaptcha is present when we require recaptchas
+        const token =
+            process.env.IS_RECAPTCHA_ENABLED === 'true'
+                ? await executeRecaptcha?.('prompt_submission')
+                : undefined;
+
+        const request: MessagePost = { ...data, captchaToken: token };
 
         if (lastMessageId != null) {
             request.parent = lastMessageId;
         }
 
         try {
-            await handlePromptSubmission(request);
-            formContext.reset();
+            await streamPrompt(request);
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
@@ -179,100 +221,76 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
-    const handleOnKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
+    const handleKeyDown = async (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             await formContext.handleSubmit(handleSubmit)();
         }
     };
 
-    // Autofocus the input if we're on a new thread
-    useEffect(() => {
-        if (location.pathname === links.playground) {
-            formContext.setFocus('content');
-        }
-    }, [location.pathname, formContext]);
-
-    const navigation = useNavigation();
-
-    // Clear errors when we navigate between pages
-    useEffect(() => {
-        if (navigation.state === 'loading') {
-            formContext.clearErrors();
-        }
-    }, [formContext, navigation.state]);
-
     return (
         <Box marginBlockStart="auto" width={1}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <Stack gap={1.5} alignItems="flex-start">
-                    <TextFieldElement
+                <Stack gap={1} alignItems="flex-start" width={1}>
+                    <Controller
+                        control={formContext.control}
                         name="content"
-                        label="Prompt"
-                        placeholder="Enter prompt"
-                        InputLabelProps={{
-                            shrink: true,
-                            // This gets rid of the * by the label
-                            required: false,
-                            // @ts-expect-error - text is valid but isn't typed
-                            color: 'text',
+                        rules={{
+                            required: true,
+                            pattern: /[^\s]+/,
                         }}
-                        fullWidth
-                        required
-                        parseError={(error) => {
-                            if (error.type === 'inappropriate') {
-                                return (
-                                    <>
-                                        This prompt was flagged as inappropriate. Please change your
-                                        prompt and resubmit.{' '}
-                                        <Link href={links.faqs} target="_blank" rel="noreferrer">
-                                            Learn why
-                                        </Link>
-                                    </>
-                                );
-                            }
-
-                            return error.message;
-                        }}
-                        validation={{ pattern: /[^\s]+/ }}
-                        // If we don't have a dense margin the label gets cut off!
-                        margin="dense"
-                        disabled={!canEditThread}
-                        onKeyDown={handleOnKeyDown}
-                        InputProps={{
-                            sx: (theme) => ({
-                                [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-                                    borderColor: theme.palette.text.primary,
-                                },
-                            }),
-                            endAdornment: (
-                                <SubmitPauseAdornment
-                                    canPause={canPauseThread}
-                                    onPause={onAbort}
-                                    isSubmitDisabled={
-                                        isSelectedThreadLoading || isLimitReached || !canEditThread
-                                    }
-                                />
-                            ),
-                        }}
+                        render={({
+                            field: { onChange, value, ref, name },
+                            fieldState: { error },
+                        }) => (
+                            <PromptInput
+                                name={name}
+                                onChange={onChange}
+                                errorMessage={
+                                    error?.type === 'inappropriate' ? (
+                                        <>
+                                            This prompt was flagged as inappropriate. Please change
+                                            your prompt and resubmit.{' '}
+                                            <Link
+                                                href={
+                                                    links.faqs +
+                                                    getFAQIdByShortId('wildguard-intro')
+                                                }>
+                                                Learn why
+                                            </Link>
+                                        </>
+                                    ) : null
+                                }
+                                value={value}
+                                ref={ref}
+                                onKeyDown={handleKeyDown}
+                                aria-label="Prompt"
+                                placeholder="Prompt"
+                                endAdornment={
+                                    <SubmitPauseAdornment
+                                        canPause={canPauseThread}
+                                        onPause={onAbort}
+                                        isSubmitDisabled={
+                                            isSelectedThreadLoading ||
+                                            isLimitReached ||
+                                            !canEditThread
+                                        }
+                                    />
+                                }
+                            />
+                        )}
                     />
-                    <Stack direction="row" gap={2} alignItems="center">
-                        {isLimitReached && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You have reached maximum thread length. Please start a new thread.
-                            </Typography>
-                        )}
-                        {!canEditThread && (
-                            <Typography
-                                variant="subtitle2"
-                                color={(theme) => theme.palette.error.main}>
-                                You cannot add a prompt because you are not the thread creator.
-                                Please submit your prompt in a new thread.
-                            </Typography>
-                        )}
-                    </Stack>
+                    {isLimitReached && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            You have reached maximum thread length. Please start a new thread.
+                        </Typography>
+                    )}
+                    {!canEditThread && (
+                        <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
+                            You cannot add a prompt because you are not the thread creator. Please
+                            submit your prompt in a new thread.
+                        </Typography>
+                    )}
                 </Stack>
             </FormContainer>
         </Box>
