@@ -1,8 +1,13 @@
-import { LoginOutlined as LoginIcon, RateReviewOutlined } from '@mui/icons-material';
+import {
+    ArrowForwardIosOutlined,
+    LoginOutlined as LoginIcon,
+    RateReviewOutlined,
+} from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
+import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import SortIcon from '@mui/icons-material/Sort';
 import { IconButton, Link, Stack } from '@mui/material';
@@ -16,8 +21,8 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { Ai2LogoFull } from '../Ai2LogoFull';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
+import { Ai2LogoPlaygroundSVG } from '../svg/Ai2LogoPlaygroundSVG';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { ColorModeSelection } from './ColorModeSelection';
 import { NavigationLink } from './NavigationLink';
@@ -106,7 +111,7 @@ export const NavigationDrawer = ({
                         toggleDrawer(HISTORY_DRAWER_ID);
                     }}
                     icon={<SortIcon />}
-                    inset>
+                    DisclosureIcon={ArrowForwardIosOutlined}>
                     Thread history
                 </NavigationLink>
                 {isDatasetExplorerEnabled && (
@@ -135,13 +140,13 @@ export const NavigationDrawer = ({
                         href={links.documentation}
                         icon={<LanguageIcon />}
                         selected={curriedDoesMatchPath(links.documentation)}
-                        iconVariant="external">
+                        DisclosureIcon={LaunchOutlinedIcon}>
                         Documentation
                     </NavigationLink>
                     <NavigationLink
                         icon={<RateReviewOutlined />}
                         href={links.feedbackForm}
-                        iconVariant="external"
+                        DisclosureIcon={LaunchOutlinedIcon}
                         variant="footer">
                         Give feedback
                     </NavigationLink>
@@ -159,20 +164,18 @@ interface MobileHeadingProps {
 
 const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
     return (
-        <Stack
-            direction="row"
-            justifyContent="space-between"
-            paddingBlock={4}
-            paddingInline={4}
-            alignItems="center">
-            <Link href={links.home}>
-                <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
+        <Stack direction="row" justifyContent="space-between" padding={3} alignItems="center">
+            <Link
+                href={links.home}
+                sx={{
+                    transform: 'translateY(5px)',
+                }}>
+                <Ai2LogoPlaygroundSVG width={214} title="Return to the Playground home page" />
             </Link>
             <IconButton
-                aria-label="Close navigation drawer"
                 onClick={onClose}
-                edge="end"
-                sx={{ color: (theme) => theme.palette.secondary.main }}>
+                sx={{ color: (theme) => theme.palette.text.drawer.primary, opacity: 0.5 }}
+                aria-label="Close navigation drawer">
                 <CloseIcon />
             </IconButton>
         </Stack>
@@ -182,7 +185,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 const DesktopHeading = (): JSX.Element => {
     return (
         <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
-            <Ai2LogoFull width={97.3} height={30} alt="Return to the Playground home page" />
+            <Ai2LogoPlaygroundSVG title="Return to the Playground home page" />
         </Link>
     );
 };

@@ -6,7 +6,6 @@ import {
     OutlinedInput,
     Select,
     SelectChangeEvent,
-    Theme,
     Typography,
 } from '@mui/material';
 import { useEffect, useId } from 'react';
@@ -14,9 +13,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { Model, ModelList } from '@/api/Model';
 import { useAppContext } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
-import { SMALL_THREAD_CONTAINER_QUERY } from '@/utils/container-query-utils';
 
 import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
 
@@ -25,14 +22,12 @@ type ModelSelectionDisplayProps = {
     selectedModel?: Model;
     onModelChange: (event: SelectChangeEvent) => void;
     label?: string;
-    shouldOnlyShowAtDesktop: boolean;
 };
 
 export const ModelSelectionDisplay = ({
     models,
     selectedModel,
     onModelChange,
-    shouldOnlyShowAtDesktop,
     label = '',
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
@@ -60,27 +55,10 @@ export const ModelSelectionDisplay = ({
     }, [viewingMessageIds]);
 
     return (
-        <Box
-            sx={(theme: Theme) => ({
-                // These responsive styles are mirrors to the ones below
-                // the display values should be flipped versions
-                //
-                display: shouldOnlyShowAtDesktop ? 'none' : 'block', // This is hidden by default (mobile first)
-                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                    // it is visible above the DESKTOP_LAYOUT_BREAKPOINT
-                    display: shouldOnlyShowAtDesktop ? 'block' : 'none',
-                },
-                [SMALL_THREAD_CONTAINER_QUERY]: {
-                    // Unlesss the container is too small, then it is hidden again
-                    display: shouldOnlyShowAtDesktop ? 'none' : 'block',
-                },
-                paddingTop: !shouldOnlyShowAtDesktop ? 2 : undefined,
-                gridColumn: !shouldOnlyShowAtDesktop ? '1 / -1' : '1',
-            })}>
+        <Box>
             {newModels.length > 1 ? (
                 <FormControl
                     sx={{
-                        width: !shouldOnlyShowAtDesktop ? '100%' : undefined,
                         maxWidth: '25rem',
                         justifySelf: 'center',
                     }}>

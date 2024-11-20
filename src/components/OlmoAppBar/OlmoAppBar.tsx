@@ -1,21 +1,24 @@
+import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
+import { AppBar, ButtonGroup, IconButton, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useMatch } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
-import { Ai2LogoFull } from '../Ai2LogoFull';
-import { useDesktopOrUp } from '../dolma/shared';
+import { Ai2MarkLogoSVG } from '../svg/Ai2MarkLogoSVG';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
+import { PARAMETERS_DRAWER_ID } from '../thread/parameter/ParameterDrawer';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
 export const OlmoAppBar = (): JSX.Element => {
-    const title = useRouteTitle();
+    const { title, showTitle } = useRouteTitle();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    const isDesktopOrUp = useDesktopOrUp();
 
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -25,77 +28,78 @@ export const OlmoAppBar = (): JSX.Element => {
         setIsDrawerOpen(false);
     };
 
+    const isOnThreadPage = useMatch({ path: links.thread(':id') });
+
     return (
         <>
             <AppBar
                 position="sticky"
                 color="inherit"
                 elevation={0}
-                sx={(theme) => ({
+                sx={{
                     gridArea: 'app-bar',
-
-                    backgroundColor: theme.palette.background.drawer.primary,
-
-                    paddingBlock: 1,
-                    paddingInline: 2,
-
-                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 1.5,
-                        backgroundColor: 'transparent',
-                    },
-                })}>
+                    backgroundColor: 'transparent',
+                }}>
                 <Toolbar
                     disableGutters
                     sx={(theme) => ({
                         display: 'grid',
+
+                        backgroundColor: theme.palette.background.drawer.primary,
+
+                        paddingBlock: 1,
+                        paddingInline: 2,
+                        alignContent: 'center',
+
                         gridTemplateColumns: '1fr max-content 1fr',
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                             width: '100%',
                             margin: '0 auto',
-                            paddingInline: 3,
+                            paddingInline: 5,
+                            paddingBlockStart: 1.5,
+                            display: 'none',
                         },
                     })}>
+                    <MenuIconButton onClick={handleDrawerToggle} />
                     <Link
                         href={links.home}
-                        lineHeight={1}
                         sx={(theme) => ({
-                            justifySelf: 'left',
-                            alignItems: 'center',
                             height: '100%',
                             display: 'flex',
+                            alignItems: 'center',
                             [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                                 display: 'none',
                             },
                         })}>
-                        <Ai2LogoFull
-                            height={18.5}
-                            width={60}
-                            alt="Return to the Playground home page"
-                        />
+                        <Ai2MarkLogoSVG width={30} />
                     </Link>
-                    <Typography
-                        variant={isDesktopOrUp ? 'h1' : 'h3'}
-                        component="h1"
-                        color="primary"
-                        sx={(theme) => ({
-                            margin: 0,
-                            textAlign: 'center',
-                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                textAlign: 'left',
-                            },
-                        })}>
-                        {title}
-                    </Typography>
-                    <IconButton
-                        onClick={handleDrawerToggle}
-                        color="secondary"
+                    <ButtonGroup
                         sx={{
                             justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
-                        <MenuIcon />
-                    </IconButton>
+                        {isOnThreadPage && (
+                            <>
+                                <ShareThreadIconButton />
+                                <ParameterIconButton />
+                            </>
+                        )}
+                        <NewThreadIconButton />
+                    </ButtonGroup>
                 </Toolbar>
+                <Typography
+                    variant="h1"
+                    component="h1"
+                    color="primary"
+                    data-heading-below="true"
+                    sx={{
+                        background: 'transparent',
+                        margin: '1rem 1rem 0',
+                        textAlign: 'left',
+                        display: showTitle ? 'block' : 'none',
+                    }}>
+                    {title}
+                </Typography>
             </AppBar>
             <HistoryDrawer />
             <NavigationDrawer
@@ -104,5 +108,75 @@ export const OlmoAppBar = (): JSX.Element => {
                 onDrawerToggle={handleDrawerToggle}
             />
         </>
+    );
+};
+
+export const ParameterIconButton = () => {
+    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
+
+    const toggleParametersDrawer = () => {
+        toggleDrawer(PARAMETERS_DRAWER_ID);
+    };
+
+    return (
+        <IconButton color="primary" onClick={toggleParametersDrawer} aria-label="Show parameters">
+            <TuneOutlined />
+        </IconButton>
+    );
+};
+
+export const ShareThreadIconButton = () => {
+    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+
+    const { isAuthenticated } = useUserAuthInfo();
+
+    const shouldDisableShareButton = !selectedThreadId || !isAuthenticated;
+
+    const handleShareThread = async () => {
+        await navigator.clipboard.writeText(location.origin + links.thread(selectedThreadId));
+        addSnackMessage({
+            id: `thread-copy-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Brief,
+            message: 'Link Copied',
+        });
+    };
+
+    return (
+        <IconButton
+            color="primary"
+            onClick={handleShareThread}
+            disabled={shouldDisableShareButton}
+            aria-label="Share this thread">
+            <IosShareOutlined
+                sx={{
+                    // This Icon looks visually off when centered
+                    transform: 'translateY(-2px)',
+                }}
+            />
+        </IconButton>
+    );
+};
+
+const NewThreadIconButton = () => {
+    return (
+        <IconButton color="primary" href={links.playground} aria-label="Create a new thread">
+            <AddBoxOutlined />
+        </IconButton>
+    );
+};
+
+const MenuIconButton = ({ onClick }: { onClick: () => void }) => {
+    return (
+        <IconButton
+            onClick={onClick}
+            color="primary"
+            aria-label="Open the navigation menu"
+            sx={{
+                justifySelf: 'start',
+                display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+            }}>
+            <MenuIcon />
+        </IconButton>
     );
 };
