@@ -1,7 +1,8 @@
 import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, ButtonGroup, IconButton, Link, Toolbar, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useMatch } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
@@ -26,6 +27,8 @@ export const OlmoAppBar = (): JSX.Element => {
     const handleDrawerClose = () => {
         setIsDrawerOpen(false);
     };
+
+    const isOnThreadPage = useMatch({ path: '/thread/*' });
 
     return (
         <>
@@ -83,8 +86,12 @@ export const OlmoAppBar = (): JSX.Element => {
                             justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
-                        <ShareThreadIconButton />
-                        <ParameterIconButton />
+                        {isOnThreadPage && (
+                            <>
+                                <ShareThreadIconButton />
+                                <ParameterIconButton />
+                            </>
+                        )}
                         <IconButton color="primary" href={links.playground}>
                             <AddBoxOutlined />
                         </IconButton>
