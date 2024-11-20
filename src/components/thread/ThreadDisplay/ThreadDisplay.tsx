@@ -35,18 +35,16 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     }
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <ChatMessage role={role} messageId={messageId}>
-                <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+        <ChatMessage role={role} messageId={messageId}>
+            <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
 
-                <MessageInteraction
-                    role={role}
-                    content={content}
-                    messageLabels={messageLabels}
-                    messageId={messageId}
-                />
-            </ChatMessage>
-        </Box>
+            <MessageInteraction
+                role={role}
+                content={content}
+                messageLabels={messageLabels}
+                messageId={messageId}
+            />
+        </ChatMessage>
     );
 };
 
@@ -181,44 +179,26 @@ export const ThreadDisplay = (): ReactNode => {
                     scrollBehavior: 'smooth',
                 },
             }}>
-            <Stack
-                gap={2}
-                direction="column"
-                useFlexGap
+            <Box
                 height={1}
                 sx={{
                     maxWidth: '750px',
                     margin: '0 auto',
-                    alignItems: 'flex-start',
+
+                    display: 'grid',
+                    gridTemplateColumns: 'auto 1fr',
+
+                    rowGap: 2,
+                    columnGap: 2,
                 }}>
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr',
-                        gap: 2,
-                        paddingInlineStart: 'calc(16px + 24px + 28px)',
-                        width: '100%',
-                    }}>
-                    <Box sx={{ gridColumn: '1 / -1', width: '100%' }}>
-                        <LegalNotice />
-                    </Box>
-
-                    <Box sx={{ gridColumn: '1 / -1', width: '100%' }}>
-                        <Divider />
-                    </Box>
+                <Box gridColumn="2 / -1">
+                    <LegalNotice />
+                    {/* <Divider /> */}
                 </Box>
 
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr',
-                        gap: 2,
-                        width: '100%',
-                    }}>
-                    {childMessageIds.map((messageId) => (
-                        <MessageView messageId={messageId} key={messageId} />
-                    ))}
-                </Box>
+                {childMessageIds.map((messageId) => (
+                    <MessageView messageId={messageId} key={messageId} />
+                ))}
                 <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
                 <Stack
                     justifyContent="center"
@@ -239,7 +219,7 @@ export const ThreadDisplay = (): ReactNode => {
                         onScrollToBottom={handleScrollToBottomButtonClick}
                     />
                 </Stack>
-            </Stack>
+            </Box>
         </Box>
     );
 };

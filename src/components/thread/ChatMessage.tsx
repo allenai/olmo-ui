@@ -12,6 +12,7 @@ import { UserAvatar } from '../avatars/UserAvatar';
 const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
     paddingInlineEnd: 2,
+    gridColumn: '2 / -1',
 };
 
 const streamingMessageIndicatorStyle: SxProps = {
@@ -85,8 +86,9 @@ export const ChatMessage = ({
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
-        <Stack direction="row" gap={3} alignItems="start" paddingInline={2}>
-            <Box id="icon" width={28} height={28}>
+        // <Stack direction="row" gap={3} alignItems="start" paddingInline={2}>
+        <>
+            <Box id="icon" width={28} height={28} gridColumn="1">
                 {icon}
             </Box>
             <MessageComponent messageId={messageId}>{children}</MessageComponent>
@@ -97,6 +99,7 @@ export const ChatMessage = ({
             {!!finalMessageContent && (
                 <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
             )}
-        </Stack>
+        </>
+        // </Stack>
     );
 };
