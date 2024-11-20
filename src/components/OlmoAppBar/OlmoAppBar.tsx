@@ -1,7 +1,8 @@
 import { AddBoxOutlined, IosShareOutlined, TuneOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, ButtonGroup, IconButton, Link, Toolbar, Typography } from '@mui/material';
+import { AppBar, ButtonGroup, Link, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useMatch } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
@@ -12,6 +13,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 import { Ai2MarkLogoSVG } from '../svg/Ai2MarkLogoSVG';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
 import { PARAMETERS_DRAWER_ID } from '../thread/parameter/ParameterDrawer';
+import { IconButtonWithTooltip } from './IconButtonWithTooltip';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteTitle } from './useRouteTitle';
 
@@ -26,6 +28,8 @@ export const OlmoAppBar = (): JSX.Element => {
     const handleDrawerClose = () => {
         setIsDrawerOpen(false);
     };
+
+    const isOnThreadPage = useMatch({ path: links.thread(':id') });
 
     return (
         <>
@@ -57,15 +61,7 @@ export const OlmoAppBar = (): JSX.Element => {
                             display: 'none',
                         },
                     })}>
-                    <IconButton
-                        onClick={handleDrawerToggle}
-                        color="primary"
-                        sx={{
-                            justifySelf: 'start',
-                            display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
-                        }}>
-                        <MenuIcon />
-                    </IconButton>
+                    <MenuIconButton onClick={handleDrawerToggle} />
                     <Link
                         href={links.home}
                         sx={(theme) => ({
@@ -83,11 +79,13 @@ export const OlmoAppBar = (): JSX.Element => {
                             justifySelf: 'end',
                             display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
                         }}>
-                        <ShareThreadIconButton />
-                        <ParameterIconButton />
-                        <IconButton color="primary" href={links.playground}>
-                            <AddBoxOutlined />
-                        </IconButton>
+                        {isOnThreadPage && (
+                            <>
+                                <ShareThreadIconButton />
+                                <ParameterIconButton />
+                            </>
+                        )}
+                        <NewThreadIconButton />
                     </ButtonGroup>
                 </Toolbar>
                 <Typography
@@ -116,28 +114,15 @@ export const OlmoAppBar = (): JSX.Element => {
 
 export const ParameterIconButton = () => {
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
-    const canUseParameterButton = useAppContext(
-        (state) =>
-            state.selectedThreadRootId === '' ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            state.selectedThreadMessagesById[state.selectedThreadRootId]?.creator ===
-                state.userInfo?.client
-    );
+
     const toggleParametersDrawer = () => {
         toggleDrawer(PARAMETERS_DRAWER_ID);
     };
 
-    if (!canUseParameterButton) {
-        return null;
-    }
-
     return (
-        <IconButton
-            color="primary"
-            onClick={toggleParametersDrawer}
-            disabled={!canUseParameterButton}>
+        <IconButtonWithTooltip onClick={toggleParametersDrawer} label="Show parameters">
             <TuneOutlined />
-        </IconButton>
+        </IconButtonWithTooltip>
     );
 };
 
@@ -159,13 +144,38 @@ export const ShareThreadIconButton = () => {
     };
 
     return (
-        <IconButton color="primary" onClick={handleShareThread} disabled={shouldDisableShareButton}>
+        <IconButtonWithTooltip
+            onClick={handleShareThread}
+            disabled={shouldDisableShareButton}
+            label="Share this thread">
             <IosShareOutlined
                 sx={{
                     // This Icon looks visually off when centered
                     transform: 'translateY(-2px)',
                 }}
             />
-        </IconButton>
+        </IconButtonWithTooltip>
+    );
+};
+
+const NewThreadIconButton = () => {
+    return (
+        <IconButtonWithTooltip href={links.playground} label="Create a new thread">
+            <AddBoxOutlined />
+        </IconButtonWithTooltip>
+    );
+};
+
+const MenuIconButton = ({ onClick }: { onClick: () => void }) => {
+    return (
+        <IconButtonWithTooltip
+            onClick={onClick}
+            label="Open the navigation menu"
+            sx={{
+                justifySelf: 'start',
+                display: { [DESKTOP_LAYOUT_BREAKPOINT]: 'none' },
+            }}>
+            <MenuIcon />
+        </IconButtonWithTooltip>
     );
 };

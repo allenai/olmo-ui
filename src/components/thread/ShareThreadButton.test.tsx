@@ -20,7 +20,7 @@ describe('ShareThreadButton', () => {
             </FakeAppContextProvider>
         );
 
-        expect(screen.queryByRole('button', { name: 'Share Thread' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Share this thread' })).not.toBeInTheDocument();
     });
 
     it('should show if the user is authenticated', () => {
@@ -35,6 +35,6 @@ describe('ShareThreadButton', () => {
             </FakeAppContextProvider>
         );
 
-        expect(screen.getByRole('button', { name: 'Share Thread' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Share this thread' })).toBeInTheDocument();
     });
 });
