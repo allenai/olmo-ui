@@ -1,4 +1,3 @@
-import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import Send from '@mui/icons-material/Send';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import {

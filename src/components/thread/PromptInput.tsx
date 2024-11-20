@@ -1,12 +1,4 @@
-import {
-    Box,
-    FormControl,
-    FormHelperText,
-    InputAdornment,
-    Stack,
-    SxProps,
-    Theme,
-} from '@mui/material';
+import { Box, FormControl, FormHelperText, SxProps, Theme } from '@mui/material';
 import { ChangeEventHandler, forwardRef, KeyboardEventHandler, ReactNode } from 'react';
 
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
