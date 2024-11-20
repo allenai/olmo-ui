@@ -52,6 +52,7 @@ const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
     return (
         <Typography
             component="div"
+            paddingBlockEnd={2}
             sx={[sharedMessageStyle, streamingMessageIndicatorStyle]}
             data-is-streaming={shouldShowStreamingIndicator}>
             {children}
