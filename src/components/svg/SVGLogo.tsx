@@ -28,6 +28,8 @@ export const SVGLogo = ({
         fill: 'currentColor',
         color: color ?? theme.palette.primary.main,
     };
+    // Follows best practices for SVG images inline:
+    // https://css-tricks.com/accessible-svgs/#aa-2-inline-svg
     return (
         <Box
             component="svg"
