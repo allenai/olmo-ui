@@ -6,6 +6,7 @@ import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 
 interface ParameterDrawerInputWrapperProps {
     label: string;
+    ariaLabel: string;
     inputId: string;
     children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
     tooltipContent?: string;
@@ -18,6 +19,7 @@ export const ParameterDrawerInputWrapper = ({
     children,
     label,
     inputId,
+    ariaLabel,
 }: ParameterDrawerInputWrapperProps) => {
     const containerRef = useRef<HTMLElement>();
 
@@ -67,6 +69,7 @@ export const ParameterDrawerInputWrapper = ({
                             aria-expanded={isTooltipOpen}
                             sx={{ color: 'inherit', justifySelf: 'left' }}
                             onClick={toggleTooltipOpen}
+                            aria-labelledby={ariaLabel}
                             onKeyDown={(event) => {
                                 // This is currently used in the parameters drawer that has ESC handling as well
                                 // we need to stop propagation so the drawer doesn't close when we  just want to close the tooltip

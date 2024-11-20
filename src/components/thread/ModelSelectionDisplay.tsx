@@ -86,6 +86,7 @@ export const ModelSelectionDisplay = ({
                         size="small"
                         onChange={handleModelChange}
                         input={<OutlinedInput />}
+                        aria-labelledby={(selectedModel && selectedModel.id) || ''}
                         value={(selectedModel && selectedModel.id) || ''}>
                         {newModels.map((model) => (
                             <MenuItem key={model.name} value={model.id}>

@@ -84,6 +84,7 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Temperature"
+                        ariaLabel="Temperature Description"
                         min={opts.temperature.min}
                         max={opts.temperature.max}
                         step={opts.temperature.step}
@@ -103,6 +104,7 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Top P"
+                        ariaLabel="Top P Description"
                         min={opts.top_p.min}
                         max={opts.top_p.max}
                         step={opts.top_p.step}
