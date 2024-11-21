@@ -38,6 +38,7 @@ export const UIRefreshThreadPage = () => {
                 sx={(theme) => ({
                     gridArea: 'content',
                     paddingBlockStart: 1,
+                    paddingBlockEnd: 2,
                     paddingInline: 2,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         display: 'grid',
@@ -63,7 +64,6 @@ export const UIRefreshThreadPage = () => {
 
                         backgroundColor: 'transparent',
                         height: 1,
-                        // paddingBlockStart: 1,
                         // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
                         minHeight: 0,
                         minWidth: 0,
@@ -77,7 +77,6 @@ export const UIRefreshThreadPage = () => {
                             width: '100%',
                             maxWidth: '750px',
                             margin: '0 auto',
-                            paddingBlockEnd: 2,
                         }}>
                         <QueryForm />
                         <LegalNotice />
