@@ -90,14 +90,16 @@ export const ChatMessage = ({
             <Box id="icon" width={CHAT_ICON_WIDTH} height={CHAT_ICON_WIDTH} gridColumn="1">
                 {icon}
             </Box>
-            <MessageComponent messageId={messageId}>{children}</MessageComponent>
-            {streamPromptState === RemoteState.Loading && (
-                <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
-            )}
-            {/* This gets the latest LLM response to alert screen readers */}
-            {!!finalMessageContent && (
-                <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
-            )}
+            <Box>
+                <MessageComponent messageId={messageId}>{children}</MessageComponent>
+                {streamPromptState === RemoteState.Loading && (
+                    <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
+                )}
+                {/* This gets the latest LLM response to alert screen readers */}
+                {!!finalMessageContent && (
+                    <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
+                )}
+            </Box>
         </>
     );
 };
