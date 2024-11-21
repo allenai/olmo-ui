@@ -18,7 +18,7 @@ export const ScrollToBottomButton = ({
             sx={(theme) => ({
                 position: 'absolute',
                 right: '30px',
-                bottom: '26px',
+                bottom: '40px',
                 visibility: isVisible ? 'visible' : 'hidden',
                 color: theme.palette.text.secondary,
                 display: 'none',

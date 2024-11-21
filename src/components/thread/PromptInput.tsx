@@ -22,9 +22,8 @@ const textareaStyles: SxProps<Theme> = {
     whiteSpace: 'pre-wrap',
     outline: 'none',
     border: 'none',
-
+    paddingInline: 1,
     paddingBlock: '4px',
-    paddingInlineStart: 2,
 
     background: 'none',
 
@@ -79,17 +78,18 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         gridTemplateAreas: '"prompt adornment"',
                         borderRadius: theme.spacing(3.5),
                         padding: 1,
+                        paddingInlineStart: 2,
                         paddingInlineEnd: '14px', // eyeball adjustment
                         background: theme.palette.background.drawer.secondary,
-                        border: (theme) => `1px solid ${theme.palette.secondary.main}`,
+                        border: '1px solid transparent',
 
                         [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
-                            // borderColor: (theme) => theme.palette.secondary.main,
+                            border: (theme) => `1px solid ${theme.palette.secondary.main}`,
                         },
 
                         '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
                             ':focus-within': {
-                                // borderColor: (theme) => theme.palette.secondary.main,
+                                border: (theme) => `1px solid ${theme.palette.secondary.main}`,
                             },
                         },
                     })}>
@@ -116,6 +116,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                             return {
                                 ...textareaStyles,
                                 color: theme.palette.text.primary,
+                                caretColor: theme.palette.secondary.main,
 
                                 // start styles stolen from MUI https://github.com/mui/material-ui/blob/e0894407dd8c564f853452dbed278f3fa7c04933/packages/mui-material/src/InputBase/InputBase.js#L109
                                 '&::-webkit-input-placeholder': placeholderStyles,
