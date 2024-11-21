@@ -50,13 +50,23 @@ functions.http(
         const title = await page.title();
         logger.info(`My Page title: ${title} ` + executionId);
 
-        const iconAltText = 'Return to the Playground home page';
-        const iconSelector = `img[alt="${iconAltText}"]`;
-        await page.waitForSelector(iconSelector, { timeout: 10000 }); // waits up to 10 seconds
-        const imageElement = await page.$(iconSelector);
-        const iconExists = imageElement !== null;
-        assert.strictEqual(iconExists, true, 'Icon should exist');
+        try {
+            // Wait for a <p> element containing the specified text to appear (up to 10 seconds)
+            await page.waitForSelector('p', { timeout: 10000 });
 
+            // Check if a <p> element with the exact text exists
+            const textExists = await page.evaluate(() => {
+            const paragraphs = Array.from(document.querySelectorAll('p'));
+                return paragraphs.some(p => p.textContent.trim() === 'Ai2 Playground is a free scientific research and educational tool; always fact-check your results.');
+            });
+
+            // Assert that the text exists in a <p> element
+            assert.strictEqual(textExists, true, 'The specified text should exist in a <p> element');
+            console.log('Assertion passed: Text found in a <p> element');
+        } catch (error) {
+            console.error('Assertion error:', error.message);
+            throw error;
+        }
         // Close the browser
         await browser.close();
     })
