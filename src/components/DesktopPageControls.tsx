@@ -18,6 +18,8 @@ export const DesktopPageControls = (): ReactNode => {
             sx={{
                 gridArea: 'controls',
                 display: { xs: 'none', [DESKTOP_LAYOUT_BREAKPOINT]: 'flex' },
+                // I don't feel like figuring out a good way to make sure stays the same width when there aren't buttons so I'm just hardcoding it to what the width is with buttons
+                width: 88,
             }}>
             {controls}
         </Stack>
