@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -11,10 +11,12 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
+import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
+import { ThreadMaxWidthContainer } from './ThreadContainer';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -34,18 +36,16 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     }
 
     return (
-        <>
-            <ChatMessage role={role} messageId={messageId}>
-                <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+        <ChatMessage role={role} messageId={messageId}>
+            <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
 
-                <MessageInteraction
-                    role={role}
-                    content={content}
-                    messageLabels={messageLabels}
-                    messageId={messageId}
-                />
-            </ChatMessage>
-        </>
+            <MessageInteraction
+                role={role}
+                content={content}
+                messageLabels={messageLabels}
+                messageId={messageId}
+            />
+        </ChatMessage>
     );
 };
 
@@ -180,15 +180,20 @@ export const ThreadDisplay = (): ReactNode => {
                     scrollBehavior: 'smooth',
                 },
             }}>
-            <Stack
-                gap={2}
-                direction="column"
-                useFlexGap
-                height={1}
-                sx={{
-                    maxWidth: '750px',
-                    margin: '0 auto',
-                }}>
+            <ThreadMaxWidthContainer>
+                <Box gridColumn="2 / -1">
+                    <LegalNotice />
+                </Box>
+
+                {childMessageIds.length > 0 && (
+                    <Divider
+                        sx={{
+                            gridColumn: '2 / -1',
+                            borderColor: getLegalNoticeTextColor,
+                        }}
+                    />
+                )}
+
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
@@ -212,7 +217,7 @@ export const ThreadDisplay = (): ReactNode => {
                         onScrollToBottom={handleScrollToBottomButtonClick}
                     />
                 </Stack>
-            </Stack>
+            </ThreadMaxWidthContainer>
         </Box>
     );
 };
