@@ -8,7 +8,7 @@ import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { isOlderThan30Days } from '@/utils/date-utils';
 
-import { IconButtonWithTooltip } from '../OlmoAppBar/IconButtonWithTooltip';
+import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
 
