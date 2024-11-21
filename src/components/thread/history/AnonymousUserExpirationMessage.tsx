@@ -23,7 +23,7 @@ export const AnonymousUserExpirationMessage = (): ReactNode => {
             Logged-in users get to keep their thread history forever.{' '}
             <Link
                 href={links.login(location.pathname)}
-                sx={{ textDecoration: 'underline' }}
+                fontWeight={600}
                 color={(theme) => theme.palette.primary.main}>
                 Log in
             </Link>{' '}
