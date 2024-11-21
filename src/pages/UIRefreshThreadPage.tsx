@@ -1,4 +1,4 @@
-import { Box, Card, SelectChangeEvent, Stack } from '@mui/material';
+import { alpha, Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -36,11 +36,11 @@ export const UIRefreshThreadPage = () => {
                 variant="elevation"
                 elevation={0}
                 sx={(theme) => ({
-                    gridArea: 'content',
                     paddingBlockStart: 1,
                     paddingBlockEnd: 2,
                     paddingInline: 2,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        gridArea: 'content',
                         display: 'grid',
                         gridRowGap: '1rem',
                         transition: '300ms',
@@ -70,6 +70,25 @@ export const UIRefreshThreadPage = () => {
 
                         gridArea: 'content',
                     }}>
+                    <Box
+                        sx={(theme) => ({
+                            display: 'grid',
+                            gridTemplateColumns: '1fr max-content',
+                            columnGap: 1,
+                            width: '100%',
+                            margin: '0 auto',
+                            paddingInline: 2,
+                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                                paddingInline: 5,
+                            },
+                        })}>
+                        <ModelSelectionDisplay
+                            models={models}
+                            selectedModel={selectedModel}
+                            onModelChange={onModelChange}
+                            label="Model"
+                        />
+                    </Box>
                     <Outlet />
                     <Stack
                         gap={1}
@@ -79,7 +98,23 @@ export const UIRefreshThreadPage = () => {
                             margin: '0 auto',
                         }}>
                         <QueryForm />
-                        <LegalNotice />
+                        <Typography
+                            component="p"
+                            variant="caption"
+                            textAlign="center"
+                            sx={(theme) => ({
+                                display: 'block',
+                                fontSize: '0.7rem',
+                                lineHeight: '1.5',
+                                margin: '0',
+                                color: alpha(
+                                    theme.palette.text.primary,
+                                    theme.palette.mode === 'dark' ? 0.5 : 0.75
+                                ),
+                            })}>
+                            Ai2 Playground is a free scientific research and educational tool;
+                            always fact-check your results.
+                        </Typography>
                     </Stack>
                 </Stack>
 
