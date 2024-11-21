@@ -208,8 +208,8 @@ export const ThreadDisplay = (): ReactNode => {
                     data-testid="bottom-scroll-anchor"
                     aria-hidden
                     sx={{
-                        marginBlockStart: 2, // more?
-                        paddingBlockEnd: 1,
+                        marginBlockStart: 4,
+                        paddingBlockEnd: 2,
                     }}
                 />
             </ThreadMaxWidthContainer>

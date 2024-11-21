@@ -39,7 +39,7 @@ export const UIRefreshThreadPage = () => {
                     },
                 })}>
                 <Stack
-                    gap={2}
+                    gap={0}
                     sx={{
                         containerName: 'thread-page',
                         containerType: 'inline-size',
@@ -57,6 +57,7 @@ export const UIRefreshThreadPage = () => {
                             columnGap: 1,
                             width: '100%',
                             margin: '0 auto',
+                            paddingBlockEnd: 2,
                             paddingInline: 2,
                             [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                                 paddingInline: 5,
