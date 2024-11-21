@@ -4,6 +4,7 @@ import {
     ListItemButton,
     ListItemButtonProps,
     ListItemIcon,
+    ListItemProps,
     ListItemText,
 } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
@@ -75,7 +76,7 @@ export const NavigationLink = ({
     };
 
     return (
-        <ListItem disablePadding disableGutters dense>
+        <ListItem disablePadding dense>
             <ListItemButton
                 alignItems="center"
                 selected={selected}

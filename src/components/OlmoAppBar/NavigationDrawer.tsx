@@ -1,4 +1,5 @@
 import {
+    AddBoxOutlined,
     ArrowForwardIosOutlined,
     LoginOutlined as LoginIcon,
     RateReviewOutlined,
@@ -10,7 +11,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import SortIcon from '@mui/icons-material/Sort';
-import { IconButton, Link, Stack } from '@mui/material';
+import { alpha, IconButton, Link, ListItemText, Stack } from '@mui/material';
 import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
@@ -26,6 +27,9 @@ import { Ai2LogoPlaygroundSVG } from '../svg/Ai2LogoPlaygroundSVG';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { ColorModeSelection } from './ColorModeSelection';
 import { NavigationLink } from './NavigationLink';
+import { ListItemButton } from '@mui/material';
+import { ListItem } from '@mui/material';
+import { ListItemIcon } from '@mui/material';
 
 const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
@@ -100,13 +104,8 @@ export const NavigationDrawer = ({
                     overflowX: 'hidden',
                     paddingBlockEnd: 2,
                 }}>
-                <Stack component="ul" padding="0" margin="0">
-                    <NavigationLink
-                        href={links.playground}
-                        icon={<ChatIcon />}
-                        selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                        Chat
-                    </NavigationLink>
+                <Stack component="ul" padding="0" margin="0" gap={1}>
+                    <NewChatButton />
                     <NavigationLink
                         onClick={() => {
                             toggleDrawer(HISTORY_DRAWER_ID);
@@ -195,3 +194,68 @@ const DesktopHeading = (): JSX.Element => {
         </Link>
     );
 };
+
+const NewChatButton = ({ isSelected }: { isSelected: boolean; }) => {
+    return (
+        <ListItem disablePadding dense>
+            <ListItemButton
+                alignItems="center"
+                disableGutters
+                href={links.playground}
+                sx={( theme ) => ({
+                    minHeight: theme.spacing(5),
+                    marginInline: theme.spacing(2),
+                    marginBlockEnd: theme.spacing(1),
+                    paddingBlock: theme.spacing(2),
+                    paddingInline: theme.spacing(2),
+                    gap: theme.spacing(2),
+                    color: theme.color['off-white'].hex,
+                    borderRadius: '9999px',
+                    backgroundColor: alpha(theme.palette.common.white, 0.1),
+
+                    ':hover, :hover > &': {
+                        backgroundColor: alpha(theme.palette.common.white, 0.1),
+                    },
+
+                    '&.Mui-selected': {
+                        backgroundColor: alpha(theme.palette.common.white, 0.1),
+                        color: theme.palette.secondary.main,
+
+                        ':hover': {
+                            backgroundColor: alpha(theme.palette.common.white, 0.1),
+                        },
+
+                        ':focus-visible': {
+                            backgroundColor: theme.palette.secondary.light,
+                            color: theme.palette.secondary.contrastText,
+                        },
+                    },
+
+                    '&.Mui-focusVisible': {
+                        backgroundColor: theme.palette.secondary.light,
+                        color: theme.palette.secondary.contrastText,
+                    },
+                })}>
+                <ListItemIcon
+                    sx={{
+                        height: '1.25rem',
+                        width: '1.25rem',
+                        minWidth: 'unset',
+                        '& svg': { fontSize: '1.25rem', transform: 'scale(1.2)' },
+                    }}>
+                    <AddBoxOutlined color="secondary" />
+                </ListItemIcon>
+                <ListItemText
+                    sx={{ margin: 0, marginInlineEnd: 'auto' }}
+                    primaryTypographyProps={{
+                        variant: 'body1',
+                        fontWeight: 500,
+                        component: 'span',
+                    }}>
+                    New chat
+                </ListItemText>
+                <div />
+            </ListItemButton>
+        </ListItem>
+    )
+}
