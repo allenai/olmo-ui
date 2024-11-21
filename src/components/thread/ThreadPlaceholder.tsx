@@ -5,16 +5,22 @@ import { Ai2LogoMarkSpinner } from '@/components/Ai2LogoMarkSpinner';
 import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from './LegalNotice';
+import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadContainer';
 
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
 
     return (
-        <Stack flex={1} alignItems="center" spacing={4}>
-            <Box textAlign="center" maxWidth="80%" mt={2}>
+        <ThreadMaxWidthContainer>
+            <Box gridColumn="2 / -1">
                 <LegalNotice />
             </Box>
-            <Box display="flex" justifyContent="center" alignItems="center" flex={1}>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flex={1}
+                gridColumn="1 / -1">
                 <Ai2LogoMarkSpinner isAnimating={isLoading} width={70} height={70} alt="" />
             </Box>
             <Typography variant="body1">
@@ -24,6 +30,6 @@ export const ThreadPlaceholder = () => {
                 */}
                 {/* Still working... */}
             </Typography>
-        </Stack>
+        </ThreadMaxWidthContainer>
     );
 };

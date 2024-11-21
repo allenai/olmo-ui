@@ -1,6 +1,8 @@
 import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
+import { CHAT_ICON_WIDTH } from '../ChatMessage';
+
 export const ThreadMaxWidthContainer = ({ children }: PropsWithChildren) => {
     return (
         <Box
@@ -10,7 +12,7 @@ export const ThreadMaxWidthContainer = ({ children }: PropsWithChildren) => {
                 margin: '0 auto',
 
                 display: 'grid',
-                gridTemplateColumns: 'auto 1fr',
+                gridTemplateColumns: `${CHAT_ICON_WIDTH}px 1fr`,
 
                 rowGap: 2,
                 columnGap: 2,
