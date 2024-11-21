@@ -62,15 +62,14 @@ export const ParameterSlider = ({
     }, 800);
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
-        const value = Array.isArray(newValue) ? newValue[0] : newValue;
-        setValue(value);
+        const valueToSet = Array.isArray(newValue) ? newValue[0] : newValue;
+        setValue(valueToSet);
         handleChange(value);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
         const newValue = Number(event.target.value);
-        setValue(value);
+        setValue(newValue);
         handleChange(newValue);
     };
 
