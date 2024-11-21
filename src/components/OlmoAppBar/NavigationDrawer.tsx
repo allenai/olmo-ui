@@ -100,22 +100,22 @@ export const NavigationDrawer = ({
                     overflowX: 'hidden',
                     paddingBlockEnd: 2,
                 }}>
-                <NavigationLink
-                    href={links.playground}
-                    icon={<ChatIcon />}
-                    selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                    Chat
-                </NavigationLink>
-                <NavigationLink
-                    onClick={() => {
-                        toggleDrawer(HISTORY_DRAWER_ID);
-                    }}
-                    icon={<SortIcon />}
-                    DisclosureIcon={ArrowForwardIosOutlined}>
-                    Thread history
-                </NavigationLink>
-                {isDatasetExplorerEnabled && (
-                    <>
+                <Stack component="ul" padding="0" margin="0">
+                    <NavigationLink
+                        href={links.playground}
+                        icon={<ChatIcon />}
+                        selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
+                        Chat
+                    </NavigationLink>
+                    <NavigationLink
+                        onClick={() => {
+                            toggleDrawer(HISTORY_DRAWER_ID);
+                        }}
+                        icon={<SortIcon />}
+                        DisclosureIcon={ArrowForwardIosOutlined}>
+                        Thread history
+                    </NavigationLink>
+                    {isDatasetExplorerEnabled && (
                         <NavigationLink
                             href={links.datasetExplorer}
                             icon={<ExploreIcon />}
@@ -126,16 +126,22 @@ export const NavigationDrawer = ({
                             }>
                             Dataset Explorer
                         </NavigationLink>
-                    </>
-                )}
-                <NavigationLink
-                    icon={<HelpCenterIcon />}
-                    selected={curriedDoesMatchPath(links.faqs)}
-                    href={links.faqs}
-                    variant="footer">
-                    FAQ
-                </NavigationLink>
-                <Stack marginBlockStart="auto" id="nav-footer" gap={1}>
+                    )}
+                    <NavigationLink
+                        icon={<HelpCenterIcon />}
+                        selected={curriedDoesMatchPath(links.faqs)}
+                        href={links.faqs}
+                        variant="footer">
+                        FAQ
+                    </NavigationLink>
+                </Stack>
+                <Stack
+                    marginBlockStart="auto"
+                    id="nav-footer"
+                    gap={1}
+                    component="ul"
+                    padding="0"
+                    marginBottom="0">
                     <NavigationLink
                         href={links.documentation}
                         icon={<LanguageIcon />}
