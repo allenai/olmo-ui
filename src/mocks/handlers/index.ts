@@ -87,6 +87,14 @@ const fakeModelsResponse: ModelList = [
         name: 'Tulu2.5',
         is_deprecated: false,
     },
+    {
+        description: "AI2's 7B model following the 'peteish' thread of improvements.",
+        host: 'modal',
+        id: 'OLMo-peteish-dpo-preview',
+        is_deprecated: false,
+        model_type: 'chat',
+        name: 'OLMo-peteish-dpo-preview',
+    },
 ];
 const fakePromptsResponse: JSONPromptTemplateList = [
     {
