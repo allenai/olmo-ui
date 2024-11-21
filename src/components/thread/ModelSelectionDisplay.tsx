@@ -36,6 +36,8 @@ export const ModelSelectionDisplay = ({
     sx,
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
+    const labelId = selectId + '-label';
+
     const { isPeteishModelEnabled } = useFeatureToggles();
     const newModels = isPeteishModelEnabled
         ? models
@@ -77,6 +79,7 @@ export const ModelSelectionDisplay = ({
                         justifySelf: 'center',
                     }}>
                     <InputLabel
+                        id={labelId}
                         htmlFor={selectId}
                         sx={(theme) => ({
                             background: theme.palette.background.paper,
@@ -86,6 +89,7 @@ export const ModelSelectionDisplay = ({
                     </InputLabel>
                     <Select
                         id={selectId}
+                        labelId={labelId}
                         fullWidth
                         size="small"
                         onChange={handleModelChange}

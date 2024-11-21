@@ -17,6 +17,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
             inputId="stop-words-input"
             label="Stop Words"
             tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
+            aria-label="Show description for Stop Words"
             tooltipTitle="Stop Words">
             <Autocomplete
                 id="stop-words-input"
