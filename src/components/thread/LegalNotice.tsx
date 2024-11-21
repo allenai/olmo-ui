@@ -1,7 +1,10 @@
-import { alpha, Typography } from '@mui/material';
+import { alpha, Theme, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
+
+export const getLegalNoticeTextColor = (theme: Theme) =>
+    alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.5 : 0.75);
 
 export const LegalNotice = () => {
     const userInfo = useAppContext((state) => state.userInfo);
@@ -10,15 +13,12 @@ export const LegalNotice = () => {
         <Typography
             component="p"
             variant="caption"
-            sx={(theme) => ({
+            sx={{
                 fontSize: '0.7rem',
                 lineHeight: '1.25',
                 margin: '0',
-                color: alpha(
-                    theme.palette.text.primary,
-                    theme.palette.mode === 'dark' ? 0.5 : 0.75
-                ),
-            })}>
+                color: getLegalNoticeTextColor,
+            }}>
             <>
                 Ai2 Playground is a free scientific research and educational tool; always fact-check
                 your results.{' '}

@@ -11,7 +11,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
-import { LegalNotice } from '../LegalNotice';
+import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
@@ -193,8 +193,16 @@ export const ThreadDisplay = (): ReactNode => {
                 }}>
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
-                    {/* <Divider /> */}
                 </Box>
+
+                {childMessageIds.length > 0 && (
+                    <Divider
+                        sx={{
+                            gridColumn: '2 / -1',
+                            borderColor: getLegalNoticeTextColor,
+                        }}
+                    />
+                )}
 
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
