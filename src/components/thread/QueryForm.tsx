@@ -217,7 +217,7 @@ export const QueryForm = (): JSX.Element => {
     };
 
     return (
-        <Box marginBlockStart="auto" width={1}>
+        <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                 <Stack gap={1} alignItems="flex-start" width={1}>
                     <Controller

@@ -178,6 +178,7 @@ export const ThreadDisplay = (): ReactNode => {
                 '@media (prefers-reduced-motion: no-preference)': {
                     scrollBehavior: 'smooth',
                 },
+                paddingInline: 2,
             }}>
             <Box
                 sx={{

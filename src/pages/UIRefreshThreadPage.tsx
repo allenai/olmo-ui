@@ -37,7 +37,9 @@ export const UIRefreshThreadPage = () => {
                 sx={(theme) => ({
                     paddingBlockStart: 1,
                     paddingBlockEnd: 2,
-                    paddingInline: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridArea: 'content',
                         display: 'grid',
@@ -53,7 +55,7 @@ export const UIRefreshThreadPage = () => {
                     selectedModel={selectedModel}
                     onModelChange={onModelChange}
                     label="Model"
-                    sx={{ gridArea: 'controls' }}
+                    sx={{ gridArea: 'controls', paddingInline: 2 }}
                 />
                 <Stack
                     gap={0}
@@ -66,9 +68,10 @@ export const UIRefreshThreadPage = () => {
                         paddingBlockStart: 1,
 
                         position: 'relative',
+                        overflow: 'hidden',
+
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                             gridArea: 'content',
-
                             // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
                             minHeight: 0,
                             minWidth: 0,
@@ -96,6 +99,7 @@ export const UIRefreshThreadPage = () => {
                                     theme.palette.text.primary,
                                     theme.palette.mode === 'dark' ? 0.5 : 0.75
                                 ),
+                                paddingInline: 2,
                             })}>
                             Ai2 Playground is a free scientific research and educational tool;
                             always fact-check your results.
