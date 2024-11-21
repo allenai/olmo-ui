@@ -46,7 +46,10 @@ export const ModelSelectionDisplay = ({
         const latestThreadContent = selectedThreadMessagesById[latestThreadId];
         const modelIdList = models.map((model) => model.id);
         if (latestThreadContent) {
-            if (latestThreadContent.model_id && modelIdList.indexOf(latestThreadContent.model_id)) {
+            if (
+                latestThreadContent.model_id &&
+                modelIdList.includes(latestThreadContent.model_id)
+            ) {
                 setSelectedModel(latestThreadContent.model_id);
             } else {
                 setSelectedModel(modelIdList[0]);
