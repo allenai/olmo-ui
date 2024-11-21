@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
+import { useColorMode } from '@/components/ColorModeProvider';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
@@ -46,6 +47,8 @@ export const ParameterSlider = ({
         _setValue(initialValue);
     }, [initialValue]);
 
+    const [colorMode] = useColorMode();
+
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const handleChange = useDebouncedCallback((value: number) => {
@@ -65,6 +68,7 @@ export const ParameterSlider = ({
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.value);
         const newValue = Number(event.target.value);
         setValue(value);
         handleChange(newValue);
@@ -87,7 +91,7 @@ export const ParameterSlider = ({
                             min={min}
                             max={max}
                             sx={{
-                                color: 'inherit',
+                                color: colorMode === 'light' ? 'inherit' : undefined,
                             }}
                         />
                     </Box>
@@ -117,7 +121,7 @@ export const ParameterSlider = ({
                                 type: 'number',
                                 id,
                                 sx: {
-                                    textAlign: 'right',
+                                    textAlign: 'center',
                                     width: 'auto',
                                     height: '100%',
                                 },
