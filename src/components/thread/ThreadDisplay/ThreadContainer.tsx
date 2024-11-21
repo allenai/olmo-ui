@@ -6,10 +6,10 @@ import { CHAT_ICON_WIDTH } from '../ChatMessage';
 export const ThreadMaxWidthContainer = ({ children }: PropsWithChildren) => {
     return (
         <Box
-            height={1}
             sx={{
                 maxWidth: '750px',
                 margin: '0 auto',
+                flex: '1',
 
                 display: 'grid',
                 gridTemplateColumns: `${CHAT_ICON_WIDTH}px 1fr`,
