@@ -2,42 +2,49 @@ import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { links } from '../Links';
+import { formatDateForHistory } from '../utils/formatDateForHistory';
 import { ChevronIcon } from './assets/ChevronIcon';
-import { TimeDisplay } from './TimeDisplay';
+import { DeleteThreadIconButton } from './thread/DeleteThreadButton';
+
 interface ThreadLinkProps {
     content: string;
     created: Date;
     id: string;
 }
+
 export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
     const { id: idParameter } = useParams();
 
     const isSelected = idParameter === id;
 
     return (
-        <ListItem disablePadding sx={{ minHeight: (theme) => theme.spacing(7) }}>
+        <ListItem
+            disablePadding
+            sx={{ position: 'relative', minHeight: (theme) => theme.spacing(5) }}
+            secondaryAction={<DeleteThreadIconButton threadId={id} />}>
             <ListItemButton
                 alignItems="center"
                 selected={isSelected}
+                title={formatDateForHistory(created)}
                 sx={{
-                    minHeight: (theme) => theme.spacing(7),
+                    minHeight: (theme) => theme.spacing(5),
                     gap: (theme) => theme.spacing(1),
                     color: (theme) => theme.palette.text.drawer.primary,
                     '&.Mui-selected': {
                         backgroundColor: (theme) => theme.palette.secondary.light,
-                        color: (theme) => theme.palette.text.primary,
+                        color: (theme) => theme.color['dark-teal'].hex,
                         fontWeight: 'normal',
 
                         '&:hover': {
                             backgroundColor: (theme) => theme.palette.secondary.light,
-                            color: (theme) => theme.palette.text.primary,
+                            color: (theme) => theme.color['dark-teal'].hex,
                             fontWeight: 'normal',
                         },
                     },
 
                     '&.Mui-focusVisible': (theme) => ({
                         backgroundColor: theme.palette.secondary.light,
-                        color: theme.palette.secondary.contrastText,
+                        color: theme.color['dark-teal'].hex,
                     }),
                 }}
                 component={Link}
@@ -55,23 +62,20 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     }}>
                     {content}
                 </ListItemText>
-
-                <ListItemText
-                    sx={{ marginInlineStart: 'auto', flex: '0 0 auto' }}
-                    primaryTypographyProps={{
-                        variant: 'caption',
-                        color: 'inherit',
-                        fontWeight: 'bold',
-                        sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
-                    }}>
-                    <TimeDisplay timeStamp={created} />
-                </ListItemText>
-                {!isSelected && (
-                    <ChevronIcon
-                        sx={(theme) => ({ width: theme.spacing(1.5), height: theme.spacing(1.5) })}
-                    />
-                )}
             </ListItemButton>
+            {isSelected && (
+                <ChevronIcon
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: '6px',
+                        top: '50%',
+                        transform: 'translateY(-45%)', // visually center
+                        color: theme.color['dark-teal'].hex,
+                        width: theme.spacing(1.5),
+                        height: theme.spacing(1.5),
+                    })}
+                />
+            )}
         </ListItem>
     );
 };

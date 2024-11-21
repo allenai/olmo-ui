@@ -9,6 +9,7 @@ import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
 import { MetaTags } from '@/components/MetaTags';
 import { NoResults } from '@/components/NoResults';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 const SEARCH_FIELD_NAME = 'search';
 
@@ -61,10 +62,16 @@ export const FAQsPage = (): JSX.Element => {
                 sx={{
                     gridArea: 'content',
                     overflow: 'auto',
-                    backgroundColor: 'background.default',
+                    paddingInline: 2,
                 }}>
                 <CardContent
-                    sx={() => (isDesktop ? { paddingX: 4 } : { paddingInline: 2 })}
+                    sx={(theme) => ({
+                        backgroundColor: 'background.default',
+                        paddingInline: 2,
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            paddingInline: 4,
+                        },
+                    })}
                     component={Stack}
                     gap={3.5}>
                     <Form>

@@ -10,8 +10,8 @@ export const UserAvatar = () => {
             alt=""
             color="primary"
             sx={(theme: Theme) => ({
-                background: theme.palette.background.paper,
-                borderColor: theme.palette.primary.main,
+                background: theme.palette.secondary.main,
+                border: 'none',
             })}
         />
     );
