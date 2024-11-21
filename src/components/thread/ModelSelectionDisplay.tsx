@@ -32,6 +32,8 @@ export const ModelSelectionDisplay = ({
     label = '',
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
+    const labelId = selectId + '-label';
+
     const { isPeteishModelEnabled } = useFeatureToggles();
     const newModels = isPeteishModelEnabled
         ? models
@@ -73,6 +75,7 @@ export const ModelSelectionDisplay = ({
                         justifySelf: 'center',
                     }}>
                     <InputLabel
+                        id={labelId}
                         htmlFor={selectId}
                         sx={(theme) => ({
                             background: theme.palette.background.paper,
@@ -82,11 +85,11 @@ export const ModelSelectionDisplay = ({
                     </InputLabel>
                     <Select
                         id={selectId}
+                        labelId={labelId}
                         fullWidth
                         size="small"
                         onChange={handleModelChange}
                         input={<OutlinedInput />}
-                        aria-labelledby={(selectedModel && selectedModel.id) || ''}
                         value={(selectedModel && selectedModel.id) || ''}>
                         {newModels.map((model) => (
                             <MenuItem key={model.name} value={model.id}>

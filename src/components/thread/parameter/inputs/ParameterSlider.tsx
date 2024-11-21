@@ -12,7 +12,6 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
 interface Props {
-    ariaLabel?: string;
     label: string;
     step?: number;
     min?: number;
@@ -25,7 +24,6 @@ interface Props {
 }
 
 export const ParameterSlider = ({
-    ariaLabel,
     min = 0,
     max = 100,
     step = 1,
@@ -76,7 +74,7 @@ export const ParameterSlider = ({
         <ParameterDrawerInputWrapper
             inputId={id}
             label={label}
-            ariaLabel={ariaLabel}
+            aria-label={`Show description for ${label}`}
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
             {({ inputLabelId }) => (
