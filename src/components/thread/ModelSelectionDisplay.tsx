@@ -5,8 +5,10 @@ import {
     InputBase,
     inputBaseClasses,
     InputBaseProps,
+    menuClasses,
     MenuItem,
     menuItemClasses,
+    paperClasses,
     Select,
     SelectChangeEvent,
     selectClasses,
@@ -90,7 +92,8 @@ export const ModelSelectionDisplay = ({
                         htmlFor={selectId}
                         sx={{
                             background: 'transparent',
-                            paddingX: 1,
+                            paddingInlineStart: 2,
+                            paddingInlineEnd: 2,
                         }}>
                         Model:{' '}
                     </Box>
@@ -105,10 +108,20 @@ export const ModelSelectionDisplay = ({
                             slotProps: {
                                 paper: {
                                     sx: (theme) => ({
-                                        background: theme.palette.background.drawer.secondary,
-                                        borderRadius: theme.spacing(1),
+                                        background: 'transparent',
+                                        paddingInline: theme.spacing(1.5),
+                                        paddingBlock: '0',
+                                        boxShadow: 'none',
                                     }),
                                 },
+                            },
+                            MenuListProps: {
+                                sx: (theme) => ({
+                                    borderRadius: theme.spacing(1),
+                                    backgroundColor: theme.palette.background.drawer.secondary,
+                                    padding: 0,
+                                    // Want the boxshadow from paper here
+                                }),
                             },
                         }}
                         value={(selectedModel && selectedModel.id) || ''}>
@@ -130,23 +143,23 @@ export const ModelSelectionDisplay = ({
 };
 
 const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
-    background: theme.palette.background.drawer.secondary,
-    [`&.${menuItemClasses.root}`]: {
-        background: theme.palette.background.drawer.secondary,
-    },
+    paddingInline: theme.spacing(1.5),
+
+    background: 'transparent',
+
     [`&.${menuItemClasses.focusVisible}`]: {
-        backgroundColor: '#FF0000',
+        backgroundColor: alpha(theme.palette.common.black, 0.12),
     },
     ':hover': {
-        backgroundColor: alpha(theme.color['dark-teal'].hex, 0.5),
+        backgroundColor: alpha(theme.palette.common.black, 0.04),
     },
     [`&.${menuItemClasses.selected}`]: {
-        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        backgroundColor: alpha(theme.palette.common.black, 0.12),
         [`&.${menuItemClasses.focusVisible}`]: {
-            backgroundColor: 'rgba(255, 255, 255, 0.25)',
+            backgroundColor: alpha(theme.palette.common.black, 0.12),
         },
         ':hover': {
-            backgroundColor: 'rgba(255, 0, 255, 0.25)',
+            backgroundColor: alpha(theme.palette.common.black, 0.04),
         },
     },
 }));
@@ -164,8 +177,8 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
     },
     [`.${inputBaseClasses.input}`]: {
         paddingBlock: theme.spacing(1),
-        paddingInlineStart: theme.spacing(2),
-        paddingInlineEnd: theme.spacing(3),
+        paddingInlineStart: theme.spacing(3),
+        paddingInlineEnd: theme.spacing(4),
 
         '&:focus': {
             backgroundColor: 'transparent',
@@ -178,7 +191,8 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
         },
     },
     [`.${selectClasses.icon}`]: {
-        marginInlineEnd: theme.spacing(1),
-        transform: 'scale(1.2) translateY(-1px)',
+        marginInlineEnd: theme.spacing(2),
+        transform: 'scale(1.2) translateY(0px)',
+        fill: theme.palette.primary.main,
     },
 }));
