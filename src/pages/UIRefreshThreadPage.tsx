@@ -1,4 +1,4 @@
-import { alpha, Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
+import { alpha, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -14,7 +14,6 @@ import {
     MobileParameterDrawer,
 } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
-import { ThreadPageControls } from '@/components/thread/ThreadPageControls/ThreadPageControls';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
