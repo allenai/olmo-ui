@@ -13,11 +13,12 @@ export const ThreadMaxWidthContainer = ({ children }: PropsWithChildren) => {
 
                 display: 'grid',
                 gridTemplateColumns: `${CHAT_ICON_WIDTH}px 1fr`,
+                gridAutoRows: 'min-content',
 
                 rowGap: 2,
                 columnGap: 2,
 
-                paddingInlineEnd: 2,
+                paddingInline: 2,
             }}>
             {children}
         </Box>
