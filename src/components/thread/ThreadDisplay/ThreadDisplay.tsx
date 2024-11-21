@@ -1,4 +1,4 @@
-import { Box, Divider, Stack } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -15,7 +15,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
-import { ThreadMaxWidthContainer } from './ThreadContainer';
+import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
 interface MessageViewProps {
     messageId: Message['id'];
