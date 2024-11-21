@@ -11,6 +11,7 @@ import { isOlderThan30Days } from '@/utils/date-utils';
 import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 type DeleteThreadButtonProps = Partial<
     Pick<ResponsiveButtonProps, 'isResponsive' | 'variant' | 'layout' | 'onClick'>
@@ -59,10 +60,11 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const allThreads = useAppContext((state) => state.allThreads);
     const thread = allThreads.find((thread) => thread.id === threadId);
+    const { isAuthenticated } = useUserAuthInfo();
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-    if (!thread || !userInfo) {
+    if (!thread || !userInfo || !isAuthenticated) {
         return null;
     }
 
