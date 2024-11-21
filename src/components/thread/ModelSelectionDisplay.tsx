@@ -71,7 +71,7 @@ export const ModelSelectionDisplay = ({
     };
 
     return (
-        <Box sx={sx}>
+        <Box sx={sx} paddingInline={2}>
             {newModels.length > 1 ? (
                 <FormControl
                     sx={{
