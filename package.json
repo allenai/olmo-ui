@@ -18,7 +18,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
-    "*.{md,json}": "prettier --write"
+    "*.{md,json,yaml,yml}": "prettier --write"
   },
   "resolutions": {
     "@types/react": "^18.2.55"

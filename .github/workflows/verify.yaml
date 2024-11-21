@@ -4,11 +4,14 @@ concurrency:
   group: unit-${{ github.ref }}
   cancel-in-progress: true
 
-on: 
-  push: 
-    branches: [ main, dev ]
+env:
+  HUSKY: 0
+
+on:
+  push:
+    branches: [main, dev]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
 
 jobs:
   unit-test:
@@ -20,7 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'yarn'
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn test
 
@@ -33,7 +36,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'yarn'
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn build
 
@@ -46,6 +49,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'yarn'
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn lint

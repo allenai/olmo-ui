@@ -4,36 +4,39 @@ concurrency:
   group: e2e-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  HUSKY: 0
+
 on:
   push:
-    branches: [ main, dev ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-        cache: 'yarn'
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile
-    - name: Install Playwright Browsers
-      run: yarn playwright install --with-deps
-    - name: Run Playwright tests
-      run: yarn test:e2e
-      env:
-        NODE_ENV: test 
-        E2E_TEST_USER: ${{ vars.E2E_TEST_USER }}
-        E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
-        AUTH0_DOMAIN: ${{ vars.E2E_AUTH0_DOMAIN }}
-        AUTH0_CLIENT_ID: ${{ vars.E2E_AUTH0_CLIENT_ID }}
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "yarn"
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn test:e2e
+        env:
+          NODE_ENV: test
+          E2E_TEST_USER: ${{ vars.E2E_TEST_USER }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          AUTH0_DOMAIN: ${{ vars.E2E_AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ vars.E2E_AUTH0_CLIENT_ID }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
