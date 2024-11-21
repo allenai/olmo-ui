@@ -1,5 +1,4 @@
-import { Box, Stack } from '@mui/material';
-import { borderBottom } from '@mui/system';
+import { Box, Divider, Stack } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -8,14 +7,15 @@ import { useShallow } from 'zustand/react/shallow';
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
+import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
+import { ThreadMaxWidthContainer } from './ThreadContainer';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -35,18 +35,16 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     }
 
     return (
-        <>
-            <ChatMessage role={role} messageId={messageId}>
-                <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+        <ChatMessage role={role} messageId={messageId}>
+            <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
 
-                <MessageInteraction
-                    role={role}
-                    content={content}
-                    messageLabels={messageLabels}
-                    messageId={messageId}
-                />
-            </ChatMessage>
-        </>
+            <MessageInteraction
+                role={role}
+                content={content}
+                messageLabels={messageLabels}
+                messageId={messageId}
+            />
+        </ChatMessage>
     );
 };
 
@@ -182,23 +180,26 @@ export const ThreadDisplay = (): ReactNode => {
                 },
                 // paddingBlockEnd: 6,
             }}>
-            <Stack
-                gap={2}
-                direction="column"
-                useFlexGap
-                height={1}
+            <Box
                 sx={{
-                    maxWidth: '750px',
-                    margin: '0 auto',
-                }}>
-                <Box
-                    sx={{
-                        pointerEvents: 'none',
-                        top: '-1px',
-                        position: 'sticky',
-                        boxShadow: (theme) => `0 12px 50px 12px ${theme.palette.background.paper}`,
-                    }}
-                />
+                    pointerEvents: 'none',
+                    top: '-1px',
+                    position: 'sticky',
+                    boxShadow: (theme) => `0 12px 50px 12px ${theme.palette.background.paper}`,
+                }}
+            />
+            <ThreadMaxWidthContainer>
+                <Box gridColumn="2 / -1">
+                    <LegalNotice />
+                </Box>
+                {childMessageIds.length > 0 && (
+                    <Divider
+                        sx={{
+                            gridColumn: '2 / -1',
+                            borderColor: getLegalNoticeTextColor,
+                        }}
+                    />
+                )}
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
@@ -211,19 +212,20 @@ export const ThreadDisplay = (): ReactNode => {
                         paddingBlockEnd: 1,
                     }}
                 />
-                <Box
-                    sx={{
-                        pointerEvents: 'none',
-                        bottom: '-1px',
-                        position: 'sticky',
-                        boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
-                    }}
-                />
-                <ScrollToBottomButton
-                    isVisible={isScrollToBottomButtonVisible}
-                    onScrollToBottom={handleScrollToBottomButtonClick}
-                />
-            </Stack>
+            </ThreadMaxWidthContainer>
+            <Box
+                sx={{
+                    pointerEvents: 'none',
+                    bottom: '-1px',
+                    position: 'sticky',
+
+                    boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
+                }}
+            />
+            <ScrollToBottomButton
+                isVisible={isScrollToBottomButtonVisible}
+                onScrollToBottom={handleScrollToBottomButtonClick}
+            />
         </Box>
     );
 };
