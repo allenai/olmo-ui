@@ -14,7 +14,7 @@
     "test:e2e": "playwright test",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "prepare": "husky"
+    "add-git-hooks": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
