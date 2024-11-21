@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
+import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
@@ -19,9 +20,16 @@ const TOP_P_INFO =
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
+    const [colorMode] = useColorMode();
 
     return (
         <DesktopExpandingDrawer open={open} id="desktop-parameter-drawer">
+            <Typography
+                variant="body2"
+                component="h2"
+                color={colorMode === 'dark' ? 'primary.main' : undefined}>
+                Parameters
+            </Typography>
             <ParameterContent />
         </DesktopExpandingDrawer>
     );
