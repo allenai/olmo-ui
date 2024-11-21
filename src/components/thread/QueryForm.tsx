@@ -105,18 +105,6 @@ const SubmitPauseAdornment = ({
     );
 };
 
-// export const QueryForm = () => {
-//     return (
-//         <PromptInput
-//             placeholder="Prompt"
-//             aria-label="Prompt"
-//             onChange={(e) => {
-//                 console.log(e.target.value);
-//             }}
-//         />
-//     );
-// };
-
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
     const location = useLocation();

@@ -1,8 +1,9 @@
 import { Container, Paper, PaperProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
+import { DesktopPageControls } from './DesktopPageControls';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar';
 
@@ -24,6 +25,8 @@ export const AppLayout = ({ children }: AppLayout) => {
                     height: 1,
 
                     gridArea: {
+                        // Give this the full content width at small, fixes gridRendering on iOS 16
+                        [SMALL_LAYOUT_BREAKPOINT]: 'content',
                         // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
                         [DESKTOP_LAYOUT_BREAKPOINT]: 'aside / content / aside / aside',
                     },
@@ -34,6 +37,7 @@ export const AppLayout = ({ children }: AppLayout) => {
                 maxWidth={false}>
                 {children}
             </Container>
+            <DesktopPageControls />
         </OuterContainer>
     );
 };
@@ -59,11 +63,11 @@ const OuterContainer = (props: PaperProps) => {
 
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridTemplateAreas: `
-                            'nav app-bar aside'
-                            'nav content aside'`,
+                            'nav app-bar aside controls'
+                            'nav content aside controls'`,
                         gridTemplateRows: 'auto minmax(0, 1fr)',
-                        gridTemplateColumns: 'auto 1fr auto',
-                        rowGap: 2, // keep?
+                        gridTemplateColumns: 'auto 1fr auto auto',
+                        rowGap: 2,
                     },
                 }),
             ]}

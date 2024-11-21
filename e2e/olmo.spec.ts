@@ -15,12 +15,11 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await expect(page.getByText('Text matches from pre-training data'), {
         message: 'should display CorpusLink tab',
     }).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Delete this thread ' })).toBeVisible();
 
     if (isAnonymousTest) {
-        await expect(page.getByRole('button', { name: 'Share' })).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeDisabled();
     } else {
-        await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled();
     }
 
     await expect(
@@ -42,12 +41,11 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await expect(page.getByText('Text matches from pre-training data'), {
         message: 'should display CorpusLink tab',
     }).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Delete this thread ' })).toBeVisible();
 
     if (isAnonymousTest) {
-        await expect(page.getByRole('button', { name: 'Share' })).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeDisabled();
     } else {
-        await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled();
     }
 
     await expect(

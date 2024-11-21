@@ -1,7 +1,10 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
+import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
@@ -14,7 +17,17 @@ const TEMPERATURE_INFO =
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
-export const ParameterDrawer = (): JSX.Element => {
+export const DesktopParameterDrawer = (): ReactNode => {
+    const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
+
+    return (
+        <DesktopExpandingDrawer open={open} id="desktop-parameter-drawer">
+            <ParameterContent />
+        </DesktopExpandingDrawer>
+    );
+};
+
+export const MobileParameterDrawer = (): JSX.Element => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
@@ -88,6 +101,10 @@ export const ParameterContent = () => {
                         step={opts.temperature.step}
                         initialValue={initialTemperature}
                         onChange={(v) => {
+                            analyticsClient.trackParametersUpdate({
+                                parameterUpdated: 'temperature',
+                            });
+
                             updateInferenceOpts({ temperature: v });
                         }}
                         dialogContent={TEMPERATURE_INFO}
@@ -103,6 +120,9 @@ export const ParameterContent = () => {
                         step={opts.top_p.step}
                         initialValue={initialTopP}
                         onChange={(v) => {
+                            analyticsClient.trackParametersUpdate({
+                                parameterUpdated: 'top_p',
+                            });
                             updateInferenceOpts({ top_p: v });
                         }}
                         dialogContent={TOP_P_INFO}

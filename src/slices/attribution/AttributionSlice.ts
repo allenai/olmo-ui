@@ -1,9 +1,7 @@
-import varnishTokens from '@allenai/varnish-theme';
 import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {
@@ -263,19 +261,5 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         // when we change threads we want to reset all the selected spans from the last thread
         get().resetSelectedSpans();
         get().resetSelectedRepeatedDocument();
-        set(
-            (state) => {
-                if (
-                    window.matchMedia(
-                        `(min-width: ${varnishTokens.breakpoint[DESKTOP_LAYOUT_BREAKPOINT].value})`
-                    ).matches
-                ) {
-                    // If we're on desktop we want to open the attribution tab whenever we move between threads
-                    state.currentOpenThreadTab = 'attribution';
-                }
-            },
-            false,
-            'attribution/openAttributionForNewThread'
-        );
     },
 });
