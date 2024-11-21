@@ -28,8 +28,9 @@ interface HistoryDrawerSectionProps {
 }
 
 export const HistoryDivider = styled(Divider)(({ theme }) => ({
-    borderColor: theme.palette.background.paper,
+    borderColor: theme.palette.text.primary,
     opacity: 0.5,
+    marginInline: theme.spacing(2),
 }));
 
 export const HistoryDrawerSection = ({
