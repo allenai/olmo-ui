@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
+import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { DrawerId } from '@/slices/DrawerSlice';
@@ -16,28 +17,13 @@ const TEMPERATURE_INFO =
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
-const DRAWER_WIDTH = '20rem';
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
 
     return (
-        <Box
-            id="desktop-parameter-drawer"
-            sx={{
-                overflowX: 'hidden',
-                width: open ? DRAWER_WIDTH : 0,
-                transitionProperty: 'width, padding-inline',
-                transitionDuration: '300ms',
-                transitionTimingFunction: 'ease-in-out',
-            }}>
-            <Box
-                paddingInline={2}
-                sx={{
-                    minWidth: DRAWER_WIDTH,
-                }}>
-                <ParameterContent />
-            </Box>
-        </Box>
+        <DesktopExpandingDrawer open={open} id="desktop-parameter-drawer">
+            <ParameterContent />
+        </DesktopExpandingDrawer>
     );
 };
 

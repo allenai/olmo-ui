@@ -1,13 +1,25 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
+import { useAppContext } from '@/AppContext';
+import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
-import { FullAttributionContent } from './AttributionContent';
+import { AttributionContent, FullAttributionContent } from './AttributionContent';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
-export const AttributionDrawer = () => {
+export const DesktopAttributionDrawer = () => {
+    const open = useAppContext((state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID);
+
+    return (
+        <DesktopExpandingDrawer open={open} id="desktop-attribution-drawer">
+            <AttributionContent />
+        </DesktopExpandingDrawer>
+    );
+};
+
+export const MobileAttributionDrawer = () => {
     return (
         <FullScreenDrawer
             drawerId="attribution"

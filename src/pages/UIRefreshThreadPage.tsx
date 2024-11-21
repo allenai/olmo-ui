@@ -4,7 +4,10 @@ import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-d
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
-import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
+import {
+    DesktopAttributionDrawer,
+    MobileAttributionDrawer,
+} from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { LegalNotice } from '@/components/thread/LegalNotice';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import {
@@ -91,11 +94,13 @@ export const UIRefreshThreadPage = () => {
                 </Stack>
 
                 {isDesktop ? (
-                    <DesktopParameterDrawer />
-                ) : (
-                    // <ThreadTabs />
                     <>
-                        <AttributionDrawer />
+                        <DesktopParameterDrawer />
+                        <DesktopAttributionDrawer />
+                    </>
+                ) : (
+                    <>
+                        <MobileAttributionDrawer />
                         <MobileParameterDrawer />
                     </>
                 )}
