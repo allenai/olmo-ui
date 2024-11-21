@@ -81,15 +81,15 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         paddingInlineStart: 2,
                         paddingInlineEnd: '14px', // eyeball adjustment
                         background: theme.palette.background.drawer.secondary,
-                        border: '1px solid transparent',
+                        border: '2px solid transparent',
 
                         [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
-                            border: (theme) => `1px solid ${theme.palette.secondary.main}`,
+                            border: (theme) => `2px solid ${theme.palette.secondary.main}`,
                         },
 
                         '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
                             ':focus-within': {
-                                border: (theme) => `1px solid ${theme.palette.secondary.main}`,
+                                border: (theme) => `2px solid ${theme.palette.secondary.main}`,
                             },
                         },
                     })}>
