@@ -1,6 +1,4 @@
-import { Box, Button, Card, CardContent, Stack, TextField } from '@mui/material';
-import { useEffect, useMemo } from 'react';
-import { Form, useSearchParams } from 'react-router-dom';
+import { Box, Card, CardContent, Stack } from '@mui/material';
 
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { faqs } from '@/components/faq/faq-list';
@@ -8,52 +6,10 @@ import { FAQCategoriesButton } from '@/components/faq/FAQCategoriesButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
 import { MetaTags } from '@/components/MetaTags';
-import { NoResults } from '@/components/NoResults';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
-const SEARCH_FIELD_NAME = 'search';
-
 export const FAQsPage = (): JSX.Element => {
-    const [searchParams, setSearchParams] = useSearchParams();
     const isDesktop = useDesktopOrUp();
-    const search = searchParams.get(SEARCH_FIELD_NAME);
-
-    useEffect(() => {
-        // This makes the ?search= part of the URL go away if there's an empty query
-        if (!search) {
-            setSearchParams((searchParams) => {
-                searchParams.delete('search');
-                return searchParams;
-            });
-        }
-    }, [search, setSearchParams]);
-
-    const filteredFAQs = useMemo(() => {
-        if (!search) {
-            return faqs;
-        }
-
-        const filtered = faqs.map((category) => ({
-            category: category.category,
-            questions: category.questions.filter((question) => {
-                if (question.question.includes(search)) {
-                    return true;
-                }
-
-                const faqAnswer =
-                    typeof question.answer === 'string' ? question.answer : question.answer();
-
-                return faqAnswer.includes(search);
-            }),
-        }));
-
-        return filtered;
-    }, [search]);
-
-    const hasNoQuestionsToDisplay = filteredFAQs.every(
-        (category) => category.questions.length === 0
-    );
-
     return (
         <>
             <MetaTags title="Ai2 Playground" />
@@ -74,43 +30,14 @@ export const FAQsPage = (): JSX.Element => {
                     })}
                     component={Stack}
                     gap={3.5}>
-                    <Form>
-                        <Stack direction="row" gap={2}>
-                            <TextField
-                                type="search"
-                                label="Search FAQs"
-                                name={SEARCH_FIELD_NAME}
-                                fullWidth
-                                defaultValue={search}
-                                size="small"
-                            />
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{
-                                    backgroundColor: (theme) =>
-                                        theme.palette.background.drawer.primary,
-                                    color: (theme) => theme.palette.text.drawer.primary,
-                                    '&:hover': {
-                                        backgroundColor: (theme) => theme.color['teal-100'].hex,
-                                    },
-                                }}>
-                                Submit
-                            </Button>
-                        </Stack>
-                    </Form>
                     {!isDesktop && <FAQCategoriesButton />}
-                    {hasNoQuestionsToDisplay && search != null ? (
-                        <NoResults request={search} resultsType="FAQ" />
-                    ) : (
-                        filteredFAQs.map((faqCategory) => (
-                            <FAQCategory
-                                categoryName={faqCategory.category}
-                                questions={faqCategory.questions}
-                                key={faqCategory.category}
-                            />
-                        ))
-                    )}
+                    {faqs.map((faqCategory) => (
+                        <FAQCategory
+                            categoryName={faqCategory.category}
+                            questions={faqCategory.questions}
+                            key={faqCategory.category}
+                        />
+                    ))}
                     {/* Fade effect */}
                     <Box
                         sx={{
