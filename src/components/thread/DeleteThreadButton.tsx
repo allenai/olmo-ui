@@ -3,6 +3,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -59,10 +60,11 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const allThreads = useAppContext((state) => state.allThreads);
     const thread = allThreads.find((thread) => thread.id === threadId);
+    const { isAuthenticated } = useUserAuthInfo();
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-    if (!thread || !userInfo) {
+    if (!thread || !userInfo || !isAuthenticated) {
         return null;
     }
 
