@@ -14,6 +14,7 @@ import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
+import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
 import { links } from './Links';
@@ -79,17 +80,10 @@ export const routes: RouteObject[] = [
                     {
                         path: links.thread(':id'),
                         element: <ThreadDisplay />,
-                        handle: {
-                            showTitle: false,
-                            title: 'Playground',
-                        },
                         loader: selectedThreadPageLoader,
+                        handle: { pageControls: <ThreadPageControls /> },
                     },
                 ],
-                handle: {
-                    showTitle: false,
-                    title: 'Playground',
-                },
                 loader: playgroundLoader,
                 shouldRevalidate: handleRevalidation,
             },
