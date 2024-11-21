@@ -1,4 +1,4 @@
-import { Box, Divider, Stack } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
@@ -16,7 +15,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
-import { ThreadMaxWidthContainer } from './ThreadContainer';
+import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -179,12 +178,20 @@ export const ThreadDisplay = (): ReactNode => {
                 '@media (prefers-reduced-motion: no-preference)': {
                     scrollBehavior: 'smooth',
                 },
+                paddingInline: 2,
             }}>
+            <Box
+                sx={{
+                    pointerEvents: 'none',
+                    top: '-1px',
+                    position: 'sticky',
+                    boxShadow: (theme) => `0 12px 50px 12px ${theme.palette.background.paper}`,
+                }}
+            />
             <ThreadMaxWidthContainer>
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
                 </Box>
-
                 {childMessageIds.length > 0 && (
                     <Divider
                         sx={{
@@ -193,31 +200,32 @@ export const ThreadDisplay = (): ReactNode => {
                         }}
                     />
                 )}
-
                 {childMessageIds.map((messageId) => (
                     <MessageView messageId={messageId} key={messageId} />
                 ))}
-                <div ref={scrollAnchorRef} data-testid="bottom-scroll-anchor" aria-hidden />
-                <Stack
-                    justifyContent="center"
-                    alignItems="center"
+                <Box
+                    ref={scrollAnchorRef}
+                    data-testid="bottom-scroll-anchor"
+                    aria-hidden
                     sx={{
-                        bottom: '-1px',
-                        minHeight: (theme) => ({
-                            xs: theme.spacing(6),
-                            [DESKTOP_LAYOUT_BREAKPOINT]: theme.spacing(6),
-                        }),
-                        position: 'sticky',
-                        background: (theme) =>
-                            `linear-gradient(0deg, ${theme.palette.background.paper} 0%, #0000 42.5%)`,
-                        marginTop: (theme) => theme.spacing(-3),
-                    }}>
-                    <ScrollToBottomButton
-                        isVisible={isScrollToBottomButtonVisible}
-                        onScrollToBottom={handleScrollToBottomButtonClick}
-                    />
-                </Stack>
+                        marginBlockStart: 4,
+                        paddingBlockEnd: 2,
+                    }}
+                />
             </ThreadMaxWidthContainer>
+            <Box
+                sx={{
+                    pointerEvents: 'none',
+                    bottom: '-1px',
+                    position: 'sticky',
+
+                    boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
+                }}
+            />
+            <ScrollToBottomButton
+                isVisible={isScrollToBottomButtonVisible}
+                onScrollToBottom={handleScrollToBottomButtonClick}
+            />
         </Box>
     );
 };

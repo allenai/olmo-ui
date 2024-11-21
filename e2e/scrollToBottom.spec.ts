@@ -2,7 +2,7 @@ import { expect, isElementVisibleInContainer, test } from '@playwright-utils';
 
 test.use({
     // Overflow stuff is easier to test consistently with a smaller viewport
-    viewport: { width: 392, height: 500 },
+    viewport: { width: 1250, height: 500 },
 });
 
 test('scroll to bottom button', async ({ page }) => {
