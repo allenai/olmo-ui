@@ -45,16 +45,9 @@ export const UIRefreshThreadPage = () => {
                         transition: '300ms',
                         gridTemplateColumns: '1fr auto',
                         gridTemplateRows: 'auto 1fr',
-                        gridTemplateAreas: '"controls ." "content drawer"',
+                        gridTemplateAreas: '"controls ." "thread-content drawer"',
                     },
                 })}>
-                <ModelSelectionDisplay
-                    models={models}
-                    selectedModel={selectedModel}
-                    onModelChange={onModelChange}
-                    label="Model"
-                    sx={{ gridArea: 'controls' }}
-                />
                 <Stack
                     gap={2}
                     sx={(theme) => ({
@@ -66,13 +59,19 @@ export const UIRefreshThreadPage = () => {
                         paddingBlockStart: 1,
 
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            gridArea: 'content',
+                            gridArea: 'thread-content',
 
                             // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
                             minHeight: 0,
                             minWidth: 0,
                         },
                     })}>
+                    <ModelSelectionDisplay
+                        models={models}
+                        selectedModel={selectedModel}
+                        onModelChange={onModelChange}
+                        label="Model"
+                    />
                     <Outlet />
                     <Stack
                         gap={1}
