@@ -96,9 +96,6 @@ export const ParameterSlider = ({
                             value={value}
                             size="small"
                             onChange={handleInputChange}
-                            onBlur={() => {
-                                handleChange(value);
-                            }} // Ensure value is clipped on blur
                             sx={(theme) => ({
                                 ...theme.typography.caption,
                                 border: 'none',

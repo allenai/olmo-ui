@@ -28,7 +28,7 @@ const ColorModeSelectionMenuItem = ({
         <MenuItem
             {...menuItemProps}
             onClick={(e) => {
-                analyticsClient.trackColorModeChange({ colorMode: name });
+                analyticsClient.trackColorModeChange({ colorMode: mode });
                 setColorMode(mode);
                 onClick?.(e);
             }}>
