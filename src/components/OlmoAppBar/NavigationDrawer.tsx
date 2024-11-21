@@ -169,9 +169,11 @@ export const NavigationDrawer = ({
                             color: theme.color['gray-50'].hex,
                             paddingBlock: 2,
                         })}>
-                        <Typography variant="h6" fontWeight={600}>
+                        <Typography component="span" variant="subtitle2" fontWeight={400} sx={(theme) => ({
+                            color: alpha(theme.color['off-white'].hex, 0.5)
+                        })}>
                             Proudly built by{' '}
-                            <Link href="https://allenai.org/" target="_blank" rel="noreferer">
+                            <Link href="https://allenai.org/" target="_blank" rel="noreferer" fontWeight={600}>
                                 Ai2
                             </Link>
                         </Typography>
