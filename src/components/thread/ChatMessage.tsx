@@ -11,7 +11,6 @@ import { UserAvatar } from '../avatars/UserAvatar';
 
 const sharedMessageStyle: SxProps = {
     wordBreak: 'break-word',
-    paddingInlineEnd: 2,
     gridColumn: '2 / -1',
 };
 

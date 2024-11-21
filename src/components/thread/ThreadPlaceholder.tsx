@@ -8,6 +8,7 @@ import { LegalNotice } from './LegalNotice';
 
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
+
     return (
         <Stack flex={1} alignItems="center" spacing={4}>
             <Box textAlign="center" maxWidth="80%" mt={2}>

@@ -16,6 +16,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
+import { ThreadMaxWidthContainer } from './ThreadContainer';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -179,18 +180,7 @@ export const ThreadDisplay = (): ReactNode => {
                     scrollBehavior: 'smooth',
                 },
             }}>
-            <Box
-                height={1}
-                sx={{
-                    maxWidth: '750px',
-                    margin: '0 auto',
-
-                    display: 'grid',
-                    gridTemplateColumns: 'auto 1fr',
-
-                    rowGap: 2,
-                    columnGap: 2,
-                }}>
+            <ThreadMaxWidthContainer>
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
                 </Box>
@@ -227,7 +217,7 @@ export const ThreadDisplay = (): ReactNode => {
                         onScrollToBottom={handleScrollToBottomButtonClick}
                     />
                 </Stack>
-            </Box>
+            </ThreadMaxWidthContainer>
         </Box>
     );
 };
