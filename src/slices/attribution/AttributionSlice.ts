@@ -1,9 +1,7 @@
-import varnishTokens from '@allenai/varnish-theme';
 import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
 export interface MessageWithAttributionDocuments {

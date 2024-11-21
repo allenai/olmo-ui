@@ -1,4 +1,4 @@
-import { alpha, Box, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
+import { alpha, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext, useAppContext } from '@/AppContext';
@@ -8,7 +8,6 @@ import {
     DesktopAttributionDrawer,
     MobileAttributionDrawer,
 } from '@/components/thread/attribution/drawer/AttributionDrawer';
-import { LegalNotice } from '@/components/thread/LegalNotice';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
 import {
     DesktopParameterDrawer,
@@ -58,37 +57,22 @@ export const UIRefreshThreadPage = () => {
                 />
                 <Stack
                     gap={2}
-                    sx={{
+                    sx={(theme) => ({
                         containerName: 'thread-page',
                         containerType: 'inline-size',
 
                         backgroundColor: 'transparent',
                         height: 1,
-                        // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
-                        minHeight: 0,
-                        minWidth: 0,
+                        paddingBlockStart: 1,
 
-                        gridArea: 'content',
-                    }}>
-                    <Box
-                        sx={(theme) => ({
-                            display: 'grid',
-                            gridTemplateColumns: '1fr max-content',
-                            columnGap: 1,
-                            width: '100%',
-                            margin: '0 auto',
-                            paddingInline: 2,
-                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                paddingInline: 5,
-                            },
-                        })}>
-                        <ModelSelectionDisplay
-                            models={models}
-                            selectedModel={selectedModel}
-                            onModelChange={onModelChange}
-                            label="Model"
-                        />
-                    </Box>
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            gridArea: 'content',
+
+                            // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
+                            minHeight: 0,
+                            minWidth: 0,
+                        },
+                    })}>
                     <Outlet />
                     <Stack
                         gap={1}

@@ -7,7 +7,7 @@ import { ShareThreadIconButton } from './ShareThreadIconButton';
 
 export const ThreadPageControls = (): React.ReactNode => {
     const { isCorpusLinkEnabled } = useFeatureToggles();
-    
+
     return (
         <>
             <ShareThreadIconButton />
