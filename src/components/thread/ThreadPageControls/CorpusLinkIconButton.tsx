@@ -1,0 +1,20 @@
+import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
+
+import { useAppContext } from '@/AppContext';
+import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
+
+import { ATTRIBUTION_DRAWER_ID } from '../attribution/drawer/AttributionDrawer';
+
+export const CorpusLinkIconButton = () => {
+    const toggleDrawer = useAppContext((state) => state.toggleDrawer);
+
+    const toggleParametersDrawer = () => {
+        toggleDrawer(ATTRIBUTION_DRAWER_ID);
+    };
+
+    return (
+        <IconButtonWithTooltip onClick={toggleParametersDrawer} label="Show CorpusLink">
+            <ArticleOutlined />
+        </IconButtonWithTooltip>
+    );
+};

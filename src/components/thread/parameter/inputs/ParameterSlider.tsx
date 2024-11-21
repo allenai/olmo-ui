@@ -74,6 +74,7 @@ export const ParameterSlider = ({
         <ParameterDrawerInputWrapper
             inputId={id}
             label={label}
+            aria-label={`Show description for ${label}`}
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
             {({ inputLabelId }) => (

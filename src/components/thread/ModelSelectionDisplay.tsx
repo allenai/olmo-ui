@@ -6,6 +6,8 @@ import {
     OutlinedInput,
     Select,
     SelectChangeEvent,
+    SxProps,
+    Theme,
     Typography,
 } from '@mui/material';
 import { useEffect, useId } from 'react';
@@ -23,6 +25,7 @@ type ModelSelectionDisplayProps = {
     selectedModel?: Model;
     onModelChange: (event: SelectChangeEvent) => void;
     label?: string;
+    sx?: SxProps<Theme>;
 };
 
 export const ModelSelectionDisplay = ({
@@ -30,8 +33,11 @@ export const ModelSelectionDisplay = ({
     selectedModel,
     onModelChange,
     label = '',
+    sx,
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
+    const labelId = selectId + '-label';
+
     const { isPeteishModelEnabled } = useFeatureToggles();
     const newModels = isPeteishModelEnabled
         ? models
@@ -65,7 +71,7 @@ export const ModelSelectionDisplay = ({
     };
 
     return (
-        <Box>
+        <Box sx={sx}>
             {newModels.length > 1 ? (
                 <FormControl
                     sx={{
@@ -73,6 +79,7 @@ export const ModelSelectionDisplay = ({
                         justifySelf: 'center',
                     }}>
                     <InputLabel
+                        id={labelId}
                         htmlFor={selectId}
                         sx={(theme) => ({
                             background: theme.palette.background.paper,
@@ -82,6 +89,7 @@ export const ModelSelectionDisplay = ({
                     </InputLabel>
                     <Select
                         id={selectId}
+                        labelId={labelId}
                         fullWidth
                         size="small"
                         onChange={handleModelChange}

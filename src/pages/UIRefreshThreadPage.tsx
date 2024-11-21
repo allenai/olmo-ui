@@ -4,12 +4,17 @@ import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-d
 import { appContext, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
-import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
+import {
+    DesktopAttributionDrawer,
+    MobileAttributionDrawer,
+} from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
-import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
+import {
+    DesktopParameterDrawer,
+    MobileParameterDrawer,
+} from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
-import { ThreadPageControls } from '@/components/thread/ThreadPageControls';
-import { ThreadTabs } from '@/components/thread/ThreadTabs';
+import { ThreadPageControls } from '@/components/thread/ThreadPageControls/ThreadPageControls';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
@@ -31,16 +36,29 @@ export const UIRefreshThreadPage = () => {
                 variant="elevation"
                 elevation={0}
                 sx={(theme) => ({
-                    flexGrow: '1',
-                    gridArea: 'content',
-                    paddingBlockStart: 2,
+                    paddingBlockStart: 1,
+                    paddingBlockEnd: 2,
+                    paddingInline: 2,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 0,
+                        gridArea: 'content',
+                        display: 'grid',
+                        gridRowGap: '1rem',
+                        transition: '300ms',
+                        gridTemplateColumns: '1fr auto',
+                        gridTemplateRows: 'auto 1fr',
+                        gridTemplateAreas: '"controls ." "content drawer"',
                     },
                 })}>
+                <ModelSelectionDisplay
+                    models={models}
+                    selectedModel={selectedModel}
+                    onModelChange={onModelChange}
+                    label="Model"
+                    sx={{ gridArea: 'controls' }}
+                />
                 <Stack
                     gap={0}
-                    sx={{
+                    sx={(theme) => ({
                         containerName: 'thread-page',
                         containerType: 'inline-size',
 
@@ -49,8 +67,16 @@ export const UIRefreshThreadPage = () => {
                         paddingBlockStart: 1,
 
                         position: 'relative',
-                    }}>
+                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                            gridArea: 'content',
+
+                            // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
+                            minHeight: 0,
+                            minWidth: 0,
+                        },
+                    })}>
                     <Box
+                        gap={2}
                         sx={(theme) => ({
                             display: 'grid',
                             gridTemplateColumns: '1fr max-content',
@@ -75,11 +101,9 @@ export const UIRefreshThreadPage = () => {
                     <Stack
                         gap={1}
                         sx={{
-                            paddingInline: 2,
                             width: '100%',
                             maxWidth: '750px',
                             margin: '0 auto',
-                            paddingBlockEnd: 2,
                         }}>
                         <QueryForm />
                         <Typography
@@ -101,16 +125,19 @@ export const UIRefreshThreadPage = () => {
                         </Typography>
                     </Stack>
                 </Stack>
-            </Card>
 
-            {isDesktop ? (
-                <ThreadTabs />
-            ) : (
-                <>
-                    <AttributionDrawer />
-                    <ParameterDrawer />
-                </>
-            )}
+                {isDesktop ? (
+                    <>
+                        <DesktopParameterDrawer />
+                        <DesktopAttributionDrawer />
+                    </>
+                ) : (
+                    <>
+                        <MobileAttributionDrawer />
+                        <MobileParameterDrawer />
+                    </>
+                )}
+            </Card>
         </>
     );
 };
