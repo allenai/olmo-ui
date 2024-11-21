@@ -5,13 +5,13 @@ import { Ai2LogoMarkSpinner } from '@/components/Ai2LogoMarkSpinner';
 import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from './LegalNotice';
-import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadContainer';
+import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
 
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
 
     return (
-        <ThreadMaxWidthContainer>
+        <ThreadMaxWidthContainer gridTemplateRows="auto 1fr auto">
             <Box gridColumn="2 / -1">
                 <LegalNotice />
             </Box>

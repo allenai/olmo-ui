@@ -22,6 +22,8 @@ const textareaStyles: SxProps<Theme> = {
     whiteSpace: 'pre-wrap',
     outline: 'none',
     border: 'none',
+    paddingInline: 1,
+    paddingBlock: '4px',
 
     background: 'none',
 
@@ -68,23 +70,26 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         ...theme.typography.body1,
                         cursor: 'text',
                         lineHeight: '1.4375em',
+
                         // end styles stolen from MUI
 
                         display: 'grid',
                         gridTemplateColumns: '1fr auto',
                         gridTemplateAreas: '"prompt adornment"',
-                        borderRadius: theme.spacing(1.5),
+                        borderRadius: theme.spacing(3.5),
                         padding: 1,
+                        paddingInlineStart: 2,
+                        paddingInlineEnd: '14px', // eyeball adjustment
                         background: theme.palette.background.drawer.secondary,
                         border: '2px solid transparent',
 
                         [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
-                            borderColor: (theme) => theme.palette.primary.main,
+                            border: (theme) => `2px solid ${theme.palette.secondary.main}`,
                         },
 
                         '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
                             ':focus-within': {
-                                borderColor: (theme) => theme.palette.primary.main,
+                                border: (theme) => `2px solid ${theme.palette.secondary.main}`,
                             },
                         },
                     })}>
@@ -111,6 +116,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                             return {
                                 ...textareaStyles,
                                 color: theme.palette.text.primary,
+                                caretColor: theme.palette.secondary.main,
 
                                 // start styles stolen from MUI https://github.com/mui/material-ui/blob/e0894407dd8c564f853452dbed278f3fa7c04933/packages/mui-material/src/InputBase/InputBase.js#L109
                                 '&::-webkit-input-placeholder': placeholderStyles,

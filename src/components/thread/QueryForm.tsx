@@ -77,7 +77,7 @@ const SubmitPauseAdornment = ({
     isSubmitDisabled,
 }: SubmitPauseAdornmentProps) => {
     return (
-        <InputAdornment position="end" sx={{ color: 'primary.main', height: 'auto' }}>
+        <InputAdornment position="end" sx={{ color: 'secondary.main', height: 'auto' }}>
             {canPause ? (
                 <QueryFormButton
                     aria-label="Stop response generation"
@@ -217,7 +217,7 @@ export const QueryForm = (): JSX.Element => {
     };
 
     return (
-        <Box marginBlockStart="auto" width={1}>
+        <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                 <Stack gap={1} alignItems="flex-start" width={1}>
                     <Controller
