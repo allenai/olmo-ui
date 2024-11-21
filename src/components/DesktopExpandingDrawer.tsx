@@ -24,8 +24,9 @@ export const DesktopExpandingDrawer = ({
                 height: '100%',
                 minHeight: 0,
                 overflowY: 'auto',
-                gridColumn: '2 / -1',
-                gridRow: '1 / -1',
+                // gridColumn: '2 / -1',
+                // gridRow: '2 / -1',
+                gridArea: 'drawer',
             }}>
             <Box
                 paddingInline={2}

@@ -37,14 +37,24 @@ export const UIRefreshThreadPage = () => {
                 elevation={0}
                 sx={(theme) => ({
                     gridArea: 'content',
-                    paddingBlockStart: 2,
+                    paddingBlockStart: 1,
+                    paddingInline: 2,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        paddingBlockStart: 0,
                         display: 'grid',
+                        gridRowGap: '1rem',
                         transition: '300ms',
                         gridTemplateColumns: '1fr auto',
+                        gridTemplateRows: 'auto 1fr',
+                        gridTemplateAreas: '"controls ." "content drawer"',
                     },
                 })}>
+                <ModelSelectionDisplay
+                    models={models}
+                    selectedModel={selectedModel}
+                    onModelChange={onModelChange}
+                    label="Model"
+                    sx={{ gridArea: 'controls' }}
+                />
                 <Stack
                     gap={2}
                     sx={{
@@ -53,36 +63,17 @@ export const UIRefreshThreadPage = () => {
 
                         backgroundColor: 'transparent',
                         height: 1,
-                        paddingBlockStart: 1,
+                        // paddingBlockStart: 1,
                         // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
                         minHeight: 0,
                         minWidth: 0,
+
+                        gridArea: 'content',
                     }}>
-                    <Box
-                        sx={(theme) => ({
-                            display: 'grid',
-                            gridTemplateColumns: '1fr max-content',
-                            columnGap: 1,
-                            // width: '100%',
-                            flexGrow: 1,
-                            margin: '0 auto',
-                            paddingInline: 2,
-                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                paddingInline: 5,
-                            },
-                        })}>
-                        <ModelSelectionDisplay
-                            models={models}
-                            selectedModel={selectedModel}
-                            onModelChange={onModelChange}
-                            label="Model"
-                        />
-                    </Box>
                     <Outlet />
                     <Stack
                         gap={1}
                         sx={{
-                            paddingInline: 2,
                             width: '100%',
                             maxWidth: '750px',
                             margin: '0 auto',

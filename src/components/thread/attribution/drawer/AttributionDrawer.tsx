@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';

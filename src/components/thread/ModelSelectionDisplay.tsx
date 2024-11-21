@@ -6,6 +6,8 @@ import {
     OutlinedInput,
     Select,
     SelectChangeEvent,
+    SxProps,
+    Theme,
     Typography,
 } from '@mui/material';
 import { useEffect, useId } from 'react';
@@ -23,6 +25,7 @@ type ModelSelectionDisplayProps = {
     selectedModel?: Model;
     onModelChange: (event: SelectChangeEvent) => void;
     label?: string;
+    sx?: SxProps<Theme>;
 };
 
 export const ModelSelectionDisplay = ({
@@ -30,6 +33,7 @@ export const ModelSelectionDisplay = ({
     selectedModel,
     onModelChange,
     label = '',
+    sx,
 }: ModelSelectionDisplayProps) => {
     const selectId = useId();
     const { isPeteishModelEnabled } = useFeatureToggles();
@@ -65,7 +69,7 @@ export const ModelSelectionDisplay = ({
     };
 
     return (
-        <Box>
+        <Box sx={sx}>
             {newModels.length > 1 ? (
                 <FormControl
                     sx={{
