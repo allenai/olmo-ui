@@ -75,28 +75,6 @@ export const UIRefreshThreadPage = () => {
                             minWidth: 0,
                         },
                     })}>
-                    <Box
-                        gap={2}
-                        sx={(theme) => ({
-                            display: 'grid',
-                            gridTemplateColumns: '1fr max-content',
-                            columnGap: 1,
-                            width: '100%',
-                            margin: '0 auto',
-                            paddingBlockEnd: 2,
-                            paddingInline: 2,
-                            [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                                paddingInline: 5,
-                            },
-                        })}>
-                        <ModelSelectionDisplay
-                            models={models}
-                            selectedModel={selectedModel}
-                            onModelChange={onModelChange}
-                            label="Model"
-                        />
-                        <ThreadPageControls />
-                    </Box>
                     <Outlet />
                     <Stack
                         gap={1}
