@@ -122,11 +122,13 @@ export const UIRefreshThreadPage = () => {
     );
 };
 
-export const playgroundLoader: LoaderFunction = async ({ params }) => {
+export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
     const { models, getAllModels, resetSelectedThreadState, resetAttribution, getSchema, schema } =
         appContext.getState();
 
     const promises = [];
+
+    console.log('models', models);
 
     if (models.length === 0) {
         promises.push(getAllModels());
@@ -142,6 +144,16 @@ export const playgroundLoader: LoaderFunction = async ({ params }) => {
     }
 
     await Promise.all(promises);
+
+    const preselectedModelId = new URL(request.url).searchParams.get('model');
+    if (preselectedModelId != null) {
+        const { models: loadedModels, setSelectedModel } = appContext.getState();
+
+        const selectedModel = loadedModels.find((model) => model.id === preselectedModelId);
+        if (selectedModel != null) {
+            setSelectedModel(selectedModel.id);
+        }
+    }
 
     return null;
 };
