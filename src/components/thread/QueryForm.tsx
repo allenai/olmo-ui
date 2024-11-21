@@ -216,6 +216,8 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
+    const placeholderText = lastMessageId ? 'Reply to Tülu3' : 'Message Tülu3';
+
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -252,8 +254,8 @@ export const QueryForm = (): JSX.Element => {
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
-                                aria-label="Prompt"
-                                placeholder="Prompt"
+                                aria-label={placeholderText}
+                                placeholder={placeholderText}
                                 endAdornment={
                                     <SubmitPauseAdornment
                                         canPause={canPauseThread}
