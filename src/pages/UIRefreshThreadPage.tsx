@@ -128,8 +128,6 @@ export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
 
     const promises = [];
 
-    console.log('models', models);
-
     if (models.length === 0) {
         promises.push(getAllModels());
     }
