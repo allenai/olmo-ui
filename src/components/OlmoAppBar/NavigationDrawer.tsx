@@ -11,25 +11,31 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import SortIcon from '@mui/icons-material/Sort';
-import { alpha, IconButton, Link, ListItemText, Stack } from '@mui/material';
+import {
+    alpha,
+    IconButton,
+    Link,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
-import { ChatIcon } from '@/components/assets/ChatIcon';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
-import { Ai2LogoPlaygroundSVG } from '../svg/Ai2LogoPlaygroundSVG';
+import { Tulu3LogoSVG } from '../svg/Tulu3LogoSVG';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { ColorModeSelection } from './ColorModeSelection';
 import { NavigationLink } from './NavigationLink';
-import { ListItemButton } from '@mui/material';
-import { ListItem } from '@mui/material';
-import { ListItemIcon } from '@mui/material';
 
 const Auth0LoginLink = () => {
     const { isAuthenticated } = useUserAuthInfo();
@@ -157,6 +163,19 @@ export const NavigationDrawer = ({
                     </NavigationLink>
                     <ColorModeSelection />
                     <Auth0LoginLink />
+                    <ListItem
+                        sx={(theme) => ({
+                            paddingInline: 4,
+                            color: theme.color['gray-50'].hex,
+                            paddingBlock: 2,
+                        })}>
+                        <Typography variant="h6" fontWeight={600}>
+                            Proudly built by{' '}
+                            <Link href="https://allenai.org/" target="_blank" rel="noreferer">
+                                Ai2
+                            </Link>
+                        </Typography>
+                    </ListItem>
                 </Stack>
             </Stack>
         </ResponsiveDrawer>
@@ -175,7 +194,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
                 sx={{
                     transform: 'translateY(5px)',
                 }}>
-                <Ai2LogoPlaygroundSVG width={214} title="Return to the Playground home page" />
+                <Tulu3LogoSVG width={126} title="Return to the Playground home page" />
             </Link>
             <IconButton
                 onClick={onClose}
@@ -190,19 +209,19 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 const DesktopHeading = (): JSX.Element => {
     return (
         <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
-            <Ai2LogoPlaygroundSVG title="Return to the Playground home page" />
+            <Tulu3LogoSVG title="Return to the Playground home page" width={126} />
         </Link>
     );
 };
 
-const NewChatButton = ({ isSelected }: { isSelected: boolean; }) => {
+const NewChatButton = () => {
     return (
         <ListItem disablePadding dense>
             <ListItemButton
                 alignItems="center"
                 disableGutters
                 href={links.playground}
-                sx={( theme ) => ({
+                sx={(theme) => ({
                     minHeight: theme.spacing(5),
                     marginInline: theme.spacing(2),
                     marginBlockEnd: theme.spacing(1),
@@ -257,5 +276,5 @@ const NewChatButton = ({ isSelected }: { isSelected: boolean; }) => {
                 <div />
             </ListItemButton>
         </ListItem>
-    )
-}
+    );
+};

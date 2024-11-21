@@ -4,7 +4,6 @@ import {
     ListItemButton,
     ListItemButtonProps,
     ListItemIcon,
-    ListItemProps,
     ListItemText,
 } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
