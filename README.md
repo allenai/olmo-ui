@@ -4,9 +4,9 @@ https://olmo.allen.ai
 
 ## Contributing
 
-If you'd like to disable pre-commit hooks, set `HUSKY=0` in your env or run the commit with the `commit -n` option to skip hooks.
-
 ### Getting Started
+
+If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will use `husky` to set up our standard git hooks.
 
 #### Forwarding the API
 
