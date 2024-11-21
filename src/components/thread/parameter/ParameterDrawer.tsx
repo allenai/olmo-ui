@@ -1,5 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
@@ -15,7 +16,32 @@ const TEMPERATURE_INFO =
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
-export const ParameterDrawer = (): JSX.Element => {
+const DRAWER_WIDTH = '20rem';
+export const DesktopParameterDrawer = (): ReactNode => {
+    const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
+
+    return (
+        <Box
+            id="desktop-parameter-drawer"
+            sx={{
+                overflowX: 'hidden',
+                width: open ? DRAWER_WIDTH : 0,
+                transitionProperty: 'width, padding-inline',
+                transitionDuration: '300ms',
+                transitionTimingFunction: 'ease-in-out',
+            }}>
+            <Box
+                paddingInline={2}
+                sx={{
+                    minWidth: DRAWER_WIDTH,
+                }}>
+                <ParameterContent />
+            </Box>
+        </Box>
+    );
+};
+
+export const MobileParameterDrawer = (): JSX.Element => {
     return (
         <FullScreenDrawer
             drawerId="parameters"

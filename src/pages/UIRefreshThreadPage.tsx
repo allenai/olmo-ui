@@ -7,9 +7,11 @@ import { MetaTags } from '@/components/MetaTags';
 import { AttributionDrawer } from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { LegalNotice } from '@/components/thread/LegalNotice';
 import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
-import { ParameterDrawer } from '@/components/thread/parameter/ParameterDrawer';
+import {
+    DesktopParameterDrawer,
+    MobileParameterDrawer,
+} from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm';
-import { ThreadTabs } from '@/components/thread/ThreadTabs';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
@@ -31,11 +33,13 @@ export const UIRefreshThreadPage = () => {
                 variant="elevation"
                 elevation={0}
                 sx={(theme) => ({
-                    flexGrow: '1',
                     gridArea: 'content',
                     paddingBlockStart: 2,
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         paddingBlockStart: 0,
+                        display: 'grid',
+                        transition: '300ms',
+                        gridTemplateColumns: '1fr auto',
                     },
                 })}>
                 <Stack
@@ -47,13 +51,17 @@ export const UIRefreshThreadPage = () => {
                         backgroundColor: 'transparent',
                         height: 1,
                         paddingBlockStart: 1,
+                        // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
+                        minHeight: 0,
+                        minWidth: 0,
                     }}>
                     <Box
                         sx={(theme) => ({
                             display: 'grid',
                             gridTemplateColumns: '1fr max-content',
                             columnGap: 1,
-                            width: '100%',
+                            // width: '100%',
+                            flexGrow: 1,
                             margin: '0 auto',
                             paddingInline: 2,
                             [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
@@ -81,16 +89,17 @@ export const UIRefreshThreadPage = () => {
                         <LegalNotice />
                     </Stack>
                 </Stack>
-            </Card>
 
-            {isDesktop ? (
-                <ThreadTabs />
-            ) : (
-                <>
-                    <AttributionDrawer />
-                    <ParameterDrawer />
-                </>
-            )}
+                {isDesktop ? (
+                    <DesktopParameterDrawer />
+                ) : (
+                    // <ThreadTabs />
+                    <>
+                        <AttributionDrawer />
+                        <MobileParameterDrawer />
+                    </>
+                )}
+            </Card>
         </>
     );
 };
