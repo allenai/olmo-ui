@@ -1,11 +1,16 @@
 import {
+    alpha,
     Box,
     FormControl,
-    InputLabel,
+    InputBase,
+    inputBaseClasses,
+    InputBaseProps,
     MenuItem,
-    OutlinedInput,
+    menuItemClasses,
     Select,
     SelectChangeEvent,
+    selectClasses,
+    styled,
     SxProps,
     Theme,
     Typography,
@@ -74,31 +79,43 @@ export const ModelSelectionDisplay = ({
         <Box sx={sx} paddingInline={2} paddingBlockEnd={2}>
             {newModels.length > 1 ? (
                 <FormControl
+                    variant="standard"
                     sx={{
-                        maxWidth: '25rem',
-                        justifySelf: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'baseline',
                     }}>
-                    <InputLabel
+                    <Box
+                        component="label"
                         id={labelId}
                         htmlFor={selectId}
-                        sx={(theme) => ({
-                            background: theme.palette.background.paper,
+                        sx={{
+                            background: 'transparent',
                             paddingX: 1,
-                        })}>
-                        {label}
-                    </InputLabel>
+                        }}>
+                        Model:{' '}
+                    </Box>
                     <Select
                         id={selectId}
                         labelId={labelId}
                         fullWidth
                         size="small"
                         onChange={handleModelChange}
-                        input={<OutlinedInput />}
+                        input={<CustomInput />}
+                        MenuProps={{
+                            slotProps: {
+                                paper: {
+                                    sx: (theme) => ({
+                                        background: theme.palette.background.drawer.secondary,
+                                        borderRadius: theme.spacing(1),
+                                    }),
+                                },
+                            },
+                        }}
                         value={(selectedModel && selectedModel.id) || ''}>
                         {newModels.map((model) => (
-                            <MenuItem key={model.name} value={model.id}>
+                            <CustomMenuItem key={model.name} value={model.id}>
                                 {model.name}
-                            </MenuItem>
+                            </CustomMenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -111,3 +128,57 @@ export const ModelSelectionDisplay = ({
         </Box>
     );
 };
+
+const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
+    background: theme.palette.background.drawer.secondary,
+    [`&.${menuItemClasses.root}`]: {
+        background: theme.palette.background.drawer.secondary,
+    },
+    [`&.${menuItemClasses.focusVisible}`]: {
+        backgroundColor: '#FF0000',
+    },
+    ':hover': {
+        backgroundColor: alpha(theme.color['dark-teal'].hex, 0.5),
+    },
+    [`&.${menuItemClasses.selected}`]: {
+        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        [`&.${menuItemClasses.focusVisible}`]: {
+            backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        },
+        ':hover': {
+            backgroundColor: 'rgba(255, 0, 255, 0.25)',
+        },
+    },
+}));
+
+const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(({ theme }) => ({
+    borderRadius: '999px',
+    backgroundColor: theme.palette.background.drawer.secondary,
+    backgroundImage: 'none',
+    color: theme.palette.primary.main,
+
+    minWidth: '15rem',
+    border: '2px solid transparent',
+    [`:focus, :focus-within`]: {
+        borderColor: theme.palette.secondary.main,
+    },
+    [`.${inputBaseClasses.input}`]: {
+        paddingBlock: theme.spacing(1),
+        paddingInlineStart: theme.spacing(2),
+        paddingInlineEnd: theme.spacing(3),
+
+        '&:focus': {
+            backgroundColor: 'transparent',
+        },
+        [`&.${inputBaseClasses.input}`]: {
+            paddingInlineEnd: theme.spacing(2),
+        },
+        [`.${inputBaseClasses.focused}`]: {
+            borderColor: theme.palette.secondary.main,
+        },
+    },
+    [`.${selectClasses.icon}`]: {
+        marginInlineEnd: theme.spacing(1),
+        transform: 'scale(1.2) translateY(-1px)',
+    },
+}));
