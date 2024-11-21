@@ -3,6 +3,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -11,7 +12,6 @@ import { isOlderThan30Days } from '@/utils/date-utils';
 import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
 import { DeleteThreadDialog } from './DeleteThreadDialog';
 import { ResponsiveButton, ResponsiveButtonProps } from './ResponsiveButton';
-import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 type DeleteThreadButtonProps = Partial<
     Pick<ResponsiveButtonProps, 'isResponsive' | 'variant' | 'layout' | 'onClick'>
