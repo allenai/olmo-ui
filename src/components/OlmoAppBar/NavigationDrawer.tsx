@@ -1,4 +1,5 @@
 import {
+    AddBoxOutlined,
     ArrowForwardIosOutlined,
     LoginOutlined as LoginIcon,
     RateReviewOutlined,
@@ -10,19 +11,28 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import SortIcon from '@mui/icons-material/Sort';
-import { IconButton, Link, Stack } from '@mui/material';
+import {
+    alpha,
+    IconButton,
+    Link,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Stack,
+    Typography,
+} from '@mui/material';
 import { ComponentProps } from 'react';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
-import { ChatIcon } from '@/components/assets/ChatIcon';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
-import { Ai2LogoPlaygroundSVG } from '../svg/Ai2LogoPlaygroundSVG';
+import { Tulu3LogoSVG } from '../svg/Tulu3LogoSVG';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { ColorModeSelection } from './ColorModeSelection';
 import { NavigationLink } from './NavigationLink';
@@ -100,13 +110,8 @@ export const NavigationDrawer = ({
                     overflowX: 'hidden',
                     paddingBlockEnd: 2,
                 }}>
-                <Stack component="ul" padding="0" margin="0">
-                    <NavigationLink
-                        href={links.playground}
-                        icon={<ChatIcon />}
-                        selected={curriedDoesMatchPath(links.playground, links.thread(''))}>
-                        Chat
-                    </NavigationLink>
+                <Stack component="ul" padding="0" margin="0" gap={1}>
+                    <NewChatButton />
                     <NavigationLink
                         onClick={() => {
                             toggleDrawer(HISTORY_DRAWER_ID);
@@ -158,6 +163,29 @@ export const NavigationDrawer = ({
                     </NavigationLink>
                     <ColorModeSelection />
                     <Auth0LoginLink />
+                    <ListItem
+                        sx={(theme) => ({
+                            paddingInline: 4,
+                            color: theme.color['gray-50'].hex,
+                            paddingBlock: 2,
+                        })}>
+                        <Typography
+                            component="span"
+                            variant="subtitle2"
+                            fontWeight={400}
+                            sx={(theme) => ({
+                                color: alpha(theme.color['off-white'].hex, 0.5),
+                            })}>
+                            Proudly built by{' '}
+                            <Link
+                                href="https://allenai.org/"
+                                target="_blank"
+                                rel="noreferer"
+                                fontWeight={600}>
+                                Ai2
+                            </Link>
+                        </Typography>
+                    </ListItem>
                 </Stack>
             </Stack>
         </ResponsiveDrawer>
@@ -176,7 +204,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
                 sx={{
                     transform: 'translateY(5px)',
                 }}>
-                <Ai2LogoPlaygroundSVG width={214} title="Return to the Playground home page" />
+                <Tulu3LogoSVG width={126} title="Return to the Playground home page" />
             </Link>
             <IconButton
                 onClick={onClose}
@@ -191,7 +219,72 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
 const DesktopHeading = (): JSX.Element => {
     return (
         <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
-            <Ai2LogoPlaygroundSVG title="Return to the Playground home page" />
+            <Tulu3LogoSVG title="Return to the Playground home page" width={126} />
         </Link>
+    );
+};
+
+const NewChatButton = () => {
+    return (
+        <ListItem disablePadding dense>
+            <ListItemButton
+                alignItems="center"
+                disableGutters
+                href={links.playground}
+                sx={(theme) => ({
+                    minHeight: theme.spacing(5),
+                    marginInline: theme.spacing(2),
+                    marginBlockEnd: theme.spacing(1),
+                    paddingBlock: theme.spacing(2),
+                    paddingInline: theme.spacing(2),
+                    gap: theme.spacing(2),
+                    color: theme.color['off-white'].hex,
+                    borderRadius: '9999px',
+                    backgroundColor: alpha(theme.palette.common.white, 0.1),
+
+                    ':hover, :hover > &': {
+                        backgroundColor: alpha(theme.palette.common.white, 0.1),
+                    },
+
+                    '&.Mui-selected': {
+                        backgroundColor: alpha(theme.palette.common.white, 0.1),
+                        color: theme.palette.secondary.main,
+
+                        ':hover': {
+                            backgroundColor: alpha(theme.palette.common.white, 0.1),
+                        },
+
+                        ':focus-visible': {
+                            backgroundColor: theme.palette.secondary.light,
+                            color: theme.palette.secondary.contrastText,
+                        },
+                    },
+
+                    '&.Mui-focusVisible': {
+                        backgroundColor: theme.palette.secondary.light,
+                        color: theme.palette.secondary.contrastText,
+                    },
+                })}>
+                <ListItemIcon
+                    sx={{
+                        height: '1.25rem',
+                        width: '1.25rem',
+                        minWidth: 'unset',
+                        '& svg': { fontSize: '1.25rem', transform: 'scale(1.2)' },
+                    }}>
+                    <AddBoxOutlined color="secondary" />
+                </ListItemIcon>
+                <ListItemText
+                    sx={{ margin: 0, marginInlineEnd: 'auto' }}
+                    primaryTypographyProps={{
+                        variant: 'body1',
+                        fontWeight: 500,
+                        component: 'span',
+                    }}>
+                    New chat
+                </ListItemText>
+                <div />
+            </ListItemButton>
+        </ListItem>
     );
 };

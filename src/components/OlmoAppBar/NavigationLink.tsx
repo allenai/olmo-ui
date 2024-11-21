@@ -75,7 +75,7 @@ export const NavigationLink = ({
     };
 
     return (
-        <ListItem disablePadding disableGutters dense>
+        <ListItem disablePadding dense>
             <ListItemButton
                 alignItems="center"
                 selected={selected}
