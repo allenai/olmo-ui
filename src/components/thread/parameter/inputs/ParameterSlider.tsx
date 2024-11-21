@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useAppContext } from '@/AppContext';
+import { useColorMode } from '@/components/ColorModeProvider';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
@@ -46,6 +47,8 @@ export const ParameterSlider = ({
         _setValue(initialValue);
     }, [initialValue]);
 
+    const [colorMode] = useColorMode();
+
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const handleChange = useDebouncedCallback((value: number) => {
@@ -59,14 +62,14 @@ export const ParameterSlider = ({
     }, 800);
 
     const handleSliderChange = (_: Event, newValue: number | number[]) => {
-        const value = Array.isArray(newValue) ? newValue[0] : newValue;
-        setValue(value);
+        const valueToSet = Array.isArray(newValue) ? newValue[0] : newValue;
+        setValue(valueToSet);
         handleChange(value);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = Number(event.target.value);
-        setValue(value);
+        setValue(newValue);
         handleChange(newValue);
     };
 
@@ -88,7 +91,7 @@ export const ParameterSlider = ({
                             min={min}
                             max={max}
                             sx={{
-                                color: 'inherit',
+                                color: colorMode === 'light' ? 'inherit' : undefined,
                             }}
                         />
                     </Box>
@@ -118,7 +121,7 @@ export const ParameterSlider = ({
                                 type: 'number',
                                 id,
                                 sx: {
-                                    textAlign: 'right',
+                                    textAlign: 'center',
                                     width: 'auto',
                                     height: '100%',
                                 },
