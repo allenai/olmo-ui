@@ -7,9 +7,9 @@ export const ChatAvatar = ({ sx, src, ...props }: AvatarProps) => (
             {
                 width: 28,
                 height: 28,
-                padding: '3px',
+                padding: '5px',
                 '& .MuiAvatar-fallback': {
-                    padding: '3px',
+                    padding: '5px',
                 },
                 border: '1px solid rgba(0, 0, 0, 0.15)', // Tinted outline for border
             },
