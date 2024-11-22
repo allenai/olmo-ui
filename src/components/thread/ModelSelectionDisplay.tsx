@@ -117,7 +117,6 @@ export const ModelSelectionDisplay = ({
                             MenuListProps: {
                                 sx: (theme) => ({
                                     borderRadius: theme.spacing(1),
-                                    overflow: 'hidden',
                                     backgroundColor: theme.palette.background.drawer.secondary,
                                     padding: 0,
                                     boxShadow: 1,
