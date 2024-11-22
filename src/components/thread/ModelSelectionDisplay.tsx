@@ -118,6 +118,7 @@ export const ModelSelectionDisplay = ({
                                 sx: (theme) => ({
                                     borderRadius: theme.spacing(1),
                                     backgroundColor: theme.palette.background.drawer.secondary,
+                                    overflow: 'hidden',
                                     padding: 0,
                                     boxShadow: 1,
                                 }),
@@ -153,8 +154,8 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
         backgroundColor: alpha(theme.palette.common.black, 0.04),
     },
     [`&.${menuItemClasses.selected}`]: {
-        background: 'transparent',
-        color: theme.palette.mode === 'dark' ? theme.palette.primary.main : '#ef509b',
+        background: alpha(theme.palette.background.paper, 0.6),
+        color: theme.palette.text.primary,
         [`&.${menuItemClasses.focusVisible}`]: {
             backgroundColor: alpha(theme.palette.common.black, 0.12),
         },
@@ -168,7 +169,9 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
     borderRadius: '999px',
     backgroundColor: theme.palette.background.drawer.secondary,
     backgroundImage: 'none',
-    color: theme.palette.mode === 'dark' ? theme.palette.primary.main : '#ef509b',
+    color: theme.palette.text.primary,
+
+    paddingInlineEnd: theme.spacing(6),
 
     minWidth: '15rem',
     border: '2px solid transparent',
