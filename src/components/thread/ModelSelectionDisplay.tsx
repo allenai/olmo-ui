@@ -112,6 +112,7 @@ export const ModelSelectionDisplay = ({
                                         paddingInline: theme.spacing(1.5),
                                         paddingBlock: '0',
                                         boxShadow: 'none',
+                                        overflow: 'visible',
                                     }),
                                 },
                             },
