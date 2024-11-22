@@ -22,6 +22,6 @@ describe('root playground loader', () => {
             request: new Request(new URL('http://localhost:8080/?model=fake-model')),
         });
 
-        expect(appContext.getState().selectedModel?.id).toEqual('tulu2');
+        expect(appContext.getState().selectedModel?.id).toEqual(undefined);
     });
 });

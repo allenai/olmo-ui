@@ -1,5 +1,6 @@
 import { render, screen } from '@test-utils';
-import { ComponentProps } from 'react';
+import userEvent from '@testing-library/user-event';
+import { act, ComponentProps } from 'react';
 
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
@@ -56,7 +57,8 @@ const getInitialState = () =>
     }) satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
 
 describe('Model Select', () => {
-    it("should show the selected model even if it's deprecated", () => {
+    it("should show the selected model even if it's deprecated", async () => {
+        const user = userEvent.setup();
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
@@ -69,9 +71,34 @@ describe('Model Select', () => {
             </FakeAppContextProvider>
         );
 
-        screen.debug();
-        expect(screen.getByRole('combobox', { name: 'Model' })).toHaveTextContent(
-            'OLMo-peteish-dpo-preview'
+        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model' });
+        expect(modelSelectLocator).toHaveTextContent('OLMo-peteish-dpo-preview');
+
+        await act(async () => {
+            await user.click(modelSelectLocator);
+        });
+        expect(screen.getByRole('listbox', { name: 'Model' }).children).toHaveLength(2);
+    });
+
+    it('should only show non-deprecated models as options', async () => {
+        const user = userEvent.setup();
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    ...getInitialState(),
+                }}>
+                <ModelSelect />
+            </FakeAppContextProvider>
         );
+
+        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model' });
+        expect(modelSelectLocator).toHaveTextContent('Llama Tülu 3 8B');
+
+        await act(async () => {
+            await user.click(modelSelectLocator);
+        });
+        expect(screen.getByRole('listbox', { name: 'Model' }).children).toHaveLength(1);
     });
 });
