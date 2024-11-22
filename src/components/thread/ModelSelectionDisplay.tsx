@@ -118,9 +118,10 @@ export const ModelSelectionDisplay = ({
                             MenuListProps: {
                                 sx: (theme) => ({
                                     borderRadius: theme.spacing(1),
+                                    overflow: 'hidden',
                                     backgroundColor: theme.palette.background.drawer.secondary,
                                     padding: 0,
-                                    // Want the boxshadow from paper here
+                                    boxShadow: 1,
                                 }),
                             },
                         }}
@@ -154,7 +155,8 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
         backgroundColor: alpha(theme.palette.common.black, 0.04),
     },
     [`&.${menuItemClasses.selected}`]: {
-        backgroundColor: alpha(theme.palette.common.black, 0.12),
+        background: 'transparent',
+        color: theme.palette.primary.main,
         [`&.${menuItemClasses.focusVisible}`]: {
             backgroundColor: alpha(theme.palette.common.black, 0.12),
         },
