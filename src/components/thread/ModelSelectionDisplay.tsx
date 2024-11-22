@@ -24,6 +24,7 @@ import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
+import { inputClasses } from '@mui/base';
 
 type ModelSelectionDisplayProps = {
     models: ModelList;
@@ -175,7 +176,7 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
 
     minWidth: '15rem',
     border: '2px solid transparent',
-    [`:focus, :focus-within`]: {
+    '&.Mui-focused': {
         borderColor: theme.palette.secondary.main,
     },
     [`.${inputBaseClasses.input}`]: {
