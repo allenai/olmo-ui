@@ -30,6 +30,7 @@ export const createModelSlice: StateCreator<ModelSlice & SnackMessageSlice, [], 
 
             set({
                 models,
+                selectedModel: models.find((model) => !model.is_deprecated),
                 modelRemoteState: RemoteState.Loaded,
             });
         } catch (err) {
