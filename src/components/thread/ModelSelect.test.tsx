@@ -71,13 +71,13 @@ describe('Model Select', () => {
             </FakeAppContextProvider>
         );
 
-        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model' });
+        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model:' });
         expect(modelSelectLocator).toHaveTextContent('OLMo-peteish-dpo-preview');
 
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        expect(screen.getByRole('listbox', { name: 'Model' }).children).toHaveLength(2);
+        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(2);
     });
 
     it('should only show non-deprecated models as options', async () => {
@@ -93,12 +93,12 @@ describe('Model Select', () => {
             </FakeAppContextProvider>
         );
 
-        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model' });
+        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model:' });
         expect(modelSelectLocator).toHaveTextContent('Llama Tülu 3 8B');
 
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        expect(screen.getByRole('listbox', { name: 'Model' }).children).toHaveLength(1);
+        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(1);
     });
 });
