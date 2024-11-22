@@ -83,6 +83,8 @@ const fakeSecondThreadResponse = {
     content: 'Second existing message',
     snippet: 'Second existing message',
     creator: 'murphy@allenai.org',
+    model_id: 'OLMo-peteish-dpo-preview',
+    model_host: 'modal',
     role: Role.User,
     opts: {
         max_tokens: 2048,
@@ -98,6 +100,8 @@ const fakeSecondThreadResponse = {
             content: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
             snippet: 'OkayOkayOkayOkayOkayOkayOkayOkayOkay',
             creator: 'murphy@allenai.org',
+            model_id: 'OLMo-peteish-dpo-preview',
+            model_host: 'modal',
             role: Role.LLM,
             opts: {
                 max_tokens: 2048,
@@ -119,7 +123,7 @@ const fakeSecondThreadResponse = {
     final: true,
     private: false,
     labels: [],
-};
+} satisfies JSONMessage;
 
 const highlightStressTestMessageId = 'highlightstresstest';
 const highlightStressTestResponse = {
@@ -163,7 +167,7 @@ const highlightStressTestResponse = {
     final: true,
     private: false,
     labels: [],
-};
+} satisfies JSONMessage;
 
 const fakeGetAllThreadsResponse: MessagesResponse = {
     messages: [

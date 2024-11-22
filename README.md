@@ -4,47 +4,12 @@ https://olmo.allen.ai
 
 ## Contributing
 
-### Github setup
-Olmo-Ui repo requires verify commit so it won't allow you to merge. If you run into the issue, here is the step below that you need to do to set it up
-Disclaimer: below is the instruction on how to set up verify commit using gpg please refer to docs for ssh-specific info(https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key#telling-git-about-your-ssh-key)
-1. Install gnupg
-    ```
-    brew install gnupg           
-    ```
-2. Generate gpg key
-    ```
-    gpg --full-generate-key
-    ```
-3. If you have previously configured Git to use a different key format when signing with --gpg-sign, unset this configuration so the default format of openpgp will be used.
-    ```
-    git config --global --unset gpg.format
-    ```
-4. Use the gpg --list-secret-keys --keyid-format=long command to list the long form of the GPG keys for which you have both a public and private key. A private key is required for signing commits or tags.
-    The signingkey is after sec: rsa/
-    ```
-    gpg --list-secret-keys --keyid-format=long
-    ```
-5. To set your primary GPG signing key in Git, paste the text below, substituting in the GPG primary key ID you'd like to use.
-    ```
-    git config --global user.signingkey signingkey
-    ```
-6. Go to https://github.com/settings/profile and click on SSH and GPG keys, select GPG Keys and add your public GPG keys in there. To retrieve your public GPG keys use the command below.
-    The GPG public key started with -----BEGIN PGP PUBLIC KEY BLOCK-----
-    ```
-    gpg --armor --export signingkey 
-    ```
-7. After export and save your key in github on terminal following these step:
-    ```
-    echo $SHELL
-    ```
-    Once you use the command above to find out your SHELL type add this export to it
-    ```
-    export GPG_TTY=$(tty)
-    ```
-
 ### Getting Started
 
+If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will use `husky` to set up our standard git hooks.
+
 #### Forwarding the API
+
 The UI depends on the [API](https://github.com/allenai/olmo-api). You'll need to forward a local port
 to the production API to get things working.
 
@@ -53,12 +18,12 @@ to the production API to get things working.
 
 1. Start by connecting to the Kubernetes cluster:
 
-    ```
-    gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
-    ```
+   ```
+   gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
+   ```
 
-    You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
-    If it happens, install the plugin as it suggests with this command:
+   You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
+   If it happens, install the plugin as it suggests with this command:
 
    ```
    gcloud components install gke-gcloud-auth-plugin
@@ -66,39 +31,42 @@ to the production API to get things working.
 
 2. Then port forward `8000` to the API:
 
-    ```
-    kubectl port-forward -n olmo-api service/olmo-api-prod 8000
-    ```
+   ```
+   kubectl port-forward -n olmo-api service/olmo-api-prod 8000
+   ```
 
 3. Next open another terminal and launch the application like so:
 
-    ```
-    docker compose up --build
-    ```
+   ```
+   docker compose up --build
+   ```
 
 ### Running Tests
 
 #### E2E Tests
 
 To start running E2E tests follow the steps below:
+
 - Copy the E2E_TEST_USER and E2E_TEST_PASSWORD to .env.local
-    they can be found here: https://start.1password.com/open/i?a=DES74C5MCVDCTGGUDF3CJBUJC4&v=i2t3yrat34bj23pimhovzdorpu&i=wxfuwokc7qmolsjft2d7bsscuu&h=allenai.1password.com
+  they can be found here: https://start.1password.com/open/i?a=DES74C5MCVDCTGGUDF3CJBUJC4&v=i2t3yrat34bj23pimhovzdorpu&i=wxfuwokc7qmolsjft2d7bsscuu&h=allenai.1password.com
 - Set the AUTH0_CLIENT_ID and AUTH0_DOMAIN to point at our dev environment in .env.local
-    ```
-    AUTH0_CLIENT_ID=9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd
-    AUTH0_DOMAIN=allenai-public-dev.us.auth0.com
-    ```
+  ```
+  AUTH0_CLIENT_ID=9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd
+  AUTH0_DOMAIN=allenai-public-dev.us.auth0.com
+  ```
 - Make sure mocking is enabled when running the dev server: `ENABLE_MOCKING=true docker compose up --build`
 - Run `yarn test:e2e` to run all the e2e tests
 - More commands: https://playwright.dev/docs/test-cli
 
 To update e2e test screenshots for CI:
+
 - `docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v{CURRENT_PLAYWRIGHT_VERSION}-focal /bin/bash`
 - `yarn test:e2e --update-screenshots`
 
 #### Unit Tests
 
-To start running unit tests use the command belows:  
+To start running unit tests use the command belows:
+
 - Run the command `yarn test` will perform a single run without watch node
 - Run the command `yarn test:watch` will enter the watch mode in development environment and run mode in CI automatically
 - More commands: https://vitest.dev/guide/cli
@@ -113,11 +81,13 @@ USER_EMAIL=grasshopper@allenai.org docker compose up --build
 ```
 
 ## Mocking network requests
+
 We use MSW to mock network requests for testing and local development. To enable it, have `ENABLE_MOCKING=true` as an env variable when you're starting the server. If you're starting with `docker compose`, that would look like this: `ENABLE_MOCKING=true docker compose up --build`.
 
- Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
+Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
 
 ## Setting up to use the Dolma API
+
     Generate a local config.json file:
     ```
     ./bin/bootstrap

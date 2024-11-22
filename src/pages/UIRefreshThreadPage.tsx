@@ -1,14 +1,14 @@
-import { alpha, Card, SelectChangeEvent, Stack, Typography } from '@mui/material';
+import { alpha, Card, Stack, Typography } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
-import { appContext, useAppContext } from '@/AppContext';
+import { appContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
 import {
     DesktopAttributionDrawer,
     MobileAttributionDrawer,
 } from '@/components/thread/attribution/drawer/AttributionDrawer';
-import { ModelSelectionDisplay } from '@/components/thread/ModelSelectionDisplay';
+import { ModelSelect } from '@/components/thread/ModelSelect';
 import {
     DesktopParameterDrawer,
     MobileParameterDrawer,
@@ -18,14 +18,6 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
 export const UIRefreshThreadPage = () => {
-    const models = useAppContext((state) => state.models);
-    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
-    const selectedModel = useAppContext((state) => state.selectedModel);
-
-    const onModelChange = (event: SelectChangeEvent) => {
-        setSelectedModel(event.target.value);
-    };
-
     const isDesktop = useDesktopOrUp();
 
     return (
@@ -70,12 +62,7 @@ export const UIRefreshThreadPage = () => {
                             minWidth: 0,
                         },
                     })}>
-                    <ModelSelectionDisplay
-                        models={models}
-                        selectedModel={selectedModel}
-                        onModelChange={onModelChange}
-                        label="Model"
-                    />
+                    <ModelSelect />
                     <Outlet />
                     <Stack
                         gap={1}
@@ -122,7 +109,7 @@ export const UIRefreshThreadPage = () => {
     );
 };
 
-export const playgroundLoader: LoaderFunction = async ({ params }) => {
+export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
     const { models, getAllModels, resetSelectedThreadState, resetAttribution, getSchema, schema } =
         appContext.getState();
 
@@ -142,6 +129,16 @@ export const playgroundLoader: LoaderFunction = async ({ params }) => {
     }
 
     await Promise.all(promises);
+
+    const preselectedModelId = new URL(request.url).searchParams.get('model');
+    if (preselectedModelId != null) {
+        const { models: loadedModels, setSelectedModel } = appContext.getState();
+
+        const selectedModel = loadedModels.find((model) => model.id === preselectedModelId);
+        if (selectedModel != null) {
+            setSelectedModel(selectedModel.id);
+        }
+    }
 
     return null;
 };

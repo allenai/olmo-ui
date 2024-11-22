@@ -13,7 +13,12 @@
     "test:coverage": "test --coverage",
     "test:e2e": "playwright test",
     "test:watch": "vitest",
-    "vitest-preview": "vitest-preview"
+    "vitest-preview": "vitest-preview",
+    "add-git-hooks": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --fix",
+    "*.{md,json,yaml,yml}": "prettier --write"
   },
   "resolutions": {
     "@types/react": "^18.2.55"
@@ -106,7 +111,9 @@
     "eslint-plugin-standard": "^5.0.0",
     "eslint-plugin-vitest": "^0.4.1",
     "html-webpack-plugin": "^5.3.2",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "lint-staged": "^15.2.10",
     "msw": "^2.2.13",
     "playwright-msw": "^3.0.1",
     "prettier": "^3.2.5",
