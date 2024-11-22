@@ -10,7 +10,7 @@ import { useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
-import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice';
+import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';

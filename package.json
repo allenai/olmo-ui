@@ -8,7 +8,7 @@
     "build": "webpack --mode production --env production",
     "lint": "eslint '**/*.{js,ts,tsx,json}' && echo '💫  Lint complete.'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json && echo '🛠  Lint --fix complete'",
-    "start": "webpack serve --mode development --env development",
+    "start": "webpack serve --mode development",
     "test": "vitest run",
     "test:coverage": "test --coverage",
     "test:e2e": "playwright test",
