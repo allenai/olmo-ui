@@ -184,4 +184,85 @@ describe('QueryForm', () => {
 
         expect(textfield).toHaveTextContent('write a poem');
     });
+
+    it("should show a model's family name in the placeholder and label", () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{ selectedModel: { family_name: 'family name' } }}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByRole('textbox', { name: 'Message family name' })).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Message family name')).toBeInTheDocument();
+    });
+
+    it("should show a model's family name in the reply placeholder and label", () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    selectedModel: { family_name: 'family name' },
+                    selectedThreadRootId: 'root',
+                    selectedThreadMessagesById: {
+                        root: {
+                            creator: 'creator',
+                        },
+                    },
+                }}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByRole('textbox', { name: 'Reply to family name' })).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Reply to family name')).toBeInTheDocument();
+    });
+
+    it('should show "reply to" in the placeholder and label', () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    selectedThreadRootId: 'root',
+                    selectedThreadMessagesById: {
+                        root: {
+                            creator: 'creator',
+                        },
+                    },
+                }}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByRole('textbox', { name: 'Reply to the model' })).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Reply to the model')).toBeInTheDocument();
+    });
 });
