@@ -24,7 +24,6 @@ import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
-import { inputClasses } from '@mui/base';
 
 type ModelSelectionDisplayProps = {
     models: ModelList;
