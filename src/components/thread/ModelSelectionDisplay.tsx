@@ -154,7 +154,7 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
     },
     [`&.${menuItemClasses.selected}`]: {
         background: 'transparent',
-        color: theme.palette.primary.main,
+        color: theme.palette.mode === 'dark' ? theme.palette.primary.main : '#ef509b',
         [`&.${menuItemClasses.focusVisible}`]: {
             backgroundColor: alpha(theme.palette.common.black, 0.12),
         },
@@ -168,7 +168,7 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
     borderRadius: '999px',
     backgroundColor: theme.palette.background.drawer.secondary,
     backgroundImage: 'none',
-    color: theme.palette.primary.main,
+    color: theme.palette.mode === 'dark' ? theme.palette.primary.main : '#ef509b',
 
     minWidth: '15rem',
     border: '2px solid transparent',
