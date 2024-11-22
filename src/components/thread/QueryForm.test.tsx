@@ -22,7 +22,7 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         render(<QueryForm />);
 
-        expect(screen.getByRole('textbox', { name: 'Prompt' })).toBeVisible();
+        expect(screen.getByRole('textbox', { name: 'Message the model' })).toBeVisible();
     });
 
     it('should submit prompt successfully', async () => {
@@ -48,7 +48,7 @@ describe('QueryForm', () => {
         );
 
         const user = userEvent.setup();
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
         expect(textfield).toHaveTextContent('');
@@ -89,7 +89,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
         // Keeping the text field enabled allows users to type during long generations and makes keeping focus on the text field easy
@@ -127,7 +127,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
 
@@ -171,7 +171,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
 

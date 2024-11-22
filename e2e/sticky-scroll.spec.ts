@@ -12,7 +12,7 @@ test.skip('should sticky-scroll only after the user scrolls', async ({ page }) =
         response.url().includes('stream')
     );
 
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('test');
+    await page.getByRole('textbox', { name: 'Message the model' }).fill('test');
     await page.getByLabel('Submit prompt').press('Enter');
 
     await expect(page.getByText('User message')).toBeVisible({ timeout: 10000 });
@@ -38,7 +38,7 @@ test.skip('should sticky-scroll only after the user scrolls', async ({ page }) =
         response.url().includes('stream')
     );
 
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('infinite');
+    await page.getByRole('textbox', { name: 'Message the model' }).fill('infinite');
     await page.getByLabel('Submit prompt').press('Enter');
 
     // Tests the "scroll to new user message" functionality
