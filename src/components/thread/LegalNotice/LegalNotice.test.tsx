@@ -26,8 +26,9 @@ describe('LegalNotice', () => {
         expect(
             screen.getByText(
                 (_, element) =>
-                    element?.textContent ===
-                    'By using Ai2 Playground, you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. Llama Tulu3 models were built with Llama subject to the Meta Llama 3.1 Community License Agreement. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'
+                    element?.tagName.toLowerCase() === 'div' &&
+                    element.textContent ===
+                        'By using Ai2 Playground, you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'
             )
         ).toBeVisible();
     });
@@ -44,8 +45,9 @@ describe('LegalNotice', () => {
         expect(
             screen.getByText(
                 (_, element) =>
-                    element?.textContent ===
-                    'By using Ai2 Playground, you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. Llama Tulu3 models were built with Llama subject to the Meta Llama 3.1 Community License Agreement. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'
+                    element?.tagName.toLowerCase() === 'div' &&
+                    element.textContent ===
+                        'By using Ai2 Playground, you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. Llama Tulu3 models were built with Llama subject to the Meta Llama 3.1 Community License Agreement. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'
                 // element?.textContent?.includes(
                 //     'Llama Tulu3 models were built with Llama subject to the Meta Llama 3.1 Community License Agreement.'
                 // )
