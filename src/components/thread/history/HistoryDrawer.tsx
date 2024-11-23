@@ -165,7 +165,9 @@ export const HistoryDrawer = (): JSX.Element => {
                                     fontWeight: 'bold',
                                     sx: { margin: 0, fontVariantNumeric: 'tabular-nums' },
                                 }}>
-                                <Skeleton animation="wave" variant="text" />
+                                {hasMoreThreadsToFetch && (
+                                    <Skeleton animation="wave" variant="text" />
+                                )}
                             </ListItemText>
                         </ListItem>
                     </>

@@ -14,11 +14,17 @@ export const AnonymousUserExpirationMessage = (): ReactNode => {
     }
 
     return (
-        <Typography variant="caption" color="common.white" paddingInline={2} paddingBlockEnd={2}>
+        <Typography
+            variant="caption"
+            lineHeight={1.75}
+            color="common.white"
+            paddingInline={3}
+            paddingBlockEnd={3}>
             Logged-in users get to keep their thread history forever.{' '}
             <Link
                 href={links.login(location.pathname)}
-                color={(theme) => theme.palette.secondary.light}>
+                fontWeight={600}
+                color={(theme) => theme.palette.primary.main}>
                 Log in
             </Link>{' '}
             now to save future threads.
