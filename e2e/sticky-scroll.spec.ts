@@ -2,7 +2,7 @@ import { expect, isElementVisibleInContainer, test } from '@playwright-utils';
 
 test.use({
     // Sticky scroll is easier to test consistently with a smaller viewport
-    viewport: { width: 400, height: 500 },
+    viewport: { width: 1980, height: 500 },
 });
 
 test.skip('should sticky-scroll only after the user scrolls', async ({ page }) => {
@@ -12,7 +12,7 @@ test.skip('should sticky-scroll only after the user scrolls', async ({ page }) =
         response.url().includes('stream')
     );
 
-    await page.getByRole('textbox', { name: 'Message the model' }).fill('test');
+    await page.getByRole('textbox', { name: /^Message*/ }).fill('test');
     await page.getByLabel('Submit prompt').press('Enter');
 
     await expect(page.getByText('User message')).toBeVisible({ timeout: 10000 });
@@ -38,7 +38,7 @@ test.skip('should sticky-scroll only after the user scrolls', async ({ page }) =
         response.url().includes('stream')
     );
 
-    await page.getByRole('textbox', { name: 'Message the model' }).fill('infinite');
+    await page.getByRole('textbox', { name: /^Reply to*/ }).fill('infinite');
     await page.getByLabel('Submit prompt').press('Enter');
 
     // Tests the "scroll to new user message" functionality
