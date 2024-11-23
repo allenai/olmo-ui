@@ -1,11 +1,16 @@
 import {
+    alpha,
     Box,
     FormControl,
-    InputLabel,
+    InputBase,
+    inputBaseClasses,
+    InputBaseProps,
     MenuItem,
-    OutlinedInput,
+    menuItemClasses,
     Select,
     SelectChangeEvent,
+    selectClasses,
+    styled,
     SxProps,
     Theme,
 } from '@mui/material';
@@ -58,7 +63,6 @@ type ModelSelectionDisplayProps = {
 
 export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
     const selectId = useId();
-    const label = 'Model';
     const labelId = selectId + '-label';
 
     const models = useAppContext(
@@ -85,34 +89,117 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
     return (
         <Box sx={sx} paddingInline={2} paddingBlockEnd={2}>
             <FormControl
+                variant="standard"
                 sx={{
-                    maxWidth: '25rem',
-                    justifySelf: 'center',
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
                 }}>
-                <InputLabel
+                <Box
+                    component="label"
                     id={labelId}
                     htmlFor={selectId}
-                    sx={(theme) => ({
-                        background: theme.palette.background.paper,
-                        paddingX: 1,
-                    })}>
-                    {label}
-                </InputLabel>
+                    sx={{
+                        background: 'transparent',
+                        paddingInlineStart: 2,
+                        paddingInlineEnd: 2,
+                    }}>
+                    Model:{' '}
+                </Box>
                 <Select
                     id={selectId}
                     labelId={labelId}
                     fullWidth
                     size="small"
                     onChange={handleModelChange}
-                    input={<OutlinedInput />}
+                    input={<CustomInput />}
+                    MenuProps={{
+                        slotProps: {
+                            paper: {
+                                sx: (theme) => ({
+                                    background: 'transparent',
+                                    paddingInline: theme.spacing(1.5),
+                                    paddingBlock: '0',
+                                    boxShadow: 'none',
+                                    overflow: 'visible',
+                                }),
+                            },
+                        },
+                        MenuListProps: {
+                            sx: (theme) => ({
+                                borderRadius: theme.spacing(1),
+                                backgroundColor: theme.palette.background.drawer.secondary,
+                                overflow: 'hidden',
+                                padding: 0,
+                                boxShadow: 1,
+                            }),
+                        },
+                    }}
                     value={selectedModelId}>
                     {models.map((model) => (
-                        <MenuItem key={model.name} value={model.id}>
+                        <CustomMenuItem key={model.name} value={model.id}>
                             {model.name}
-                        </MenuItem>
+                        </CustomMenuItem>
                     ))}
                 </Select>
             </FormControl>
         </Box>
     );
 };
+
+const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
+    paddingInline: theme.spacing(1.5),
+
+    background: 'transparent',
+
+    [`&.${menuItemClasses.focusVisible}`]: {
+        backgroundColor: alpha(theme.palette.common.black, 0.12),
+    },
+    ':hover': {
+        backgroundColor: alpha(theme.palette.common.black, 0.04),
+    },
+    [`&.${menuItemClasses.selected}`]: {
+        background: alpha(theme.palette.background.paper, 0.6),
+        color: theme.palette.text.primary,
+        [`&.${menuItemClasses.focusVisible}`]: {
+            backgroundColor: alpha(theme.palette.common.black, 0.12),
+        },
+        ':hover': {
+            backgroundColor: alpha(theme.palette.common.black, 0.04),
+        },
+    },
+}));
+
+const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(({ theme }) => ({
+    borderRadius: '999px',
+    backgroundColor: theme.palette.background.drawer.secondary,
+    backgroundImage: 'none',
+    color: theme.palette.text.primary,
+
+    paddingInlineEnd: theme.spacing(6),
+
+    minWidth: '15rem',
+    border: '2px solid transparent',
+    '&.Mui-focused': {
+        borderColor: theme.palette.secondary.main,
+    },
+    [`.${inputBaseClasses.input}`]: {
+        paddingBlock: theme.spacing(1),
+        paddingInlineStart: theme.spacing(3),
+        paddingInlineEnd: theme.spacing(4),
+
+        '&:focus': {
+            backgroundColor: 'transparent',
+        },
+        [`&.${inputBaseClasses.input}`]: {
+            paddingInlineEnd: theme.spacing(2),
+        },
+        [`.${inputBaseClasses.focused}`]: {
+            borderColor: theme.palette.secondary.main,
+        },
+    },
+    [`.${selectClasses.icon}`]: {
+        marginInlineEnd: theme.spacing(2),
+        transform: 'scale(1.2) translateY(0px)',
+        fill: theme.palette.primary.main,
+    },
+}));
