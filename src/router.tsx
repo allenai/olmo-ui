@@ -14,6 +14,7 @@ import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
+import { ParameterIconButton } from './components/thread/ThreadPageControls/ParameterIconButton';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
@@ -70,6 +71,7 @@ export const routes: RouteObject[] = [
                     {
                         path: links.playground,
                         element: <ThreadPlaceholder />,
+                        handle: { pageControls: <ParameterIconButton /> },
                     },
                     {
                         path: links.playground + '/thread',
