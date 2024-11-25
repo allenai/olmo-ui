@@ -98,7 +98,7 @@ test.skip('should keep scroll position when going back to CorpusLink documents a
     page,
 }) => {
     await page.goto('/thread/msg_duplicatedocuments');
-    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
 
     const documentWithDuplicates = page
         .getByRole('listitem')

@@ -11,9 +11,6 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await page.getByRole('textbox', { name: /^Message*/ }).fill('User message');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText('Text matches from pre-training data'), {
-        message: 'should display CorpusLink tab',
-    }).toBeVisible();
 
     if (isAnonymousTest) {
         await expect(page.getByRole('button', { name: 'Share this thread' })).toBeDisabled();
@@ -36,9 +33,6 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await page.getByRole('textbox', { name: /^Reply to*/ }).fill('say one word');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText('Text matches from pre-training data'), {
-        message: 'should display CorpusLink tab',
-    }).toBeVisible();
 
     if (isAnonymousTest) {
         await expect(page.getByRole('button', { name: 'Share this thread' })).toBeDisabled();
