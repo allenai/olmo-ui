@@ -4,7 +4,7 @@ import { useAppContext } from '@/AppContext';
 import { Ai2LogoMarkSpinner } from '@/components/Ai2LogoMarkSpinner';
 import { RemoteState } from '@/contexts/util';
 
-import { LegalNotice } from './LegalNotice';
+import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
 
 export const ThreadPlaceholder = () => {

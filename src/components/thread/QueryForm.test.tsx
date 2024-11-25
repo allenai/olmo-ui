@@ -22,7 +22,7 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         render(<QueryForm />);
 
-        expect(screen.getByRole('textbox', { name: 'Prompt' })).toBeVisible();
+        expect(screen.getByRole('textbox', { name: 'Message the model' })).toBeVisible();
     });
 
     it('should submit prompt successfully', async () => {
@@ -48,7 +48,7 @@ describe('QueryForm', () => {
         );
 
         const user = userEvent.setup();
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
         expect(textfield).toHaveTextContent('');
@@ -89,7 +89,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
         // Keeping the text field enabled allows users to type during long generations and makes keeping focus on the text field easy
@@ -127,7 +127,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
 
@@ -171,7 +171,7 @@ describe('QueryForm', () => {
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Prompt' });
+        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
 
         expect(textfield).toBeVisible();
 
@@ -183,5 +183,86 @@ describe('QueryForm', () => {
         });
 
         expect(textfield).toHaveTextContent('write a poem');
+    });
+
+    it("should show a model's family name in the placeholder and label", () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{ selectedModel: { family_name: 'family name' } }}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByRole('textbox', { name: 'Message family name' })).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Message family name')).toBeInTheDocument();
+    });
+
+    it("should show a model's family name in the reply placeholder and label", () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    selectedModel: { family_name: 'family name' },
+                    selectedThreadRootId: 'root',
+                    selectedThreadMessagesById: {
+                        root: {
+                            creator: 'creator',
+                        },
+                    },
+                }}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByRole('textbox', { name: 'Reply to family name' })).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Reply to family name')).toBeInTheDocument();
+    });
+
+    it('should show "reply to" in the placeholder and label', () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider
+                initialState={{
+                    selectedThreadRootId: 'root',
+                    selectedThreadMessagesById: {
+                        root: {
+                            creator: 'creator',
+                        },
+                    },
+                }}>
+                <QueryForm />
+            </FakeAppContextProvider>
+        );
+
+        expect(screen.getByRole('textbox', { name: 'Reply to the model' })).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Reply to the model')).toBeInTheDocument();
     });
 });

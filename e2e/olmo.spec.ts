@@ -8,8 +8,7 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     // Send the first message
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.getByRole('textbox', { name: 'Prompt' }).focus();
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
+    await page.getByRole('textbox', { name: /^Message*/ }).fill('User message');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByText('Text matches from pre-training data'), {
@@ -34,8 +33,7 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await page.getByRole('button', { name: 'close history drawer' }).click();
 
     // Send a second message in the thread
-    await page.getByRole('textbox', { name: 'Prompt' }).focus();
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('say one word');
+    await page.getByRole('textbox', { name: /^Reply to*/ }).fill('say one word');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByText('Text matches from pre-training data'), {
@@ -61,8 +59,8 @@ test('should scroll to the new user prompt message when its submitted', async ({
     // Send the first message
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.getByRole('textbox', { name: 'Prompt' }).focus();
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
+    await page.getByRole('textbox', { name: /^Message*/ }).focus();
+    await page.getByRole('textbox', { name: /^Message*/ }).fill('User message');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
     await expect(
@@ -70,8 +68,8 @@ test('should scroll to the new user prompt message when its submitted', async ({
     ).toBeVisible();
 
     // Send a second message in the thread
-    await page.getByRole('textbox', { name: 'Prompt' }).focus();
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('say one word');
+    await page.getByRole('textbox', { name: /^Reply to*/ }).focus();
+    await page.getByRole('textbox', { name: /^Reply to*/ }).fill('say one word');
     await page.getByLabel('Submit prompt').click();
     await page.waitForLoadState('networkidle');
     await expect(
@@ -91,10 +89,10 @@ test('should scroll to the new user prompt message when its submitted', async ({
 test('should stop thread from streaming', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.getByRole('textbox', { name: 'Prompt' }).focus();
-    await page.getByRole('textbox', { name: 'Prompt' }).fill('User message');
-    await page.getByLabel('Submit prompt').click();
-    await page.getByLabel('Stop response generation').click();
+    await page.getByRole('textbox', { name: /^Message*/ }).focus();
+    await page.getByRole('textbox', { name: /^Message*/ }).fill('User message');
+    await page.getByRole('button', { name: 'Submit prompt' }).click();
+    await page.getByRole('button', { name: 'Stop response generation' }).click();
     await expect(
         page.getByText('You stopped OLMo from generating answers to your query')
     ).toBeVisible();

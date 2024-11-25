@@ -216,6 +216,16 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
+    const placeholderText = useAppContext((state) => {
+        const selectedModelFamilyName = state.selectedModel?.family_name ?? 'the model';
+        // since selectedThreadRootId's empty state is an empty string we just check for truthiness
+        const isReply = state.selectedThreadRootId;
+
+        const familyNamePrefix = isReply ? 'Reply to' : 'Message';
+
+        return `${familyNamePrefix} ${selectedModelFamilyName}`;
+    });
+
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -252,8 +262,8 @@ export const QueryForm = (): JSX.Element => {
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
-                                aria-label="Prompt"
-                                placeholder="Prompt"
+                                aria-label={placeholderText}
+                                placeholder={placeholderText}
                                 endAdornment={
                                     <SubmitPauseAdornment
                                         canPause={canPauseThread}
