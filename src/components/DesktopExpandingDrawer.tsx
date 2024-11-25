@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 const DRAWER_WIDTH = '20rem';
 
@@ -12,9 +12,24 @@ export const DesktopExpandingDrawer = ({
     open,
     children,
 }: DesktopExpandingDrawerProps): ReactNode => {
+    // This allows us to show the drawer sliding closed instead of having it disappear immediately
+    const [isFullyClosed, setIsFullyClosed] = useState(true);
+
+    // TODO: We should focus the opened drawer when we open it
+    useEffect(() => {
+        if (open) {
+            setIsFullyClosed(false);
+        }
+    }, [open]);
+
     return (
         <Box
             id={id}
+            onTransitionEnd={() => {
+                if (!open) {
+                    setIsFullyClosed(true);
+                }
+            }}
             sx={{
                 overflowX: 'hidden',
                 width: open ? DRAWER_WIDTH : 0,
@@ -25,6 +40,7 @@ export const DesktopExpandingDrawer = ({
                 minHeight: 0,
                 overflowY: 'auto',
                 gridArea: 'drawer',
+                visibility: isFullyClosed ? 'hidden' : 'visible',
             }}>
             <Box
                 paddingInline={2}
