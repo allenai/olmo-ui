@@ -12,6 +12,7 @@ export const DesktopExpandingDrawer = ({
     open,
     children,
 }: DesktopExpandingDrawerProps): ReactNode => {
+    // This allows us to show the drawer sliding closed instead of having it disappear immediately
     const [isFullyClosed, setIsFullyClosed] = useState(true);
 
     // TODO: We should focus the opened drawer when we open it
