@@ -70,6 +70,7 @@ export const routes: RouteObject[] = [
                     {
                         path: links.playground,
                         element: <ThreadPlaceholder />,
+                        handle: { pageControls: <ThreadPageControls /> },
                     },
                     {
                         path: links.playground + '/thread',
