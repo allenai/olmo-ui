@@ -173,7 +173,7 @@ export const ThreadDisplay = (): ReactNode => {
                 hasUserScrolledSinceSendingMessage.current = true;
             }}
             ref={scrollContainerRef}
-            overflow="auto"
+            overflow="scroll"
             sx={{
                 '@media (prefers-reduced-motion: no-preference)': {
                     scrollBehavior: 'smooth',

@@ -10,10 +10,10 @@ export const ThreadPageControls = (): React.ReactNode => {
 
     return (
         <>
-            <ShareThreadIconButton />
             <ParameterIconButton />
-            <NewThreadIconButton />
             {isCorpusLinkEnabled && <CorpusLinkIconButton />}
+            <NewThreadIconButton />
+            <ShareThreadIconButton />
         </>
     );
 };

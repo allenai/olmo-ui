@@ -1,4 +1,5 @@
 import { IosShareOutlined } from '@mui/icons-material';
+import { ReactNode } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
@@ -6,7 +7,7 @@ import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
-export const ShareThreadIconButton = () => {
+export const ShareThreadIconButton = (): ReactNode => {
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
@@ -22,6 +23,10 @@ export const ShareThreadIconButton = () => {
             message: 'Link Copied',
         });
     };
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <IconButtonWithTooltip

@@ -1,4 +1,4 @@
-import { alpha, Card, Stack, Typography } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext } from '@/AppContext';
@@ -13,7 +13,8 @@ import {
     DesktopParameterDrawer,
     MobileParameterDrawer,
 } from '@/components/thread/parameter/ParameterDrawer';
-import { QueryForm } from '@/components/thread/QueryForm';
+import { QueryForm } from '@/components/thread/QueryForm/QueryForm';
+import { QueryFormNotice } from '@/components/thread/QueryForm/QueryFormNotices';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
@@ -72,24 +73,7 @@ export const UIRefreshThreadPage = () => {
                             margin: '0 auto',
                         }}>
                         <QueryForm />
-                        <Typography
-                            component="p"
-                            variant="caption"
-                            textAlign="center"
-                            sx={(theme) => ({
-                                display: 'block',
-                                fontSize: '0.7rem',
-                                lineHeight: '1.5',
-                                margin: '0',
-                                color: alpha(
-                                    theme.palette.text.primary,
-                                    theme.palette.mode === 'dark' ? 0.5 : 0.75
-                                ),
-                                paddingInline: 2,
-                            })}>
-                            Ai2 Playground is a free scientific research and educational tool;
-                            always fact-check your results.
-                        </Typography>
+                        <QueryFormNotice />
                     </Stack>
                 </Stack>
 
