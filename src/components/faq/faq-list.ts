@@ -59,11 +59,7 @@ export const faqs: FAQCategory[] = [
         questions: [
             {
                 question: 'Which models are served in the Playground?',
-                answer: '[OLMo 2](https://allenai.org/olmo) is a family of fully-open language models, developed start-to-finish with open and accessible training data, open-source training code, reproducible training recipes, transparent evaluations, intermediate checkpoints, and more. The Playground is serving the OLMo2 13B Instruct version of OLMo.\n\n[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B versions of Tülu 3.',
-            },
-            {
-                question: 'What type of data is used to train the models?',
-                answer: 'We produce Llama Tülu3 models through a three-stage post-training recipe on top of pre-trained language models. Our post-training process begins with collecting a variety of prompts to be allocated across multiple stages of optimization. We perform supervised fine-tuning on new capability-focused synthetic data mixed with existing instruction datasets. We then perform preference tuning on on-policy synthetic preference data. We finish training Llama Tülu3 with our new method, Reinforcement Learning with Verifiable Rewards. Learn more in our [blog post](https://allenai.org/blog/tulu-3-technical).',
+                answer: '[OLMo 2](https://allenai.org/olmo) is a family of fully-open language models, developed start-to-finish with open and accessible training data, open-source training code, reproducible training recipes, transparent evaluations, intermediate checkpoints, and more. The Playground is serving the OLMo 2 13B Instruct version of OLMo.\n\n[Tülu 3](https://allenai.org/tulu) is a top-performing instruction model family with fully open fine-tuning data, code, and recipes to serve as a guidebook for modern post-training. Tülu 3 is a fine-tuned version of Llama 3 that was trained on a mix of publicly available, synthetic, and human datasets. The Playground is serving both 70B and 8B versions of Tülu 3.',
             },
             {
                 question: 'How accurate and reliable is generated content on the Playground?',
