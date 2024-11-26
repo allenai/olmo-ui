@@ -2,6 +2,8 @@ import { ClientBase } from './ClientBase';
 
 export const ModelApiUrl = '/v3/models';
 
+export type ModelFamilyId = 'tulu' | 'olmo';
+
 export interface Model {
     description: string;
     id: string;
@@ -9,7 +11,7 @@ export interface Model {
     host: string;
     model_type: string;
     is_deprecated: boolean;
-    family_id?: string;
+    family_id?: ModelFamilyId;
     family_name?: string;
 }
 

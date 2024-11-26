@@ -44,7 +44,8 @@ export const LegalNotice = () => {
 
     return (
         <LegalNoticeTypography>
-            By using Ai2 Playground, you agree to Ai2’s{' '}
+            Ai2 Playground is a free scientific research and educational tool. By using Ai2
+            Playground, you agree to Ai2’s{' '}
             <TermAndConditionsLink link="https://allenai.org/terms">
                 Terms of use
             </TermAndConditionsLink>
@@ -56,13 +57,7 @@ export const LegalNotice = () => {
             <TermAndConditionsLink link="https://allenai.org/responsible-use">
                 Responsible use guidelines
             </TermAndConditionsLink>
-            .{' '}
-            {FamilySpecificLegalNotice != null && (
-                <>
-                    <FamilySpecificLegalNotice />{' '}
-                </>
-            )}
-            This site is protected by reCAPTCHA and the Google{' '}
+            . This site is protected by reCAPTCHA and the Google{' '}
             <TermAndConditionsLink link="https://policies.google.com/privacy">
                 Privacy Policy
             </TermAndConditionsLink>{' '}
@@ -71,6 +66,12 @@ export const LegalNotice = () => {
                 Terms of Service
             </TermAndConditionsLink>{' '}
             apply.
+            {FamilySpecificLegalNotice != null && (
+                <>
+                    {' '}
+                    <FamilySpecificLegalNotice />
+                </>
+            )}
         </LegalNoticeTypography>
     );
 };

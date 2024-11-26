@@ -17,11 +17,11 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { MessagePost, StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
+import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 
-import { getFAQIdByShortId } from '../faq/faq-utils';
 import { PromptInput } from './PromptInput';
 
 interface QueryFormButtonProps
