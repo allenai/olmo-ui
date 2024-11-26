@@ -13,7 +13,7 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await page.waitForLoadState('networkidle');
 
     if (isAnonymousTest) {
-        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toHaveCount(0);
     } else {
         await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled();
     }
@@ -35,7 +35,7 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     await page.waitForLoadState('networkidle');
 
     if (isAnonymousTest) {
-        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toHaveCount(0);
     } else {
         await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled();
     }
