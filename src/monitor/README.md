@@ -45,3 +45,4 @@ const executionId = 0;
 ```
 
 Add queries and assertions to the shell to test them.
+Run the test file with `node ./test.mjs`
