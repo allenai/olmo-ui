@@ -50,6 +50,7 @@ functions.http(
         const title = await page.title();
         logger.info(`My Page title: ${title} ` + executionId);
         
+        // This will throw if it can't find the link
         await page.waitForSelector(
             '::-p-aria([name="Return to the Playground home page"][role="link"])',
             {
