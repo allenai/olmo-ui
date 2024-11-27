@@ -66,7 +66,7 @@ export const OlmoAppBar = (): JSX.Element => {
                                 display: 'none',
                             },
                         })}>
-                        <Ai2MarkLogoSVG width={30} />
+                        <Ai2MarkLogoSVG title="Return to the Playground home page" width={30} />
                     </Link>
                     {controls != null && (
                         <Stack

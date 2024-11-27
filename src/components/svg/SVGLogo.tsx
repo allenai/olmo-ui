@@ -5,7 +5,7 @@ export type SVGLogoProps = Pick<BoxProps, 'children' | 'sx'> & {
     intrinsicWidth: number;
     intrinsicHeight: number;
     width?: number;
-    title?: string;
+    title: string;
 };
 
 export type SVGLogoComponentProps = Omit<SVGLogoProps, 'intrinsicWidth' | 'intrinsicHeight'>;
@@ -14,7 +14,7 @@ export const SVGLogo = ({
     width,
     intrinsicWidth,
     intrinsicHeight,
-    title = '',
+    title,
     color,
     children,
     sx,

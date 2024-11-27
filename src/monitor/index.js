@@ -49,13 +49,14 @@ functions.http(
         // Print the page title to the console
         const title = await page.title();
         logger.info(`My Page title: ${title} ` + executionId);
-
-        const iconAltText = 'Return to the Playground home page';
-        const iconSelector = `img[alt="${iconAltText}"]`;
-        await page.waitForSelector(iconSelector, { timeout: 10000 }); // waits up to 10 seconds
-        const imageElement = await page.$(iconSelector);
-        const iconExists = imageElement !== null;
-        assert.strictEqual(iconExists, true, 'Icon should exist');
+        
+        // This will throw if it can't find the link
+        await page.waitForSelector(
+            '::-p-aria([name="Return to the Playground home page"][role="link"])',
+            {
+                timeout: 10000,
+            }
+        );
 
         // Close the browser
         await browser.close();
