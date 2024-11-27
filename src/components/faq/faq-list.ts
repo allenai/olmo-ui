@@ -25,7 +25,7 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How can I contact support?',
-                answer: 'If you can’t find an answer to your question on this page, please contact support by emailing support@allenai.org. Our dedicated team is ready to assist with technical issues, account inquiries, and general questions about Ai2 models and their frameworks.',
+                answer: 'If you can’t find an answer to your question on this page, please contact support by emailing [support@allenai.org](mailto:support@allenai.org) or join our [Discord](https://discord.com/invite/vgRQQgE8). Our dedicated team is ready to assist with technical issues, account inquiries, and general questions about Ai2 models and their frameworks.',
             },
         ],
     },
