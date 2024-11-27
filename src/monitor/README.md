@@ -1,16 +1,47 @@
 ## Getting started
+
 1. Modify the code in monitor folder.
 2. Shut down olmo-ui since the command below run on port 8080.
 3. Run the command below:
-    ```
-        npx functions-framework --target=SyntheticFunction
-    ```
+   ```
+       npx functions-framework --target=SyntheticFunction
+   ```
 4. Navigate to the localhost:8080 if you see json object with synthetic_generic_result_v1 oke true you are good.
-4. Raise PR for review.
-5. Once PR gets approval please merge the PR and run the command (Make sure you are in the monitor directory before running this):
-    ```
-        gcloud functions deploy  Ai2-Playground-Monitor --gen2 --runtime=nodejs20 --region=us-west1 --source=. --entry-point=SyntheticFunction --memory=2G --timeout=60 --trigger-http
-    ```
+5. Raise PR for review.
+6. Once PR gets approval please merge the PR and run the command (Make sure you are in the monitor directory before running this):
+   ```
+       gcloud functions deploy  Ai2-Playground-Monitor --gen2 --runtime=nodejs20 --region=us-west1 --source=. --entry-point=SyntheticFunction --memory=2G --timeout=60 --trigger-http
+   ```
+
 ## Helpful Links
+
 Monitor: https://console.cloud.google.com/monitoring/synthetic-monitoring/ai2-playground-monitor-v-l612mGeME;duration=PT15M?project=ai2-reviz
 Cloud Run Functions: https://console.cloud.google.com/functions/details/us-west1/Ai2-Playground-Monitor?env=gen2&project=ai2-reviz
+
+## Testing locally without the function
+
+Create a new .mjs file in this folder (ex `test.mjs`)
+
+Add this shell to it:
+
+```
+import puppeteer from 'puppeteer';
+import assert from 'node:assert';
+
+
+const logger = console;
+const executionId = 0;
+
+(async () => {
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+
+    const result = await page.goto('https://playground.allenai.org', { waitUntil: 'load' });
+
+
+    await browser.close();
+})();
+
+```
+
+Add queries and assertions to the shell to test them.

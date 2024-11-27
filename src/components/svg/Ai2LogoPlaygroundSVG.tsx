@@ -1,11 +1,6 @@
 import { SVGLogo, SVGLogoComponentProps } from './SVGLogo';
 
-export const Ai2LogoPlaygroundSVG = ({
-    width = 264,
-    title = 'Ai2 Playground',
-    color,
-    sx,
-}: SVGLogoComponentProps) => {
+export const Ai2LogoPlaygroundSVG = ({ width = 264, title, color, sx }: SVGLogoComponentProps) => {
     return (
         <SVGLogo
             intrinsicWidth={264}
