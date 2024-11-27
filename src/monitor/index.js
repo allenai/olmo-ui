@@ -49,24 +49,27 @@ functions.http(
         // Print the page title to the console
         const title = await page.title();
         logger.info(`My Page title: ${title} ` + executionId);
+        
+        const proudlyBuiltText = await page.waitForSelector('::p-aria([name="Return to the Playground home page"][role="link"])', 10000);
 
-        try {
-            // Wait for a <p> element containing the specified text to appear (up to 10 seconds)
-            await page.waitForSelector('p', { timeout: 10000 });
 
-            // Check if a <p> element with the exact text exists
-            const textExists = await page.evaluate(() => {
-            const paragraphs = Array.from(document.querySelectorAll('p'));
-                return paragraphs.some(p => p.textContent.trim() === 'Ai2 Playground is a free scientific research and educational tool; always fact-check your results.');
-            });
+        // try {
+        //     // Wait for a <p> element containing the specified text to appear (up to 10 seconds)
+        //     await page.waitForSelector('p', { timeout: 10000 });
 
-            // Assert that the text exists in a <p> element
-            assert.strictEqual(textExists, true, 'The specified text should exist in a <p> element');
-            console.log('Assertion passed: Text found in a <p> element');
-        } catch (error) {
-            console.error('Assertion error:', error.message);
-            throw error;
-        }
+        //     // Check if a <span> element with the exact text exists
+        //     const textExists = await page.evaluate(() => {
+        //     const paragraphs = Array.from(document.querySelectorAll('span'));
+        //         return paragraphs.some(p => p.textContent.trim() === 'Proudly built by Ai2');
+        //     });
+
+        //     // Assert that the text exists in a <p> element
+        //     assert.strictEqual(textExists, true, 'The specified text should exist in a <p> element');
+        //     console.log('Assertion passed: Text found in a <p> element');
+        // } catch (error) {
+        //     console.error('Assertion error:', error.message);
+        //     throw error;
+        // }
         // Close the browser
         await browser.close();
     })
