@@ -70,6 +70,7 @@ export const ThreadDisplay = (): ReactNode => {
     const skipNextStickyScrollSetFromAnchor = useRef(false);
     const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
     const hasUserScrolledSinceSendingMessage = useRef(false);
+    const abortPrompt = useAppContext((state) => state.abortPrompt);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
@@ -80,6 +81,9 @@ export const ThreadDisplay = (): ReactNode => {
     }, []);
 
     const location = useLocation();
+
+    // Throw abort wanings when the current message is streaming
+    useEffect(() => abortPrompt, [abortPrompt]);
 
     // Scroll to the top when we change threads
     useEffect(() => {
