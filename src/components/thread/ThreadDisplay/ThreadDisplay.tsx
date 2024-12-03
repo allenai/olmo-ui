@@ -196,7 +196,8 @@ export const ThreadDisplay = (): ReactNode => {
                     <Divider
                         sx={{
                             gridColumn: '2 / -1',
-                            borderColor: getLegalNoticeTextColor,
+                            borderColor: getLegalNoticeTextColor(0.25),
+                            marginY: '1em',
                         }}
                     />
                 )}

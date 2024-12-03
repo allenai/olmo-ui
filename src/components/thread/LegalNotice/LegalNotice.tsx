@@ -6,8 +6,10 @@ import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
 
 import { familySpecificLegalNoticesMap } from './family-specific-legal-notices-map';
 
-export const getLegalNoticeTextColor = (theme: Theme) =>
-    alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.5 : 0.75);
+export const getLegalNoticeTextColor =
+    (darkModeAlpha: number = 0.5) =>
+    (theme: Theme) =>
+        alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? darkModeAlpha : 0.75);
 
 export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
     return (
@@ -16,9 +18,9 @@ export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
             variant="caption"
             sx={{
                 fontSize: '0.7rem',
-                lineHeight: '1.25',
+                lineHeight: '1.33',
                 margin: '0',
-                color: getLegalNoticeTextColor,
+                color: getLegalNoticeTextColor(),
             }}>
             {children}
         </Typography>
