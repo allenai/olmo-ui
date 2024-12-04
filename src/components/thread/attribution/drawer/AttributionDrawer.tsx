@@ -13,7 +13,11 @@ export const DesktopAttributionDrawer = () => {
     const open = useAppContext((state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID);
 
     return (
-        <DesktopExpandingDrawer width="24rem" open={open} id="desktop-attribution-drawer">
+        <DesktopExpandingDrawer
+            width="24rem"
+            open={open}
+            id="desktop-attribution-drawer"
+            overflowY="hidden">
             <FullAttributionContent />
         </DesktopExpandingDrawer>
     );
