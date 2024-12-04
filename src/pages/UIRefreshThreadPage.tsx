@@ -94,10 +94,20 @@ export const UIRefreshThreadPage = () => {
 };
 
 export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
-    const { models, getAllModels, resetSelectedThreadState, resetAttribution, getSchema, schema } =
-        appContext.getState();
+    const {
+        models,
+        getAllModels,
+        resetSelectedThreadState,
+        resetAttribution,
+        getSchema,
+        schema,
+        abortPrompt,
+    } = appContext.getState();
 
     const promises = [];
+
+    // abort the current streaming prompt if there is any
+    abortPrompt();
 
     if (models.length === 0) {
         promises.push(getAllModels());

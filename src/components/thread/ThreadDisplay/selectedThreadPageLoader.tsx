@@ -13,11 +13,14 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         setSelectedModel,
         updateInferenceOpts,
         models,
+        abortPrompt,
     } = appContext.getState();
 
     // get the latest state of the selectedThread if we're changing to a different thread
     if (params.id != null && params.id !== selectedThreadRootId) {
         handleAttributionForChangingThread();
+        // abort the current streaming prompt if there is any
+        abortPrompt();
 
         const selectedThread = await getSelectedThread(params.id);
 
