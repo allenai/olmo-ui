@@ -81,9 +81,6 @@ export const ThreadDisplay = (): ReactNode => {
 
     const location = useLocation();
 
-    // Throw abort wanings when the current message is streaming
-    // useEffect(() => abortPrompt, [abortPrompt]);
-
     // Scroll to the top when we change threads
     useEffect(() => {
         if (scrollContainerRef.current != null) {
