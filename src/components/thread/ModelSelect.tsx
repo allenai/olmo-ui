@@ -174,10 +174,7 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
     backgroundColor: theme.palette.background.drawer.secondary,
     backgroundImage: 'none',
     color: theme.palette.text.primary,
-
-    paddingInlineEnd: theme.spacing(6),
-
-    minWidth: '15rem',
+    minWidth: '16rem',
     border: '2px solid transparent',
     '&.Mui-focused': {
         borderColor: theme.palette.secondary.main,
