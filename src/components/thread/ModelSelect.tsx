@@ -188,7 +188,7 @@ const CustomInput = styled((props: InputBaseProps) => <InputBase {...props} />)(
             backgroundColor: 'transparent',
         },
         [`&.${inputBaseClasses.input}`]: {
-            paddingInlineEnd: theme.spacing(2),
+            paddingInlineEnd: theme.spacing(6),
         },
         [`.${inputBaseClasses.focused}`]: {
             borderColor: theme.palette.secondary.main,
