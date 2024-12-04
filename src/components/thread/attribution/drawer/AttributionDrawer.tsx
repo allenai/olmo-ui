@@ -5,7 +5,7 @@ import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
-import { AttributionContent, FullAttributionContent } from './AttributionContent';
+import { FullAttributionContent } from './AttributionContent';
 
 export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
@@ -13,8 +13,12 @@ export const DesktopAttributionDrawer = () => {
     const open = useAppContext((state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID);
 
     return (
-        <DesktopExpandingDrawer width="24rem" open={open} id="desktop-attribution-drawer">
-            <AttributionContent />
+        <DesktopExpandingDrawer
+            width="24rem"
+            open={open}
+            id="desktop-attribution-drawer"
+            overflowY="hidden">
+            <FullAttributionContent />
         </DesktopExpandingDrawer>
     );
 };

@@ -7,11 +7,13 @@ interface DesktopExpandingDrawerProps extends PropsWithChildren {
     id?: string;
     open?: boolean;
     width?: CSSProperties['width'];
+    overflowY?: CSSProperties['overflowY'];
 }
 export const DesktopExpandingDrawer = ({
     id,
     open,
     width = DEFAULT_DRAWER_WIDTH,
+    overflowY = 'auto',
     children,
 }: DesktopExpandingDrawerProps): ReactNode => {
     // This allows us to show the drawer sliding closed instead of having it disappear immediately
@@ -40,7 +42,7 @@ export const DesktopExpandingDrawer = ({
                 transitionTimingFunction: 'ease-in-out',
                 height: '100%',
                 minHeight: 0,
-                overflowY: 'auto',
+                overflowY,
                 gridArea: 'drawer',
                 visibility: isFullyClosed ? 'hidden' : 'visible',
             }}>
@@ -48,6 +50,7 @@ export const DesktopExpandingDrawer = ({
                 paddingInline={2}
                 sx={{
                     minWidth: width,
+                    height: '100%',
                 }}>
                 {children}
             </Box>

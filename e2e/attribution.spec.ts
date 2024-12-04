@@ -94,7 +94,7 @@ test.skip('should show the attribution drawer when navigating to a thread', asyn
     );
 });
 
-test.skip('should keep scroll position when going back to CorpusLink documents and reset selected repeated documents when navigating to a new thread', async ({
+test('should keep scroll position when going back to CorpusLink documents and reset selected repeated documents when navigating to a new thread', async ({
     page,
 }) => {
     await page.goto('/thread/msg_duplicatedocuments');
