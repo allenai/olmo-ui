@@ -1,15 +1,17 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import { CSSProperties, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
-const DRAWER_WIDTH = '20rem';
+const DEFAULT_DRAWER_WIDTH = '20rem';
 
 interface DesktopExpandingDrawerProps extends PropsWithChildren {
     id?: string;
     open?: boolean;
+    width?: CSSProperties['width'];
 }
 export const DesktopExpandingDrawer = ({
     id,
     open,
+    width = DEFAULT_DRAWER_WIDTH,
     children,
 }: DesktopExpandingDrawerProps): ReactNode => {
     // This allows us to show the drawer sliding closed instead of having it disappear immediately
@@ -32,7 +34,7 @@ export const DesktopExpandingDrawer = ({
             }}
             sx={{
                 overflowX: 'hidden',
-                width: open ? DRAWER_WIDTH : 0,
+                width: open ? width : 0,
                 transitionProperty: 'width, padding-inline',
                 transitionDuration: '300ms',
                 transitionTimingFunction: 'ease-in-out',
@@ -45,7 +47,7 @@ export const DesktopExpandingDrawer = ({
             <Box
                 paddingInline={2}
                 sx={{
-                    minWidth: DRAWER_WIDTH,
+                    minWidth: width,
                 }}>
                 {children}
             </Box>
