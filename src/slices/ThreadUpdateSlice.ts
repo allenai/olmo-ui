@@ -197,14 +197,22 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 if (isFinalMessage(message)) {
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
-                    const finalMessageId = message.children.at(-1)?.id;
+                    // TODO: This probably won't work as we expect when we add threading. We'll need to make sure we handle getting the response correctly from the final message.
+                    let finalResponse = message.children.at(-1);
 
-                    if (finalMessageId == null) {
+                    // we assume the child furthest down the tree is the prompt response. this makes a lot of assumptions about how the data is structured and may be wrong in the future.
+                    while (finalResponse?.children != null) {
+                        finalResponse = finalResponse.children.at(-1);
+                    }
+
+                    const finalResponseId = finalResponse?.id;
+
+                    if (finalResponseId == null) {
                         throw new Error('A final message without children was received');
                     }
 
-                    selectMessage(finalMessageId);
-                    await getAttributionsForMessage(promptMessage.content, finalMessageId);
+                    selectMessage(finalResponseId);
+                    await getAttributionsForMessage(promptMessage.content, finalResponseId);
                 }
             }
         } catch (err) {
