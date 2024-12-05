@@ -195,16 +195,18 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 if (isFinalMessage(message)) {
-                    handleFinalMessage(parseMessage(message), isCreatingNewThread);
+                    const streamedResponseId = get().streamingMessageId;
 
-                    const finalMessageId = message.children.at(-1)?.id;
-
-                    if (finalMessageId == null) {
-                        throw new Error('A final message without children was received');
+                    if (streamedResponseId == null) {
+                        throw new Error(
+                            'The streaming message ID was reset before streaming ended'
+                        );
                     }
 
-                    selectMessage(finalMessageId);
-                    await getAttributionsForMessage(promptMessage.content, finalMessageId);
+                    handleFinalMessage(parseMessage(message), isCreatingNewThread);
+
+                    selectMessage(streamedResponseId);
+                    await getAttributionsForMessage(promptMessage.content, streamedResponseId);
                 }
             }
         } catch (err) {
