@@ -72,7 +72,8 @@ export const documentFirstMarkedContentSelector =
 
         const previewSpans = previewCorrespondingSpansSelector(state);
         const previewSpansThatArentSelected = previewSpans.filter(
-            (previewSpan) => !selectedSpans.includes(previewSpan)
+            (previewSpan) =>
+                !selectedSpans.map((selectedSpan) => selectedSpan[0]).includes(previewSpan[0])
         );
 
         previewSpansThatArentSelected.forEach(([spanKey, span]) => {
