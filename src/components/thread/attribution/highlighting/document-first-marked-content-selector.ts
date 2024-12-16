@@ -8,17 +8,27 @@ const selectedCorrespondingSpansSelector = (state: AppContextState) => {
     if (state.attribution.selectedDocumentIndex == null) {
         return [];
     }
+    const message = messageAttributionsSelector(state);
 
-    const documents = messageAttributionsSelector(state)?.documents;
-    return documents?.[state.attribution.selectedDocumentIndex]?.corresponding_span_texts ?? [];
-};
-const previewCorrespondingSpansSelector = (state: AppContextState) => {
-    if (state.attribution.previewDocumentIndex == null) {
+    if (message == null) {
         return [];
     }
 
-    const documents = messageAttributionsSelector(state)?.documents;
-    return documents?.[state.attribution.previewDocumentIndex]?.corresponding_span_texts ?? [];
+    const correspondingSpans =
+        message.documents[state.attribution.selectedDocumentIndex]?.corresponding_spans ?? [];
+
+    return correspondingSpans.map((correspondingSpan) => message.spans[correspondingSpan]);
+};
+const previewCorrespondingSpansSelector = (state: AppContextState) => {
+    const message = messageAttributionsSelector(state);
+    if (state.attribution.previewDocumentIndex == null || message == null) {
+        return [];
+    }
+
+    const correspondingSpans =
+        message.documents[state.attribution.previewDocumentIndex]?.corresponding_spans ?? [];
+
+    return correspondingSpans.map((correspondingSpan) => message.spans[correspondingSpan]);
 };
 
 export const documentFirstMarkedContentSelector =
@@ -30,11 +40,13 @@ export const documentFirstMarkedContentSelector =
 
         const selectedSpans = selectedCorrespondingSpansSelector(state);
 
-        selectedSpans.forEach((span) => {
-            contentWithMarks = contentWithMarks.replaceAll(
-                createSpanReplacementRegex(span),
-                getAttributionHighlightString(span, span, 'selected')
-            );
+        Object.entries(selectedSpans).forEach(([spanKey, span]) => {
+            if (span?.text) {
+                contentWithMarks = contentWithMarks.replaceAll(
+                    createSpanReplacementRegex(span.text),
+                    getAttributionHighlightString(spanKey, span.text, 'selected')
+                );
+            }
         });
 
         const previewSpans = previewCorrespondingSpansSelector(state);
@@ -42,11 +54,13 @@ export const documentFirstMarkedContentSelector =
             (previewSpan) => !selectedSpans.includes(previewSpan)
         );
 
-        previewSpansThatArentSelected.forEach((span) => {
-            contentWithMarks = contentWithMarks.replaceAll(
-                createSpanReplacementRegex(span),
-                getAttributionHighlightString(span, span, 'preview')
-            );
+        Object.entries(previewSpansThatArentSelected).forEach(([spanKey, span]) => {
+            if (span?.text) {
+                contentWithMarks = contentWithMarks.replaceAll(
+                    createSpanReplacementRegex(span.text),
+                    getAttributionHighlightString(spanKey, span.text, 'preview')
+                );
+            }
         });
 
         return contentWithMarks;
