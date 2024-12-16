@@ -8,7 +8,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { Fragment, MouseEventHandler, ReactNode } from 'react';
+import { Fragment, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -17,14 +17,37 @@ import { links } from '@/Links';
 import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
-interface AttributionDocumentCardBaseProps {
+interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {
+    onClick?: MouseEventHandler;
+    onMouseEnter?: MouseEventHandler;
+    onMouseLeave?: MouseEventHandler;
+}
+
+const CardActionWrapper = ({
+    onClick,
+    onMouseLeave,
+    onMouseEnter,
+    children,
+}: AttributionDocumentCardActionWrapperProps) => {
+    if (onClick != null || onMouseLeave != null || onMouseEnter != null) {
+        return (
+            <CardActionArea
+                onClick={onClick}
+                onMouseLeave={onMouseLeave}
+                onMouseEnter={onMouseEnter}>
+                {children}
+            </CardActionArea>
+        );
+    } else {
+        return <Fragment>{children}</Fragment>;
+    }
+};
+
+interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
     snippets: ReactNode;
     url?: ReactNode;
     source: ReactNode;
     actions?: ReactNode;
-    onClick?: MouseEventHandler;
-    onMouseOver?: MouseEventHandler;
-    onMouseLeave?: MouseEventHandler;
     isSelected?: boolean;
     isPreviewed?: boolean;
 }
@@ -37,11 +60,9 @@ const AttributionDocumentCardBase = ({
     isSelected,
     isPreviewed,
     onClick,
-    onMouseOver,
+    onMouseEnter,
     onMouseLeave,
 }: AttributionDocumentCardBaseProps) => {
-    const CardActionWrapper = onClick != null ? CardActionArea : Fragment;
-
     return (
         <Card
             component="li"
@@ -64,7 +85,10 @@ const AttributionDocumentCardBase = ({
                     borderColor: (theme) => theme.palette.primary.main,
                 },
             }}>
-            <CardActionWrapper {...{ onClick, onMouseOver, onMouseLeave }}>
+            <CardActionWrapper
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}>
                 <CardContent component={Stack} direction="column" gap={1}>
                     <Typography variant="body1" component="span">
                         {snippets}
@@ -125,7 +149,7 @@ export const AttributionDocumentCard = ({
             onClick={() => {
                 selectDocument?.(documentIndex);
             }}
-            onMouseOver={() => {
+            onMouseEnter={() => {
                 previewDocument?.(documentIndex);
             }}
             onMouseLeave={() => {
