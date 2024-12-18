@@ -2,10 +2,7 @@ import { TopLevelAttributionSpan } from '@/api/AttributionClient';
 import { AppContextState } from '@/AppContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { createSpanReplacementRegex } from '../span-replacement-regex';
-import { escapeBraces } from './escape-braces';
-import { removeMarkdownCharactersFromStartAndEndOfSpan } from './escape-markdown-in-span';
-import { getAttributionHighlightString } from './get-attribution-highlight-string';
+import { addHighlightsToText } from './add-highlights-to-text';
 
 const correspondingSpansSelector =
     (documentIndex?: string | null) =>
@@ -23,73 +20,28 @@ const correspondingSpansSelector =
         ]);
     };
 
-const selectedCorrespondingSpansSelector = (state: AppContextState) => {
-    return correspondingSpansSelector(state.attribution.selectedDocumentIndex)(state);
-};
-
-const previewCorrespondingSpansSelector = (state: AppContextState) => {
-    return correspondingSpansSelector(state.attribution.previewDocumentIndex)(state);
-};
-
-const formatSpan = (variant: 'selected' | 'preview', spanKey: string, spanText?: string) => {
-    if (!spanText) {
-        return {};
-    }
-
-    const escapedSpanText = removeMarkdownCharactersFromStartAndEndOfSpan(spanText);
-
-    const spanReplacementRegex = createSpanReplacementRegex(escapedSpanText);
-
-    const spanDisplayText = escapeBraces(escapedSpanText);
-    const attributionHighlight = getAttributionHighlightString(spanKey, spanDisplayText, variant);
-
-    return { spanReplacementRegex, attributionHighlight };
-};
-
 export const documentFirstMarkedContentSelector =
     (messageId: string) =>
     (state: AppContextState): string => {
         const content = state.selectedThreadMessagesById[messageId].content;
 
-        let contentWithMarks = content;
+        const selectedSpans = correspondingSpansSelector(state.attribution.selectedDocumentIndex)(
+            state
+        );
+        const textWithSelectedHighlights = addHighlightsToText('selected', content, selectedSpans);
 
-        const selectedSpans = selectedCorrespondingSpansSelector(state);
-
-        selectedSpans.forEach(([spanKey, span]) => {
-            const { spanReplacementRegex, attributionHighlight } = formatSpan(
-                'selected',
-                spanKey,
-                span?.text
-            );
-
-            if (spanReplacementRegex != null && attributionHighlight != null) {
-                contentWithMarks = contentWithMarks.replaceAll(
-                    spanReplacementRegex,
-                    attributionHighlight
-                );
-            }
-        });
-
-        const previewSpans = previewCorrespondingSpansSelector(state);
-        const previewSpansThatArentSelected = previewSpans.filter(
+        const allPreviewSpans = correspondingSpansSelector(state.attribution.previewDocumentIndex)(
+            state
+        );
+        const nonSelectedPreviewSpans = allPreviewSpans.filter(
             (previewSpan) =>
-                !selectedSpans.map((selectedSpan) => selectedSpan[0]).includes(previewSpan[0])
+                !selectedSpans.some(([selectedSpanId, _]) => selectedSpanId === previewSpan[0])
+        );
+        const textWithPreviewHighlights = addHighlightsToText(
+            'preview',
+            textWithSelectedHighlights,
+            nonSelectedPreviewSpans
         );
 
-        previewSpansThatArentSelected.forEach(([spanKey, span]) => {
-            const { spanReplacementRegex, attributionHighlight } = formatSpan(
-                'preview',
-                spanKey,
-                span?.text
-            );
-
-            if (spanReplacementRegex != null && attributionHighlight != null) {
-                contentWithMarks = contentWithMarks.replaceAll(
-                    spanReplacementRegex,
-                    attributionHighlight
-                );
-            }
-        });
-
-        return contentWithMarks;
+        return textWithPreviewHighlights;
     };
