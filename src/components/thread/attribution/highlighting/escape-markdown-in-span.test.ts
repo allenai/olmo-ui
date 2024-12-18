@@ -1,4 +1,4 @@
-import { removeMarkdownCharactersFromStartAndEndOfSpan } from './span-first-marked-content-selector';
+import { removeMarkdownCharactersFromStartAndEndOfSpan } from './escape-markdown-in-span';
 
 const testStrings = [
     { testString: '# H1 with # inside the span', expectedResult: 'H1 with # inside the span' },
