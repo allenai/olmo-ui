@@ -34,7 +34,8 @@ const CardActionWrapper = ({
             <CardActionArea
                 onClick={onClick}
                 onMouseLeave={onMouseLeave}
-                onMouseEnter={onMouseEnter}>
+                onMouseEnter={onMouseEnter}
+                disableRipple>
                 {children}
             </CardActionArea>
         );
