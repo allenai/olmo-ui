@@ -4,14 +4,174 @@
 
 /* The bar that shows up at the start with the Manage Preferences button */
 .osano-cm-dialog {
+    visibility: visible;
+    opacity: 1;
+
+
+    width: calc(100dvw - 2em);
+    max-width: unset;
+    border-radius: var(--radii-md);
+
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+    align-items: start;
+
+    padding-inline: 2em;
+    padding-block-end: 1.75em;
+
+    font-size: var(--font-size-xs);
+
+    & .osano-cm-content {
+        /* display: contents; */
+        line-height: var(--line-height-2)
+    }
+
+    &.osano-cm-dialog--type_box.osano-cm-dialog--position_top-right {
+        top: 4rem;
+        right: 1em;
+    }
+    
+    & .osano-cm-dialog__buttons {
+        width: 100%;
+    }
+
+    @media (width >= 75rem) {
+        max-width: 25rem;
+        &.osano-cm-dialog--type_box.osano-cm-dialog--position_top-right {
+            top: unset;
+            bottom: 7rem;
+            right: 1em;
+        }
+    }
+}
+
+
+
+/* .osano-cm-dialog .osano-cm-dialog__buttons {
+    width: 100%;
+} */
+
+/* TODO: make this only apply for the dialog */
+.osano-cm-dialog__content {
+    display: contents;
+
 }
 
 /* The drawer with all the toggles */
-.osano-cm-info-views {
-    
+.osano-cm-info {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    max-width: 640px;
+    min-width: 320px;
+    min-height: 70vh;
+    max-height: 80vh;
+
+    box-shadow: none;
+
+    padding-inline: var(--spacing-2);
+    border-radius: var(--radii-sm);
+
+    & .osano-cm-description {
+        font-size: inherit;
+    }
+
+    & .osano-cm-view > .osano-cm-description {
+
+
+        &:first-of-type {
+            padding-bottom: 1rem;
+        }
+    }
+
+    & .osano-cm-list-item__description {
+        font-size: var(--font-size-sm);
+    }
+
+    & .osano-cm-drawer-toggle .osano-cm-label {
+        /* font-size: var(--font-size-lg); */
+        font-weight: var(--font-weight-semi-bold);
+    }
+
+    & .osano-cm-header {
+        font-size: var(--font-size-xl);
+    }
+
+    & .osano-cm-drawer-item {
+        padding-block: 1em;
+        
+        & + & {
+            --border-color: color-mix(in srgb, currentColor 25%, transparent);
+            border-top: 1px solid var(--border-color);
+        }
+    }
+
+    & .osano-cm-drawer-item .osano-cm-disclosure--collapse {
+        margin: 0;
+        padding: 0;
+    }
+
+    & .osano-cm-description p {
+        margin: 0;
+        margin-bottom: 1em;
+    }
+
+    & .osano-cm-toggle__switch {
+        /* figure out how to get the focus rings showing only when focused */
+        &::after, &::before {
+            /* border-style: none; */
+            border-color: transparent;
+
+            &:focus {
+                /* border-style: solid; */
+            }
+        }
+    }
+
+    & .osano-cm-save {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.osano-cm-toggle__input:disabled:checked + .osano-cm-toggle__switch, .osano-cm-toggle__input:disabled:checked:focus + .osano-cm-toggle__switch, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch  {
+    background-color: var(--color-gray-30);
+    border: none;
+}
+
+.osano-cm-toggle__input:disabled:checked + .osano-cm-toggle__switch::after, .osano-cm-toggle__input:disabled:checked:focus + .osano-cm-toggle__switch::after, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch::after {
+    background-color: var(--color-white);
+    border: none;
+}
+
+/* add focus state and hover state */
+.osano-cm-button {
+    border-radius: var(--radii-sm);
+    padding-block: 12px;
+
+    border: none;
+    margin: 0;
+    width: 100%;
+
+    outline: 1px solid var(--color-green-100);
+    color: var(--color-green-100);
+    /* outline-color: var(--color-green-100); */
+    background-color: transparent;
+    font-weight: var(--font-weight-medium);
+
+    &:focus {
+        background-color: transparent;
+        outline: 1px solid var(--color-green-100)
+    }
 }
 
 /* the dialog that holds the drawer and bar */
 .osano-cm-window {
-    
+    --font-size-xs: 0.7rem;
+    --radii-sm: 4px;
+    --radii-md: 8px;
+
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-md);
 }
