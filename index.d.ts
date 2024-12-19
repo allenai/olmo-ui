@@ -34,6 +34,9 @@ interface Window {
             personalization: boolean;
             userData: string;
 
+            showDrawer: () => void;
+            showDialog: () => void;
+
             addEventListener: (eventName: string, callback: (...args: unknown[]) => void) => void;
         };
         (): (eventName: string, callback: (...args: unknown[]) => void) => void;

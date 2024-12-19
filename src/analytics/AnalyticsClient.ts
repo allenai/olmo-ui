@@ -87,9 +87,7 @@ export class AnalyticsClient {
     }
 
     trackPageView(url: string): void {
-        if (this.hasConsentToTrack) {
-            plausibleTrackPageview({ url });
-        }
+        plausibleTrackPageview({ url });
     }
 
     trackParametersUpdate(details: { parameterUpdated: string }): boolean {
