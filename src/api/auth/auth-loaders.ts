@@ -73,18 +73,16 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
     const isAuthenticated = await auth0Client.isAuthenticated();
     const authenticatedUserInfo = await auth0Client.getUserInfo();
 
-    if (isAuthenticated && authenticatedUserInfo?.sub != null) {
+    // Checking for just falsiness for .sub because an empty string also isn't valid
+    if (isAuthenticated && !!authenticatedUserInfo?.sub) {
         const { getUserInfo } = appContext.getState();
 
         await userClient.migrateFromAnonymousUser(authenticatedUserInfo.sub);
 
         // HACK: this re-fetches user info after we log in. It'd be nice to have this happen automatically when someone logs in!
-        const userInfo = await getUserInfo();
+        await getUserInfo();
 
-        // Checking for just falsiness because an empty string also isn't valid
-        if (userInfo?.sub) {
-            window.heap?.identify(userInfo.sub);
-        }
+        window.heap?.identify(authenticatedUserInfo.sub);
 
         return redirect(redirectTo);
     } else {
