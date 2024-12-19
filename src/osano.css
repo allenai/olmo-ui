@@ -4,6 +4,7 @@
 
 /* the dialog that holds the drawer and bar */
 .osano-cm-window {
+    /* TODO: Replace these with varnish-theme values when we get them */
     --font-size-xs: 0.7rem;
     --radii-sm: 4px;
     --radii-md: 8px;
@@ -17,15 +18,12 @@
     width: calc(100dvw - 2em);
     max-width: unset;
     border-radius: var(--radii-md);
-
     display: flex;
     gap: 1em;
     flex-direction: column;
     align-items: start;
-
     padding-inline: 2em;
     padding-block-end: 1.75em;
-
     font-size: var(--font-size-xs);
 
     & .osano-cm-content {
@@ -44,6 +42,7 @@
 
     @media (width >= 75rem) {
         max-width: 25rem;
+
         &.osano-cm-dialog--type_box.osano-cm-dialog--position_top-right {
             top: unset;
             bottom: 7rem;
@@ -55,7 +54,6 @@
 /* TODO: make this only apply for the dialog */
 .osano-cm-dialog__content {
     display: contents;
-
 }
 
 /* The drawer with all the toggles */
@@ -63,8 +61,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    width: 80vw;
+    width: calc(100dvw - 2em);
     max-width: 640px;
     min-width: 320px;
     min-height: 70dvh;
@@ -76,7 +73,6 @@
     }
 
     box-shadow: none;
-
     padding-inline: var(--spacing-2);
     border-radius: var(--radii-sm);
 
@@ -112,7 +108,8 @@
         padding-block: 1em;
         
         & + & {
-            --border-color: color-mix(in srgb, currentColor 25%, transparent);
+            --border-color: color-mix(in srgb, currentcolor 25%, transparent);
+
             border-top: 1px solid var(--border-color);
         }
     }
@@ -159,7 +156,6 @@
 .osano-cm-button {
     border-radius: var(--radii-sm);
     padding-block: 12px;
-
     border: none;
     margin: 0;
     width: 100%;
