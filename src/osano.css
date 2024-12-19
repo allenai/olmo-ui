@@ -46,6 +46,7 @@
     }
 }
 
+/*   padding: 0 .75em 1em; */
 
 
 /* .osano-cm-dialog .osano-cm-dialog__buttons {
@@ -74,24 +75,27 @@
     padding-inline: var(--spacing-2);
     border-radius: var(--radii-sm);
 
+    --modal-content-padding: 0.75rem;
+
+    /* Make the header and content padding match */
+    & .osano-cm-info-dialog-header__header, & .osano-cm-info-views__view {
+        padding-inline: var(--modal-content-padding);
+    }
+
     & .osano-cm-description {
         font-size: inherit;
     }
 
-    & .osano-cm-view > .osano-cm-description {
-
-
-        &:first-of-type {
+    & #osano-cm-consent--view {
             padding-bottom: 1rem;
-        }
     }
 
-    & .osano-cm-list-item__description {
-        font-size: var(--font-size-sm);
+    & .osano-cm-drawer-item > .osano-cm-list-item__description {
+        /* TODO: Figure out why making this smaller makes the switches not look good */
+        /* font-size: var(--font-size-sm); */
     }
 
     & .osano-cm-drawer-toggle .osano-cm-label {
-        /* font-size: var(--font-size-lg); */
         font-weight: var(--font-weight-semi-bold);
     }
 
@@ -118,31 +122,33 @@
         margin-bottom: 1em;
     }
 
-    & .osano-cm-toggle__switch {
-        /* figure out how to get the focus rings showing only when focused */
-        &::after, &::before {
-            /* border-style: none; */
+    & .osano-cm-toggle__input {
+        /* START only show highlights when focused */
+        &:checked + .osano-cm-toggle__switch::after, &:checked + .osano-cm-toggle__switch::before {
             border-color: transparent;
-
-            &:focus {
-                /* border-style: solid; */
-            }
         }
+        
+        &:checked + .osano-cm-toggle__switch::after, &:checked:focus-visible + .osano-cm-toggle__switch::before {
+            border-color: #26efac;
+        }
+        /* END only show highlights when focused */
+        
+        /* START fix disabled styles */
+        &:disabled:checked + .osano-cm-toggle__switch, &:disabled:checked:focus + .osano-cm-toggle__switch, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch  {
+            background-color: var(--color-gray-30);
+            border-color: transparent;
+        }
+        
+        &:disabled:checked + .osano-cm-toggle__switch::after, &:disabled:checked:focus + .osano-cm-toggle__switch::after, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch::after {
+            background-color: var(--color-white);
+            border-color: transparent;
+        }
+        /* END fix disabled styles */
     }
 
     & .osano-cm-save {
         margin-bottom: 0.5rem;
     }
-}
-
-.osano-cm-toggle__input:disabled:checked + .osano-cm-toggle__switch, .osano-cm-toggle__input:disabled:checked:focus + .osano-cm-toggle__switch, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch  {
-    background-color: var(--color-gray-30);
-    border: none;
-}
-
-.osano-cm-toggle__input:disabled:checked + .osano-cm-toggle__switch::after, .osano-cm-toggle__input:disabled:checked:focus + .osano-cm-toggle__switch::after, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch::after {
-    background-color: var(--color-white);
-    border: none;
 }
 
 /* add focus state and hover state */
@@ -154,16 +160,21 @@
     margin: 0;
     width: 100%;
 
-    outline: 1px solid var(--color-green-100);
-    color: var(--color-green-100);
-    /* outline-color: var(--color-green-100); */
+    --button-color: var(--color-green-100);
+
+    outline-width: 1px;
+    /* This is !important because osano tries to make it 'none' when it's focused or hovered */
+    outline-style: solid !important;
+    outline-color: var(--button-color); 
+    color: var(--button-color);
     background-color: transparent;
     font-weight: var(--font-weight-medium);
 
-    &:focus {
-        background-color: transparent;
-        outline: 1px solid var(--color-green-100)
+    &:focus, &:hover {
+        background-color: color-mix(in srgb, var(--button-color) 10%, transparent);
+        outline-width: 2px;
     }
+
 }
 
 /* the dialog that holds the drawer and bar */
