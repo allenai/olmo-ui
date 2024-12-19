@@ -2,12 +2,18 @@
     display: none
 }
 
+/* the dialog that holds the drawer and bar */
+.osano-cm-window {
+    --font-size-xs: 0.7rem;
+    --radii-sm: 4px;
+    --radii-md: 8px;
+
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-md);
+}
+
 /* The bar that shows up at the start with the Manage Preferences button */
 .osano-cm-dialog {
-    visibility: visible;
-    opacity: 1;
-
-
     width: calc(100dvw - 2em);
     max-width: unset;
     border-radius: var(--radii-md);
@@ -46,13 +52,6 @@
     }
 }
 
-/*   padding: 0 .75em 1em; */
-
-
-/* .osano-cm-dialog .osano-cm-dialog__buttons {
-    width: 100%;
-} */
-
 /* TODO: make this only apply for the dialog */
 .osano-cm-dialog__content {
     display: contents;
@@ -64,11 +63,17 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 50vw;
+
+    width: 80vw;
     max-width: 640px;
     min-width: 320px;
-    min-height: 70vh;
-    max-height: 80vh;
+    min-height: 70dvh;
+    height: 90dvh;
+    
+    @media (width >= 75rem) {
+        width: 50vw;
+        height: 80dvh;
+    }
 
     box-shadow: none;
 
@@ -151,7 +156,6 @@
     }
 }
 
-/* add focus state and hover state */
 .osano-cm-button {
     border-radius: var(--radii-sm);
     padding-block: 12px;
@@ -175,14 +179,4 @@
         outline-width: 2px;
     }
 
-}
-
-/* the dialog that holds the drawer and bar */
-.osano-cm-window {
-    --font-size-xs: 0.7rem;
-    --radii-sm: 4px;
-    --radii-md: 8px;
-
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-md);
 }
