@@ -1,5 +1,9 @@
+import '../osano.css';
+import '@allenai/varnish-theme/tokens.css';
+
 import { Outlet } from 'react-router-dom';
 
+import { Analytics } from '@/analytics/Analytics';
 import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
@@ -17,6 +21,7 @@ export const NewApp = () => {
 
     return (
         <AppLayout>
+            {process.env.IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
             {shouldShowTermsAndConditionsModal && <TermsAndConditionsModal />}
             <Outlet />
         </AppLayout>

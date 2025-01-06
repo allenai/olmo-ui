@@ -1,0 +1,178 @@
+.osano-cm-widget {
+    display: none
+}
+
+/* the dialog that holds the drawer and bar */
+.osano-cm-window {
+    /* TODO: Replace these with varnish-theme values when we get them */
+    --font-size-xs: 0.7rem;
+    --radii-sm: 4px;
+    --radii-md: 8px;
+
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-md);
+}
+
+/* The bar that shows up at the start with the Manage Preferences button */
+.osano-cm-dialog {
+    width: calc(100dvw - 2em);
+    max-width: unset;
+    border-radius: var(--radii-md);
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+    align-items: start;
+    padding-inline: 2em;
+    padding-block-end: 1.75em;
+    font-size: var(--font-size-xs);
+
+    & .osano-cm-content {
+        /* display: contents; */
+        line-height: var(--line-height-2)
+    }
+
+    &.osano-cm-dialog--type_box.osano-cm-dialog--position_top-right {
+        top: 4rem;
+        right: 1em;
+    }
+    
+    & .osano-cm-dialog__buttons {
+        width: 100%;
+    }
+
+    @media (width >= 75rem) {
+        max-width: 25rem;
+
+        &.osano-cm-dialog--type_box.osano-cm-dialog--position_top-right {
+            top: unset;
+            bottom: 7rem;
+            right: 1em;
+        }
+    }
+}
+
+/* TODO: make this only apply for the dialog */
+.osano-cm-dialog__content {
+    display: contents;
+}
+
+/* The drawer with all the toggles */
+.osano-cm-info {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100dvw - 2em);
+    max-width: 640px;
+    min-width: 320px;
+    min-height: 70dvh;
+    height: 90dvh;
+    
+    @media (width >= 75rem) {
+        width: 50vw;
+        height: 80dvh;
+    }
+
+    box-shadow: none;
+    padding-inline: var(--spacing-2);
+    border-radius: var(--radii-sm);
+
+    --modal-content-padding: 0.75rem;
+
+    /* Make the header and content padding match */
+    & .osano-cm-info-dialog-header__header, & .osano-cm-info-views__view {
+        padding-inline: var(--modal-content-padding);
+    }
+
+    & .osano-cm-description {
+        font-size: inherit;
+    }
+
+    & #osano-cm-consent--view {
+            padding-bottom: 1rem;
+    }
+
+    & .osano-cm-drawer-item > .osano-cm-list-item__description {
+        /* TODO: Figure out why making this smaller makes the switches not look good */
+        /* font-size: var(--font-size-sm); */
+    }
+
+    & .osano-cm-drawer-toggle .osano-cm-label {
+        font-weight: var(--font-weight-semi-bold);
+    }
+
+    & .osano-cm-header {
+        font-size: var(--font-size-xl);
+    }
+
+    & .osano-cm-drawer-item {
+        padding-block: 1em;
+        
+        & + & {
+            --border-color: color-mix(in srgb, currentcolor 25%, transparent);
+
+            border-top: 1px solid var(--border-color);
+        }
+    }
+
+    & .osano-cm-drawer-item .osano-cm-disclosure--collapse {
+        margin: 0;
+        padding: 0;
+    }
+
+    & .osano-cm-description p {
+        margin: 0;
+        margin-bottom: 1em;
+    }
+
+    & .osano-cm-toggle__input {
+        /* START only show highlights when focused */
+        &:checked + .osano-cm-toggle__switch::after, &:checked + .osano-cm-toggle__switch::before {
+            border-color: transparent;
+        }
+        
+        &:checked + .osano-cm-toggle__switch::after, &:checked:focus-visible + .osano-cm-toggle__switch::before {
+            border-color: #26efac;
+        }
+        /* END only show highlights when focused */
+        
+        /* START fix disabled styles */
+        &:disabled:checked + .osano-cm-toggle__switch, &:disabled:checked:focus + .osano-cm-toggle__switch, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch  {
+            background-color: var(--color-gray-30);
+            border-color: transparent;
+        }
+        
+        &:disabled:checked + .osano-cm-toggle__switch::after, &:disabled:checked:focus + .osano-cm-toggle__switch::after, .osano-cm-toggle__input:disabled:checked:hover + .osano-cm-toggle__switch::after {
+            background-color: var(--color-white);
+            border-color: transparent;
+        }
+        /* END fix disabled styles */
+    }
+
+    & .osano-cm-save {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.osano-cm-button {
+    border-radius: var(--radii-sm);
+    padding-block: 12px;
+    border: none;
+    margin: 0;
+    width: 100%;
+
+    --button-color: var(--color-green-100);
+
+    outline-width: 1px;
+    /* This is !important because osano tries to make it 'none' when it's focused or hovered */
+    outline-style: solid !important;
+    outline-color: var(--button-color); 
+    color: var(--button-color);
+    background-color: transparent;
+    font-weight: var(--font-weight-medium);
+
+    &:focus, &:hover {
+        background-color: color-mix(in srgb, var(--button-color) 10%, transparent);
+        outline-width: 2px;
+    }
+
+}

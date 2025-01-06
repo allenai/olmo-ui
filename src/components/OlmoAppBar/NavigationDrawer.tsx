@@ -2,6 +2,7 @@ import {
     ArrowForwardIosOutlined,
     LoginOutlined as LoginIcon,
     RateReviewOutlined,
+    ShieldOutlined,
 } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
@@ -151,6 +152,15 @@ export const NavigationDrawer = ({
                         variant="footer">
                         Give feedback
                     </NavigationLink>
+                    {process.env.IS_ANALYTICS_ENABLED === 'true' && (
+                        <NavigationLink
+                            icon={<ShieldOutlined />}
+                            onClick={() => {
+                                window.Osano?.cm?.showDrawer();
+                            }}>
+                            Privacy settings
+                        </NavigationLink>
+                    )}
                     <ColorModeSelection />
                     <Auth0LoginLink />
                     <ListItem
