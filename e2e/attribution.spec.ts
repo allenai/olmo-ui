@@ -110,7 +110,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
 
     await documentWithDuplicates
-        .getByRole('button', { name: 'View all repeated documents' })
+        .getByRole('button', { name: 'View all repeated documents', exact: true })
         .click();
 
     // We should keep the scroll position when going back to the documents
@@ -118,7 +118,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
 
     await documentWithDuplicates
-        .getByRole('button', { name: 'View all repeated documents' })
+        .getByRole('button', { name: 'View all repeated documents', exact: true })
         .click();
 
     await expect(page.getByText('Back to CorpusLink documents')).toBeVisible();

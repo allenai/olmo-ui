@@ -34,7 +34,8 @@ const CardActionWrapper = ({
             <CardActionArea
                 onClick={onClick}
                 onMouseLeave={onMouseLeave}
-                onMouseEnter={onMouseEnter}>
+                onMouseEnter={onMouseEnter}
+                disableRipple>
                 {children}
             </CardActionArea>
         );
@@ -63,6 +64,14 @@ const AttributionDocumentCardBase = ({
     onMouseEnter,
     onMouseLeave,
 }: AttributionDocumentCardBaseProps) => {
+    const handleClick: MouseEventHandler = (event) => {
+        // We can have actions that do things on click
+        // We want to make sure we don't select this document if someone clicks on one of the actions
+        if (typeof (event.target as HTMLElement).onclick !== 'function') {
+            onClick?.(event);
+        }
+    };
+
     return (
         <Card
             component="li"
@@ -86,7 +95,7 @@ const AttributionDocumentCardBase = ({
                 },
             }}>
             <CardActionWrapper
-                onClick={onClick}
+                onClick={handleClick}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}>
                 <CardContent component={Stack} direction="column" gap={1}>
@@ -101,10 +110,10 @@ const AttributionDocumentCardBase = ({
                         {source}
                     </Typography>
                 </CardContent>
+                <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
+                    {actions != null && actions}
+                </Stack>
             </CardActionWrapper>
-            <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
-                {actions != null && actions}
-            </Stack>
         </Card>
     );
 };
