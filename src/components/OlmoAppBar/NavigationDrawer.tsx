@@ -152,16 +152,15 @@ export const NavigationDrawer = ({
                         variant="footer">
                         Give feedback
                     </NavigationLink>
-                    {process.env.IS_ANALYTICS_ENABLED === 'true' &&
-                        window.Osano?.cm?.showDrawer != null && (
-                            <NavigationLink
-                                icon={<ShieldOutlined />}
-                                onClick={() => {
-                                    window.Osano?.cm?.showDrawer();
-                                }}>
-                                Privacy settings
-                            </NavigationLink>
-                        )}
+                    {process.env.IS_ANALYTICS_ENABLED === 'true' && (
+                        <NavigationLink
+                            icon={<ShieldOutlined />}
+                            onClick={() => {
+                                window.Osano?.cm?.showDrawer();
+                            }}>
+                            Privacy settings
+                        </NavigationLink>
+                    )}
                     <ColorModeSelection />
                     <Auth0LoginLink />
                     <ListItem
