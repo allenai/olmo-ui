@@ -157,7 +157,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 const attributionResponse = await attributionClient.getAttributionDocuments(
                     prompt,
                     message.content,
-                    message.model_id,
+                    message.model_id
                 );
 
                 set(
