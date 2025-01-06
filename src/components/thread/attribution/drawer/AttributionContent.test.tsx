@@ -40,7 +40,7 @@ describe('AttributionContent deduplication', () => {
         );
 
         // We're on the standard CorpusLink stuff
-        expect(screen.getByText('Text matches from pre-training data')).toBeVisible();
+        expect(screen.getByText('exact text matches with the model response')).toBeVisible();
         const corpusLinkDocuments = screen.getAllByRole('listitem');
 
         expect(corpusLinkDocuments).toHaveLength(4);
@@ -55,10 +55,10 @@ describe('AttributionContent deduplication', () => {
         );
 
         expect(screen.getAllByRole('listitem')).toHaveLength(2);
-        expect(screen.getByText('Text matches from pre-training data')).not.toBeVisible();
+        expect(screen.getByText('exact text matches with the model response')).not.toBeVisible();
         await user.click(screen.getByRole('button', { name: 'Back to CorpusLink documents' }));
 
-        expect(screen.getByText('Text matches from pre-training data')).toBeVisible();
+        expect(screen.getByText('exact text matches with the model response')).toBeVisible();
         expect(screen.getAllByRole('listitem')).toHaveLength(4);
     });
 });

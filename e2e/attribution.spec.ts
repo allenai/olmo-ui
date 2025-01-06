@@ -107,7 +107,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
 
     await documentWithDuplicates.scrollIntoViewIfNeeded();
 
-    await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
+    await expect(page.getByText('exact text matches with the model response')).not.toBeInViewport();
 
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents' })
@@ -115,7 +115,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
 
     // We should keep the scroll position when going back to the documents
     await page.getByText('Back to CorpusLink documents').click();
-    await expect(page.getByText('Text matches from pre-training data')).not.toBeInViewport();
+    await expect(page.getByText('exact text matches with the model response')).not.toBeInViewport();
 
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents' })
