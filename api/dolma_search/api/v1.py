@@ -123,7 +123,7 @@ class Server(flask.Blueprint):
 
         infini_gram_response = search_documents_index_documents_get.sync(
             client=self.infini_gram_client,
-            index=AvailableInfiniGramIndexId.OLMOE,
+            index=AvailableInfiniGramIndexId.OLMO_2_1124_13B,
             search=request.query,
             page=computed_page,
             page_size=request.size,
@@ -167,10 +167,10 @@ class Server(flask.Blueprint):
 
     def document(self, id: str):
         query = flask.request.args.get("query", default="", type=lambda s: s.strip())
-        
+
         infini_gram_document_response = (
             get_document_by_index_index_documents_document_index_get.sync(
-                index=AvailableInfiniGramIndexId.OLMOE,
+                index=AvailableInfiniGramIndexId.OLMO_2_1124_13B,
                 document_index=int(id),
                 client=self.infini_gram_client,
                 maximum_document_display_length=1_000_000,
