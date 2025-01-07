@@ -1,7 +1,7 @@
 import { ArrowBack } from '@mui/icons-material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, Button, Card, CardContent, Link, Stack, styled, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, styled, Typography } from '@mui/material';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -34,43 +34,34 @@ export const AttributionContent = () => {
 
     return (
         <AttributionContentStack direction="column" gap={2} data-testid="attribution-drawer">
-            <Typography variant="h5">Text matches from pre-training data</Typography>
+            <Typography variant="h5">CorpusLink</Typography>
             <Typography>
-                Select a highlight from the model response to see the documents from the
-                pre-training data that have exact text matches in the model response.
+                CorpusLink shows documents from the training data that have exact text matches with
+                the model response. Select a highlight to view its documents.
             </Typography>
-            <Link href={links.faqs + getFAQIdByShortId('corpuslink-intro')} underline="always">
-                <Typography variant="caption">Learn more</Typography>
-            </Link>
-            <Card>
-                <CardContent
-                    sx={{
-                        backgroundColor: (theme) => theme.palette.background.reversed,
-                        '&:last-child': {
-                            padding: (theme) => theme.spacing(2),
-                        },
-                    }}>
-                    <Typography color="text.reversed">
-                        Want to see more pre-training data?
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        href={links.datasetExplorer}
-                        disableRipple={true}
-                        sx={(theme) => ({
-                            backgroundColor: theme.palette.secondary.light,
-                            '&:hover': {
-                                backgroundColor: `color-mix(in srgb, ${theme.palette.secondary.light} 80%, white)`,
-                            },
-                            '&:focus-visible': {
-                                backgroundColor: `color-mix(in srgb, ${theme.palette.secondary.light} 80%, white)`,
-                            },
-                            marginTop: theme.spacing(2),
-                        })}>
-                        <Typography fontWeight={500}>Explore the full dataset</Typography>
-                    </Button>
-                </CardContent>
-            </Card>
+            <Typography variant="body2">
+                CorpusLink might retrieve documents that can be used to fact check parts of the
+                model&apos;s response, if the response contains simple facts. However, creative
+                generations (e.g. writing a poem) or novel generations (e.g. writing code) likely
+                cannot be fact checked by looking at these retrieved documents.
+            </Typography>
+            <Typography variant="body2">
+                The model did not have direct access to these documents when generating the
+                response. Documents are retrieved after the response generation.{' '}
+                <Link href={links.faqs + getFAQIdByShortId('corpuslink-intro')} underline="always">
+                    Learn more
+                </Link>
+            </Typography>
+            <Button
+                variant="contained"
+                href={links.datasetExplorer}
+                color="secondary"
+                disableRipple={true}
+                sx={(theme) => ({
+                    marginTop: theme.spacing(1),
+                })}>
+                <Typography fontWeight={500}>Explore the full training dataset</Typography>
+            </Button>
             <Button
                 variant="text"
                 disabled={loadingState === RemoteState.Loading}
@@ -162,8 +153,8 @@ export const FullAttributionContent = () => {
 
     return (
         <>
-            {/* These are in separate boxes so they have separate scroll states. 
-                When RepeatedAttributionDocumentsContent is opened, it should be at the top of its content. 
+            {/* These are in separate boxes so they have separate scroll states.
+                When RepeatedAttributionDocumentsContent is opened, it should be at the top of its content.
                 When it's closed, we should go back to where we were in AttributionContent */}
             <Box
                 sx={{

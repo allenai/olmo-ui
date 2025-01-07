@@ -140,6 +140,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
         // If a request is in-flight or finished we don't need to fetch again
         if (
+            message.model_id &&
             messageDocumentsLoadingState !== RemoteState.Loading &&
             messageDocumentsLoadingState !== RemoteState.Loaded
         ) {
@@ -156,7 +157,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 const attributionResponse = await attributionClient.getAttributionDocuments(
                     prompt,
                     message.content,
-                    'OLMoE-1B-7B-0924-Instruct'
+                    message.model_id
                 );
 
                 set(
