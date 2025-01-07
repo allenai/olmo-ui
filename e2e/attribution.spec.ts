@@ -107,7 +107,9 @@ test('should keep scroll position when going back to CorpusLink documents and re
 
     await documentWithDuplicates.scrollIntoViewIfNeeded();
 
-    await expect(page.getByText('CorpusLink')).not.toBeInViewport();
+    await expect(
+        page.getByRole('heading', { name: 'CorpusLink', exact: true })
+    ).not.toBeInViewport();
 
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents' })
@@ -115,7 +117,9 @@ test('should keep scroll position when going back to CorpusLink documents and re
 
     // We should keep the scroll position when going back to the documents
     await page.getByText('Back to CorpusLink documents').click();
-    await expect(page.getByText('CorpusLink')).not.toBeInViewport();
+    await expect(
+        page.getByRole('heading', { name: 'CorpusLink', exact: true })
+    ).not.toBeInViewport();
 
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents' })
