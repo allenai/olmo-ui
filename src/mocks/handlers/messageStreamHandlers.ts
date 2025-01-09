@@ -410,13 +410,13 @@ const formatMessage = (message: unknown) => {
 };
 
 export const messageStreamHandlers = [
-    http.post(`*/v3/message/stream`, async ({ request }) => {
-        const requestBody = (await request.json()) as Record<string, unknown>;
+    http.post(`*/v4/message/stream`, async ({ request }) => {
+        const formData = await request.formData();
 
         let response: MessageStreamPart[];
-        if (requestBody.parent != null) {
-            response = fakeFollowupResponse(requestBody.parent as string);
-        } else if (requestBody.content === 'include system message') {
+        if (formData.get('parent') != null) {
+            response = fakeFollowupResponse(formData.get('parent') as string);
+        } else if (formData.get('content') === 'include system message') {
             response = streamResponseWithSystemMessage;
         } else {
             response = fakeNewThreadMessages;
@@ -424,7 +424,7 @@ export const messageStreamHandlers = [
 
         const stream = new ReadableStream({
             async start(controller) {
-                if (requestBody.content === 'infinite') {
+                if (formData.get('content') === 'infinite') {
                     await delay();
                     controller.enqueue(encoder.encode(formatMessage(response[0])));
 
