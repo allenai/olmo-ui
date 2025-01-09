@@ -59,6 +59,7 @@ class Server(flask.Blueprint):
         self.get("/meta")(self.meta)
         self.post("/event")(self.create_event)
 
+        self.get("/<index_name>/search")(self.search)
         self.get("/<index_name>/document/<id>")(self.document)
 
         self.infini_gram_client = Client(base_url="https://infinigram-api.allen.ai")
@@ -121,14 +122,19 @@ class Server(flask.Blueprint):
             query, offset, size, filters, match, no_aggs, snippet
         )
 
-    def search(self):
+    def search(self, index_name: str | None = None):
         request = self.search_request_from_query_string()
+        index_enum = (
+            AvailableInfiniGramIndexId(index_name)
+            if index_name is not None
+            else DEFAULT_INDEX
+        )
 
         computed_page = math.floor(request.offset / request.size)
 
         infini_gram_response = search_documents_index_documents_get.sync(
             client=self.infini_gram_client,
-            index=DEFAULT_INDEX,
+            index=index_enum,
             search=request.query,
             page=computed_page,
             page_size=request.size,
@@ -174,7 +180,7 @@ class Server(flask.Blueprint):
         query = flask.request.args.get("query", default="", type=lambda s: s.strip())
         index_enum = (
             AvailableInfiniGramIndexId(index_name)
-            if index is not None
+            if index_name is not None
             else DEFAULT_INDEX
         )
 
