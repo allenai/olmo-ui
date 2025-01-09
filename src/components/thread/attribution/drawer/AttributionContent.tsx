@@ -9,6 +9,7 @@ import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
+import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
@@ -87,17 +88,18 @@ export const AttributionContent = () => {
 };
 
 export const RepeatedAttributionDocumentsContent = () => {
-    const attributionForMessage = useAttributionDocumentsForMessage();
+    const attributionDocuments = useAttributionDocumentsForMessage();
+    const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
 
     const repeatedDocumentsByUrl = useAppContext(
         useShallow((state) => {
             const selectedRepeatedDocumentIndex = state.attribution.selectedRepeatedDocumentIndex;
 
-            const selectedDocument = attributionForMessage.documents.find(
+            const selectedDocument = attributionDocuments.documents.find(
                 (document) => document.index === selectedRepeatedDocumentIndex
             );
 
-            const documentsWithTheSameUrl = attributionForMessage.documents.filter(
+            const documentsWithTheSameUrl = attributionDocuments.documents.filter(
                 (document) => document.url === selectedDocument?.url
             );
 
@@ -135,9 +137,10 @@ export const RepeatedAttributionDocumentsContent = () => {
                     return (
                         <AttributionDocumentCard
                             key={document.index}
-                            documentIndex={document.index}
+                            documentId={document.index}
                             documentUrl={document.url}
                             source={document.source}
+                            index={attributionIndex ?? null}
                         />
                     );
                 })}

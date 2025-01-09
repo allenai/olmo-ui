@@ -99,6 +99,13 @@ export const routes: RouteObject[] = [
                         },
                     },
                     {
+                        path: links.document(':id', ':index'),
+                        element: <Document />,
+                        handle: {
+                            title: 'Dataset Explorer',
+                        },
+                    },
+                    {
                         path: links.datasetExplorer,
                         element: <DolmaExplorer />,
                         handle: {
