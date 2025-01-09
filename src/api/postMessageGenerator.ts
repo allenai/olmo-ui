@@ -1,12 +1,10 @@
 import {
     isFirstMessage,
     isMessageStreamError,
-    Message,
     MessageClient,
-    MessagePost,
     MessageStreamError,
     MessageStreamPart,
-    RequestInferenceOpts,
+    V4CreateMessageRequest,
 } from './Message';
 import { ReadableJSONLStream } from './ReadableJSONLStream';
 
@@ -14,17 +12,10 @@ const messageClient = new MessageClient();
 
 // This is a generator function. for more info, see MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 export const postMessageGenerator = async function* (
-    newMessage: MessagePost,
-    inferenceOptions: RequestInferenceOpts,
-    abortController: AbortController,
-    parentMessageId?: Message['id']
+    newMessage: V4CreateMessageRequest,
+    abortController: AbortController
 ) {
-    const resp = await messageClient.sendMessage(
-        newMessage,
-        inferenceOptions,
-        abortController,
-        parentMessageId
-    );
+    const resp = await messageClient.sendMessage(newMessage, abortController);
 
     const rdr = resp.pipeThrough(new ReadableJSONLStream<MessageStreamPart>()).getReader();
     let firstPart = true;

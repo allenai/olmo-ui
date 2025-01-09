@@ -1,4 +1,5 @@
 import { NullishPartial } from '@/util';
+import { mapValueToFormData } from '@/utils/map-value-to-form-data';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
@@ -7,6 +8,7 @@ import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
+export const v4MessageApiUrl = '/v4/message';
 
 export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
@@ -16,17 +18,17 @@ export interface Logprob {
     prob: number;
 }
 
-export interface MessagePost {
+export type V4CreateMessageRequest = RequestInferenceOpts & {
     content: string;
-    role?: string; // in the case of edited messages
+    role?: Role; // in the case of edited messages
     original?: string; // in the case of edited messages
     parent?: string;
     private?: boolean;
-    prompt_template_id?: string;
-    opts?: RequestInferenceOpts;
-    model?: string;
-    captchaToken?: string;
-}
+    template?: string;
+    model: string;
+    host: string;
+    files?: File[];
+};
 
 export interface Message {
     children?: Message[] | null;
@@ -195,25 +197,24 @@ export class MessageClient extends ClientBase {
     };
 
     sendMessage = async (
-        newMessage: MessagePost,
-        inferenceOptions: RequestInferenceOpts,
-        abortController: AbortController,
-        parentMessageId?: string
+        createMessageRequest: V4CreateMessageRequest,
+        abortController: AbortController
     ) => {
-        const url = this.createURL(MessageApiUrl, 'stream');
+        const url = this.createURL(v4MessageApiUrl, 'stream');
 
-        const request = {
-            ...newMessage,
-            parent: parentMessageId,
-            opts: inferenceOptions,
-        };
+        const formData = new FormData();
+
+        for (const property in createMessageRequest) {
+            const value = createMessageRequest[property as keyof typeof createMessageRequest];
+            mapValueToFormData(formData, property, value);
+        }
 
         // This opts out of the default fetch handling in this.fetch
         // Since this is a stream we can't unpack it the same way we do in this.fetch
         const response = await fetch(url, {
             method: 'POST',
-            body: JSON.stringify(request),
-            headers: await this.createStandardHeaders(),
+            body: formData,
+            headers: await this.createStandardHeaders(undefined, true),
             credentials: 'include',
             signal: abortController.signal,
         });
