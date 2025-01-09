@@ -1,5 +1,5 @@
 import { NullishPartial } from '@/util';
-import { mapValueToFormData } from '@/utils/map-value-to-form-data';
+import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
