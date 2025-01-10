@@ -20,6 +20,7 @@ export const ThreadDisplayWrapper = forwardRef<HTMLDivElement, ThreadDisplayWrap
                     },
                     paddingInline: 2,
                     overflowY: 'scroll',
+                    overflowX: 'auto',
                     scrollbarColor: (theme) =>
                         `${theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light} transparent`,
                 }}>
