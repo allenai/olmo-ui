@@ -45,6 +45,9 @@ def parse_int_from_qs(
         raise exceptions.BadRequest(f'The "{name}" argument must be a valid integer')
 
 
+DEFAULT_INDEX = AvailableInfiniGramIndexId.OLMO_2_1124_13B
+
+
 class Server(flask.Blueprint):
     infini_gram_client: Client
 
@@ -55,6 +58,9 @@ class Server(flask.Blueprint):
         self.get("/document/<id>")(self.document)
         self.get("/meta")(self.meta)
         self.post("/event")(self.create_event)
+
+        self.get("/<index_name>/search")(self.search)
+        self.get("/<index_name>/document/<id>")(self.document)
 
         self.infini_gram_client = Client(base_url="https://infinigram-api.allen.ai")
 
@@ -116,14 +122,19 @@ class Server(flask.Blueprint):
             query, offset, size, filters, match, no_aggs, snippet
         )
 
-    def search(self):
+    def search(self, index_name: str | None = None):
         request = self.search_request_from_query_string()
+        index_enum = (
+            AvailableInfiniGramIndexId(index_name)
+            if index_name is not None
+            else DEFAULT_INDEX
+        )
 
         computed_page = math.floor(request.offset / request.size)
 
         infini_gram_response = search_documents_index_documents_get.sync(
             client=self.infini_gram_client,
-            index=AvailableInfiniGramIndexId.OLMO_2_1124_13B,
+            index=index_enum,
             search=request.query,
             page=computed_page,
             page_size=request.size,
@@ -165,12 +176,17 @@ class Server(flask.Blueprint):
 
         return flask.jsonify(mapped_response)
 
-    def document(self, id: str):
+    def document(self, id: str, index_name: str | None = None):
         query = flask.request.args.get("query", default="", type=lambda s: s.strip())
+        index_enum = (
+            AvailableInfiniGramIndexId(index_name)
+            if index_name is not None
+            else DEFAULT_INDEX
+        )
 
         infini_gram_document_response = (
             get_document_by_index_index_documents_document_index_get.sync(
-                index=AvailableInfiniGramIndexId.OLMO_2_1124_13B,
+                index=index_enum,
                 document_index=int(id),
                 client=self.infini_gram_client,
                 maximum_document_display_length=1_000_000,
@@ -190,7 +206,7 @@ class Server(flask.Blueprint):
 
         target_doc = Document.from_dict(infini_gram_document_response.to_dict())
         result = index.SearchResult.from_infini_gram_document_and_search_term(
-            target_doc, search_term= query if query else ""
+            target_doc, search_term=query if query else ""
         )
 
         response = asdict(result)

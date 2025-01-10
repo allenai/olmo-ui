@@ -9,6 +9,7 @@ export interface MessageWithAttributionDocuments {
     documents: { [documentIndex: string]: Document | undefined };
     spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
+    index: string | null;
 }
 
 interface AttributionState {
@@ -63,6 +64,7 @@ const getAttributionsByMessageIdOrDefault = (state: Draft<AppContextState>, mess
             orderedDocumentIndexes: [],
             documents: {},
             spans: {},
+            index: null,
         };
     }
 
@@ -163,6 +165,9 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
+                        // This nullish coalesce is here for back-compat reasons! We can remove it when the API will always return an index
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                        attributions.index = attributionResponse.index ?? null;
 
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;

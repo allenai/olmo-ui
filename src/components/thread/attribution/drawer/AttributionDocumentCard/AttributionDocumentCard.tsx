@@ -121,14 +121,16 @@ const AttributionDocumentCardBase = ({
 interface AttributionDocumentCardProps {
     documentUrl?: string;
     source: string;
-    documentIndex: string;
+    documentId: string;
+    index?: string | null;
     repeatedDocumentCount?: number;
 }
 
 export const AttributionDocumentCard = ({
     documentUrl,
     source,
-    documentIndex,
+    index,
+    documentId,
     repeatedDocumentCount,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
@@ -145,24 +147,24 @@ export const AttributionDocumentCard = ({
     );
 
     const isSelected = useAppContext(
-        (state) => state.attribution.selectedDocumentIndex === documentIndex
+        (state) => state.attribution.selectedDocumentIndex === documentId
     );
     const isPreviewed = useAppContext(
-        (state) => state.attribution.previewDocumentIndex === documentIndex
+        (state) => state.attribution.previewDocumentIndex === documentId
     );
 
     return (
         <AttributionDocumentCardBase
-            snippets={<AttributionDocumentCardSnippets documentIndex={documentIndex} />}
+            snippets={<AttributionDocumentCardSnippets documentIndex={documentId} />}
             url={<UrlForDocumentAttribution url={documentUrl} />}
             onClick={() => {
-                selectDocument?.(documentIndex);
+                selectDocument?.(documentId);
             }}
             onMouseEnter={() => {
-                previewDocument?.(documentIndex);
+                previewDocument?.(documentId);
             }}
             onMouseLeave={() => {
-                stopPreviewingDocument?.(documentIndex);
+                stopPreviewingDocument?.(documentId);
             }}
             source={`Source: ${source}`}
             isSelected={isSelected}
@@ -171,7 +173,7 @@ export const AttributionDocumentCard = ({
                 <>
                     {isDatasetExplorerEnabled && (
                         <Button
-                            href={links.document(documentIndex)}
+                            href={links.document(documentId, index)}
                             variant="outlined"
                             color="inherit"
                             size="small"
@@ -192,7 +194,7 @@ export const AttributionDocumentCard = ({
                                 component="button"
                                 variant="body2"
                                 onClick={() => {
-                                    selectRepeatedDocument(documentIndex);
+                                    selectRepeatedDocument(documentId);
                                 }}>
                                 View all repeated documents
                             </Link>

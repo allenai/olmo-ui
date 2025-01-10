@@ -28,6 +28,7 @@ export interface TopLevelAttributionSpan extends AttributionSpan {
 interface AttributionResponse {
     documents: Document[];
     spans: TopLevelAttributionSpan[];
+    index: string;
 }
 
 const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';
