@@ -1,11 +1,11 @@
-import { IconButton, svgIconClasses } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { ComponentProps, PropsWithChildren } from 'react';
 
 interface QueryFormButtonProps
     extends PropsWithChildren,
         Pick<
             ComponentProps<typeof IconButton>,
-            'type' | 'aria-label' | 'children' | 'disabled' | 'onKeyDown' | 'onClick'
+            'type' | 'aria-label' | 'children' | 'disabled' | 'onKeyDown' | 'onClick' | 'sx'
         > {}
 
 export const QueryFormButton = ({
@@ -15,6 +15,7 @@ export const QueryFormButton = ({
     disabled,
     onClick,
     onKeyDown,
+    sx,
 }: QueryFormButtonProps) => {
     return (
         <IconButton
@@ -24,16 +25,22 @@ export const QueryFormButton = ({
             color="inherit"
             edge="end"
             disableRipple
-            sx={(theme) => ({
-                // paddingInlineEnd: 2,
-                '&:hover': {
-                    color: theme.color['teal-100'].hex,
-                },
-                [`&.Mui-focusVisible .${svgIconClasses.root}`]: {
-                    outline: `1px solid`,
-                    borderRadius: '50%',
-                },
-            })}
+            sx={[
+                (theme) => ({
+                    // override MUI style
+                    marginRight: 0,
+                    '&:hover': {
+                        color: theme.color['teal-100'].hex,
+                    },
+                    [`&.Mui-focusVisible`]: {
+                        outline: `1px solid`,
+                        borderRadius: '50%',
+                    },
+                }),
+                // Array.isArray doesn't preserve Sx's array type
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                ...(Array.isArray(sx) ? sx : [sx]),
+            ]}
             disabled={disabled}
             onClick={onClick}
             onKeyDown={onKeyDown}>

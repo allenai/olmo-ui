@@ -33,6 +33,11 @@ const Label = styled('label')({
         outline: '1px solid',
         borderRadius: 'var(--radii-full, 9999px)',
     },
+
+    '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
+        outline: '1px solid',
+        borderRadius: 'var(--radii-full, 9999px)',
+    },
 });
 
 const Input = styled('input')({

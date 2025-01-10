@@ -79,15 +79,15 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         gridTemplateColumns: 'auto 1fr auto',
                         gridTemplateAreas: '"start-adornment prompt end-adornment"',
                         alignItems: 'center',
+                        columnGap: theme.spacing(1),
 
                         borderRadius: theme.spacing(3.5),
-                        padding: 1,
-                        paddingInlineStart: 2,
-                        paddingInlineEnd: '14px', // eyeball adjustment
+                        paddingBlock: 1,
+                        paddingInline: 2,
                         background: theme.palette.background.drawer.secondary,
                         border: '2px solid transparent',
 
-                        [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
+                        [`&:has(:focus-visible)`]: {
                             border: (theme) => `2px solid ${theme.palette.secondary.main}`,
                         },
 
