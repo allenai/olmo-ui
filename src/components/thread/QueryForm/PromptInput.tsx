@@ -97,7 +97,9 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                             },
                         },
                     })}>
-                    <Box sx={{ gridArea: 'start-adornment' }}>{startAdornment}</Box>
+                    {startAdornment != null && (
+                        <Box sx={{ gridArea: 'start-adornment' }}>{startAdornment}</Box>
+                    )}
                     <Box
                         component="textarea"
                         ref={ref}

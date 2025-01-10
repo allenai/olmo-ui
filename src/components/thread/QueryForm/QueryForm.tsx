@@ -1,4 +1,3 @@
-import { DevTool } from '@hookform/devtools';
 import { Box, Link, Stack, Typography } from '@mui/material';
 import React, { UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
@@ -11,6 +10,7 @@ import { useAppContext } from '@/AppContext';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
@@ -29,6 +29,7 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
+    const { isMultiModalEnabled } = useFeatureToggles();
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -185,10 +186,12 @@ export const QueryForm = (): JSX.Element => {
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
                                 startAdornment={
-                                    <FileUploadButton
-                                        accept="image/*"
-                                        {...formContext.register('files')}
-                                    />
+                                    isMultiModalEnabled ? (
+                                        <FileUploadButton
+                                            accept="image/*"
+                                            {...formContext.register('files')}
+                                        />
+                                    ) : null
                                 }
                                 endAdornment={
                                     <SubmitPauseAdornment
@@ -204,7 +207,6 @@ export const QueryForm = (): JSX.Element => {
                             />
                         )}
                     />
-                    <DevTool control={formContext.control} />
                     {isLimitReached && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You have reached maximum thread length. Please start a new thread.
