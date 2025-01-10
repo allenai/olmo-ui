@@ -26,6 +26,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     });
 
     const isAttributionSpanFirstEnabled = featureToggles.attributionSpanFirst;
+    const isBucketColorsEnabled = featureToggles.bucketColors;
 
     const toggleSelectedSpans = () => {
         if (isAttributionSpanFirstEnabled) {
@@ -71,13 +72,13 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             if (span == null) {
                 return acc;
             }
-            const spanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
+            const nestedSpanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
                 return nestedSpan.documents.reduce((acc, documentIx) => {
                     const document = documents[documentIx];
                     return Math.max(acc, document?.relevance_score ?? 0.0);
                 }, acc);
             }, 0.0);
-            return Math.max(acc, spanRelevanceScore);
+            return Math.max(acc, nestedSpanRelevanceScore);
         }, 0.0);
 
         if (featureToggles.absoluteSpanScore) {
@@ -131,6 +132,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     return {
         shouldShowHighlight,
         isAttributionSpanFirstEnabled,
+        isBucketColorsEnabled,
         toggleSelectedSpans,
         spanScorePercentile,
     };
@@ -142,10 +144,8 @@ export interface AttributionHighlightProps extends PropsWithChildren {
     spanScorePercentile: number;
 }
 
-export const useGetHighlightColor = (theme: Theme, spanScorePercentile: number): string => {
-    const featureToggles = useFeatureToggles();
-
-    if (featureToggles.bucketColors) {
+export const getHighlightColor = (theme: Theme, spanScorePercentile: number, isBucketColorsEnabled: boolean): string => {
+    if (isBucketColorsEnabled) {
         if (spanScorePercentile >= 0.7) {
             return theme.color['green-40'].toString();
         } else if (spanScorePercentile >= 0.5) {
@@ -172,6 +172,7 @@ export const AttributionHighlight = ({
 }: AttributionHighlightProps): JSX.Element => {
     const {
         isAttributionSpanFirstEnabled,
+        isBucketColorsEnabled,
         toggleSelectedSpans,
         shouldShowHighlight,
         spanScorePercentile,
@@ -198,7 +199,7 @@ export const AttributionHighlight = ({
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
-                            ? useGetHighlightColor(theme, spanScorePercentile)
+                            ? getHighlightColor(theme, spanScorePercentile, isBucketColorsEnabled)
                             : theme.palette.tertiary.light,
 
                     // color is hard coded (not theme dependant), because background is always some variation of pink
