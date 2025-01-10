@@ -142,7 +142,7 @@ export interface AttributionHighlightProps extends PropsWithChildren {
     spanScorePercentile: number;
 }
 
-export const getHighlightColor = (theme: Theme, spanScorePercentile: number): string => {
+export const useGetHighlightColor = (theme: Theme, spanScorePercentile: number): string => {
     const featureToggles = useFeatureToggles();
 
     if (featureToggles.bucketColors) {
@@ -198,7 +198,7 @@ export const AttributionHighlight = ({
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
-                            ? getHighlightColor(theme, spanScorePercentile)
+                            ? useGetHighlightColor(theme, spanScorePercentile)
                             : theme.palette.tertiary.light,
 
                     // color is hard coded (not theme dependant), because background is always some variation of pink
