@@ -95,6 +95,8 @@ module.exports = (env) => ({
             AUTH0_CLIENT_ID: 'CmIxLlwn0miZ8kaQgDAK37pG0L6vrQEm',
             AUTH0_OLMO_API_AUDIENCE: 'https://olmo-api.allen.ai',
             IS_ATTRIBUTION_SPAN_FIRST_ENABLED: true,
+            ABSOLUTE_SPAN_SCORE: true,
+            BUCKET_COLORS: true,
             IS_DATASET_EXPLORER_ENABLED: false,
             IS_PETEISH_MODEL_ENABLED: false,
             RECAPTCHA_SITE_KEY: '6LcTKX8qAAAAAEn1zu3oVu-GIdC5JkW9IR7VQaA9',
