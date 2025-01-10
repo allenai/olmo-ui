@@ -1,15 +1,5 @@
-import Send from '@mui/icons-material/Send';
-import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import {
-    Box,
-    IconButton,
-    InputAdornment,
-    Link,
-    Stack,
-    svgIconClasses,
-    Typography,
-} from '@mui/material';
-import React, { ComponentProps, PropsWithChildren, UIEvent, useCallback, useEffect } from 'react';
+import { Box, Link, Stack, Typography } from '@mui/material';
+import React, { UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
@@ -23,88 +13,9 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
+import { FileUploadButton } from './FileUploadButton';
 import { PromptInput } from './PromptInput';
-
-interface QueryFormButtonProps
-    extends PropsWithChildren,
-        Pick<
-            ComponentProps<typeof IconButton>,
-            'type' | 'aria-label' | 'children' | 'disabled' | 'onKeyDown' | 'onClick'
-        > {}
-
-const QueryFormButton = ({
-    children,
-    type,
-    'aria-label': ariaLabel,
-    disabled,
-    onClick,
-    onKeyDown,
-}: QueryFormButtonProps) => {
-    return (
-        <IconButton
-            size="medium"
-            type={type}
-            aria-label={ariaLabel}
-            color="inherit"
-            edge="end"
-            disableRipple
-            sx={(theme) => ({
-                paddingInlineEnd: 2,
-                '&:hover': {
-                    color: theme.color['teal-100'].hex,
-                },
-                [`&.Mui-focusVisible .${svgIconClasses.root}`]: {
-                    outline: `1px solid`,
-                    borderRadius: '50%',
-                },
-            })}
-            disabled={disabled}
-            onClick={onClick}
-            onKeyDown={onKeyDown}>
-            {children}
-        </IconButton>
-    );
-};
-
-interface SubmitPauseAdornmentProps {
-    canPause?: boolean;
-    onPause: (event: UIEvent) => void;
-    isSubmitDisabled?: boolean;
-}
-
-const SubmitPauseAdornment = ({
-    canPause,
-    onPause,
-    isSubmitDisabled,
-}: SubmitPauseAdornmentProps) => {
-    return (
-        <InputAdornment position="end" sx={{ color: 'secondary.main', height: 'auto' }}>
-            {canPause ? (
-                <QueryFormButton
-                    aria-label="Stop response generation"
-                    onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === 'Space') {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            onPause(event);
-                        }
-                    }}
-                    onClick={(event) => {
-                        onPause(event);
-                    }}>
-                    <StopCircleOutlinedIcon />
-                </QueryFormButton>
-            ) : (
-                <QueryFormButton
-                    type="submit"
-                    aria-label="Submit prompt"
-                    disabled={isSubmitDisabled}>
-                    <Send />
-                </QueryFormButton>
-            )}
-        </InputAdornment>
-    );
-};
+import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
@@ -265,6 +176,7 @@ export const QueryForm = (): JSX.Element => {
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
+                                startAdornment={<FileUploadButton />}
                                 endAdornment={
                                     <SubmitPauseAdornment
                                         canPause={canPauseThread}
