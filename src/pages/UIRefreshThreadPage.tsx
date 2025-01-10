@@ -1,5 +1,5 @@
 import { Card, Stack } from '@mui/material';
-import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
+import { LoaderFunction, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
@@ -15,6 +15,7 @@ import {
 } from '@/components/thread/parameter/ParameterDrawer';
 import { QueryForm } from '@/components/thread/QueryForm/QueryForm';
 import { QueryFormNotice } from '@/components/thread/QueryForm/QueryFormNotices';
+import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
@@ -64,7 +65,7 @@ export const UIRefreshThreadPage = () => {
                         },
                     })}>
                     <ModelSelect />
-                    <Outlet />
+                    <ThreadDisplay />
                     <Stack
                         gap={1}
                         sx={{
