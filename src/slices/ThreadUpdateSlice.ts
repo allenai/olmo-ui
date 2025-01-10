@@ -52,6 +52,7 @@ export interface StreamMessageRequest {
     content: string;
     captchaToken?: string;
     parent?: string;
+    files?: FileList;
 }
 
 export interface ThreadUpdateSlice {

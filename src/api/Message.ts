@@ -27,7 +27,7 @@ export type V4CreateMessageRequest = RequestInferenceOpts & {
     template?: string;
     model: string;
     host: string;
-    files?: File[];
+    files?: FileList;
 };
 
 export interface Message {

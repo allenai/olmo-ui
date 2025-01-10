@@ -1,7 +1,8 @@
+import { DevTool } from '@hookform/devtools';
 import { Box, Link, Stack, Typography } from '@mui/material';
 import React, { UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
+import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -17,6 +18,12 @@ import { FileUploadButton } from './FileUploadButton';
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
+interface QueryFormValues {
+    content: string;
+    private: boolean;
+    files?: FileList;
+}
+
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
     const location = useLocation();
@@ -25,10 +32,11 @@ export const QueryForm = (): JSX.Element => {
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
-    const formContext = useForm({
+    const formContext = useForm<QueryFormValues>({
         defaultValues: {
             content: '',
             private: false,
+            files: undefined,
         },
     });
 
@@ -91,7 +99,7 @@ export const QueryForm = (): JSX.Element => {
         }
     }, [firstResponseId, formContext]);
 
-    const handleSubmit = async (data: { content: string }) => {
+    const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
         if (!canEditThread || isSelectedThreadLoading) {
             return;
         }
@@ -176,7 +184,12 @@ export const QueryForm = (): JSX.Element => {
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
-                                startAdornment={<FileUploadButton />}
+                                startAdornment={
+                                    <FileUploadButton
+                                        accept="image/*"
+                                        {...formContext.register('files')}
+                                    />
+                                }
                                 endAdornment={
                                     <SubmitPauseAdornment
                                         canPause={canPauseThread}
@@ -191,6 +204,7 @@ export const QueryForm = (): JSX.Element => {
                             />
                         )}
                     />
+                    <DevTool control={formContext.control} />
                     {isLimitReached && (
                         <Typography variant="subtitle2" color={(theme) => theme.palette.error.main}>
                             You have reached maximum thread length. Please start a new thread.

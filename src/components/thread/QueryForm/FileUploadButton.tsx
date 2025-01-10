@@ -1,9 +1,12 @@
 import { styled } from '@mui/material';
-import { ForwardedRef, forwardRef, useRef } from 'react';
+import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRef } from 'react';
 import { useButton } from 'react-aria';
 
 export const FileUploadButton = forwardRef(function FileUploadButton(
-    // props,
+    props: Omit<
+        DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+        'type' | 'ref'
+    >,
     ref: ForwardedRef<HTMLInputElement>
 ) {
     const labelRef = useRef<HTMLLabelElement>(null);
@@ -15,7 +18,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     return (
         <Label {...buttonProps} ref={labelRef} aria-label="Upload file">
             Upload
-            <Input type="file" ref={ref} />
+            <Input {...props} type="file" ref={ref} />
         </Label>
     );
 });
