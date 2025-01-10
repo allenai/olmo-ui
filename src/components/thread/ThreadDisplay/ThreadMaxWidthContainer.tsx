@@ -9,7 +9,7 @@ export const ThreadMaxWidthContainer = styled(Box)(({ theme }) => ({
 
     display: 'grid',
     gridTemplateColumns: `${CHAT_ICON_WIDTH}px 1fr`,
-    gridAutoRows: 'min-content',
+    // gridAutoRows: 'min-content',
 
     rowGap: theme.spacing(2),
     columnGap: theme.spacing(2),

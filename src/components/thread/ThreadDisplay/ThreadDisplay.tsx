@@ -10,12 +10,12 @@ import { useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage';
-import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
+import { getLegalNoticeTextColor } from '../LegalNotice/LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
-import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
+import { ThreadDisplayWrapper } from './ThreadDisplayWrapper';
 
 interface MessageViewProps {
     messageId: Message['id'];
@@ -166,69 +166,32 @@ export const ThreadDisplay = (): ReactNode => {
     };
 
     return (
-        <Box
-            height={1}
-            data-testid="thread-display"
-            onScroll={() => {
-                hasUserScrolledSinceSendingMessage.current = true;
-            }}
-            ref={scrollContainerRef}
-            // overflow="scroll"
-            sx={{
-                '@media (prefers-reduced-motion: no-preference)': {
-                    scrollBehavior: 'smooth',
-                },
-                paddingInline: 2,
-                overflowY: 'scroll',
-                scrollbarColor: (theme) => `${theme.palette.primary.dark} transparent`,
-            }}>
-            <Box
-                sx={{
-                    pointerEvents: 'none',
-                    top: '-1px',
-                    position: 'sticky',
-                    boxShadow: (theme) => `0 12px 50px 12px ${theme.palette.background.paper}`,
-                }}
-            />
-            <ThreadMaxWidthContainer>
-                <Box gridColumn="2 / -1">
-                    <LegalNotice />
-                </Box>
-                {childMessageIds.length > 0 && (
-                    <Divider
-                        sx={{
-                            gridColumn: '2 / -1',
-                            borderColor: getLegalNoticeTextColor(0.25),
-                            marginY: '1em',
-                        }}
-                    />
-                )}
-                {childMessageIds.map((messageId) => (
-                    <MessageView messageId={messageId} key={messageId} />
-                ))}
-                <Box
-                    ref={scrollAnchorRef}
-                    data-testid="bottom-scroll-anchor"
-                    aria-hidden
+        <ThreadDisplayWrapper>
+            {childMessageIds.length > 0 && (
+                <Divider
                     sx={{
-                        marginBlockStart: 4,
-                        paddingBlockEnd: 2,
+                        gridColumn: '2 / -1',
+                        borderColor: getLegalNoticeTextColor(0.25),
+                        marginY: '1em',
                     }}
                 />
-            </ThreadMaxWidthContainer>
+            )}
+            {childMessageIds.map((messageId) => (
+                <MessageView messageId={messageId} key={messageId} />
+            ))}
             <Box
+                ref={scrollAnchorRef}
+                data-testid="bottom-scroll-anchor"
+                aria-hidden
                 sx={{
-                    pointerEvents: 'none',
-                    bottom: '-1px',
-                    position: 'sticky',
-
-                    boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
+                    marginBlockStart: 4,
+                    paddingBlockEnd: 2,
                 }}
             />
             <ScrollToBottomButton
                 isVisible={isScrollToBottomButtonVisible}
                 onScrollToBottom={handleScrollToBottomButtonClick}
             />
-        </Box>
+        </ThreadDisplayWrapper>
     );
 };
