@@ -78,6 +78,8 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         display: 'grid',
                         gridTemplateColumns: 'auto 1fr auto',
                         gridTemplateAreas: '"start-adornment prompt end-adornment"',
+                        alignItems: 'center',
+
                         borderRadius: theme.spacing(3.5),
                         padding: 1,
                         paddingInlineStart: 2,

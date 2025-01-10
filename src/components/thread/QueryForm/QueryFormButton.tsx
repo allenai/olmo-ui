@@ -25,7 +25,7 @@ export const QueryFormButton = ({
             edge="end"
             disableRipple
             sx={(theme) => ({
-                paddingInlineEnd: 2,
+                // paddingInlineEnd: 2,
                 '&:hover': {
                     color: theme.color['teal-100'].hex,
                 },

@@ -1,6 +1,6 @@
+import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import { styled } from '@mui/material';
 import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRef } from 'react';
-import { useButton } from 'react-aria';
 
 export const FileUploadButton = forwardRef(function FileUploadButton(
     props: Omit<
@@ -10,14 +10,9 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     ref: ForwardedRef<HTMLInputElement>
 ) {
     const labelRef = useRef<HTMLLabelElement>(null);
-    const { buttonProps } = useButton(
-        { 'aria-label': 'Upload file', elementType: 'label' },
-        labelRef
-    );
-
     return (
-        <Label {...buttonProps} ref={labelRef} aria-label="Upload file">
-            Upload
+        <Label ref={labelRef} aria-label="Upload file">
+            <AddAPhotoOutlinedIcon />
             <Input {...props} type="file" ref={ref} />
         </Label>
     );
@@ -25,6 +20,19 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 
 const Label = styled('label')({
     cursor: 'pointer',
+    borderRadius: 'var(--radii-full, 9999px)',
+    padding: 'var(--spacing-1)',
+    display: 'flex',
+    color: 'var(--palette-light-accent-secondary)',
+
+    ':hover': {
+        color: 'var(--color-teal-100)',
+    },
+
+    ':has(:focus-visible)': {
+        outline: '1px solid',
+        borderRadius: 'var(--radii-full, 9999px)',
+    },
 });
 
 const Input = styled('input')({

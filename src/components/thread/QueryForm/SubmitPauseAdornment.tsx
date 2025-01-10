@@ -17,7 +17,7 @@ export const SubmitPauseAdornment = ({
     isSubmitDisabled,
 }: SubmitPauseAdornmentProps) => {
     return (
-        <InputAdornment position="end" sx={{ color: 'secondary.main', height: 'auto' }}>
+        <InputAdornment position="end" sx={{ color: 'secondary.main', height: 'auto', margin: 0 }}>
             {canPause ? (
                 <QueryFormButton
                     aria-label="Stop response generation"
