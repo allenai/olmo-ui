@@ -26,6 +26,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     });
 
     const isAttributionSpanFirstEnabled = featureToggles.attributionSpanFirst;
+    const isBucketColorsEnabled = featureToggles.bucketColors;
 
     const toggleSelectedSpans = () => {
         if (isAttributionSpanFirstEnabled) {
@@ -64,7 +65,35 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         const spans = state.attribution.attributionsByMessageId[messageId].spans;
         const documents = state.attribution.attributionsByMessageId[messageId].documents;
 
-        // Compute the global max and min relevance score across all spans
+        // I don't know why spanIds can be an array, but if it is, we'll just compute the max score
+        const spanIdsArray = Array.isArray(spanIds) ? spanIds : [spanIds];
+        const spanRelevanceScore = spanIdsArray.reduce((acc, spanId) => {
+            const span = spans[spanId];
+            if (span == null) {
+                return acc;
+            }
+            const nestedSpanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
+                return nestedSpan.documents.reduce((acc, documentIx) => {
+                    const document = documents[documentIx];
+                    return Math.max(acc, document?.relevance_score ?? 0.0);
+                }, acc);
+            }, 0.0);
+            return Math.max(acc, nestedSpanRelevanceScore);
+        }, 0.0);
+
+        if (featureToggles.absoluteSpanScore) {
+            // Absolute scoring based on response length
+            const message = state.selectedThreadMessagesById[messageId];
+            // message can be undefined but our typing isn't quite right
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (!message?.content) return 0.0;
+
+            // 0.125 is a hyperparam heuristically determined by running distrib_of_score_span.py in infinigram-api
+            const score = spanRelevanceScore / (message.content.length * 0.125);
+            return Math.min(Math.max(score, 0.0), 1.0);
+        }
+
+        // Relative scoring based on min/max normalization
         const maxRelevanceScore = Object.values(spans).reduce((acc, span) => {
             if (span == null) {
                 return acc;
@@ -93,35 +122,19 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
                 }, 0.0)
             );
         }, 1000000.0);
+
         // shouldn't happen, but just in case
         if (maxRelevanceScore <= minRelevanceScore) {
             return 0.0;
         }
 
-        // I don't know why spanIds can be an array, but if it is, we'll just compute the max score
-        const spanIdsArray = Array.isArray(spanIds) ? spanIds : [spanIds];
-        const spanRelevanceScore = spanIdsArray.reduce((acc, spanId) => {
-            const span = spans[spanId];
-            if (span == null) {
-                return acc;
-            }
-            const spanRelevanceScore = span.nested_spans.reduce((acc, nestedSpan) => {
-                return nestedSpan.documents.reduce((acc, documentIx) => {
-                    const document = documents[documentIx];
-                    return Math.max(acc, document?.relevance_score ?? 0.0);
-                }, acc);
-            }, 0.0);
-            return Math.max(acc, spanRelevanceScore);
-        }, 0.0);
-
-        const spanScorePercentile =
-            (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
-        return spanScorePercentile;
+        return (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
     });
 
     return {
         shouldShowHighlight,
         isAttributionSpanFirstEnabled,
+        isBucketColorsEnabled,
         toggleSelectedSpans,
         spanScorePercentile,
     };
@@ -133,7 +146,21 @@ export interface AttributionHighlightProps extends PropsWithChildren {
     spanScorePercentile: number;
 }
 
-export const getHighlightColor = (theme: Theme, spanScorePercentile: number): string => {
+export const getHighlightColor = (
+    theme: Theme,
+    spanScorePercentile: number,
+    isBucketColorsEnabled: boolean
+): string => {
+    if (isBucketColorsEnabled) {
+        if (spanScorePercentile >= 0.7) {
+            return theme.color['green-40'].toString();
+        } else if (spanScorePercentile >= 0.5) {
+            return theme.color['orange-40'].toString();
+        } else {
+            return theme.color['pink-30'].toString();
+        }
+    }
+
     const color0 = theme.color['pink-20'].rgba;
     const color1 = theme.color['pink-40'].rgba;
     const r = Math.round(color0.r * (1 - spanScorePercentile) + color1.r * spanScorePercentile);
@@ -151,6 +178,7 @@ export const AttributionHighlight = ({
 }: AttributionHighlightProps): JSX.Element => {
     const {
         isAttributionSpanFirstEnabled,
+        isBucketColorsEnabled,
         toggleSelectedSpans,
         shouldShowHighlight,
         spanScorePercentile,
@@ -177,7 +205,7 @@ export const AttributionHighlight = ({
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
-                            ? getHighlightColor(theme, spanScorePercentile)
+                            ? getHighlightColor(theme, spanScorePercentile, isBucketColorsEnabled)
                             : theme.palette.tertiary.light,
 
                     // color is hard coded (not theme dependant), because background is always some variation of pink
