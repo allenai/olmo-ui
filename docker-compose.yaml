@@ -29,6 +29,7 @@ services:
       - IS_ATTRIBUTION_SPAN_FIRST_ENABLED
       - IS_DATASET_EXPLORER_ENABLED
       - IS_PETEISH_MODEL_ENABLED
+      - IS_MULTI_MODAL_ENABLED
   nginx:
     image: nginx:1.25.1-alpine
     volumes:
