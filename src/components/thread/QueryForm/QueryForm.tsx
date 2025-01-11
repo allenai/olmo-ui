@@ -15,12 +15,13 @@ import { Controller, FormContainer, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { MessagePost, StreamBadRequestError } from '@/api/Message';
+import { StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
+import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { PromptInput } from './PromptInput';
 
@@ -190,7 +191,7 @@ export const QueryForm = (): JSX.Element => {
                 ? await executeRecaptcha?.('prompt_submission')
                 : undefined;
 
-        const request: MessagePost = { ...data, captchaToken: token };
+        const request: StreamMessageRequest = { ...data, captchaToken: token };
 
         if (lastMessageId != null) {
             request.parent = lastMessageId;

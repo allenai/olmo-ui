@@ -3,12 +3,12 @@ import {
     isFirstMessage,
     isMessageChunk,
     Message,
-    MessagePost,
     MessageStreamError,
     MessageStreamErrorReason,
     parseMessage,
     RequestInferenceOpts,
     StreamBadRequestError,
+    V4CreateMessageRequest,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
@@ -48,6 +48,12 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
     severity: AlertMessageSeverity.Warning,
 } as const;
 
+export interface StreamMessageRequest {
+    content: string;
+    captchaToken?: string;
+    parent?: string;
+}
+
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string | null;
@@ -55,11 +61,10 @@ export interface ThreadUpdateSlice {
     updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
-    streamPrompt: (newMessage: MessagePost, parentMessageId?: string) => Promise<void>;
+    streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
     abortPrompt: () => void;
 }
-
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
     streamingMessageId: null,
@@ -114,7 +119,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
     },
 
-    streamPrompt: async (newMessage: MessagePost) => {
+    streamPrompt: async (newMessage: StreamMessageRequest) => {
         const {
             inferenceOpts,
             selectedModel,
@@ -131,10 +136,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
 
-        const promptMessage = selectedModel
-            ? { ...newMessage, model: selectedModel.id, host: selectedModel.host }
-            : newMessage;
-
         set(
             (state) => {
                 state.abortController = abortController;
@@ -147,13 +148,25 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         resetAttribution();
         set({ currentOpenThreadTab: 'attribution' });
 
+        if (selectedModel == null) {
+            // This _shouldn't_ ever happen, but there's a chance it can happen if we let the user submit before models are loaded.
+            addSnackMessage({
+                type: SnackMessageType.Brief,
+                id: `missing-model${new Date().getTime()}`,
+                message: 'You must select a model before submitting a prompt.',
+            });
+            return;
+        }
+
+        const request: V4CreateMessageRequest = {
+            model: selectedModel.id,
+            host: selectedModel.host,
+            ...newMessage,
+            ...inferenceOpts,
+        };
+
         try {
-            const messageChunks = postMessageGenerator(
-                promptMessage,
-                inferenceOpts,
-                abortController,
-                promptMessage.parent
-            );
+            const messageChunks = postMessageGenerator(request, abortController);
 
             // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.
             // See MDN for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
@@ -206,7 +219,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
                     selectMessage(streamedResponseId);
-                    await getAttributionsForMessage(promptMessage.content, streamedResponseId);
+                    await getAttributionsForMessage(request.content, streamedResponseId);
                 }
             }
         } catch (err) {
