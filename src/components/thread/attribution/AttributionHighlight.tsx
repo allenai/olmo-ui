@@ -84,6 +84,8 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         if (featureToggles.absoluteSpanScore) {
             // Absolute scoring based on response length
             const message = state.selectedThreadMessagesById[messageId];
+            // message can be undefined but our typing isn't quite right
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!message?.content) return 0.0;
 
             // 0.125 is a hyperparam heuristically determined by running distrib_of_score_span.py in infinigram-api
@@ -144,7 +146,11 @@ export interface AttributionHighlightProps extends PropsWithChildren {
     spanScorePercentile: number;
 }
 
-export const getHighlightColor = (theme: Theme, spanScorePercentile: number, isBucketColorsEnabled: boolean): string => {
+export const getHighlightColor = (
+    theme: Theme,
+    spanScorePercentile: number,
+    isBucketColorsEnabled: boolean
+): string => {
     if (isBucketColorsEnabled) {
         if (spanScorePercentile >= 0.7) {
             return theme.color['green-40'].toString();
