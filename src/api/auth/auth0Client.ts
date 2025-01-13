@@ -34,7 +34,13 @@ class Auth0Client {
         const client = await this.#getClient();
 
         if (await client.isAuthenticated()) {
-            return client.getTokenSilently();
+            try {
+                return await client.getTokenSilently();
+            } catch (e) {
+                console.error(`Something went wrong when getting the token: ${e}\nLogging out.`);
+                await this.login(window.location.href);
+                throw e;
+            }
         }
 
         return undefined;
