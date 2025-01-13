@@ -35,6 +35,12 @@ const RemoveButton = styled(Button)({
         outline: '1px solid',
         borderRadius: 'var(--radii-full, 9999px)',
     },
+
+    svg: {
+        color: 'var(--color-green-100)',
+        height: 22,
+        width: 22,
+    },
 });
 
 interface ThumbnailProps {
