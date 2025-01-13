@@ -34,7 +34,18 @@ class Auth0Client {
         const client = await this.#getClient();
 
         if (await client.isAuthenticated()) {
-            return client.getTokenSilently();
+            try {
+                return await client.getTokenSilently();
+            } catch (e) {
+                if (e instanceof Error) {
+                    console.error(
+                        `Something went wrong when getting the token: ${e.message}\nLogging in again.`
+                    );
+                }
+
+                await this.login(window.location.href);
+                throw e;
+            }
         }
 
         return undefined;
