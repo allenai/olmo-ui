@@ -37,9 +37,12 @@ class Auth0Client {
             try {
                 return await client.getTokenSilently();
             } catch (e) {
-                console.error(
-                    `Something went wrong when getting the token: ${e}\nLogging in again.`
-                );
+                if (e instanceof Error) {
+                    console.error(
+                        `Something went wrong when getting the token: ${e.message}\nLogging in again.`
+                    );
+                }
+
                 await this.login(window.location.href);
                 throw e;
             }
