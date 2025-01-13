@@ -16,6 +16,7 @@ export enum FeatureToggle {
     bucketColors = 'bucketColors',
     isDatasetExplorerEnabled = 'isDatasetExplorerEnabled',
     isPeteishModelEnabled = 'isPeteishModelEnabled',
+    isMultiModalEnabled = 'isMultiModalEnabled',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
@@ -28,6 +29,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.bucketColors]: true,
     [FeatureToggle.isDatasetExplorerEnabled]: false,
     [FeatureToggle.isPeteishModelEnabled]: false,
+    [FeatureToggle.isMultiModalEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -98,6 +100,7 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
             absoluteSpanScore: process.env.ABSOLUTE_SPAN_SCORE,
             bucketColors: process.env.BUCKET_COLORS,
             isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
+            isMultiModalEnabled: process.env.IS_MULTI_MODAL_ENABLED,
         });
 
         const toggles = {

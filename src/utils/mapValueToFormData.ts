@@ -1,4 +1,4 @@
-type AllowedFormValues = string | number | File | null | undefined | boolean;
+type AllowedFormValues = string | number | File | null | undefined | boolean | FileList;
 
 export const mapValueToFormData = (
     formData: FormData,
@@ -11,6 +11,10 @@ export const mapValueToFormData = (
         value.forEach((item) => {
             mapValueToFormData(formData, name, item);
         });
+    } else if (value instanceof FileList) {
+        for (const file of value) {
+            formData.append(name, file, file.name);
+        }
     } else if (value != null) {
         formData.append(name, value.toString());
     }

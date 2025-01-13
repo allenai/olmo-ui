@@ -10,6 +10,8 @@ server {
         proxy_pass http://ui:3000;
     }
     
+    client_max_body_size 50M;
+    
     # This allows a websocket connection between the client and the webpack development server,
     # so that webpack can reload the developer's browser after they make changes.
     location /ws {

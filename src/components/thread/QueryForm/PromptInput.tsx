@@ -43,6 +43,7 @@ interface AutoSizedInputProps {
     value: string;
     errorMessage?: ReactNode;
     onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
+    startAdornment?: ReactNode;
     endAdornment?: ReactNode;
 }
 
@@ -57,6 +58,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
             onKeyDown,
             name,
             errorMessage,
+            startAdornment,
             endAdornment,
         },
         ref
@@ -74,16 +76,18 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         // end styles stolen from MUI
 
                         display: 'grid',
-                        gridTemplateColumns: '1fr auto',
-                        gridTemplateAreas: '"prompt adornment"',
+                        gridTemplateColumns: 'auto 1fr auto',
+                        gridTemplateAreas: '"start-adornment prompt end-adornment"',
+                        alignItems: 'center',
+                        columnGap: theme.spacing(1),
+
                         borderRadius: theme.spacing(3.5),
-                        padding: 1,
-                        paddingInlineStart: 2,
-                        paddingInlineEnd: '14px', // eyeball adjustment
+                        paddingBlock: 1,
+                        paddingInline: 2,
                         background: theme.palette.background.drawer.secondary,
                         border: '2px solid transparent',
 
-                        [`&:has(.${AUTO_SIZED_INPUT_CLASSNAME}:focus-visible)`]: {
+                        [`&:has(:focus-visible)`]: {
                             border: (theme) => `2px solid ${theme.palette.secondary.main}`,
                         },
 
@@ -93,6 +97,9 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                             },
                         },
                     })}>
+                    {startAdornment != null && (
+                        <Box sx={{ gridArea: 'start-adornment' }}>{startAdornment}</Box>
+                    )}
                     <Box
                         component="textarea"
                         ref={ref}
@@ -143,7 +150,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         {/* This intentionally has a space at the end, the css-tricks article says it helps it be smoother */}
                         {value}{' '}
                     </Box>
-                    <Box sx={{ gridArea: 'adornment', alignSelf: 'end' }}>{endAdornment}</Box>
+                    <Box sx={{ gridArea: 'end-adornment', alignSelf: 'end' }}>{endAdornment}</Box>
                 </Box>
                 <FormHelperText
                     sx={{
