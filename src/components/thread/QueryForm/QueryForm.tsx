@@ -15,6 +15,7 @@ import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { FileUploadButton } from './FileUploadButton';
+import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
@@ -147,10 +148,30 @@ export const QueryForm = (): JSX.Element => {
         return `${familyNamePrefix} ${selectedModelFamilyName}`;
     });
 
+    const files = formContext.watch('files');
+
+    const handleRemoveFile = (fileToRemove: File) => {
+        if (files == null) {
+            // Something weird has happened, maybe we reset the form or the user cleared it
+            // We're just ignoring the removal in this case
+            return;
+        }
+
+        const dataTransfer = new DataTransfer();
+        for (const file of files) {
+            if (file !== fileToRemove) {
+                dataTransfer.items.add(file);
+            }
+
+            formContext.setValue('files', dataTransfer.files);
+        }
+    };
+
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <Stack gap={1} alignItems="flex-start" width={1}>
+                <Stack gap={1} alignItems="flex-start" width={1} position="relative">
+                    <FileUploadThumbnails files={files} onRemoveFile={handleRemoveFile} />
                     <Controller
                         control={formContext.control}
                         name="content"
