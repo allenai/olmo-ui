@@ -92,3 +92,7 @@ Mock request handlers can be found in `src/mocks/handlers`. If you want to add o
     ```
     ./bin/bootstrap
     ```
+
+## Importing SVGs as React components
+
+We have SVGR set up in this project. To import an SVG as a Component, import it with `?react` at the end of the import filename. For example, `import CloseIcon from '@/components/assets/close.svg?react'` will import `close.svg` as a React component.

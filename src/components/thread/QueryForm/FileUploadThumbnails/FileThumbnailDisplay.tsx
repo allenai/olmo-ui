@@ -52,15 +52,11 @@ interface ThumbnailProps {
 const Thumbnail = ({ filename, src, onPressRemove }: ThumbnailProps): ReactNode => {
     return (
         <Box position="relative" zIndex={0}>
-            <ThumbnailImage alt={`User uploaded file ${filename}`} src={src} title={filename} />
-            <RemoveButton onPress={onPressRemove}>
+            <ThumbnailImage alt={`User file ${filename}`} src={src} title={filename} />
+            <RemoveButton
+                onPress={onPressRemove}
+                aria-label={`Remove ${filename} from files to upload`}>
                 <CloseIcon />
-                {/* <img
-                    src={closeIconUrl}
-                    alt={`Remove ${filename} from the files to upload`}
-                    height={22}
-                    width={22}
-                /> */}
             </RemoveButton>
         </Box>
     );
