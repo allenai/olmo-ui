@@ -54,7 +54,7 @@ export interface Message {
     model?: string | null;
     model_id?: string | null;
     model_host?: string | null;
-    image_links?: string[];
+    file_links?: string[];
 }
 
 export interface MessageList {

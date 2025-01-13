@@ -19,7 +19,7 @@ export interface SelectedThreadMessage {
     parent?: string;
     model_id: string | null | undefined;
     opts: NullishPartial<InferenceOpts>;
-    imageLinks?: string[];
+    fileLinks?: string[];
 }
 
 const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMessage => {
@@ -37,7 +37,7 @@ const mapMessageToSelectedThreadMessage = (message: Message): SelectedThreadMess
         parent: message.parent ?? undefined,
         model_id: message.model_id,
         opts: message.opts,
-        imageLinks: message.image_links,
+        fileLinks: message.file_links,
     };
 };
 

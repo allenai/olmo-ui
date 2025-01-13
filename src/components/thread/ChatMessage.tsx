@@ -1,4 +1,4 @@
-import { Box, ImageList, ImageListItem, SxProps, Typography } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';
@@ -34,24 +34,11 @@ interface MessageProps extends PropsWithChildren {
     messageId: string;
 }
 
-const UserMessage = ({ messageId, children }: MessageProps): JSX.Element => {
-    const imageLinks = useAppContext(
-        (state) => state.selectedThreadMessagesById[messageId].imageLinks || []
-    );
-
+const UserMessage = ({ children }: MessageProps): JSX.Element => {
     return (
-        <>
-            <Typography component="div" fontWeight="bold" sx={sharedMessageStyle}>
-                {children}
-            </Typography>
-            <ImageList>
-                {imageLinks.map((link, idx) => (
-                    <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
-                        <img src={link} alt={'Uploaded'} loading="lazy" />
-                    </ImageListItem>
-                ))}
-            </ImageList>
-        </>
+        <Typography component="div" fontWeight="bold" sx={sharedMessageStyle}>
+            {children}
+        </Typography>
     );
 };
 
