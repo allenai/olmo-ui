@@ -2,7 +2,7 @@ import { Box, Stack, styled } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import { Button } from 'react-aria-components';
 
-import closeIconUrl from '@/components/assets/close.svg';
+import CloseIcon from '@/components/assets/close.svg?react';
 
 import { useObjectUrls } from './useObjectUrls';
 
@@ -30,6 +30,11 @@ const RemoveButton = styled(Button)({
     background: 'transparent',
     border: 'none',
     cursor: 'pointer',
+
+    ':focus-visible': {
+        outline: '1px solid',
+        borderRadius: 'var(--radii-full, 9999px)',
+    },
 });
 
 interface ThumbnailProps {
@@ -43,12 +48,13 @@ const Thumbnail = ({ filename, src, onPressRemove }: ThumbnailProps): ReactNode 
         <Box position="relative" zIndex={0}>
             <ThumbnailImage alt={`User uploaded file ${filename}`} src={src} title={filename} />
             <RemoveButton onPress={onPressRemove}>
-                <img
+                <CloseIcon />
+                {/* <img
                     src={closeIconUrl}
                     alt={`Remove ${filename} from the files to upload`}
                     height={22}
                     width={22}
-                />
+                /> */}
             </RemoveButton>
         </Box>
     );
