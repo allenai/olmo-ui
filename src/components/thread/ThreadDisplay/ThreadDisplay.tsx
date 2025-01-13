@@ -179,6 +179,12 @@ export const ThreadDisplay = (): ReactNode => {
                     scrollBehavior: 'smooth',
                 },
                 paddingInline: 2,
+
+                // TODO: https://github.com/allenai/olmo-ui/issues/825 Combine this and the ThreadDisplay layout
+                overflowY: 'scroll',
+                overflowX: 'auto',
+                scrollbarColor: (theme) =>
+                    `${theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light} transparent`,
             }}>
             <Box
                 sx={{
