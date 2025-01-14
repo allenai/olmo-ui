@@ -1,205 +1,213 @@
 {
-    "spans": [
+  "spans": [
+    {
+      "text": "# H1 with # inside the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " H1 with a space after #",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "##### H5 with # inside the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " H5 with a space after #",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "[link with link stuff inside the span](#link)",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "* list item with * in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " list item with a space after *",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "- list item with - in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " list item with a space after -",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "+ list item with + in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " list item with a space after +",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "> quote with > in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " quote with a space after >",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "1. numbered list with 1. in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " list item with a space after 1.",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "    code block with four spaces in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "code block with a span in it",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "`code span with tick in the span`",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " code span with a space after tick in the span`",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "`code span entirely contained inside a highlight`",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "*emphasis with * in the span*",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "*emphasis * with the emphasis starting in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "emphasis * with the emphasis ending in the span*",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "**emphasis with ** in the span**",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "**emphasis ** with the emphasis starting in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "emphasis ** with the emphasis ending in the span**",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "_italics with _ in the span_",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "_italics _ with the italics starting in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "italics _ with the italics ending in the span_",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "__italics with __ in the span__",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "__italics __ with the italics starting in the span",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "italics __ with the italics ending in the span__",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with opening brace in it [",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with closing brace in it ]",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with both [ braces ] in it",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with reversed ] braces [ in it",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "*span that starts with a * but shouldn't get changed",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": " **span with a space at the start**",
+      "documents": [],
+      "nested_spans": [
         {
-            "text": "# H1 with # inside the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " H1 with a space after #",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "##### H5 with # inside the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " H5 with a space after #",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "[link with link stuff inside the span](#link)",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "* list item with * in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " list item with a space after *",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "- list item with - in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " list item with a space after -",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "+ list item with + in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " list item with a space after +",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "> quote with > in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " quote with a space after >",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "1. numbered list with 1. in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " list item with a space after 1.",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "    code block with four spaces in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "code block with a span in it",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "`code span with tick in the span`",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": " code span with a space after tick in the span`",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "`code span entirely contained inside a highlight`",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "*emphasis with * in the span*",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "*emphasis * with the emphasis starting in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "emphasis * with the emphasis ending in the span*",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "**emphasis with ** in the span**",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "**emphasis ** with the emphasis starting in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "emphasis ** with the emphasis ending in the span**",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "_italics with _ in the span_",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "_italics _ with the italics starting in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "italics _ with the italics ending in the span_",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "__italics with __ in the span__",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "__italics __ with the italics starting in the span",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "italics __ with the italics ending in the span__",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "span with opening brace in it [",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "span with closing brace in it ]",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "span with both [ braces ] in it",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "span with reversed ] braces [ in it",
-            "documents": [],
-            "nested_spans": []
-        },
-        {
-            "text": "*span that starts with a * but shouldn't get changed",
-            "documents": [],
-            "nested_spans": []
+          "text": "**span with a space at the start**",
+          "documents": []
         }
-    ],
-    "documents": [
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "corresponding_spans": [0],
+      "snippets": [
         {
-            "corresponding_spans": [
-                0
-            ],
-            "snippets": [
-                {
-                    "text": "starting text #H1 with # inside the span ending text",
-                    "corresponding_span_text": "#H1 with # inside the span"
-                }
-            ],
-            "index": "2132419686",
-            "source": "fake",
-            "title": null
+          "text": "starting text #H1 with # inside the span ending text",
+          "corresponding_span_text": "#H1 with # inside the span"
         }
-    ]
+      ],
+      "index": "2132419686",
+      "source": "fake",
+      "title": null
+    }
+  ]
 }
