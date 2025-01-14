@@ -157,6 +157,7 @@ const highlightStressTestResponse = {
             root: highlightStressTestMessageId,
             created: '2024-08-20T22:34:03.342086+00:00',
             parent: highlightStressTestMessageId,
+            model_id: 'OLMo-peteish-dpo-preview',
             logprobs: [],
             completion: 'cpl_R5T5K6B4D9',
             final: true,

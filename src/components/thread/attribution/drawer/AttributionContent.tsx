@@ -22,7 +22,7 @@ const AttributionContentStack = styled(Stack)(({ theme }) => ({
 
 export const AttributionContent = () => {
     return (
-        <AttributionContentStack direction="column" gap={2} data-testid="attribution-drawer">
+        <AttributionContentStack direction="column" gap={2} data-testid="corpuslink-drawer">
             <Typography variant="h5">CorpusLink</Typography>
             <Typography>
                 CorpusLink shows documents from the training data that have exact text matches with
