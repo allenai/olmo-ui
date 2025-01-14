@@ -11,9 +11,11 @@ import { ChangeEventHandler, forwardRef, KeyboardEventHandler, ReactNode } from 
 // The textarea and div that holds the contents need to have the same styles so they don't get out of sync
 const textareaStyles: SxProps<Theme> = {
     gridArea: 'prompt',
+    alignSelf: 'stretch',
     height: 'unset',
     resize: 'none',
     maxWidth: '100%',
+    overflowWrap: 'anywhere',
     // We want the max height to be the same as about X lines, the lh unit does that for us
     maxHeight: '5lh',
     lineHeight: 'inherit',
