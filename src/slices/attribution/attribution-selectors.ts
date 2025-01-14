@@ -16,5 +16,5 @@ export const messageAttributionsSelector = (
 export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
     state.attribution.selectedSpanIds.length > 0;
 
-export const shouldShowHighlights = (state: AppContextState): boolean =>
+export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
     state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID;
