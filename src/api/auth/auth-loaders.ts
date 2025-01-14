@@ -131,11 +131,13 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
 };
 
 export const useUserAuthInfo = (): UserAuthInfo => {
-    const { userAuthInfo } = useRouteLoaderData('root') as UserInfoLoaderResponse;
+    const userInfoFromLoader = useRouteLoaderData('userInfoRoot') as
+        | UserInfoLoaderResponse
+        | undefined;
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
     return {
         userInfo: userInfo ?? undefined,
-        isAuthenticated: Boolean(userAuthInfo?.isAuthenticated),
+        isAuthenticated: Boolean(userInfoFromLoader?.userAuthInfo?.isAuthenticated),
     };
 };
