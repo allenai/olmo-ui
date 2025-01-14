@@ -30,7 +30,11 @@ const streamingMessageIndicatorStyle: SxProps = {
     },
 };
 
-const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
+interface MessageProps extends PropsWithChildren {
+    messageId: string;
+}
+
+const UserMessage = ({ children }: MessageProps): JSX.Element => {
     return (
         <Typography component="div" fontWeight="bold" sx={sharedMessageStyle}>
             {children}
@@ -38,11 +42,7 @@ const UserMessage = ({ children }: PropsWithChildren): JSX.Element => {
     );
 };
 
-interface LLMMessageProps extends PropsWithChildren {
-    messageId: string;
-}
-
-const LLMMessage = ({ messageId, children }: LLMMessageProps): JSX.Element => {
+const LLMMessage = ({ messageId, children }: MessageProps): JSX.Element => {
     const shouldShowStreamingIndicator = useAppContext(
         (state) =>
             state.streamingMessageId === messageId &&

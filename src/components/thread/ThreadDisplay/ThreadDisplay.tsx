@@ -1,4 +1,4 @@
-import { Box, Divider } from '@mui/material';
+import { Box, Divider, ImageList, ImageListItem } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -26,6 +26,7 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
         role,
         content,
         labels: messageLabels,
+        fileUrls,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
     const contentWithMarks = useSpanHighlighting(messageId);
@@ -37,6 +38,13 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     return (
         <ChatMessage role={role} messageId={messageId}>
             <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+            <ImageList>
+                {(fileUrls || []).map((url, idx) => (
+                    <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
+                        <img src={url} alt={'Uploaded'} loading="lazy" />
+                    </ImageListItem>
+                ))}
+            </ImageList>
 
             <MessageInteraction
                 role={role}
