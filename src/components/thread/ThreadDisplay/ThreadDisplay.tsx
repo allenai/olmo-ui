@@ -26,7 +26,7 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
         role,
         content,
         labels: messageLabels,
-        fileLinks,
+        fileUrls,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
     const contentWithMarks = useSpanHighlighting(messageId);
@@ -39,9 +39,9 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
         <ChatMessage role={role} messageId={messageId}>
             <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
             <ImageList>
-                {(fileLinks || []).map((link, idx) => (
+                {(fileUrls || []).map((url, idx) => (
                     <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
-                        <img src={link} alt={'Uploaded'} loading="lazy" />
+                        <img src={url} alt={'Uploaded'} loading="lazy" />
                     </ImageListItem>
                 ))}
             </ImageList>
