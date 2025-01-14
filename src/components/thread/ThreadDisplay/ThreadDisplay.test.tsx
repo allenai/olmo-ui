@@ -12,6 +12,7 @@ import { links } from '@/Links';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 
+import { ATTRIBUTION_DRAWER_ID } from '../attribution/drawer/AttributionDrawer';
 import { ThreadDisplay } from './ThreadDisplay';
 
 describe('ThreadDisplay', () => {
@@ -28,6 +29,7 @@ describe('ThreadDisplay', () => {
                         client: 'currentUser',
                         hasAcceptedTermsAndConditions: true,
                     },
+                    currentOpenDrawer: ATTRIBUTION_DRAWER_ID,
                     selectedThreadRootId: 'userMessage',
                     selectedThreadMessages: ['userMessage', 'llmMessage'],
                     selectedThreadMessagesById: {
