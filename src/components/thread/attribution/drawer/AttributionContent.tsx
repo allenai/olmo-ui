@@ -1,23 +1,17 @@
 import { ArrowBack } from '@mui/icons-material';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, Link, Stack, styled, Typography } from '@mui/material';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
-import {
-    messageAttributionDocumentsSelector,
-    useAttributionDocumentsForMessage,
-} from './message-attribution-documents-selector';
+import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 const AttributionContentStack = styled(Stack)(({ theme }) => ({
     paddingBlock: theme.spacing(2),
@@ -27,14 +21,8 @@ const AttributionContentStack = styled(Stack)(({ theme }) => ({
 }));
 
 export const AttributionContent = () => {
-    const toggleHighlightVisibility = useAppContext((state) => state.toggleHighlightVisibility);
-    const attributionForMessage = useAppContext(messageAttributionDocumentsSelector);
-    const isAllHighlightVisible = useAppContext((state) => state.attribution.isAllHighlightVisible);
-
-    const { loadingState, documents } = attributionForMessage;
-
     return (
-        <AttributionContentStack direction="column" gap={2} data-testid="attribution-drawer">
+        <AttributionContentStack direction="column" gap={2} data-testid="corpuslink-drawer">
             <Typography variant="h5">CorpusLink</Typography>
             <Typography>
                 CorpusLink shows documents from the training data that have exact text matches with
@@ -62,24 +50,6 @@ export const AttributionContent = () => {
                     marginTop: theme.spacing(1),
                 })}>
                 <Typography fontWeight={500}>Explore the full training dataset</Typography>
-            </Button>
-            <Button
-                variant="text"
-                disabled={loadingState === RemoteState.Loading}
-                startIcon={
-                    isAllHighlightVisible ? (
-                        <VisibilityOffOutlinedIcon />
-                    ) : (
-                        <VisibilityOutlinedIcon />
-                    )
-                }
-                onClick={toggleHighlightVisibility}
-                sx={{
-                    justifyContent: 'flex-start',
-                    color: (theme) => theme.palette.text.primary,
-                    visibility: documents.length === 0 ? 'hidden' : 'visible',
-                }}>
-                {isAllHighlightVisible ? 'Hide Highlights' : 'Show Highlights'}
             </Button>
             <ClearSelectedSpanButton />
             <AttributionDrawerDocumentList />

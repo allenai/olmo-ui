@@ -3,7 +3,10 @@ import { PropsWithChildren } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
-import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
+import {
+    hasSelectedSpansSelector,
+    shouldShowHighlightsSelector,
+} from '@/slices/attribution/attribution-selectors';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 
@@ -40,7 +43,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     };
 
     const shouldShowHighlight = useAppContext((state) => {
-        if (!state.attribution.isAllHighlightVisible) {
+        if (!shouldShowHighlightsSelector(state)) {
             return false;
         }
 

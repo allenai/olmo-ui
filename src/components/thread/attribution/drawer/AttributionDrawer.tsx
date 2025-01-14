@@ -16,7 +16,7 @@ export const DesktopAttributionDrawer = () => {
         <DesktopExpandingDrawer
             width="24rem"
             open={open}
-            id="desktop-attribution-drawer"
+            id="desktop-corpuslink-drawer"
             overflowY="hidden">
             <FullAttributionContent />
         </DesktopExpandingDrawer>

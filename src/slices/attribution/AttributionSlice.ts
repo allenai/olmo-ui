@@ -22,7 +22,6 @@ interface AttributionState {
         selectedMessageId: string | null;
         selectedSpanIds: string[];
         selectedRepeatedDocumentIndex: string | null;
-        isAllHighlightVisible: boolean;
     };
 }
 
@@ -35,7 +34,6 @@ interface AttributionActions {
     getAttributionsForMessage: (prompt: string, messageId: string) => Promise<AttributionState>;
     selectSpans: (span: string | string[]) => void;
     resetSelectedSpans: () => void;
-    toggleHighlightVisibility: () => void;
     handleAttributionForChangingThread: () => void;
     selectRepeatedDocument: (documentIndex: string) => void;
     resetSelectedRepeatedDocument: () => void;
@@ -51,7 +49,6 @@ const initialAttributionState: AttributionState = {
         selectedMessageId: null,
         selectedSpanIds: [],
         selectedRepeatedDocumentIndex: null,
-        isAllHighlightVisible: true,
     },
 };
 
@@ -246,20 +243,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             },
             false,
             'attribution/resetSelectedRepeatedDocument'
-        );
-    },
-
-    toggleHighlightVisibility: () => {
-        const { attribution, resetSelectedSpans } = get();
-        if (attribution.selectedSpanIds.length > 0) {
-            resetSelectedSpans();
-        }
-        set(
-            (state) => {
-                state.attribution.isAllHighlightVisible = !state.attribution.isAllHighlightVisible;
-            },
-            false,
-            'attribution/toggleHighlightVisibility'
         );
     },
 
