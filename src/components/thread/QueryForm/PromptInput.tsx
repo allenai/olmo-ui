@@ -15,6 +15,7 @@ const textareaStyles: SxProps<Theme> = {
     height: 'unset',
     resize: 'none',
     maxWidth: '100%',
+    overflowWrap: 'anywhere',
     // We want the max height to be the same as about X lines, the lh unit does that for us
     maxHeight: '5lh',
     lineHeight: 'inherit',
