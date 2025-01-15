@@ -47,7 +47,7 @@ export const AppLayout = ({ children }: AppLayout) => {
                                 `rgb(from currentColor r g b / ${theme.palette.mode === 'light' ? 0.42 : 0.5})`,
                         },
 
-                        scrollbarColor: `var(--color-transparent-text-accent) transparent`,
+                        scrollbarColor: `var(--color-transparent-text-accent, currentColor) transparent`,
                     },
                 ]}
                 maxWidth={false}>

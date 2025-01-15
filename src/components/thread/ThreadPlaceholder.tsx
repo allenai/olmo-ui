@@ -22,8 +22,9 @@ export const ThreadPlaceholder = () => {
                 paddingInline: 2,
 
                 // TODO: https://github.com/allenai/olmo-ui/issues/825 Combine this and the ThreadDisplay layout
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 overflowX: 'auto',
+                scrollbarGutter: 'stable',
             }}>
             <ThreadMaxWidthContainer gridTemplateRows="auto 1fr auto" sx={{ height: '100%' }}>
                 <Box gridColumn="2 / -1">

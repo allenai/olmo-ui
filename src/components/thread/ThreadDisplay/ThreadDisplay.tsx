@@ -181,8 +181,9 @@ export const ThreadDisplay = (): ReactNode => {
                 paddingInline: 2,
 
                 // TODO: https://github.com/allenai/olmo-ui/issues/825 Combine this and the ThreadDisplay layout
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 overflowX: 'auto',
+                scrollbarGutter: 'stable',
             }}>
             <Box
                 sx={{
