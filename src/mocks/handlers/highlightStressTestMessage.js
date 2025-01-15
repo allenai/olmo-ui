@@ -29,6 +29,7 @@ export default `HighlightStressTest
 1. numbered list with 1. in the span
 1. second in list
 1. list item with a space after 1.
+1. **span with a space at the start**
 
 \`\`\`js
 code block with a span in it
