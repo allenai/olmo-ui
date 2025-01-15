@@ -72,6 +72,35 @@ export interface FeatureToggleProps extends PropsWithChildren {
 
 export const FeatureToggleContext = createContext<FeatureToggles>(defaultFeatureToggles);
 
+function createToggles(initialToggles = defaultFeatureToggles) {
+    // grab from local storage if we have any
+    const localStorageToggles = parseToggles(
+        JSON.parse(localStorage.getItem(localStorageKey) || '{}') as Record<string, FTValue>
+    );
+
+    // grab from url if we have any
+    const query = new URL(window.location.href).searchParams;
+    const queryToggles = parseToggles(Object.fromEntries(query));
+
+    const envToggles = parseToggles({
+        isCorpusLinkEnabled: process.env.IS_CORPUS_LINK_ENABLED,
+        attributionSpanFirst: process.env.IS_ATTRIBUTION_SPAN_FIRST_ENABLED,
+        absoluteSpanScore: process.env.ABSOLUTE_SPAN_SCORE,
+        bucketColors: process.env.BUCKET_COLORS,
+        isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
+        isMultiModalEnabled: process.env.IS_MULTI_MODAL_ENABLED,
+    });
+
+    const toggles = {
+        ...initialToggles,
+        ...localStorageToggles,
+        ...envToggles,
+        ...queryToggles,
+    };
+
+    return toggles;
+}
+
 export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
     children,
     featureToggles: initialToggles = defaultFeatureToggles,
@@ -85,30 +114,7 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
             return;
         }
 
-        // grab from local storage if we have any
-        const localStorageToggles = parseToggles(
-            JSON.parse(localStorage.getItem(localStorageKey) || '{}') as Record<string, FTValue>
-        );
-
-        // grab from url if we have any
-        const query = new URL(window.location.href).searchParams;
-        const queryToggles = parseToggles(Object.fromEntries(query));
-
-        const envToggles = parseToggles({
-            isCorpusLinkEnabled: process.env.IS_CORPUS_LINK_ENABLED,
-            attributionSpanFirst: process.env.IS_ATTRIBUTION_SPAN_FIRST_ENABLED,
-            absoluteSpanScore: process.env.ABSOLUTE_SPAN_SCORE,
-            bucketColors: process.env.BUCKET_COLORS,
-            isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
-            isMultiModalEnabled: process.env.IS_MULTI_MODAL_ENABLED,
-        });
-
-        const toggles = {
-            ...initialToggles,
-            ...localStorageToggles,
-            ...envToggles,
-            ...queryToggles,
-        };
+        const toggles = createToggles(initialToggles);
 
         // save back to local storage
         localStorage.setItem(localStorageKey, JSON.stringify(toggles));
@@ -131,4 +137,8 @@ export const FeatureToggleProvider: FC<FeatureToggleProps> = ({
 
 export function useFeatureToggles() {
     return useContext(FeatureToggleContext);
+}
+
+export function getFeatureToggles() {
+    return createToggles();
 }

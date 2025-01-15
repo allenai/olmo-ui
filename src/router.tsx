@@ -17,6 +17,7 @@ import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { VarnishedApp } from './components/VarnishedApp';
+import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { Document } from './pages/Document';
@@ -104,6 +105,16 @@ export const routes: RouteObject[] = [
                     },
                     {
                         element: <DolmaPage />,
+                        loader: () => {
+                            const { isDatasetExplorerEnabled } = getFeatureToggles();
+                            if (!isDatasetExplorerEnabled) {
+                                // React-router recommends throwing a
+                                // eslint-disable-next-line @typescript-eslint/only-throw-error
+                                throw new Response('Not Found', { status: 404 });
+                            }
+
+                            return new Response();
+                        },
                         children: [
                             {
                                 path: links.document(':id'),
