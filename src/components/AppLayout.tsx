@@ -16,24 +16,40 @@ export const AppLayout = ({ children }: AppLayout) => {
             <GlobalSnackMessageList />
             <Container
                 component="main"
-                sx={{
-                    display: 'grid',
-                    flexDirection: 'column',
+                sx={[
+                    {
+                        display: 'grid',
+                        flexDirection: 'column',
 
-                    overflow: 'auto',
+                        overflow: 'auto',
 
-                    height: 1,
+                        height: 1,
 
-                    gridArea: {
-                        // Give this the full content width at small, fixes gridRendering on iOS 16
-                        [SMALL_LAYOUT_BREAKPOINT]: 'content',
-                        // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
-                        [DESKTOP_LAYOUT_BREAKPOINT]: 'aside / content / aside / aside',
+                        gridArea: {
+                            // Give this the full content width at small, fixes gridRendering on iOS 16
+                            [SMALL_LAYOUT_BREAKPOINT]: 'content',
+                            // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
+                            [DESKTOP_LAYOUT_BREAKPOINT]: 'aside / content / aside / aside',
+                        },
+                        gridTemplateColumns: 'subgrid',
+                        gridTemplateRows: 'subgrid',
+                        backgroundColor: 'transparent',
                     },
-                    gridTemplateColumns: 'subgrid',
-                    gridTemplateRows: 'subgrid',
-                    backgroundColor: 'transparent',
-                }}
+                    {
+                        '--color-transparent-text-accent': (theme) =>
+                            theme.palette.mode === 'light'
+                                ? theme.color['gray-50'].hex
+                                : theme.color['gray-10'].hex,
+
+                        '@supports(color: rgb(from white r g b))': {
+                            // This matches the placeholder color in the prompt input
+                            '--color-transparent-text-accent': (theme) =>
+                                `rgb(from currentColor r g b / ${theme.palette.mode === 'light' ? 0.42 : 0.5})`,
+                        },
+
+                        scrollbarColor: `var(--color-transparent-text-accent, currentColor) transparent`,
+                    },
+                ]}
                 maxWidth={false}>
                 {children}
             </Container>
