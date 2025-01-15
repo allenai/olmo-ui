@@ -24,8 +24,6 @@ export const ThreadPlaceholder = () => {
                 // TODO: https://github.com/allenai/olmo-ui/issues/825 Combine this and the ThreadDisplay layout
                 overflowY: 'scroll',
                 overflowX: 'auto',
-                scrollbarColor: (theme) =>
-                    `${theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light} transparent`,
             }}>
             <ThreadMaxWidthContainer gridTemplateRows="auto 1fr auto" sx={{ height: '100%' }}>
                 <Box gridColumn="2 / -1">
