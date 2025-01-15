@@ -162,9 +162,9 @@ export const QueryForm = (): JSX.Element => {
             if (file !== fileToRemove) {
                 dataTransfer.items.add(file);
             }
-
-            formContext.setValue('files', dataTransfer.files);
         }
+
+        formContext.setValue('files', dataTransfer.files);
     };
 
     return (
