@@ -1,6 +1,10 @@
 declare module '*.svg' {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const content: any;
+    const content: string;
+    export default content;
+}
+
+declare module '*.svg?react' {
+    const content: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
     export default content;
 }
 

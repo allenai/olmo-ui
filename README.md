@@ -92,3 +92,46 @@ Mock request handlers can be found in `src/mocks/handlers`. If you want to add o
     ```
     ./bin/bootstrap
     ```
+
+## Importing SVGs as React components
+
+We have SVGR set up in this project. To import an SVG as a Component, import it with `?react` at the end of the import filename. For example, `import CloseIcon from '@/components/assets/close.svg?react'` will import `close.svg` as a React component.
+
+## Writing Tests
+
+### Faking feature toggles
+
+To fake feature toggles, you can pass a custom `featureToggles` into the second argument of `render`.
+Example:
+
+```
+render(
+   <FakeAppContextProvider>
+         <ComponentToTest />
+   </FakeAppContextProvider>,
+   {
+         wrapperProps: {
+            featureToggles: {
+               logToggles: false,
+               isMultiModalEnabled: true,
+            },
+         },
+   }
+);
+```
+
+### Faking App Context state
+
+To fake AppContext, you need to set up the `FakeAppContextProvider` and fake the implementation of `useAppContext` with `useFakeAppContext`.
+Example:
+
+```
+vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+render(
+   <FakeAppContextProvider>
+         <QueryForm />
+   </FakeAppContextProvider>
+)
+```

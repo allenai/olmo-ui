@@ -51,7 +51,14 @@ module.exports = (env) => ({
             },
             {
                 test: /\.(jpg|svg|png|gif)/,
-                loader: 'file-loader',
+                resourceQuery: { not: [/react/] },
+                type: 'asset',
+            },
+            {
+                test: /\.svg$/i,
+                issuer: /\.[jt]sx?$/,
+                resourceQuery: /react/,
+                use: ['@svgr/webpack'],
             },
         ],
     },

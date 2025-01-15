@@ -1,5 +1,7 @@
+// @vitest-environment happy-dom
+
 import { IDLE_NAVIGATION } from '@remix-run/router';
-import { act, render, screen } from '@test-utils';
+import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { ComponentProps } from 'react';
 import * as RouterDom from 'react-router-dom';
@@ -264,5 +266,49 @@ describe('QueryForm', () => {
 
         expect(screen.getByRole('textbox', { name: 'Reply to the model' })).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Reply to the model')).toBeInTheDocument();
+    });
+
+    it('should show the thumbnail of an uploaded image and allow the user to remove it', async () => {
+        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+            pathname: '/',
+            search: '',
+            hash: '',
+            state: 'loaded',
+            key: '',
+        });
+        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        render(
+            <FakeAppContextProvider>
+                <QueryForm />
+            </FakeAppContextProvider>,
+            {
+                wrapperProps: {
+                    featureToggles: {
+                        logToggles: false,
+                        isMultiModalEnabled: true,
+                    },
+                },
+            }
+        );
+
+        const user = userEvent.setup();
+
+        const fileInput = screen.getByLabelText('Upload file');
+
+        await waitFor(async () => {
+            await user.upload(fileInput, new File(['foo'], 'test.png', { type: 'image/png' }));
+        });
+
+        expect(screen.getByAltText('User file test.png')).toBeVisible();
+
+        await waitFor(async () => {
+            await user.click(
+                screen.getByRole('button', { name: 'Remove test.png from files to upload' })
+            );
+        });
+
+        expect(screen.queryByAltText('User file test.png')).not.toBeInTheDocument();
     });
 });

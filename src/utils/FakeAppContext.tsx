@@ -10,7 +10,7 @@ export const FakeAppContextProvider = ({
     initialState,
     children,
 }: PropsWithChildren<{
-    initialState: Parameters<typeof appContext.createAppContext>[0];
+    initialState?: Parameters<typeof appContext.createAppContext>[0];
 }>) => {
     const storeRef = useRef<AppContextStore>(appContext.createAppContext(initialState));
 
