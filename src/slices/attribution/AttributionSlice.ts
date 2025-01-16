@@ -24,8 +24,6 @@ export interface SpansSelection {
 
 interface AttributionState {
     attribution: {
-        // selectedDocumentIndex: string | null;
-        // previewDocumentIndex: string | null;
         selection: DocumentSelection | SpansSelection | null;
         attributionsByMessageId: {
             [messageId: string]: MessageWithAttributionDocuments | undefined;
