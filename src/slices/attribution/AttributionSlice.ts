@@ -18,7 +18,7 @@ export interface DocumentSelection {
 }
 
 export interface SpansSelection {
-    type: 'spans';
+    type: 'span';
     selectedSpanIds: string[];
 }
 
@@ -187,7 +187,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set(
             (state) => {
                 state.attribution.selection = {
-                    type: 'spans',
+                    type: 'span',
                     selectedSpanIds: Array.isArray(spanIds) ? spanIds : [spanIds],
                 };
             },

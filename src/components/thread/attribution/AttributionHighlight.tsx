@@ -17,7 +17,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 
     const isSelectedSpan = useAppContext((state) => {
         const isSpanIdSelected = (spanId: string) =>
-            state.attribution.selection?.type === 'spans' &&
+            state.attribution.selection?.type === 'span' &&
             state.attribution.selection.selectedSpanIds.includes(spanId);
 
         if (Array.isArray(spanIds)) {

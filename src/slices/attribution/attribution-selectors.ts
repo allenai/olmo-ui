@@ -14,7 +14,7 @@ export const messageAttributionsSelector = (
 };
 
 export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
-    state.attribution.selection?.type === 'spans' &&
+    state.attribution.selection?.type === 'span' &&
     state.attribution.selection.selectedSpanIds.length > 0;
 
 export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
