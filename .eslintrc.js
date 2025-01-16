@@ -5,7 +5,6 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 0,
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
-        '@typescript-eslint/switch-exhaustiveness-check': 'error',
     },
     parserOptions: {
         project: true,
@@ -26,6 +25,7 @@ module.exports = {
                 '@typescript-eslint/no-unsafe-call': 'warn',
                 '@typescript-eslint/no-unsafe-member-access': 'warn',
                 '@typescript-eslint/no-unnecessary-condition': 'warn',
+                '@typescript-eslint/switch-exhaustiveness-check': 'error',
                 // This interferes with simple-import-sort so it's disabled!
                 'import/order': 'off',
                 '@typescript-eslint/no-unused-vars': [
