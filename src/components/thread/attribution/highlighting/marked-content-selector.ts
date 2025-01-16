@@ -26,6 +26,7 @@ export const markedContentSelector =
         const content = state.selectedThreadMessagesById[messageId].content;
         const selection = state.attribution.selection;
 
+        // TODO: See if we can move the document vs span logic to the AttributionHighlight instead of doing it here
         switch (selection?.type) {
             case 'document': {
                 // The user has selected a document. Show spans associated with it.
@@ -57,7 +58,7 @@ export const markedContentSelector =
             }
             case null:
             // deliberate fallthrough
-            case 'spans':
+            case 'span':
             default: {
                 const spans = state.attribution.attributionsByMessageId[messageId]?.spans ?? {};
 
