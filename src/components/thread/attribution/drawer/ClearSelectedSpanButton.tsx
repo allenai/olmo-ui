@@ -2,13 +2,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { hasSelectedSpansSelector } from '@/slices/attribution/attribution-selectors';
 
 export const ClearSelectedSpanButton = (): JSX.Element | null => {
-    const resetSelectedSpan = useAppContext((state) => state.resetSelectedSpans);
-    const hasSelectedSpan = useAppContext(hasSelectedSpansSelector);
+    const resetSelectedSpan = useAppContext((state) => state.resetCorpusLinkSelection);
+    const hasSelection = useAppContext((state) => state.attribution.selection != null);
 
-    if (!hasSelectedSpan) {
+    if (!hasSelection) {
         return null;
     }
 

@@ -1,14 +1,5 @@
-import {
-    Button,
-    Card,
-    CardActionArea,
-    CardContent,
-    Link,
-    Skeleton,
-    Stack,
-    Typography,
-} from '@mui/material';
-import { Fragment, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { PropsWithChildren, ReactNode } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -17,32 +8,7 @@ import { links } from '@/Links';
 import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
-interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {
-    onClick?: MouseEventHandler;
-    onMouseEnter?: MouseEventHandler;
-    onMouseLeave?: MouseEventHandler;
-}
-
-const CardActionWrapper = ({
-    onClick,
-    onMouseLeave,
-    onMouseEnter,
-    children,
-}: AttributionDocumentCardActionWrapperProps) => {
-    if (onClick != null || onMouseLeave != null || onMouseEnter != null) {
-        return (
-            <CardActionArea
-                onClick={onClick}
-                onMouseLeave={onMouseLeave}
-                onMouseEnter={onMouseEnter}
-                disableRipple>
-                {children}
-            </CardActionArea>
-        );
-    } else {
-        return <Fragment>{children}</Fragment>;
-    }
-};
+interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
 interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
     snippets: ReactNode;
@@ -50,7 +16,6 @@ interface AttributionDocumentCardBaseProps extends AttributionDocumentCardAction
     source: ReactNode;
     actions?: ReactNode;
     isSelected?: boolean;
-    isPreviewed?: boolean;
 }
 
 const AttributionDocumentCardBase = ({
@@ -59,23 +24,10 @@ const AttributionDocumentCardBase = ({
     source,
     actions,
     isSelected,
-    isPreviewed,
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
 }: AttributionDocumentCardBaseProps) => {
-    const handleClick: MouseEventHandler = (event) => {
-        // We can have actions that do things on click
-        // We want to make sure we don't select this document if someone clicks on one of the actions
-        if (typeof (event.target as HTMLElement).onclick !== 'function') {
-            onClick?.(event);
-        }
-    };
-
     return (
         <Card
             component="li"
-            data-previewed-document={isPreviewed}
             data-selected-document={isSelected}
             sx={{
                 bgcolor: (theme) =>
@@ -86,34 +38,25 @@ const AttributionDocumentCardBase = ({
 
                 borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
 
-                '&[data-previewed-document="true"]': {
-                    borderColor: (theme) => theme.palette.primary.light,
-                },
-
                 '&[data-selected-document="true"]': {
                     borderColor: (theme) => theme.palette.primary.main,
                 },
             }}>
-            <CardActionWrapper
-                onClick={handleClick}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}>
-                <CardContent component={Stack} direction="column" gap={1}>
-                    <Typography variant="body1" component="span">
-                        {snippets}
-                    </Typography>
-                    {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
-                    <Typography variant="body2" fontWeight={600} component="span">
-                        {url}
-                    </Typography>
-                    <Typography variant="body2" fontWeight={600} component="span">
-                        {source}
-                    </Typography>
-                </CardContent>
-                <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
-                    {actions != null && actions}
-                </Stack>
-            </CardActionWrapper>
+            <CardContent component={Stack} direction="column" gap={1}>
+                <Typography variant="body1" component="span">
+                    {snippets}
+                </Typography>
+                {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
+                <Typography variant="body2" fontWeight={600} component="span">
+                    {url}
+                </Typography>
+                <Typography variant="body2" fontWeight={600} component="span">
+                    {source}
+                </Typography>
+            </CardContent>
+            <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
+                {actions != null && actions}
+            </Stack>
         </Card>
     );
 };
@@ -134,41 +77,22 @@ export const AttributionDocumentCard = ({
     repeatedDocumentCount,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
-    const { isDatasetExplorerEnabled, attributionSpanFirst } = useFeatureToggles();
+    const { isDatasetExplorerEnabled } = useFeatureToggles();
 
-    const selectDocument = useAppContext((state) =>
-        attributionSpanFirst ? undefined : state.selectDocument
-    );
-    const previewDocument = useAppContext((state) =>
-        attributionSpanFirst ? undefined : state.previewDocument
-    );
-    const stopPreviewingDocument = useAppContext((state) =>
-        attributionSpanFirst ? undefined : state.stopPreviewingDocument
-    );
+    const selectDocument = useAppContext((state) => state.selectDocument);
 
     const isSelected = useAppContext(
-        (state) => state.attribution.selectedDocumentIndex === documentId
-    );
-    const isPreviewed = useAppContext(
-        (state) => state.attribution.previewDocumentIndex === documentId
+        (state) =>
+            state.attribution.selection?.type === 'document' &&
+            state.attribution.selection.documentIndex === documentId
     );
 
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets documentIndex={documentId} />}
             url={<UrlForDocumentAttribution url={documentUrl} />}
-            onClick={() => {
-                selectDocument?.(documentId);
-            }}
-            onMouseEnter={() => {
-                previewDocument?.(documentId);
-            }}
-            onMouseLeave={() => {
-                stopPreviewingDocument?.(documentId);
-            }}
             source={`Source: ${source}`}
             isSelected={isSelected}
-            isPreviewed={isPreviewed}
             actions={
                 <>
                     {isDatasetExplorerEnabled && (
@@ -184,6 +108,14 @@ export const AttributionDocumentCard = ({
                             Open in Dataset Explorer
                         </Button>
                     )}
+
+                    <Button
+                        variant="text"
+                        onClick={() => {
+                            selectDocument(documentId);
+                        }}>
+                        Locate spans
+                    </Button>
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
                         <Stack direction="column" alignItems="start">

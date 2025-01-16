@@ -4,7 +4,7 @@ import { Role } from '@/api/Role';
 import { AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
-import { documentFirstMarkedContentSelector } from './document-first-marked-content-selector';
+import { markedContentSelector } from './marked-content-selector';
 
 describe('documentFirstMarkedContentSelector', () => {
     it('should select a selected and previewed span', () => {
@@ -41,8 +41,10 @@ describe('documentFirstMarkedContentSelector', () => {
             },
             attribution: {
                 selectedMessageId: 'llmMessage',
-                selectedDocumentIndex: '12345',
-                previewDocumentIndex: '67890',
+                selection: {
+                    type: 'document',
+                    documentIndex: '12345',
+                },
                 attributionsByMessageId: {
                     llmMessage: {
                         orderedDocumentIndexes: ['12345', '67890'],
@@ -97,11 +99,8 @@ describe('documentFirstMarkedContentSelector', () => {
         };
 
         // @ts-expect-error - I don't want to make the whole state, just what's relevant
-        const result = documentFirstMarkedContentSelector('llmMessage')(testState);
+        const result = markedContentSelector('llmMessage')(testState);
 
-        expect(result).toContain(
-            ':attribution-highlight[message from the LLM]{variant="preview" span="1"}'
-        );
         expect(result).toContain(':attribution-highlight[This is a]{variant="selected" span="0"}');
     });
 
@@ -139,8 +138,7 @@ describe('documentFirstMarkedContentSelector', () => {
             },
             attribution: {
                 selectedMessageId: 'llmMessage',
-                selectedDocumentIndex: '12345',
-                previewDocumentIndex: '12345',
+                selection: { type: 'document', documentIndex: '12345' },
                 attributionsByMessageId: {
                     llmMessage: {
                         orderedDocumentIndexes: ['12345'],
@@ -184,7 +182,7 @@ describe('documentFirstMarkedContentSelector', () => {
         };
 
         // @ts-expect-error - I don't want to make the whole state, just what's relevant
-        const result = documentFirstMarkedContentSelector('llmMessage')(testState);
+        const result = markedContentSelector('llmMessage')(testState);
 
         expect(result).toContain(
             ':attribution-highlight[message from the LLM]{variant="selected" span="1"}'
