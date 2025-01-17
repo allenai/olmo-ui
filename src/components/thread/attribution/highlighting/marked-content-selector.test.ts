@@ -56,7 +56,7 @@ describe('documentFirstMarkedContentSelector', () => {
                                 index: '12345',
                                 source: 'c4',
                                 text: '',
-                                relevance_score: 1,
+                                relevance_score: 120.1537157594669,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
@@ -71,7 +71,7 @@ describe('documentFirstMarkedContentSelector', () => {
                                 index: '67890',
                                 source: 'c4',
                                 text: '',
-                                relevance_score: 1,
+                                relevance_score: 120.1537157594669,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
@@ -150,7 +150,7 @@ describe('documentFirstMarkedContentSelector', () => {
                                 index: '12345',
                                 source: 'c4',
                                 text: '',
-                                relevance_score: 1,
+                                relevance_score: 120.1537157594669,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
