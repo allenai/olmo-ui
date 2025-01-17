@@ -114,7 +114,7 @@ export const AttributionDocumentCard = ({
                         onClick={() => {
                             selectDocument(documentId);
                         }}>
-                        Locate spans
+                        Locate span(s)
                     </Button>
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (

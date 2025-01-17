@@ -39,22 +39,7 @@ export const markedContentSelector =
                     selectedSpans
                 );
 
-                const allPreviewSpans = spansCorrespondingToDocumentSelector(
-                    selection.documentIndex
-                )(state);
-                const nonSelectedPreviewSpans = allPreviewSpans.filter(
-                    (previewSpan) =>
-                        !selectedSpans.some(
-                            ([selectedSpanId, _]) => selectedSpanId === previewSpan[0]
-                        )
-                );
-                const textWithPreviewHighlights = addHighlightsToText(
-                    'preview',
-                    textWithSelectedHighlights,
-                    nonSelectedPreviewSpans
-                );
-
-                return textWithPreviewHighlights;
+                return textWithSelectedHighlights;
             }
             case null:
             // deliberate fallthrough
