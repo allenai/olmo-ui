@@ -12,28 +12,35 @@ export interface MessageWithAttributionDocuments {
     index: string | null;
 }
 
+export interface DocumentSelection {
+    type: 'document';
+    documentIndex: string;
+}
+
+export interface SpansSelection {
+    type: 'span';
+    // Currently the only way of selecting multiple spans is from a code block with multiple spans in it. It will select all the spans inside of it when the select button is pressed.
+    selectedSpanIds: string[];
+}
+
 interface AttributionState {
     attribution: {
-        selectedDocumentIndex: string | null;
-        previewDocumentIndex: string | null;
+        selection: DocumentSelection | SpansSelection | null;
         attributionsByMessageId: {
             [messageId: string]: MessageWithAttributionDocuments | undefined;
         };
         selectedMessageId: string | null;
-        selectedSpanIds: string[];
         selectedRepeatedDocumentIndex: string | null;
     };
 }
 
 interface AttributionActions {
     selectDocument: (documentIndex: string) => void;
-    previewDocument: (previewDocumentIndex: string) => void;
-    stopPreviewingDocument: (previewDocumentIndex: string) => void;
     resetAttribution: () => void;
     selectMessage: (messageId: string) => void;
     getAttributionsForMessage: (prompt: string, messageId: string) => Promise<AttributionState>;
     selectSpans: (span: string | string[]) => void;
-    resetSelectedSpans: () => void;
+    resetCorpusLinkSelection: () => void;
     handleAttributionForChangingThread: () => void;
     selectRepeatedDocument: (documentIndex: string) => void;
     resetSelectedRepeatedDocument: () => void;
@@ -43,11 +50,9 @@ export type AttributionSlice = AttributionState & AttributionActions;
 
 const initialAttributionState: AttributionState = {
     attribution: {
-        selectedDocumentIndex: null,
-        previewDocumentIndex: null,
         attributionsByMessageId: {},
+        selection: null,
         selectedMessageId: null,
-        selectedSpanIds: [],
         selectedRepeatedDocumentIndex: null,
     },
 };
@@ -74,32 +79,10 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     selectDocument: (documentIndex: string) => {
         set(
             (state) => {
-                state.attribution.selectedDocumentIndex = documentIndex;
+                state.attribution.selection = { type: 'document', documentIndex };
             },
             false,
             'attribution/selectDocument'
-        );
-    },
-
-    previewDocument: (previewDocumentIndex: string) => {
-        set(
-            (state) => {
-                state.attribution.previewDocumentIndex = previewDocumentIndex;
-            },
-            false,
-            'attribution/previewDocument'
-        );
-    },
-
-    stopPreviewingDocument: (previewDocumentIndex: string) => {
-        set(
-            (state) => {
-                if (state.attribution.previewDocumentIndex === previewDocumentIndex) {
-                    state.attribution.previewDocumentIndex = null;
-                }
-            },
-            false,
-            'attribution/stopPreviewingDocument'
         );
     },
 
@@ -107,8 +90,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set(
             (state) => {
                 state.attribution.selectedMessageId = null;
-                state.attribution.selectedSpanIds =
-                    initialAttributionState.attribution.selectedSpanIds;
+                state.attribution.selection = initialAttributionState.attribution.selection;
                 state.attribution.selectedRepeatedDocumentIndex =
                     initialAttributionState.attribution.selectedRepeatedDocumentIndex;
             },
@@ -203,25 +185,23 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     selectSpans: (spanIds: string | string[]) => {
         set(
             (state) => {
-                if (Array.isArray(spanIds)) {
-                    state.attribution.selectedSpanIds = spanIds;
-                } else {
-                    state.attribution.selectedSpanIds = [spanIds];
-                }
+                state.attribution.selection = {
+                    type: 'span',
+                    selectedSpanIds: Array.isArray(spanIds) ? spanIds : [spanIds],
+                };
             },
             false,
             'attribution/selectSpan'
         );
     },
 
-    resetSelectedSpans: () => {
+    resetCorpusLinkSelection: () => {
         set(
             (state) => {
-                state.attribution.selectedSpanIds =
-                    initialAttributionState.attribution.selectedSpanIds;
+                state.attribution.selection = null;
             },
             false,
-            'attribution/resetSelectedSpan'
+            'attribution/resetCorpusLinkSelection'
         );
     },
 
@@ -248,7 +228,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
     handleAttributionForChangingThread: () => {
         // when we change threads we want to reset all the selected spans from the last thread
-        get().resetSelectedSpans();
+        get().resetCorpusLinkSelection();
         get().resetSelectedRepeatedDocument();
     },
 });

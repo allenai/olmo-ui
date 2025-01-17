@@ -15,13 +15,12 @@ export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 export const useAttributionHighlights = (spanIds: string | string[]) => {
     const featureToggles = useFeatureToggles();
     const selectSpans = useAppContext((state) => state.selectSpans);
-    const resetSelectedSpans = useAppContext((state) => state.resetSelectedSpans);
-
-    const openDrawer = useAppContext((state) => state.openDrawer);
+    const resetSelectedSpans = useAppContext((state) => state.resetCorpusLinkSelection);
 
     const isSelectedSpan = useAppContext((state) => {
         const isSpanIdSelected = (spanId: string) =>
-            state.attribution.selectedSpanIds.includes(spanId);
+            state.attribution.selection?.type === 'span' &&
+            state.attribution.selection.selectedSpanIds.includes(spanId);
 
         if (Array.isArray(spanIds)) {
             return spanIds.some(isSpanIdSelected);
@@ -30,17 +29,13 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         }
     });
 
-    const isAttributionSpanFirstEnabled = featureToggles.attributionSpanFirst;
     const isBucketColorsEnabled = featureToggles.bucketColors;
 
     const toggleSelectedSpans = () => {
-        if (isAttributionSpanFirstEnabled) {
-            openDrawer('attribution');
-            if (isSelectedSpan) {
-                resetSelectedSpans();
-            } else {
-                selectSpans(spanIds);
-            }
+        if (isSelectedSpan) {
+            resetSelectedSpans();
+        } else {
+            selectSpans(spanIds);
         }
     };
 
@@ -136,7 +131,6 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 
     return {
         shouldShowHighlight,
-        isAttributionSpanFirstEnabled,
         isBucketColorsEnabled,
         toggleSelectedSpans,
         spanScorePercentile,
@@ -179,13 +173,8 @@ export const AttributionHighlight = ({
     variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const {
-        isAttributionSpanFirstEnabled,
-        isBucketColorsEnabled,
-        toggleSelectedSpans,
-        shouldShowHighlight,
-        spanScorePercentile,
-    } = useAttributionHighlights(span);
+    const { isBucketColorsEnabled, toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
+        useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
@@ -204,7 +193,7 @@ export const AttributionHighlight = ({
                 const isPrimaryVariant = variant === 'selected' || variant === 'default';
 
                 return {
-                    cursor: isAttributionSpanFirstEnabled ? 'pointer' : undefined,
+                    cursor: 'pointer',
                     textDecoration: 'underline',
                     backgroundColor: (theme) =>
                         isPrimaryVariant
