@@ -80,7 +80,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const { documents, loadingState } = attributionForMessage;
 
     const isPromptLoading = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading
+        (state) =>
+            state.streamPromptState === RemoteState.Loading &&
+            state.streamingMessageId === state.attribution.selectedMessageId
     );
 
     const deduplicatedDocuments = useMemo(() => {
