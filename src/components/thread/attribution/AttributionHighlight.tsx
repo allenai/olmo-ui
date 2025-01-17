@@ -8,6 +8,8 @@ import {
     shouldShowHighlightsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
+import { calculateRelevanceScore } from './calculate-relevance-score';
+
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 
 export const useAttributionHighlights = (spanIds: string | string[]) => {
@@ -91,9 +93,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!message?.content) return 0.0;
 
-            // 0.125 is a hyperparam heuristically determined by running distrib_of_score_span.py in infinigram-api
-            const score = spanRelevanceScore / (message.content.length * 0.125);
-            return Math.min(Math.max(score, 0.0), 1.0);
+            return calculateRelevanceScore(spanRelevanceScore, message.content.length);
         }
 
         // Relative scoring based on min/max normalization
