@@ -147,7 +147,6 @@ describe('ThreadDisplay', () => {
                     featureToggles: {
                         logToggles: false,
                         isCorpusLinkEnabled: true,
-                        attributionSpanFirst: true,
                         isDatasetExplorerEnabled: true,
                     },
                 },

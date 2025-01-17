@@ -7,6 +7,7 @@ import {
     hasSelectedSpansSelector,
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
+import { SpansSelection } from '@/slices/attribution/AttributionSlice';
 
 interface MessageAttributionsFromSelector {
     documents: Document[];
@@ -20,7 +21,8 @@ export const messageAttributionDocumentsSelector = (
     const hasSelectedSpan = hasSelectedSpansSelector(state);
 
     if (hasSelectedSpan) {
-        const selectedSpans = state.attribution.selectedSpanIds.map(
+        // TODO: See if there's a better way to handle the typing here. We know we're in a "spans" selection mode because of hasSelectedSpan
+        const selectedSpans = (state.attribution.selection as SpansSelection).selectedSpanIds.map(
             (spanId) => attributions?.spans[spanId]
         );
 
@@ -59,7 +61,7 @@ export const messageAttributionDocumentsSelector = (
 };
 
 export const useAttributionDocumentsForMessage = () => {
-    const attributonDocuments = useAppContext(useShallow(messageAttributionDocumentsSelector));
+    const attributionDocuments = useAppContext(useShallow(messageAttributionDocumentsSelector));
 
-    return attributonDocuments;
+    return attributionDocuments;
 };

@@ -11,7 +11,6 @@ import {
 export enum FeatureToggle {
     logToggles = 'logToggles',
     isCorpusLinkEnabled = 'isCorpusLinkEnabled',
-    attributionSpanFirst = 'attributionSpanFirst',
     absoluteSpanScore = 'absoluteSpanScore',
     bucketColors = 'bucketColors',
     isDatasetExplorerEnabled = 'isDatasetExplorerEnabled',
@@ -24,7 +23,6 @@ export type FeatureToggles = Record<FeatureToggle, boolean>;
 export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.logToggles]: true,
     [FeatureToggle.isCorpusLinkEnabled]: false,
-    [FeatureToggle.attributionSpanFirst]: true,
     [FeatureToggle.absoluteSpanScore]: true,
     [FeatureToggle.bucketColors]: true,
     [FeatureToggle.isDatasetExplorerEnabled]: false,
@@ -84,7 +82,6 @@ function createToggles(initialToggles = defaultFeatureToggles) {
 
     const envToggles = parseToggles({
         isCorpusLinkEnabled: process.env.IS_CORPUS_LINK_ENABLED,
-        attributionSpanFirst: process.env.IS_ATTRIBUTION_SPAN_FIRST_ENABLED,
         absoluteSpanScore: process.env.ABSOLUTE_SPAN_SCORE,
         bucketColors: process.env.BUCKET_COLORS,
         isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
