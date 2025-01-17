@@ -19,6 +19,7 @@ export interface DocumentSelection {
 
 export interface SpansSelection {
     type: 'span';
+    // Currently the only way of selecting multiple spans is from a code block with multiple spans in it. It will select all the spans inside of it when the select button is pressed.
     selectedSpanIds: string[];
 }
 
