@@ -4,6 +4,6 @@ export const calculateRelevanceScore = (relevanceScore: number, messageLength: n
     }
 
     // 0.125 is a hyperparam heuristically determined by running distrib_of_score_span.py in infinigram-api
-    const score = relevanceScore / (messageLength * 0.125);
+    const score = relevanceScore / (messageLength * 0.18);
     return Math.min(Math.max(score, 0.0), 1.0);
 };
