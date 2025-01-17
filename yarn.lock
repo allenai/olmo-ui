@@ -17,10 +17,28 @@
   resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-2.0.3.tgz#705cab3be01fbea16d56dc457e237c6976eac4ad"
   integrity sha512-KguMr+/BTWWHOsNlnPNMkvddOSEV/zQq9/tN3Xl+edsN3CrUPfCCt0m0vZezi8RzSjTCAJ2E7CwoZiIbQwWJAw==
 
+"@allenai/varnish-panda-runtime@^1.0.2-alpha.0":
+  version "1.0.2-alpha.0"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.0.2-alpha.0.tgz#755735af315dcbb7a701112dc2953d622dd8428e"
+  integrity sha512-FYvoKwM8zu47o4Rhhzegs4nsJENzTamAwOAUFK00XVhSg6ZbjpGAFmGE0e404Q6s+1NE6fCH0K2jrulKnSGRkQ==
+
 "@allenai/varnish-theme@^2.0.6":
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-2.0.6.tgz#44763f3254a8079b17275dd6225f20f8406943d8"
   integrity sha512-j4t4xV3APCOb+6Hw+ETd468DJfKKz/mep/MAnJzV4FFfn0bg6sozLylcMc+FfUgqE+pFAy3uvSwW+NDKVOmZPw==
+
+"@allenai/varnish-theme@^3.0.0-alpha.0":
+  version "3.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.0-alpha.0.tgz#39a9297ea5d831d4ea003f9b6af21be19115bf36"
+  integrity sha512-s3T2Xi3fjm1zCnXuanzR63tgZhSumXhinMBVPI6BYVIRQOOROn/IZd+pMeEhdHDgVUD2VtqJrSMzUIDVjVo7Xg==
+
+"@allenai/varnish-ui@^1.0.2-alpha.0":
+  version "1.0.2-alpha.0"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-ui/-/varnish-ui-1.0.2-alpha.0.tgz#b976ce6e43df5fec8985d6a2ad519cab758bc807"
+  integrity sha512-n52uZOAZmwPiZP6vli8K4KJsNOwJUnjsqYIcFDSpjO6Y3mQeby8glZ3Q/mMrbII5Lg+xAagYf/r52WXiL0zG4A==
+  dependencies:
+    "@allenai/varnish-theme" "^3.0.0-alpha.0"
+    lucide-react "^0.468.0"
 
 "@allenai/varnish2@2.0.6":
   version "2.0.6"
@@ -8361,6 +8379,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+lucide-react@^0.468.0:
+  version "0.468.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.468.0.tgz#830c1bfd905575ddd23b832baa420c87db166910"
+  integrity sha512-6koYRhnM2N0GGZIdXzSeiNwguv1gt/FAjZOiPl76roBi3xKEXa4WmfpxgQwTTL4KipXjefrnf3oV4IsYhi4JFA==
 
 lz-string@^1.5.0:
   version "1.5.0"

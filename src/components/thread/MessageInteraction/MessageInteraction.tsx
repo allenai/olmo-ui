@@ -17,6 +17,8 @@ import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
+import { SelectMessageButton } from './SelectMessageButton';
+
 interface MessageInteractionProps {
     role: Message['role'];
     messageLabels: Message['labels'];
@@ -102,6 +104,7 @@ export const MessageInteraction = ({
                 }}
                 message="LLM Response Copied."
             />
+            <SelectMessageButton messageId={messageId} />
         </Stack>
     );
 };

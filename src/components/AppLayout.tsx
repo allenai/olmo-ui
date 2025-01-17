@@ -1,3 +1,5 @@
+import '@allenai/varnish-ui/styles.css';
+
 import { Container, Paper, PaperProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
