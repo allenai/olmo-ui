@@ -55,8 +55,8 @@ describe('documentFirstMarkedContentSelector', () => {
                                 corresponding_span_texts: ['This is a'],
                                 index: '12345',
                                 source: 'c4',
-                                text: '',
-                                relevance_score: 120.1537157594669,
+                                text: 'document 1',
+                                relevance_score: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
@@ -70,7 +70,7 @@ describe('documentFirstMarkedContentSelector', () => {
                                 corresponding_span_texts: ['message from the LLM'],
                                 index: '67890',
                                 source: 'c4',
-                                text: '',
+                                text: '1.1',
                                 relevance_score: 120.1537157594669,
                                 snippets: [
                                     {
@@ -149,8 +149,8 @@ describe('documentFirstMarkedContentSelector', () => {
                                 corresponding_span_texts: ['This is a', 'message from the LLM'],
                                 index: '12345',
                                 source: 'c4',
-                                text: '',
-                                relevance_score: 120.1537157594669,
+                                text: 'document 1',
+                                relevance_score: 1.6,
                                 snippets: [
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',

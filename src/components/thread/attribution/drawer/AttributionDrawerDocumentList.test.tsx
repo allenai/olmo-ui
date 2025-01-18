@@ -31,7 +31,7 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 1'],
                                 corresponding_spans: [0],
                                 source: 'made up',
-                                relevance_score: 139.0001586443153,
+                                relevance_score: 1.5,
                                 url: undefined,
                                 snippets: [
                                     { text: 'document 1', corresponding_span_text: 'span 1' },
@@ -43,7 +43,7 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 2'],
                                 corresponding_spans: [1],
                                 source: 'made up',
-                                relevance_score: 118.60012861004664,
+                                relevance_score: 1.2,
                                 url: undefined,
                                 snippets: [
                                     { text: 'document 2', corresponding_span_text: 'span 2' },
@@ -55,7 +55,7 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 3'],
                                 corresponding_spans: [2],
                                 source: 'made up',
-                                relevance_score: 103.07117602774,
+                                relevance_score: 1,
                                 url: undefined,
                                 snippets: [
                                     { text: 'document 3', corresponding_span_text: 'span 3' },
@@ -67,7 +67,7 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 4'],
                                 corresponding_spans: [3],
                                 source: 'made up',
-                                relevance_score: 96.54396565580412,
+                                relevance_score: 0.9,
                                 url: undefined,
                                 snippets: [
                                     { text: 'document 4', corresponding_span_text: 'span 4' },
@@ -79,7 +79,7 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 5'],
                                 corresponding_spans: [4],
                                 source: 'made up',
-                                relevance_score: 86.61064042870979,
+                                relevance_score: 0.7,
                                 url: undefined,
                                 snippets: [
                                     { text: 'document 5', corresponding_span_text: 'span 5' },
