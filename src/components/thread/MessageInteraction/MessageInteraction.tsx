@@ -116,7 +116,7 @@ interface MessageInteractionIconProps {
     onClick: () => void;
 }
 
-const MessageInteractionIcon = ({
+export const MessageInteractionIcon = ({
     Icon,
     tooltip,
     selected,

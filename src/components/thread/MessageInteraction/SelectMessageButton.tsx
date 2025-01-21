@@ -1,7 +1,10 @@
-import { Button as VUIButton } from '@allenai/varnish-ui';
+import Article from '@mui/icons-material/Article';
+import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
+
+import { MessageInteractionIcon } from './MessageInteraction';
 
 interface SelectMessageButtonProps {
     messageId: Message['id'];
@@ -25,8 +28,14 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps) => 
     };
 
     return (
-        <VUIButton variant={isMessageSelected ? 'contained' : 'text'} onPress={handlePress}>
-            {isMessageSelected ? 'Hide training text' : 'Match training text'}
-        </VUIButton>
+        <MessageInteractionIcon
+            onClick={handlePress}
+            tooltip={isMessageSelected ? 'Hide training text' : 'Match training text'}
+            Icon={isMessageSelected ? Article : ArticleOutlined}
+            selected={isMessageSelected}
+        />
+        // <VUIButton variant={isMessageSelected ? 'contained' : 'text'} onPress={handlePress}>
+        //     {isMessageSelected ? 'Hide training text' : 'Match training text'}
+        // </VUIButton>
     );
 };
