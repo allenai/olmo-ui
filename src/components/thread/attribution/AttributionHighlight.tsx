@@ -173,12 +173,15 @@ export const AttributionHighlight = ({
     variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { isBucketColorsEnabled, toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
+    const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
         useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
     }
+
+    const spanRelevance =
+        spanScorePercentile >= 0.7 ? 'high' : spanScorePercentile >= 0.5 ? 'medium' : 'low';
 
     return (
         <Box
@@ -189,20 +192,26 @@ export const AttributionHighlight = ({
                 toggleSelectedSpans();
             }}
             tabIndex={0}
-            sx={() => {
+            data-span-relevance={spanRelevance}
+            sx={(theme) => {
                 const isPrimaryVariant = variant === 'selected' || variant === 'default';
 
                 return {
                     cursor: 'pointer',
-                    textDecoration: 'underline',
-                    backgroundColor: (theme) =>
-                        isPrimaryVariant
-                            ? getHighlightColor(theme, spanScorePercentile, isBucketColorsEnabled)
-                            : theme.palette.tertiary.light,
+                    '--base-highlight-color': theme.palette.secondary.main,
+                    borderBottom: '2px solid var(--base-highlight-color)',
+                    '&[data-span-relevance="high"]': {
+                        backgroundColor: `rgb(from var(--base-highlight-color) r g b / 50%)`,
+                    },
+                    '&[data-span-relevance="medium"]': {
+                        backgroundColor: `rgb(from var(--base-highlight-color) r g b / 25%)`,
+                    },
+                    '&[data-span-relevance="low"]': {
+                        backgroundColor: `rgb(from var(--base-highlight-color) r g b / 10%)`,
+                    },
 
                     // color is hard coded (not theme dependant), because background is always some variation of pink
-                    color: (theme) =>
-                        isPrimaryVariant ? theme.color['dark-teal'] : theme.color['dark-blue'],
+                    color: theme.color['off-white'].hex,
 
                     ':focus-visible': {
                         outlineStyle: 'solid',
