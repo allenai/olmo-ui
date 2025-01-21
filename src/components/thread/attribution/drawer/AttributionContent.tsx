@@ -135,6 +135,7 @@ export const FullAttributionContent = () => {
                     display: shouldShowRepeatedDocuments ? 'none' : undefined,
                     height: 1,
                     overflowY: 'auto',
+                    scrollbarGutter: 'stable',
                 }}>
                 <AttributionContent />
             </Box>
