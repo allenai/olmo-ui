@@ -9,6 +9,7 @@ import {
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
+import { calculateRelevanceScore } from '../calculate-relevance-score';
 import {
     AttributionDocumentCard,
     AttributionDocumentCardSkeleton,
@@ -58,10 +59,24 @@ const NoDocumentsCard = (): JSX.Element => {
     );
 };
 
+interface RelevanceGroup {
+    title: string;
+    collections: DedupedDocument[];
+}
+
 export const AttributionDrawerDocumentList = (): JSX.Element => {
     const attributionForMessage = useAttributionDocumentsForMessage();
     const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
-
+    const messageLength = useAppContext((state) => {
+        if (state.attribution.selectedMessageId != null) {
+            return (
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                state.selectedThreadMessagesById[state.attribution.selectedMessageId]?.content
+                    .length || 0
+            );
+        }
+        return 0;
+    });
     const { documents, loadingState } = attributionForMessage;
 
     const isPromptLoading = useAppContext(
@@ -99,6 +114,35 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
         return Array.from(documentsDedupedByUrl.values());
     }, [documents]);
+
+    const relevance = deduplicatedDocuments.reduce<Record<string, RelevanceGroup>>(
+        (acc, doc) => {
+            const score = calculateRelevanceScore(doc.relevance_score, messageLength);
+            if (score >= 0.7) {
+                acc.high.collections.push(doc);
+            } else if (score >= 0.5) {
+                acc.medium.collections.push(doc);
+            } else {
+                acc.low.collections.push(doc);
+            }
+
+            return acc;
+        },
+        {
+            high: {
+                title: 'High Relevance',
+                collections: [],
+            },
+            medium: {
+                title: 'Medium Relevance',
+                collections: [],
+            },
+            low: {
+                title: 'Low Relevance',
+                collections: [],
+            },
+        }
+    );
 
     if (isPromptLoading) {
         return (
@@ -146,18 +190,29 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
             */}
             <MatchingDocumentsText documentCount={documents.length} />
             <Box p={0} m={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
-                {deduplicatedDocuments.map((document) => {
+                {Object.keys(relevance).map((key) => {
+                    const group = relevance[key];
+
+                    if (group.collections.length === 0) {
+                        return null;
+                    }
+
                     return (
-                        <AttributionDocumentCard
-                            key={document.index}
-                            documentId={document.index}
-                            documentUrl={document.url}
-                            source={document.source}
-                            // This has a +1 because the repeated document count should include this document we're showing here
-                            // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
-                            repeatedDocumentCount={document.duplicateDocumentIndexes.length + 1}
-                            index={attributionIndex}
-                        />
+                        <>
+                            <Typography>{group.title}</Typography>
+                            {group.collections.map((doc) => (
+                                <AttributionDocumentCard
+                                    key={doc.index}
+                                    documentId={doc.index}
+                                    documentUrl={doc.url}
+                                    source={doc.source}
+                                    // This has a +1 because the repeated document count should include this document we're showing here
+                                    // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
+                                    repeatedDocumentCount={doc.duplicateDocumentIndexes.length + 1}
+                                    index={attributionIndex}
+                                />
+                            ))}
+                        </>
                     );
                 })}
             </Box>

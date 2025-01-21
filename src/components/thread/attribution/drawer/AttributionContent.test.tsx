@@ -64,6 +64,12 @@ describe('AttributionContent deduplication', () => {
 });
 
 const initialStateWithDuplicateDocuments = {
+    selectedThreadMessagesById: {
+        message: {
+            id: 'message',
+            content: 'message 01',
+        },
+    },
     attribution: {
         selectedMessageId: 'message',
         attributionsByMessageId: {
@@ -77,7 +83,7 @@ const initialStateWithDuplicateDocuments = {
                         corresponding_span_texts: ['span 1'],
                         corresponding_spans: [0],
                         source: 'made up',
-                        relevance_score: 5,
+                        relevance_score: 1.5,
                         url: 'https://fake.website',
                         snippets: [{ text: 'document 1', corresponding_span_text: 'span 1' }],
                     },
@@ -87,7 +93,7 @@ const initialStateWithDuplicateDocuments = {
                         corresponding_span_texts: ['span 2'],
                         corresponding_spans: [1],
                         source: 'made up',
-                        relevance_score: 4,
+                        relevance_score: 1.2,
                         url: 'https://fake.website',
                         snippets: [{ text: 'document 2', corresponding_span_text: 'span 2' }],
                     },
@@ -97,7 +103,7 @@ const initialStateWithDuplicateDocuments = {
                         corresponding_span_texts: ['span 3'],
                         corresponding_spans: [2],
                         source: 'made up',
-                        relevance_score: 3,
+                        relevance_score: 1,
                         url: 'https//fake.website',
                         snippets: [{ text: 'document 3', corresponding_span_text: 'span 3' }],
                     },
@@ -107,7 +113,7 @@ const initialStateWithDuplicateDocuments = {
                         corresponding_span_texts: ['span 4'],
                         corresponding_spans: [3],
                         source: 'made up',
-                        relevance_score: 2,
+                        relevance_score: 0.9,
                         url: undefined,
                         snippets: [{ text: 'document 4', corresponding_span_text: 'span 4' }],
                     },
@@ -117,7 +123,7 @@ const initialStateWithDuplicateDocuments = {
                         corresponding_span_texts: ['span 5'],
                         corresponding_spans: [4],
                         source: 'made up',
-                        relevance_score: 1,
+                        relevance_score: 0.7,
                         url: 'https://another.fake.website',
                         snippets: [{ text: 'document 5', corresponding_span_text: 'span 5' }],
                     },
