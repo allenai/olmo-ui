@@ -34,8 +34,5 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps) => 
             Icon={isMessageSelected ? Article : ArticleOutlined}
             selected={isMessageSelected}
         />
-        // <VUIButton variant={isMessageSelected ? 'contained' : 'text'} onPress={handlePress}>
-        //     {isMessageSelected ? 'Hide training text' : 'Match training text'}
-        // </VUIButton>
     );
 };
