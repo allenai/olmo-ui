@@ -64,6 +64,12 @@ describe('AttributionContent deduplication', () => {
 });
 
 const initialStateWithDuplicateDocuments = {
+    selectedThreadMessagesById: {
+        message: {
+            id: 'message',
+            content: 'message 01',
+        },
+    },
     attribution: {
         selectedMessageId: 'message',
         attributionsByMessageId: {
