@@ -70,7 +70,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const messageLength = useAppContext((state) => {
         if (state.attribution.selectedMessageId != null) {
             return (
-                state.selectedThreadMessagesById[state.attribution.selectedMessageId].content
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                state.selectedThreadMessagesById[state.attribution.selectedMessageId]?.content
                     .length || 0
             );
         }
