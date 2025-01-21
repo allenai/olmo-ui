@@ -41,8 +41,10 @@ interface AttributesModalProps {
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
         <StandardModal open={open} onClose={handleClose}>
-            <DialogTitle variant="h4">Training text matches</DialogTitle>
-            <DialogContent>
+            <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
+                Training text matches
+            </DialogTitle>
+            <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
                     CorpusLink shows documents from the training data that have exact text matches
                     with the model response. Select a highlight to view its documents.
@@ -63,7 +65,7 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
                     </Link>
                 </Typography>
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{ paddingInline: 0 }}>
                 <Button variant="text" onClick={handleClose}>
                     Close
                 </Button>

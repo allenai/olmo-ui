@@ -22,10 +22,7 @@ export const StandardModal = ({
             PaperProps={{
                 sx: {
                     maxWidth: `${width}px`,
-                    padding: {
-                        [SMALL_LAYOUT_BREAKPOINT]: 1.5,
-                        [DESKTOP_LAYOUT_BREAKPOINT]: 3.75,
-                    },
+                    padding: 3.75,
                     margin: '0 auto',
                     backgroundColor: 'background.paper',
                     backgroundImage: 'none',
