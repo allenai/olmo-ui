@@ -40,7 +40,7 @@ interface AttributesModalProps {
 
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose}>
+        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
             <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
                 Training text matches
             </DialogTitle>
