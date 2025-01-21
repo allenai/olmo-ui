@@ -1,7 +1,5 @@
 import { Dialog, DialogProps } from '@mui/material';
 
-import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
-
 export const DEFAULT_MODAL_WIDTH = 970;
 
 interface StandardModalProps extends DialogProps {
