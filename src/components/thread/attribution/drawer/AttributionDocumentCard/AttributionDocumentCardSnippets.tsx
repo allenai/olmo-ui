@@ -1,41 +1,23 @@
 import { Box, Link, Stack } from '@mui/material';
 import { useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
-import { useAppContext } from '@/AppContext';
+import type { AttributionDocumentSnippet } from '@/api/AttributionClient';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
 
 const SNIPPET_TRANSITION_TIME = '300ms';
 
 interface AttributionDocumentCardSnippetsProps {
-    documentIndex: string;
+    snippets: AttributionDocumentSnippet[];
 }
 export const AttributionDocumentCardSnippets = ({
-    documentIndex,
+    snippets,
 }: AttributionDocumentCardSnippetsProps) => {
     const [expanded, setExpanded] = useState(false);
 
     const toggleExpanded = () => {
         setExpanded((prevExpanded) => !prevExpanded);
     };
-
-    const snippets = useAppContext(
-        useShallow((state) => {
-            const selectedMessageId = state.attribution.selectedMessageId;
-
-            if (selectedMessageId != null) {
-                const documents =
-                    state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
-
-                const document = documents[documentIndex];
-
-                return document?.snippets ?? [];
-            } else {
-                return [];
-            }
-        })
-    );
 
     if (snippets.length === 0) {
         return null;
