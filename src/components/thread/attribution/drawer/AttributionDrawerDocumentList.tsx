@@ -117,7 +117,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const relevance = deduplicatedDocuments.reduce<Record<string, RelevanceGroup>>(
         (acc, doc) => {
             const score = calculateRelevanceScore(doc.relevance_score, messageLength);
-            console.log(doc.text, score);
             if (score >= 0.7) {
                 acc.high.collections.push(doc);
             } else if (score >= 0.5) {
