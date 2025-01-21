@@ -1,8 +1,19 @@
 import { Dialog, DialogProps } from '@mui/material';
 
+import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants';
+
 export const DEFAULT_MODAL_WIDTH = 970;
 
-export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
+interface StandardModalProps extends DialogProps {
+    width?: string | number;
+}
+
+export const StandardModal = ({
+    children,
+    width = DEFAULT_MODAL_WIDTH,
+    open,
+    ...rest
+}: StandardModalProps) => {
     return (
         <Dialog
             fullWidth
@@ -10,8 +21,11 @@ export const StandardModal = ({ children, open, ...rest }: DialogProps) => {
             aria-describedby="modal-description"
             PaperProps={{
                 sx: {
-                    maxWidth: `${DEFAULT_MODAL_WIDTH}px`,
-                    padding: 3.75,
+                    maxWidth: `${width}px`,
+                    padding: {
+                        [SMALL_LAYOUT_BREAKPOINT]: 1.5,
+                        [DESKTOP_LAYOUT_BREAKPOINT]: 3.75,
+                    },
                     margin: '0 auto',
                     backgroundColor: 'background.paper',
                     backgroundImage: 'none',
