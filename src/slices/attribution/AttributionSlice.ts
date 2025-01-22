@@ -169,9 +169,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
-                        // This nullish coalesce is here for back-compat reasons! We can remove it when the API will always return an index
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                        attributions.index = attributionResponse.index ?? null;
+                        attributions.index = attributionResponse.index;
 
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;
