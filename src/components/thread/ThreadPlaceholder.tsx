@@ -36,7 +36,13 @@ export const ThreadPlaceholder = () => {
                     alignItems="center"
                     flex={1}
                     gridColumn="1 / -1">
-                    <ImageSpinner src="/ai2-monogram.svg" isAnimating={isLoading} width={70} height={70} alt="" />
+                    <ImageSpinner
+                        src="/ai2-monogram.svg"
+                        isAnimating={isLoading}
+                        width={70}
+                        height={70}
+                        alt=""
+                    />
                 </Box>
                 <Typography variant="body1">
                     <br />
