@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
-import { Ai2LogoMarkSpinner } from '@/components/Ai2LogoMarkSpinner';
+import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from './LegalNotice/LegalNotice';
@@ -36,7 +36,7 @@ export const ThreadPlaceholder = () => {
                     alignItems="center"
                     flex={1}
                     gridColumn="1 / -1">
-                    <Ai2LogoMarkSpinner isAnimating={isLoading} width={70} height={70} alt="" />
+                    <ImageSpinner src="/ai2-monogram.svg" isAnimating={isLoading} width={70} height={70} alt="" />
                 </Box>
                 <Typography variant="body1">
                     <br />

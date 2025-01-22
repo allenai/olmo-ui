@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
+import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
@@ -162,26 +163,12 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 sx={(theme) => ({
                     color: theme.palette.primary.main,
                 })}>
-                <Box
-                    component="img"
+                <ImageSpinner
                     src="/arrow-spin.svg"
                     alt="Searching documents"
                     width={49}
                     height={49}
-                    fetchPriority="high"
-                    sx={{
-                        '@keyframes spin': {
-                            from: {
-                                transform: 'rotate(0deg)',
-                            },
-                            to: {
-                                transform: 'rotate(360deg)',
-                            },
-                        },
-                        display: 'block',
-                        justifySelf: 'center',
-                        animation: 'spin 1.33s ease-in-out infinite',
-                    }}
+                    justifySelf="center"
                 />
                 <p>Searching 3.9B documents...</p>
             </Stack>
