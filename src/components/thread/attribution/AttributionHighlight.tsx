@@ -37,6 +37,8 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 
                 return Array.isArray(spanIds)
                     ? spanIds.some((spanId) =>
+                          // HACK: our types are a little mismatched rn. we'll need to reconcile this in the future
+                          // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
                           document?.corresponding_spans.includes(Number(spanId))
                       )
                     : document?.corresponding_spans.includes(Number(spanIds));
@@ -153,7 +155,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 };
 
 export interface AttributionHighlightProps extends PropsWithChildren {
-    span: number;
+    span: string | string[];
     variant?: AttributionHighlightVariant;
     spanScorePercentile: number;
 }
@@ -163,7 +165,7 @@ export const AttributionHighlight = ({
     children,
 }: AttributionHighlightProps): JSX.Element => {
     const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
-        useAttributionHighlights(span.toString());
+        useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
@@ -188,24 +190,28 @@ export const AttributionHighlight = ({
 
                     '--base-highlight-color': theme.palette.secondary.main,
                     borderBottom: '2px solid var(--base-highlight-color)',
-                    backgroundColor: 'var(--base-highlight-color)',
 
-                    '&[data-span-relevance="high"]': {
-                        '--background-opacity': '50%',
-                    },
-                    '&[data-span-relevance="medium"]': {
-                        '--background-opacity': '25%',
-                    },
-                    '&[data-span-relevance="low"]': {
-                        '--background-opacity': '10%',
-                    },
+                    // fallback if relative colors aren't supported
+                    backgroundColor: 'var(--base-highlight-color)',
+                    color: theme.palette.secondary.contrastText,
+
                     '@supports (color: rgb(from white r g b))': {
+                        '&[data-span-relevance="high"]': {
+                            '--background-opacity': '50%',
+                        },
+
+                        '&[data-span-relevance="medium"]': {
+                            '--background-opacity': '25%',
+                        },
+
+                        '&[data-span-relevance="low"]': {
+                            '--background-opacity': '10%',
+                        },
+
                         backgroundColor:
                             'rgb(from var(--base-highlight-color) r g b / var(--background-opacity, 10%))',
+                        color: theme.palette.text.primary,
                     },
-
-                    // color is hard coded (not theme dependant), because background is always some variation of pink
-                    color: theme.palette.text.primary,
 
                     ':focus-visible': {
                         outlineStyle: 'solid',
