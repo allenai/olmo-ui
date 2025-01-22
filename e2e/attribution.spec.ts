@@ -91,3 +91,36 @@ test('should keep scroll position when going back to CorpusLink documents and re
 
     await expect(page.getByText('Back to CorpusLink documents')).not.toBeVisible();
 });
+
+test('should show the trainting text match dialog', async ({ page }) => {
+    await page.goto('/thread/msg_A8E5H1X2O3');
+
+    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+
+    // We're on the standard CorpusLink stuff
+    await expect(page.getByText('Training text matches')).toBeVisible();
+
+    // Click the about button
+    await page
+        .getByRole('button', {
+            name: 'More about how matching works',
+        })
+        .click();
+
+    // Find the modal
+    const modal = page.getByTestId('about-attribution-modal');
+
+    // should be visible, and heave the heading text
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Training text matches')).toBeVisible();
+
+    // should close
+    await modal
+        .getByRole('button', {
+            name: 'Close',
+        })
+        .click();
+
+    // and not be visible
+    await expect(modal).not.toBeVisible();
+});
