@@ -57,7 +57,7 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
                 </Typography>
                 <Typography paddingBlockEnd={1}>
                     The model did not have direct access to these documents when generating the
-                    response. Documents are retrieved after the response generation.{' '}
+                    response. Documents are retrieved after the response generation. <br />
                     <Link
                         href={links.faqs + getFAQIdByShortId('corpuslink-intro')}
                         underline="always">
