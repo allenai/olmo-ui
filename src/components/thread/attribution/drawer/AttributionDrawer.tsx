@@ -64,8 +64,11 @@ export const MobileAttributionDrawer = () => {
 const UnavailableMessage = () => {
     return (
         <Box sx={{ margin: 2 }}>
-            Training text matching is not available for this model, because we do not have access to
-            its full training data. Chat with an OLMo model to see training text matches.
+            <Typography>
+                Training text matching is not available for this model, because we do not have
+                access to its full training data. Chat with an OLMo model to see training text
+                matches.
+            </Typography>
         </Box>
     );
 };
