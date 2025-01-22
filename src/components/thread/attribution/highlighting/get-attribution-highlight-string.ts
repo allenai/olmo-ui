@@ -1,10 +1,6 @@
-import type { AttributionHighlightVariant } from '../AttributionHighlight';
+type AttributionHighlightString = `:attribution-highlight[${string}]{span="${string}"}`;
 
-type AttributionHighlightString =
-    `:attribution-highlight[${string}]{variant="${AttributionHighlightVariant}" span="${string}"}`;
 export const getAttributionHighlightString = (
     spanKey: string,
-    span: string,
-    variant: AttributionHighlightVariant
-): AttributionHighlightString =>
-    `:attribution-highlight[${span}]{variant="${variant}" span="${spanKey}"}`;
+    span: string
+): AttributionHighlightString => `:attribution-highlight[${span}]{span="${spanKey}"}`;

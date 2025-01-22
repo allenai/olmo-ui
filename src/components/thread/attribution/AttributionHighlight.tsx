@@ -1,10 +1,11 @@
-import { Box, Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
     hasSelectedSpansSelector,
+    messageAttributionsSelector,
     shouldShowHighlightsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -28,8 +29,6 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             return isSpanIdSelected(spanIds);
         }
     });
-
-    const isBucketColorsEnabled = featureToggles.bucketColors;
 
     const toggleSelectedSpans = () => {
         if (isSelectedSpan) {
@@ -129,52 +128,52 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         return (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
     });
 
+    const isSelected = useAppContext((state) => {
+        switch (state.attribution.selection?.type) {
+            case undefined:
+            case null: // fallthrough
+                return false;
+            case 'span': {
+                const selectedSpanIds = state.attribution.selection.selectedSpanIds;
+
+                return Array.isArray(spanIds)
+                    ? selectedSpanIds.some((selectedSpanId) => spanIds.includes(selectedSpanId))
+                    : selectedSpanIds.includes(spanIds);
+            }
+            case 'document': {
+                const selectedDocument = state.attribution.selection.documentIndex;
+                const messageAttributions = messageAttributionsSelector(state);
+                const document = messageAttributions?.documents[selectedDocument];
+
+                return Array.isArray(spanIds)
+                    ? spanIds.some((spanId) =>
+                          document?.corresponding_spans.includes(Number(spanId))
+                      )
+                    : document?.corresponding_spans.includes(Number(spanIds));
+            }
+        }
+    });
+
     return {
         shouldShowHighlight,
-        isBucketColorsEnabled,
         toggleSelectedSpans,
         spanScorePercentile,
+        isSelected,
     };
 };
 
 export interface AttributionHighlightProps extends PropsWithChildren {
-    span: string | string[];
+    span: number;
     variant?: AttributionHighlightVariant;
     spanScorePercentile: number;
 }
 
-export const getHighlightColor = (
-    theme: Theme,
-    spanScorePercentile: number,
-    isBucketColorsEnabled: boolean
-): string => {
-    if (isBucketColorsEnabled) {
-        if (spanScorePercentile >= 0.7) {
-            return theme.color['green-40'].toString();
-        } else if (spanScorePercentile >= 0.5) {
-            return theme.color['orange-40'].toString();
-        } else {
-            return theme.color['pink-30'].toString();
-        }
-    }
-
-    const color0 = theme.color['pink-20'].rgba;
-    const color1 = theme.color['pink-40'].rgba;
-    const r = Math.round(color0.r * (1 - spanScorePercentile) + color1.r * spanScorePercentile);
-    const g = Math.round(color0.g * (1 - spanScorePercentile) + color1.g * spanScorePercentile);
-    const b = Math.round(color0.b * (1 - spanScorePercentile) + color1.b * spanScorePercentile);
-    const a = Math.round(color0.a * (1 - spanScorePercentile) + color1.a * spanScorePercentile);
-    const color = `rgba(${r}, ${g}, ${b}, ${a})`;
-    return color;
-};
-
 export const AttributionHighlight = ({
     span,
-    variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
-        useAttributionHighlights(span);
+    const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile, isSelected } =
+        useAttributionHighlights(span.toString());
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
@@ -193,13 +192,14 @@ export const AttributionHighlight = ({
             }}
             tabIndex={0}
             data-span-relevance={spanRelevance}
+            data-selected={isSelected}
             sx={(theme) => {
-                const isPrimaryVariant = variant === 'selected' || variant === 'default';
-
                 return {
                     cursor: 'pointer',
+
                     '--base-highlight-color': theme.palette.secondary.main,
                     borderBottom: '2px solid var(--base-highlight-color)',
+                    backgroundColor: 'var(--base-highlight-color)',
                     '&[data-span-relevance="high"]': {
                         backgroundColor: `rgb(from var(--base-highlight-color) r g b / 50%)`,
                     },
@@ -213,13 +213,15 @@ export const AttributionHighlight = ({
                     // color is hard coded (not theme dependant), because background is always some variation of pink
                     color: theme.color['off-white'].hex,
 
+                    '&[data-selected="true"]': {
+                        backgroundColor: 'var(--base-highlight-color)',
+                        color: theme.color['dark-teal'].hex,
+                    },
+
                     ':focus-visible': {
                         outlineStyle: 'solid',
                         outlineWidth: 2,
-                        outlineColor: (theme) =>
-                            isPrimaryVariant
-                                ? theme.palette.primary.dark
-                                : theme.palette.tertiary.dark,
+                        outlineColor: 'var(--base-highlight-color)',
                     },
                 };
             }}>
