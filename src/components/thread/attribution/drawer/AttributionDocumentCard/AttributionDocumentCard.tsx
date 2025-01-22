@@ -6,7 +6,6 @@ import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
-import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
@@ -67,7 +66,6 @@ interface AttributionDocumentCardProps {
 }
 
 export const AttributionDocumentCard = ({
-    documentUrl,
     source,
     index,
     documentId,
@@ -163,7 +161,6 @@ export const AttributionDocumentCardSkeleton = (): JSX.Element => {
                     <Skeleton />
                 </Typography>
             }
-            url={<Skeleton />}
             source={<Skeleton />}
             actions={<Skeleton variant="rectangular" />}
         />

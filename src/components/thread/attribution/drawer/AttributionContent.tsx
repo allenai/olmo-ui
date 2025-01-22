@@ -46,9 +46,8 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
             </DialogTitle>
             <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
-                    This feature shows documents from the training data that have exact text
-                    matches with the model response. Select a highlighted span to view its
-                    documents.
+                    This feature shows documents from the training data that have exact text matches
+                    with the model response. Select a highlighted span to view its documents.
                 </Typography>
                 <Typography paddingBlockEnd={1}>
                     Some retrieved documents may be used to fact check parts of the model&apos;s
@@ -168,7 +167,6 @@ export const RepeatedAttributionDocumentsContent = () => {
                         <AttributionDocumentCard
                             key={document.index}
                             documentId={document.index}
-                            documentUrl={document.url}
                             source={document.source}
                             index={attributionIndex ?? null}
                         />
