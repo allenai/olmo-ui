@@ -3,6 +3,8 @@ import { ATTRIBUTION_DRAWER_ID } from '@/components/thread/attribution/drawer/At
 
 import { MessageWithAttributionDocuments } from './AttributionSlice';
 
+export const ATTRIBUTION_UNAVAILABLE_FAMILY_ID = 'tulu';
+
 export const messageAttributionsSelector = (
     state: AppContextState
 ): MessageWithAttributionDocuments | undefined => {
@@ -18,4 +20,5 @@ export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
     state.attribution.selection.selectedSpanIds.length > 0;
 
 export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
-    state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID;
+    state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID &&
+    state.selectedModel?.family_id !== ATTRIBUTION_UNAVAILABLE_FAMILY_ID;
