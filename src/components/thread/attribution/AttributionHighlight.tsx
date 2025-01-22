@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react';
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
-    hasSelectedSpansSelector,
+    hasAttributionSelectionSelector,
     messageAttributionsSelector,
     shouldShowHighlightsSelector,
 } from '@/slices/attribution/attribution-selectors';
@@ -19,14 +19,28 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     const resetSelectedSpans = useAppContext((state) => state.resetCorpusLinkSelection);
 
     const isSelectedSpan = useAppContext((state) => {
-        const isSpanIdSelected = (spanId: string) =>
-            state.attribution.selection?.type === 'span' &&
-            state.attribution.selection.selectedSpanIds.includes(spanId);
+        switch (state.attribution.selection?.type) {
+            case undefined:
+            case null: // fallthrough
+                return false;
+            case 'span': {
+                const selectedSpanIds = state.attribution.selection.selectedSpanIds;
 
-        if (Array.isArray(spanIds)) {
-            return spanIds.some(isSpanIdSelected);
-        } else {
-            return isSpanIdSelected(spanIds);
+                return Array.isArray(spanIds)
+                    ? selectedSpanIds.some((selectedSpanId) => spanIds.includes(selectedSpanId))
+                    : selectedSpanIds.includes(spanIds);
+            }
+            case 'document': {
+                const selectedDocument = state.attribution.selection.documentIndex;
+                const messageAttributions = messageAttributionsSelector(state);
+                const document = messageAttributions?.documents[selectedDocument];
+
+                return Array.isArray(spanIds)
+                    ? spanIds.some((spanId) =>
+                          document?.corresponding_spans.includes(Number(spanId))
+                      )
+                    : document?.corresponding_spans.includes(Number(spanIds));
+            }
         }
     });
 
@@ -43,9 +57,9 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             return false;
         }
 
-        const hasSelectedSpans = hasSelectedSpansSelector(state);
+        const hasSelection = hasAttributionSelectionSelector(state);
         // If there aren't any selected spans we want to show all highlights
-        if (!hasSelectedSpans) {
+        if (!hasSelection) {
             return true;
         }
 
@@ -53,6 +67,8 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         if (isSelectedSpan) {
             return true;
         }
+
+        return false;
     });
 
     const spanScorePercentile = useAppContext((state: AppContextState) => {
@@ -128,37 +144,11 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         return (spanRelevanceScore - minRelevanceScore) / (maxRelevanceScore - minRelevanceScore);
     });
 
-    const isSelected = useAppContext((state) => {
-        switch (state.attribution.selection?.type) {
-            case undefined:
-            case null: // fallthrough
-                return false;
-            case 'span': {
-                const selectedSpanIds = state.attribution.selection.selectedSpanIds;
-
-                return Array.isArray(spanIds)
-                    ? selectedSpanIds.some((selectedSpanId) => spanIds.includes(selectedSpanId))
-                    : selectedSpanIds.includes(spanIds);
-            }
-            case 'document': {
-                const selectedDocument = state.attribution.selection.documentIndex;
-                const messageAttributions = messageAttributionsSelector(state);
-                const document = messageAttributions?.documents[selectedDocument];
-
-                return Array.isArray(spanIds)
-                    ? spanIds.some((spanId) =>
-                          document?.corresponding_spans.includes(Number(spanId))
-                      )
-                    : document?.corresponding_spans.includes(Number(spanIds));
-            }
-        }
-    });
-
     return {
         shouldShowHighlight,
         toggleSelectedSpans,
         spanScorePercentile,
-        isSelected,
+        isSelectedSpan,
     };
 };
 
@@ -172,7 +162,7 @@ export const AttributionHighlight = ({
     span,
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile, isSelected } =
+    const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
         useAttributionHighlights(span.toString());
 
     if (!shouldShowHighlight) {
@@ -192,7 +182,6 @@ export const AttributionHighlight = ({
             }}
             tabIndex={0}
             data-span-relevance={spanRelevance}
-            data-selected={isSelected}
             sx={(theme) => {
                 return {
                     cursor: 'pointer',
@@ -200,23 +189,23 @@ export const AttributionHighlight = ({
                     '--base-highlight-color': theme.palette.secondary.main,
                     borderBottom: '2px solid var(--base-highlight-color)',
                     backgroundColor: 'var(--base-highlight-color)',
+
                     '&[data-span-relevance="high"]': {
-                        backgroundColor: `rgb(from var(--base-highlight-color) r g b / 50%)`,
+                        '--background-opacity': '50%',
                     },
                     '&[data-span-relevance="medium"]': {
-                        backgroundColor: `rgb(from var(--base-highlight-color) r g b / 25%)`,
+                        '--background-opacity': '25%',
                     },
                     '&[data-span-relevance="low"]': {
-                        backgroundColor: `rgb(from var(--base-highlight-color) r g b / 10%)`,
+                        '--background-opacity': '10%',
+                    },
+                    '@supports (color: rgb(from white r g b))': {
+                        backgroundColor:
+                            'rgb(from var(--base-highlight-color) r g b / var(--background-opacity, 10%))',
                     },
 
                     // color is hard coded (not theme dependant), because background is always some variation of pink
-                    color: theme.color['off-white'].hex,
-
-                    '&[data-selected="true"]': {
-                        backgroundColor: 'var(--base-highlight-color)',
-                        color: theme.color['dark-teal'].hex,
-                    },
+                    color: theme.palette.text.primary,
 
                     ':focus-visible': {
                         outlineStyle: 'solid',
