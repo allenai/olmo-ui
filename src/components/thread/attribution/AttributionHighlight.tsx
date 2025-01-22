@@ -18,33 +18,39 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     const selectSpans = useAppContext((state) => state.selectSpans);
     const resetSelectedSpans = useAppContext((state) => state.resetCorpusLinkSelection);
 
-    const isSelectedSpan = useAppContext((state) => {
-        switch (state.attribution.selection?.type) {
-            case undefined:
-            case null: // fallthrough
-                return false;
-            case 'span': {
-                const selectedSpanIds = state.attribution.selection.selectedSpanIds;
+    const [isSelectedSpan, selectionType] = useAppContext(
+        (state): [boolean, 'span' | 'document' | null] => {
+            switch (state.attribution.selection?.type) {
+                case undefined:
+                case null: // fallthrough
+                    return [false, null];
+                case 'span': {
+                    const selectedSpanIds = state.attribution.selection.selectedSpanIds;
 
-                return Array.isArray(spanIds)
-                    ? selectedSpanIds.some((selectedSpanId) => spanIds.includes(selectedSpanId))
-                    : selectedSpanIds.includes(spanIds);
-            }
-            case 'document': {
-                const selectedDocument = state.attribution.selection.documentIndex;
-                const messageAttributions = messageAttributionsSelector(state);
-                const document = messageAttributions?.documents[selectedDocument];
+                    const isSelectedSpan = Array.isArray(spanIds)
+                        ? selectedSpanIds.some((selectedSpanId) => spanIds.includes(selectedSpanId))
+                        : selectedSpanIds.includes(spanIds);
 
-                return Array.isArray(spanIds)
-                    ? spanIds.some((spanId) =>
-                          // HACK: our types are a little mismatched rn. we'll need to reconcile this in the future
-                          // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
-                          document?.corresponding_spans.includes(Number(spanId))
-                      )
-                    : document?.corresponding_spans.includes(Number(spanIds));
+                    return [isSelectedSpan, 'span'];
+                }
+                case 'document': {
+                    const selectedDocument = state.attribution.selection.documentIndex;
+                    const messageAttributions = messageAttributionsSelector(state);
+                    const document = messageAttributions?.documents[selectedDocument];
+
+                    const isSelectedSpan = Array.isArray(spanIds)
+                        ? spanIds.some((spanId) =>
+                              // HACK: our types are a little mismatched rn. we'll need to reconcile this in the future
+                              // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
+                              document?.corresponding_spans.includes(Number(spanId))
+                          )
+                        : document?.corresponding_spans.includes(Number(spanIds)) ?? false;
+
+                    return [isSelectedSpan, 'document'];
+                }
             }
         }
-    });
+    );
 
     const toggleSelectedSpans = () => {
         if (isSelectedSpan) {
@@ -151,6 +157,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         toggleSelectedSpans,
         spanScorePercentile,
         isSelectedSpan,
+        selectionType,
     };
 };
 
@@ -162,8 +169,13 @@ export const AttributionHighlight = ({
     span,
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
-        useAttributionHighlights(span);
+    const {
+        toggleSelectedSpans,
+        shouldShowHighlight,
+        spanScorePercentile,
+        isSelectedSpan,
+        selectionType,
+    } = useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
@@ -182,6 +194,7 @@ export const AttributionHighlight = ({
             }}
             tabIndex={0}
             data-span-relevance={spanRelevance}
+            data-selection-type={isSelectedSpan ? selectionType : undefined}
             sx={(theme) => {
                 return {
                     cursor: 'pointer',
@@ -209,6 +222,11 @@ export const AttributionHighlight = ({
                         backgroundColor:
                             'rgb(from var(--base-highlight-color) r g b / var(--background-opacity, 10%))',
                         color: theme.palette.text.primary,
+                    },
+
+                    '&[data-selection-type="span"]': {
+                        backgroundColor: 'var(--base-highlight-color)',
+                        color: theme.palette.secondary.contrastText,
                     },
 
                     ':focus-visible': {

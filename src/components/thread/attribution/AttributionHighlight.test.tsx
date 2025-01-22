@@ -65,9 +65,74 @@ describe('AttributionHighlight', () => {
             </FakeAppContextProvider>
         );
 
-        expect(
-            screen.getByRole('button', { name: 'Show documents related to this span' })
-        ).toHaveTextContent('This is a');
+        const highlight = screen.getByRole('button', {
+            name: 'Show documents related to this span',
+        });
+        expect(highlight).toHaveTextContent('This is a');
+        expect(highlight).not.toHaveAttribute('data-selection-type');
+    });
+
+    it('should show a highlight when the span is selected', () => {
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+        const initialState: DeepPartial<AppContextState> = {
+            currentOpenDrawer: 'attribution',
+            attribution: {
+                selectedMessageId: 'llmMessage',
+                selection: { type: 'span', selectedSpanIds: ['0'] },
+                attributionsByMessageId: {
+                    llmMessage: {
+                        orderedDocumentIndexes: ['12345'],
+                        loadingState: RemoteState.Loaded,
+                        documents: {
+                            12345: {
+                                corresponding_spans: [0, 1],
+                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                index: '12345',
+                                source: 'c4',
+                                text: 'document 1',
+                                relevance_score: 1.6,
+                                snippets: [
+                                    {
+                                        text: 'This is a part of a larger document that contains the text "message from the LLM"',
+                                        corresponding_span_text: 'This is a',
+                                    },
+                                    {
+                                        text: 'This is a part of a larger document that contains the text "message from the LLM"',
+                                        corresponding_span_text: 'message from the LLM',
+                                    },
+                                ],
+                                title: 'Title',
+                            },
+                        },
+                        spans: {
+                            0: {
+                                documents: [12345],
+                                text: 'This is a',
+                                nested_spans: [],
+                            },
+                            1: {
+                                documents: [67890],
+                                text: 'message from the LLM',
+                                nested_spans: [],
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        render(
+            <FakeAppContextProvider initialState={initialState}>
+                <AttributionHighlight span={'0'}>This is a</AttributionHighlight>
+            </FakeAppContextProvider>
+        );
+
+        const highlight = screen.getByRole('button', {
+            name: 'Show documents related to this span',
+        });
+        expect(highlight).toHaveTextContent('This is a');
+        expect(highlight).toHaveAttribute('data-selection-type', 'span');
     });
 
     it('should not show a highlight when another span is selected', () => {
@@ -188,9 +253,11 @@ describe('AttributionHighlight', () => {
             </FakeAppContextProvider>
         );
 
-        expect(
-            screen.getByRole('button', { name: 'Show documents related to this span' })
-        ).toHaveTextContent('This is a');
+        const highlight = screen.getByRole('button', {
+            name: 'Show documents related to this span',
+        });
+        expect(highlight).toHaveTextContent('This is a');
+        expect(highlight).toHaveAttribute('data-selection-type', 'document');
     });
 
     it('should not show a highlight when a non-corresponding document is selected', () => {
