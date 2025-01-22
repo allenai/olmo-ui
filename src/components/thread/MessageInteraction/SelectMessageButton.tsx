@@ -4,7 +4,7 @@ import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 
-import { MessageInteractionIcon } from './MessageInteraction';
+import { MessageInteractionIcon } from './MessageInteractionIcon';
 
 interface SelectMessageButtonProps {
     messageId: Message['id'];
