@@ -79,7 +79,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     });
     const { documents, loadingState } = attributionForMessage;
 
-    const isPromptLoading = useAppContext(
+    const isSelectedMessageLoading = useAppContext(
         (state) =>
             state.streamPromptState === RemoteState.Loading &&
             state.streamingMessageId === state.attribution.selectedMessageId
@@ -146,7 +146,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         }
     );
 
-    if (isPromptLoading) {
+    if (isSelectedMessageLoading) {
         return (
             <Card>
                 <CardContent>
