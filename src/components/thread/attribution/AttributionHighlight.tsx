@@ -156,8 +156,6 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 
 export interface AttributionHighlightProps extends PropsWithChildren {
     span: string | string[];
-    variant?: AttributionHighlightVariant;
-    spanScorePercentile: number;
 }
 
 export const AttributionHighlight = ({
