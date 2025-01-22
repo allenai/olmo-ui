@@ -167,7 +167,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 })}>
                 <ImageSpinner
                     src="/arrow-spin.svg"
-                    alt="Searching documents"
+                    alt=""
                     width={49}
                     height={49}
                     justifySelf="center"
