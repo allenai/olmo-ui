@@ -109,6 +109,10 @@ describe('AttributionDocumentCard', () => {
         expect(screen.getByText('This is a')).toHaveStyle({ 'font-weight': '700' });
         expect(screen.queryByText('message from the LLM')).not.toBeVisible();
 
+        // this should have a button with plural Located spans (there are two)
+        // this will fail if it is not plural
+        expect(screen.getByRole('button', { name: 'Locate spans' })).toBeVisible();
+
         await user.click(screen.getByRole('button', { name: 'Show more' }));
 
         expect(screen.getByText('message from the LLM')).toBeVisible();
