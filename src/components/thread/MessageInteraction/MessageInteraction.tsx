@@ -2,13 +2,12 @@ import {
     ContentCopy,
     Flag,
     FlagOutlined,
-    SvgIconComponent,
     ThumbDown,
     ThumbDownOutlined,
     ThumbUp,
     ThumbUpOutlined,
 } from '@mui/icons-material';
-import { ButtonGroup, IconButton, Snackbar, Stack, Tooltip } from '@mui/material';
+import { ButtonGroup, Snackbar, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
 
 import { Label, LabelRating } from '@/api/Label';
@@ -17,6 +16,7 @@ import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
+import { MessageInteractionIcon } from './MessageInteractionIcon';
 import { SelectMessageButton } from './SelectMessageButton';
 
 interface MessageInteractionProps {
@@ -87,7 +87,7 @@ export const MessageInteraction = ({
                     }}
                 />
                 <MessageInteractionIcon
-                    tooltip="Inapproriate response"
+                    tooltip="Inappropriate response"
                     Icon={FlagIcon}
                     selected={currentLabel?.rating === LabelRating.Flag}
                     onClick={async () => {
@@ -106,45 +106,5 @@ export const MessageInteraction = ({
             />
             <SelectMessageButton messageId={messageId} />
         </Stack>
-    );
-};
-
-interface MessageInteractionIconProps {
-    Icon: SvgIconComponent;
-    tooltip: string;
-    selected?: boolean;
-    onClick: () => void;
-}
-
-export const MessageInteractionIcon = ({
-    Icon,
-    tooltip,
-    selected,
-    onClick,
-}: MessageInteractionIconProps) => {
-    return (
-        <Tooltip
-            title={tooltip}
-            placement="top"
-            arrow
-            slotProps={{
-                tooltip: {
-                    sx: (theme) => ({
-                        backgroundColor: theme.color['dark-teal'].hex,
-                        color: theme.color['off-white'].hex,
-                        boxShadow: 'none',
-                    }),
-                },
-                arrow: {
-                    sx: (theme) => ({
-                        color: theme.color['dark-teal'].hex,
-                        boxShadow: 'none',
-                    }),
-                },
-            }}>
-            <IconButton onClick={onClick} aria-pressed={selected} aria-label={tooltip}>
-                <Icon color="primary" />
-            </IconButton>
-        </Tooltip>
     );
 };
