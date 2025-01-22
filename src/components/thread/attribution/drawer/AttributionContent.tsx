@@ -46,14 +46,15 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
             </DialogTitle>
             <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
-                    CorpusLink shows documents from the training data that have exact text matches
-                    with the model response. Select a highlight to view its documents.
+                    This feature shows documents from the training data that have exact text
+                    matches with the model response. Select a highlighted span to view its
+                    documents.
                 </Typography>
                 <Typography paddingBlockEnd={1}>
-                    CorpusLink might retrieve documents that can be used to fact check parts of the
-                    model&apos;s response, if the response contains simple facts. However, creative
-                    generations (e.g. writing a poem) or novel generations (e.g. writing code)
-                    likely cannot be fact checked by looking at these retrieved documents.
+                    Some retrieved documents may be used to fact check parts of the model&apos;s
+                    response, if the response contains simple facts. However, creative generations
+                    (e.g. writing a poem) or novel generations (e.g. writing code) likely cannot be
+                    fact checked by looking at these retrieved documents.
                 </Typography>
                 <Typography paddingBlockEnd={1}>
                     The model did not have direct access to these documents when generating the

@@ -21,7 +21,6 @@ interface AttributionDocumentCardBaseProps extends AttributionDocumentCardAction
 
 const AttributionDocumentCardBase = ({
     snippets,
-    url,
     source,
     actions,
     isSelected,
@@ -44,16 +43,13 @@ const AttributionDocumentCardBase = ({
                 },
             }}>
             <CardContent component={Stack} direction="column" gap={1}>
+                <Typography variant="body2" fontWeight={600} component="span">
+                    {source}
+                </Typography>
                 <Typography variant="body1" component="span">
                     {snippets}
                 </Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
-                <Typography variant="body2" fontWeight={600} component="span">
-                    {url}
-                </Typography>
-                <Typography variant="body2" fontWeight={600} component="span">
-                    {source}
-                </Typography>
             </CardContent>
             <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
                 {actions}
@@ -108,7 +104,6 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
-            url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
             isSelected={isSelected}
             actions={
@@ -123,7 +118,7 @@ export const AttributionDocumentCard = ({
                             sx={{
                                 width: 'fit-content',
                             }}>
-                            Open in Dataset Explorer
+                            View Document
                         </Button>
                     )}
 
