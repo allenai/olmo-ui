@@ -1,5 +1,6 @@
 import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -55,7 +56,7 @@ const AttributionDocumentCardBase = ({
                 </Typography>
             </CardContent>
             <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
-                {actions != null && actions}
+                {actions}
             </Stack>
         </Card>
     );
@@ -81,6 +82,23 @@ export const AttributionDocumentCard = ({
 
     const selectDocument = useAppContext((state) => state.selectDocument);
 
+    const snippets = useAppContext(
+        useShallow((state) => {
+            const selectedMessageId = state.attribution.selectedMessageId;
+
+            if (selectedMessageId != null) {
+                const documents =
+                    state.attribution.attributionsByMessageId[selectedMessageId]?.documents ?? {};
+
+                const document = documents[documentId];
+
+                return document?.snippets ?? [];
+            } else {
+                return [];
+            }
+        })
+    );
+
     const isSelected = useAppContext(
         (state) =>
             state.attribution.selection?.type === 'document' &&
@@ -89,7 +107,7 @@ export const AttributionDocumentCard = ({
 
     return (
         <AttributionDocumentCardBase
-            snippets={<AttributionDocumentCardSnippets documentIndex={documentId} />}
+            snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
             url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
             isSelected={isSelected}
@@ -114,7 +132,7 @@ export const AttributionDocumentCard = ({
                         onClick={() => {
                             selectDocument(documentId);
                         }}>
-                        Locate span(s)
+                        Locate span{snippets.length > 1 ? 's' : ''}
                     </Button>
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
