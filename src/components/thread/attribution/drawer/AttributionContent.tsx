@@ -1,10 +1,23 @@
 import { ArrowBack } from '@mui/icons-material';
-import { Box, Button, Link, Stack, styled, Typography } from '@mui/material';
+import {
+    Box,
+    Button,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Link,
+    Stack,
+    styled,
+    Typography,
+} from '@mui/material';
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
+import { StandardModal } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -20,39 +33,85 @@ const AttributionContentStack = styled(Stack)(({ theme }) => ({
     },
 }));
 
+interface AttributesModalProps {
+    open: boolean;
+    closeModal: () => void;
+}
+
+const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
+    return (
+        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
+            <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
+                Training text matches
+            </DialogTitle>
+            <DialogContent sx={{ padding: 0 }}>
+                <Typography paddingBlockEnd={1}>
+                    CorpusLink shows documents from the training data that have exact text matches
+                    with the model response. Select a highlight to view its documents.
+                </Typography>
+                <Typography paddingBlockEnd={1}>
+                    CorpusLink might retrieve documents that can be used to fact check parts of the
+                    model&apos;s response, if the response contains simple facts. However, creative
+                    generations (e.g. writing a poem) or novel generations (e.g. writing code)
+                    likely cannot be fact checked by looking at these retrieved documents.
+                </Typography>
+                <Typography paddingBlockEnd={1}>
+                    The model did not have direct access to these documents when generating the
+                    response. Documents are retrieved after the response generation. <br />
+                    <Link
+                        href={links.faqs + getFAQIdByShortId('corpuslink-intro')}
+                        underline="always">
+                        Learn more
+                    </Link>
+                </Typography>
+            </DialogContent>
+            <DialogActions sx={{ paddingInline: 0 }}>
+                <Button variant="text" onClick={handleClose}>
+                    Close
+                </Button>
+            </DialogActions>
+        </StandardModal>
+    );
+};
+
 export const AttributionContent = () => {
+    const [open, setOpen] = useState<boolean>(false);
+    const { isDatasetExplorerEnabled } = useFeatureToggles();
+    const closeModal = () => {
+        setOpen(false);
+    };
+
     return (
         <AttributionContentStack direction="column" gap={2} data-testid="corpuslink-drawer">
-            <Typography variant="h5">CorpusLink</Typography>
-            <Typography>
-                CorpusLink shows documents from the training data that have exact text matches with
-                the model response. Select a highlight to view its documents.
-            </Typography>
+            <Typography variant="h5">Training text matches</Typography>
             <Typography variant="body2">
-                CorpusLink might retrieve documents that can be used to fact check parts of the
-                model&apos;s response, if the response contains simple facts. However, creative
-                generations (e.g. writing a poem) or novel generations (e.g. writing code) likely
-                cannot be fact checked by looking at these retrieved documents.
+                Documents from the training data that have exact text matches with the model
+                response. <br />
+                <Button
+                    onClick={() => {
+                        setOpen(true);
+                    }}
+                    sx={{
+                        padding: 0,
+                    }}>
+                    More about how matching works
+                </Button>
             </Typography>
-            <Typography variant="body2">
-                The model did not have direct access to these documents when generating the
-                response. Documents are retrieved after the response generation.{' '}
-                <Link href={links.faqs + getFAQIdByShortId('corpuslink-intro')} underline="always">
-                    Learn more
-                </Link>
-            </Typography>
-            <Button
-                variant="contained"
-                href={links.datasetExplorer}
-                color="secondary"
-                disableRipple={true}
-                sx={(theme) => ({
-                    marginTop: theme.spacing(1),
-                })}>
-                <Typography fontWeight={500}>Explore the full training dataset</Typography>
-            </Button>
+            {isDatasetExplorerEnabled ? (
+                <Button
+                    variant="contained"
+                    href={links.datasetExplorer}
+                    color="secondary"
+                    disableRipple={true}
+                    sx={{
+                        marginTop: 1,
+                    }}>
+                    <Typography fontWeight={500}>Explore the full training dataset</Typography>
+                </Button>
+            ) : null}
             <ClearSelectedSpanButton />
             <AttributionDrawerDocumentList />
+            <AboutAttributionModal open={open} closeModal={closeModal} />
         </AttributionContentStack>
     );
 };
@@ -135,6 +194,7 @@ export const FullAttributionContent = () => {
                     display: shouldShowRepeatedDocuments ? 'none' : undefined,
                     height: 1,
                     overflowY: 'auto',
+                    scrollbarGutter: 'stable',
                 }}>
                 <AttributionContent />
             </Box>

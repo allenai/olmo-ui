@@ -131,8 +131,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             setSelectedThread,
             setMessageLimitReached,
             getAttributionsForMessage,
-            selectMessage,
-            resetAttribution,
         } = get();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
@@ -145,9 +143,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             false,
             'threadUpdate/startCreateNewThread'
         );
-
-        resetAttribution();
-        set({ currentOpenThreadTab: 'attribution' });
 
         if (selectedModel == null) {
             // This _shouldn't_ ever happen, but there's a chance it can happen if we let the user submit before models are loaded.
@@ -219,7 +214,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
-                    selectMessage(streamedResponseId);
                     await getAttributionsForMessage(request.content, streamedResponseId);
                 }
             }

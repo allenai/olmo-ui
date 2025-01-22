@@ -1,6 +1,7 @@
 import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
+import { Role } from '@/api/Role';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
@@ -38,6 +39,7 @@ interface AttributionActions {
     selectDocument: (documentIndex: string) => void;
     resetAttribution: () => void;
     selectMessage: (messageId: string) => void;
+    unselectMessage: (messageId: string) => void;
     getAttributionsForMessage: (prompt: string, messageId: string) => Promise<AttributionState>;
     selectSpans: (span: string | string[]) => void;
     resetCorpusLinkSelection: () => void;
@@ -107,6 +109,30 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             false,
             'attribution/selectMessage'
         );
+
+        const selectedThreadMessagesById = get().selectedThreadMessagesById;
+        const message = selectedThreadMessagesById[messageId];
+        let prompt = '';
+        if (message.role === Role.LLM) {
+            const parentId = selectedThreadMessagesById[messageId].parent;
+            if (parentId != null) {
+                prompt = selectedThreadMessagesById[parentId].content;
+            }
+        }
+
+        get()
+            .getAttributionsForMessage(prompt, messageId)
+            .catch((error: unknown) => {
+                throw error;
+            });
+    },
+
+    unselectMessage: (messageId: string) => {
+        set((state) => {
+            if (state.attribution.selectedMessageId === messageId) {
+                state.attribution.selectedMessageId = null;
+            }
+        });
     },
 
     getAttributionsForMessage: async (
@@ -114,7 +140,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         messageId: string
     ): Promise<AttributionState> => {
         const message = get().selectedThreadMessagesById[messageId];
-        get().selectMessage(messageId);
 
         const messageDocumentsLoadingState =
             get().attribution.attributionsByMessageId[messageId]?.loadingState;
@@ -144,9 +169,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
-                        // This nullish coalesce is here for back-compat reasons! We can remove it when the API will always return an index
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                        attributions.index = attributionResponse.index ?? null;
+                        attributions.index = attributionResponse.index;
 
                         attributionResponse.spans.forEach((span, index) => {
                             attributions.spans[index] = span;
