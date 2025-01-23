@@ -51,6 +51,8 @@ export const MobileAttributionDrawer = () => {
                     </Stack>
                     <Divider />
                 </FullScreenDrawerHeader>
-            )}></FullScreenDrawer>
+            )}>
+            <FullAttributionContent />
+        </FullScreenDrawer>
     );
 };
