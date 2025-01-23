@@ -37,6 +37,7 @@ interface AttributionState {
 
 interface AttributionActions {
     selectDocument: (documentIndex: string) => void;
+    unselectDocument: (documentIndex: string) => void;
     resetAttribution: () => void;
     selectMessage: (messageId: string) => void;
     unselectMessage: (messageId: string) => void;
@@ -86,6 +87,17 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             false,
             'attribution/selectDocument'
         );
+    },
+
+    unselectDocument: (documentIndex: string) => {
+        set((state) => {
+            if (
+                state.attribution.selection?.type === 'document' &&
+                state.attribution.selection.documentIndex === documentIndex
+            ) {
+                state.attribution.selection = null;
+            }
+        });
     },
 
     resetAttribution: () => {
