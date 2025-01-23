@@ -21,7 +21,8 @@ test('should only show highlights when the CorpusLink drawer is open', async ({ 
         page.getByRole('button', { name: 'Show documents related to this span' })
     ).toHaveCount(0);
 
-    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+    // The match training text button should open the drawer if it's not open already
+    await page.getByRole('button', { name: 'Match training text' }).click();
 
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(2);
     await expect(
@@ -94,7 +95,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await expect(page.getByText('Back to CorpusLink documents')).not.toBeVisible();
 });
 
-test('should show the trainting text match dialog', async ({ page }) => {
+test('should show the training text match dialog', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');
 
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
