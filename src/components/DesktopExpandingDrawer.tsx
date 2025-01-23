@@ -34,7 +34,7 @@ export const DesktopExpandingDrawer = ({
                     setIsFullyClosed(true);
                 }
             }}
-            sx={{
+            sx={(theme) => ({
                 overflowX: 'hidden',
                 width: open ? width : 0,
                 transitionProperty: 'width, padding-inline',
@@ -43,11 +43,12 @@ export const DesktopExpandingDrawer = ({
                 height: '100%',
                 minHeight: 0,
                 overflowY,
-                paddingBlockStart: 5,
-                paddingBlockEnd: 2,
                 gridArea: 'drawer',
                 visibility: isFullyClosed ? 'hidden' : 'visible',
-            }}>
+                '--drop-shadow-color':
+                    theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.33)' : 'rgba(0, 0, 0, 0.15)',
+                boxShadow: '0px 0px 120px var(--drop-shadow-color)',
+            })}>
             <Box
                 paddingInline={2}
                 sx={{

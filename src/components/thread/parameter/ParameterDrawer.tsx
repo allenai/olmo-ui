@@ -24,13 +24,19 @@ export const DesktopParameterDrawer = (): ReactNode => {
 
     return (
         <DesktopExpandingDrawer open={open} id="desktop-parameter-drawer">
-            <Typography
-                variant="body2"
-                component="h2"
-                color={colorMode === 'dark' ? 'primary.main' : undefined}>
-                Parameters
-            </Typography>
-            <ParameterContent />
+            <Box
+                sx={{
+                    paddingBlockStart: 5,
+                    paddingBlockEnd: 2,
+                }}>
+                <Typography
+                    variant="body2"
+                    component="h2"
+                    color={colorMode === 'dark' ? 'primary.main' : undefined}>
+                    Parameters
+                </Typography>
+                <ParameterContent />
+            </Box>
         </DesktopExpandingDrawer>
     );
 };

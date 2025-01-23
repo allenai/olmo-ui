@@ -27,11 +27,12 @@ import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
 import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 const AttributionContentStack = styled(Stack)(({ theme }) => ({
-    paddingBlock: theme.spacing(2),
+    paddingBlockStart: theme.spacing(2),
     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-        padding: 0,
+        paddingBlockStart: theme.spacing(5),
     },
-    height: '100%',
+    paddingBlockEnd: theme.spacing(2),
+    minHeight: '100%',
 }));
 
 interface AttributesModalProps {
