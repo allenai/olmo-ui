@@ -1,6 +1,7 @@
 import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
+import { error } from '@/api/error';
 import { Role } from '@/api/Role';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
@@ -169,12 +170,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     message.model_id
                 );
 
-                if (attributionResponse.error) {
-                    throw Error(attributionResponse.error.message, {
-                        cause: attributionResponse.error.validation_errors[0].type,
-                    });
-                }
-
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
@@ -203,7 +198,12 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                         attributions.loadingState = RemoteState.Error;
-                        if (e instanceof Error && e.cause === 'value_error') {
+                        if (
+                            e instanceof error.ValidationError &&
+                            e.validationErrors.some((validationError) =>
+                                validationError.loc.some((loc) => loc === 'model_id')
+                            )
+                        ) {
                             attributions.isModelSupported = false;
                         }
                     },

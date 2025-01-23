@@ -29,6 +29,9 @@ interface AttributionResponse {
     documents: Document[];
     spans: TopLevelAttributionSpan[];
     index: string;
+}
+
+export interface AttributionValidationErrorResponse {
     error?: {
         code: number;
         message: string;
