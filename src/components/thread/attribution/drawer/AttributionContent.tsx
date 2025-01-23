@@ -164,10 +164,7 @@ export const RepeatedAttributionDocumentsContent = () => {
             </Typography>
             <Box
                 component="ol"
-                p={0}
-                m={0}
                 sx={{
-                    listStyleType: 'none',
                     display: 'contents',
                 }}>
                 {repeatedDocumentsByUrl.map((document) => {
