@@ -164,13 +164,11 @@ export const RepeatedAttributionDocumentsContent = () => {
             </Typography>
             <Box
                 component="ol"
+                p={0}
+                m={0}
                 sx={{
-                    padding: 0,
-                    margin: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
                     listStyleType: 'none',
+                    display: 'contents',
                 }}>
                 {repeatedDocumentsByUrl.map((document) => {
                     return (

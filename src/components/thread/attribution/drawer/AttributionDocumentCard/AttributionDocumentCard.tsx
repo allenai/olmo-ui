@@ -34,6 +34,7 @@ const AttributionDocumentCardBase = ({
                         ? theme.palette.background.drawer.primary
                         : theme.palette.background.default,
                 listStyle: 'none',
+                overflow: 'visible',
 
                 borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
 

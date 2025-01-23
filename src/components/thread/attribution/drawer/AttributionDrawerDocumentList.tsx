@@ -201,12 +201,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
             <MatchingDocumentsText documentCount={documents.length} />
             <Box
                 component="ol"
+                p={0}
+                m={0}
                 sx={{
-                    padding: 0,
-                    margin: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
+                    display: 'contents',
                     listStyleType: 'none',
                 }}>
                 {Object.keys(relevance).map((key) => {
