@@ -1,10 +1,11 @@
-import { Box, Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
-    hasSelectedSpansSelector,
+    hasAttributionSelectionSelector,
+    messageAttributionsSelector,
     shouldShowHighlightsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -17,19 +18,39 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     const selectSpans = useAppContext((state) => state.selectSpans);
     const resetSelectedSpans = useAppContext((state) => state.resetCorpusLinkSelection);
 
-    const isSelectedSpan = useAppContext((state) => {
-        const isSpanIdSelected = (spanId: string) =>
-            state.attribution.selection?.type === 'span' &&
-            state.attribution.selection.selectedSpanIds.includes(spanId);
+    const [isSelectedSpan, selectionType] = useAppContext(
+        (state): [boolean, 'span' | 'document' | null] => {
+            switch (state.attribution.selection?.type) {
+                case undefined:
+                case null: // fallthrough
+                    return [false, null];
+                case 'span': {
+                    const selectedSpanIds = state.attribution.selection.selectedSpanIds;
 
-        if (Array.isArray(spanIds)) {
-            return spanIds.some(isSpanIdSelected);
-        } else {
-            return isSpanIdSelected(spanIds);
+                    const isSelectedSpan = Array.isArray(spanIds)
+                        ? selectedSpanIds.some((selectedSpanId) => spanIds.includes(selectedSpanId))
+                        : selectedSpanIds.includes(spanIds);
+
+                    return [isSelectedSpan, 'span'];
+                }
+                case 'document': {
+                    const selectedDocument = state.attribution.selection.documentIndex;
+                    const messageAttributions = messageAttributionsSelector(state);
+                    const document = messageAttributions?.documents[selectedDocument];
+
+                    const isSelectedSpan = Array.isArray(spanIds)
+                        ? spanIds.some((spanId) =>
+                              // HACK: our types are a little mismatched rn. we'll need to reconcile this in the future
+                              // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
+                              document?.corresponding_spans.includes(Number(spanId))
+                          )
+                        : document?.corresponding_spans.includes(Number(spanIds)) ?? false;
+
+                    return [isSelectedSpan, 'document'];
+                }
+            }
         }
-    });
-
-    const isBucketColorsEnabled = featureToggles.bucketColors;
+    );
 
     const toggleSelectedSpans = () => {
         if (isSelectedSpan) {
@@ -44,9 +65,9 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             return false;
         }
 
-        const hasSelectedSpans = hasSelectedSpansSelector(state);
+        const hasSelection = hasAttributionSelectionSelector(state);
         // If there aren't any selected spans we want to show all highlights
-        if (!hasSelectedSpans) {
+        if (!hasSelection) {
             return true;
         }
 
@@ -54,6 +75,8 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
         if (isSelectedSpan) {
             return true;
         }
+
+        return false;
     });
 
     const spanScorePercentile = useAppContext((state: AppContextState) => {
@@ -131,54 +154,35 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
 
     return {
         shouldShowHighlight,
-        isBucketColorsEnabled,
         toggleSelectedSpans,
         spanScorePercentile,
+        isSelectedSpan,
+        selectionType,
     };
 };
 
 export interface AttributionHighlightProps extends PropsWithChildren {
     span: string | string[];
-    variant?: AttributionHighlightVariant;
-    spanScorePercentile: number;
 }
-
-export const getHighlightColor = (
-    theme: Theme,
-    spanScorePercentile: number,
-    isBucketColorsEnabled: boolean
-): string => {
-    if (isBucketColorsEnabled) {
-        if (spanScorePercentile >= 0.7) {
-            return theme.color['green-40'].toString();
-        } else if (spanScorePercentile >= 0.5) {
-            return theme.color['orange-40'].toString();
-        } else {
-            return theme.color['pink-30'].toString();
-        }
-    }
-
-    const color0 = theme.color['pink-20'].rgba;
-    const color1 = theme.color['pink-40'].rgba;
-    const r = Math.round(color0.r * (1 - spanScorePercentile) + color1.r * spanScorePercentile);
-    const g = Math.round(color0.g * (1 - spanScorePercentile) + color1.g * spanScorePercentile);
-    const b = Math.round(color0.b * (1 - spanScorePercentile) + color1.b * spanScorePercentile);
-    const a = Math.round(color0.a * (1 - spanScorePercentile) + color1.a * spanScorePercentile);
-    const color = `rgba(${r}, ${g}, ${b}, ${a})`;
-    return color;
-};
 
 export const AttributionHighlight = ({
     span,
-    variant = 'default',
     children,
 }: AttributionHighlightProps): JSX.Element => {
-    const { isBucketColorsEnabled, toggleSelectedSpans, shouldShowHighlight, spanScorePercentile } =
-        useAttributionHighlights(span);
+    const {
+        toggleSelectedSpans,
+        shouldShowHighlight,
+        spanScorePercentile,
+        isSelectedSpan,
+        selectionType,
+    } = useAttributionHighlights(span);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
     }
+
+    const spanRelevance =
+        spanScorePercentile >= 0.7 ? 'high' : spanScorePercentile >= 0.5 ? 'medium' : 'low';
 
     return (
         <Box
@@ -189,28 +193,48 @@ export const AttributionHighlight = ({
                 toggleSelectedSpans();
             }}
             tabIndex={0}
-            sx={() => {
-                const isPrimaryVariant = variant === 'selected' || variant === 'default';
-
+            data-span-relevance={spanRelevance}
+            data-selection-type={isSelectedSpan ? selectionType : undefined}
+            sx={(theme) => {
                 return {
                     cursor: 'pointer',
-                    textDecoration: 'underline',
-                    backgroundColor: (theme) =>
-                        isPrimaryVariant
-                            ? getHighlightColor(theme, spanScorePercentile, isBucketColorsEnabled)
-                            : theme.palette.tertiary.light,
 
-                    // color is hard coded (not theme dependant), because background is always some variation of pink
-                    color: (theme) =>
-                        isPrimaryVariant ? theme.color['dark-teal'] : theme.color['dark-blue'],
+                    '--base-highlight-color': theme.palette.secondary.main,
+                    borderBottom: '2px solid var(--base-highlight-color)',
+
+                    // fallback if relative colors aren't supported
+                    backgroundColor: 'var(--base-highlight-color)',
+                    color: theme.palette.secondary.contrastText,
+
+                    '@supports (color: rgb(from white r g b))': {
+                        '&[data-span-relevance="high"]': {
+                            '--background-opacity': '50%',
+                        },
+
+                        '&[data-span-relevance="medium"]': {
+                            '--background-opacity': '25%',
+                        },
+
+                        '&[data-span-relevance="low"]': {
+                            '--background-opacity': '10%',
+                        },
+
+                        backgroundColor:
+                            'rgb(from var(--base-highlight-color) r g b / var(--background-opacity, 10%))',
+                        color: theme.palette.text.primary,
+                    },
+
+                    // We only have a special highlight state for spans when the selection type is span
+                    // If this is shown through a document selection we want to keep the normal span highlights
+                    '&[data-selection-type="span"]': {
+                        backgroundColor: 'var(--base-highlight-color)',
+                        color: theme.palette.secondary.contrastText,
+                    },
 
                     ':focus-visible': {
                         outlineStyle: 'solid',
                         outlineWidth: 2,
-                        outlineColor: (theme) =>
-                            isPrimaryVariant
-                                ? theme.palette.primary.dark
-                                : theme.palette.tertiary.dark,
+                        outlineColor: 'var(--base-highlight-color)',
                     },
                 };
             }}>
