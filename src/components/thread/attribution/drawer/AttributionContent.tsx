@@ -162,7 +162,16 @@ export const RepeatedAttributionDocumentsContent = () => {
             <Typography variant="h4" component="p">
                 Viewing {repeatedDocumentsByUrl.length} repeated documents
             </Typography>
-            <Box p={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+            <Box
+                component="ol"
+                sx={{
+                    padding: 0,
+                    margin: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    listStyleType: 'none',
+                }}>
                 {repeatedDocumentsByUrl.map((document) => {
                     return (
                         <AttributionDocumentCard

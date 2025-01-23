@@ -199,7 +199,16 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            <Box p={0} m={0} component="ol" sx={{ display: 'block', listStyleType: 'none' }}>
+            <Box
+                component="ol"
+                sx={{
+                    padding: 0,
+                    margin: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    listStyleType: 'none',
+                }}>
                 {Object.keys(relevance).map((key) => {
                     const group = relevance[key];
 
