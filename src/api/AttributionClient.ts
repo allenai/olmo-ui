@@ -31,20 +31,6 @@ interface AttributionResponse {
     index: string;
 }
 
-export interface AttributionValidationErrorResponse {
-    error?: {
-        code: number;
-        message: string;
-        validation_errors: Array<{
-            input: string;
-            loc: string[];
-            msg: string;
-            type: string;
-            url: string;
-        }>;
-    };
-}
-
 const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';
 
 export class AttributionClient extends ClientBase {
