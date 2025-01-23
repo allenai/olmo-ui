@@ -38,31 +38,15 @@ const MatchingDocumentsText = ({
     );
 };
 
-const NoDocumentsCard = (): JSX.Element => {
-    const isThereASelectedThread = useAppContext((state) => Boolean(state.selectedThreadRootId));
-
-    const message = isThereASelectedThread ? (
-        <>
-            There are no documents from the training set that contain exact text matches to sections
-            of the model response. This will often happen on short responses.
-        </>
-    ) : (
-        <>Start a new thread or select an existing message to see training text matches.</>
-    );
-
-    return (
-        <Card>
-            <CardContent>{message}</CardContent>
-        </Card>
-    );
-};
-
 interface RelevanceGroup {
     title: string;
     collections: DedupedDocument[];
 }
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
+    const isThereASelectedMessage = useAppContext((state) =>
+        Boolean(state.attribution.selectedMessageId)
+    );
     const attributionForMessage = useAttributionDocumentsForMessage();
     const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
     const messageLength = useAppContext((state) => {
@@ -144,6 +128,17 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         }
     );
 
+    if (!isThereASelectedMessage) {
+        return (
+            <Card>
+                <CardContent>
+                    To see training text matches for a model response, click the &ldquo;Match
+                    training text&rdquo; button below it.
+                </CardContent>
+            </Card>
+        );
+    }
+
     if (isSelectedMessageLoading) {
         return (
             <Card>
@@ -189,7 +184,14 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     }
 
     if (documents.length === 0) {
-        return <NoDocumentsCard />;
+        return (
+            <Card>
+                <CardContent>
+                    There are no documents from the training set that contain exact text matches to
+                    sections of the model response. This will often happen on short responses.
+                </CardContent>
+            </Card>
+        );
     }
 
     return (
