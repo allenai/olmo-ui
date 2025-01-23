@@ -59,9 +59,11 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await page.goto('/thread/msg_duplicatedocuments');
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
 
-    const documentWithDuplicates = page
-        .getByRole('listitem')
-        .filter({ has: page.getByText('https://www.worldatlas.com/articles/empe...') });
+    const documentWithDuplicates = page.getByRole('listitem').filter({
+        has: page.getByText(
+            'are a few other facts about these fascinating birds that live on the coldest continent.\n\nScientific Name\n\nThe emperor penguin\u2019s scientific name is Aptenodytes forsteri. They\u2019re birds that belong to the family Spheniscidae and one of the two species in the genus Aptenodytes.\n\nTaxonomic Position\n\n  \u2022 Phylum:\u00a0Chordata\n  \u2022 \u00a0\u00a0\u00a0'
+        ),
+    });
     await expect(documentWithDuplicates).toHaveCount(1);
 
     await documentWithDuplicates.scrollIntoViewIfNeeded();

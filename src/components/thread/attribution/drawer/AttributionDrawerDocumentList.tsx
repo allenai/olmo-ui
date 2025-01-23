@@ -47,7 +47,7 @@ const NoDocumentsCard = (): JSX.Element => {
             of the model response. This will often happen on short responses.
         </>
     ) : (
-        <>Start a new thread or select an existing one to see response attributions.</>
+        <>Start a new thread or select an existing message to see training text matches.</>
     );
 
     return (
