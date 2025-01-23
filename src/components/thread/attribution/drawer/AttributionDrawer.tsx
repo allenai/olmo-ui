@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
+import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
@@ -11,22 +11,18 @@ export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const DesktopAttributionDrawer = () => {
     const open = useAppContext((state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID);
-    const isCorpusLinkAvailable = useAppContext((state) => state.isAttributionAvailable());
-
     return (
         <DesktopExpandingDrawer
             width="24rem"
             open={open}
             id="desktop-corpuslink-drawer"
             overflowY="hidden">
-            {isCorpusLinkAvailable ? <FullAttributionContent /> : <UnavailableMessage />}
+            <FullAttributionContent />
         </DesktopExpandingDrawer>
     );
 };
 
 export const MobileAttributionDrawer = () => {
-    const isCorpusLinkAvailable = useAppContext((state) => state.isAttributionAvailable());
-
     return (
         <FullScreenDrawer
             drawerId="attribution"
@@ -55,20 +51,6 @@ export const MobileAttributionDrawer = () => {
                     </Stack>
                     <Divider />
                 </FullScreenDrawerHeader>
-            )}>
-            {isCorpusLinkAvailable ? <FullAttributionContent /> : <UnavailableMessage />}
-        </FullScreenDrawer>
-    );
-};
-
-const UnavailableMessage = () => {
-    return (
-        <Box sx={{ margin: 2 }}>
-            <Typography>
-                This message used a model that doesn&apos;t have training text matching available.
-                View training text for another message or prompt a model that does have training
-                text matches available
-            </Typography>
-        </Box>
+            )}></FullScreenDrawer>
     );
 };
