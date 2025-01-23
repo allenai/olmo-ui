@@ -74,6 +74,7 @@ export const AttributionDocumentCard = ({
     const { isDatasetExplorerEnabled } = useFeatureToggles();
 
     const selectDocument = useAppContext((state) => state.selectDocument);
+    const unselectDocument = useAppContext((state) => state.unselectDocument);
 
     const snippets = useAppContext(
         useShallow((state) => {
@@ -122,9 +123,15 @@ export const AttributionDocumentCard = ({
                     <Button
                         variant="text"
                         onClick={() => {
-                            selectDocument(documentId);
+                            if (isSelected) {
+                                unselectDocument(documentId);
+                            } else {
+                                selectDocument(documentId);
+                            }
                         }}>
-                        Locate span{snippets.length > 1 ? 's' : ''}
+                        {isSelected
+                            ? 'Show all spans'
+                            : `Locate span${snippets.length > 1 ? 's' : ''}`}
                     </Button>
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
