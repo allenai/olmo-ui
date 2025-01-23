@@ -149,6 +149,12 @@ export const AttributionDocumentCard = ({
 
                     <Button
                         variant="text"
+                        sx={(theme) => ({
+                            '[data-selected-document="true"] &': {
+                                fontWeight: theme.font.weight.semiBold,
+                                color: theme.palette.secondary.contrastText,
+                            },
+                        })}
                         onClick={() => {
                             if (isSelected) {
                                 unselectDocument(documentId);
