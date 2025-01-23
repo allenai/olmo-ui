@@ -12,7 +12,7 @@ import {
 } from '@/slices/attribution/attribution-selectors';
 
 import {
-    AttributionBucket,
+    type AttributionBucket,
     calculateRelevanceScore,
     getBucketForScorePercentile,
 } from '../calculate-relevance-score';
@@ -42,7 +42,6 @@ const MatchingDocumentsText = ({
         </Typography>
     );
 };
-
 
 const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
     fontWeight: theme.font.weight.semiBold,
@@ -115,15 +114,15 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
             return acc;
         },
         {
-            [AttributionBucket.High]: {
+            high: {
                 title: 'High Relevance',
                 collections: [],
             },
-            [AttributionBucket.Medium]: {
+            medium: {
                 title: 'Medium Relevance',
                 collections: [],
             },
-            [AttributionBucket.Low]: {
+            low: {
                 title: 'Low Relevance',
                 collections: [],
             },
@@ -210,7 +209,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                     listStyle: 'none',
                 }}>
                 {/* Object keys gives us string[] regardless of Record<Key,> */}
-                {(Object.keys(relevance) as AttributionBucket[]).map((key: AttributionBucket) => {
+                {(Object.keys(relevance) as AttributionBucket[]).map((key) => {
                     const group = relevance[key];
 
                     if (group.collections.length === 0) {

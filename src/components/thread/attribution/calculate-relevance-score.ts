@@ -1,8 +1,4 @@
-export enum AttributionBucket {
-    Low = 'low',
-    Medium = 'medium',
-    High = 'high',
-}
+export type AttributionBucket = 'low' | 'medium' | 'high';
 
 export const calculateRelevanceScore = (relevanceScore: number, messageLength: number) => {
     if (messageLength === 0) {
@@ -15,8 +11,4 @@ export const calculateRelevanceScore = (relevanceScore: number, messageLength: n
 };
 
 export const getBucketForScorePercentile = (scorePercentile: number): AttributionBucket =>
-    scorePercentile >= 0.7
-        ? AttributionBucket.High
-        : scorePercentile >= 0.5
-          ? AttributionBucket.Medium
-          : AttributionBucket.Low;
+    scorePercentile >= 0.7 ? 'high' : scorePercentile >= 0.5 ? 'medium' : 'low';
