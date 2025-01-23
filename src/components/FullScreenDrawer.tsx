@@ -50,7 +50,6 @@ export const FullScreenDrawer = ({
                 },
             }}>
             {typeof header === 'function' ? header({ onDrawerClose: handleDrawerClose }) : header}
-            {/* minHeight here helps the children overflow properly */}
             <Box paddingBlockEnd={1} paddingInline={2} height={1}>
                 {children}
             </Box>

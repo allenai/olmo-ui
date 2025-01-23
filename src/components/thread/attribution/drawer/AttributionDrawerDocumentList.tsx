@@ -172,7 +172,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                     height={49}
                     justifySelf="center"
                 />
-                <p>Searching 3.9B documents...</p>
+                <p>Searching 3.2B documents...</p>
             </Stack>
         );
     }
