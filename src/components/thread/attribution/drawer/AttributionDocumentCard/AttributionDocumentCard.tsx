@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -146,24 +146,6 @@ export const AttributionDocumentCard = ({
                     )}
                 </>
             }
-        />
-    );
-};
-
-export const AttributionDocumentCardSkeleton = (): JSX.Element => {
-    return (
-        <AttributionDocumentCardBase
-            snippets={
-                <Typography variant="body1">
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                </Typography>
-            }
-            source={<Skeleton />}
-            actions={<Skeleton variant="rectangular" />}
         />
     );
 };
