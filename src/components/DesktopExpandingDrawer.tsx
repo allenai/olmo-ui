@@ -43,6 +43,8 @@ export const DesktopExpandingDrawer = ({
                 height: '100%',
                 minHeight: 0,
                 overflowY,
+                paddingBlockStart: 5,
+                paddingBlockEnd: 2,
                 gridArea: 'drawer',
                 visibility: isFullyClosed ? 'hidden' : 'visible',
             }}>

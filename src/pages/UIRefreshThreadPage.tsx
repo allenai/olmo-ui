@@ -28,15 +28,12 @@ export const UIRefreshThreadPage = () => {
                 variant="elevation"
                 elevation={0}
                 sx={(theme) => ({
-                    paddingBlockStart: 1,
-                    paddingBlockEnd: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         gridArea: 'content',
                         display: 'grid',
-                        gridRowGap: '1rem',
                         transition: '300ms',
                         gridTemplateColumns: '1fr auto',
                         gridTemplateRows: 'auto 1fr',
@@ -51,13 +48,15 @@ export const UIRefreshThreadPage = () => {
 
                         backgroundColor: 'transparent',
                         height: 1,
-                        paddingBlockStart: 1,
+                        paddingBlockEnd: 2,
+                        paddingBlockStart: 2,
 
                         position: 'relative',
                         overflow: 'hidden',
 
                         [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                             gridArea: 'thread-content',
+                            paddingBlockStart: 6,
                             // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
                             minHeight: 0,
                             minWidth: 0,
