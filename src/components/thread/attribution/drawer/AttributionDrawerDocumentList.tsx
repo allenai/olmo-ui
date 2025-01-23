@@ -1,5 +1,5 @@
-import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { Box, Card, CardContent, Stack, styled, Typography } from '@mui/material';
+import { Fragment, useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
@@ -8,9 +8,14 @@ import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
     messageAttributionsSelector,
+    messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
 
-import { calculateRelevanceScore } from '../calculate-relevance-score';
+import {
+    AttributionBucket,
+    calculateRelevanceScore,
+    getBucketForScorePercentile,
+} from '../calculate-relevance-score';
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
@@ -38,6 +43,17 @@ const MatchingDocumentsText = ({
     );
 };
 
+
+const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
+    fontWeight: theme.font.weight.semiBold,
+    color:
+        theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.text.primary,
+    opacity: theme.palette.mode === 'light' ? 0.5 : undefined,
+    paddingInline: theme.spacing(3),
+    paddingBlockStart: theme.spacing(2.5),
+    textTransform: 'uppercase',
+}));
+
 interface RelevanceGroup {
     title: string;
     collections: DedupedDocument[];
@@ -49,16 +65,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     );
     const attributionForMessage = useAttributionDocumentsForMessage();
     const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
-    const messageLength = useAppContext((state) => {
-        if (state.attribution.selectedMessageId != null) {
-            return (
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                state.selectedThreadMessagesById[state.attribution.selectedMessageId]?.content
-                    .length || 0
-            );
-        }
-        return 0;
-    });
+    const messageLength = useAppContext((state) => messageLengthSelector(state));
     const { documents, loadingState } = attributionForMessage;
 
     const isSelectedMessageLoading = useAppContext(
@@ -99,29 +106,24 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return Array.from(documentsDedupedByUrl.values());
     }, [documents]);
 
-    const relevance = deduplicatedDocuments.reduce<Record<string, RelevanceGroup>>(
+    const relevance = deduplicatedDocuments.reduce<Record<AttributionBucket, RelevanceGroup>>(
         (acc, doc) => {
             const score = calculateRelevanceScore(doc.relevance_score, messageLength);
-            if (score >= 0.7) {
-                acc.high.collections.push(doc);
-            } else if (score >= 0.5) {
-                acc.medium.collections.push(doc);
-            } else {
-                acc.low.collections.push(doc);
-            }
+            const bucket = getBucketForScorePercentile(score);
+            acc[bucket].collections.push(doc);
 
             return acc;
         },
         {
-            high: {
+            [AttributionBucket.High]: {
                 title: 'High Relevance',
                 collections: [],
             },
-            medium: {
+            [AttributionBucket.Medium]: {
                 title: 'Medium Relevance',
                 collections: [],
             },
-            low: {
+            [AttributionBucket.Low]: {
                 title: 'Low Relevance',
                 collections: [],
             },
@@ -205,8 +207,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 component="ol"
                 sx={{
                     display: 'contents',
+                    listStyle: 'none',
                 }}>
-                {Object.keys(relevance).map((key) => {
+                {/* Object keys gives us string[] regardless of Record<Key,> */}
+                {(Object.keys(relevance) as AttributionBucket[]).map((key: AttributionBucket) => {
                     const group = relevance[key];
 
                     if (group.collections.length === 0) {
@@ -214,8 +218,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                     }
 
                     return (
-                        <>
-                            <Typography>{group.title}</Typography>
+                        <Fragment key={key}>
+                            <AttributionDocumentGroupTitle variant="subtitle2">
+                                {group.title}
+                            </AttributionDocumentGroupTitle>
                             {group.collections.map((doc) => (
                                 <AttributionDocumentCard
                                     key={doc.index}
@@ -225,9 +231,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                                     // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
                                     repeatedDocumentCount={doc.duplicateDocumentIndexes.length + 1}
                                     index={attributionIndex}
+                                    releavanceBucket={key}
                                 />
                             ))}
-                        </>
+                        </Fragment>
                     );
                 })}
             </Box>

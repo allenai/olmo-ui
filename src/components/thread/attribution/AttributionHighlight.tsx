@@ -9,7 +9,7 @@ import {
     shouldShowHighlightsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
-import { calculateRelevanceScore } from './calculate-relevance-score';
+import { calculateRelevanceScore, getBucketForScorePercentile } from './calculate-relevance-score';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
 
@@ -181,8 +181,7 @@ export const AttributionHighlight = ({
         return <>{children}</>;
     }
 
-    const spanRelevance =
-        spanScorePercentile >= 0.7 ? 'high' : spanScorePercentile >= 0.5 ? 'medium' : 'low';
+    const spanRelevance = getBucketForScorePercentile(spanScorePercentile);
 
     return (
         <Box

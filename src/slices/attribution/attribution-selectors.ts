@@ -22,3 +22,14 @@ export const hasAttributionSelectionSelector = (state: AppContextState): boolean
 
 export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
     state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID;
+
+export const messageLengthSelector = (state: AppContextState): number => {
+    if (state.attribution.selectedMessageId != null) {
+        return (
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.selectedThreadMessagesById[state.attribution.selectedMessageId]?.content.length ||
+            0
+        );
+    }
+    return 0;
+};

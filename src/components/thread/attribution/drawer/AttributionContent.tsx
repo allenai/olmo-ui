@@ -19,8 +19,12 @@ import { StandardModal } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
-import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
+import {
+    messageAttributionsSelector,
+    messageLengthSelector,
+} from '@/slices/attribution/attribution-selectors';
 
+import { calculateRelevanceScore, getBucketForScorePercentile } from '../calculate-relevance-score';
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
@@ -85,33 +89,35 @@ export const AttributionContent = () => {
 
     return (
         <AttributionContentStack direction="column" gap={2} data-testid="corpuslink-drawer">
-            <Typography variant="h5">Training text matches</Typography>
-            <Typography variant="body2">
-                Documents from the training data that have exact text matches with the model
-                response. <br />
-                <Button
-                    onClick={() => {
-                        setOpen(true);
-                    }}
-                    sx={{
-                        padding: 0,
-                    }}>
-                    More about how matching works
-                </Button>
-            </Typography>
-            {isDatasetExplorerEnabled ? (
-                <Button
-                    variant="contained"
-                    href={links.datasetExplorer}
-                    color="secondary"
-                    disableRipple={true}
-                    sx={{
-                        marginTop: 1,
-                    }}>
-                    <Typography fontWeight={500}>Explore the full training dataset</Typography>
-                </Button>
-            ) : null}
-            <ClearSelectedSpanButton />
+            <Stack direction="column" gap={2} paddingInline={3}>
+                <Typography variant="h5">Training text matches</Typography>
+                <Typography variant="body2">
+                    Documents from the training data that have exact text matches with the model
+                    response. <br />
+                    <Button
+                        onClick={() => {
+                            setOpen(true);
+                        }}
+                        sx={{
+                            padding: 0,
+                        }}>
+                        More about how matching works
+                    </Button>
+                </Typography>
+                {isDatasetExplorerEnabled ? (
+                    <Button
+                        variant="contained"
+                        href={links.datasetExplorer}
+                        color="secondary"
+                        disableRipple={true}
+                        sx={{
+                            marginTop: 1,
+                        }}>
+                        <Typography fontWeight={500}>Explore the full training dataset</Typography>
+                    </Button>
+                ) : null}
+                <ClearSelectedSpanButton />
+            </Stack>
             <AttributionDrawerDocumentList />
             <AboutAttributionModal open={open} closeModal={closeModal} />
         </AttributionContentStack>
@@ -142,6 +148,8 @@ export const RepeatedAttributionDocumentsContent = () => {
         (state) => state.resetSelectedRepeatedDocument
     );
 
+    const messageLength = useAppContext((state) => messageLengthSelector(state));
+
     const handleBackToCorpusLinkDocumentsClick = () => {
         resetSelectedRepeatedDocument();
     };
@@ -167,14 +175,18 @@ export const RepeatedAttributionDocumentsContent = () => {
                 component="ol"
                 sx={{
                     display: 'contents',
+                    listStyle: 'none',
                 }}>
                 {repeatedDocumentsByUrl.map((document) => {
+                    const score = calculateRelevanceScore(document.relevance_score, messageLength); // INTO Bucket
+                    const bucket = getBucketForScorePercentile(score);
                     return (
                         <AttributionDocumentCard
                             key={document.index}
                             documentId={document.index}
                             source={document.source}
                             index={attributionIndex ?? null}
+                            releavanceBucket={bucket}
                         />
                     );
                 })}
