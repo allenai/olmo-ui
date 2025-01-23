@@ -12,7 +12,6 @@ interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
 interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
     snippets: ReactNode;
-    url?: ReactNode;
     source: ReactNode;
     actions?: ReactNode;
     isSelected?: boolean;
@@ -58,7 +57,6 @@ const AttributionDocumentCardBase = ({
 };
 
 interface AttributionDocumentCardProps {
-    documentUrl?: string;
     source: string;
     documentId: string;
     index?: string | null;

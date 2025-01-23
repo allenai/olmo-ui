@@ -206,7 +206,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                                 <AttributionDocumentCard
                                     key={doc.index}
                                     documentId={doc.index}
-                                    documentUrl={doc.url}
                                     source={doc.source}
                                     // This has a +1 because the repeated document count should include this document we're showing here
                                     // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
