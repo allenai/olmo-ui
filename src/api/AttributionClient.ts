@@ -29,6 +29,17 @@ interface AttributionResponse {
     documents: Document[];
     spans: TopLevelAttributionSpan[];
     index: string;
+    error?: {
+        code: number;
+        message: string;
+        validation_errors: Array<{
+            input: string;
+            loc: string[];
+            msg: string;
+            type: string;
+            url: string;
+        }>;
+    };
 }
 
 const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';

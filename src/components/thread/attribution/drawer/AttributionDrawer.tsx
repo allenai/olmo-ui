@@ -4,7 +4,6 @@ import { Box, Divider, IconButton, ListSubheader, Stack, Typography } from '@mui
 import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
-import { shouldShowHighlightsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { FullAttributionContent } from './AttributionContent';
 
@@ -12,7 +11,8 @@ export const ATTRIBUTION_DRAWER_ID = 'attribution';
 
 export const DesktopAttributionDrawer = () => {
     const open = useAppContext((state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID);
-    const isCorpusLinkAvailable = useAppContext(shouldShowHighlightsSelector);
+    const isCorpusLinkAvailable = useAppContext((state) => state.isAttributionAvailable());
+
     return (
         <DesktopExpandingDrawer
             width="24rem"
@@ -25,7 +25,7 @@ export const DesktopAttributionDrawer = () => {
 };
 
 export const MobileAttributionDrawer = () => {
-    const isCorpusLinkAvailable = useAppContext(shouldShowHighlightsSelector);
+    const isCorpusLinkAvailable = useAppContext((state) => state.isAttributionAvailable());
 
     return (
         <FullScreenDrawer
@@ -65,9 +65,9 @@ const UnavailableMessage = () => {
     return (
         <Box sx={{ margin: 2 }}>
             <Typography>
-                Training text matching is not available for this model, because we do not have
-                access to its full training data. Chat with an OLMo model to see training text
-                matches.
+                This message used a model that doesn&apos;t have training text matching available.
+                View training text for another message or prompt a model that does have training
+                text matches available
             </Typography>
         </Box>
     );

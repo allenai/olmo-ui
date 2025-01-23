@@ -11,6 +11,7 @@ export interface MessageWithAttributionDocuments {
     spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
     index: string | null;
+    isModelSupported?: boolean;
 }
 
 export interface DocumentSelection {
@@ -46,6 +47,7 @@ interface AttributionActions {
     handleAttributionForChangingThread: () => void;
     selectRepeatedDocument: (documentIndex: string) => void;
     resetSelectedRepeatedDocument: () => void;
+    isAttributionAvailable: () => boolean;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -154,6 +156,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 (state) => {
                     const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                     attributions.loadingState = RemoteState.Loading;
+                    attributions.isModelSupported = undefined;
                 },
                 false,
                 'attribution/startGetAttributionsForMessage'
@@ -165,6 +168,12 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     message.content,
                     message.model_id
                 );
+
+                if (attributionResponse.error) {
+                    throw Error(attributionResponse.error.message, {
+                        cause: attributionResponse.error.validation_errors[0].type,
+                    });
+                }
 
                 set(
                     (state) => {
@@ -184,15 +193,19 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         );
 
                         attributions.loadingState = RemoteState.Loaded;
+                        attributions.isModelSupported = true;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
                 );
-            } catch {
+            } catch (e) {
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                         attributions.loadingState = RemoteState.Error;
+                        if (e instanceof Error && e.cause === 'value_error') {
+                            attributions.isModelSupported = false;
+                        }
                     },
                     false,
                     'attribution/errorGetAttributionsForMessage'
@@ -253,5 +266,16 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         // when we change threads we want to reset all the selected spans from the last thread
         get().resetCorpusLinkSelection();
         get().resetSelectedRepeatedDocument();
+    },
+
+    isAttributionAvailable: () => {
+        const { selectedMessageId, attributionsByMessageId } = get().attribution;
+        if (selectedMessageId !== null) {
+            const selectedMessageAttribution = attributionsByMessageId[selectedMessageId];
+
+            return selectedMessageAttribution?.isModelSupported !== false;
+        }
+
+        return true;
     },
 });
