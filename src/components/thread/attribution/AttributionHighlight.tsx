@@ -224,6 +224,8 @@ export const AttributionHighlight = ({
                         color: theme.palette.text.primary,
                     },
 
+                    // We only have a special highlight state for spans when the selection type is span
+                    // If this is shown through a document selection we want to keep the normal span highlights
                     '&[data-selection-type="span"]': {
                         backgroundColor: 'var(--base-highlight-color)',
                         color: theme.palette.secondary.contrastText,
