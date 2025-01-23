@@ -22,3 +22,14 @@ export const hasAttributionSelectionSelector = (state: AppContextState): boolean
 
 export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
     state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID;
+
+export const isAttributionAvailableSelector = (state: AppContextState): boolean => {
+    const { selectedMessageId, attributionsByMessageId } = state.attribution;
+    if (selectedMessageId !== null) {
+        const selectedMessageAttribution = attributionsByMessageId[selectedMessageId];
+
+        return selectedMessageAttribution?.isModelSupported !== false;
+    }
+
+    return true;
+};

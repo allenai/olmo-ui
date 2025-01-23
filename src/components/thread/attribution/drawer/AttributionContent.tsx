@@ -19,7 +19,10 @@ import { StandardModal } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
-import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
+import {
+    isAttributionAvailableSelector,
+    messageAttributionsSelector,
+} from '@/slices/attribution/attribution-selectors';
 
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
@@ -77,13 +80,20 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
 
 export const AttributionContent = () => {
     const [open, setOpen] = useState<boolean>(false);
+    const isCorpusLinkUnavailable = useAppContext(
+        (state) => !isAttributionAvailableSelector(state)
+    );
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     const closeModal = () => {
         setOpen(false);
     };
 
     return (
-        <AttributionContentStack direction="column" gap={2} data-testid="corpuslink-drawer">
+        <AttributionContentStack
+            direction="column"
+            gap={2}
+            data-testid="corpuslink-drawer"
+            height={isCorpusLinkUnavailable ? '100%' : undefined}>
             <Typography variant="h5">Training text matches</Typography>
             <Typography variant="body2">
                 Documents from the training data that have exact text matches with the model

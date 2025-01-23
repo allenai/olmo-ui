@@ -1,6 +1,7 @@
 import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
+import { error } from '@/api/error';
 import { Role } from '@/api/Role';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
@@ -11,6 +12,7 @@ export interface MessageWithAttributionDocuments {
     spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
     index: string | null;
+    isModelSupported?: boolean;
 }
 
 export interface DocumentSelection {
@@ -166,6 +168,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 (state) => {
                     const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                     attributions.loadingState = RemoteState.Loading;
+                    attributions.isModelSupported = undefined;
                 },
                 false,
                 'attribution/startGetAttributionsForMessage'
@@ -196,15 +199,24 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         );
 
                         attributions.loadingState = RemoteState.Loaded;
+                        attributions.isModelSupported = true;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
                 );
-            } catch {
+            } catch (e) {
                 set(
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                         attributions.loadingState = RemoteState.Error;
+                        if (
+                            e instanceof error.ValidationError &&
+                            e.validationErrors.some((validationError) =>
+                                validationError.loc.some((loc) => loc === 'model_id')
+                            )
+                        ) {
+                            attributions.isModelSupported = false;
+                        }
                     },
                     false,
                     'attribution/errorGetAttributionsForMessage'
