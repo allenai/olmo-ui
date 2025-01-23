@@ -7,6 +7,7 @@ import { NoDocsIcon } from '@/components/assets/NoDocsIcon';
 import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
+    isAttributionAvailableSelector,
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -106,7 +107,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         }
         return 0;
     });
-    const isCorpusLinkUnavailable = useAppContext((state) => !state.isAttributionAvailable());
+    const isCorpusLinkUnavailable = useAppContext(
+        (state) => !isAttributionAvailableSelector(state)
+    );
     const { documents, loadingState } = attributionForMessage;
 
     const isSelectedMessageLoading = useAppContext(

@@ -19,7 +19,10 @@ import { StandardModal } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
-import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
+import {
+    isAttributionAvailableSelector,
+    messageAttributionsSelector,
+} from '@/slices/attribution/attribution-selectors';
 
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
@@ -76,7 +79,9 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
 
 export const AttributionContent = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const isCorpusLinkUnavailable = useAppContext((state) => !state.isAttributionAvailable());
+    const isCorpusLinkUnavailable = useAppContext(
+        (state) => !isAttributionAvailableSelector(state)
+    );
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     const closeModal = () => {
         setOpen(false);

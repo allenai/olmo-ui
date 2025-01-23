@@ -48,7 +48,6 @@ interface AttributionActions {
     handleAttributionForChangingThread: () => void;
     selectRepeatedDocument: (documentIndex: string) => void;
     resetSelectedRepeatedDocument: () => void;
-    isAttributionAvailable: () => boolean;
 }
 
 export type AttributionSlice = AttributionState & AttributionActions;
@@ -266,16 +265,5 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         // when we change threads we want to reset all the selected spans from the last thread
         get().resetCorpusLinkSelection();
         get().resetSelectedRepeatedDocument();
-    },
-
-    isAttributionAvailable: () => {
-        const { selectedMessageId, attributionsByMessageId } = get().attribution;
-        if (selectedMessageId !== null) {
-            const selectedMessageAttribution = attributionsByMessageId[selectedMessageId];
-
-            return selectedMessageAttribution?.isModelSupported !== false;
-        }
-
-        return true;
     },
 });
