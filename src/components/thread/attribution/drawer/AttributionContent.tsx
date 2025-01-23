@@ -31,6 +31,7 @@ const AttributionContentStack = styled(Stack)(({ theme }) => ({
     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
         padding: 0,
     },
+    height: '100%',
 }));
 
 interface AttributesModalProps {
@@ -161,7 +162,11 @@ export const RepeatedAttributionDocumentsContent = () => {
             <Typography variant="h4" component="p">
                 Viewing {repeatedDocumentsByUrl.length} repeated documents
             </Typography>
-            <Box p={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+            <Box
+                component="ol"
+                sx={{
+                    display: 'contents',
+                }}>
                 {repeatedDocumentsByUrl.map((document) => {
                     return (
                         <AttributionDocumentCard

@@ -1,8 +1,9 @@
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
+import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
@@ -10,10 +11,7 @@ import {
 } from '@/slices/attribution/attribution-selectors';
 
 import { calculateRelevanceScore } from '../calculate-relevance-score';
-import {
-    AttributionDocumentCard,
-    AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard/AttributionDocumentCard';
+import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
@@ -159,13 +157,23 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     if (loadingState === RemoteState.Loading) {
         return (
-            <>
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-            </>
+            <Stack
+                flexGrow={1}
+                justifyContent="center"
+                alignItems="center"
+                gap={3.5}
+                sx={(theme) => ({
+                    color: theme.palette.primary.main,
+                })}>
+                <ImageSpinner
+                    src="/arrow-spin.svg"
+                    alt=""
+                    width={49}
+                    height={49}
+                    justifySelf="center"
+                />
+                <p>Searching 3.2B documents...</p>
+            </Stack>
         );
     }
 
@@ -191,7 +199,11 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            <Box p={0} m={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+            <Box
+                component="ol"
+                sx={{
+                    display: 'contents',
+                }}>
                 {Object.keys(relevance).map((key) => {
                     const group = relevance[key];
 
