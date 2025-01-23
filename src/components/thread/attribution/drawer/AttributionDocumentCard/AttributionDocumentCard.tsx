@@ -37,7 +37,7 @@ const AttributionDocumentCardBase = ({
                         ? theme.palette.background.drawer.primary
                         : theme.palette.background.default,
                 overflow: 'visible',
-                borderRadius: '11px', // Figma
+                borderRadius: 3,
 
                 // Note:
                 // These need are related to opacity for spans in
