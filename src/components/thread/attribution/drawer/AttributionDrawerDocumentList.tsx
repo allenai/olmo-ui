@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { NoDocsIcon } from '@/components/assets/NoDocsIcon';
+import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
@@ -12,10 +13,7 @@ import {
 } from '@/slices/attribution/attribution-selectors';
 
 import { calculateRelevanceScore } from '../calculate-relevance-score';
-import {
-    AttributionDocumentCard,
-    AttributionDocumentCardSkeleton,
-} from './AttributionDocumentCard/AttributionDocumentCard';
+import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
 import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
@@ -39,25 +37,6 @@ const MatchingDocumentsText = ({
         <Typography variant="body1">
             {documentCount} {documentsText} containing the selected span
         </Typography>
-    );
-};
-
-const NoDocumentsCard = (): JSX.Element => {
-    const isThereASelectedThread = useAppContext((state) => Boolean(state.selectedThreadRootId));
-
-    const message = isThereASelectedThread ? (
-        <>
-            There are no documents from the training set that contain exact text matches to sections
-            of the model response. This will often happen on short responses.
-        </>
-    ) : (
-        <>Start a new thread or select an existing one to see response attributions.</>
-    );
-
-    return (
-        <Card>
-            <CardContent>{message}</CardContent>
-        </Card>
     );
 };
 
@@ -95,6 +74,9 @@ interface RelevanceGroup {
 }
 
 export const AttributionDrawerDocumentList = (): JSX.Element => {
+    const isThereASelectedMessage = useAppContext((state) =>
+        Boolean(state.attribution.selectedMessageId)
+    );
     const attributionForMessage = useAttributionDocumentsForMessage();
     const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
     const messageLength = useAppContext((state) => {
@@ -179,6 +161,17 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         }
     );
 
+    if (!isThereASelectedMessage) {
+        return (
+            <Card>
+                <CardContent>
+                    To see training text matches for a model response, click the &ldquo;Match
+                    training text&rdquo; button below it.
+                </CardContent>
+            </Card>
+        );
+    }
+
     if (isSelectedMessageLoading) {
         return (
             <Card>
@@ -192,13 +185,23 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
 
     if (loadingState === RemoteState.Loading) {
         return (
-            <>
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-                <AttributionDocumentCardSkeleton />
-            </>
+            <Stack
+                flexGrow={1}
+                justifyContent="center"
+                alignItems="center"
+                gap={3.5}
+                sx={(theme) => ({
+                    color: theme.palette.primary.main,
+                })}>
+                <ImageSpinner
+                    src="/arrow-spin.svg"
+                    alt=""
+                    width={49}
+                    height={49}
+                    justifySelf="center"
+                />
+                <p>Searching 3.2B documents...</p>
+            </Stack>
         );
     }
 
@@ -218,7 +221,14 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     }
 
     if (documents.length === 0) {
-        return <NoDocumentsCard />;
+        return (
+            <Card>
+                <CardContent>
+                    There are no documents from the training set that contain exact text matches to
+                    sections of the model response. This will often happen on short responses.
+                </CardContent>
+            </Card>
+        );
     }
 
     return (
@@ -228,7 +238,11 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
             <MatchingDocumentsText documentCount={documents.length} />
-            <Box p={0} m={0} component="ol" sx={{ display: 'contents', listStyleType: 'none' }}>
+            <Box
+                component="ol"
+                sx={{
+                    display: 'contents',
+                }}>
                 {Object.keys(relevance).map((key) => {
                     const group = relevance[key];
 
@@ -243,7 +257,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                                 <AttributionDocumentCard
                                     key={doc.index}
                                     documentId={doc.index}
-                                    documentUrl={doc.url}
                                     source={doc.source}
                                     // This has a +1 because the repeated document count should include this document we're showing here
                                     // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated

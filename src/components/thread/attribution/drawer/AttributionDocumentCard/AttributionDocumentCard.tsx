@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -6,14 +6,12 @@ import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
-import { UrlForDocumentAttribution } from '../UrlForDocumentAttribution';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
 interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
     snippets: ReactNode;
-    url?: ReactNode;
     source: ReactNode;
     actions?: ReactNode;
     isSelected?: boolean;
@@ -21,7 +19,6 @@ interface AttributionDocumentCardBaseProps extends AttributionDocumentCardAction
 
 const AttributionDocumentCardBase = ({
     snippets,
-    url,
     source,
     actions,
     isSelected,
@@ -36,6 +33,7 @@ const AttributionDocumentCardBase = ({
                         ? theme.palette.background.drawer.primary
                         : theme.palette.background.default,
                 listStyle: 'none',
+                overflow: 'visible',
 
                 borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
 
@@ -44,16 +42,13 @@ const AttributionDocumentCardBase = ({
                 },
             }}>
             <CardContent component={Stack} direction="column" gap={1}>
+                <Typography variant="body2" fontWeight={600} component="span">
+                    {source}
+                </Typography>
                 <Typography variant="body1" component="span">
                     {snippets}
                 </Typography>
                 {/* todo: Switch this to theme.typography.fontWeightSemiBold when it's added  */}
-                <Typography variant="body2" fontWeight={600} component="span">
-                    {url}
-                </Typography>
-                <Typography variant="body2" fontWeight={600} component="span">
-                    {source}
-                </Typography>
             </CardContent>
             <Stack direction="column" alignItems="start" p={2} paddingBlockStart={0} gap={1}>
                 {actions}
@@ -63,7 +58,6 @@ const AttributionDocumentCardBase = ({
 };
 
 interface AttributionDocumentCardProps {
-    documentUrl?: string;
     source: string;
     documentId: string;
     index?: string | null;
@@ -71,7 +65,6 @@ interface AttributionDocumentCardProps {
 }
 
 export const AttributionDocumentCard = ({
-    documentUrl,
     source,
     index,
     documentId,
@@ -81,6 +74,7 @@ export const AttributionDocumentCard = ({
     const { isDatasetExplorerEnabled } = useFeatureToggles();
 
     const selectDocument = useAppContext((state) => state.selectDocument);
+    const unselectDocument = useAppContext((state) => state.unselectDocument);
 
     const snippets = useAppContext(
         useShallow((state) => {
@@ -108,7 +102,6 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
-            url={<UrlForDocumentAttribution url={documentUrl} />}
             source={`Source: ${source}`}
             isSelected={isSelected}
             actions={
@@ -123,16 +116,22 @@ export const AttributionDocumentCard = ({
                             sx={{
                                 width: 'fit-content',
                             }}>
-                            Open in Dataset Explorer
+                            View Document
                         </Button>
                     )}
 
                     <Button
                         variant="text"
                         onClick={() => {
-                            selectDocument(documentId);
+                            if (isSelected) {
+                                unselectDocument(documentId);
+                            } else {
+                                selectDocument(documentId);
+                            }
                         }}>
-                        Locate span{snippets.length > 1 ? 's' : ''}
+                        {isSelected
+                            ? 'Show all spans'
+                            : `Locate span${snippets.length > 1 ? 's' : ''}`}
                     </Button>
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
@@ -152,25 +151,6 @@ export const AttributionDocumentCard = ({
                     )}
                 </>
             }
-        />
-    );
-};
-
-export const AttributionDocumentCardSkeleton = (): JSX.Element => {
-    return (
-        <AttributionDocumentCardBase
-            snippets={
-                <Typography variant="body1">
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                </Typography>
-            }
-            url={<Skeleton />}
-            source={<Skeleton />}
-            actions={<Skeleton variant="rectangular" />}
         />
     );
 };

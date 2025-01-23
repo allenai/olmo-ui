@@ -17,6 +17,9 @@ export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
     state.attribution.selection?.type === 'span' &&
     state.attribution.selection.selectedSpanIds.length > 0;
 
+export const hasAttributionSelectionSelector = (state: AppContextState): boolean =>
+    state.attribution.selection != null;
+
 export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
     state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID;
 
