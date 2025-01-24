@@ -100,6 +100,7 @@ describe('AttributionDocumentCard', () => {
                     source="Source"
                     documentId="12345"
                     repeatedDocumentCount={1}
+                    relevanceBucket="high"
                 />
             </FakeAppContextProvider>
         );
