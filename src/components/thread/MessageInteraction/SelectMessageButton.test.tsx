@@ -20,7 +20,15 @@ describe('SelectMessageButton', () => {
         render(
             <FakeAppContextProvider initialState={initialState}>
                 <SelectMessageButton messageId="message-1" />
-            </FakeAppContextProvider>
+            </FakeAppContextProvider>,
+            {
+                wrapperProps: {
+                    featureToggles: {
+                        logToggles: false,
+                        isCorpusLinkEnabled: true,
+                    },
+                },
+            }
         );
 
         expect(screen.getByRole('button', { name: 'Match training text' })).toBeInTheDocument();
@@ -39,7 +47,15 @@ describe('SelectMessageButton', () => {
         render(
             <FakeAppContextProvider initialState={initialState}>
                 <SelectMessageButton messageId="message-1" />
-            </FakeAppContextProvider>
+            </FakeAppContextProvider>,
+            {
+                wrapperProps: {
+                    featureToggles: {
+                        logToggles: false,
+                        isCorpusLinkEnabled: true,
+                    },
+                },
+            }
         );
 
         expect(screen.getByRole('button', { name: 'Hide training text' })).toBeInTheDocument();
@@ -56,7 +72,15 @@ describe('SelectMessageButton', () => {
         render(
             <FakeAppContextProvider initialState={initialState}>
                 <SelectMessageButton messageId="message-1" />
-            </FakeAppContextProvider>
+            </FakeAppContextProvider>,
+            {
+                wrapperProps: {
+                    featureToggles: {
+                        logToggles: false,
+                        isCorpusLinkEnabled: true,
+                    },
+                },
+            }
         );
 
         expect(screen.getByRole('button', { name: 'Match training text' })).toBeInTheDocument();
