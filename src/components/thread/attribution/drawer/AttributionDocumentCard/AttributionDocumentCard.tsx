@@ -16,7 +16,7 @@ interface AttributionDocumentCardBaseProps extends AttributionDocumentCardAction
     source: string;
     actions?: ReactNode;
     isSelected?: boolean;
-    releavanceBucket: AttributionBucket;
+    relevanceBucket: AttributionBucket;
 }
 
 const AttributionDocumentCardBase = ({
@@ -24,13 +24,13 @@ const AttributionDocumentCardBase = ({
     source,
     actions,
     isSelected,
-    releavanceBucket,
+    relevanceBucket,
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
             component="li"
             data-selected-document={isSelected}
-            data-document-relevance={releavanceBucket}
+            data-document-relevance={relevanceBucket}
             sx={(theme) => ({
                 bgcolor:
                     theme.palette.mode === 'dark'
@@ -86,7 +86,7 @@ interface AttributionDocumentCardProps {
     documentId: string;
     index?: string | null;
     repeatedDocumentCount?: number;
-    releavanceBucket: AttributionBucket;
+    relevanceBucket: AttributionBucket;
 }
 
 export const AttributionDocumentCard = ({
@@ -94,7 +94,7 @@ export const AttributionDocumentCard = ({
     index,
     documentId,
     repeatedDocumentCount,
-    releavanceBucket,
+    relevanceBucket,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
     const { isDatasetExplorerEnabled } = useFeatureToggles();
@@ -130,7 +130,7 @@ export const AttributionDocumentCard = ({
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
             source={source}
             isSelected={isSelected}
-            releavanceBucket={releavanceBucket}
+            relevanceBucket={relevanceBucket}
             actions={
                 <>
                     {isDatasetExplorerEnabled && (

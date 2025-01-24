@@ -267,7 +267,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                                     // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
                                     repeatedDocumentCount={doc.duplicateDocumentIndexes.length + 1}
                                     index={attributionIndex}
-                                    releavanceBucket={key}
+                                    relevanceBucket={key}
                                 />
                             ))}
                         </Fragment>

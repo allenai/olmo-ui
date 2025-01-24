@@ -194,7 +194,7 @@ export const RepeatedAttributionDocumentsContent = () => {
                             documentId={document.index}
                             source={document.source}
                             index={attributionIndex ?? null}
-                            releavanceBucket={bucket}
+                            relevanceBucket={bucket}
                         />
                     );
                 })}
