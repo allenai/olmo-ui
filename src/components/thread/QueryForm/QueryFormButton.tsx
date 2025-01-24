@@ -28,6 +28,7 @@ export const QueryFormButton = ({
             sx={[
                 (theme) => ({
                     // override MUI style
+                    padding: 0.5,
                     marginRight: 0,
                     '&:hover': {
                         color: theme.color['teal-100'].hex,
