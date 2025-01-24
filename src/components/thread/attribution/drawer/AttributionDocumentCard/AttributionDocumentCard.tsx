@@ -63,7 +63,7 @@ const AttributionDocumentCardBase = forwardRef<HTMLLIElement, AttributionDocumen
                 })}>
                 <CardContent component={Stack} direction="column" gap={1}>
                     <Typography variant="body2" fontWeight={600} component="span">
-                        {source}
+                        Source: {source}
                     </Typography>
                     <Typography variant="body1" component="span">
                         {snippets}
