@@ -99,7 +99,7 @@ describe('AttributionDrawerDocumentList', () => {
 
         render(
             <FakeAppContextProvider initialState={initialState}>
-                <AttributionDrawerDocumentList />
+                <AttributionDrawerDocumentList onDocumentSelection={() => {}} />
             </FakeAppContextProvider>
         );
         // If these are null something's wrong with the test anyway
