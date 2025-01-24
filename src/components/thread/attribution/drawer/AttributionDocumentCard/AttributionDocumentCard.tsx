@@ -6,15 +6,17 @@ import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
+import { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
 interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
     snippets: ReactNode;
-    source: ReactNode;
+    source: string;
     actions?: ReactNode;
     isSelected?: boolean;
+    relevanceBucket: AttributionBucket;
 }
 
 const AttributionDocumentCardBase = ({
@@ -22,29 +24,51 @@ const AttributionDocumentCardBase = ({
     source,
     actions,
     isSelected,
+    relevanceBucket,
 }: AttributionDocumentCardBaseProps) => {
     return (
         <Card
             component="li"
             data-selected-document={isSelected}
-            sx={{
-                bgcolor: (theme) =>
+            data-document-relevance={relevanceBucket}
+            sx={(theme) => ({
+                bgcolor:
                     theme.palette.mode === 'dark'
                         ? theme.palette.background.drawer.primary
                         : theme.palette.background.default,
-                listStyle: 'none',
                 overflow: 'visible',
+                borderRadius: 3,
 
-                borderLeft: (theme) => `${theme.spacing(1)} solid transparent`,
+                // Note:
+                // These need are related to opacity for spans in
+                // `../../AttributionHilight.tsx`
+                //
+                '--base-border-color': theme.palette.secondary.main,
+                borderLeft: '9px solid var(--base-border-color)',
+
+                '&[data-document-relevance="high"]': {
+                    // no-op
+                },
+                '&[data-document-relevance="medium"]': {
+                    borderColor: 'rgb(from var(--base-border-color) r g b / 50%)',
+                },
+                '&[data-document-relevance="low"]': {
+                    borderColor: 'rgb(from var(--base-border-color) r g b / 25%)',
+                },
 
                 '&[data-selected-document="true"]': {
-                    borderColor: (theme) => theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
+                    color: theme.palette.secondary.contrastText,
+                    borderColor: (theme) => theme.palette.secondary.main,
                 },
-            }}>
+            })}>
             <CardContent component={Stack} direction="column" gap={1}>
-                <Typography variant="body2" fontWeight={600} component="span">
+                <div>
+                    <Typography variant="body2" fontWeight={600} component="span">
+                        Source:{' '}
+                    </Typography>
                     {source}
-                </Typography>
+                </div>
                 <Typography variant="body1" component="span">
                     {snippets}
                 </Typography>
@@ -62,6 +86,7 @@ interface AttributionDocumentCardProps {
     documentId: string;
     index?: string | null;
     repeatedDocumentCount?: number;
+    relevanceBucket: AttributionBucket;
 }
 
 export const AttributionDocumentCard = ({
@@ -69,6 +94,7 @@ export const AttributionDocumentCard = ({
     index,
     documentId,
     repeatedDocumentCount,
+    relevanceBucket,
 }: AttributionDocumentCardProps): JSX.Element => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
     const { isDatasetExplorerEnabled } = useFeatureToggles();
@@ -102,8 +128,9 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
-            source={`Source: ${source}`}
+            source={source}
             isSelected={isSelected}
+            relevanceBucket={relevanceBucket}
             actions={
                 <>
                     {isDatasetExplorerEnabled && (
@@ -122,6 +149,12 @@ export const AttributionDocumentCard = ({
 
                     <Button
                         variant="text"
+                        sx={(theme) => ({
+                            '[data-selected-document="true"] &': {
+                                fontWeight: theme.font.weight.semiBold,
+                                color: theme.palette.secondary.contrastText,
+                            },
+                        })}
                         onClick={() => {
                             if (isSelected) {
                                 unselectDocument(documentId);

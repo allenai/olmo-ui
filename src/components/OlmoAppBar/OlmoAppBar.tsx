@@ -87,7 +87,7 @@ export const OlmoAppBar = (): JSX.Element => {
                         data-heading-below="true"
                         sx={{
                             background: 'transparent',
-                            margin: '1rem 1rem 0',
+                            margin: '1rem 1rem',
                             textAlign: 'left',
                         }}>
                         {title}

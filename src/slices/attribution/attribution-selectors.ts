@@ -33,3 +33,14 @@ export const isAttributionAvailableSelector = (state: AppContextState): boolean 
 
     return true;
 };
+
+export const messageLengthSelector = (state: AppContextState): number => {
+    if (state.attribution.selectedMessageId != null) {
+        return (
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.selectedThreadMessagesById[state.attribution.selectedMessageId]?.content.length ||
+            0
+        );
+    }
+    return 0;
+};
