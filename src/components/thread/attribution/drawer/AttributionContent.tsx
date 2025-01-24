@@ -30,6 +30,7 @@ import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDo
 import { AttributionDrawerDocumentList } from './AttributionDrawerDocumentList';
 import { ClearSelectedSpanButton } from './ClearSelectedSpanButton';
 import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
+import { usePreserveDocumentPosition } from './usePreserveDocumentPosition';
 
 const AttributionContentStack = styled(Stack)(({ theme }) => ({
     paddingBlockStart: theme.spacing(2),
@@ -93,15 +94,9 @@ export const AttributionContent = ({ shouldBeHidden = false }: { shouldBeHidden:
 
     const stackRef = useRef<HTMLDivElement>(null);
 
+    const { getScrollPreservationDetails } = usePreserveDocumentPosition(stackRef);
     const handleDocumentSelection = (target: HTMLElement) => {
-        if (stackRef.current != null) {
-            const targetBoundingRect = target.getBoundingClientRect();
-            const containerBoundingRect = stackRef.current.getBoundingClientRect();
-            const targetDistanceFromTopOfContainer =
-                targetBoundingRect.top - containerBoundingRect.top;
-            target.scrollIntoView();
-            stackRef.current.scrollBy(0, -targetDistanceFromTopOfContainer);
-        }
+        getScrollPreservationDetails(target);
     };
 
     return (
@@ -113,7 +108,7 @@ export const AttributionContent = ({ shouldBeHidden = false }: { shouldBeHidden:
             sx={{
                 // This sticks around so we can preserve its scroll state. If we remove it from rendering entirely it'll reset
                 display: shouldBeHidden ? 'none' : undefined,
-                height: isCorpusLinkUnavailable ? '100%' : undefined,
+                height: isCorpusLinkUnavailable ? '100%' : 1,
                 overflowY: 'auto',
                 scrollbarGutter: 'stable',
             }}>
