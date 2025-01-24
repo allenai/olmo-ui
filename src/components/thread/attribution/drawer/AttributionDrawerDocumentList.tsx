@@ -3,10 +3,12 @@ import { Fragment, useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
+import { NoDocsIcon } from '@/components/assets/NoDocsIcon';
 import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
+    isAttributionAvailableSelector,
     messageAttributionsSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
@@ -43,6 +45,34 @@ const MatchingDocumentsText = ({
     );
 };
 
+const UnavailableMessage = () => {
+    return (
+        <Stack
+            sx={{
+                margin: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: 'flex',
+                gap: 1.5,
+                flex: 1,
+            }}>
+            <NoDocsIcon
+                sx={(theme) => ({
+                    width: 52.5,
+                    height: 55,
+                    fill: theme.palette.text.primary,
+                    opacity: 0.5,
+                })}
+            />
+            <Typography align="center">
+                This message used a model that doesn&apos;t have training text matching available.
+                View training text for another message or prompt a model that does have training
+                text matches available
+            </Typography>
+        </Stack>
+    );
+};
+
 const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
     fontWeight: theme.font.weight.semiBold,
     color:
@@ -65,6 +95,9 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const attributionForMessage = useAttributionDocumentsForMessage();
     const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
     const messageLength = useAppContext((state) => messageLengthSelector(state));
+    const isCorpusLinkUnavailable = useAppContext(
+        (state) => !isAttributionAvailableSelector(state)
+    );
     const { documents, loadingState } = attributionForMessage;
 
     const isSelectedMessageLoading = useAppContext(
@@ -174,6 +207,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     }
 
     if (loadingState === RemoteState.Error) {
+        if (isCorpusLinkUnavailable) {
+            return <UnavailableMessage />;
+        }
+
         return (
             <Card>
                 <CardContent>

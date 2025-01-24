@@ -20,6 +20,7 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import {
+    isAttributionAvailableSelector,
     messageAttributionsSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
@@ -82,13 +83,20 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
 
 export const AttributionContent = () => {
     const [open, setOpen] = useState<boolean>(false);
+    const isCorpusLinkUnavailable = useAppContext(
+        (state) => !isAttributionAvailableSelector(state)
+    );
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     const closeModal = () => {
         setOpen(false);
     };
 
     return (
-        <AttributionContentStack direction="column" gap={2} data-testid="corpuslink-drawer">
+        <AttributionContentStack
+            direction="column"
+            gap={2}
+            data-testid="corpuslink-drawer"
+            height={isCorpusLinkUnavailable ? '100%' : undefined}>
             <Stack direction="column" gap={2} paddingInline={3}>
                 <Typography variant="h5">Training text matches</Typography>
                 <Typography variant="body2">
