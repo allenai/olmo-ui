@@ -88,7 +88,11 @@ interface RelevanceGroup {
     collections: DedupedDocument[];
 }
 
-export const AttributionDrawerDocumentList = (): JSX.Element => {
+export const AttributionDrawerDocumentList = ({
+    onDocumentSelection,
+}: {
+    onDocumentSelection: (target: HTMLLIElement) => void;
+}): JSX.Element => {
     const isThereASelectedMessage = useAppContext((state) =>
         Boolean(state.attribution.selectedMessageId)
     );
@@ -260,6 +264,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                             </AttributionDocumentGroupTitle>
                             {group.collections.map((doc) => (
                                 <AttributionDocumentCard
+                                    onSelect={onDocumentSelection}
                                     key={doc.index}
                                     documentId={doc.index}
                                     source={doc.source}

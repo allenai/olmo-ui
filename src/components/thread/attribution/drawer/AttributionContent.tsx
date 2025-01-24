@@ -10,7 +10,7 @@ import {
     styled,
     Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -81,53 +81,71 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
     );
 };
 
-export const AttributionContent = () => {
-    const [open, setOpen] = useState<boolean>(false);
+export const AttributionContent = ({ shouldBeHidden = false }: { shouldBeHidden: boolean }) => {
+    const [isAboutAttributionModalOpen, setIsAttributionModalOpen] = useState<boolean>(false);
     const isCorpusLinkUnavailable = useAppContext(
         (state) => !isAttributionAvailableSelector(state)
     );
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     const closeModal = () => {
-        setOpen(false);
+        setIsAttributionModalOpen(false);
+    };
+
+    const stackRef = useRef<HTMLDivElement>(null);
+
+    const handleDocumentSelection = (target: HTMLElement) => {
+        if (stackRef.current != null) {
+            const targetBoundingRect = target.getBoundingClientRect();
+            const containerBoundingRect = stackRef.current.getBoundingClientRect();
+            const targetDistanceFromTopOfContainer =
+                targetBoundingRect.top - containerBoundingRect.top;
+            target.scrollIntoView();
+            stackRef.current.scrollBy(0, -targetDistanceFromTopOfContainer);
+        }
     };
 
     return (
         <AttributionContentStack
+            ref={stackRef}
             direction="column"
             gap={2}
             data-testid="corpuslink-drawer"
-            height={isCorpusLinkUnavailable ? '100%' : undefined}>
-            <Stack direction="column" gap={2} paddingInline={3}>
-                <Typography variant="h5">Training text matches</Typography>
-                <Typography variant="body2">
-                    Documents from the training data that have exact text matches with the model
-                    response. <br />
-                    <Button
-                        onClick={() => {
-                            setOpen(true);
-                        }}
-                        sx={{
-                            padding: 0,
-                        }}>
-                        More about how matching works
-                    </Button>
-                </Typography>
-                {isDatasetExplorerEnabled ? (
-                    <Button
-                        variant="contained"
-                        href={links.datasetExplorer}
-                        color="secondary"
-                        disableRipple={true}
-                        sx={{
-                            marginTop: 1,
-                        }}>
-                        <Typography fontWeight={500}>Explore the full training dataset</Typography>
-                    </Button>
-                ) : null}
-                <ClearSelectedSpanButton />
-            </Stack>
-            <AttributionDrawerDocumentList />
-            <AboutAttributionModal open={open} closeModal={closeModal} />
+            sx={{
+                // This sticks around so we can preserve its scroll state. If we remove it from rendering entirely it'll reset
+                display: shouldBeHidden ? 'none' : undefined,
+                height: isCorpusLinkUnavailable ? '100%' : undefined,
+                overflowY: 'auto',
+                scrollbarGutter: 'stable',
+            }}>
+            <Typography variant="h5">Training text matches</Typography>
+            <Typography variant="body2">
+                Documents from the training data that have exact text matches with the model
+                response. <br />
+                <Button
+                    onClick={() => {
+                        setIsAttributionModalOpen(true);
+                    }}
+                    sx={{
+                        padding: 0,
+                    }}>
+                    More about how matching works
+                </Button>
+            </Typography>
+            {isDatasetExplorerEnabled ? (
+                <Button
+                    variant="contained"
+                    href={links.datasetExplorer}
+                    color="secondary"
+                    disableRipple={true}
+                    sx={{
+                        marginTop: 1,
+                    }}>
+                    <Typography fontWeight={500}>Explore the full training dataset</Typography>
+                </Button>
+            ) : null}
+            <ClearSelectedSpanButton />
+            <AttributionDrawerDocumentList onDocumentSelection={handleDocumentSelection} />
+            <AboutAttributionModal open={isAboutAttributionModalOpen} closeModal={closeModal} />
         </AttributionContentStack>
     );
 };
@@ -163,43 +181,54 @@ export const RepeatedAttributionDocumentsContent = () => {
     };
 
     return (
-        <AttributionContentStack direction="column" gap={2} data-testid="repeated-documents-drawer">
-            <Button
-                onClick={handleBackToCorpusLinkDocumentsClick}
-                variant="text"
-                color="inherit"
-                sx={{
-                    justifyContent: 'start',
-                    paddingInlineStart: 0,
-                }}>
-                <ArrowBack />
-                &nbsp;Back to CorpusLink documents
-            </Button>
+        <Box
+            sx={{
+                height: 1,
+                overflowY: 'auto',
+            }}>
+            <AttributionContentStack
+                direction="column"
+                gap={2}
+                data-testid="repeated-documents-drawer">
+                <Button
+                    onClick={handleBackToCorpusLinkDocumentsClick}
+                    variant="text"
+                    color="inherit"
+                    sx={{
+                        justifyContent: 'start',
+                        paddingInlineStart: 0,
+                    }}>
+                    <ArrowBack />
+                    &nbsp;Back to CorpusLink documents
+                </Button>
 
-            <Typography variant="h4" component="p">
-                Viewing {repeatedDocumentsByUrl.length} repeated documents
-            </Typography>
-            <Box
-                component="ol"
-                sx={{
-                    display: 'contents',
-                    listStyle: 'none',
-                }}>
-                {repeatedDocumentsByUrl.map((document) => {
-                    const score = calculateRelevanceScore(document.relevance_score, messageLength); // INTO Bucket
-                    const bucket = getBucketForScorePercentile(score);
-                    return (
-                        <AttributionDocumentCard
-                            key={document.index}
-                            documentId={document.index}
-                            source={document.source}
-                            index={attributionIndex ?? null}
-                            relevanceBucket={bucket}
-                        />
-                    );
-                })}
-            </Box>
-        </AttributionContentStack>
+                <Typography variant="h4" component="p">
+                    Viewing {repeatedDocumentsByUrl.length} repeated documents
+                </Typography>
+                <Box
+                    component="ol"
+                    sx={{
+                        display: 'contents',
+                    }}>
+                    {repeatedDocumentsByUrl.map((document) => {
+                        const score = calculateRelevanceScore(
+                            document.relevance_score,
+                            messageLength
+                        ); // INTO Bucket
+                        const bucket = getBucketForScorePercentile(score);
+                        return (
+                            <AttributionDocumentCard
+                                key={document.index}
+                                documentId={document.index}
+                                source={document.source}
+                                index={attributionIndex ?? null}
+                                relevanceBucket={bucket}
+                            />
+                        );
+                    })}
+                </Box>
+            </AttributionContentStack>
+        </Box>
     );
 };
 
@@ -213,25 +242,8 @@ export const FullAttributionContent = () => {
             {/* These are in separate boxes so they have separate scroll states.
                 When RepeatedAttributionDocumentsContent is opened, it should be at the top of its content.
                 When it's closed, we should go back to where we were in AttributionContent */}
-            <Box
-                sx={{
-                    // This sticks around so we can preserve its scroll state. If we remove it from rendering entirely it'll reset
-                    display: shouldShowRepeatedDocuments ? 'none' : undefined,
-                    height: 1,
-                    overflowY: 'auto',
-                    scrollbarGutter: 'stable',
-                }}>
-                <AttributionContent />
-            </Box>
-            {shouldShowRepeatedDocuments && (
-                <Box
-                    sx={{
-                        height: 1,
-                        overflowY: 'auto',
-                    }}>
-                    <RepeatedAttributionDocumentsContent />
-                </Box>
-            )}
+            <AttributionContent shouldBeHidden={shouldShowRepeatedDocuments} />
+            {shouldShowRepeatedDocuments && <RepeatedAttributionDocumentsContent />}
         </>
     );
 };
