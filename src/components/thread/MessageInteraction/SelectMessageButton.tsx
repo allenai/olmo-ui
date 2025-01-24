@@ -1,10 +1,12 @@
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { ReactNode } from 'react';
 
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { MessageInteractionIcon } from './MessageInteractionIcon';
 
@@ -12,7 +14,7 @@ interface SelectMessageButtonProps {
     messageId: Message['id'];
 }
 
-export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps) => {
+export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): ReactNode => {
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
     );
@@ -37,6 +39,12 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps) => 
     };
 
     const showSelectedIcon = isMessageSelected && isAttributionDrawerOpen;
+
+    const { isCorpusLinkEnabled } = useFeatureToggles();
+
+    if (!isCorpusLinkEnabled) {
+        return null;
+    }
 
     return (
         <MessageInteractionIcon
