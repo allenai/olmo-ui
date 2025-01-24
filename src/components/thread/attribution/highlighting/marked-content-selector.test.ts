@@ -28,7 +28,8 @@ describe('markedContentSelector', () => {
                 llmMessage: {
                     id: 'llmMessage',
                     childIds: [],
-                    content: 'This is a message from the LLM',
+                    content:
+                        "This is a message from the LLM. **Best Time to Visit Paris for Climate:** - **Spring (March to May):** Milder weather with fewer tourists, making it ideal for exploring without the crowds. The city's gardens come to life, and the famous French blooming season is in full swing.",
                     role: Role.LLM,
                     labels: [],
                     creator: 'currentUser',
@@ -49,7 +50,11 @@ describe('markedContentSelector', () => {
                         documents: {
                             12345: {
                                 corresponding_spans: [0, 1],
-                                corresponding_span_texts: ['This is a', 'message from the LLM'],
+                                corresponding_span_texts: [
+                                    'This is a',
+                                    'message from the LLM',
+                                    '- **Spring (March to May):**',
+                                ],
                                 index: '12345',
                                 source: 'c4',
                                 text: 'document 1',
@@ -62,6 +67,10 @@ describe('markedContentSelector', () => {
                                     {
                                         text: 'This is a part of a larger document that contains the text "message from the LLM"',
                                         corresponding_span_text: 'message from the LLM',
+                                    },
+                                    {
+                                        text: '**Best Time to Visit Paris for Climate:** - **Spring (March to May):** Milder weather with fewer tourists, making it ideal for exploring without the crowds.',
+                                        corresponding_span_text: '- **Spring (March to May):**',
                                     },
                                 ],
                                 title: 'Title',
@@ -78,6 +87,11 @@ describe('markedContentSelector', () => {
                                 text: 'message from the LLM',
                                 nested_spans: [],
                             },
+                            2: {
+                                documents: [12345],
+                                text: '- **Spring (March to May):**',
+                                nested_spans: [],
+                            },
                         },
                     },
                 },
@@ -89,5 +103,6 @@ describe('markedContentSelector', () => {
 
         expect(result).toContain(':attribution-highlight[message from the LLM]{span="1"}');
         expect(result).toContain(':attribution-highlight[This is a]{span="0"}');
+        expect(result).toContain(':attribution-highlight[Spring (March to May):]{span="2"}');
     });
 });
