@@ -1,15 +1,19 @@
 import { Box, Card, CardContent, Stack } from '@mui/material';
 
 import { useDesktopOrUp } from '@/components/dolma/shared';
-import { faqs } from '@/components/faq/faq-list';
+import { corpusLinkFaqs, faqs } from '@/components/faq/faq-list';
 import { FAQCategoriesButton } from '@/components/faq/FAQCategoriesButton';
 import { FAQCategory } from '@/components/faq/FAQCategory';
 import { FAQCategoryLinks } from '@/components/faq/FAQCategoryLinks';
 import { MetaTags } from '@/components/MetaTags';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 
 export const FAQsPage = (): JSX.Element => {
+    const { isCorpusLinkEnabled } = useFeatureToggles();
+
     const isDesktop = useDesktopOrUp();
+    const allFaqs = isCorpusLinkEnabled ? faqs.concat(corpusLinkFaqs) : faqs;
     return (
         <>
             <MetaTags title="Ai2 Playground" />
@@ -31,7 +35,7 @@ export const FAQsPage = (): JSX.Element => {
                     component={Stack}
                     gap={3.5}>
                     {!isDesktop && <FAQCategoriesButton />}
-                    {faqs.map((faqCategory) => (
+                    {allFaqs.map((faqCategory) => (
                         <FAQCategory
                             categoryName={faqCategory.category}
                             questions={faqCategory.questions}
