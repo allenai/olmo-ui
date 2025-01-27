@@ -1,5 +1,4 @@
 import type { AppContextState } from '@/AppContext';
-import { ATTRIBUTION_DRAWER_ID } from '@/components/thread/attribution/drawer/AttributionDrawer';
 
 import { MessageWithAttributionDocuments } from './AttributionSlice';
 
@@ -19,9 +18,6 @@ export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
 
 export const hasAttributionSelectionSelector = (state: AppContextState): boolean =>
     state.attribution.selection != null;
-
-export const shouldShowHighlightsSelector = (state: AppContextState): boolean =>
-    state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID;
 
 export const isAttributionAvailableSelector = (state: AppContextState): boolean => {
     const { selectedMessageId, attributionsByMessageId } = state.attribution;

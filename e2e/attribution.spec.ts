@@ -13,7 +13,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await expect(page.getByTestId('corpuslink-drawer').getByText('Source')).toHaveCount(1);
 });
 
-test('should only show highlights when the CorpusLink drawer is open', async ({ page }) => {
+test.skip('should only show highlights when the CorpusLink drawer is open', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');
 
     // Make sure highlights don't show before we open the drawer

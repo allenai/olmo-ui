@@ -3,8 +3,11 @@ import { defer, LoaderFunction } from 'react-router-dom';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 
+import { ATTRIBUTION_DRAWER_ID } from '../attribution/drawer/AttributionDrawer';
+
 export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
     const {
+        currentOpenDrawer,
         getSelectedThread,
         selectedThreadRootId,
         getAttributionsForMessage,
@@ -35,7 +38,11 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
             .at(-1);
 
         if (lastResponseId != null) {
-            selectMessage(lastResponseId);
+            if (currentOpenDrawer === ATTRIBUTION_DRAWER_ID) {
+                // this doesn't happen because we never have the drawer open -- its either a page load
+                // or the history drawer was open
+                selectMessage(lastResponseId);
+            }
             const lastThreadContent = selectedThreadMessagesById[lastResponseId];
             const modelIdList = models
                 .filter((model) => model.model_type === 'chat' && !model.is_deprecated)
