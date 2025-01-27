@@ -119,6 +119,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set(
             (state) => {
                 state.attribution.selectedMessageId = messageId;
+                state.attribution.selection = null;
             },
             false,
             'attribution/selectMessage'
@@ -145,6 +146,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
         set((state) => {
             if (state.attribution.selectedMessageId === messageId) {
                 state.attribution.selectedMessageId = null;
+                state.attribution.selection = null;
             }
         });
     },
