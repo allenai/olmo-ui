@@ -14,9 +14,9 @@ export const NewThreadIconButton = () => {
 
     return (
         <IconButtonWithTooltip
+            desktopPlacement="left"
             href={links.playground}
-            label="Create a new thread"
-            leftOnDesktop={true}>
+            label="Create a new thread">
             <AddBoxOutlined />
         </IconButtonWithTooltip>
     );

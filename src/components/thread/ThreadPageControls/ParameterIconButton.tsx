@@ -14,9 +14,9 @@ export const ParameterIconButton = () => {
 
     return (
         <IconButtonWithTooltip
+            desktopPlacement="left"
             onClick={toggleParametersDrawer}
-            label="Show parameters"
-            leftOnDesktop={true}>
+            label="Show parameters">
             <TuneOutlined />
         </IconButtonWithTooltip>
     );
