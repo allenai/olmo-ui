@@ -38,11 +38,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
             .at(-1);
 
         if (lastResponseId != null) {
-            if (currentOpenDrawer === ATTRIBUTION_DRAWER_ID) {
-                // this doesn't happen because we never have the drawer open -- its either a page load
-                // or the history drawer was open
-                selectMessage(lastResponseId);
-            }
             const lastThreadContent = selectedThreadMessagesById[lastResponseId];
             const modelIdList = models
                 .filter((model) => model.model_type === 'chat' && !model.is_deprecated)
