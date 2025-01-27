@@ -10,11 +10,14 @@ import {
 } from '@mui/material';
 import { MouseEventHandler, PropsWithChildren } from 'react';
 
+import { useDesktopOrUp } from './dolma/shared';
+
 type IconButtonWithTooltipProps = PropsWithChildren & {
     color?: IconButtonOwnProps['color'];
     disabled?: IconButtonOwnProps['disabled'];
     label: string;
     arrow?: TooltipProps['arrow'];
+    leftOnDesktop?: boolean;
     sx?: SxProps<Theme>;
 } & ({ href?: never; onClick: MouseEventHandler<HTMLElement> } | { href: string; onClick?: never });
 
@@ -24,10 +27,14 @@ export const IconButtonWithTooltip = ({
     sx,
     arrow = true,
     children,
+    leftOnDesktop = false,
     ...rest
 }: IconButtonWithTooltipProps) => {
+    const isDesktop = useDesktopOrUp();
+    const placement = leftOnDesktop && isDesktop ? 'left' : 'bottom';
+
     return (
-        <StyledTooltip title={label} arrow={arrow}>
+        <StyledTooltip title={label} arrow={arrow} placement={placement}>
             <IconButton {...rest} color={color} sx={sx}>
                 {children}
             </IconButton>

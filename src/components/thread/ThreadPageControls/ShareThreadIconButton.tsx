@@ -32,7 +32,8 @@ export const ShareThreadIconButton = (): ReactNode => {
         <IconButtonWithTooltip
             onClick={handleShareThread}
             disabled={shouldDisableShareButton}
-            label="Share this thread">
+            label="Share this thread"
+            leftOnDesktop={true}>
             <IosShareOutlined
                 sx={{
                     // This Icon looks visually off when centered

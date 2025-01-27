@@ -13,7 +13,10 @@ export const CorpusLinkIconButton = () => {
     };
 
     return (
-        <IconButtonWithTooltip onClick={toggleParametersDrawer} label="Show CorpusLink">
+        <IconButtonWithTooltip
+            onClick={toggleParametersDrawer}
+            label="Show CorpusLink"
+            leftOnDesktop={true}>
             <ArticleOutlined />
         </IconButtonWithTooltip>
     );
