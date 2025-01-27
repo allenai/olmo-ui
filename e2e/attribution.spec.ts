@@ -4,6 +4,9 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.goto('/thread/msg_A8E5H1X2O3');
     await page.waitForLoadState('networkidle');
 
+    // select message
+    await page.getByRole('button', { name: 'Match training text' }).click();
+
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
     await expect(page.getByTestId('corpuslink-drawer').getByText('Source')).toHaveCount(2);
     await page
@@ -13,15 +16,10 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await expect(page.getByTestId('corpuslink-drawer').getByText('Source')).toHaveCount(1);
 });
 
-test.skip('should only show highlights when the CorpusLink drawer is open', async ({ page }) => {
+test('should show highlights when message is selected', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');
 
-    // Make sure highlights don't show before we open the drawer
-    await expect(
-        page.getByRole('button', { name: 'Show documents related to this span' })
-    ).toHaveCount(0);
-
-    // The match training text button should open the drawer if it's not open already
+    // The match training text button should open the drawer
     await page.getByRole('button', { name: 'Match training text' }).click();
 
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(2);
@@ -37,17 +35,27 @@ test.skip('should only show highlights when the CorpusLink drawer is open', asyn
     await expect(page.getByText('1 document containing the selected span')).toBeVisible();
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(1);
 
-    // CLose the drawer and make sure the highlights don't show
+    // Close the drawer and make sure the highlights are still visible
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
     await expect(
         page.getByRole('button', { name: 'Show documents related to this span' })
-    ).toHaveCount(0);
+    ).toHaveCount(1);
+
+    // Hide highlights
+    await page.getByRole('button', { name: 'Hide training text' }).click();
+    // should have no documents
+    await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(0);
+    // text should not be visible
+    await expect(
+        page.getByRole('button', { name: 'Show documents related to this span' }).first()
+    ).not.toBeVisible();
 
     // Make sure new attributions show and selected spans do go away when you click another thread
     await page.getByRole('button', { name: 'Thread history' }).click();
     await page.getByRole('link', { name: 'Highlight stress test' }).click();
 
-    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+    // Show highlights
+    await page.getByRole('button', { name: 'Match training text' }).click();
 
     await expect(page.getByRole('button', { name: 'Clear Selection' })).not.toBeVisible();
     await expect(page.getByText(/\d+ documents* containing the selected span/)).not.toBeVisible();
@@ -60,6 +68,9 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await page.goto('/thread/msg_duplicatedocuments');
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
 
+    // select message
+    await page.getByRole('button', { name: 'Match training text' }).click();
+
     const documentWithDuplicates = page.getByRole('listitem').filter({
         has: page.getByText(
             'are a few other facts about these fascinating birds that live on the coldest continent.\n\nScientific Name\n\nThe emperor penguin\u2019s scientific name is Aptenodytes forsteri. They\u2019re birds that belong to the family Spheniscidae and one of the two species in the genus Aptenodytes.\n\nTaxonomic Position\n\n  \u2022 Phylum:\u00a0Chordata\n  \u2022 \u00a0\u00a0\u00a0'
@@ -70,7 +81,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await documentWithDuplicates.scrollIntoViewIfNeeded();
 
     await expect(
-        page.getByRole('heading', { name: 'CorpusLink', exact: true })
+        page.getByRole('heading', { name: 'Training text matches', exact: true })
     ).not.toBeInViewport();
 
     await documentWithDuplicates
@@ -80,7 +91,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     // We should keep the scroll position when going back to the documents
     await page.getByText('Back to CorpusLink documents').click();
     await expect(
-        page.getByRole('heading', { name: 'CorpusLink', exact: true })
+        page.getByRole('heading', { name: 'Training text matches', exact: true })
     ).not.toBeInViewport();
 
     await documentWithDuplicates
@@ -101,7 +112,7 @@ test('should show the training text match dialog', async ({ page }) => {
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
 
     // We're on the standard CorpusLink stuff
-    await expect(page.getByText('Training text matches')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Training text matches' })).toBeVisible();
 
     // Click the about button
     await page
