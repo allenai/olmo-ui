@@ -1,14 +1,16 @@
 import { Card, CardContent, Link, Stack, Typography } from '@mui/material';
 
-import { faqs } from '@/components/faq/faq-list';
+import { corpusLinkFaqs, faqs } from '@/components/faq/faq-list';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { useDesktopOrUp } from '../dolma/shared';
 import { createFAQId } from './faq-utils';
 import { FAQCategoriesDrawer } from './FAQDrawer';
 
 export const FAQCategoryLinks = (): JSX.Element => {
+    const { isCorpusLinkEnabled } = useFeatureToggles();
     const isDesktop = useDesktopOrUp();
-
+    const allFaqs = isCorpusLinkEnabled ? faqs.concat(corpusLinkFaqs) : faqs;
     if (isDesktop) {
         return (
             <Card
@@ -24,7 +26,7 @@ export const FAQCategoryLinks = (): JSX.Element => {
                         Categories
                     </Typography>
                     <Stack gap={3}>
-                        {faqs.map((faqCategory) => (
+                        {allFaqs.map((faqCategory) => (
                             <Link
                                 sx={{ paddingTop: (theme) => theme.spacing(1) }}
                                 href={'#' + createFAQId(faqCategory.category)}
