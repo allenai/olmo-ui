@@ -6,11 +6,11 @@ import { Schema, SchemaApiUrl } from '@/api/Schema';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
 import { attributionHandlers } from './attributionHandlers';
-import { datasetDocumentResponse } from './datasetDocumentResponse';
-import { datasetSearchResponse } from './datasetSearchResponse';
 import { dolmaHandlers } from './dolmaHandlers';
 import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
+import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
+import { datasetSearchResponse } from './responses/datasetSearchResponse';
 
 export const handlers = [
     ...messageStreamHandlers,

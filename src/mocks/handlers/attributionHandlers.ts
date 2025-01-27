@@ -1,7 +1,8 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
-import duplicateDocumentsResponse from './duplicateDocumentAttributionResponse.json';
-import highlightStressTestResponse from './highlightStressTestResponse.json';
+import documentWithMultipleSnippetsResponse from './responses/attribution/documentWithMultipleSnippetsAttributionResponse.json';
+import duplicateDocumentsResponse from './responses/attribution/duplicateDocumentAttributionResponse.json';
+import highlightStressTestResponse from './responses/attribution/highlightStressTestResponse.json';
 
 const fakeAttributionResponse = {
     documents: [
@@ -82,6 +83,13 @@ export const attributionHandlers = [
             requestBody.model_response.startsWith('Penguins are fascinating birds')
         ) {
             return HttpResponse.json(duplicateDocumentsResponse);
+        }
+
+        if (
+            typeof requestBody.model_response === 'string' &&
+            requestBody.model_response.startsWith('multipleSnippets:')
+        ) {
+            return HttpResponse.json(documentWithMultipleSnippetsResponse);
         }
 
         return passthrough();

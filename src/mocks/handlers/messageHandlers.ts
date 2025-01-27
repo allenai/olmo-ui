@@ -3,9 +3,10 @@ import { http, HttpResponse } from 'msw';
 import { JSONMessage, MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
-import duplicateDocumentsResponse from './duplicateDocumentMessageResponse.json';
-import highlightStressTestMessage from './highlightStressTestMessage';
 import { newMessageId } from './messageStreamHandlers';
+import documentWithMultipleSnippetsResponse from './responses/documentWithMultipleSnippetsResponse.json';
+import duplicateDocumentsResponse from './responses/duplicateDocumentMessageResponse.json';
+import highlightStressTestMessage from './responses/highlightStressTestMessage';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
 const fakeFirstThreadResponse = {
@@ -177,6 +178,7 @@ const fakeGetAllThreadsResponse: MessagesResponse = {
         fakeSecondThreadResponse,
         highlightStressTestResponse,
         duplicateDocumentsResponse as JSONMessage,
+        documentWithMultipleSnippetsResponse as JSONMessage,
     ],
     meta: { limit: 10, offset: 0, total: 4 },
 };
@@ -204,5 +206,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/msg_duplicatedocuments`, () => {
         return HttpResponse.json(duplicateDocumentsResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/msg_multiplesnippets`, () => {
+        return HttpResponse.json(documentWithMultipleSnippetsResponse);
     }),
 ];
