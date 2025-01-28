@@ -44,7 +44,7 @@ export const FullScreenDrawer = ({
             anchor="right"
             PaperProps={{
                 sx: {
-                    backgroundColor: (theme) => theme.palette.background.paper,
+                    backgroundColor: (theme) => theme.palette.background.default,
                     backgroundImage: 'none', // Mui adds a linear-gradient of opacity white
                     width: fullWidth ? 'clamp(20rem, 100vw - 44px, 23rem)' : undefined,
                     overflow: 'hidden',
