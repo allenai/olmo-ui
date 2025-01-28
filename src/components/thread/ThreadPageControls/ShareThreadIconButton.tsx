@@ -30,6 +30,7 @@ export const ShareThreadIconButton = (): ReactNode => {
 
     return (
         <IconButtonWithTooltip
+            desktopPlacement="left"
             onClick={handleShareThread}
             disabled={shouldDisableShareButton}
             label="Share this thread">
