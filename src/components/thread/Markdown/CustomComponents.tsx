@@ -25,6 +25,8 @@ export const CustomParagraph = styled('p')({
 export const CustomLink = (props: HTMLAttributes<HTMLAnchorElement>) => (
     <Link
         {...props}
+        target="_blank"
+        rel="noopener"
         sx={(theme) => ({
             '&, &:visited': {
                 color: theme.palette.primary.main,
