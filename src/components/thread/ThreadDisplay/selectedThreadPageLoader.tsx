@@ -3,15 +3,11 @@ import { defer, LoaderFunction } from 'react-router-dom';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 
-import { ATTRIBUTION_DRAWER_ID } from '../attribution/drawer/AttributionDrawer';
-
 export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
     const {
-        currentOpenDrawer,
         getSelectedThread,
         selectedThreadRootId,
         getAttributionsForMessage,
-        selectMessage,
         handleAttributionForChangingThread,
         setSelectedModel,
         updateInferenceOpts,
