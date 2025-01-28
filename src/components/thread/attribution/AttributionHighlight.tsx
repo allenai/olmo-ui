@@ -6,7 +6,6 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
     hasAttributionSelectionSelector,
     messageAttributionsSelector,
-    shouldShowHighlightsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
 import { calculateRelevanceScore, getBucketForScorePercentile } from './calculate-relevance-score';
@@ -61,10 +60,6 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     };
 
     const shouldShowHighlight = useAppContext((state) => {
-        if (!shouldShowHighlightsSelector(state)) {
-            return false;
-        }
-
         const hasSelection = hasAttributionSelectionSelector(state);
         // If there aren't any selected spans we want to show all highlights
         if (!hasSelection) {

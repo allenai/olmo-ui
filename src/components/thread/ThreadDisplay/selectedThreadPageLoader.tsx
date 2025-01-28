@@ -8,7 +8,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         getSelectedThread,
         selectedThreadRootId,
         getAttributionsForMessage,
-        selectMessage,
         handleAttributionForChangingThread,
         setSelectedModel,
         updateInferenceOpts,
@@ -35,7 +34,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
             .at(-1);
 
         if (lastResponseId != null) {
-            selectMessage(lastResponseId);
             const lastThreadContent = selectedThreadMessagesById[lastResponseId];
             const modelIdList = models
                 .filter((model) => model.model_type === 'chat' && !model.is_deprecated)

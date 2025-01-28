@@ -21,14 +21,12 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     const selectMessage = useAppContext((state) => state.selectMessage);
     const unselectMessage = useAppContext((state) => state.unselectMessage);
     const openDrawer = useAppContext((state) => state.openDrawer);
-    const isAttributionDrawerOpen = useAppContext(
-        (state) => state.currentOpenDrawer === 'attribution'
-    );
+
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
 
     const handleClick = () => {
-        if (isMessageSelected && isAttributionDrawerOpen) {
+        if (isMessageSelected) {
             unselectMessage(messageId);
         } else {
             selectMessage(messageId);
@@ -37,8 +35,6 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
             }
         }
     };
-
-    const showSelectedIcon = isMessageSelected && isAttributionDrawerOpen;
 
     const { isCorpusLinkEnabled } = useFeatureToggles();
 
@@ -49,9 +45,9 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     return (
         <MessageInteractionIcon
             onClick={handleClick}
-            tooltip={showSelectedIcon ? 'Hide training text' : 'Match training text'}
-            Icon={showSelectedIcon ? Article : ArticleOutlined}
-            selected={showSelectedIcon}
+            tooltip={isMessageSelected ? 'Hide training text' : 'Match training text'}
+            Icon={isMessageSelected ? Article : ArticleOutlined}
+            selected={isMessageSelected}
         />
     );
 };
