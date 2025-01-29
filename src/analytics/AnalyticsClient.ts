@@ -13,6 +13,7 @@ export enum EventType {
     ExternalNavigationLinkClick = 'navigation.external',
     TermsLogOut = 'terms.logout',
     ColorModeChange = 'color.mode.change',
+    ModelOverloadedError = 'model.overloaded.error',
 }
 
 export type SearchQueryDetails = {
@@ -126,6 +127,14 @@ export class AnalyticsClient {
             type: EventType.ColorModeChange,
             occurred: new Date(),
             details,
+        });
+    }
+
+    trackModelOverloadedError(modelId: string): boolean {
+        return this.track({
+            type: EventType.ModelOverloadedError,
+            occurred: new Date(),
+            details: { modelId },
         });
     }
 }

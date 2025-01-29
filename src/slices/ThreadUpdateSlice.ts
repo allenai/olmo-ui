@@ -1,3 +1,4 @@
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     isFinalMessage,
     isFirstMessage,
@@ -237,6 +238,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 if (err.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
                     get().abortController?.abort();
+                    analyticsClient.trackModelOverloadedError(request.model);
 
                     snackMessage = errorToAlert(
                         `create-message-${new Date().getTime()}`.toLowerCase(),
