@@ -218,15 +218,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
             }
         } catch (err) {
-            set(
-                (state) => {
-                    state.abortController = null;
-                    state.streamPromptState = RemoteState.Error;
-                },
-                false,
-                'threadUpdate/errorCreateNewThread'
-            );
-
             let snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
                 'Unable to Submit Message',
@@ -243,6 +234,16 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     setMessageLimitReached(err.messageId, true);
                 }
+
+                if (err.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
+                    get().abortController?.abort();
+
+                    snackMessage = errorToAlert(
+                        `create-message-${new Date().getTime()}`.toLowerCase(),
+                        'This model is overloaded due to high demand. Please try again later or try another model.',
+                        err
+                    );
+                }
             } else if (err instanceof StreamBadRequestError) {
                 throw err;
             } else if (err instanceof Error) {
@@ -252,6 +253,15 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             }
 
             addSnackMessage(snackMessage);
+
+            set(
+                (state) => {
+                    state.abortController = null;
+                    state.streamPromptState = RemoteState.Error;
+                },
+                false,
+                'threadUpdate/errorCreateNewThread'
+            );
         }
     },
 

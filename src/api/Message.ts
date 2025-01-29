@@ -93,6 +93,7 @@ export enum MessageStreamErrorReason {
     FINALIZATION = 'finalization failure',
     GRPC = 'grpc inference failed',
     UNKNOWN = 'unkown',
+    MODEL_OVERLOADED = 'model_overloaded',
 }
 
 export class MessageStreamError extends Error {
@@ -116,6 +117,8 @@ export class MessageStreamError extends Error {
         return MessageStreamErrorReason.UNKNOWN;
     }
 }
+
+export class ModelOverloadedError extends MessageStreamError {}
 
 export interface FirstMessage extends JSONMessage {
     final: false;
