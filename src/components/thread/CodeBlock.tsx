@@ -4,17 +4,13 @@ import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import { useAttributionHighlights } from './attribution/AttributionHighlight';
+import { attributionHighlightRegex } from './attribution/highlighting/match-span-in-codeblock';
 
 interface CodeBlockProps extends PropsWithChildren {
     inline?: boolean;
     className?: string;
     node?: unknown;
 }
-
-// This regex is used to pull the text and span ID out of attribution highlight directives
-// If you're using .match you can use .groups.spanText or .groups.spanId to get the respective values
-const attributionHighlightRegex =
-    /:attribution-highlight\[(?<spanText>.*)\]{variant=".*" span="(?<spanId>.*)"}/gm;
 
 export const CodeBlock = ({
     inline,
