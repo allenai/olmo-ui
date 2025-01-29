@@ -203,6 +203,7 @@ const LocateSpanButton = ({
 
     return (
         <StyledTooltip title={label} placement="top">
+            {/* Mui won't show a tooltip if the child is disabled, so the <Button> needs to be wrapped */}
             <span>
                 <Button
                     variant="text"
