@@ -237,7 +237,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
 
                 if (err.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
-                    get().abortController?.abort();
+                    get().abortPrompt();
                     analyticsClient.trackModelOverloadedError(request.model);
 
                     snackMessage = errorToAlert(
