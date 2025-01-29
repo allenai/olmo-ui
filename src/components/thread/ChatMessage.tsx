@@ -1,5 +1,5 @@
 import { Box, SxProps, Typography } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { MouseEvent, PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
@@ -48,10 +48,23 @@ const LLMMessage = ({ messageId, children }: MessageProps): JSX.Element => {
             state.streamingMessageId === messageId &&
             state.streamPromptState === RemoteState.Loading
     );
+    const isMessageSelected = useAppContext(
+        (state) => state.attribution.selectedMessageId === messageId
+    );
+
+    const handleClick = (e: MouseEvent<HTMLElement>) => {
+        if (isMessageSelected) {
+            const target = e.target as HTMLElement;
+            if (target.tagName === 'A') {
+                e.preventDefault();
+            }
+        }
+    };
 
     return (
         <Typography
             component="div"
+            onClick={handleClick}
             paddingBlockEnd={2}
             sx={[sharedMessageStyle, streamingMessageIndicatorStyle]}
             data-is-streaming={shouldShowStreamingIndicator}>
