@@ -26,7 +26,7 @@ export const CustomLink = (props: HTMLAttributes<HTMLAnchorElement>) => (
     <Link
         {...props}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         sx={(theme) => ({
             '&, &:visited': {
                 color: theme.palette.primary.main,
