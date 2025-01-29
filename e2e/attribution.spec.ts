@@ -7,7 +7,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     // select message
     await page.getByRole('button', { name: 'Match training text' }).click();
 
-    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+    await page.getByRole('button', { name: 'Training Text Matches' }).click();
     await expect(page.getByTestId('corpuslink-drawer').getByText('Source')).toHaveCount(2);
     await page
         .getByRole('button', { name: 'Show documents related to this span' })
@@ -32,11 +32,11 @@ test('should show highlights when message is selected', async ({ page }) => {
         .filter({ hasText: 'OkayOkayOkayOkayOkayOkayOkayOkay' })
         .click();
 
-    await expect(page.getByText('1 document containing the selected span')).toBeVisible();
+    await expect(page.getByText('1 document matching the selected span')).toBeVisible();
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(1);
 
     // Close the drawer and make sure the highlights are still visible
-    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+    await page.getByRole('button', { name: 'Training Text Matches' }).click();
     await expect(
         page.getByRole('button', { name: 'Show documents related to this span' })
     ).toHaveCount(1);
@@ -58,7 +58,7 @@ test('should show highlights when message is selected', async ({ page }) => {
     await page.getByRole('button', { name: 'Match training text' }).click();
 
     await expect(page.getByRole('button', { name: 'Clear Selection' })).not.toBeVisible();
-    await expect(page.getByText(/\d+ documents* containing the selected span/)).not.toBeVisible();
+    await expect(page.getByText(/\d+ documents* matching the selected span/)).not.toBeVisible();
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(1);
 });
 
@@ -66,7 +66,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     page,
 }) => {
     await page.goto('/thread/msg_duplicatedocuments');
-    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+    await page.getByRole('button', { name: 'Training Text Matches' }).click();
 
     // select message
     await page.getByRole('button', { name: 'Match training text' }).click();
@@ -109,7 +109,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
 test('should show the training text match dialog', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');
 
-    await page.getByRole('button', { name: 'Show CorpusLink' }).click();
+    await page.getByRole('button', { name: 'Training Text Matches' }).click();
 
     // We're on the standard CorpusLink stuff
     await expect(page.getByRole('heading', { name: 'Training text matches' })).toBeVisible();

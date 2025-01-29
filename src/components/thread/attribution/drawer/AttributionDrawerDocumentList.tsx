@@ -40,7 +40,7 @@ const MatchingDocumentsText = ({
 
     return (
         <Typography variant="body1">
-            {documentCount} {documentsText} containing the selected span
+            {documentCount} {documentsText} matching the selected span
         </Typography>
     );
 };

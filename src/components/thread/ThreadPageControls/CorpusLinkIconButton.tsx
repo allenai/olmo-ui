@@ -16,7 +16,7 @@ export const CorpusLinkIconButton = () => {
         <IconButtonWithTooltip
             desktopPlacement="left"
             onClick={toggleParametersDrawer}
-            label="Show CorpusLink">
+            label="Training Text Matches">
             <ArticleOutlined />
         </IconButtonWithTooltip>
     );

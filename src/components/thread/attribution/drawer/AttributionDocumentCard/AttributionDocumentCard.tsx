@@ -9,6 +9,122 @@ import { links } from '@/Links';
 import { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 
+const deduceUsageFromSource = (source: string): string => {
+    switch (source) {
+        case 'dclm-hero-run-fasttext_for_HF':
+        case 'dclm':
+        case 'arxiv':
+        case 'algebraic-stack':
+        case 'open-web-math':
+        case 'pes2o':
+        case 'starcoder':
+        case 'wiki':
+            return 'Pre-training';
+        case 'dolmino':
+            return 'Mid-training';
+        case 'tulu-3-sft-olmo-2-mixture':
+            return 'Post-training (SFT)';
+        case 'olmo-2-1124-13b-preference-mix':
+            return 'Post-training (DPO)';
+        case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
+            return 'Post-training (RLVR)';
+        default:
+            return '';
+    }
+};
+
+const prettifySource = (source: string): ReactNode => {
+    const linkOlmoMix1124 = (
+        <Link
+            href="[olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124)"
+            target="_blank"
+            fontWeight={600}
+            sx={{ color: (theme) => theme.palette.primary.main }}
+            underline="always">
+            olmo-mix-1124
+        </Link>
+    );
+    switch (source) {
+        case 'dclm-hero-run-fasttext_for_HF':
+        case 'dclm':
+            return (
+                <>
+                    {linkOlmoMix1124}
+                    <Typography
+                        variant="body2"
+                        component="span"
+                        sx={{ color: (theme) => theme.palette.text.secondary }}>
+                        {' > '}web corpus (DCLM)
+                    </Typography>
+                </>
+            );
+        case 'arxiv':
+        case 'algebraic-stack':
+        case 'open-web-math':
+        case 'pes2o':
+        case 'starcoder':
+        case 'wiki':
+            return (
+                <>
+                    {linkOlmoMix1124}
+                    <Typography
+                        variant="body2"
+                        component="span"
+                        sx={{ color: (theme) => theme.palette.text.secondary }}>
+                        {' > '}
+                        {source}
+                    </Typography>
+                </>
+            );
+        case 'dolmino':
+            return (
+                <Link
+                    href="[dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124)"
+                    target="_blank"
+                    fontWeight={600}
+                    sx={{ color: (theme) => theme.palette.primary.main }}
+                    underline="always">
+                    dolmino-mix-1124
+                </Link>
+            );
+        case 'tulu-3-sft-olmo-2-mixture':
+            return (
+                <Link
+                    href="[tulu-3-sft-olmo-2-mixture](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture)"
+                    target="_blank"
+                    fontWeight={600}
+                    sx={{ color: (theme) => theme.palette.primary.main }}
+                    underline="always">
+                    tulu-3-sft-olmo-2-mixture
+                </Link>
+            );
+        case 'olmo-2-1124-13b-preference-mix':
+            return (
+                <Link
+                    href="[olmo-2-1124-13b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix)"
+                    target="_blank"
+                    fontWeight={600}
+                    sx={{ color: (theme) => theme.palette.primary.main }}
+                    underline="always">
+                    olmo-2-1124-13b-preference-mix
+                </Link>
+            );
+        case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
+            return (
+                <Link
+                    href="[RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)"
+                    target="_blank"
+                    fontWeight={600}
+                    sx={{ color: (theme) => theme.palette.primary.main }}
+                    underline="always">
+                    RLVR-GSM-MATH-IF-Mixed-Constraints
+                </Link>
+            );
+        default:
+            return <></>;
+    }
+};
+
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
 interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
@@ -65,9 +181,12 @@ const AttributionDocumentCardBase = ({
             <CardContent component={Stack} direction="column" gap={1}>
                 <div>
                     <Typography variant="body2" fontWeight={600} component="span">
-                        Source:{' '}
+                        {deduceUsageFromSource(source)} document from:
+                        <br />
                     </Typography>
-                    {source}
+                    <Typography variant="body2" component="span">
+                        {prettifySource(source)}
+                    </Typography>
                 </div>
                 <Typography variant="body1" component="span">
                     {snippets}
