@@ -101,8 +101,14 @@ describe('markedContentSelector', () => {
         // @ts-expect-error - I don't want to make the whole state, just what's relevant
         const result = markedContentSelector('llmMessage')(testState);
 
-        expect(result).toContain(':attribution-highlight[message from the LLM]{span="1"}');
-        expect(result).toContain(':attribution-highlight[This is a]{span="0"}');
-        expect(result).toContain(':attribution-highlight[Spring (March to May):]{span="2"}');
+        expect(result).toContain(
+            '<attribution-highlight span="1">message from the LLM</attribution-highlight>'
+        );
+        expect(result).toContain(
+            '<attribution-highlight span="0">This is a</attribution-highlight>'
+        );
+        expect(result).toContain(
+            '<attribution-highlight span="2">Spring (March to May):</attribution-highlight>'
+        );
     });
 });
