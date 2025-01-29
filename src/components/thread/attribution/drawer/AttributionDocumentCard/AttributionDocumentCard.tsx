@@ -3,6 +3,7 @@ import { PropsWithChildren, ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
+import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
@@ -25,7 +26,7 @@ const AttributionDocumentCardBase = ({
     actions,
     isSelected,
     relevanceBucket,
-}: AttributionDocumentCardBaseProps) => {
+}: AttributionDocumentCardBaseProps): ReactNode => {
     return (
         <Card
             component="li"
@@ -95,12 +96,9 @@ export const AttributionDocumentCard = ({
     documentId,
     repeatedDocumentCount,
     relevanceBucket,
-}: AttributionDocumentCardProps): JSX.Element => {
+}: AttributionDocumentCardProps): ReactNode => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
     const { isDatasetExplorerEnabled } = useFeatureToggles();
-
-    const selectDocument = useAppContext((state) => state.selectDocument);
-    const unselectDocument = useAppContext((state) => state.unselectDocument);
 
     const snippets = useAppContext(
         useShallow((state) => {
@@ -119,7 +117,7 @@ export const AttributionDocumentCard = ({
         })
     );
 
-    const isSelected = useAppContext(
+    const isDocumentSelected = useAppContext(
         (state) =>
             state.attribution.selection?.type === 'document' &&
             state.attribution.selection.documentIndex === documentId
@@ -129,7 +127,7 @@ export const AttributionDocumentCard = ({
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
             source={source}
-            isSelected={isSelected}
+            isSelected={isDocumentSelected}
             relevanceBucket={relevanceBucket}
             actions={
                 <>
@@ -147,25 +145,11 @@ export const AttributionDocumentCard = ({
                         </Button>
                     )}
 
-                    <Button
-                        variant="text"
-                        sx={(theme) => ({
-                            '[data-selected-document="true"] &': {
-                                fontWeight: theme.font.weight.semiBold,
-                                color: theme.palette.secondary.contrastText,
-                            },
-                        })}
-                        onClick={() => {
-                            if (isSelected) {
-                                unselectDocument(documentId);
-                            } else {
-                                selectDocument(documentId);
-                            }
-                        }}>
-                        {isSelected
-                            ? 'Show all spans'
-                            : `Locate span${snippets.length > 1 ? 's' : ''}`}
-                    </Button>
+                    <LocateSpanButton
+                        documentId={documentId}
+                        snippetCount={snippets.length}
+                        isDocumentSelected={isDocumentSelected}
+                    />
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
                         <Stack direction="column" alignItems="start">
@@ -185,5 +169,62 @@ export const AttributionDocumentCard = ({
                 </>
             }
         />
+    );
+};
+
+interface LocateSpanProps {
+    documentId: string;
+    isDocumentSelected: boolean;
+    snippetCount: number;
+}
+
+const LocateSpanButton = ({
+    documentId,
+    isDocumentSelected,
+    snippetCount,
+}: LocateSpanProps): ReactNode => {
+    const selectDocument = useAppContext((state) => state.selectDocument);
+    const unselectDocument = useAppContext((state) => state.unselectDocument);
+
+    const isSpanSelected = useAppContext((state) => state.attribution.selection != null);
+
+    const noDocumentsSelected = useAppContext(
+        (state) => !(state.attribution.selection?.type === 'document')
+    );
+
+    const locateUnavailable = isSpanSelected && noDocumentsSelected;
+    const spans = `span${snippetCount > 1 ? 's' : ''}`;
+
+    const label = locateUnavailable
+        ? 'Locating span is not available when a span is selected'
+        : isDocumentSelected
+          ? 'Restore all span highlights'
+          : `Highlight ${spans} in the selected message`;
+
+    return (
+        <StyledTooltip title={label} placement="top">
+            <span>
+                <Button
+                    variant="text"
+                    disabled={locateUnavailable}
+                    sx={(theme) => ({
+                        padding: 0,
+                        fontWeight: 'semiBold',
+                        '[data-selected-document="true"] &': {
+                            fontWeight: theme.font.weight.semiBold,
+                            color: theme.palette.secondary.contrastText,
+                        },
+                    })}
+                    onClick={() => {
+                        if (isDocumentSelected) {
+                            unselectDocument(documentId);
+                        } else {
+                            selectDocument(documentId);
+                        }
+                    }}>
+                    {isDocumentSelected ? 'Show all spans' : `Locate ${spans}`}
+                </Button>
+            </span>
+        </StyledTooltip>
     );
 };

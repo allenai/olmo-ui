@@ -103,6 +103,7 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
                         opacity: 1,
                     },
                 })}
+                placement="right"
                 onClick={handleClickDelete}
                 disabled={!canUseDeleteButton}
                 label="Delete thread">

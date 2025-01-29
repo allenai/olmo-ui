@@ -1,21 +1,11 @@
-import {
-    IconButton,
-    IconButtonOwnProps,
-    styled,
-    SxProps,
-    Theme,
-    Tooltip,
-    tooltipClasses,
-    TooltipProps,
-} from '@mui/material';
+import { IconButton, IconButtonOwnProps, SxProps, Theme } from '@mui/material';
 import { MouseEventHandler } from 'react';
 
-import { useDesktopOrUp } from './dolma/shared';
+import { StyledTooltip, type StyledTooltipProps } from './StyledTooltip';
 
 type IconButtonWithTooltipProps = Pick<IconButtonOwnProps, 'color' | 'disabled'> &
-    Pick<TooltipProps, 'children' | 'arrow' | 'placement'> & {
+    Pick<StyledTooltipProps, 'children' | 'arrow' | 'placement' | 'desktopPlacement'> & {
         label: string;
-        desktopPlacement?: TooltipProps['placement'];
         sx?: SxProps<Theme>;
     } & (
         | { href?: never; onClick: MouseEventHandler<HTMLElement> }
@@ -32,27 +22,15 @@ export const IconButtonWithTooltip = ({
     children,
     ...rest
 }: IconButtonWithTooltipProps) => {
-    const isDesktop = useDesktopOrUp();
-    const responsivePlacement = isDesktop ? desktopPlacement : placement;
-
     return (
-        <StyledTooltip title={label} arrow={arrow} placement={responsivePlacement}>
+        <StyledTooltip
+            title={label}
+            arrow={arrow}
+            placement={placement}
+            desktopPlacement={desktopPlacement}>
             <IconButton {...rest} color={color} sx={sx}>
                 {children}
             </IconButton>
         </StyledTooltip>
     );
 };
-
-const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        ...theme.typography.caption,
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-    },
-    [`& .${tooltipClasses.arrow}`]: {
-        color: theme.palette.background.default,
-    },
-}));
