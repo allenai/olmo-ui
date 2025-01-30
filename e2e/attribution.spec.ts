@@ -8,12 +8,12 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.getByRole('button', { name: 'Match training text' }).click();
 
     await page.getByRole('button', { name: 'Training Text Matches' }).click();
-    await expect(page.getByTestId('corpuslink-drawer').getByText('Source')).toHaveCount(2);
+    await expect(page.getByTestId('corpuslink-drawer').getByText('document from:')).toHaveCount(2);
     await page
         .getByRole('button', { name: 'Show documents related to this span' })
         .and(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkay'))
         .click();
-    await expect(page.getByTestId('corpuslink-drawer').getByText('Source')).toHaveCount(1);
+    await expect(page.getByTestId('corpuslink-drawer').getByText('document from:')).toHaveCount(1);
 });
 
 test('should show highlights when message is selected', async ({ page }) => {
