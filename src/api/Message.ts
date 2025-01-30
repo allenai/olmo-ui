@@ -118,8 +118,6 @@ export class MessageStreamError extends Error {
     }
 }
 
-export class ModelOverloadedError extends MessageStreamError {}
-
 export interface FirstMessage extends JSONMessage {
     final: false;
 }
