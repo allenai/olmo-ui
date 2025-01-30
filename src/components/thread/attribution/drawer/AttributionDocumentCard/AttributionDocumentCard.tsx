@@ -34,95 +34,71 @@ const deduceUsageFromSource = (source: string): string => {
 };
 
 const prettifySource = (source: string): ReactNode => {
-    const linkOlmoMix1124 = (
-        <Link
-            href="[olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124)"
-            target="_blank"
-            fontWeight={600}
-            sx={{ color: (theme) => theme.palette.primary.main }}
-            underline="always">
-            olmo-mix-1124
-        </Link>
-    );
+    let displayName = '';
+    let url = '';
+    let secondaryName = '';
     switch (source) {
         case 'dclm-hero-run-fasttext_for_HF':
         case 'dclm':
-            return (
-                <>
-                    {linkOlmoMix1124}
-                    <Typography
-                        variant="body2"
-                        component="span"
-                        sx={{ color: (theme) => theme.palette.text.secondary }}>
-                        {' > '}web corpus (DCLM)
-                    </Typography>
-                </>
-            );
+            displayName = 'olmo-mix-1124';
+            url = 'https://huggingface.co/datasets/allenai/olmo-mix-1124';
+            secondaryName = 'web corpus (DCLM)';
+            break;
         case 'arxiv':
         case 'algebraic-stack':
         case 'open-web-math':
         case 'pes2o':
         case 'starcoder':
         case 'wiki':
-            return (
-                <>
-                    {linkOlmoMix1124}
-                    <Typography
-                        variant="body2"
-                        component="span"
-                        sx={{ color: (theme) => theme.palette.text.secondary }}>
-                        {' > '}
-                        {source}
-                    </Typography>
-                </>
-            );
+            displayName = 'olmo-mix-1124';
+            url = 'https://huggingface.co/datasets/allenai/olmo-mix-1124';
+            secondaryName = source;
+            break;
         case 'dolmino':
-            return (
-                <Link
-                    href="[dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124)"
-                    target="_blank"
-                    fontWeight={600}
-                    sx={{ color: (theme) => theme.palette.primary.main }}
-                    underline="always">
-                    dolmino-mix-1124
-                </Link>
-            );
+            displayName = 'dolmino-mix-1124';
+            url = 'https://huggingface.co/datasets/allenai/dolmino-mix-1124';
+            break;
         case 'tulu-3-sft-olmo-2-mixture':
-            return (
-                <Link
-                    href="[tulu-3-sft-olmo-2-mixture](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture)"
-                    target="_blank"
-                    fontWeight={600}
-                    sx={{ color: (theme) => theme.palette.primary.main }}
-                    underline="always">
-                    tulu-3-sft-olmo-2-mixture
-                </Link>
-            );
+            displayName = 'tulu-3-sft-olmo-2-mixture';
+            url = 'https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture';
+            break;
         case 'olmo-2-1124-13b-preference-mix':
-            return (
-                <Link
-                    href="[olmo-2-1124-13b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix)"
-                    target="_blank"
-                    fontWeight={600}
-                    sx={{ color: (theme) => theme.palette.primary.main }}
-                    underline="always">
-                    olmo-2-1124-13b-preference-mix
-                </Link>
-            );
+            displayName = 'olmo-2-1124-13b-preference-mix';
+            url = 'https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix';
+            break;
         case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
-            return (
-                <Link
-                    href="[RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)"
-                    target="_blank"
-                    fontWeight={600}
-                    sx={{ color: (theme) => theme.palette.primary.main }}
-                    underline="always">
-                    RLVR-GSM-MATH-IF-Mixed-Constraints
-                </Link>
-            );
+            displayName = 'RLVR-GSM-MATH-IF-Mixed-Constraints';
+            url = 'https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints';
+            break;
         default:
             return <></>;
     }
+
+    let node = (
+        <Link
+            href={url}
+            target="_blank"
+            fontWeight={600}
+            sx={{ color: (theme) => theme.palette.primary.main }}
+            underline="always">
+            {displayName}
+        </Link>
+    );
+    if (secondaryName) {
+        node = (
+            <>
+                {node}
+                <Typography
+                    variant="body2"
+                    component="span"
+                    sx={{ color: (theme) => theme.palette.text.secondary }}>
+                    {' > '}
+                    {secondaryName}
+                </Typography>
+            </>
+        );
+    }
+    return node;
 };
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
