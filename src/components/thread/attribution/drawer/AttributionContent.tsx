@@ -20,7 +20,6 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import {
-    isAttributionAvailableSelector,
     messageAttributionsSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
@@ -83,9 +82,6 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
 
 export const AttributionContent = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const isCorpusLinkUnavailable = useAppContext(
-        (state) => !isAttributionAvailableSelector(state)
-    );
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     const closeModal = () => {
         setOpen(false);
@@ -96,7 +92,7 @@ export const AttributionContent = () => {
             direction="column"
             gap={2}
             data-testid="corpuslink-drawer"
-            height={isCorpusLinkUnavailable ? '100%' : undefined}>
+            height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
                 <Typography variant="h5">Training text matches</Typography>
                 <Typography variant="body2">
@@ -218,8 +214,6 @@ export const FullAttributionContent = () => {
                     // This sticks around so we can preserve its scroll state. If we remove it from rendering entirely it'll reset
                     display: shouldShowRepeatedDocuments ? 'none' : undefined,
                     height: 1,
-                    overflowY: 'auto',
-                    scrollbarGutter: 'stable',
                 }}>
                 <AttributionContent />
             </Box>

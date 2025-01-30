@@ -233,7 +233,13 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     }
 
     return (
-        <>
+        <Stack
+            flexDirection="column"
+            gap={2}
+            sx={{
+                overflowY: 'auto',
+                scrollbarGutter: 'stable',
+            }}>
             {/*
                 MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole.
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
@@ -274,6 +280,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                     );
                 })}
             </Box>
-        </>
+        </Stack>
     );
 };
