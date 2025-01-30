@@ -21,21 +21,7 @@ export const postMessageGenerator = async function* (
     let partIndex = 0;
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while (true) {
-        let part;
-        // HACK: We're checking to see if the first part of the message arrives within 5s
-        // This _should_ happen within the API but I was having trouble implementing it there
-        if (partIndex === 1) {
-            part = await Promise.race([
-                rdr.read(),
-                new Promise<never>((_resolve, reject) => {
-                    setTimeout(() => {
-                        reject(new MessageStreamError('', 'model_overloaded', 'Model overloaded'));
-                    }, 5000);
-                }),
-            ]);
-        } else {
-            part = await rdr.read();
-        }
+        const part = await rdr.read();
 
         if (part.done) {
             break;

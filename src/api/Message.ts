@@ -93,7 +93,7 @@ export enum MessageStreamErrorReason {
     FINALIZATION = 'finalization failure',
     GRPC = 'grpc inference failed',
     UNKNOWN = 'unkown',
-    MODEL_OVERLOADED = 'model_overloaded',
+    MODEL_OVERLOADED = 'model overloaded',
 }
 
 export class MessageStreamError extends Error {
