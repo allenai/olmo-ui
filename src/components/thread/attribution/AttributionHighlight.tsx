@@ -183,7 +183,8 @@ export const AttributionHighlight = ({
             component="mark"
             role="button"
             aria-label="Show documents related to this span"
-            onClick={() => {
+            onClick={(e) => {
+                e.preventDefault();
                 toggleSelectedSpans();
             }}
             tabIndex={0}

@@ -1,7 +1,6 @@
 import { TopLevelAttributionSpan } from '@/api/AttributionClient';
 
 import { createSpanReplacementRegex } from '../span-replacement-regex';
-import { escapeBraces } from './escape-braces';
 import { removeMarkdownCharactersFromStartAndEndOfSpan } from './escape-markdown-in-span';
 import { getAttributionHighlightString } from './get-attribution-highlight-string';
 
@@ -12,11 +11,10 @@ export const addHighlightsToText = (
     const textWithHighlights = spans.reduce((acc, [spanKey, span]) => {
         if (span?.text) {
             const escapedSpanText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
-            const spanDisplayText = escapeBraces(escapedSpanText);
 
             return acc.replaceAll(
                 createSpanReplacementRegex(escapedSpanText),
-                getAttributionHighlightString(spanKey, spanDisplayText)
+                getAttributionHighlightString(spanKey, escapedSpanText)
             );
         } else {
             return acc;

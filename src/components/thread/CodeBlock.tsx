@@ -33,8 +33,8 @@ export const CodeBlock = ({
 
     if (typeof children === 'string') {
         const childrenWithoutAttributionHighlights = children
-            // the attributionHighlightRegex uses a capture group, $1 gets replaced with that capture group
-            .replaceAll(attributionHighlightRegex, '$1')
+            // the attributionHighlightRegex uses a capture group, $<spanText> gets replaced with the spanText capture group
+            .replaceAll(attributionHighlightRegex, '$<spanText>')
             .replace(/\n$/, '');
 
         if (inline || !match) {
