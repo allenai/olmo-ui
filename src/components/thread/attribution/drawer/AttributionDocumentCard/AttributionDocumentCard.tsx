@@ -193,39 +193,40 @@ const LocateSpanButton = ({
     );
 
     const locateUnavailable = isSpanSelected && noDocumentsSelected;
-    const spans = `span${snippetCount > 1 ? 's' : ''}`;
 
-    const label = locateUnavailable
-        ? 'Locating span is not available when a span is selected'
-        : isDocumentSelected
-          ? 'Restore all span highlights'
-          : `Highlight ${spans} in the selected message`;
-
-    return (
-        <StyledTooltip title={label} placement="top">
-            {/* Mui won't show a tooltip if the child is disabled, so the <Button> needs to be wrapped */}
-            <span>
-                <Button
-                    variant="text"
-                    disabled={locateUnavailable}
-                    sx={(theme) => ({
-                        padding: 0,
-                        fontWeight: 'semiBold',
-                        '[data-selected-document="true"] &': {
-                            fontWeight: theme.font.weight.semiBold,
-                            color: theme.palette.secondary.contrastText,
-                        },
-                    })}
-                    onClick={() => {
-                        if (isDocumentSelected) {
-                            unselectDocument(documentId);
-                        } else {
-                            selectDocument(documentId);
-                        }
-                    }}>
-                    {isDocumentSelected ? 'Show all spans' : `Locate ${spans}`}
-                </Button>
-            </span>
-        </StyledTooltip>
+    const locateButton = (
+        <Button
+            variant="text"
+            disabled={locateUnavailable}
+            sx={(theme) => ({
+                padding: 0,
+                fontWeight: 'semiBold',
+                '[data-selected-document="true"] &': {
+                    fontWeight: theme.font.weight.semiBold,
+                    color: theme.palette.secondary.contrastText,
+                },
+            })}
+            onClick={() => {
+                if (isDocumentSelected) {
+                    unselectDocument(documentId);
+                } else {
+                    selectDocument(documentId);
+                }
+            }}>
+            {isDocumentSelected ? 'Show all spans' : `Locate span${snippetCount > 1 ? 's' : ''}`}
+        </Button>
     );
+
+    if (locateUnavailable) {
+        return (
+            <StyledTooltip
+                title="Locating span is not available when a span is selected"
+                placement="top">
+                {/* Mui won't show a tooltip if the child is disabled, so the <Button> needs to be wrapped */}
+                <span>{locateButton}</span>
+            </StyledTooltip>
+        );
+    }
+
+    return locateButton;
 };
