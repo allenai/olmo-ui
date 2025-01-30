@@ -22,6 +22,7 @@ export const postMessageGenerator = async function* (
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while (true) {
         const part = await rdr.read();
+
         if (part.done) {
             break;
         }
