@@ -2,8 +2,6 @@ import { Box } from '@mui/material';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
-import remarkDirective from 'remark-directive';
-import remarkDirectiveRehype from 'remark-directive-rehype';
 import remarkGfm from 'remark-gfm';
 
 import { AttributionHighlight } from '@/components/thread/attribution/AttributionHighlight';
@@ -33,7 +31,7 @@ export const MarkdownRenderer = ({ children: markdown }: MarkdownRendererProps) 
         // @ts-expect-error - We add attribution-highlight as a custom element
         <Box
             component={Markdown}
-            remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
+            remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, [rehypeSanitize, extendedSchema]]}
             components={{
                 code: CodeBlock,
