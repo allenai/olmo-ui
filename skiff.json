@@ -1,7 +1,9 @@
 {
-    "appName": "olmo-ui",
-    "contact": "sams",
-    "team": "oe-adoption",
-    "replicas": { "prod": 2 },
-    "customDomains": [ "olmo.allen.ai", "playground.allenai.org" ]
+  "appName": "olmo-ui",
+  "contact": "sams",
+  "team": "oe-adoption",
+  "replicas": {
+    "prod": 6
+  },
+  "customDomains": ["olmo.allen.ai", "playground.allenai.org"]
 }
