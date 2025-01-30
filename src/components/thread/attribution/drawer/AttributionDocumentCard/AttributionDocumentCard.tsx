@@ -74,31 +74,19 @@ const prettifySource = (source: string): ReactNode => {
             return <></>;
     }
 
-    let node = (
-        <Link
-            href={url}
-            target="_blank"
-            fontWeight={600}
-            sx={{ color: (theme) => theme.palette.primary.main }}
-            underline="always">
-            {displayName}
-        </Link>
-    );
-    if (secondaryName) {
-        node = (
-            <>
-                {node}
-                <Typography
-                    variant="body2"
-                    component="span"
-                    sx={{ color: (theme) => theme.palette.text.secondary }}>
+    return (
+        <>
+            <Link href={url} target="_blank" fontWeight={600} color="primary" underline="always">
+                {displayName}
+            </Link>
+            {secondaryName != null && (
+                <Typography variant="body2" component="span" color="secondary">
                     {' > '}
                     {secondaryName}
                 </Typography>
-            </>
-        );
-    }
-    return node;
+            )}
+        </>
+    );
 };
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
