@@ -79,8 +79,11 @@ const prettifySource = (source: string): ReactNode => {
             <Link href={url} target="_blank" fontWeight={600} color="primary" underline="always">
                 {displayName}
             </Link>
-            {secondaryName != null && (
-                <Typography variant="body2" component="span" color="secondary">
+            {secondaryName !== '' && (
+                <Typography
+                    variant="body2"
+                    component="span"
+                    sx={{ color: (theme) => theme.palette.text.secondary }}>
                     {' > '}
                     {secondaryName}
                 </Typography>
