@@ -219,6 +219,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
             }
         } catch (err) {
+            set(
+                (state) => {
+                    state.streamPromptState = RemoteState.Error;
+                },
+                false,
+                'threadUpdate/errorCreateNewThread'
+            );
+
             let snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
                 'Unable to Submit Message',
@@ -255,14 +263,13 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             }
 
             addSnackMessage(snackMessage);
-
+        } finally {
             set(
                 (state) => {
                     state.abortController = null;
-                    state.streamPromptState = RemoteState.Error;
                 },
                 false,
-                'threadUpdate/errorCreateNewThread'
+                'threadUpdate/finishCreateNewThread'
             );
         }
     },
