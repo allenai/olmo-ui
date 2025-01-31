@@ -3,7 +3,7 @@
   "contact": "sams",
   "team": "oe-adoption",
   "replicas": {
-    "prod": 6
+    "prod": 8
   },
   "customDomains": ["olmo.allen.ai", "playground.allenai.org"]
 }
