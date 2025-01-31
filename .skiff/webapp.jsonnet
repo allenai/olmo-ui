@@ -356,6 +356,10 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
         },
     };
 
+    local uiRequestsAndLimits = {
+       cpu: 0.2,
+       memory: '200M'
+    };
 
     local deployment = {
         apiVersion: 'apps/v1',
@@ -421,17 +425,10 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
                                     path: '/?check=rdy'
                                 }
                             },
-                            env: [
-                                {
-                                    name: 'IS_UI_REFRESH_ENABLED',
-                                    value: if env == 'refresh' then 'true' else 'false'
-                                }
-                            ],
+                            env: [],
                             resources: {
-                                requests: {
-                                   cpu: 0.1,
-                                   memory: '100M'
-                                }
+                                requests: uiRequestsAndLimits,
+                                limits: uiRequestsAndLimits
                             }
                         }
                     ]
