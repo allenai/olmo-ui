@@ -263,6 +263,14 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
                         },
                     },
                     nodeSelector: nodeSelector,
+                    volumes: [
+                        {
+                            name: 'config',
+                            secret: {
+                                secretName: 'config'
+                            }
+                        },
+                    ],
                     containers: [
                         {
                             name: fullyQualifiedName + '-ui',
