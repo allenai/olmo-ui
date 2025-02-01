@@ -205,7 +205,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
 
     local uiRequestsAndLimits = {
        cpu: 2,
-       memory: '200M'
+       memory: '500M'
     };
 
     local deployment = {
