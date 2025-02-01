@@ -177,70 +177,6 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
         }
     };
 
-    local dolmaApiSelectorLabels = selectorLabels + {
-        'app.kubernetes.io/component': 'api'
-    };
-
-    local dolmaApiSvc = {
-        apiVersion: 'v1',
-        kind: 'Service',
-        metadata: meta + {
-            name: fullyQualifiedName + '-api',
-        },
-        spec: {
-            selector: dolmaApiSelectorLabels,
-            ports: [
-                {
-                    port: dolmaApiPort,
-                    name: 'http'
-                }
-            ]
-        }
-    };
-
-    // Rate limit clients to 30 requests per minute. Up to 5 requests beyond that rate are queued,
-    // and any that surplus are rejected w/ a 429. See:
-    // https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md#rate-limiting
-    // https://www.nginx.com/blog/rate-limiting-nginx/#bursts
-    local apiAnnotations = {
-      'nginx.ingress.kubernetes.io/limit-rpm': '30',
-      'nginx.ingress.kubernetes.io/limit-req-status-code': '429'
-    };
-
-    local apiPaths = [
-        {
-            path: '/api',
-            pathType: 'Prefix',
-            backend: {
-                service: {
-                    name: dolmaApiSvc.metadata.name,
-                    port: {
-                        number: dolmaApiSvc.spec.ports[0].port
-                    }
-                }
-            }
-        }
-    ];
-
-    local allenAIAPIIngress = {
-        apiVersion: 'networking.k8s.io/v1',
-        kind: 'Ingress',
-        metadata: {
-            name: fullyQualifiedName + '-allen-dot-ai-api',
-            namespace: namespaceName,
-            labels: labels,
-            annotations: annotations + apiAnnotations + allenAITLS.ingressAnnotations + util.getAuthAnnotations(config, '.allen.ai') + {
-                'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
-                'nginx.ingress.kubernetes.io/configuration-snippet': 'proxy_set_header Request-Id $request_id;'
-            }
-        },
-        spec: {
-            tls: [ allenAITLS.spec + { hosts: allenAIHosts } ],
-            rules: [ { host: host, http: { paths: apiPaths } } for host in allenAIHosts ]
-        }
-    };
-
-
     local affinity = {
         podAntiAffinity: {
             requiredDuringSchedulingIgnoredDuringExecution: [
@@ -260,101 +196,12 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
         },
     };
 
-    local apiPodLabels = labels + antiAffinityLabels + {
-        'app.kubernetes.io/component': 'api'
-    };
-
-    local apiSelectorLabels = selectorLabels + {
-        'app.kubernetes.io/component': 'api'
-    };
-
         // This is used to verify that the API is funtional.
     local apiHealthCheck = {
         port: dolmaApiPort,
         scheme: 'HTTP'
     };
 
-
-    local dolmaApiDeployment = {
-        apiVersion: 'apps/v1',
-        kind: 'Deployment',
-        metadata: meta + { name: fullyQualifiedName + '-api' },
-        spec: {
-            strategy: {
-                type: 'RollingUpdate',
-                rollingUpdate: {
-                    maxSurge: numReplicas // This makes deployments faster.
-                }
-            },
-            revisionHistoryLimit: 3,
-            replicas: numReplicas,
-            selector: { matchLabels: apiSelectorLabels },
-            template: {
-                metadata: meta + { labels: apiPodLabels },
-                spec: {
-                    affinity: affinity,
-                    nodeSelector: nodeSelector,
-                    volumes: [
-                        {
-                            name: 'config',
-                            secret: {
-                                secretName: 'config'
-                            }
-                        },
-                    ],
-                    containers: [
-                        {
-                            name: fullyQualifiedName + '-api',
-                            image: apiImage,
-                            readinessProbe: {
-                                httpGet: apiHealthCheck + {
-                                    path: '/api/health?check=rdy'
-                                },
-                                periodSeconds: 10,
-                                failureThreshold: 3
-                            },
-                            resources: {
-                                requests: {
-                                    cpu: 0.1,
-                                    memory: '500M'
-                                },
-                                limits: { } + gpuLimits
-                            },
-                            env: [
-                                {
-                                    name: 'LOG_FORMAT',
-                                    value: 'google:json'
-                                }
-                            ],
-                            volumeMounts: [
-                                {
-                                    name: 'config',
-                                    mountPath: '/secret/config',
-                                    readOnly: true
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-        }
-    };
-
-    local dolmaApiPdb = {
-        apiVersion: 'policy/v1',
-        kind: 'PodDisruptionBudget',
-        metadata: {
-            name: fullyQualifiedName + '-api',
-            namespace: namespaceName,
-            labels: labels,
-        },
-        spec: {
-            minAvailable: if numReplicas > 1 then 1 else 0,
-            selector: {
-                matchLabels: apiSelectorLabels,
-            },
-        },
-    };
 
     local uiRequestsAndLimits = {
        cpu: 0.2,
@@ -430,6 +277,37 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
                                 requests: uiRequestsAndLimits,
                                 limits: uiRequestsAndLimits
                             }
+                        },
+                        {
+                            name: fullyQualifiedName + '-api',
+                            image: apiImage,
+                            readinessProbe: {
+                                httpGet: apiHealthCheck + {
+                                    path: '/api/health?check=rdy'
+                                },
+                                periodSeconds: 10,
+                                failureThreshold: 3
+                            },
+                            resources: {
+                                requests: {
+                                    cpu: 0.1,
+                                    memory: '500M'
+                                },
+                                limits: { } + gpuLimits
+                            },
+                            env: [
+                                {
+                                    name: 'LOG_FORMAT',
+                                    value: 'google:json'
+                                }
+                            ],
+                            volumeMounts: [
+                                {
+                                    name: 'config',
+                                    mountPath: '/secret/config',
+                                    readOnly: true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -477,11 +355,6 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
         namespace,
         
         allenAIIngress,
-        allenAIAPIIngress,
-
-        dolmaApiSvc,
-        dolmaApiDeployment,
-        dolmaApiPdb,
         
         deployment,
         service,
