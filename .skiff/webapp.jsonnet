@@ -204,7 +204,7 @@ function(image, apiImage, cause, sha, env='prod', branch='', repo='', buildId=''
 
 
     local uiRequestsAndLimits = {
-       cpu: 0.2,
+       cpu: 2,
        memory: '200M'
     };
 
