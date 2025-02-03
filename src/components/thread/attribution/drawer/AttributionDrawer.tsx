@@ -3,7 +3,6 @@ import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/mate
 
 import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
-import { useDesktopOrUp } from '@/components/dolma/shared';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
 import { FullAttributionContent } from './AttributionContent';
