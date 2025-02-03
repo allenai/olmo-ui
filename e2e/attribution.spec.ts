@@ -111,7 +111,7 @@ test('should show the training text match dialog', async ({ page }) => {
     await page.getByRole('button', { name: 'Show CorpusLink' }).click();
 
     // We're on the standard CorpusLink stuff
-    await expect(page.getByRole('heading', { name: 'Training text matches' })).toBeVisible();
+    await expect(page.getByTestId('corpuslink-drawer')).toBeVisible();
 
     // Click the about button
     await page
@@ -123,7 +123,7 @@ test('should show the training text match dialog', async ({ page }) => {
     // Find the modal
     const modal = page.getByTestId('about-attribution-modal');
 
-    // should be visible, and heave the heading text
+    // should be visible, and have the heading text
     await expect(modal).toBeVisible();
     await expect(modal.getByText('Training text matches')).toBeVisible();
 
