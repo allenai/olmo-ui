@@ -3,6 +3,7 @@ import { Divider, IconButton, ListSubheader, Stack, Typography } from '@mui/mate
 
 import { useAppContext } from '@/AppContext';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 
 import { FullAttributionContent } from './AttributionContent';
@@ -39,7 +40,7 @@ export const MobileAttributionDrawer = () => {
                                 variant="h5"
                                 margin={0}
                                 color={(theme) => theme.palette.text.primary}>
-                                CorpusLink
+                                Training text matches
                             </Typography>
                         </ListSubheader>
                         <IconButton

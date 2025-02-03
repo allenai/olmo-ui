@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { StandardModal } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -86,6 +87,7 @@ export const AttributionContent = () => {
     const closeModal = () => {
         setOpen(false);
     };
+    const isDesktop = useDesktopOrUp();
 
     return (
         <AttributionContentStack
@@ -94,7 +96,7 @@ export const AttributionContent = () => {
             data-testid="corpuslink-drawer"
             height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
-                <Typography variant="h5">Training text matches</Typography>
+                {isDesktop && <Typography variant="h5">Training text matches</Typography>}
                 <Typography variant="body2">
                     Documents from the training data that have exact text matches with the model
                     response. <br />
