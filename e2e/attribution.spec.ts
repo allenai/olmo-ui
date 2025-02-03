@@ -80,10 +80,6 @@ test('should keep scroll position when going back to CorpusLink documents and re
 
     await documentWithDuplicates.scrollIntoViewIfNeeded();
 
-    await expect(
-        page.getByRole('heading', { name: 'Training text matches', exact: true })
-    ).not.toBeInViewport();
-
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents', exact: true })
         .click();
@@ -91,8 +87,11 @@ test('should keep scroll position when going back to CorpusLink documents and re
     // We should keep the scroll position when going back to the documents
     await page.getByText('Back to CorpusLink documents').click();
     await expect(
-        page.getByRole('heading', { name: 'Training text matches', exact: true })
-    ).not.toBeInViewport();
+        documentWithDuplicates.getByRole('button', {
+            name: 'View all repeated documents',
+            exact: true,
+        })
+    ).toBeInViewport();
 
     await documentWithDuplicates
         .getByRole('button', { name: 'View all repeated documents', exact: true })
@@ -112,7 +111,7 @@ test('should show the training text match dialog', async ({ page }) => {
     await page.getByRole('button', { name: 'Training Text Matches' }).click();
 
     // We're on the standard CorpusLink stuff
-    await expect(page.getByRole('heading', { name: 'Training text matches' })).toBeVisible();
+    await expect(page.getByTestId('corpuslink-drawer')).toBeVisible();
 
     // Click the about button
     await page
@@ -124,7 +123,7 @@ test('should show the training text match dialog', async ({ page }) => {
     // Find the modal
     const modal = page.getByTestId('about-attribution-modal');
 
-    // should be visible, and heave the heading text
+    // should be visible, and have the heading text
     await expect(modal).toBeVisible();
     await expect(modal.getByText('Training text matches')).toBeVisible();
 
