@@ -171,7 +171,7 @@ export const RepeatedAttributionDocumentsContent = () => {
                     paddingInlineStart: 0,
                 }}>
                 <ArrowBack />
-                &nbsp;Back to CorpusLink documents
+                &nbsp;Back to all documents
             </Button>
 
             <Typography variant="h4" component="p">

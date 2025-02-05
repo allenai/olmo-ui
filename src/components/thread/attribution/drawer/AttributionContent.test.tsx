@@ -56,7 +56,7 @@ describe('AttributionContent deduplication', () => {
 
         expect(screen.getAllByRole('listitem')).toHaveLength(2);
         expect(screen.getByTestId('corpuslink-drawer')).not.toBeVisible();
-        await user.click(screen.getByRole('button', { name: 'Back to CorpusLink documents' }));
+        await user.click(screen.getByRole('button', { name: 'Back to all documents' }));
 
         expect(screen.getByTestId('corpuslink-drawer')).toBeVisible();
         expect(screen.getAllByRole('listitem')).toHaveLength(4);
