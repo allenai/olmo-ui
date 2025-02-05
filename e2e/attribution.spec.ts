@@ -125,7 +125,7 @@ test('should show the training text match dialog', async ({ page }) => {
 
     // should be visible, and have the heading text
     await expect(modal).toBeVisible();
-    await expect(modal.getByText('Training text matches')).toBeVisible();
+    await expect(modal.getByText('Training Text Matches')).toBeVisible();
 
     // should close
     await modal
