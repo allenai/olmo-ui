@@ -85,7 +85,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
         .click();
 
     // We should keep the scroll position when going back to the documents
-    await page.getByText('Back to CorpusLink documents').click();
+    await page.getByText('Back to all documents').click();
     await expect(
         documentWithDuplicates.getByRole('button', {
             name: 'View all repeated documents',
@@ -97,12 +97,12 @@ test('should keep scroll position when going back to CorpusLink documents and re
         .getByRole('button', { name: 'View all repeated documents', exact: true })
         .click();
 
-    await expect(page.getByText('Back to CorpusLink documents')).toBeVisible();
+    await expect(page.getByText('Back to all documents')).toBeVisible();
 
     await page.getByRole('button', { name: 'Thread history' }).click();
     await page.getByRole('link', { name: 'Second existing message' }).click();
 
-    await expect(page.getByText('Back to CorpusLink documents')).not.toBeVisible();
+    await expect(page.getByText('Back to all documents')).not.toBeVisible();
 });
 
 test('should show the training text match dialog', async ({ page }) => {
