@@ -18,14 +18,11 @@ export const AttributionDocumentModal = ({
     open,
     closeModal: handleClose,
 }: AttributionDocumentModalProps) => {
+    // we'd like to make spans bold on the text in the modal
     const correspondingSpans = document.snippets.map((snippet) => snippet.corresponding_span_text);
 
     return (
-        <StandardModal
-            open={open}
-            onClose={handleClose}
-            data-testid="attribution-document-modal"
-            sx={{ borderRadius: '20px', padding: '30px 50px 50px 50px' }}>
+        <StandardModal open={open} onClose={handleClose} data-testid="attribution-document-modal">
             <IconButton
                 aria-label="close"
                 onClick={handleClose}
