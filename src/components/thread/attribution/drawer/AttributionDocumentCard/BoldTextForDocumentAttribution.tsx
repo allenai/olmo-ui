@@ -5,11 +5,13 @@ import { escapeRegExp } from '@/utils/escape-reg-exp';
 interface BoldTextForDocumentAttributionProps {
     correspondingSpans: string[] | undefined;
     text: string;
+    lineBreak?: boolean;
 }
 
 export const BoldTextForDocumentAttribution = ({
     correspondingSpans,
     text,
+    lineBreak = false,
 }: BoldTextForDocumentAttributionProps) => {
     if (!correspondingSpans) {
         return text;
@@ -22,7 +24,11 @@ export const BoldTextForDocumentAttribution = ({
     const splitTextSegments = text.split(regexPattern);
 
     return (
-        <Typography variant="body1" sx={{ wordBreak: 'break-word' }} component="blockquote">
+        <Typography
+            variant="body1"
+            sx={{ wordBreak: 'break-word' }}
+            component="blockquote"
+            whiteSpace={lineBreak ? 'break-spaces' : undefined}>
             &quot;...
             {splitTextSegments.map((segment, index) => {
                 // Check if the segment matches any of the substrings exactly

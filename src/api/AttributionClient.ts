@@ -6,6 +6,7 @@ export interface AttributionDocumentSnippet {
 
 export interface Document {
     text: string;
+    text_long: string;
     snippets: AttributionDocumentSnippet[];
     corresponding_spans: number[];
     corresponding_span_texts: string[];

@@ -1,97 +1,15 @@
-import { Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
+import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
+import { PropsWithChildren, ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { StyledTooltip } from '@/components/StyledTooltip';
-import { useFeatureToggles } from '@/FeatureToggleContext';
-import { links } from '@/Links';
 
 import { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
-
-const deduceUsageFromSource = (source: string): string => {
-    switch (source) {
-        case 'dclm-hero-run-fasttext_for_HF':
-        case 'dclm':
-        case 'arxiv':
-        case 'algebraic-stack':
-        case 'open-web-math':
-        case 'pes2o':
-        case 'starcoder':
-        case 'wiki':
-            return 'Pre-training';
-        case 'dolmino':
-            return 'Mid-training';
-        case 'tulu-3-sft-olmo-2-mixture':
-            return 'Post-training (SFT)';
-        case 'olmo-2-1124-13b-preference-mix':
-            return 'Post-training (DPO)';
-        case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
-            return 'Post-training (RLVR)';
-        default:
-            return '';
-    }
-};
-
-const prettifySource = (source: string): ReactNode => {
-    let displayName = '';
-    let url = '';
-    let secondaryName = '';
-    switch (source) {
-        case 'dclm-hero-run-fasttext_for_HF':
-        case 'dclm':
-            displayName = 'olmo-mix-1124';
-            url = 'https://huggingface.co/datasets/allenai/olmo-mix-1124';
-            secondaryName = 'web corpus (DCLM)';
-            break;
-        case 'arxiv':
-        case 'algebraic-stack':
-        case 'open-web-math':
-        case 'pes2o':
-        case 'starcoder':
-        case 'wiki':
-            displayName = 'olmo-mix-1124';
-            url = 'https://huggingface.co/datasets/allenai/olmo-mix-1124';
-            secondaryName = source;
-            break;
-        case 'dolmino':
-            displayName = 'dolmino-mix-1124';
-            url = 'https://huggingface.co/datasets/allenai/dolmino-mix-1124';
-            break;
-        case 'tulu-3-sft-olmo-2-mixture':
-            displayName = 'tulu-3-sft-olmo-2-mixture';
-            url = 'https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture';
-            break;
-        case 'olmo-2-1124-13b-preference-mix':
-            displayName = 'olmo-2-1124-13b-preference-mix';
-            url = 'https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix';
-            break;
-        case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
-            displayName = 'RLVR-GSM-MATH-IF-Mixed-Constraints';
-            url = 'https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints';
-            break;
-        default:
-            return <></>;
-    }
-
-    return (
-        <>
-            <Link href={url} target="_blank" fontWeight={600} color="primary" underline="always">
-                {displayName}
-            </Link>
-            {secondaryName !== '' && (
-                <Typography
-                    variant="body2"
-                    component="span"
-                    sx={{ color: (theme) => theme.palette.text.secondary }}>
-                    {' > '}
-                    {secondaryName}
-                </Typography>
-            )}
-        </>
-    );
-};
+import { AttributionDocumentModal } from './AttributionDocumentModal';
+import { deduceUsageFromSource, prettifySource } from './SourcePrettifier';
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
@@ -169,22 +87,19 @@ const AttributionDocumentCardBase = ({
 };
 
 interface AttributionDocumentCardProps {
-    source: string;
-    documentId: string;
-    index?: string | null;
+    document: Document;
     repeatedDocumentCount?: number;
     relevanceBucket: AttributionBucket;
 }
 
 export const AttributionDocumentCard = ({
-    source,
-    index,
-    documentId,
+    document,
     repeatedDocumentCount,
     relevanceBucket,
 }: AttributionDocumentCardProps): ReactNode => {
     const selectRepeatedDocument = useAppContext((state) => state.selectRepeatedDocument);
-    const { isDatasetExplorerEnabled } = useFeatureToggles();
+    const [open, setOpen] = useState(false);
+    const documentId = document.index;
 
     const snippets = useAppContext(
         useShallow((state) => {
@@ -212,14 +127,16 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
-            source={source}
+            source={document.source}
             isSelected={isDocumentSelected}
             relevanceBucket={relevanceBucket}
             actions={
                 <>
-                    {isDatasetExplorerEnabled && (
+                    <Box gap={2} display="flex">
                         <Button
-                            href={links.document(documentId, index)}
+                            onClick={() => {
+                                setOpen(true);
+                            }}
                             variant="outlined"
                             color="inherit"
                             size="small"
@@ -229,12 +146,18 @@ export const AttributionDocumentCard = ({
                             }}>
                             View Document
                         </Button>
-                    )}
-
-                    <LocateSpanButton
-                        documentId={documentId}
-                        snippetCount={snippets.length}
-                        isDocumentSelected={isDocumentSelected}
+                        <LocateSpanButton
+                            documentId={documentId}
+                            snippetCount={snippets.length}
+                            isDocumentSelected={isDocumentSelected}
+                        />
+                    </Box>
+                    <AttributionDocumentModal
+                        document={document}
+                        open={open}
+                        closeModal={() => {
+                            setOpen(false);
+                        }}
                     />
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
