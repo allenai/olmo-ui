@@ -49,9 +49,7 @@ export const AttributionDocumentModal = ({
                 </Box>
                 {!!document.url && (
                     <Typography variant="body1" component="span" pt={1}>
-                        <Typography component="span" fontStyle="italic">
-                            URL:&nbsp;
-                        </Typography>
+                        <Typography component="span">URL:&nbsp;</Typography>
                         <Link
                             href={document.url}
                             target="_blank"
