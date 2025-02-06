@@ -1,46 +1,11 @@
 import CloseIcon from '@mui/icons-material/Close';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { Button, DialogTitle, IconButton, Snackbar, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { DialogTitle, IconButton, Stack, Typography } from '@mui/material';
 
 import { Document } from '@/api/AttributionClient';
 import { StandardModal } from '@/components/StandardModal';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
 import { deduceUsageFromSource, prettifySource } from './SourcePrettifier';
-
-export const ShareButton = ({ url, onClick }: { url: string; onClick?: () => void }) => {
-    const [open, setOpen] = useState(false);
-    if (!url) {
-        return null;
-    }
-
-    return (
-        <>
-            <Button
-                title="Share"
-                variant="outlined"
-                onClick={() => {
-                    if (onClick) {
-                        onClick();
-                    }
-                    navigator.clipboard.writeText(url);
-                    setOpen(true);
-                }}
-                startIcon={<ShareOutlinedIcon />}>
-                Share
-            </Button>
-            <Snackbar
-                open={open}
-                autoHideDuration={2500}
-                onClose={() => {
-                    setOpen(false);
-                }}
-                message="Link copied to clipboard"
-            />
-        </>
-    );
-};
 
 interface AttributionDocumentModalProps {
     document: Document;
