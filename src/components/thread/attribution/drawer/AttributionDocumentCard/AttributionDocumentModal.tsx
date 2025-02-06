@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { DialogTitle, IconButton, Link, Stack, Typography } from '@mui/material';
+import { Box, DialogTitle, IconButton, Link, Stack, Typography } from '@mui/material';
 
 import { Document } from '@/api/AttributionClient';
 import { StandardModal } from '@/components/StandardModal';
@@ -38,18 +38,20 @@ export const AttributionDocumentModal = ({
                 })}>
                 <CloseIcon />
             </IconButton>
-            <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
-                <Typography variant="h4" fontWeight={600} component="span">
-                    {deduceUsageFromSource(document.source)} document from:&nbsp;
-                </Typography>
-                <Typography variant="h4" component="span">
-                    {prettifySource(document.source)}
-                </Typography>
-            </DialogTitle>
-            <Stack pt={1} gap={3.5} sx={{ overflowY: 'scroll' }}>
+            <DialogTitle sx={{ paddingInline: 0 }} display="flex" flexDirection="column">
+                <Box>
+                    <Typography variant="h4" fontWeight={600} component="span">
+                        {deduceUsageFromSource(document.source)} document from:&nbsp;
+                    </Typography>
+                    <Typography variant="h4" component="span">
+                        {prettifySource(document.source)}
+                    </Typography>
+                </Box>
                 {!!document.url && (
-                    <Typography variant="body1" component="span">
-                        <Typography component="span">URL:&nbsp;</Typography>
+                    <Typography variant="body1" component="span" pt={1}>
+                        <Typography component="span" fontStyle="italic">
+                            URL:&nbsp;
+                        </Typography>
                         <Link
                             href={document.url}
                             target="_blank"
@@ -59,6 +61,8 @@ export const AttributionDocumentModal = ({
                         </Link>
                     </Typography>
                 )}
+            </DialogTitle>
+            <Stack pt={2} gap={3.5} sx={{ overflowY: 'scroll' }}>
                 <BoldTextForDocumentAttribution
                     correspondingSpans={correspondingSpans}
                     text={document.text_long}
