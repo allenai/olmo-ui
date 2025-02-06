@@ -34,6 +34,7 @@ describe('AttributionDrawerDocumentList', () => {
                             1: {
                                 index: '1',
                                 text: 'document 1',
+                                text_long: 'document 1 span 1',
                                 corresponding_span_texts: ['span 1'],
                                 corresponding_spans: [0],
                                 source: 'made up',
@@ -46,6 +47,7 @@ describe('AttributionDrawerDocumentList', () => {
                             2: {
                                 index: '2',
                                 text: 'document 2',
+                                text_long: 'document 2 span 2',
                                 corresponding_span_texts: ['span 2'],
                                 corresponding_spans: [1],
                                 source: 'made up',
@@ -58,6 +60,7 @@ describe('AttributionDrawerDocumentList', () => {
                             3: {
                                 index: '3',
                                 text: 'document 3',
+                                text_long: 'document 3 span 3',
                                 corresponding_span_texts: ['span 3'],
                                 corresponding_spans: [2],
                                 source: 'made up',
@@ -70,6 +73,7 @@ describe('AttributionDrawerDocumentList', () => {
                             4: {
                                 index: '4',
                                 text: 'document 4',
+                                text_long: 'document 4 span 4',
                                 corresponding_span_texts: ['span 4'],
                                 corresponding_spans: [3],
                                 source: 'made up',
@@ -82,6 +86,7 @@ describe('AttributionDrawerDocumentList', () => {
                             5: {
                                 index: '5',
                                 text: 'document 5',
+                                text_long: 'document 5 span 5',
                                 corresponding_span_texts: ['span 5'],
                                 corresponding_spans: [4],
                                 source: 'made up',
