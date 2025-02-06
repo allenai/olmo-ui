@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -132,30 +132,32 @@ export const AttributionDocumentCard = ({
             relevanceBucket={relevanceBucket}
             actions={
                 <>
-                    <Button
-                        onClick={() => {
-                            setOpen(true);
-                        }}
-                        variant="outlined"
-                        color="inherit"
-                        size="small"
-                        fullWidth={false}
-                        sx={{
-                            width: 'fit-content',
-                        }}>
-                        View Document
-                    </Button>
+                    <Box gap={2} display="flex">
+                        <Button
+                            onClick={() => {
+                                setOpen(true);
+                            }}
+                            variant="outlined"
+                            color="inherit"
+                            size="small"
+                            fullWidth={false}
+                            sx={{
+                                width: 'fit-content',
+                            }}>
+                            View Document
+                        </Button>
+                        <LocateSpanButton
+                            documentId={documentId}
+                            snippetCount={snippets.length}
+                            isDocumentSelected={isDocumentSelected}
+                        />
+                    </Box>
                     <AttributionDocumentModal
                         document={document}
                         open={open}
                         closeModal={() => {
                             setOpen(false);
                         }}
-                    />
-                    <LocateSpanButton
-                        documentId={documentId}
-                        snippetCount={snippets.length}
-                        isDocumentSelected={isDocumentSelected}
                     />
 
                     {repeatedDocumentCount != null && repeatedDocumentCount > 1 && (
