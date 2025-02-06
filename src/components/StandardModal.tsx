@@ -10,6 +10,7 @@ export const StandardModal = ({
     children,
     width = DEFAULT_MODAL_WIDTH,
     open,
+    sx,
     ...rest
 }: StandardModalProps) => {
     return (
@@ -24,6 +25,7 @@ export const StandardModal = ({
                     margin: '0 auto',
                     backgroundColor: 'background.paper',
                     backgroundImage: 'none',
+                    ...sx,
                 },
             }}
             {...rest}
