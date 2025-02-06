@@ -9,7 +9,6 @@ import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
     isAttributionAvailableSelector,
-    messageAttributionsSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -93,7 +92,6 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         Boolean(state.attribution.selectedMessageId)
     );
     const attributionForMessage = useAttributionDocumentsForMessage();
-    const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
     const messageLength = useAppContext((state) => messageLengthSelector(state));
     const isCorpusLinkUnavailable = useAppContext(
         (state) => !isAttributionAvailableSelector(state)
@@ -267,12 +265,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                             {group.collections.map((doc) => (
                                 <AttributionDocumentCard
                                     key={doc.index}
-                                    documentId={doc.index}
-                                    source={doc.source}
+                                    document={doc}
                                     // This has a +1 because the repeated document count should include this document we're showing here
                                     // the duplicateDocumentIndexes array doesn't include this document, just the others that are repeated
                                     repeatedDocumentCount={doc.duplicateDocumentIndexes.length + 1}
-                                    index={attributionIndex}
                                     relevanceBucket={key}
                                 />
                             ))}

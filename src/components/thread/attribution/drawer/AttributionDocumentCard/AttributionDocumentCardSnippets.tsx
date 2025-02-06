@@ -16,10 +16,7 @@ export const AttributionDocumentCardSnippets = ({
 
     return (
         <Stack direction="column" gap={1}>
-            <Box
-                sx={{
-                    display: 'contents',
-                }}>
+            <Box sx={{ display: 'contents' }}>
                 {snippets.map((snippet) => (
                     <BoldTextForDocumentAttribution
                         key={snippet.text}

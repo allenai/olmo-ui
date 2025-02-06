@@ -20,10 +20,7 @@ import { StandardModal } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
-import {
-    messageAttributionsSelector,
-    messageLengthSelector,
-} from '@/slices/attribution/attribution-selectors';
+import { messageLengthSelector } from '@/slices/attribution/attribution-selectors';
 
 import { calculateRelevanceScore, getBucketForScorePercentile } from '../calculate-relevance-score';
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
@@ -132,7 +129,6 @@ export const AttributionContent = () => {
 
 export const RepeatedAttributionDocumentsContent = () => {
     const attributionDocuments = useAttributionDocumentsForMessage();
-    const attributionIndex = useAppContext((state) => messageAttributionsSelector(state)?.index);
 
     const repeatedDocumentsByUrl = useAppContext(
         useShallow((state) => {
@@ -189,9 +185,7 @@ export const RepeatedAttributionDocumentsContent = () => {
                     return (
                         <AttributionDocumentCard
                             key={document.index}
-                            documentId={document.index}
-                            source={document.source}
-                            index={attributionIndex ?? null}
+                            document={document}
                             relevanceBucket={bucket}
                         />
                     );
