@@ -72,28 +72,26 @@ export const AttributionDocumentModal = ({
                 })}>
                 <CloseIcon />
             </IconButton>
-            <>
-                <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
-                    <Typography variant="h4" fontWeight={600} component="span">
-                        {deduceUsageFromSource(document.source)} document from:&nbsp;
+            <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
+                <Typography variant="h4" fontWeight={600} component="span">
+                    {deduceUsageFromSource(document.source)} document from:&nbsp;
+                </Typography>
+                <Typography variant="h4" component="span">
+                    {prettifySource(document.source)}
+                </Typography>
+            </DialogTitle>
+            <Stack pt={3.5} gap={2.5}>
+                {!!document.url && (
+                    <Typography variant="h4" color="primary">
+                        {document.url}
                     </Typography>
-                    <Typography variant="h4" component="span">
-                        {prettifySource(document.source)}
-                    </Typography>
-                </DialogTitle>
-                <Stack pt={3.5} gap={2.5}>
-                    {!!document.url && (
-                        <Typography variant="h4" color="primary">
-                            {document.url}
-                        </Typography>
-                    )}
-                    <BoldTextForDocumentAttribution
-                        correspondingSpans={correspondingSpans}
-                        text={document.text_long}
-                        lineBreak={true}
-                    />
-                </Stack>
-            </>
+                )}
+                <BoldTextForDocumentAttribution
+                    correspondingSpans={correspondingSpans}
+                    text={document.text_long}
+                    lineBreak={true}
+                />
+            </Stack>
         </StandardModal>
     );
 };
