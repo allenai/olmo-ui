@@ -45,10 +45,10 @@ test('should show highlights when message is selected', async ({ page }) => {
     await page.getByRole('button', { name: 'Hide training text' }).click();
     // should have no documents
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(0);
-    // text should not be visible
+    // highlight on text is not visible
     await expect(
-        page.getByRole('button', { name: 'Show documents related to this span' }).first()
-    ).not.toBeVisible();
+        page.getByRole('button', { name: 'Show documents related to this span' })
+    ).toHaveCount(0);
 
     // Make sure new attributions show and selected spans do go away when you click another thread
     await page.getByRole('button', { name: 'Thread history' }).click();
@@ -125,7 +125,7 @@ test('should show the training text match dialog', async ({ page }) => {
 
     // should be visible, and have the heading text
     await expect(modal).toBeVisible();
-    await expect(modal.getByText('Training text matches')).toBeVisible();
+    await expect(modal.getByText('Training Text Matches').first()).toBeVisible();
 
     // should close
     await modal

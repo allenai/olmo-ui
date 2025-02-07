@@ -39,7 +39,7 @@ export const MobileAttributionDrawer = () => {
                                 variant="h5"
                                 margin={0}
                                 color={(theme) => theme.palette.text.primary}>
-                                Training text matches
+                                Training Text Matches
                             </Typography>
                         </ListSubheader>
                         <IconButton

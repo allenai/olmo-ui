@@ -46,7 +46,7 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
     return (
         <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
             <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
-                Training text matches
+                Training Text Matches
             </DialogTitle>
             <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
@@ -61,7 +61,20 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
                 </Typography>
                 <Typography paddingBlockEnd={1}>
                     The model did not have direct access to these documents when generating the
-                    response. Documents are retrieved after the response generation. <br />
+                    response. Documents are retrieved after the response generation.
+                </Typography>
+                <Typography paddingBlockEnd={1}>
+                    Training Text Matches uses{' '}
+                    <Link
+                        href="https://infini-gram.io"
+                        target="_blank"
+                        underline="always"
+                        fontWeight={600}>
+                        infini-gram
+                    </Link>{' '}
+                    to efficiently find text matches in the massive training dataset.
+                </Typography>
+                <Typography paddingBlockEnd={1}>
                     <Link
                         href={links.faqs + getFAQIdByShortId('corpuslink-intro')}
                         underline="always">
@@ -93,10 +106,18 @@ export const AttributionContent = () => {
             data-testid="corpuslink-drawer"
             height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
-                {isDesktop && <Typography variant="h5">Training text matches</Typography>}
+                {isDesktop && <Typography variant="h5">Training Text Matches</Typography>}
                 <Typography variant="body2">
                     Documents from the training data that have exact text matches with the model
-                    response. <br />
+                    response. Powered by{' '}
+                    <Link
+                        href="https://infini-gram.io"
+                        target="_blank"
+                        underline="always"
+                        fontWeight={600}>
+                        infini-gram
+                    </Link>
+                    <br />
                     <Button
                         onClick={() => {
                             setOpen(true);
