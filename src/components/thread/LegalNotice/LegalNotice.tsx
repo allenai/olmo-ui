@@ -4,7 +4,10 @@ import { PropsWithChildren } from 'react';
 import { useAppContext } from '@/AppContext';
 import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
 
-import { familySpecificLegalNoticesMap } from './family-specific-legal-notices-map';
+import {
+    familySpecificLegalNoticesMap,
+    getModelSpecificLegalNotices,
+} from './specific-legal-notices-map';
 
 export const getLegalNoticeTextColor =
     (darkModeAlpha: number = 0.5) =>
@@ -38,14 +41,18 @@ export const SmallLegalNotice = () => {
 
 export const LegalNotice = () => {
     const selectedModelFamilyId = useAppContext((state) => state.selectedModel?.family_id);
+    const selectedModelId = useAppContext((state) => state.selectedModel?.id);
 
     const FamilySpecificLegalNotice =
         selectedModelFamilyId != null
             ? familySpecificLegalNoticesMap[selectedModelFamilyId]
             : undefined;
 
+    const ModelSpecificLegalNotice = getModelSpecificLegalNotices(selectedModelId);
+
     return (
         <LegalNoticeTypography>
+            {ModelSpecificLegalNotice && <ModelSpecificLegalNotice />}
             Ai2 Playground is a free scientific research and educational tool. By using Ai2
             Playground, you agree to Ai2’s{' '}
             <TermAndConditionsLink link="https://allenai.org/terms">
