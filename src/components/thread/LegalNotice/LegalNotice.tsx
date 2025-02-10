@@ -48,7 +48,7 @@ export const LegalNotice = () => {
             ? familySpecificLegalNoticesMap[selectedModelFamilyId]
             : undefined;
 
-    const ModelSpecificLegalNotice = getModelSpecificLegalNotices(selectedModelId || '');
+    const ModelSpecificLegalNotice = getModelSpecificLegalNotices(selectedModelId);
 
     return (
         <LegalNoticeTypography>
