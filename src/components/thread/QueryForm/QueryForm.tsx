@@ -48,7 +48,7 @@ export const QueryForm = (): JSX.Element => {
         return (
             state.selectedThreadRootId === '' ||
             state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
-            state.userInfo?.client
+                state.userInfo?.client
         );
     });
 
@@ -123,7 +123,7 @@ export const QueryForm = (): JSX.Element => {
             await streamPrompt(request);
             window.heap?.track('queryform.submit', {
                 model: modelId,
-                isNewThread: location.pathname === '/',
+                isNewThread: location.pathname === links.playground,
             });
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
