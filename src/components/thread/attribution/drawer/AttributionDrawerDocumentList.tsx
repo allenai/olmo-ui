@@ -9,6 +9,7 @@ import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
     isAttributionAvailableSelector,
+    isAttributionBlockedSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -72,6 +73,33 @@ const UnavailableMessage = () => {
     );
 };
 
+const BlockedMessage = () => {
+    return (
+        <Stack
+            sx={{
+                margin: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: 'flex',
+                gap: 1.5,
+                flex: 1,
+            }}>
+            <NoDocsIcon
+                sx={(theme) => ({
+                    width: 52.5,
+                    height: 55,
+                    fill: theme.palette.text.primary,
+                    opacity: 0.5,
+                })}
+            />
+            <Typography align="center">
+                Training Text Matches is blocked for this message due to legal compliance. Please
+                try another message.
+            </Typography>
+        </Stack>
+    );
+};
+
 const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
     fontWeight: theme.font.weight.semiBold,
     color:
@@ -96,6 +124,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const isCorpusLinkUnavailable = useAppContext(
         (state) => !isAttributionAvailableSelector(state)
     );
+    const isCorpusLinkBlocked = useAppContext((state) => isAttributionBlockedSelector(state));
     const { documents, loadingState } = attributionForMessage;
 
     const isSelectedMessageLoading = useAppContext(
@@ -207,6 +236,10 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     if (loadingState === RemoteState.Error) {
         if (isCorpusLinkUnavailable) {
             return <UnavailableMessage />;
+        }
+
+        if (isCorpusLinkBlocked) {
+            return <BlockedMessage />;
         }
 
         return (
