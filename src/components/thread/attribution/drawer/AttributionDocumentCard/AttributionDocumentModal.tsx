@@ -3,6 +3,8 @@ import { Box, DialogTitle, IconButton, Link, Stack, Typography } from '@mui/mate
 
 import { Document } from '@/api/AttributionClient';
 import { StandardModal } from '@/components/StandardModal';
+import { useFeatureToggles } from '@/FeatureToggleContext';
+import { links } from '@/Links';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
 import { deduceUsageFromSource, prettifySource } from './SourcePrettifier';
@@ -18,6 +20,7 @@ export const AttributionDocumentModal = ({
     open,
     closeModal: handleClose,
 }: AttributionDocumentModalProps) => {
+    const { isDatasetExplorerEnabled } = useFeatureToggles();
     // we'd like to make spans bold on the text in the modal
     const correspondingSpans = document.snippets.map((snippet) => snippet.corresponding_span_text);
 
@@ -67,6 +70,12 @@ export const AttributionDocumentModal = ({
                     lineBreak={true}
                 />
             </Stack>
+            {isDatasetExplorerEnabled && (
+                // TODO: Pass the dataset index we want to use into this
+                <Link href={links.document(document.index) + '?isDatasetExplorerEnabled=true'}>
+                    View in Dataset Explorer
+                </Link>
+            )}
         </StandardModal>
     );
 };
