@@ -30,6 +30,7 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
+    const modelId = useAppContext((state) => state.selectedModel?.id);
     const { isMultiModalEnabled } = useFeatureToggles();
 
     const { executeRecaptcha } = useGoogleReCaptcha();
@@ -120,6 +121,10 @@ export const QueryForm = (): JSX.Element => {
 
         try {
             await streamPrompt(request);
+            window.heap?.track('queryform.submit', {
+                model: modelId,
+                prompt: formContext.getValues('content'),
+            });
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
