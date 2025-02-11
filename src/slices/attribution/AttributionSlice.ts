@@ -13,6 +13,7 @@ export interface MessageWithAttributionDocuments {
     loadingState: RemoteState | null;
     index: string | null;
     isModelSupported?: boolean;
+    isRequestBlocked?: boolean;
 }
 
 export interface DocumentSelection {
@@ -173,6 +174,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                     attributions.loadingState = RemoteState.Loading;
                     attributions.isModelSupported = undefined;
+                    attributions.isRequestBlocked = undefined;
                 },
                 false,
                 'attribution/startGetAttributionsForMessage'
@@ -204,6 +206,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
                         attributions.loadingState = RemoteState.Loaded;
                         attributions.isModelSupported = true;
+                        attributions.isRequestBlocked = false;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
@@ -213,13 +216,20 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                     (state) => {
                         const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                         attributions.loadingState = RemoteState.Error;
-                        if (
-                            e instanceof error.ValidationError &&
-                            e.validationErrors.some((validationError) =>
-                                validationError.loc.some((loc) => loc === 'model_id')
-                            )
-                        ) {
-                            attributions.isModelSupported = false;
+                        if (e instanceof error.ValidationError) {
+                            if (
+                                e.validationErrors.some((validationError) =>
+                                    validationError.loc.some((loc) => loc === 'model_id')
+                                )
+                            ) {
+                                attributions.isModelSupported = false;
+                            } else if (
+                                e.validationErrors.some((validationError) =>
+                                    validationError.msg.includes('blocked')
+                                )
+                            ) {
+                                attributions.isRequestBlocked = true;
+                            }
                         }
                     },
                     false,
