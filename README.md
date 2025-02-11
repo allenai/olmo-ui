@@ -135,3 +135,7 @@ render(
    </FakeAppContextProvider>
 )
 ```
+
+### Testing HEAP events on local
+
+Switch to `local` environment on HEAP Analytics, then have `IS_ANALYTICS_ENABLED=true` and set `HEAP_ANALYTICS_ID` to the Heap ID of the `local` environment in your `.env.local`. You will see your local events showing on HEAP dashboard.
