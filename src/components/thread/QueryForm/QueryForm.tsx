@@ -123,7 +123,6 @@ export const QueryForm = (): JSX.Element => {
             await streamPrompt(request);
             window.heap?.track('queryform.submit', {
                 model: modelId,
-                prompt: formContext.getValues('content'),
             });
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
