@@ -35,10 +35,10 @@ export const isAttributionBlockedSelector = (state: AppContextState): boolean =>
     if (selectedMessageId !== null) {
         const selectedMessageAttribution = attributionsByMessageId[selectedMessageId];
 
-        return selectedMessageAttribution?.isRequestBlocked !== true;
+        return selectedMessageAttribution?.isRequestBlocked === true;
     }
 
-    return true;
+    return false;
 };
 
 export const messageLengthSelector = (state: AppContextState): number => {

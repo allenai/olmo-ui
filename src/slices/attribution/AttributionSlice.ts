@@ -225,7 +225,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                                 attributions.isModelSupported = false;
                             } else if (
                                 e.validationErrors.some((validationError) =>
-                                    validationError.loc.some((loc) => loc === 'block')
+                                    validationError.msg.includes('blocked')
                                 )
                             ) {
                                 attributions.isRequestBlocked = true;
