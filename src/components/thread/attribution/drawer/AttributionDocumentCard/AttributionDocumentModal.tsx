@@ -72,7 +72,9 @@ export const AttributionDocumentModal = ({
             </Stack>
             {isDatasetExplorerEnabled && (
                 // TODO: Pass the dataset index we want to use into this
-                <Link href={links.document(document.index)}>View in Dataset Explorer</Link>
+                <Link href={links.document(document.index) + '?isDatasetExplorerEnabled=true'}>
+                    View in Dataset Explorer
+                </Link>
             )}
         </StandardModal>
     );
