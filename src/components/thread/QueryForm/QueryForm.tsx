@@ -132,6 +132,7 @@ export const QueryForm = (): JSX.Element => {
                 formContext.setError('content', {
                     type: 'inappropriate',
                 });
+                analyticsClient.trackInappropriatePrompt();
             } else {
                 throw e;
             }
@@ -175,7 +176,6 @@ export const QueryForm = (): JSX.Element => {
     };
 
     const renderInappropriateError = () => {
-        analyticsClient.trackInappropriatePrompt();
         return (
             <>This prompt was flagged as inappropriate. Please change your prompt and resubmit.</>
         );
