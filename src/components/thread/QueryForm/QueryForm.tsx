@@ -1,13 +1,13 @@
-import { Box, Link, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import React, { UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
-import { getFAQIdByShortId } from '@/components/faq/faq-utils';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -121,10 +121,12 @@ export const QueryForm = (): JSX.Element => {
 
         try {
             await streamPrompt(request);
-            window.heap?.track('queryform.submit', {
-                model: modelId,
-                isNewThread: location.pathname === links.playground,
-            });
+            if (modelId !== undefined) {
+                analyticsClient.trackQueryformSubmission(
+                    modelId,
+                    location.pathname === links.playground
+                );
+            }
         } catch (e) {
             if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
                 formContext.setError('content', {
@@ -172,6 +174,13 @@ export const QueryForm = (): JSX.Element => {
         formContext.setValue('files', dataTransfer.files);
     };
 
+    const renderInappropriateError = () => {
+        analyticsClient.trackInappropriatePrompt();
+        return (
+            <>This prompt was flagged as inappropriate. Please change your prompt and resubmit.</>
+        );
+    };
+
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -192,19 +201,9 @@ export const QueryForm = (): JSX.Element => {
                                 name={name}
                                 onChange={onChange}
                                 errorMessage={
-                                    error?.type === 'inappropriate' ? (
-                                        <>
-                                            This prompt was flagged as inappropriate. Please change
-                                            your prompt and resubmit.{' '}
-                                            <Link
-                                                href={
-                                                    links.faqs +
-                                                    getFAQIdByShortId('wildguard-intro')
-                                                }>
-                                                Learn why
-                                            </Link>
-                                        </>
-                                    ) : null
+                                    error?.type === 'inappropriate'
+                                        ? renderInappropriateError()
+                                        : null
                                 }
                                 value={value}
                                 ref={ref}

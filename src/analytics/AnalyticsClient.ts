@@ -14,6 +14,9 @@ export enum EventType {
     TermsLogOut = 'terms.logout',
     ColorModeChange = 'color.mode.change',
     ModelOverloadedError = 'model.overloaded.error',
+    // ----- HEAP -----
+    PromptErrorInappropriate = 'prompt.error.inappropriate',
+    QueryformSubmit = 'queryform.submit',
 }
 
 export type SearchQueryDetails = {
@@ -136,6 +139,17 @@ export class AnalyticsClient {
             occurred: new Date(),
             details: { modelId },
         });
+    }
+
+    trackQueryformSubmission(modelId: string, isNewThread: boolean) {
+        window.heap?.track(EventType.QueryformSubmit, {
+            model: modelId,
+            isNewThread,
+        });
+    }
+
+    trackInappropriatePrompt() {
+        window.heap?.track(EventType.PromptErrorInappropriate);
     }
 }
 
