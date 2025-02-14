@@ -17,6 +17,7 @@ export enum EventType {
     // ----- HEAP -----
     PromptErrorInappropriate = 'prompt.error.inappropriate',
     QueryformSubmit = 'queryform.submit',
+    PromptCorpusLink = 'prompt.corpuslink',
 }
 
 export type SearchQueryDetails = {
@@ -150,6 +151,13 @@ export class AnalyticsClient {
 
     trackInappropriatePrompt() {
         window.heap?.track(EventType.PromptErrorInappropriate);
+    }
+
+    trackPromptCorpusLink(modelId: string, isEnabling: boolean) {
+        window.heap?.track(EventType.PromptCorpusLink, {
+            model: modelId,
+            isEnabling,
+        });
     }
 }
 

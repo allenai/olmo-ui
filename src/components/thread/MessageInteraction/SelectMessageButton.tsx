@@ -3,6 +3,7 @@ import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { ReactNode } from 'react';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -21,6 +22,7 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     const selectMessage = useAppContext((state) => state.selectMessage);
     const unselectMessage = useAppContext((state) => state.unselectMessage);
     const openDrawer = useAppContext((state) => state.openDrawer);
+    const selectedModelId = useAppContext((state) => state.selectedModel?.id);
 
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
@@ -33,6 +35,9 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
             if (isDesktop) {
                 openDrawer('attribution');
             }
+        }
+        if (selectedModelId !== undefined) {
+            analyticsClient.trackPromptCorpusLink(selectedModelId, !isMessageSelected);
         }
     };
 
