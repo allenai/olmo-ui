@@ -15,6 +15,7 @@ import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { getFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { router } from '@/router';
 
@@ -24,7 +25,6 @@ import {
     SnackMessage,
     SnackMessageType,
 } from './SnackMessageSlice';
-import { getFeatureToggles } from '@/FeatureToggleContext';
 
 export const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
