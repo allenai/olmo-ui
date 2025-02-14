@@ -24,6 +24,7 @@ import {
     SnackMessage,
     SnackMessageType,
 } from './SnackMessageSlice';
+import { getFeatureToggles } from '@/FeatureToggleContext';
 
 export const findChildMessageById = (messageId: string, rootMessage: Message): Message | null => {
     for (const childMessage of rootMessage.children ?? []) {
@@ -133,6 +134,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             setMessageLimitReached,
             getAttributionsForMessage,
         } = get();
+
+        const { isCorpusLinkEnabled } = getFeatureToggles();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
 
@@ -215,7 +218,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
-                    await getAttributionsForMessage(request.content, streamedResponseId);
+                    if (isCorpusLinkEnabled) {
+                        await getAttributionsForMessage(request.content, streamedResponseId);
+                    }
                 }
             }
         } catch (err) {
