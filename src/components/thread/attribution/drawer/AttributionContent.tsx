@@ -2,7 +2,6 @@ import { ArrowBack } from '@mui/icons-material';
 import {
     Box,
     Button,
-    DialogActions,
     DialogContent,
     DialogTitle,
     Link,
@@ -44,8 +43,8 @@ interface AttributesModalProps {
 
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
-            <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
+        <StandardModal open={open} closeModal={handleClose} data-testid="about-attribution-modal">
+            <DialogTitle variant="h4" sx={{ paddingInline: 0, paddingBlockStart: 0 }}>
                 Training Text Matches
             </DialogTitle>
             <DialogContent sx={{ padding: 0 }}>
@@ -82,11 +81,6 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
                     </Link>
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{ paddingInline: 0 }}>
-                <Button variant="text" onClick={handleClose}>
-                    Close
-                </Button>
-            </DialogActions>
         </StandardModal>
     );
 };
@@ -106,7 +100,11 @@ export const AttributionContent = () => {
             data-testid="corpuslink-drawer"
             height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
-                {isDesktop && <Typography variant="h5">Training Text Matches</Typography>}
+                {isDesktop && (
+                    <Typography variant="h5" sx={{ marginBlockStart: 0 }}>
+                        Training Text Matches
+                    </Typography>
+                )}
                 <Typography variant="body2">
                     Documents from the training data that have exact text matches with the model
                     response. Powered by{' '}
