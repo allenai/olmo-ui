@@ -50,12 +50,16 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
 
     if (isDesktop) {
         return (
+            // <Button startIcon={} sizes the icon to 20px regardless of what size you set
+            // this acheives a similar result, while allowing our Icon size to match an <IconButton>
             <Button
+                variant="text"
                 onClick={handleClick}
                 sx={{
-                    alignSelf: 'end',
-                    marginInlineStart: 4.5,
                     fontWeight: 'semiBold',
+                    color: 'primary.main',
+                    gap: 1,
+                    padding: 1,
                     '&:hover': {
                         color: 'text.primary',
                         backgroundColor: (theme) =>
@@ -65,7 +69,8 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
                                 : 'rgba(0,0,0,0.04)',
                     },
                 }}>
-                {showHideText}
+                {isMessageSelected ? <Article /> : <ArticleOutlined />}
+                <span>{showHideText}</span>
             </Button>
         );
     }
