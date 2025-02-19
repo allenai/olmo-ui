@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
     hasAttributionSelectionSelector,
@@ -16,6 +17,9 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     const featureToggles = useFeatureToggles();
     const selectSpans = useAppContext((state) => state.selectSpans);
     const resetSelectedSpans = useAppContext((state) => state.resetCorpusLinkSelection);
+    const openDrawer = useAppContext((state) => state.openDrawer);
+
+    const isDesktop = useDesktopOrUp();
 
     const [isSelectedSpan, selectionType] = useAppContext(
         (state): [boolean, 'span' | 'document' | null] => {
@@ -56,6 +60,9 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             resetSelectedSpans();
         } else {
             selectSpans(spanIds);
+            if (!isDesktop) {
+                openDrawer('attribution');
+            }
         }
     };
 
