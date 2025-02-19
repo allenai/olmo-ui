@@ -1,7 +1,11 @@
-import { Box, DialogTitle, Link, Stack, Typography } from '@mui/material';
+import { Box, Link, Stack, Typography } from '@mui/material';
 
 import { Document } from '@/api/AttributionClient';
-import { StandardModal } from '@/components/StandardModal';
+import {
+    StandardDialogCloseButton,
+    StandardDialogTitle,
+    StandardModal,
+} from '@/components/StandardModal';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
@@ -24,17 +28,8 @@ export const AttributionDocumentModal = ({
     const correspondingSpans = document.snippets.map((snippet) => snippet.corresponding_span_text);
 
     return (
-        <StandardModal
-            open={open}
-            closeModal={handleClose}
-            data-testid="attribution-document-modal">
-            <DialogTitle
-                sx={{
-                    paddingInline: 0,
-                    paddingBlockStart: 0,
-                }}
-                display="flex"
-                flexDirection="column">
+        <StandardModal open={open} onClose={handleClose} data-testid="attribution-document-modal">
+            <StandardDialogTitle>
                 <Box
                     sx={{
                         paddingInlineEnd: 6,
@@ -58,7 +53,8 @@ export const AttributionDocumentModal = ({
                         </Link>
                     </Typography>
                 )}
-            </DialogTitle>
+                <StandardDialogCloseButton onClick={handleClose} />
+            </StandardDialogTitle>
             <Stack pt={2} gap={3.5} sx={{ overflowY: 'scroll' }}>
                 <BoldTextForDocumentAttribution
                     correspondingSpans={correspondingSpans}

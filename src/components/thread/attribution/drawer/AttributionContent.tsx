@@ -1,21 +1,16 @@
 import { ArrowBack } from '@mui/icons-material';
-import {
-    Box,
-    Button,
-    DialogContent,
-    DialogTitle,
-    Link,
-    Stack,
-    styled,
-    Typography,
-} from '@mui/material';
+import { Box, Button, DialogContent, Link, Stack, styled, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
-import { StandardModal } from '@/components/StandardModal';
+import {
+    StandardDialogCloseButton,
+    StandardDialogTitle,
+    StandardModal,
+} from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
@@ -43,10 +38,11 @@ interface AttributesModalProps {
 
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
-        <StandardModal open={open} closeModal={handleClose} data-testid="about-attribution-modal">
-            <DialogTitle variant="h4" sx={{ paddingInline: 0, paddingBlockStart: 0 }}>
+        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
+            <StandardDialogTitle variant="h4">
                 Training Text Matches
-            </DialogTitle>
+                <StandardDialogCloseButton onClick={handleClose} />
+            </StandardDialogTitle>
             <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
                     This feature shows documents from the training data that have exact text matches
