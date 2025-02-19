@@ -15,6 +15,7 @@ import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
+import { getFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { router } from '@/router';
 
@@ -133,6 +134,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             setMessageLimitReached,
             getAttributionsForMessage,
         } = get();
+
+        const { isCorpusLinkEnabled } = getFeatureToggles();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
 
@@ -215,7 +218,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
-                    await getAttributionsForMessage(request.content, streamedResponseId);
+                    if (isCorpusLinkEnabled) {
+                        await getAttributionsForMessage(request.content, streamedResponseId);
+                    }
                 }
             }
         } catch (err) {
