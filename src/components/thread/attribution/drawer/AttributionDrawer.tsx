@@ -26,6 +26,7 @@ export const MobileAttributionDrawer = () => {
     return (
         <FullScreenDrawer
             drawerId="attribution"
+            fullWidth
             header={({ onDrawerClose }) => (
                 <FullScreenDrawerHeader>
                     <Stack
