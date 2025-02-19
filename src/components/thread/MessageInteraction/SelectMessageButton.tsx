@@ -56,7 +56,14 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
                     alignSelf: 'end',
                     marginInlineStart: 4.5,
                     fontWeight: 'semiBold',
-                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.04)' },
+                    '&:hover': {
+                        color: 'text.primary',
+                        backgroundColor: (theme) =>
+                            // I don't know why this comes for free with IconButton, but not Button
+                            theme.palette.mode === 'dark'
+                                ? 'rgba(255,255,255,0.04)'
+                                : 'rgba(0,0,0,0.04)',
+                    },
                 }}>
                 {showHideText}
             </Button>
