@@ -2,6 +2,7 @@ import { defer, LoaderFunction } from 'react-router-dom';
 
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
+import { getFeatureToggles } from '@/FeatureToggleContext';
 
 export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
     const {
@@ -14,6 +15,8 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         models,
         abortPrompt,
     } = appContext.getState();
+
+    const { isCorpusLinkEnabled } = getFeatureToggles();
 
     // get the latest state of the selectedThread if we're changing to a different thread
     if (params.id != null && params.id !== selectedThreadRootId) {
@@ -53,15 +56,19 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
             }
         }
 
-        const attributionsPromise =
-            lastResponseId != null
-                ? getAttributionsForMessage(lastPrompt, lastResponseId)
-                : undefined;
+        if (isCorpusLinkEnabled) {
+            const attributionsPromise =
+                lastResponseId != null
+                    ? getAttributionsForMessage(lastPrompt, lastResponseId)
+                    : undefined;
 
-        return defer({
-            selectedThread,
-            attributions: attributionsPromise,
-        });
+            return defer({
+                selectedThread,
+                attributions: attributionsPromise,
+            });
+        } else {
+            return defer({ selectedThread });
+        }
     }
 
     return null;
