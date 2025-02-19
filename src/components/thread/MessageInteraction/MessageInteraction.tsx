@@ -79,8 +79,8 @@ export const MessageInteraction = ({
                 '@media (pointer: fine)': {
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         opacity: autoHideControls ? 0 : 1,
-                        transition: 'opacity 300ms linear 0.2s',
-                        '.ChatMessage:hover &': {
+                        transition: 'opacity 300ms linear',
+                        '.ChatMessage:hover &, .ChatMessage:focus-within &': {
                             opacity: 1,
                             transitionDelay: '0s',
                         },
