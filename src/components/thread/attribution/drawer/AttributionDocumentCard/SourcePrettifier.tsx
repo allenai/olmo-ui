@@ -74,12 +74,12 @@ export const prettifySource = (source: string): ReactNode => {
                 fontWeight={600}
                 color="primary"
                 underline="always"
-                sx={(theme) => ({
+                sx={{
                     '[data-selected-document=true] &': {
-                        color: theme.palette.secondary.contrastText,
+                        color: 'inherit',
                         textDecorationColor: 'currentColor',
                     },
-                })}>
+                }}>
                 {displayName}
             </Link>
             {secondaryName !== '' && (
