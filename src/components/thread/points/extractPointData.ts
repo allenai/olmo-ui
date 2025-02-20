@@ -3,12 +3,12 @@ interface Point {
     y: number;
 }
 
-export interface PointsData {
+export interface PointInfo {
     points: Point[];
     alt: string;
 }
 
-export function extractPointData(input: string): PointsData[] {
+export function extractPointData(input: string): PointInfo[] {
     const xmlDoc = new DOMParser().parseFromString(input, 'text/xml');
 
     if (xmlDoc.querySelector('parsererror') != null) {
@@ -34,53 +34,21 @@ export function extractPointData(input: string): PointsData[] {
             }
 
             // an "x" attribute with a number after, like "x1" or "x42"
+            // TODO: figure out if we need to do some error handling around the empty group
             const { coordinateIndex } =
                 /x(?<coordinateIndex>\d+)/.exec(xAttributeName)?.groups ?? {};
 
             return {
                 x: Number(element.getAttribute(xAttributeName)),
                 y: Number(element.getAttribute('y' + coordinateIndex)),
-            };
+            } satisfies Point;
         });
 
         return {
             points: coordinatePairs,
             alt: element.getAttribute('alt') ?? '',
-        } satisfies PointsData;
+        } satisfies PointInfo;
     });
 
     return points;
 }
-
-window.extractPointData = extractPointData;
-
-// export function extractAllPointsData(input: string): PointsData[] {
-//     const allMatches = Array.from(input.matchAll(pointsPattern))
-//         .concat(Array.from(input.matchAll(pointPattern)))
-//         .sort((a, b) => a.index - b.index);
-
-//     return allMatches.map((match) => {
-//         if (match[0].startsWith('<points')) {
-//             // Handle <points> tag
-//             const pointsString = match[0];
-//             const alt = match[2];
-
-//             const points: Point[] = [];
-//             let coordinateMatch;
-//             while ((coordinateMatch = coordinatePattern.exec(pointsString)) !== null) {
-//                 points.push({
-//                     x: parseFloat(coordinateMatch[2]),
-//                     y: parseFloat(coordinateMatch[3]),
-//                 });
-//             }
-
-//             return { points, alt };
-//         } else {
-//             // Handle <point> tag
-//             return {
-//                 points: [{ x: parseFloat(match[1]), y: parseFloat(match[2]) }],
-//                 alt: match[3],
-//             };
-//         }
-//     });
-// }

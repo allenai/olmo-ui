@@ -1,5 +1,3 @@
-import '../points/extractPointData';
-
 import { Box, Divider, ImageList, ImageListItem } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -15,6 +13,7 @@ import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
+import { extractPointData } from '../points/extractPointData';
 import { isPointResponse } from '../points/isPointResponse';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
@@ -30,6 +29,10 @@ const StandardMessage = ({ messageId }: MessageViewProps): ReactNode => {
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
+const PointCircle = ({ x, y }: { x: number; y: number }): ReactNode => {
+    return <circle cx={`${x}%`} cy={`${y}%`} r={10} fill="white" />;
+};
+
 const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
     const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
     const lastImagesInThread = useAppContext((state) => {
@@ -43,14 +46,28 @@ const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
         return "can't find image";
     }
 
-    // const xAttributes = xmlDoc.evaluate('point/@*[starts-with(name(), "x")]', xmlDoc);
-    // const yAttributes = xmlDoc.evaluate('point/@*[starts-with(name(), "y")]', xmlDoc);
-    // const altText = xmlDoc.evaluate('point/@alt', xmlDoc);
+    const pointInfos = extractPointData(content);
 
     return (
-        <Box sx={{ display: 'grid', gridTemplate: '1fr / 1fr', gridTemplateAreas: '"combined"' }}>
-            <img src={lastImagesInThread[0]} alt="" />
-            <div>{content}</div>
+        <Box
+            sx={{
+                display: 'grid',
+                gridTemplate: 'auto / auto',
+                gridTemplateAreas: '"combined"',
+                width: 'min-content',
+            }}>
+            <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
+            {pointInfos.map((pointInfo, i) => {
+                return (
+                    <svg
+                        key={i}
+                        style={{ gridArea: 'combined', height: '100%', width: '100%', zIndex: 1 }}>
+                        {pointInfo.points.map((point, i) => (
+                            <PointCircle x={point.x} y={point.y} key={i} />
+                        ))}
+                    </svg>
+                );
+            })}
         </Box>
     );
 };
