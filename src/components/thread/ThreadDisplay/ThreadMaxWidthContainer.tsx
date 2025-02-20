@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 
-import { CHAT_ICON_WIDTH } from '../ChatMessage';
+import { CHAT_ICON_WIDTH } from '../ChatMessage/ChatMessage';
 
 export const ThreadMaxWidthContainer = styled(Box)(({ theme }) => ({
     maxWidth: '750px',

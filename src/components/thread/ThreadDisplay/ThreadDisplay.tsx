@@ -9,10 +9,11 @@ import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from '../ChatMessage';
+import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
+import { isPointResponse } from '../points/isPointResponse';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
@@ -20,6 +21,33 @@ import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 interface MessageViewProps {
     messageId: Message['id'];
 }
+
+const StandardMessage = ({ messageId }: MessageViewProps): ReactNode => {
+    const contentWithMarks = useSpanHighlighting(messageId);
+
+    return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
+};
+
+const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
+    const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
+    const lastImagesInThread = useAppContext((state) => {
+        return state.selectedThreadMessages
+            .map((messageId) => state.selectedThreadMessagesById[messageId])
+            .filter((message) => message.fileUrls?.length)
+            .at(-1)?.fileUrls;
+    });
+
+    if (lastImagesInThread == null) {
+        return "can't find image";
+    }
+
+    return (
+        <div>
+            <img src={lastImagesInThread[0]} alt="" />
+            {content}
+        </div>
+    );
+};
 
 const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
     const {
@@ -29,15 +57,15 @@ const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
         fileUrls,
     } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
 
-    const contentWithMarks = useSpanHighlighting(messageId);
-
     if (role === Role.System) {
         return null;
     }
 
+    const Message = isPointResponse(content) ? PointResponseMessage : StandardMessage;
+
     return (
         <ChatMessage role={role} messageId={messageId}>
-            <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
+            <Message messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
                     <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
