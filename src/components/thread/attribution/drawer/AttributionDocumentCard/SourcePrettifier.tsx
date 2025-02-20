@@ -68,14 +68,30 @@ export const prettifySource = (source: string): ReactNode => {
 
     return (
         <>
-            <Link href={url} target="_blank" fontWeight={600} color="primary" underline="always">
+            <Link
+                href={url}
+                target="_blank"
+                fontWeight={600}
+                color="primary"
+                underline="always"
+                sx={(theme) => ({
+                    '[data-selected-document=true] &': {
+                        color: theme.palette.secondary.contrastText,
+                        textDecorationColor: 'currentColor',
+                    },
+                })}>
                 {displayName}
             </Link>
             {secondaryName !== '' && (
                 <Typography
                     variant="body2"
                     component="span"
-                    sx={{ color: (theme) => theme.palette.text.secondary }}>
+                    sx={(theme) => ({
+                        color: theme.palette.text.secondary,
+                        '[data-selected-document=true] &': {
+                            color: 'inherit',
+                        },
+                    })}>
                     {' > '}
                     {secondaryName}
                 </Typography>
