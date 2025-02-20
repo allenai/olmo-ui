@@ -99,11 +99,18 @@ export const ChatMessage = ({
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
-        <>
-            <Box id="icon" width={CHAT_ICON_WIDTH} height={CHAT_ICON_WIDTH} gridColumn="1">
+        <Box
+            // This className is used for a hover effect
+            className="ChatMessage"
+            sx={{
+                display: 'grid',
+                gridTemplateColumns: 'subgrid',
+                gridColumn: '1 / -1',
+            }}>
+            <Box width={CHAT_ICON_WIDTH} height={CHAT_ICON_WIDTH} gridColumn="1">
                 {icon}
             </Box>
-            <Box>
+            <Box gridColumn="2">
                 <MessageComponent messageId={messageId}>{children}</MessageComponent>
                 {streamPromptState === RemoteState.Loading && (
                     <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
@@ -113,6 +120,6 @@ export const ChatMessage = ({
                     <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
                 )}
             </Box>
-        </>
+        </Box>
     );
 };
