@@ -1,12 +1,12 @@
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { Button } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
 import { MessageInteractionIcon } from './MessageInteractionIcon';
@@ -24,8 +24,7 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     const openDrawer = useAppContext((state) => state.openDrawer);
     const selectedModelId = useAppContext((state) => state.selectedModel?.id);
 
-    const theme = useTheme();
-    const isDesktop = useMediaQuery(theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT));
+    const isDesktop = useDesktopOrUp();
 
     const handleClick = () => {
         if (isMessageSelected) {
@@ -47,10 +46,39 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
         return null;
     }
 
+    const showHideText = isMessageSelected ? 'Hide training text' : 'Match training text';
+
+    if (isDesktop) {
+        return (
+            // <Button startIcon={} sizes the icon to 20px regardless of what size you set
+            // this acheives a similar result, while allowing our Icon size to match an <IconButton>
+            <Button
+                variant="text"
+                onClick={handleClick}
+                sx={{
+                    fontWeight: 'semiBold',
+                    color: 'primary.main',
+                    gap: 1,
+                    padding: 1,
+                    '&:hover': {
+                        color: 'text.primary',
+                        backgroundColor: (theme) =>
+                            // I don't know why this comes for free with IconButton, but not Button
+                            theme.palette.mode === 'dark'
+                                ? 'rgba(255,255,255,0.04)'
+                                : 'rgba(0,0,0,0.04)',
+                    },
+                }}>
+                {isMessageSelected ? <Article /> : <ArticleOutlined />}
+                <span>{showHideText}</span>
+            </Button>
+        );
+    }
+
     return (
         <MessageInteractionIcon
             onClick={handleClick}
-            tooltip={isMessageSelected ? 'Hide training text' : 'Match training text'}
+            tooltip={showHideText}
             Icon={isMessageSelected ? Article : ArticleOutlined}
             selected={isMessageSelected}
         />

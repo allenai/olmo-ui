@@ -18,8 +18,17 @@ export const MessageInteractionIcon = ({
 }: MessageInteractionIconProps) => {
     return (
         <StyledTooltip title={tooltip} placement="top">
-            <IconButton onClick={onClick} aria-pressed={selected} aria-label={tooltip}>
-                <Icon color="primary" />
+            <IconButton
+                onClick={onClick}
+                aria-pressed={selected}
+                aria-label={tooltip}
+                sx={{
+                    color: 'primary.main',
+                    '&:hover': {
+                        color: 'text.primary',
+                    },
+                }}>
+                <Icon />
             </IconButton>
         </StyledTooltip>
     );
