@@ -29,6 +29,7 @@ import { TermAndConditionsLink } from './TermsAndConditionsLink';
 interface TermsAndConditionsSection {
     title: string;
     image: string;
+    notice: string;
     contents: React.ReactNode;
     acknowledgement: React.ReactNode;
     submitButtonText: string;
@@ -105,7 +106,7 @@ export const TermsAndConditionsModal = () => {
                             variant="body1"
                             color={(theme) => theme.palette.text.drawer.secondary}
                             sx={{ mt: 1.5, alignItems: 'center', display: 'inline-flex' }}>
-                            Please read carefully
+                            {section.notice}
                         </Typography>
                     </DialogTitle>
                     <DialogContent sx={{ p: 0, m: 0 }}>
@@ -116,7 +117,7 @@ export const TermsAndConditionsModal = () => {
                     <DialogActions sx={{ p: 0, justifyContent: 'flex-start' }}>
                         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                             <FormControlLabel
-                                sx={{ alignItems: 'center', gap: 2 }}
+                                sx={{ alignItems: 'center' }}
                                 control={
                                     <Controller
                                         rules={{ required: true }}
@@ -243,59 +244,59 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
 const Section1: TermsAndConditionsSection = {
     title: 'Limitations',
     image: '/getting-started-section-1.png',
-    contents: (
-        <>
-            <p>
-                Large pretrained language models are trained on data scraped from the internet,
-                including potentially toxic, unethical, and harmful language. Ai2 uses several
-                strategies to mitigate these behaviors, but model outputs may contain unwelcome or
-                offensive language and inaccurate results. Never use Playground as a provider of
-                critical information or professional advice (e.g. legal, medical, financial or
-                similar advice).
-            </p>
-        </>
-    ),
-    acknowledgement:
-        'I understand that models in the Ai2 Playground, including OLMo, may output unintended, inaccurate, or offensive results.',
-    submitButtonText: 'Next',
-};
-
-const Section2: TermsAndConditionsSection = {
-    title: 'Privacy and Data Collection',
-    image: '/getting-started-section-2.png',
+    notice: 'Things to remember before getting started',
     contents: (
         <>
             <p
                 style={{
                     fontVariantLigatures: 'none', // This avoids font-family to replace '(c)' with a copyright mark
                 }}>
-                The Ai2 Playground is designed for scientific research and educational use and
-                offered to the general public at no cost pursuant to Ai2&apos;s mission as a
-                501(c)(3) nonprofit organization , By using Playground, you agree to our Terms of
-                Use, Responsible Use Guidelines, and Privacy Policy. Your prompt history and user
-                data may be disclosed outside Ai2, to the extent permitted by applicable laws.
-                Exercise discretion and never submit personal, sensitive, or confidential
-                information on the Ai2 Playground.
+                As a 501(c)(3) nonprofit organization, Ai2 offers the Ai2 Playground at no cost to
+                educate the general public and advance scientific research in AI. Models served in
+                the Ai2 Playground generate inaccurate or misleading information, or produce
+                offensive or unwelcome outputs.
+                <br />
+                <br />
+                Neither the Playground nor any models provided by Ai2 are intended to give advice.
+                Never use Playground as a provider of critical information or for legal, medical,
+                financial, or other professional advice. Always validate model outputs with your own
+                independent research.
             </p>
         </>
     ),
-    acknowledgement: (
+    acknowledgement: 'Acknowledge',
+    submitButtonText: 'Next',
+};
+
+const Section2: TermsAndConditionsSection = {
+    title: 'Notice & Consent',
+    image: '/getting-started-section-2.png',
+    notice: 'Please read our terms carefully',
+    contents: (
         <>
-            I agree to Ai2’s{' '}
-            <TermAndConditionsLink link="https://allenai.org/terms">
-                Terms of Use
-            </TermAndConditionsLink>
-            ,{' '}
-            <TermAndConditionsLink link="https://allenai.org/responsible-use">
-                Responsible Use Guidelines
-            </TermAndConditionsLink>
-            , and{' '}
-            <TermAndConditionsLink link="https://allenai.org/privacy-policy">
-                Privacy Policy
-            </TermAndConditionsLink>
-            .
+            <p>
+                By selecting “Accept” below, you agree to our{' '}
+                <TermAndConditionsLink link="https://allenai.org/terms">
+                    Terms of Use
+                </TermAndConditionsLink>{' '}
+                and{' '}
+                <TermAndConditionsLink link="https://allenai.org/responsible-use">
+                    Responsible Use Guidelines
+                </TermAndConditionsLink>
+                . To the extent permitted by applicable laws, your interactions with Playground and
+                logs of your activity may be collected by Ai2 and shared in accordance with our{' '}
+                <TermAndConditionsLink link="https://allenai.org/privacy-policy">
+                    Privacy Policy
+                </TermAndConditionsLink>
+                . Always exercise discretion and never submit personal, sensitive, or confidential
+                information on the Playground.
+                <br />
+                <br />
+                If you do not wish to agree to these terms, feel free to exit this page.
+            </p>
         </>
     ),
+    acknowledgement: 'Accept',
     submitButtonText: "Let's Go!",
 };
 
