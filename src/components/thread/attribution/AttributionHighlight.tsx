@@ -187,6 +187,11 @@ export const AttributionHighlight = ({
                 e.preventDefault();
                 toggleSelectedSpans();
             }}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    toggleSelectedSpans();
+                }
+            }}
             tabIndex={0}
             data-span-relevance={spanRelevance}
             data-selection-type={isSelectedSpan ? selectionType : undefined}
