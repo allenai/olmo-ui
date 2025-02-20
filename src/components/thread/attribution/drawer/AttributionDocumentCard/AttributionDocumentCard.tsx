@@ -4,6 +4,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 
 import { AttributionBucket } from '../../calculate-relevance-score';
@@ -197,6 +198,9 @@ const LocateSpanButton = ({
 
     const isSpanSelected = useAppContext((state) => state.attribution.selection != null);
 
+    const isDesktop = useDesktopOrUp();
+    const closeDrawer = useAppContext((state) => state.closeDrawer);
+
     const noDocumentsSelected = useAppContext(
         (state) => !(state.attribution.selection?.type === 'document')
     );
@@ -220,6 +224,9 @@ const LocateSpanButton = ({
                     unselectDocument(documentId);
                 } else {
                     selectDocument(documentId);
+                    if (!isDesktop) {
+                        closeDrawer('attribution');
+                    }
                 }
             }}>
             {isDocumentSelected ? 'Show all spans' : `Locate span${snippetCount > 1 ? 's' : ''}`}
