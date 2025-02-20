@@ -1,3 +1,5 @@
+import '../points/extractPointData';
+
 import { Box, Divider, ImageList, ImageListItem } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -33,7 +35,7 @@ const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
     const lastImagesInThread = useAppContext((state) => {
         return state.selectedThreadMessages
             .map((messageId) => state.selectedThreadMessagesById[messageId])
-            .filter((message) => message.fileUrls?.length)
+            .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
     });
 
@@ -41,11 +43,15 @@ const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
         return "can't find image";
     }
 
+    // const xAttributes = xmlDoc.evaluate('point/@*[starts-with(name(), "x")]', xmlDoc);
+    // const yAttributes = xmlDoc.evaluate('point/@*[starts-with(name(), "y")]', xmlDoc);
+    // const altText = xmlDoc.evaluate('point/@alt', xmlDoc);
+
     return (
-        <div>
+        <Box sx={{ display: 'grid', gridTemplate: '1fr / 1fr', gridTemplateAreas: '"combined"' }}>
             <img src={lastImagesInThread[0]} alt="" />
-            {content}
-        </div>
+            <div>{content}</div>
+        </Box>
     );
 };
 
