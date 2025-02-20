@@ -20,6 +20,7 @@ import { Controller, FormContainer, useForm, useFormState } from 'react-hook-for
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
+import { SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 
 import { StandardModal } from './StandardModal';
@@ -67,10 +68,12 @@ export const TermsAndConditionsModal = () => {
             <Stack
                 direction="row"
                 spacing={2.5}
-                sx={{
+                sx={(theme) => ({
                     display: 'flex',
-                    maxHeight: '520px',
-                }}>
+                    [theme.breakpoints.up(SMALL_LAYOUT_BREAKPOINT)]: {
+                        maxHeight: '520px',
+                    },
+                })}>
                 {greaterThanLg && (
                     <Box
                         component="img"
