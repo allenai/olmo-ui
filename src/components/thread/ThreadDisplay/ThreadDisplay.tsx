@@ -108,8 +108,7 @@ const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
                     </Stack>
                 ))}
             </Stack>
-            {/* TODO: make the text from inside the xml bold */}
-            {content.replaceAll(pointRegex, '$text')}
+            <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
         </Box>
     );
 };
