@@ -61,9 +61,10 @@ interface PointOnImageProps {
     fill: string;
 }
 const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
-    <svg
+    <Box
+        component="svg"
         aria-hidden
-        style={{
+        sx={{
             gridArea: 'combined',
             height: '100%',
             width: '100%',
@@ -78,7 +79,7 @@ const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
                 shouldAnimate
             />
         ))}
-    </svg>
+    </Box>
 );
 
 interface PointLabelProps {
@@ -131,10 +132,11 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
                     gridTemplateAreas: '"combined"',
                     width: 'fit-content',
                 }}>
-                <img
+                <Box
+                    component="img"
                     src={lastImagesInThread[0]}
                     alt=""
-                    style={{
+                    sx={{
                         gridArea: 'combined',
                         maxHeight: 500,
                         objectFit: 'contain',
