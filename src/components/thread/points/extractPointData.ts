@@ -12,7 +12,6 @@ export interface PointInfo {
 
 export function extractPointData(input: string): PointInfo[] | null {
     const pointXmls = input.match(pointRegex);
-    console.log(pointXmls);
 
     if (pointXmls == null || pointXmls.length === 0) {
         return null;
@@ -38,18 +37,9 @@ export function extractPointData(input: string): PointInfo[] | null {
             .filter((name) => name.startsWith('x'));
 
         const coordinatePairs = xCoordinateAttributeNames.map((xAttributeName) => {
-            // just an "x" attribute
-            if (xAttributeName.length === 1) {
-                return {
-                    x: Number(element.getAttribute(xAttributeName)),
-                    y: Number(element.getAttribute('y')),
-                };
-            }
-
-            // an "x" attribute with a number after, like "x1" or "x42"
-            // TODO: figure out if we need to do some error handling around the empty group
-            const { coordinateIndex } =
-                /x(?<coordinateIndex>\d+)/.exec(xAttributeName)?.groups ?? {};
+            const { coordinateIndex } = /x(?<coordinateIndex>\d+)/.exec(xAttributeName)?.groups ?? {
+                coordinateIndex: '',
+            };
 
             return {
                 x: Number(element.getAttribute(xAttributeName)),
