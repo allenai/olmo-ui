@@ -56,11 +56,11 @@ const PointCircle = ({
     );
 };
 
-interface ImagePointProps {
+interface PointOnImageProps {
     points: Point[];
     fill: string;
 }
-const ImagePoint = ({ points, fill }: ImagePointProps): ReactNode => (
+const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
     <svg
         aria-hidden
         style={{
@@ -124,6 +124,7 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
         <Box
             component="figure"
             sx={{
+                margin: 0,
                 display: 'grid',
                 gridTemplate: 'auto / auto',
                 gridTemplateAreas: '"combined"',
@@ -132,7 +133,7 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
             <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
             {pointInfos.map((pointInfo, i) => {
                 return (
-                    <ImagePoint
+                    <PointOnImage
                         key={i}
                         points={pointInfo.points}
                         fill={pointColors[i % pointColors.length]}
@@ -147,8 +148,8 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
                         pointColor={pointColors[i % pointColors.length]}
                     />
                 ))}
+                <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
             </Stack>
-            <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
         </Box>
     );
 };
