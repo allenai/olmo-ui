@@ -41,11 +41,11 @@ export const MessageView = ({
         return null;
     }
 
-    const Message = hasPoints(content) ? PointResponseMessage : StandardMessage;
+    const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
 
     return (
         <ChatMessage role={role} messageId={messageId}>
-            <Message messageId={messageId} />
+            <MessageComponent messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
                     <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
