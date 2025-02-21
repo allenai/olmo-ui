@@ -1,4 +1,4 @@
-import { Typography, useTheme } from '@mui/material';
+import { styled, Typography, useTheme } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { ReactNode } from 'react';
 
@@ -9,6 +9,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { extractPointData, Point } from '../points/extractPointData';
 import { pointRegex } from '../points/pointRegex';
 import { MessageProps, StandardMessage } from '../ThreadDisplay/MessageView';
+import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 
 interface PointCircleProps {
     xPercent: number;
@@ -56,20 +57,22 @@ const PointCircle = ({
     );
 };
 
+// This is using styled because Box eats the height and width properties that we want to pass to the SVG!
+const PointOnImageSvg = styled('svg')({
+    gridArea: 'combined',
+    height: '100%',
+    width: '100%',
+    zIndex: 1,
+});
+
 interface PointOnImageProps {
     points: Point[];
     fill: string;
 }
 const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
-    <Box
-        component="svg"
-        aria-hidden
-        sx={{
-            gridArea: 'combined',
-            height: '100%',
-            width: '100%',
-            zIndex: 1,
-        }}>
+    // Height and width are applied here to give it a minimum viewport of 0w,0h. Otherwise it gets set to the default of 300wx150h
+    // This allows us to scale down to smaller sizes
+    <PointOnImageSvg aria-hidden width="0" height="0">
         {points.map((point, pointIndex) => (
             <PointCircle
                 xPercent={point.x}
@@ -79,7 +82,7 @@ const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
                 shouldAnimate
             />
         ))}
-    </Box>
+    </PointOnImageSvg>
 );
 
 interface PointLabelProps {
@@ -123,35 +126,38 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
 
     return (
         <>
-            <Box
-                component="figure"
-                sx={{
-                    margin: 0,
-                    display: 'grid',
-                    gridTemplate: 'auto / auto',
-                    gridTemplateAreas: '"combined"',
-                    width: 'fit-content',
-                }}>
+            <Box component="figure" sx={{ margin: 0 }}>
                 <Box
-                    component="img"
-                    src={lastImagesInThread[0]}
-                    alt=""
                     sx={{
-                        gridArea: 'combined',
-                        maxHeight: 500,
-                        objectFit: 'contain',
-                        height: 'auto',
-                    }}
-                />
-                {pointInfos.map((pointInfo, i) => {
-                    return (
-                        <PointOnImage
-                            key={i}
-                            points={pointInfo.points}
-                            fill={pointColors[i % pointColors.length]}
-                        />
-                    );
-                })}
+                        display: 'grid',
+                        gridTemplate: 'auto / auto',
+                        gridTemplateAreas: '"combined"',
+                        width: 'fit-content',
+                        height: 'fit-content',
+                        maxWidth: '100%',
+                    }}>
+                    <Box
+                        component="img"
+                        src={lastImagesInThread[0]}
+                        alt=""
+                        sx={{
+                            gridArea: 'combined',
+                            maxHeight: MAX_THREAD_IMAGE_HEIGHT,
+                            objectFit: 'contain',
+                            height: 'auto',
+                            maxWidth: '100%',
+                        }}
+                    />
+                    {pointInfos.map((pointInfo, i) => {
+                        return (
+                            <PointOnImage
+                                key={i}
+                                points={pointInfo.points}
+                                fill={pointColors[i % pointColors.length]}
+                            />
+                        );
+                    })}
+                </Box>
                 <Stack gap={2} useFlexGap component="figcaption">
                     {pointInfos.map((pointInfo, i) => (
                         <PointLabel

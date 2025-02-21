@@ -11,6 +11,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
+import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 
 export interface MessageProps {
     messageId: Message['id'];
@@ -48,7 +49,7 @@ export const MessageView = ({
             <MessageComponent messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
-                    <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
+                    <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>
                         <img src={url} alt={'Uploaded'} loading="lazy" />
                     </ImageListItem>
                 ))}
