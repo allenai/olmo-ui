@@ -114,7 +114,14 @@ export const TermsAndConditionsModal = () => {
                             {section.contents}
                         </Typography>
                     </DialogContent>
-                    <DialogActions sx={{ p: 0, justifyContent: 'flex-start' }}>
+                    <DialogActions
+                        sx={{
+                            p: 0,
+                            justifyContent: 'flex-start',
+                            '&>form': {
+                                flex: 1,
+                            },
+                        }}>
                         <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                             <FormControlLabel
                                 sx={{ alignItems: 'center' }}
