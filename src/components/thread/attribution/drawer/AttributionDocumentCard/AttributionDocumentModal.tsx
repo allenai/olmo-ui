@@ -1,8 +1,11 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, DialogTitle, IconButton, Link, Stack, Typography } from '@mui/material';
+import { Box, Link, Stack, Typography } from '@mui/material';
 
 import { Document } from '@/api/AttributionClient';
-import { StandardModal } from '@/components/StandardModal';
+import {
+    StandardDialogCloseButton,
+    StandardDialogTitle,
+    StandardModal,
+} from '@/components/StandardModal';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
@@ -25,24 +28,12 @@ export const AttributionDocumentModal = ({
     const correspondingSpans = document.snippets.map((snippet) => snippet.corresponding_span_text);
 
     return (
-        <StandardModal
-            open={open}
-            onClose={handleClose}
-            data-testid="attribution-document-modal"
-            sx={{ overflowY: 'unset', padding: '30px 50px 50px 50px', borderRadius: '20px' }}>
-            <IconButton
-                aria-label="close"
-                onClick={handleClose}
-                sx={(theme) => ({
-                    position: 'absolute',
-                    right: 25,
-                    top: 25,
-                    color: theme.palette.grey[500],
-                })}>
-                <CloseIcon />
-            </IconButton>
-            <DialogTitle sx={{ paddingInline: 0 }} display="flex" flexDirection="column">
-                <Box>
+        <StandardModal open={open} onClose={handleClose} data-testid="attribution-document-modal">
+            <StandardDialogTitle>
+                <Box
+                    sx={{
+                        paddingInlineEnd: 6,
+                    }}>
                     <Typography variant="h4" fontWeight={600} component="span">
                         {deduceUsageFromSource(document.source)} document from:&nbsp;
                     </Typography>
@@ -62,7 +53,8 @@ export const AttributionDocumentModal = ({
                         </Link>
                     </Typography>
                 )}
-            </DialogTitle>
+                <StandardDialogCloseButton onClick={handleClose} />
+            </StandardDialogTitle>
             <Stack pt={2} gap={3.5} sx={{ overflowY: 'scroll' }}>
                 <BoldTextForDocumentAttribution
                     correspondingSpans={correspondingSpans}

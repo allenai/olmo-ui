@@ -12,17 +12,24 @@ import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 
-export interface MessageViewProps {
+export interface MessageProps {
     messageId: Message['id'];
 }
 
-export const StandardMessage = ({ messageId }: MessageViewProps): ReactNode => {
+export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
     const contentWithMarks = useSpanHighlighting(messageId);
 
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
-export const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
+interface MessageViewProps extends MessageProps {
+    isLastMessageInThread?: boolean;
+}
+
+export const MessageView = ({
+    messageId,
+    isLastMessageInThread = false,
+}: MessageViewProps): ReactNode => {
     const {
         role,
         content,
@@ -52,6 +59,7 @@ export const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
                 content={content}
                 messageLabels={messageLabels}
                 messageId={messageId}
+                autoHideControls={!isLastMessageInThread}
             />
         </ChatMessage>
     );

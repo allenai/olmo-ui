@@ -1,22 +1,16 @@
 import { ArrowBack } from '@mui/icons-material';
-import {
-    Box,
-    Button,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Link,
-    Stack,
-    styled,
-    Typography,
-} from '@mui/material';
+import { Box, Button, DialogContent, Link, Stack, styled, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { getFAQIdByShortId } from '@/components/faq/faq-utils';
-import { StandardModal } from '@/components/StandardModal';
+import {
+    StandardDialogCloseButton,
+    StandardDialogTitle,
+    StandardModal,
+} from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
@@ -45,9 +39,10 @@ interface AttributesModalProps {
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
         <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
-            <DialogTitle variant="h4" sx={{ paddingInline: 0 }}>
+            <StandardDialogTitle variant="h4">
                 Training Text Matches
-            </DialogTitle>
+                <StandardDialogCloseButton onClick={handleClose} />
+            </StandardDialogTitle>
             <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
                     This feature shows documents from the training data that have exact text matches
@@ -82,11 +77,6 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
                     </Link>
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{ paddingInline: 0 }}>
-                <Button variant="text" onClick={handleClose}>
-                    Close
-                </Button>
-            </DialogActions>
         </StandardModal>
     );
 };
@@ -106,7 +96,11 @@ export const AttributionContent = () => {
             data-testid="corpuslink-drawer"
             height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
-                {isDesktop && <Typography variant="h5">Training Text Matches</Typography>}
+                {isDesktop && (
+                    <Typography variant="h5" sx={{ marginBlockStart: 0 }}>
+                        Training Text Matches
+                    </Typography>
+                )}
                 <Typography variant="body2">
                     Documents from the training data that have exact text matches with the model
                     response. Powered by{' '}

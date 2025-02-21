@@ -8,7 +8,7 @@ import { useAppContext } from '@/AppContext';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { extractPointData, Point } from '../points/extractPointData';
 import { pointRegex } from '../points/pointRegex';
-import { MessageViewProps, StandardMessage } from '../ThreadDisplay/MessageView';
+import { MessageProps, StandardMessage } from '../ThreadDisplay/MessageView';
 
 interface PointCircleProps {
     xPercent: number;
@@ -95,7 +95,7 @@ const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
     </Stack>
 );
 
-export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
+export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
     const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
     const lastImagesInThread = useAppContext((state) => {
         return state.selectedThreadMessages

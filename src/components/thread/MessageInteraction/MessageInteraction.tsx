@@ -14,6 +14,7 @@ import { Label, LabelRating } from '@/api/Label';
 import { Message } from '@/api/Message';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
 import { MessageInteractionIcon } from './MessageInteractionIcon';
@@ -24,6 +25,7 @@ interface MessageInteractionProps {
     messageLabels: Message['labels'];
     content: Message['content'];
     messageId: Message['id'];
+    autoHideControls: boolean;
 }
 
 export const MessageInteraction = ({
@@ -31,6 +33,7 @@ export const MessageInteraction = ({
     messageLabels,
     content,
     messageId,
+    autoHideControls,
 }: MessageInteractionProps): JSX.Element | null => {
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
@@ -68,7 +71,22 @@ export const MessageInteraction = ({
     }
 
     return (
-        <Stack direction="row" gap={0} alignItems="start">
+        <Stack
+            direction="row"
+            gap={0}
+            alignItems="start"
+            sx={(theme) => ({
+                '@media (pointer: fine)': {
+                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                        opacity: autoHideControls ? 0 : 1,
+                        transition: 'opacity 300ms linear',
+                        '.ChatMessage:hover &, .ChatMessage:focus-within &': {
+                            opacity: 1,
+                            transitionDelay: '0s',
+                        },
+                    },
+                },
+            })}>
             <ButtonGroup aria-label="Thread feedback buttons">
                 <MessageInteractionIcon
                     tooltip="Good response"

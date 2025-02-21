@@ -129,6 +129,9 @@ export const ThreadDisplay = (): ReactNode => {
         }
     };
 
+    const lastMessageId =
+        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
+
     return (
         <Box
             height={1}
@@ -171,7 +174,11 @@ export const ThreadDisplay = (): ReactNode => {
                     />
                 )}
                 {childMessageIds.map((messageId) => (
-                    <MessageView messageId={messageId} key={messageId} />
+                    <MessageView
+                        messageId={messageId}
+                        key={messageId}
+                        isLastMessageInThread={lastMessageId === messageId}
+                    />
                 ))}
                 <Box
                     ref={scrollAnchorRef}
