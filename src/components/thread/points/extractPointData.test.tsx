@@ -77,5 +77,25 @@ describe('extractPointData', () => {
         expect(result).toBeNull();
     });
 
+    it('should skip points that have mismatched coordinate pairs', () => {
+        const pointsWithMismatchedCoordinatePairs =
+            '<points x1="1.0" y1="2.0" x2="3.0" x3="5.0" y3="6.0" alt="mismatched">mismatched</points>';
+
+        const result = extractPointData(pointsWithMismatchedCoordinatePairs);
+
+        expect(result).not.toBeFalsy();
+        expect(result).toHaveLength(1);
+
+        // @ts-expect-error - we check that this is truthy above
+        const pointData = result[0];
+        expect(pointData.points).toHaveLength(2);
+        expect.soft(pointData.points[0]).toEqual({
+            x: 1.0,
+            y: 2.0,
+        });
+        expect.soft(pointData.points[1]).toEqual({ x: 5.0, y: 6.0 });
+        expect.soft(pointData.alt).toEqual('mismatched');
+    });
+
     // TODO: Figure out how to pass invalid XML that gets past the regex
 });

@@ -36,16 +36,26 @@ export function extractPointData(input: string): PointInfo[] | null {
             .getAttributeNames()
             .filter((name) => name.startsWith('x'));
 
-        const coordinatePairs = xCoordinateAttributeNames.map((xAttributeName) => {
+        const coordinatePairs = xCoordinateAttributeNames.reduce<Point[]>((acc, xAttributeName) => {
             const { coordinateIndex } = /x(?<coordinateIndex>\d+)/.exec(xAttributeName)?.groups ?? {
                 coordinateIndex: '',
             };
 
-            return {
-                x: Number(element.getAttribute(xAttributeName)),
-                y: Number(element.getAttribute('y' + coordinateIndex)),
-            } as Point;
-        });
+            const x = element.getAttribute(xAttributeName);
+            const y = element.getAttribute('y' + coordinateIndex);
+
+            // If one of the coordinates is missing, skip it!
+            if (x == null || y == null) {
+                return acc;
+            }
+
+            acc.push({
+                x: Number(x),
+                y: Number(y),
+            } as Point);
+
+            return acc;
+        }, []);
 
         return {
             points: coordinatePairs,
