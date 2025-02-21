@@ -60,16 +60,26 @@ interface PointOnImageProps {
     points: Point[];
     fill: string;
 }
-const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode =>
-    points.map((point, pointIndex) => (
-        <PointCircle
-            xPercent={point.x}
-            yPercent={point.y}
-            key={pointIndex}
-            fill={fill}
-            shouldAnimate
-        />
-    ));
+const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
+    <svg
+        aria-hidden
+        style={{
+            gridArea: 'combined',
+            height: '100%',
+            width: '100%',
+            zIndex: 1,
+        }}>
+        {points.map((point, pointIndex) => (
+            <PointCircle
+                xPercent={point.x}
+                yPercent={point.y}
+                key={pointIndex}
+                fill={fill}
+                shouldAnimate
+            />
+        ))}
+    </svg>
+);
 
 interface PointLabelProps {
     pointColor: string;
@@ -115,20 +125,21 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
             component="figure"
             sx={{
                 margin: 0,
+                display: 'grid',
+                gridTemplate: 'auto / auto',
+                gridTemplateAreas: '"combined"',
                 width: 'min-content',
             }}>
-            <svg>
-                <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
-                {pointInfos.map((pointInfo, i) => {
-                    return (
-                        <PointOnImage
-                            key={i}
-                            points={pointInfo.points}
-                            fill={pointColors[i % pointColors.length]}
-                        />
-                    );
-                })}
-            </svg>
+            <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
+            {pointInfos.map((pointInfo, i) => {
+                return (
+                    <PointOnImage
+                        key={i}
+                        points={pointInfo.points}
+                        fill={pointColors[i % pointColors.length]}
+                    />
+                );
+            })}
             <Stack gap={2} useFlexGap component="figcaption">
                 {pointInfos.map((pointInfo, i) => (
                     <PointLabel
