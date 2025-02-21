@@ -1,152 +1,16 @@
-import varnishTheme from '@allenai/varnish-theme';
-import { Box, Divider, ImageList, ImageListItem, Stack } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Message } from '@/api/Message';
-import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
-import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
-import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
-import { extractPointData } from '../points/extractPointData';
-import { hasPoints } from '../points/isPointResponse';
-import { pointRegex } from '../points/pointRegex';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
+import { MessageView } from './MessageView';
 import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
-
-interface MessageViewProps {
-    messageId: Message['id'];
-}
-
-const StandardMessage = ({ messageId }: MessageViewProps): ReactNode => {
-    const contentWithMarks = useSpanHighlighting(messageId);
-
-    return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
-};
-
-const PointCircle = ({
-    xPercent,
-    yPercent,
-    fill,
-}: {
-    xPercent: number;
-    yPercent: number;
-    fill: string;
-}): ReactNode => {
-    return <circle cx={`${xPercent}%`} cy={`${yPercent}%`} r={10} fill={fill} />;
-};
-
-const POINT_COLORS = [
-    varnishTheme.color['pink-100'].value,
-    varnishTheme.color['purple-100'].value,
-    varnishTheme.color['green-100'].value,
-];
-
-const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
-    const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
-    const lastImagesInThread = useAppContext((state) => {
-        return state.selectedThreadMessages
-            .map((messageId) => state.selectedThreadMessagesById[messageId])
-            .filter((message) => message.role === Role.User && message.fileUrls?.length)
-            .at(-1)?.fileUrls;
-    });
-
-    if (lastImagesInThread == null) {
-        return "can't find image";
-    }
-
-    const pointInfos = extractPointData(content);
-
-    if (pointInfos == null) {
-        return <StandardMessage messageId={messageId} />;
-    }
-
-    return (
-        <Box
-            sx={{
-                display: 'grid',
-                gridTemplate: 'auto / auto',
-                gridTemplateAreas: '"combined"',
-                width: 'min-content',
-            }}>
-            <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
-            {pointInfos.map((pointInfo, i) => {
-                return (
-                    <svg
-                        key={i}
-                        style={{
-                            gridArea: 'combined',
-                            height: '100%',
-                            width: '100%',
-                            zIndex: 1,
-                        }}>
-                        {pointInfo.points.map((point, pointIndex) => (
-                            <PointCircle
-                                xPercent={point.x}
-                                yPercent={point.y}
-                                key={pointIndex}
-                                fill={POINT_COLORS[i % 3]}
-                            />
-                        ))}
-                    </svg>
-                );
-            })}
-            <Stack gap={2} useFlexGap>
-                {pointInfos.map((pointInfo, i) => (
-                    <Stack key={i} gap="1ch" useFlexGap direction="row" alignItems="center">
-                        <svg viewBox="0 0 20 20" height="1em" width="1em">
-                            <PointCircle xPercent={50} yPercent={50} fill={POINT_COLORS[i % 3]} />
-                        </svg>
-                        {pointInfo.alt}
-                    </Stack>
-                ))}
-            </Stack>
-            <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
-        </Box>
-    );
-};
-
-const MessageView = ({ messageId }: MessageViewProps): ReactNode => {
-    const {
-        role,
-        content,
-        labels: messageLabels,
-        fileUrls,
-    } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
-
-    if (role === Role.System) {
-        return null;
-    }
-
-    const Message = hasPoints(content) ? PointResponseMessage : StandardMessage;
-
-    return (
-        <ChatMessage role={role} messageId={messageId}>
-            <Message messageId={messageId} />
-            <ImageList>
-                {(fileUrls || []).map((url, idx) => (
-                    <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
-                        <img src={url} alt={'Uploaded'} loading="lazy" />
-                    </ImageListItem>
-                ))}
-            </ImageList>
-
-            <MessageInteraction
-                role={role}
-                content={content}
-                messageLabels={messageLabels}
-                messageId={messageId}
-            />
-        </ChatMessage>
-    );
-};
 
 export const ThreadDisplay = (): ReactNode => {
     // useShallow is used here to prevent triggering re-render. However, it
