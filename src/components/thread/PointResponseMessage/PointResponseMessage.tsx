@@ -1,4 +1,4 @@
-import { useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { ReactNode } from 'react';
 
@@ -90,7 +90,7 @@ const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
         <svg viewBox="0 0 20 20" height="1em" width="1em" aria-hidden>
             <PointCircle xPercent={50} yPercent={50} fill={pointColor} />
         </svg>
-        {text}
+        <Typography>{text}</Typography>
     </Stack>
 );
 
@@ -121,35 +121,46 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
     }
 
     return (
-        <Box
-            component="figure"
-            sx={{
-                margin: 0,
-                display: 'grid',
-                gridTemplate: 'auto / auto',
-                gridTemplateAreas: '"combined"',
-                width: 'min-content',
-            }}>
-            <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
-            {pointInfos.map((pointInfo, i) => {
-                return (
-                    <PointOnImage
-                        key={i}
-                        points={pointInfo.points}
-                        fill={pointColors[i % pointColors.length]}
-                    />
-                );
-            })}
-            <Stack gap={2} useFlexGap component="figcaption">
-                {pointInfos.map((pointInfo, i) => (
-                    <PointLabel
-                        key={i}
-                        text={pointInfo.alt}
-                        pointColor={pointColors[i % pointColors.length]}
-                    />
-                ))}
-                <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
-            </Stack>
-        </Box>
+        <>
+            <Box
+                component="figure"
+                sx={{
+                    margin: 0,
+                    display: 'grid',
+                    gridTemplate: 'auto / auto',
+                    gridTemplateAreas: '"combined"',
+                    width: 'fit-content',
+                }}>
+                <img
+                    src={lastImagesInThread[0]}
+                    alt=""
+                    style={{
+                        gridArea: 'combined',
+                        maxHeight: 500,
+                        objectFit: 'contain',
+                        height: 'auto',
+                    }}
+                />
+                {pointInfos.map((pointInfo, i) => {
+                    return (
+                        <PointOnImage
+                            key={i}
+                            points={pointInfo.points}
+                            fill={pointColors[i % pointColors.length]}
+                        />
+                    );
+                })}
+                <Stack gap={2} useFlexGap component="figcaption">
+                    {pointInfos.map((pointInfo, i) => (
+                        <PointLabel
+                            key={i}
+                            text={pointInfo.alt}
+                            pointColor={pointColors[i % pointColors.length]}
+                        />
+                    ))}
+                </Stack>
+            </Box>
+            <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
+        </>
     );
 };
