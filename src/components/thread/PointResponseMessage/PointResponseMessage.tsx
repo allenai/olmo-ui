@@ -14,7 +14,6 @@ import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 interface PointCircleProps {
     xPercent: number;
     yPercent: number;
-    fill: string;
     shouldAnimate?: boolean;
 }
 
@@ -73,16 +72,13 @@ const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
     // This allows us to scale down to smaller sizes
     <PointOnImageSvg aria-hidden width="0" height="0" sx={{ color: fill }}>
         {points.map((point, pointIndex) => (
-            <PointCircle
-                xPercent={point.x}
-                yPercent={point.y}
-                key={pointIndex}
-                fill={fill}
-                shouldAnimate
-            />
+            <PointCircle xPercent={point.x} yPercent={point.y} key={pointIndex} shouldAnimate />
         ))}
     </PointOnImageSvg>
 );
+
+// This lets us use sx without using a box
+const PointLabelSvg = styled('svg')();
 
 interface PointLabelProps {
     pointColor: string;
@@ -90,9 +86,14 @@ interface PointLabelProps {
 }
 const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
     <Stack gap="0.5ch" useFlexGap direction="row" alignItems="center">
-        <svg viewBox="0 0 20 20" height="1em" width="1em" aria-hidden style={{ color: pointColor }}>
-            <PointCircle xPercent={50} yPercent={50} fill={pointColor} />
-        </svg>
+        <PointLabelSvg
+            viewBox="0 0 20 20"
+            height="1em"
+            width="1em"
+            aria-hidden
+            sx={{ color: pointColor }}>
+            <PointCircle xPercent={50} yPercent={50} />
+        </PointLabelSvg>
         <Typography>{text}</Typography>
     </Stack>
 );
