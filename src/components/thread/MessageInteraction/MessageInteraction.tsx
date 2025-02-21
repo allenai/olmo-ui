@@ -17,6 +17,7 @@ import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { RemoteState } from '@/contexts/util';
 
+import { CHAT_MESSAGE_CLASS_NAME } from '../ChatMessage/ChatMessage';
 import { MessageInteractionIcon } from './MessageInteractionIcon';
 import { SelectMessageButton } from './SelectMessageButton';
 
@@ -80,10 +81,11 @@ export const MessageInteraction = ({
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                         opacity: autoHideControls ? 0 : 1,
                         transition: 'opacity 300ms linear',
-                        '.ChatMessage:hover &, .ChatMessage:focus-within &': {
-                            opacity: 1,
-                            transitionDelay: '0s',
-                        },
+                        [`.${CHAT_MESSAGE_CLASS_NAME}:hover &, .${CHAT_MESSAGE_CLASS_NAME}:focus-within &`]:
+                            {
+                                opacity: 1,
+                                transitionDelay: '0s',
+                            },
                     },
                 },
             })}>

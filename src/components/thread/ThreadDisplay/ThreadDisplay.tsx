@@ -1,62 +1,16 @@
-import { Box, Divider, ImageList, ImageListItem } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Message } from '@/api/Message';
-import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
-import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
-import { ChatMessage } from '../ChatMessage';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
-import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
+import { MessageView } from './MessageView';
 import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
-
-interface MessageViewProps {
-    messageId: Message['id'];
-    isLastMessageInThread: boolean;
-}
-
-const MessageView = ({ messageId, isLastMessageInThread }: MessageViewProps): ReactNode => {
-    const {
-        role,
-        content,
-        labels: messageLabels,
-        fileUrls,
-    } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
-
-    const contentWithMarks = useSpanHighlighting(messageId);
-
-    if (role === Role.System) {
-        return null;
-    }
-
-    return (
-        <ChatMessage role={role} messageId={messageId}>
-            <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>
-            <ImageList>
-                {(fileUrls || []).map((url, idx) => (
-                    <ImageListItem key={idx} sx={{ maxHeight: 500 }}>
-                        <img src={url} alt={'Uploaded'} loading="lazy" />
-                    </ImageListItem>
-                ))}
-            </ImageList>
-
-            <MessageInteraction
-                role={role}
-                content={content}
-                messageLabels={messageLabels}
-                messageId={messageId}
-                autoHideControls={!isLastMessageInThread}
-            />
-        </ChatMessage>
-    );
-};
 
 export const ThreadDisplay = (): ReactNode => {
     // useShallow is used here to prevent triggering re-render. However, it
