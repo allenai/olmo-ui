@@ -1,6 +1,6 @@
 import { pointRegex } from './pointRegex';
 
-interface Point {
+export interface Point {
     x: number;
     y: number;
 }

@@ -1,4 +1,4 @@
-import varnishTheme from '@allenai/varnish-theme';
+import { useTheme } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { ReactNode } from 'react';
 
@@ -6,56 +6,93 @@ import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-import { extractPointData } from '../points/extractPointData';
+import { extractPointData, Point } from '../points/extractPointData';
 import { pointRegex } from '../points/pointRegex';
 import { MessageViewProps, StandardMessage } from '../ThreadDisplay/MessageView';
+
+interface PointCircleProps {
+    xPercent: number;
+    yPercent: number;
+    fill: string;
+    shouldAnimate?: boolean;
+}
 
 const PointCircle = ({
     xPercent,
     yPercent,
     fill,
-}: {
-    xPercent: number;
-    yPercent: number;
-    fill: string;
-}): ReactNode => {
+    shouldAnimate = false,
+}: PointCircleProps): ReactNode => {
     return (
         <>
             <circle cx={`${xPercent}%`} cy={`${yPercent}%`} r={5} fill={fill} />{' '}
-            <circle
-                cx={`${xPercent}%`}
-                cy={`${yPercent}%`}
-                fill="none"
-                r="10"
-                stroke={fill}
-                strokeWidth="1">
-                <animate
-                    attributeName="r"
-                    from="4"
-                    to="8"
-                    dur="1.5s"
-                    begin="0s"
-                    repeatCount="indefinite"
-                />
-                <animate
-                    attributeName="opacity"
-                    from="1"
-                    to="0"
-                    dur="1.5s"
-                    begin="0s"
-                    repeatCount="indefinite"
-                />
-            </circle>
+            {shouldAnimate && (
+                <circle
+                    cx={`${xPercent}%`}
+                    cy={`${yPercent}%`}
+                    fill="none"
+                    r="10"
+                    stroke={fill}
+                    strokeWidth="1.5">
+                    <animate
+                        attributeName="r"
+                        from="4"
+                        to="8"
+                        dur="1.5s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                    />
+                    <animate
+                        attributeName="opacity"
+                        from="1"
+                        to="0"
+                        dur="1.5s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                    />
+                </circle>
+            )}
         </>
     );
 };
 
-// TODO: See if I can get these through the theme
-const POINT_COLORS = [
-    varnishTheme.color['pink-100'].value,
-    varnishTheme.color['purple-100'].value,
-    varnishTheme.color['green-100'].value,
-];
+interface ImagePointProps {
+    points: Point[];
+    fill: string;
+}
+const ImagePoint = ({ points, fill }: ImagePointProps): ReactNode => (
+    <svg
+        aria-hidden
+        style={{
+            gridArea: 'combined',
+            height: '100%',
+            width: '100%',
+            zIndex: 1,
+        }}>
+        {points.map((point, pointIndex) => (
+            <PointCircle
+                xPercent={point.x}
+                yPercent={point.y}
+                key={pointIndex}
+                fill={fill}
+                shouldAnimate
+            />
+        ))}
+    </svg>
+);
+
+interface PointLabelProps {
+    pointColor: string;
+    text: string;
+}
+const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
+    <Stack gap="0.5ch" useFlexGap direction="row" alignItems="center">
+        <svg viewBox="0 0 20 20" height="1em" width="1em" aria-hidden>
+            <PointCircle xPercent={50} yPercent={50} fill={pointColor} />
+        </svg>
+        {text}
+    </Stack>
+);
 
 export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode => {
     const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
@@ -65,6 +102,13 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
     });
+
+    const theme = useTheme();
+    const pointColors = [
+        theme.color['pink-100'].hex,
+        theme.color['purple-100'].hex,
+        theme.color['green-100'].hex,
+    ];
 
     if (lastImagesInThread == null) {
         return <StandardMessage messageId={messageId} />;
@@ -78,6 +122,7 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
 
     return (
         <Box
+            component="figure"
             sx={{
                 display: 'grid',
                 gridTemplate: 'auto / auto',
@@ -87,33 +132,20 @@ export const PointResponseMessage = ({ messageId }: MessageViewProps): ReactNode
             <img src={lastImagesInThread[0]} alt="" style={{ gridArea: 'combined' }} />
             {pointInfos.map((pointInfo, i) => {
                 return (
-                    <svg
+                    <ImagePoint
                         key={i}
-                        style={{
-                            gridArea: 'combined',
-                            height: '100%',
-                            width: '100%',
-                            zIndex: 1,
-                        }}>
-                        {pointInfo.points.map((point, pointIndex) => (
-                            <PointCircle
-                                xPercent={point.x}
-                                yPercent={point.y}
-                                key={pointIndex}
-                                fill={POINT_COLORS[i % 3]}
-                            />
-                        ))}
-                    </svg>
+                        points={pointInfo.points}
+                        fill={pointColors[i % pointColors.length]}
+                    />
                 );
             })}
-            <Stack gap={2} useFlexGap>
+            <Stack gap={2} useFlexGap component="figcaption">
                 {pointInfos.map((pointInfo, i) => (
-                    <Stack key={i} gap="1ch" useFlexGap direction="row" alignItems="center">
-                        <svg viewBox="0 0 20 20" height="1em" width="1em">
-                            <PointCircle xPercent={50} yPercent={50} fill={POINT_COLORS[i % 3]} />
-                        </svg>
-                        {pointInfo.alt}
-                    </Stack>
+                    <PointLabel
+                        key={i}
+                        text={pointInfo.alt}
+                        pointColor={pointColors[i % pointColors.length]}
+                    />
                 ))}
             </Stack>
             <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
