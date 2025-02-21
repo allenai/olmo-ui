@@ -21,19 +21,18 @@ interface PointCircleProps {
 const PointCircle = ({
     xPercent,
     yPercent,
-    fill,
     shouldAnimate = false,
 }: PointCircleProps): ReactNode => {
     return (
         <>
-            <circle cx={`${xPercent}%`} cy={`${yPercent}%`} r={5} fill={fill} />{' '}
+            <circle cx={`${xPercent}%`} cy={`${yPercent}%`} r={5} fill="currentColor" />
             {shouldAnimate && (
                 <circle
                     cx={`${xPercent}%`}
                     cy={`${yPercent}%`}
                     fill="none"
                     r="10"
-                    stroke={fill}
+                    stroke="currentColor"
                     strokeWidth="1.5">
                     <animate
                         attributeName="r"
@@ -72,7 +71,7 @@ interface PointOnImageProps {
 const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
     // Height and width are applied here to give it a minimum viewport of 0w,0h. Otherwise it gets set to the default of 300wx150h
     // This allows us to scale down to smaller sizes
-    <PointOnImageSvg aria-hidden width="0" height="0">
+    <PointOnImageSvg aria-hidden width="0" height="0" sx={{ color: fill }}>
         {points.map((point, pointIndex) => (
             <PointCircle
                 xPercent={point.x}
@@ -91,7 +90,7 @@ interface PointLabelProps {
 }
 const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
     <Stack gap="0.5ch" useFlexGap direction="row" alignItems="center">
-        <svg viewBox="0 0 20 20" height="1em" width="1em" aria-hidden>
+        <svg viewBox="0 0 20 20" height="1em" width="1em" aria-hidden style={{ color: pointColor }}>
             <PointCircle xPercent={50} yPercent={50} fill={pointColor} />
         </svg>
         <Typography>{text}</Typography>
