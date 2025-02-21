@@ -12,6 +12,8 @@ import { LLMMessage } from './LLMMessage';
 import { UserMessage } from './UserMessage';
 
 export const CHAT_ICON_WIDTH = 28;
+export const CHAT_MESSAGE_CLASS_NAME = 'chat-message';
+
 interface ChatMessageProps extends PropsWithChildren {
     role: Role;
     messageId: string;
@@ -37,7 +39,13 @@ export const ChatMessage = ({
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
-        <>
+        <Box
+            className={CHAT_MESSAGE_CLASS_NAME}
+            sx={{
+                display: 'grid',
+                gridTemplateColumns: 'subgrid',
+                gridColumn: '1 / -1',
+            }}>
             <Box id="icon" width={CHAT_ICON_WIDTH} height={CHAT_ICON_WIDTH} gridColumn="1">
                 {icon}
             </Box>
@@ -51,6 +59,6 @@ export const ChatMessage = ({
                     <ScreenReaderAnnouncer level="assertive" content={finalMessageContent} />
                 )}
             </Box>
-        </>
+        </Box>
     );
 };
