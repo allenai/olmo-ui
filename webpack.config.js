@@ -107,7 +107,7 @@ module.exports = (env) => ({
             IS_DATASET_EXPLORER_ENABLED: false,
             IS_PETEISH_MODEL_ENABLED: false,
             RECAPTCHA_SITE_KEY: '6LcTKX8qAAAAAEn1zu3oVu-GIdC5JkW9IR7VQaA9',
-            IS_RECAPTCHA_ENABLED: true,
+            IS_RECAPTCHA_ENABLED: 'true',
             HEAP_ANALYTICS_ID: '341313142',
             IS_ANALYTICS_ENABLED: 'true',
             IS_MULTI_MODAL_ENABLED: 'false',
