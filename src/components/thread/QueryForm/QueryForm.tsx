@@ -28,10 +28,26 @@ interface QueryFormValues {
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
     const location = useLocation();
+    const { isMultiModalEnabled } = useFeatureToggles();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
-    const modelId = useAppContext((state) => state.selectedModel?.id);
-    const { isMultiModalEnabled } = useFeatureToggles();
+    const { modelId, acceptsFileUpload, acceptedFileTypes, requiredFileOption } = useAppContext(
+        (state) => ({
+            modelId: state.selectedModel?.id,
+            acceptsFileUpload: state.selectedModel?.accepted_file_types != null,
+            acceptedFileTypes:
+                state.selectedModel?.accepted_file_types?.reduce((prev, curr) => {
+                    return prev + 'image/' + curr + ',';
+                }, '') || '',
+            requiredFileOption: state.selectedModel?.require_file_to_prompt,
+        })
+    );
+
+    const supportFileUpload = isMultiModalEnabled && acceptsFileUpload;
+
+    const disableFileUploadAfterSent = useAppContext(
+        (state) => state.selectedThreadMessages.length > 2 && requiredFileOption === 'first_message'
+    );
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -211,9 +227,9 @@ export const QueryForm = (): JSX.Element => {
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
                                 startAdornment={
-                                    isMultiModalEnabled ? (
+                                    supportFileUpload && !disableFileUploadAfterSent ? (
                                         <FileUploadButton
-                                            accept="image/*"
+                                            accept={acceptedFileTypes}
                                             {...formContext.register('files')}
                                         />
                                     ) : null
