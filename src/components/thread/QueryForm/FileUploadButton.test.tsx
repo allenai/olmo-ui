@@ -45,6 +45,7 @@ describe('FileUploadButton', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
+            // @ts-expect-error using first_message value
             <FakeAppContextProvider initialState={initialStates}>
                 <FileUploadButton />
             </FakeAppContextProvider>,
