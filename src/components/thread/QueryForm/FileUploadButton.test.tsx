@@ -11,10 +11,10 @@ describe('FileUploadButton', () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
-                accepted_file_types: ['image/png']
+                accepted_file_types: ['image/png'],
             },
-            selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage']
-        }
+            selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
+        };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
@@ -41,7 +41,7 @@ describe('FileUploadButton', () => {
                 require_file_to_prompt: 'first_message',
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
-        }
+        };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
@@ -67,8 +67,8 @@ describe('FileUploadButton', () => {
                 accepted_file_types: ['image/png'],
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
-            streamPromptState: RemoteState.Loading
-        }
+            streamPromptState: RemoteState.Loading,
+        };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
@@ -85,5 +85,5 @@ describe('FileUploadButton', () => {
         );
 
         expect(screen.getByTestId('file-upload-btn')).toBeDisabled();
-    })
+    });
 });

@@ -10,7 +10,6 @@ import { StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
-import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
