@@ -10,7 +10,6 @@ import { StreamBadRequestError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
-import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
@@ -31,7 +30,6 @@ export const QueryForm = (): JSX.Element => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const modelId = useAppContext((state) => state.selectedModel?.id);
-    const { isMultiModalEnabled } = useFeatureToggles();
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -211,12 +209,7 @@ export const QueryForm = (): JSX.Element => {
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
                                 startAdornment={
-                                    isMultiModalEnabled ? (
-                                        <FileUploadButton
-                                            accept="image/*"
-                                            {...formContext.register('files')}
-                                        />
-                                    ) : null
+                                    <FileUploadButton {...formContext.register('files')} />
                                 }
                                 endAdornment={
                                     <SubmitPauseAdornment

@@ -278,9 +278,14 @@ describe('QueryForm', () => {
         });
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
+        const initialStates = {
+            selectedModel: {
+                id: 'Molmo',
+                accepted_file_types: ['image/png'],
+            },
+        };
         render(
-            <FakeAppContextProvider>
+            <FakeAppContextProvider initialState={initialStates}>
                 <QueryForm />
             </FakeAppContextProvider>,
             {
