@@ -62,7 +62,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 const Label = styled('label')({
     cursor: 'pointer',
     borderRadius: 'var(--radii-full, 9999px)',
-    padding: 'var(--spacing-1)',
+    paddingLeft: 'var(--spacing-1)',
     display: 'flex',
     color: 'var(--palette-light-accent-secondary)',
 
