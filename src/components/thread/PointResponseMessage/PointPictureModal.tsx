@@ -18,7 +18,7 @@ export const PointPictureModal = ({
     children,
 }: PointPictureModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
+        <StandardModal open={open} onClose={handleClose}>
             <StandardDialogTitle variant="h4">
                 <StandardDialogCloseButton onClick={handleClose} />
             </StandardDialogTitle>

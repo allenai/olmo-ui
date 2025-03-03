@@ -36,15 +36,13 @@ export const StandardModal = ({
                 sx: (theme) => ({
                     backgroundColor: 'background.paper',
                     backgroundImage: 'none',
-
                     width: '100%',
-                    height: '100%',
                     maxHeight: '100%',
                     padding: 2,
                     margin: '0 auto',
                     borderRadius: 2,
+                    height: 'auto',
                     [theme.breakpoints.up(SMALL_LAYOUT_BREAKPOINT)]: {
-                        height: 'auto',
                         maxWidth: `${width}px`,
                         padding: 4,
                         borderRadius: 4,
