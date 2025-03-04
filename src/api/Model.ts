@@ -13,6 +13,7 @@ export interface Model {
     host: string;
     model_type: string;
     is_deprecated: boolean;
+    accepts_files: boolean;
     family_id?: ModelFamilyId;
     family_name?: string;
     accepted_file_types?: string[];
