@@ -1,5 +1,5 @@
 import { styled, Typography, useTheme } from '@mui/material';
-import { Box, Stack } from '@mui/system';
+import { Box, Stack, SxProps, Theme } from '@mui/system';
 import React, { ReactNode, useState } from 'react';
 
 import { Role } from '@/api/Role';
@@ -104,26 +104,17 @@ const PointPicture = ({
     pointInfos,
     pointColors,
     caption,
+    sx,
 }: {
     imageLink: string;
     pointInfos: PointInfo[];
     pointColors: string[];
     caption?: React.ReactNode;
+    sx?: SxProps<Theme>;
 }) => {
     return (
         <>
-            <Box
-                component="img"
-                src={imageLink}
-                alt=""
-                sx={{
-                    gridArea: 'combined',
-                    maxHeight: MAX_THREAD_IMAGE_HEIGHT,
-                    objectFit: 'contain',
-                    height: 'auto',
-                    maxWidth: '100%',
-                }}
-            />
+            <Box component="img" src={imageLink} alt="" sx={sx} />
             {pointInfos.map((pointInfo, i) => {
                 return (
                     <PointOnImage
@@ -135,6 +126,26 @@ const PointPicture = ({
             })}
             {caption}
         </>
+    );
+};
+
+const PointPictureCaption = ({
+    pointInfos,
+    pointColors,
+}: {
+    pointInfos: PointInfo[];
+    pointColors: string[];
+}) => {
+    return (
+        <Stack gap={2} useFlexGap component="figcaption">
+            {pointInfos.map((pointInfo, i) => (
+                <PointLabel
+                    key={i}
+                    text={pointInfo.alt}
+                    pointColor={pointColors[i % pointColors.length]}
+                />
+            ))}
+        </Stack>
     );
 };
 
@@ -170,20 +181,6 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
         setIsModalOpen(false);
     };
 
-    const PointPictureCaption = () => {
-        return (
-            <Stack gap={2} useFlexGap component="figcaption">
-                {pointInfos.map((pointInfo, i) => (
-                    <PointLabel
-                        key={i}
-                        text={pointInfo.alt}
-                        pointColor={pointColors[i % pointColors.length]}
-                    />
-                ))}
-            </Stack>
-        );
-    };
-
     return (
         <>
             <Box component="figure" sx={{ margin: 0 }}>
@@ -206,6 +203,13 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                         imageLink={lastImagesInThread[0]}
                         pointInfos={pointInfos}
                         pointColors={pointColors}
+                        sx={{
+                            gridArea: 'combined',
+                            maxHeight: MAX_THREAD_IMAGE_HEIGHT,
+                            objectFit: 'contain',
+                            height: 'auto',
+                            maxWidth: '100%',
+                        }}
                     />
                 </Box>
                 <PointPictureModal open={isModalOpen} closeModal={handleClose}>
@@ -213,10 +217,16 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                         imageLink={lastImagesInThread[0]}
                         pointInfos={pointInfos}
                         pointColors={pointColors}
-                        caption={<PointPictureCaption />}
+                        caption={
+                            <PointPictureCaption
+                                pointInfos={pointInfos}
+                                pointColors={pointColors}
+                            />
+                        }
+                        sx={{ gridArea: 'combined' }}
                     />
                 </PointPictureModal>
-                <PointPictureCaption />
+                <PointPictureCaption pointInfos={pointInfos} pointColors={pointColors} />
             </Box>
             <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
         </>

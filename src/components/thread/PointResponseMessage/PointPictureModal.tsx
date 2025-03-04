@@ -18,7 +18,7 @@ export const PointPictureModal = ({
     children,
 }: PointPictureModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose}>
+        <StandardModal open={open} onClose={handleClose} width={1200}>
             <StandardDialogTitle variant="h4">
                 <StandardDialogCloseButton onClick={handleClose} />
             </StandardDialogTitle>
