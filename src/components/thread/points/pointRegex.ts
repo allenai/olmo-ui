@@ -1,1 +1,2 @@
-export const pointRegex = /<points?(?:\s+x\d?=".*"\s+y\d?=".*")+.*>(?<text>.*)<\/points?>/g;
+export const pointRegex =
+    /<points?(?:\s+x\d?="\d+\.?\d*"\s+y\d?="\d+\.?\d*")+.*>(?<text>.*)<\/points?>/g;

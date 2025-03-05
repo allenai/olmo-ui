@@ -7,6 +7,7 @@ import documentWithMultipleSnippetsResponse from './responses/documentWithMultip
 import duplicateDocumentsResponse from './responses/duplicateDocumentMessageResponse.json';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import { newMessageId } from './responses/stream/default';
+import multiplePointerMessageResponse from './responses/multiplePointerMessageResponse.json';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
 const fakeFirstThreadResponse = {
@@ -210,5 +211,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/msg_multiplesnippets`, () => {
         return HttpResponse.json(documentWithMultipleSnippetsResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/msg_multiple_points`, () => {
+        return HttpResponse.json(multiplePointerMessageResponse);
     }),
 ];
