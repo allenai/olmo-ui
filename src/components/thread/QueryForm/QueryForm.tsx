@@ -29,7 +29,7 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
-    const modelId = useAppContext((state) => state.selectedModel?.id);
+    const selectedModel = useAppContext((state) => state.selectedModel);
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -100,6 +100,12 @@ export const QueryForm = (): JSX.Element => {
         }
     }, [firstResponseId, formContext]);
 
+    useEffect(() => {
+        if (!selectedModel?.accepts_files) {
+            formContext.setValue('files', undefined);
+        }
+    }, [formContext, selectedModel?.accepts_files]);
+
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
         if (!canEditThread || isSelectedThreadLoading) {
             return;
@@ -119,9 +125,9 @@ export const QueryForm = (): JSX.Element => {
 
         try {
             await streamPrompt(request);
-            if (modelId !== undefined) {
+            if (selectedModel !== undefined) {
                 analyticsClient.trackQueryformSubmission(
-                    modelId,
+                    selectedModel.id,
                     location.pathname === links.playground
                 );
             }
