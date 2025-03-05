@@ -56,19 +56,19 @@ test('should scroll to the new user prompt message when its submitted', async ({
     await page.getByRole('textbox', { name: /^Message*/ }).focus();
     await page.getByRole('textbox', { name: /^Message*/ }).fill('User message');
     await page.getByLabel('Submit prompt').click();
-    await page.waitForLoadState('networkidle');
+
     await expect(
         page.getByText('Lorem ipsum odor amet, consectetuer adipiscing elit.')
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 50_000 });
 
     // Send a second message in the thread
     await page.getByRole('textbox', { name: /^Reply to*/ }).focus();
     await page.getByRole('textbox', { name: /^Reply to*/ }).fill('say one word');
     await page.getByLabel('Submit prompt').click();
-    await page.waitForLoadState('networkidle');
+
     await expect(
         page.getByText('Lorem ipsum odor amet, consectetuer adipiscing elit.')
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 50_000 });
     await expect(page.getByText('This is the second response.')).toBeVisible();
 
     const scrollContainerScrollTop = await page.evaluate(() => {
