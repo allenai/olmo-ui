@@ -1,6 +1,6 @@
 import { render, screen } from '@test-utils';
 
-import { Model } from '@/api/Model';
+import { FileRequiredToPromptOption } from '@/api/Model';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -36,14 +36,13 @@ describe('FileUploadButton', () => {
     });
 
     it('should be disabled if the model only accepts file upload for the first message', () => {
-        const selectedModel = {
-            id: 'Molmo',
-            accepted_file_types: ['image/png'],
-            require_file_to_prompt: 'first_message',
-            accepts_files: true,
-        } satisfies Model;
         const initialStates = {
-            selectedModel,
+            selectedModel: {
+                id: 'Molmo',
+                accepted_file_types: ['image/png'],
+                require_file_to_prompt: 'first_message' as FileRequiredToPromptOption,
+                accepts_files: true,
+            },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
         };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);

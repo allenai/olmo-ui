@@ -282,6 +282,7 @@ describe('QueryForm', () => {
             selectedModel: {
                 id: 'Molmo',
                 accepted_file_types: ['image/png'],
+                accepts_files: true,
             },
         };
         render(
