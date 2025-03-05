@@ -7,6 +7,7 @@ import {
     IconButton,
     IconButtonProps,
 } from '@mui/material';
+import { SystemStyleObject } from '@mui/system';
 
 import { SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 
@@ -14,6 +15,7 @@ export const DEFAULT_MODAL_WIDTH = 970;
 
 interface StandardModalProps extends DialogProps {
     width?: string | number;
+    paperSx?: SystemStyleObject<Theme>;
 }
 
 export const StandardModal = ({
@@ -22,6 +24,7 @@ export const StandardModal = ({
     open,
     onClose,
     sx,
+    paperSx,
     ...rest
 }: StandardModalProps) => {
     return (
@@ -29,9 +32,7 @@ export const StandardModal = ({
             fullWidth
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
-            sx={{
-                padding: 2,
-            }}
+            sx={{ padding: 2 }}
             PaperProps={{
                 sx: (theme) => ({
                     backgroundColor: 'background.paper',
@@ -47,6 +48,7 @@ export const StandardModal = ({
                         padding: 4,
                         borderRadius: 4,
                     },
+                    ...paperSx,
                 }),
             }}
             {...rest}

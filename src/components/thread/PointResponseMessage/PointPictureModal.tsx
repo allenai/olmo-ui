@@ -18,7 +18,11 @@ export const PointPictureModal = ({
     children,
 }: PointPictureModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose} width={1200}>
+        <StandardModal
+            open={open}
+            onClose={handleClose}
+            width={1200}
+            paperSx={{ alignItems: 'center' }}>
             <StandardDialogTitle variant="h4">
                 <StandardDialogCloseButton onClick={handleClose} />
             </StandardDialogTitle>
@@ -27,8 +31,7 @@ export const PointPictureModal = ({
                     display: 'grid',
                     gridTemplate: 'auto / auto',
                     gridTemplateAreas: '"combined"',
-                    width: 'fit-content',
-                    height: 'fit-content',
+                    width: 'min-content',
                     maxWidth: '100%',
                 }}>
                 {children}
