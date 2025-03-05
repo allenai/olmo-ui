@@ -102,7 +102,18 @@ const fakeModelsResponse: ModelList = [
         name: 'OLMo-peteish-dpo-preview',
         accepts_files: false,
     },
+    {
+        description: 'Molmo',
+        id: 'molmo',
+        model_type: 'chat',
+        host: 'inferd',
+        name: 'Molmo',
+        is_deprecated: false,
+        accepts_files: true,
+        accepted_file_types: ['image/*'],
+    },
 ];
+
 const fakePromptsResponse: JSONPromptTemplateList = [
     {
         id: 'id',

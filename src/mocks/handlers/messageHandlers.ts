@@ -3,11 +3,11 @@ import { http, HttpResponse } from 'msw';
 import { JSONMessage, MessageApiUrl, MessagesApiUrl, MessagesResponse } from '@/api/Message';
 import { Role } from '@/api/Role';
 
-import { newMessageId } from './messageStreamHandlers';
 import documentWithMultipleSnippetsResponse from './responses/documentWithMultipleSnippetsResponse.json';
 import duplicateDocumentsResponse from './responses/duplicateDocumentMessageResponse.json';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import multiplePointerMessageResponse from './responses/multiplePointerMessageResponse.json';
+import { newMessageId } from './responses/stream/default';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
 const fakeFirstThreadResponse = {

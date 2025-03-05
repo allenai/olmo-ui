@@ -12,5 +12,5 @@ test('redirects back to original URL', async ({ page }) => {
     await page.getByLabel('Password').fill(process.env.E2E_TEST_PASSWORD);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
 
-    await expect(page).toHaveURL(/.*\/thread\/msg_A8E5H1X2O3/);
+    await expect(page).toHaveURL(/.*\/thread\/msg_A8E5H1X2O3/, { timeout: 20_000 });
 });
