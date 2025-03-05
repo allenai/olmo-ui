@@ -1,6 +1,7 @@
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import { styled } from '@mui/material';
 import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
@@ -15,20 +16,30 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 ) {
     const labelRef = useRef<HTMLLabelElement>(null);
     const { isMultiModalEnabled } = useFeatureToggles();
-    const acceptsFileUpload = useAppContext(
-        (state) => state.selectedModel?.accepted_file_types != null
-    );
-    const acceptedFileTypes = useAppContext(
-        (state) => state.selectedModel?.accepted_file_types?.join(',') || ''
-    );
-    const requiredFileOption = useAppContext(
-        (state) => state.selectedModel?.require_file_to_prompt
-    );
-    const acceptsMultiple = useAppContext(
-        (state) =>
-            state.selectedModel?.max_files_per_message !== undefined &&
-            state.selectedModel.max_files_per_message > 1
-    );
+    const { acceptsFileUpload, acceptedFileTypes, requiredFileOption, acceptsMultiple } =
+        useAppContext(
+            useShallow((state) => {
+                const values = {
+                    acceptsFileUpload: false,
+                    acceptedFileTypes: '',
+                    requiredFileOption: undefined as string | undefined,
+                    acceptsMultiple: false,
+                };
+
+                if (state.selectedModel?.accepts_files) {
+                    const selectedModel = state.selectedModel;
+                    values.acceptsFileUpload = selectedModel.accepts_files;
+                    values.acceptedFileTypes = selectedModel.accepted_file_types.join('');
+                    values.acceptsMultiple =
+                        selectedModel.max_files_per_message != null &&
+                        selectedModel.max_files_per_message > 1;
+                    values.requiredFileOption = selectedModel.require_file_to_prompt;
+                }
+
+                return values;
+            })
+        );
+
     const isSendingPrompt = useAppContext(
         (state) => state.streamPromptState === RemoteState.Loading
     );
