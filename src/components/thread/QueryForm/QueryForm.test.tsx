@@ -283,7 +283,6 @@ describe('QueryForm', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-                accepts_files: true,
             },
         };
         render(
