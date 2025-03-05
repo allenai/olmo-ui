@@ -281,6 +281,7 @@ describe('QueryForm', () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
+                accepts_files: true,
                 accepted_file_types: ['image/png'],
                 accepts_files: true,
             },
