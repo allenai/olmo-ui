@@ -1,15 +1,16 @@
 import { styled, Typography, useTheme } from '@mui/material';
-import { Box, Stack } from '@mui/system';
-import { ReactNode } from 'react';
+import { Box, Stack, SxProps, Theme } from '@mui/system';
+import React, { ReactNode, useState } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
-import { extractPointData, Point } from '../points/extractPointData';
+import { extractPointData, Point, PointInfo } from '../points/extractPointData';
 import { pointRegex } from '../points/pointRegex';
 import { MessageProps, StandardMessage } from '../ThreadDisplay/MessageView';
 import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
+import { PointPictureModal } from './PointPictureModal';
 
 interface PointCircleProps {
     xPercent: number;
@@ -98,6 +99,56 @@ const PointLabel = ({ pointColor, text }: PointLabelProps): ReactNode => (
     </Stack>
 );
 
+const PointPicture = ({
+    imageLink,
+    pointInfos,
+    pointColors,
+    caption,
+    sx,
+}: {
+    imageLink: string;
+    pointInfos: PointInfo[];
+    pointColors: string[];
+    caption?: React.ReactNode;
+    sx?: SxProps<Theme>;
+}) => {
+    return (
+        <>
+            <Box component="img" src={imageLink} alt="" sx={sx} />
+            {pointInfos.map((pointInfo, i) => {
+                return (
+                    <PointOnImage
+                        key={i}
+                        points={pointInfo.points}
+                        fill={pointColors[i % pointColors.length]}
+                    />
+                );
+            })}
+            {caption}
+        </>
+    );
+};
+
+const PointPictureCaption = ({
+    pointInfos,
+    pointColors,
+}: {
+    pointInfos: PointInfo[];
+    pointColors: string[];
+}) => {
+    return (
+        <Stack gap={2} useFlexGap component="figcaption">
+            {pointInfos.map((pointInfo, i) => (
+                <PointLabel
+                    key={i}
+                    text={pointInfo.alt}
+                    pointColor={pointColors[i % pointColors.length]}
+                />
+            ))}
+        </Stack>
+    );
+};
+
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
     const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
     const lastImagesInThread = useAppContext((state) => {
@@ -106,6 +157,8 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
             .at(-1)?.fileUrls;
     });
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const theme = useTheme();
     const pointColors = [
@@ -124,10 +177,17 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
         return <StandardMessage messageId={messageId} />;
     }
 
+    const handleClose = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             <Box component="figure" sx={{ margin: 0 }}>
                 <Box
+                    onClick={() => {
+                        setIsModalOpen(true);
+                    }}
                     sx={{
                         display: 'grid',
                         gridTemplate: 'auto / auto',
@@ -135,11 +195,14 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                         width: 'fit-content',
                         height: 'fit-content',
                         maxWidth: '100%',
+                        '&:hover': {
+                            cursor: 'pointer',
+                        },
                     }}>
-                    <Box
-                        component="img"
-                        src={lastImagesInThread[0]}
-                        alt=""
+                    <PointPicture
+                        imageLink={lastImagesInThread[0]}
+                        pointInfos={pointInfos}
+                        pointColors={pointColors}
                         sx={{
                             gridArea: 'combined',
                             maxHeight: MAX_THREAD_IMAGE_HEIGHT,
@@ -148,25 +211,22 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
                             maxWidth: '100%',
                         }}
                     />
-                    {pointInfos.map((pointInfo, i) => {
-                        return (
-                            <PointOnImage
-                                key={i}
-                                points={pointInfo.points}
-                                fill={pointColors[i % pointColors.length]}
-                            />
-                        );
-                    })}
                 </Box>
-                <Stack gap={2} useFlexGap component="figcaption">
-                    {pointInfos.map((pointInfo, i) => (
-                        <PointLabel
-                            key={i}
-                            text={pointInfo.alt}
-                            pointColor={pointColors[i % pointColors.length]}
-                        />
-                    ))}
-                </Stack>
+                <PointPictureModal open={isModalOpen} closeModal={handleClose}>
+                    <PointPicture
+                        imageLink={lastImagesInThread[0]}
+                        pointInfos={pointInfos}
+                        pointColors={pointColors}
+                        caption={
+                            <PointPictureCaption
+                                pointInfos={pointInfos}
+                                pointColors={pointColors}
+                            />
+                        }
+                        sx={{ gridArea: 'combined' }}
+                    />
+                </PointPictureModal>
+                <PointPictureCaption pointInfos={pointInfos} pointColors={pointColors} />
             </Box>
             <MarkdownRenderer>{content.replaceAll(pointRegex, '**$<text>**')}</MarkdownRenderer>
         </>

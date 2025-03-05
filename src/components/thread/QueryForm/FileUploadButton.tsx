@@ -16,7 +16,8 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     const labelRef = useRef<HTMLLabelElement>(null);
     const { isMultiModalEnabled } = useFeatureToggles();
     const acceptsFileUpload = useAppContext(
-        (state) => state.selectedModel?.accepted_file_types != null
+        (state) =>
+            state.selectedModel?.accepts_files && state.selectedModel.accepted_file_types != null
     );
     const acceptedFileTypes = useAppContext(
         (state) => state.selectedModel?.accepted_file_types?.join(',') || ''

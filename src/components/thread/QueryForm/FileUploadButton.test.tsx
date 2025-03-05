@@ -11,6 +11,7 @@ describe('FileUploadButton', () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
+                accepts_files: true,
                 accepted_file_types: ['image/png'],
             },
             selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
@@ -37,6 +38,7 @@ describe('FileUploadButton', () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
+                accepts_files: true,
                 accepted_file_types: ['image/png'],
                 require_file_to_prompt: 'first_message',
             },
@@ -65,6 +67,7 @@ describe('FileUploadButton', () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
+                accepts_files: true,
                 accepted_file_types: ['image/png'],
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
