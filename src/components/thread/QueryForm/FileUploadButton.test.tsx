@@ -1,5 +1,6 @@
 import { render, screen } from '@test-utils';
 
+import { Model } from '@/api/Model';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -12,6 +13,7 @@ describe('FileUploadButton', () => {
             selectedModel: {
                 id: 'Molmo',
                 accepted_file_types: ['image/png'],
+                accepts_files: true,
             },
             selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
         };
@@ -34,18 +36,19 @@ describe('FileUploadButton', () => {
     });
 
     it('should be disabled if the model only accepts file upload for the first message', () => {
+        const selectedModel = {
+            id: 'Molmo',
+            accepted_file_types: ['image/png'],
+            require_file_to_prompt: 'first_message',
+            accepts_files: true,
+        } satisfies Model;
         const initialStates = {
-            selectedModel: {
-                id: 'Molmo',
-                accepted_file_types: ['image/png'],
-                require_file_to_prompt: 'first_message',
-            },
+            selectedModel,
             selectedThreadMessages: ['userMessage', 'llmMessage'],
         };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
-            // @ts-expect-error using first_message value
             <FakeAppContextProvider initialState={initialStates}>
                 <FileUploadButton />
             </FakeAppContextProvider>,
@@ -66,6 +69,7 @@ describe('FileUploadButton', () => {
             selectedModel: {
                 id: 'Molmo',
                 accepted_file_types: ['image/png'],
+                accepts_files: true,
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
             streamPromptState: RemoteState.Loading,
