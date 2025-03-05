@@ -38,7 +38,7 @@ describe('QueryForm', () => {
         vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        const mockStreamPrompt = vi.fn().mockImplementation(() => {});
+        const mockStreamPrompt = vi.fn().mockImplementation(() => { });
         const initialStates = {
             streamPrompt: mockStreamPrompt,
         };
@@ -281,6 +281,7 @@ describe('QueryForm', () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
+                accepts_files: true,
                 accepted_file_types: ['image/png'],
             },
         };

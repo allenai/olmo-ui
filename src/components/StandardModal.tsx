@@ -6,6 +6,7 @@ import {
     DialogTitleProps,
     IconButton,
     IconButtonProps,
+    Theme,
 } from '@mui/material';
 import { SystemStyleObject } from '@mui/system';
 
