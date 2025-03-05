@@ -80,6 +80,7 @@ const fakeModelsResponse: ModelList = [
         is_deprecated: true,
         family_id: 'olmo',
         family_name: 'OLMo',
+        accepts_files: false,
     },
     {
         description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
@@ -90,6 +91,7 @@ const fakeModelsResponse: ModelList = [
         is_deprecated: false,
         family_id: 'tulu',
         family_name: 'Tülu',
+        accepts_files: false,
     },
     {
         description: "AI2's 7B model following the 'peteish' thread of improvements.",
@@ -98,8 +100,20 @@ const fakeModelsResponse: ModelList = [
         is_deprecated: false,
         model_type: 'chat',
         name: 'OLMo-peteish-dpo-preview',
+        accepts_files: false,
+    },
+    {
+        description: 'Molmo',
+        id: 'molmo',
+        model_type: 'chat',
+        host: 'inferd',
+        name: 'Molmo',
+        is_deprecated: false,
+        accepts_files: true,
+        accepted_file_types: ['image/*'],
     },
 ];
+
 const fakePromptsResponse: JSONPromptTemplateList = [
     {
         id: 'id',
