@@ -1,5 +1,6 @@
 import { render, screen } from '@test-utils';
 
+import { FileRequiredToPromptOption } from '@/api/Model';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -40,14 +41,13 @@ describe('FileUploadButton', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-                require_file_to_prompt: 'first_message',
+                require_file_to_prompt: 'first_message' as FileRequiredToPromptOption,
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
         };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
-            // @ts-expect-error using first_message value
             <FakeAppContextProvider initialState={initialStates}>
                 <FileUploadButton />
             </FakeAppContextProvider>,

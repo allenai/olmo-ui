@@ -6,7 +6,7 @@ export type ModelFamilyId = 'tulu' | 'olmo';
 
 export type FileRequiredToPromptOption = 'first_message' | 'all_messages' | 'no_requirement';
 
-export interface Model {
+type BaseModel = {
     description: string;
     id: string;
     name: string;
@@ -16,14 +16,24 @@ export interface Model {
     accepts_files: boolean;
     family_id?: ModelFamilyId;
     family_name?: string;
-    accepted_file_types?: string[];
+};
+
+type TextModel = BaseModel & {
+    accepts_files: false;
+};
+
+type MultiModalModel = BaseModel & {
+    accepts_files: true;
+    accepted_file_types: string[];
     max_files_per_message?: number;
     require_file_to_prompt?: FileRequiredToPromptOption;
     max_total_file_size?: number;
     allow_files_in_followups?: boolean;
-}
+};
 
-export type ModelList = Model[];
+export type Model = TextModel | MultiModalModel;
+
+export type ModelList = Array<Model>;
 
 export class ModelClient extends ClientBase {
     getAllModels = async (): Promise<ModelList> => {
