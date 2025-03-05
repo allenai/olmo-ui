@@ -14,7 +14,6 @@ describe('FileUploadButton', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-                accepts_files: true,
             },
             selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
         };
@@ -43,7 +42,6 @@ describe('FileUploadButton', () => {
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
                 require_file_to_prompt: 'first_message' as FileRequiredToPromptOption,
-                accepts_files: true,
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
         };
@@ -71,7 +69,6 @@ describe('FileUploadButton', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-                accepts_files: true,
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
             streamPromptState: RemoteState.Loading,
