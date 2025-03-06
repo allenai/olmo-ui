@@ -228,9 +228,24 @@ export class MessageClient extends ClientBase {
         if (!response.ok) {
             if (response.status === 400) {
                 const body = (await response.json()) as {
-                    error: { code: number; message: string };
+                    error: {
+                        code: number;
+                        message: string;
+                        validation_errors?: {
+                            loc: unknown[];
+                            msg: string;
+                            type: string;
+                            url: string;
+                        }[];
+                    };
                 };
 
+                if (body.error.validation_errors) {
+                    throw new StreamValidationError(
+                        response.status,
+                        body.error.validation_errors.map((err) => err.msg)
+                    );
+                }
                 throw new StreamBadRequestError(response.status, body.error.message);
             }
 
@@ -254,5 +269,16 @@ export class StreamBadRequestError extends Error {
         this.name = 'StreamBadRequestError';
         this.status = status;
         this.description = description;
+    }
+}
+
+export class StreamValidationError extends StreamBadRequestError {
+    validationErrors: string[];
+
+    constructor(status: number, validationErrors: string[]) {
+        const description = validationErrors.join(';');
+        super(status, description);
+
+        this.validationErrors = validationErrors;
     }
 }
