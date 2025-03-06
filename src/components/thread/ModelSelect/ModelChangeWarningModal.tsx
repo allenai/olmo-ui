@@ -1,4 +1,4 @@
-import { Button, DialogContent, Stack, Typography } from '@mui/material';
+import { Button, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
 import { ComponentProps } from 'react';
 
 import {
@@ -26,19 +26,19 @@ export const ModelChangeWarningModal = ({
                 </StandardDialogTitle>
                 <Stack gap={1}>
                     <Typography>
-                        The model you&apos;re switching to isn&apos;t compatible with this thread.
-                        To switch models you&apos;ll need to start a new thread. Continue?
+                        The model you&apos;re changing to isn&apos;t compatible with this thread. To
+                        change models you&apos;ll need to start a new thread. Continue?
                     </Typography>
-                    <Stack direction="row" gap={2} justifyContent="flex-end">
-                        <Button variant="outlined" onClick={onCancel}>
-                            Cancel
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={onConfirm}>
-                            Change model
-                        </Button>
-                    </Stack>
                 </Stack>
             </DialogContent>
+            <DialogActions>
+                <Button variant="outlined" onClick={onCancel}>
+                    Cancel
+                </Button>
+                <Button variant="contained" color="primary" onClick={onConfirm}>
+                    Change model
+                </Button>
+            </DialogActions>
         </StandardModal>
     );
 };
