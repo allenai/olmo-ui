@@ -10,9 +10,6 @@ export interface ModelSlice {
     models: ModelList;
     selectedModel?: Model;
     getAllModels: () => Promise<void>;
-    /**
-     * This is a direct set that opts out of the modal asking if the user is sure they want to switch. It should only be used when you don't need to care about that UX!
-     */
     setSelectedModel: (modelId: string) => void;
 }
 
