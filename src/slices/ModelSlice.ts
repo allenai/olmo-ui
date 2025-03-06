@@ -22,7 +22,6 @@ export const createModelSlice: OlmoStateCreator<ModelSlice> = (set, get) => ({
     modelRemoteState: undefined,
     models: [],
     selectedModel: undefined,
-    shouldShowModalSwitchWarning: false,
     getAllModels: async () => {
         const { addSnackMessage } = get();
         set({ modelRemoteState: RemoteState.Loading });
