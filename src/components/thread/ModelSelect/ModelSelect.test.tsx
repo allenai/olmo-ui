@@ -57,16 +57,6 @@ const getInitialState = () =>
                 name: 'Llama Tülu 3 8B',
                 accepts_files: false,
             },
-            {
-                description: 'Molmo',
-                host: 'modal',
-                id: 'molmo',
-                is_deprecated: false,
-                model_type: 'chat',
-                name: 'Molmo',
-                accepts_files: true,
-                accepted_file_types: ['image/*'],
-            },
         ] satisfies Model[],
         setSelectedModel: () => {},
     }) satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
@@ -94,7 +84,7 @@ describe('Model Select', () => {
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(3);
+        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(2);
     });
 
     it('should only show non-deprecated models as options', async () => {
@@ -118,6 +108,6 @@ describe('Model Select', () => {
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(2);
+        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(1);
     });
 });
