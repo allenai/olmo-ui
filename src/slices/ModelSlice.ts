@@ -1,27 +1,28 @@
-import { StateCreator } from 'zustand';
+import { OlmoStateCreator } from '@/AppContext';
 
 import { Model, ModelClient, ModelList } from '../api/Model';
 import { WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
-import { errorToAlert, SnackMessageSlice } from './SnackMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface ModelSlice {
     modelRemoteState?: RemoteState;
     models: ModelList;
     selectedModel?: Model;
     getAllModels: () => Promise<void>;
+    /**
+     * This is a direct set that opts out of the modal asking if the user is sure they want to switch. It should only be used when you don't need to care about that UX!
+     */
     setSelectedModel: (modelId: string) => void;
 }
 
 const modelClient = new ModelClient();
 
-export const createModelSlice: StateCreator<ModelSlice & SnackMessageSlice, [], [], ModelSlice> = (
-    set,
-    get
-) => ({
+export const createModelSlice: OlmoStateCreator<ModelSlice> = (set, get) => ({
     modelRemoteState: undefined,
     models: [],
     selectedModel: undefined,
+    shouldShowModalSwitchWarning: false,
     getAllModels: async () => {
         const { addSnackMessage } = get();
         set({ modelRemoteState: RemoteState.Loading });

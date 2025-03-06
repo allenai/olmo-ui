@@ -8,7 +8,6 @@ import {
     MenuItem,
     menuItemClasses,
     Select,
-    SelectChangeEvent,
     selectClasses,
     styled,
     SxProps,
@@ -17,21 +16,19 @@ import {
 import { useEffect, useId, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Model } from '@/api/Model';
 import { AppContextState, useAppContext } from '@/AppContext';
 
-import { selectMessagesToShow } from './ThreadDisplay/selectMessagesToShow';
+import { selectMessagesToShow } from '../ThreadDisplay/selectMessagesToShow';
+import { useHandleChangeModel } from './useHandleChangeModel';
 
 // HACK: This is here because we don't always have the models loaded when the selectedThreadPageLoader is called (if first load is a thread, for example)
 // If we find a nice way to wait for models to be populated in that loader we can replace this
-const useUpdateSelectedModelWhenLoadingAThread = (
-    models: Model[],
-    setSelectedModel: (modelId: string) => void
-) => {
+const useUpdateSelectedModelWhenLoadingAThread = (models: Model[]) => {
     const previousSelectedThreadIdRef = useRef<string>();
     const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
+    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
 
     const latestThreadContent = useAppContext(
         (state) => state.selectedThreadMessagesById[viewingMessageIds[viewingMessageIds.length - 1]]
@@ -77,14 +74,9 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
 
     const selectedModelId = useAppContext((state) => (state.selectedModel ?? models[0]).id);
 
-    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
+    const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeModel();
 
-    const handleModelChange = (event: SelectChangeEvent) => {
-        analyticsClient.trackModelUpdate({ modelChosen: event.target.value });
-        setSelectedModel(event.target.value);
-    };
-
-    useUpdateSelectedModelWhenLoadingAThread(models, setSelectedModel);
+    useUpdateSelectedModelWhenLoadingAThread(models);
 
     return (
         <Box sx={sx} paddingInline={2} paddingBlockEnd={2}>
@@ -142,6 +134,7 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
                     ))}
                 </Select>
             </FormControl>
+            <ModelSwitchWarningModal />
         </Box>
     );
 };
