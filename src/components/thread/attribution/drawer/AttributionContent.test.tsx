@@ -40,7 +40,7 @@ describe('AttributionContent deduplication', () => {
         );
 
         // We're on the standard CorpusLink stuff
-        expect(screen.getByTestId('corpuslink-drawer')).toBeVisible();
+        expect(screen.getByTestId('olmotrace-drawer')).toBeVisible();
         const corpusLinkDocuments = screen.getAllByRole('listitem');
 
         expect(corpusLinkDocuments).toHaveLength(4);
@@ -55,10 +55,10 @@ describe('AttributionContent deduplication', () => {
         );
 
         expect(screen.getAllByRole('listitem')).toHaveLength(2);
-        expect(screen.getByTestId('corpuslink-drawer')).not.toBeVisible();
+        expect(screen.getByTestId('olmotrace-drawer')).not.toBeVisible();
         await user.click(screen.getByRole('button', { name: 'Back to all documents' }));
 
-        expect(screen.getByTestId('corpuslink-drawer')).toBeVisible();
+        expect(screen.getByTestId('olmotrace-drawer')).toBeVisible();
         expect(screen.getAllByRole('listitem')).toHaveLength(4);
     });
 });

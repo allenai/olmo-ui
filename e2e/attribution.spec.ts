@@ -8,12 +8,12 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
 
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
-    await expect(page.getByTestId('corpuslink-drawer').getByText('document from:')).toHaveCount(2);
+    await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(2);
     await page
         .getByRole('button', { name: 'Show documents related to this span' })
         .and(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkay'))
         .click();
-    await expect(page.getByTestId('corpuslink-drawer').getByText('document from:')).toHaveCount(1);
+    await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(1);
 });
 
 test('should show highlights when message is selected', async ({ page }) => {
@@ -22,7 +22,7 @@ test('should show highlights when message is selected', async ({ page }) => {
     // The OLMoTrace button should open the drawer
     await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
 
-    await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(2);
+    await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(2);
     await expect(
         page.getByRole('button', { name: 'Show documents related to this span' }).first()
     ).toBeInViewport();
@@ -33,7 +33,7 @@ test('should show highlights when message is selected', async ({ page }) => {
         .click();
 
     await expect(page.getByText('1 document matching the selected span')).toBeVisible();
-    await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(1);
+    await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(1);
 
     // Close the drawer and make sure the highlights are still visible
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
@@ -44,7 +44,7 @@ test('should show highlights when message is selected', async ({ page }) => {
     // Hide highlights
     await page.getByRole('button', { name: 'Hide OLMoTrace' }).click();
     // should have no documents
-    await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(0);
+    await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(0);
     // highlight on text is not visible
     await expect(
         page.getByRole('button', { name: 'Show documents related to this span' })
@@ -59,7 +59,7 @@ test('should show highlights when message is selected', async ({ page }) => {
 
     await expect(page.getByRole('button', { name: 'Clear Selection' })).not.toBeVisible();
     await expect(page.getByText(/\d+ documents* matching the selected span/)).not.toBeVisible();
-    await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(1);
+    await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(1);
 });
 
 test('should keep scroll position when going back to CorpusLink documents and reset selected repeated documents when navigating to a new thread', async ({
@@ -111,7 +111,7 @@ test('should show the OLMoTrace dialog', async ({ page }) => {
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
 
     // We're on the standard CorpusLink stuff
-    await expect(page.getByTestId('corpuslink-drawer')).toBeVisible();
+    await expect(page.getByTestId('olmotrace-drawer')).toBeVisible();
 
     // Click the about button
     await page
@@ -121,7 +121,7 @@ test('should show the OLMoTrace dialog', async ({ page }) => {
         .click();
 
     // Find the modal
-    const modal = page.getByTestId('about-attribution-modal');
+    const modal = page.getByTestId('about-olmotrace-modal');
 
     // should be visible, and have the heading text
     await expect(modal).toBeVisible();

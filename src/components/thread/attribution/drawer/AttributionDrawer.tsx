@@ -15,7 +15,7 @@ export const DesktopAttributionDrawer = () => {
         <DesktopExpandingDrawer
             width="24rem"
             open={open}
-            id="desktop-corpuslink-drawer"
+            id="desktop-olmotrace-drawer"
             overflowY="hidden">
             <FullAttributionContent />
         </DesktopExpandingDrawer>

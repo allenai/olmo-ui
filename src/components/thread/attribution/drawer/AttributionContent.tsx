@@ -38,7 +38,7 @@ interface AttributesModalProps {
 
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
+        <StandardModal open={open} onClose={handleClose} data-testid="about-olmotrace-modal">
             <StandardDialogTitle variant="h4">
                 OLMoTrace
                 <StandardDialogCloseButton onClick={handleClose} />
@@ -93,7 +93,7 @@ export const AttributionContent = () => {
         <AttributionContentStack
             direction="column"
             gap={2}
-            data-testid="corpuslink-drawer"
+            data-testid="olmotrace-drawer"
             height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
                 {isDesktop && (
