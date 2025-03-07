@@ -261,15 +261,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     );
                 }
             } else if (err instanceof StreamBadRequestError) {
-                if (err instanceof StreamValidationError) {
-                    snackMessage = errorToAlert(
-                        `create-message-${new Date().getTime()}`.toLowerCase(),
-                        err.description || '',
-                        err
-                    );
-                } else {
-                    throw err;
-                }
+                throw err;
             } else if (err instanceof Error) {
                 if (err.name === 'AbortError') {
                     snackMessage = ABORT_ERROR_MESSAGE;

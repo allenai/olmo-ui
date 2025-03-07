@@ -6,7 +6,7 @@ import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { StreamBadRequestError } from '@/api/Message';
+import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
@@ -126,11 +126,22 @@ export const QueryForm = (): JSX.Element => {
                 );
             }
         } catch (e) {
-            if (e instanceof StreamBadRequestError && e.description === 'inappropriate_prompt') {
-                formContext.setError('content', {
-                    type: 'inappropriate',
-                });
-                analyticsClient.trackInappropriatePrompt();
+            if (e instanceof StreamBadRequestError) {
+                if (e instanceof StreamValidationError) {
+                    formContext.setError('content', {
+                        type: 'validation',
+                        message: e.description,
+                    });
+                }
+
+                if (e.description === 'inappropriate_prompt') {
+                    formContext.setError('content', {
+                        type: 'inappropriate',
+                        message:
+                            'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
+                    });
+                    analyticsClient.trackInappropriatePrompt();
+                }
             } else {
                 throw e;
             }
@@ -173,10 +184,8 @@ export const QueryForm = (): JSX.Element => {
         formContext.setValue('files', dataTransfer.files);
     };
 
-    const renderInappropriateError = () => {
-        return (
-            <>This prompt was flagged as inappropriate. Please change your prompt and resubmit.</>
-        );
+    const renderErrorMessage = (message?: string) => {
+        return <>{message}</>;
     };
 
     return (
@@ -198,11 +207,7 @@ export const QueryForm = (): JSX.Element => {
                             <PromptInput
                                 name={name}
                                 onChange={onChange}
-                                errorMessage={
-                                    error?.type === 'inappropriate'
-                                        ? renderInappropriateError()
-                                        : null
-                                }
+                                errorMessage={error && renderErrorMessage(error.message)}
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
