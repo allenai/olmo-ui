@@ -108,37 +108,37 @@ export const faqs: FAQCategory[] = [
 
 export const corpusLinkFaqs: FAQCategory[] = [
     {
-        category: 'Training Text Matches',
+        category: 'OLMoTrace',
         questions: [
             {
-                question: 'What is Training Text Matches?',
-                answer: 'Training Text Matches is a unique feature of Ai2 Playground, connecting pieces of a language model’s output to documents in the model’s training data. Training Text Matches is designed to find verbatim text matches between model outputs and the training corpus that are relatively long and unique. We developed Training Text Matches in the hope that researchers and the general public might find it helpful for inspecting where and how language models might have learned to generate certain word sequences. Training Text Matches is a one-of-a-kind feature and is only made possible by Ai2’s commitment to making large pretraining and post-training datasets open in the interest of advancing scientific research in AI and public understanding of AI systems.',
+                question: 'What is OLMoTrace?',
+                answer: 'OLMoTrace is a unique feature of Ai2 Playground, connecting pieces of a language model’s output to documents in the model’s training data. OLMoTrace is designed to find verbatim text matches between model outputs and the training corpus that are relatively long and unique. We developed OLMoTrace in the hope that researchers and the general public might find it helpful for inspecting where and how language models might have learned to generate certain word sequences. OLMoTrace is a one-of-a-kind feature and is only made possible by Ai2’s commitment to making large pretraining and post-training datasets open in the interest of advancing scientific research in AI and public understanding of AI systems.',
             },
             {
                 question:
-                    'Did the model directly reference the documents presented by Training Text Matches when generating the response?',
-                answer: 'No. Upon receiving a user prompt, our model first generates a response on its own, and then Training Text Matches scans the model response and retrieves matching documents. This is different from RAG (retrieval-augmented generation) systems, where the model generates responses conditioning on retrieved documents as part of its input context.',
+                    'Did the model directly reference the documents presented by OLMoTrace when generating the response?',
+                answer: 'No. Upon receiving a user prompt, our model first generates a response on its own, and then OLMoTrace scans the model response and retrieves matching documents. This is different from RAG (retrieval-augmented generation) systems, where the model generates responses conditioning on retrieved documents as part of its input context.',
             },
             {
                 question: 'What do the different shades of the highlight color mean?',
-                answer: 'The shades represent the level of relevance between the best document retrieved for a span and the overall model response. Training Text Matches computes a BM25 relevance score for each retrieved document, and buckets them into three levels: “high relevance”, “medium relevance”, and “low relevance”. A span’s shade is determined by the maximum relevance level achieved by the documents containing that span. Darker shade means higher maximum relevance level.',
+                answer: 'The shades represent the level of relevance between the best document retrieved for a span and the overall model response. OLMoTrace computes a BM25 relevance score for each retrieved document, and buckets them into three levels: “high relevance”, “medium relevance”, and “low relevance”. A span’s shade is determined by the maximum relevance level achieved by the documents containing that span. Darker shade means higher maximum relevance level.',
             },
             {
-                question: 'Why are some documents repeated in the Training Text Matches result?',
-                answer: 'Because some documents are repeated in the training dataset of our models. Training Text Matches groups some repeated documents into the same card by matching the URL in their metadata, and you can inspect these repetitions by clicking “View all repeated documents” on the document card. However, there are documents with identical content but different URLs and they will show up as separate document cards.',
+                question: 'Why are some documents repeated in the OLMoTrace result?',
+                answer: 'Because some documents are repeated in the training dataset of our models. OLMoTrace groups some repeated documents into the same card by matching the URL in their metadata, and you can inspect these repetitions by clicking “View all repeated documents” on the document card. However, there are documents with identical content but different URLs and they will show up as separate document cards.',
             },
             {
                 question: 'Why do some highlighted spans begin or end in the middle of a word?',
-                answer: 'Training Text Matches processes the model response in granularity of tokens. While it tries to avoid cutting off in the middle of words, there may be some uncaught corner cases.',
+                answer: 'OLMoTrace processes the model response in granularity of tokens. While it tries to avoid cutting off in the middle of words, there may be some uncaught corner cases.',
             },
             {
                 question:
                     'Where do the documents come from? In which training stage is each document used?',
-                answer: 'For each document retrieved by Training Text Matches, we show its source (the dataset it comes from) and its usage in training. Our flagship model, [OLMo 2 13B Instruct](https://huggingface.co/allenai/OLMo-2-1124-13B-Instruct), was trained in 3 stages:\n&emsp;&emsp;1. Pre-training: the dataset is [olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124). It contains mostly data from the web (the DCLM corpus), as well as other sources like wiki and arxiv.\n&emsp;&emsp;2. Mid-training: the dataset is [dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124). It contains high-quality text data and a mixture of math-heavy data.Some documents in this dataset already appeared in the pretraining dataset, and we excluded them so as to reduce duplicates.\n&emsp;&emsp;3. Post-training: it has 3 sub-stages: \n&emsp;&emsp;&emsp;&emsp;a. Supervised fine-tuning(SFT): the dataset is [tulu-3-sft-olmo-2-mixture](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture)\n&emsp;&emsp;&emsp;&emsp;b. Preference learning(DPO): the dataset is [olmo-2-1124-13b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix)\n&emsp;&emsp;&emsp;&emsp;c. RL with verifiable rewards(RLVR): the dataset is [RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)\n\n We consider the union of all the above datasets as “training data” of the OLMo 2 13B Instruct model, and when matching model outputs with the training text we consider all these datasets.',
+                answer: 'For each document retrieved by OLMoTrace, we show its source (the dataset it comes from) and its usage in training. Our flagship model, [OLMo 2 13B Instruct](https://huggingface.co/allenai/OLMo-2-1124-13B-Instruct), was trained in 3 stages:\n&emsp;&emsp;1. Pre-training: the dataset is [olmo-mix-1124](https://huggingface.co/datasets/allenai/olmo-mix-1124). It contains mostly data from the web (the DCLM corpus), as well as other sources like wiki and arxiv.\n&emsp;&emsp;2. Mid-training: the dataset is [dolmino-mix-1124](https://huggingface.co/datasets/allenai/dolmino-mix-1124). It contains high-quality text data and a mixture of math-heavy data.Some documents in this dataset already appeared in the pretraining dataset, and we excluded them so as to reduce duplicates.\n&emsp;&emsp;3. Post-training: it has 3 sub-stages: \n&emsp;&emsp;&emsp;&emsp;a. Supervised fine-tuning(SFT): the dataset is [tulu-3-sft-olmo-2-mixture](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture)\n&emsp;&emsp;&emsp;&emsp;b. Preference learning(DPO): the dataset is [olmo-2-1124-13b-preference-mix](https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix)\n&emsp;&emsp;&emsp;&emsp;c. RL with verifiable rewards(RLVR): the dataset is [RLVR-GSM-MATH-IF-Mixed-Constraints](https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints)\n\n We consider the union of all the above datasets as “training data” of the OLMo 2 13B Instruct model, and when matching model outputs with the training text we consider all these datasets.',
             },
             {
-                question: 'Why does Training Text Matches not support Tulu 3 models?',
-                answer: 'Because we do not have access to the full training data of Tulu 3. While their post-training data is open, Tulu 3 is developed on top of the base Llama-3.1 models, whose pre-training data is not openly accessible. Showing Training Text Matches results with only post-training data would give an incomplete picture, so we disabled it on Tulu 3.',
+                question: 'Why does OLMoTrace not support Tulu 3 models?',
+                answer: 'Because we do not have access to the full training data of Tulu 3. While their post-training data is open, Tulu 3 is developed on top of the base Llama-3.1 models, whose pre-training data is not openly accessible. Showing OLMoTrace results with only post-training data would give an incomplete picture, so we disabled it on Tulu 3.',
             },
         ],
     },

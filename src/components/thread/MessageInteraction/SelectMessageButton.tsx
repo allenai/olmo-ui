@@ -46,7 +46,7 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
         return null;
     }
 
-    const showHideText = isMessageSelected ? 'Hide training text' : 'Match training text';
+    const showHideText = isMessageSelected ? 'Hide OLMoTrace' : 'Show OLMoTrace';
 
     if (isDesktop) {
         return (

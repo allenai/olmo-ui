@@ -38,14 +38,14 @@ interface AttributesModalProps {
 
 const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModalProps) => {
     return (
-        <StandardModal open={open} onClose={handleClose} data-testid="about-attribution-modal">
+        <StandardModal open={open} onClose={handleClose} data-testid="about-olmotrace-modal">
             <StandardDialogTitle variant="h4">
-                Training Text Matches
+                OLMoTrace
                 <StandardDialogCloseButton onClick={handleClose} />
             </StandardDialogTitle>
             <DialogContent sx={{ padding: 0 }}>
                 <Typography paddingBlockEnd={1}>
-                    This feature shows documents from the training data that have exact text matches
+                    OLMoTrace shows documents from the training data that have exact text matches
                     with the model response. Select a highlighted span to view its documents.
                 </Typography>
                 <Typography paddingBlockEnd={1}>
@@ -59,7 +59,7 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
                     response. Documents are retrieved after the response generation.
                 </Typography>
                 <Typography paddingBlockEnd={1}>
-                    Training Text Matches uses{' '}
+                    OLMoTrace uses{' '}
                     <Link
                         href="https://infini-gram.io"
                         target="_blank"
@@ -93,12 +93,12 @@ export const AttributionContent = () => {
         <AttributionContentStack
             direction="column"
             gap={2}
-            data-testid="corpuslink-drawer"
+            data-testid="olmotrace-drawer"
             height="100%">
             <Stack direction="column" gap={2} paddingInline={3}>
                 {isDesktop && (
                     <Typography variant="h5" sx={{ marginBlockStart: 0 }}>
-                        Training Text Matches
+                        OLMoTrace
                     </Typography>
                 )}
                 <Typography variant="body2">
@@ -119,7 +119,7 @@ export const AttributionContent = () => {
                         sx={{
                             padding: 0,
                         }}>
-                        More about how matching works
+                        More about how OLMoTrace works
                     </Button>
                 </Typography>
                 {isDatasetExplorerEnabled ? (

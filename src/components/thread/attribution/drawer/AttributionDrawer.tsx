@@ -15,7 +15,7 @@ export const DesktopAttributionDrawer = () => {
         <DesktopExpandingDrawer
             width="24rem"
             open={open}
-            id="desktop-corpuslink-drawer"
+            id="desktop-olmotrace-drawer"
             overflowY="hidden">
             <FullAttributionContent />
         </DesktopExpandingDrawer>
@@ -40,7 +40,7 @@ export const MobileAttributionDrawer = () => {
                                 variant="h5"
                                 margin={0}
                                 color={(theme) => theme.palette.text.primary}>
-                                Training Text Matches
+                                OLMoTrace
                             </Typography>
                         </ListSubheader>
                         <IconButton
