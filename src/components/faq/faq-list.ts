@@ -99,8 +99,28 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question:
-                    'Where can I find additional information about Ai2 Playground use and privacy? ',
+                    'Where can I find additional information about Ai2 Playground use and privacy?',
                 answer: 'Please see [Terms of Use](https://allenai.org/terms/2024-09-25), [Privacy Policy](https://allenai.org/privacy-policy/2022-07-21) and [Responsible Use Guidelines](https://allenai.org/responsible-use) for detailed guidelines on use of Ai2 Playground.',
+            },
+        ],
+    },
+    {
+        category: 'Safety & Trust',
+        questions: [
+            {
+                question:
+                    'I am a copyright holder and I’ve found my or my company’s copyrighted material displayed in Playground. How can I request that it be removed?',
+                answer: 'Please submit a request on this [form](https://docs.google.com/forms/d/e/1FAIpQLSeKD4gs_NfizDWhmDmHAsfrZ9uYAmflYWHc3aQQIG-nKfcESw/viewform) and we will review it. Any display of copyrighted material in Playground results falls within fair use. Although Ai2 is not legally required to remove this material, we take requests from rights holders seriously and will remove specific content to the extent feasible out of respect for their creative efforts, balanced against the need for our AI artifacts to support open science and reproducible research experiments.',
+            },
+            {
+                question:
+                    'I noticed personally identifiable information in a model output or other results in the Playground. Where can I report this?',
+                answer: 'Please submit a request on this [form](https://docs.google.com/forms/d/e/1FAIpQLSeKD4gs_NfizDWhmDmHAsfrZ9uYAmflYWHc3aQQIG-nKfcESw/viewform) and we will review it. We use filtering, data minimization, anonymization and other responsible data privacy practices to prevent the inadvertent communication of PII on the Playground. We respect the rights of data subjects to request removal in compliance with law.',
+            },
+            {
+                question:
+                    'I’m seeing toxic content in model outputs or other results in the Playground. Where can I report this?',
+                answer: 'We use industry standard moderation and filtering tools to prevent toxic results, so we are sorry to hear you encountered upsetting content. Please use the ‘flag’ functionality provided below the specific model output to indicate an inappropriate response. We study these flags to better understand where the model or the filtering may have gone wrong and how we can improve the response in the future.',
             },
         ],
     },
