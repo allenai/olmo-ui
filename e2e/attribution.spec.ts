@@ -125,7 +125,7 @@ test('should show the OLMoTrace dialog', async ({ page }) => {
 
     // should be visible, and have the heading text
     await expect(modal).toBeVisible();
-    await expect(modal.getByText('OLMoTrace documents').first()).toBeVisible();
+    await expect(modal.getByText('OLMoTrace').first()).toBeVisible();
 
     // should close
     await modal
