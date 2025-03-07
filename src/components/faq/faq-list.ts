@@ -65,6 +65,11 @@ export const faqs: FAQCategory[] = [
                 question: 'How accurate and reliable is generated content on the Playground?',
                 answer: 'Playground-generated content is built for research and educational purposes only. It is not intended to be accurate or reliable, but rather as a research tool and to help the general public better understand LLMs. Please do not rely on any Playground-generated content and always use your best judgment, fact-check important information, and consider the context when interpreting content generated on the Playground.',
             },
+
+            {
+                question: 'Which models on the Playground are multimodal and how do I use them?',
+                answer: "Currently, the 'Molmo' model in the model dropdown is the only one that supports multimodal interaction. Your first message should include an image and a query. Subsequent prompts can be text-only. Ideally, you'd choose a different language model for purely text-based conversations.",
+            },
         ],
     },
     {
