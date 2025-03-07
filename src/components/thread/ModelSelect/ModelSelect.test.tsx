@@ -1,7 +1,9 @@
 import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 
+import { Model } from '@/api/Model';
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -44,6 +46,7 @@ const getInitialState = () =>
                 is_deprecated: true,
                 model_type: 'chat',
                 name: 'OLMo-peteish-dpo-preview',
+                accepts_files: false,
             },
             {
                 description: "A preview version of Ai2's latest Tulu model",
@@ -52,8 +55,10 @@ const getInitialState = () =>
                 is_deprecated: false,
                 model_type: 'chat',
                 name: 'Llama Tülu 3 8B',
+                accepts_files: false,
             },
-        ],
+        ] satisfies Model[],
+        setSelectedModel: () => {},
     }) satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
 
 describe('Model Select', () => {
@@ -62,13 +67,15 @@ describe('Model Select', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
-            <FakeAppContextProvider
-                initialState={{
-                    ...getInitialState(),
-                    selectedModel: { id: 'OLMo-peteish-dpo-preview' },
-                }}>
-                <ModelSelect />
-            </FakeAppContextProvider>
+            <MemoryRouter>
+                <FakeAppContextProvider
+                    initialState={{
+                        ...getInitialState(),
+                        selectedModel: { id: 'OLMo-peteish-dpo-preview' },
+                    }}>
+                    <ModelSelect />
+                </FakeAppContextProvider>
+            </MemoryRouter>
         );
 
         const modelSelectLocator = screen.getByRole('combobox', { name: 'Model:' });
@@ -85,12 +92,14 @@ describe('Model Select', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
-            <FakeAppContextProvider
-                initialState={{
-                    ...getInitialState(),
-                }}>
-                <ModelSelect />
-            </FakeAppContextProvider>
+            <MemoryRouter>
+                <FakeAppContextProvider
+                    initialState={{
+                        ...getInitialState(),
+                    }}>
+                    <ModelSelect />
+                </FakeAppContextProvider>
+            </MemoryRouter>
         );
 
         const modelSelectLocator = screen.getByRole('combobox', { name: 'Model:' });

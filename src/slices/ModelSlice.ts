@@ -1,9 +1,9 @@
-import { StateCreator } from 'zustand';
+import { OlmoStateCreator } from '@/AppContext';
 
 import { Model, ModelClient, ModelList } from '../api/Model';
 import { WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
-import { errorToAlert, SnackMessageSlice } from './SnackMessageSlice';
+import { errorToAlert } from './SnackMessageSlice';
 
 export interface ModelSlice {
     modelRemoteState?: RemoteState;
@@ -15,10 +15,7 @@ export interface ModelSlice {
 
 const modelClient = new ModelClient();
 
-export const createModelSlice: StateCreator<ModelSlice & SnackMessageSlice, [], [], ModelSlice> = (
-    set,
-    get
-) => ({
+export const createModelSlice: OlmoStateCreator<ModelSlice> = (set, get) => ({
     modelRemoteState: undefined,
     models: [],
     selectedModel: undefined,

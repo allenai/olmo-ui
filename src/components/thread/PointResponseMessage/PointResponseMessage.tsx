@@ -79,7 +79,7 @@ const PointOnImage = ({ points, fill }: PointOnImageProps): ReactNode => (
 );
 
 // This lets us use sx without using a box
-const PointLabelSvg = styled('svg')();
+const PointLabelSvg = styled('svg')({});
 
 interface PointLabelProps {
     pointColor: string;

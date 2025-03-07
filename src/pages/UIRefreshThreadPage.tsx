@@ -8,7 +8,7 @@ import {
     DesktopAttributionDrawer,
     MobileAttributionDrawer,
 } from '@/components/thread/attribution/drawer/AttributionDrawer';
-import { ModelSelect } from '@/components/thread/ModelSelect';
+import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
 import {
     DesktopParameterDrawer,
     MobileParameterDrawer,
