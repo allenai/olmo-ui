@@ -137,7 +137,7 @@ const PointPictureCaption = ({
     pointColors: string[];
 }) => {
     return (
-        <Stack gap={2} useFlexGap component="figcaption">
+        <Stack gap={1} useFlexGap component="figcaption" sx={{ marginBlockStart: 1 }}>
             {pointInfos.map((pointInfo, i) => (
                 <PointLabel
                     key={i}
@@ -183,7 +183,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
 
     return (
         <>
-            <Box component="figure" sx={{ margin: 0 }}>
+            <Box component="figure" sx={{ margin: 0, marginBlockEnd: 2 }}>
                 <Box
                     onClick={() => {
                         setIsModalOpen(true);
