@@ -9,7 +9,6 @@ import {
     parseMessage,
     RequestInferenceOpts,
     StreamBadRequestError,
-    StreamValidationError,
     V4CreateMessageRequest,
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
