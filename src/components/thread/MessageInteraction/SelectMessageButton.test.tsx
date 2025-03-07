@@ -7,7 +7,7 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 import { SelectMessageButton } from './SelectMessageButton';
 
 describe('SelectMessageButton', () => {
-    it('should show "Hide training text" when the message is selected', () => {
+    it('should show "Hide OLMoTrace" when the message is selected', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         const initialState = {
@@ -30,10 +30,10 @@ describe('SelectMessageButton', () => {
             }
         );
 
-        expect(screen.getByRole('button', { name: 'Hide training text' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Hide OLMoTrace' })).toBeInTheDocument();
     });
 
-    it('should show "Match training text" when the message is not selected', () => {
+    it('should show "Show OLMoTrace" when the message is not selected', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
@@ -50,6 +50,6 @@ describe('SelectMessageButton', () => {
             }
         );
 
-        expect(screen.getByRole('button', { name: 'Match training text' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Show OLMoTrace' })).toBeInTheDocument();
     });
 });

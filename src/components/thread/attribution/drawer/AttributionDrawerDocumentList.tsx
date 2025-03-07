@@ -65,9 +65,8 @@ const UnavailableMessage = () => {
                 })}
             />
             <Typography align="center">
-                This message used a model that doesn&apos;t have training text matching available.
-                View training text for another message or prompt a model that does have training
-                text matches available
+                This message used a model that doesn&apos;t have OLMoTrace supported. View OLMoTrace
+                for another message or prompt a model that does have OLMoTrace supported.
             </Typography>
         </Stack>
     );
@@ -93,8 +92,8 @@ const BlockedMessage = () => {
                 })}
             />
             <Typography align="center">
-                Training Text Matches is blocked for this message due to legal compliance. Please
-                try another message.
+                OLMoTrace is blocked for this message due to legal compliance. Please try another
+                message.
             </Typography>
         </Stack>
     );
@@ -193,8 +192,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         return (
             <Card>
                 <CardContent>
-                    To see training text matches for a model response, click the &ldquo;Match
-                    training text&rdquo; button below it.
+                    To see OLMoTrace for a model response, click the &ldquo;Show OLMoTrace&rdquo;
+                    button below it.
                 </CardContent>
             </Card>
         );
