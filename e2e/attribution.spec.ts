@@ -7,7 +7,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     // select message
     await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
 
-    await page.getByRole('button', { name: 'OLMoTrace' }).click();
+    await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
     await expect(page.getByTestId('corpuslink-drawer').getByText('document from:')).toHaveCount(2);
     await page
         .getByRole('button', { name: 'Show documents related to this span' })
@@ -36,7 +36,7 @@ test('should show highlights when message is selected', async ({ page }) => {
     await expect(page.getByTestId('corpuslink-drawer').getByRole('listitem')).toHaveCount(1);
 
     // Close the drawer and make sure the highlights are still visible
-    await page.getByRole('button', { name: 'OLMoTrace' }).click();
+    await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
     await expect(
         page.getByRole('button', { name: 'Show documents related to this span' })
     ).toHaveCount(1);
@@ -66,7 +66,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     page,
 }) => {
     await page.goto('/thread/msg_duplicatedocuments');
-    await page.getByRole('button', { name: 'OLMoTrace' }).click();
+    await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
 
     // select message
     await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
@@ -108,7 +108,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
 test('should show the OLMoTrace dialog', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');
 
-    await page.getByRole('button', { name: 'OLMoTrace' }).click();
+    await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
 
     // We're on the standard CorpusLink stuff
     await expect(page.getByTestId('corpuslink-drawer')).toBeVisible();
@@ -125,7 +125,7 @@ test('should show the OLMoTrace dialog', async ({ page }) => {
 
     // should be visible, and have the heading text
     await expect(modal).toBeVisible();
-    await expect(modal.getByText('OLMoTrace').first()).toBeVisible();
+    await expect(modal.getByText('OLMoTrace documents').first()).toBeVisible();
 
     // should close
     await modal
