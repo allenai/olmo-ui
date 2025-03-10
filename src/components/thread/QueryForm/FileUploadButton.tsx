@@ -76,7 +76,6 @@ const Label = styled('label')(({ theme }) => ({
     cursor: 'pointer',
     borderRadius: 'var(--radii-full, 9999px)',
     padding: 4,
-    marginLeft: 'var(--spacing-1)',
     display: 'flex',
     color: 'var(--palette-light-accent-secondary)',
 
