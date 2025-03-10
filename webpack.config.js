@@ -111,6 +111,7 @@ module.exports = (env) => ({
             HEAP_ANALYTICS_ID: '341313142',
             IS_ANALYTICS_ENABLED: 'true',
             IS_MULTI_MODAL_ENABLED: 'true',
+            BASE_URL: 'https://playground.allenai.org',
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
         new RetryChunkLoadPlugin({

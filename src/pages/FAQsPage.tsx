@@ -16,7 +16,7 @@ export const FAQsPage = (): JSX.Element => {
     const allFaqs = isCorpusLinkEnabled ? faqs.concat(corpusLinkFaqs) : faqs;
     return (
         <>
-            <MetaTags title="Ai2 Playground" />
+            <MetaTags />
             <Card
                 elevation={0}
                 sx={{
