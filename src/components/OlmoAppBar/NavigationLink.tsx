@@ -10,7 +10,7 @@ import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
-const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
+export const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
     <ListItemIcon
         sx={[
             {
