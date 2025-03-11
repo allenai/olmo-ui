@@ -16,7 +16,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 ) {
     const labelRef = useRef<HTMLLabelElement>(null);
     const { isMultiModalEnabled } = useFeatureToggles();
-    const { acceptsFileUpload, acceptedFileTypes, requiredFileOption, acceptsMultiple } =
+    const { acceptsFileUpload, acceptedFileTypes, acceptsMultiple, allowFilesInFollowups } =
         useAppContext(
             useShallow((state) => {
                 const values = {
@@ -24,6 +24,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
                     acceptedFileTypes: '',
                     requiredFileOption: undefined as string | undefined,
                     acceptsMultiple: false,
+                    allowFilesInFollowups: false,
                 };
 
                 if (state.selectedModel?.accepts_files) {
@@ -34,6 +35,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
                         selectedModel.max_files_per_message != null &&
                         selectedModel.max_files_per_message > 1;
                     values.requiredFileOption = selectedModel.require_file_to_prompt;
+                    values.allowFilesInFollowups = selectedModel.allow_files_in_followups ?? false;
                 }
 
                 return values;
@@ -44,8 +46,8 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
         (state) => state.streamPromptState === RemoteState.Loading
     );
 
-    const disableFileUploadAfterSent = useAppContext(
-        (state) => state.selectedThreadMessages.length > 1 && requiredFileOption === 'first_message'
+    const isFileUploadDisabled = useAppContext(
+        (state) => state.selectedThreadMessages.length > 1 && !allowFilesInFollowups
     );
 
     const supportFileUpload = isMultiModalEnabled && acceptsFileUpload;
@@ -59,7 +61,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
             <AddAPhotoOutlinedIcon />
             <Input
                 {...props}
-                disabled={isSendingPrompt || disableFileUploadAfterSent}
+                disabled={isSendingPrompt || isFileUploadDisabled}
                 accept={acceptedFileTypes}
                 multiple={acceptsMultiple}
                 type="file"
@@ -70,10 +72,10 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     );
 });
 
-const Label = styled('label')({
+const Label = styled('label')(({ theme }) => ({
     cursor: 'pointer',
     borderRadius: 'var(--radii-full, 9999px)',
-    paddingLeft: 'var(--spacing-1)',
+    padding: 4,
     display: 'flex',
     color: 'var(--palette-light-accent-secondary)',
 
@@ -86,11 +88,15 @@ const Label = styled('label')({
         borderRadius: 'var(--radii-full, 9999px)',
     },
 
-    '@supports not (selector(:focus-visible)) or (selector(:has(*))': {
+    ':has(input[type="file"]:disabled)': {
+        color: theme.palette.action.disabled,
+    },
+
+    '@supports not (selector(:focus-visible) or selector(:has(*)))': {
         outline: '1px solid',
         borderRadius: 'var(--radii-full, 9999px)',
     },
-});
+}));
 
 const Input = styled('input')({
     opacity: 0,

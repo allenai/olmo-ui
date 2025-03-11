@@ -1,6 +1,5 @@
 import { render, screen } from '@test-utils';
 
-import { FileRequiredToPromptOption } from '@/api/Model';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -35,13 +34,13 @@ describe('FileUploadButton', () => {
         expect(screen.getByLabelText('Upload file')).toBeVisible();
     });
 
-    it('should be disabled if the model only accepts file upload for the first message', () => {
+    it("should be disabled if the model doesn't accept file uploads for followup messages", () => {
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-                require_file_to_prompt: 'first_message' as FileRequiredToPromptOption,
+                allow_files_in_followups: false,
             },
             selectedThreadMessages: ['userMessage', 'llmMessage'],
         };
