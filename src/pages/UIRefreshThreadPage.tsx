@@ -23,7 +23,7 @@ export const UIRefreshThreadPage = () => {
 
     return (
         <>
-            <MetaTags title="Ai2 Playground" />
+            <MetaTags />
             <Card
                 variant="elevation"
                 elevation={0}

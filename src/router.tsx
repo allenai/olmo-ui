@@ -41,7 +41,7 @@ const DolmaPage = (): JSX.Element => {
                 paddingInline: 2,
                 paddingBlockEnd: 2,
             }}>
-            <MetaTags title="AI2 Playground - Dataset Explorer" />
+            <MetaTags title="Ai2 Playground - Dataset Explorer" />
             <Outlet />
         </Box>
     );
@@ -52,13 +52,13 @@ export const routes: RouteObject[] = [
         id: 'root',
         element: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
-                <MetaTags title="AI2 Playground" />
+                <MetaTags />
                 <NewApp />
             </VarnishedApp>
         ),
         errorElement: (
             <VarnishedApp theme={uiRefreshOlmoTheme}>
-                <MetaTags title="AI2 Playground" />
+                <MetaTags />
                 <ErrorPage />
             </VarnishedApp>
         ),

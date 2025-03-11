@@ -1,22 +1,30 @@
 import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 
-interface Props {
+interface MetaTagsProps {
     title?: string;
     description?: string;
+    socialSharingImageUrl?: string;
 }
 
 export const MetaTags = ({
-    title = 'AI2 OLMo',
-    description = 'A state-of-the-art LLM and framework intentionally designed to provide access to data, training code, models, and evaluation code.',
-}: Props) => {
+    title = 'Ai2 Playground',
+    description = "Try Ai2's latest models on our official Playground.",
+    socialSharingImageUrl = '/social-sharing-image.png',
+}: MetaTagsProps) => {
+    const location = useLocation();
+
     return (
         <Helmet>
             <title>{title}</title>
-            <meta name="twitter:title" content={title} />
+            <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="Ai2 Playground" />
             <meta property="og:title" content={title} />
-            <meta name="description" content={description} />
-            <meta name="twitter:description" content={description} />
             <meta property="og:description" content={description} />
+            <meta property="og:image" content={socialSharingImageUrl} />
+            <meta property="og:url" content={`${process.env.BASE_URL}/${location.pathname}`} />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:site" content="@allen_ai" />
         </Helmet>
     );
 };
