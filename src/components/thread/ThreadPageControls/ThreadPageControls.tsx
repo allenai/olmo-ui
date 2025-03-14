@@ -1,6 +1,6 @@
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
-import { AvatarMenu } from './AvatarMenu';
+import { AvatarIconButton } from './AvatarIconButton';
 import { CorpusLinkIconButton } from './CorpusLinkIconButton';
 import { NewThreadIconButton } from './NewThreadIconButton';
 import { ParameterIconButton } from './ParameterIconButton';
@@ -11,7 +11,7 @@ export const ThreadPageControls = (): React.ReactNode => {
 
     return (
         <>
-            <AvatarMenu />
+            <AvatarIconButton />
             <ParameterIconButton />
             {isCorpusLinkEnabled && <CorpusLinkIconButton />}
             <NewThreadIconButton />
