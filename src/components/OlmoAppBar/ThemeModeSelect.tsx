@@ -11,7 +11,8 @@ import {
     MenuItemProps,
     Select,
     selectClasses,
-    styled,
+    SxProps,
+    Theme,
 } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -19,44 +20,67 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 
 import { ColorPreference, useColorMode } from '../ColorModeProvider';
 
-// We need the autoFocus prop from MenuItemProps so the MenuList can automatically focus the right item
-// Including all the props just in case we need something else
 interface ThemeModeSelectMenuItemProps extends MenuItemProps {
     title: string;
     mode: ColorPreference;
+    themeModeAdaptive?: boolean;
 }
 
 const ThemeModeSelectMenuItem = ({
     title,
     mode,
+    themeModeAdaptive = true,
     onClick,
     ...menuItemProps
 }: ThemeModeSelectMenuItemProps): ReactNode => {
     const [colorMode, setColorMode] = useColorMode();
     const isSelected = mode === colorMode;
 
+    const adaptiveSx: SxProps<Theme> = (theme) => ({
+        paddingInline: theme.spacing(1.5),
+        [`&.${menuItemClasses.focusVisible}`]: {
+            backgroundColor: alpha(theme.palette.common.black, 0.12),
+        },
+        ':hover': {
+            backgroundColor: alpha(theme.palette.common.black, 0.04),
+        },
+        [`&.${menuItemClasses.selected}`]: {
+            backgroundColor: alpha(theme.palette.background.paper, 0.6),
+            color: theme.palette.text.primary,
+            [`&.${menuItemClasses.focusVisible}`]: {
+                backgroundColor: alpha(theme.palette.common.black, 0.12),
+            },
+            ':hover': {
+                backgroundColor: alpha(theme.palette.common.black, 0.04),
+            },
+        },
+    });
+
+    const fixedSx: SxProps<Theme> = (theme) => ({
+        color: theme.palette.common.white,
+        paddingInline: theme.spacing(1.5),
+        [`&.${menuItemClasses.focusVisible}`]: {
+            backgroundColor: alpha(theme.palette.common.black, 0.12),
+        },
+        ':hover': {
+            backgroundColor: alpha(theme.palette.common.black, 0.04),
+        },
+        [`&.${menuItemClasses.selected}`]: {
+            color: theme.palette.common.white,
+            // avoid paper from changing colors
+            backgroundColor: alpha('#032629', 0.6),
+            [`&.${menuItemClasses.focusVisible}`]: {
+                backgroundColor: alpha(theme.palette.common.black, 0.12),
+            },
+            ':hover': {
+                backgroundColor: alpha(theme.palette.common.black, 0.04),
+            },
+        },
+    });
+
     return (
         <MenuItem
-            sx={(theme) => ({
-                paddingInline: theme.spacing(1.5),
-                background: 'transparent',
-                [`&.${menuItemClasses.focusVisible}`]: {
-                    backgroundColor: alpha(theme.palette.common.black, 0.12),
-                },
-                ':hover': {
-                    backgroundColor: alpha(theme.palette.common.black, 0.04),
-                },
-                [`&.${menuItemClasses.selected}`]: {
-                    background: alpha(theme.palette.background.paper, 0.6),
-                    color: theme.palette.text.primary,
-                    [`&.${menuItemClasses.focusVisible}`]: {
-                        backgroundColor: alpha(theme.palette.common.black, 0.12),
-                    },
-                    ':hover': {
-                        backgroundColor: alpha(theme.palette.common.black, 0.04),
-                    },
-                },
-            })}
+            sx={themeModeAdaptive ? adaptiveSx : fixedSx}
             {...menuItemProps}
             onClick={(e) => {
                 analyticsClient.trackColorModeChange({ colorMode: mode });
@@ -66,10 +90,13 @@ const ThemeModeSelectMenuItem = ({
             <Box flexGrow={1}>{title}</Box>
             {isSelected ? (
                 <ListItemIcon
-                    sx={{
+                    sx={(theme) => ({
                         flexDirection: 'row-reverse',
                         justifySelf: 'end',
-                    }}>
+                        color: themeModeAdaptive
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.common.white,
+                    })}>
                     <Check />
                 </ListItemIcon>
             ) : null}
@@ -77,46 +104,41 @@ const ThemeModeSelectMenuItem = ({
     );
 };
 
-export const ThemeModeSelect = () => {
-    // const [_, setAnchorEl] = useState<null | HTMLElement>(null);
+type ThemeModeInputProps = InputBaseProps & {
+    themeModeAdaptive?: boolean;
+};
+
+export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptive?: boolean }) => {
     const [colorMode] = useColorMode();
     const themeOptions: Array<{
         title: string;
         mode: ColorPreference;
     }> = [
-            {
-                title: 'System theme',
-                mode: 'system',
-            },
-            {
-                title: 'Light',
-                mode: 'light',
-            },
-            {
-                title: 'Dark',
-                mode: 'dark',
-            },
-        ];
+        {
+            title: 'System theme',
+            mode: 'system',
+        },
+        {
+            title: 'Light',
+            mode: 'light',
+        },
+        {
+            title: 'Dark',
+            mode: 'dark',
+        },
+    ];
 
     const selectedThemeMode = (
         themeOptions.find((option) => option.mode === colorMode) || themeOptions[0]
     ).mode;
-
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
-
-    const handleMenuItemClick = () => {
-        // handleClose();
-    };
 
     return (
         <>
             <Select
                 fullWidth
                 size="small"
-                onChange={handleMenuItemClick}
-                input={<ThemeModeInput />}
+                onChange={() => {}}
+                input={<ThemeModeInput themeModeAdaptive={themeModeAdaptive} />}
                 MenuProps={{
                     slotProps: {
                         paper: {
@@ -132,7 +154,9 @@ export const ThemeModeSelect = () => {
                     MenuListProps: {
                         sx: (theme) => ({
                             borderRadius: theme.spacing(1),
-                            backgroundColor: theme.palette.background.drawer.secondary,
+                            backgroundColor: themeModeAdaptive
+                                ? theme.palette.background.drawer.secondary
+                                : theme.palette.background.drawer.primary,
                             overflow: 'hidden',
                             padding: 0,
                             boxShadow: 1,
@@ -145,7 +169,8 @@ export const ThemeModeSelect = () => {
                         key={option.mode}
                         value={option.mode}
                         title={option.title}
-                        mode={option.mode}>
+                        mode={option.mode}
+                        themeModeAdaptive={themeModeAdaptive}>
                         {option.title}
                     </ThemeModeSelectMenuItem>
                 ))}
@@ -154,38 +179,74 @@ export const ThemeModeSelect = () => {
     );
 };
 
-const ThemeModeInput = styled((props: InputBaseProps) => <InputBase {...props} />)(({ theme }) => ({
-    borderRadius: '8px',
-    backgroundColor:
-        theme.palette.mode === 'light'
-            ? theme.palette.background.drawer.secondary
-            : alpha(theme.palette.common.white, 0.1),
-    backgroundImage: 'none',
-    color: theme.palette.text.primary,
-    minWidth: '14rem',
-    marginBottom: theme.spacing(1),
-    border: '1px solid rgba(0, 0, 0, 0.10)',
-    '&.Mui-focused': {
-        borderColor: theme.palette.secondary.main,
-    },
-    [`.${inputBaseClasses.input}`]: {
-        paddingBlock: theme.spacing(1),
-        paddingInlineStart: theme.spacing(3),
-        paddingInlineEnd: theme.spacing(4),
-
-        '&:focus': {
-            backgroundColor: 'transparent',
-        },
-        [`&.${inputBaseClasses.input}`]: {
-            paddingInlineEnd: theme.spacing(6),
-        },
-        [`.${inputBaseClasses.focused}`]: {
+const ThemeModeInput = ({ themeModeAdaptive, ...props }: ThemeModeInputProps) => {
+    const adaptiveSx: SxProps<Theme> = (theme) => ({
+        borderRadius: '8px',
+        backgroundColor:
+            theme.palette.mode === 'light'
+                ? theme.palette.background.drawer.secondary
+                : alpha(theme.palette.common.white, 0.1),
+        backgroundImage: 'none',
+        color: theme.palette.text.primary,
+        minWidth: '14rem',
+        marginBottom: theme.spacing(1),
+        border: '1px solid rgba(0, 0, 0, 0.10)',
+        '&.Mui-focused': {
             borderColor: theme.palette.secondary.main,
         },
-    },
-    [`.${selectClasses.icon}`]: {
-        marginInlineEnd: theme.spacing(1),
-        transform: 'scale(1.2) translateY(0px)',
-        fill: theme.palette.secondary.main,
-    },
-}));
+        [`.${inputBaseClasses.input}`]: {
+            paddingBlock: theme.spacing(1),
+            paddingInlineStart: theme.spacing(3),
+            paddingInlineEnd: theme.spacing(4),
+
+            '&:focus': {
+                backgroundColor: 'transparent',
+            },
+            [`&.${inputBaseClasses.input}`]: {
+                paddingInlineEnd: theme.spacing(6),
+            },
+            [`.${inputBaseClasses.focused}`]: {
+                borderColor: theme.palette.secondary.main,
+            },
+        },
+        [`.${selectClasses.icon}`]: {
+            marginInlineEnd: theme.spacing(1),
+            transform: 'scale(1.2) translateY(0px)',
+            fill: theme.palette.secondary.main,
+        },
+    });
+
+    const fixedSx: SxProps<Theme> = (theme) => ({
+        borderRadius: '8px',
+        backgroundColor: alpha(theme.palette.common.white, 0.1),
+        color: theme.palette.common.white,
+        minWidth: '14rem',
+        marginBottom: theme.spacing(1),
+        border: '1px solid rgba(0, 0, 0, 0.10)',
+        '&.Mui-focused': {
+            borderColor: theme.palette.secondary.main,
+        },
+        [`.${inputBaseClasses.input}`]: {
+            paddingBlock: theme.spacing(1),
+            paddingInlineStart: theme.spacing(3),
+            paddingInlineEnd: theme.spacing(4),
+
+            '&:focus': {
+                backgroundColor: 'transparent',
+            },
+            [`&.${inputBaseClasses.input}`]: {
+                paddingInlineEnd: theme.spacing(6),
+            },
+            [`.${inputBaseClasses.focused}`]: {
+                borderColor: theme.palette.secondary.main,
+            },
+        },
+        [`.${selectClasses.icon}`]: {
+            marginInlineEnd: theme.spacing(1),
+            transform: 'scale(1.2) translateY(0px)',
+            fill: theme.palette.secondary.main,
+        },
+    });
+
+    return <InputBase sx={themeModeAdaptive ? adaptiveSx : fixedSx} {...props} />;
+};
