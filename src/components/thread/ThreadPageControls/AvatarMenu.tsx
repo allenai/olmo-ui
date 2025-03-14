@@ -1,8 +1,24 @@
+import { PopperOwnProps } from '@mui/base';
 import { ShieldOutlined } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 import LoginIcon from '@mui/icons-material/LoginOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
-import { Box, IconButton, ListItem, ListItemButton, ListItemText, Popper } from '@mui/material';
-import React, { MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import {
+    Box,
+    IconButton,
+    IconButton,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    Popover,
+    PopoverProps,
+    Popper,
+    Stack,
+    SxProps,
+    Theme,
+    Typography,
+} from '@mui/material';
+import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
@@ -11,12 +27,15 @@ import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
 import { ThemeModeSelect } from '@/components/OlmoAppBar/ThemeModeSelect';
 import { links } from '@/Links';
 
-const Auth0LoginLink = () => {
+const Auth0LoginLink = ({ themeModeAdaptive = true }: { themeModeAdaptive?: boolean }) => {
     const { isAuthenticated } = useUserAuthInfo();
 
     if (isAuthenticated) {
         return (
-            <AvatarMenuItem icon={<LogoutIcon />} href={links.logout}>
+            <AvatarMenuItem
+                icon={<LogoutIcon />}
+                href={links.logout}
+                themeModeAdaptive={themeModeAdaptive}>
                 Log out
             </AvatarMenuItem>
         );
@@ -26,32 +45,26 @@ const Auth0LoginLink = () => {
         <AvatarMenuItem
             // eslint-disable-next-line react/jsx-no-undef
             icon={<LoginIcon />}
-            href={links.login(window.location.href)}>
+            href={links.login(window.location.href)}
+            themeModeAdaptive={themeModeAdaptive}>
             Log in
         </AvatarMenuItem>
     );
 };
 
-export const AvatarMenu = () => {
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+type AvatarMenuProps = Pick<PopperOwnProps, 'anchorEl' | 'placement'> & {
+    sx?: SxProps<Theme>;
+};
 
-    const toggleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(anchorEl == null ? event.currentTarget : null);
-    };
-
+export const AvatarMenu = ({ anchorEl, placement, sx }: AvatarMenuProps) => {
     return (
         <>
-            <IconButton sx={{ padding: 0.7 }} onClick={toggleMenu}>
-                <UserAvatar />
-            </IconButton>
             <Popper
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
-                placement="left"
-                sx={{
-                    top: '15px!important',
-                    right: '40px!important',
-                }}>
+                placement={placement}
+                sx={sx}
+                data-test-id="avatar-menu">
                 <Box
                     sx={(theme) => ({
                         p: 2.5,
@@ -60,7 +73,7 @@ export const AvatarMenu = () => {
                             theme.palette.mode === 'light'
                                 ? theme.palette.background.default
                                 : theme.palette.background.drawer.primary,
-                        boxShadow: '0px 4px 60px 0px rgba(0, 0, 0, 0.15)',
+                        boxShadow: `0px 4px 60px 0px alpha(${(theme.palette.common.black, 0.15)})`,
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 1,
@@ -82,8 +95,96 @@ export const AvatarMenu = () => {
     );
 };
 
+type AvatarMenuMobileProps = Pick<PopoverProps, 'anchorEl' | 'open' | 'sx'> & {
+    onClose?: () => void;
+};
+
+export const AvatarMenuMobile = ({ anchorEl, open, onClose, sx }: AvatarMenuMobileProps) => {
+    const closeMenu = () => {
+        if (onClose) {
+            onClose();
+        }
+    };
+
+    return (
+        <Popover
+            id="avatar-mobile-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            sx={sx}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            slotProps={{
+                paper: {
+                    sx: (theme) => ({
+                        minWidth: '320px',
+                        borderRadius: '16px',
+                        boxShadow: `0px 4px 120px 0px alpha(${(theme.palette.common.black, 0.13)})`,
+                    }),
+                },
+                root: {
+                    sx: {
+                        '& > .MuiModal-backdrop': {
+                            backdropFilter: 'blur(10px)',
+                        },
+                    },
+                },
+            }}>
+            <Box
+                sx={(theme) => ({
+                    p: 2.5,
+                    bgcolor: theme.palette.background.drawer.primary,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1,
+                })}>
+                <Stack direction="row" gap={2} mb={2}>
+                    <UserAvatar />
+                    <Typography
+                        component="span"
+                        variant="body1"
+                        sx={(theme) => ({
+                            fontWeight: 500,
+                            alignSelf: 'center',
+                            color: theme.palette.common.white,
+                        })}>
+                        Preferences
+                    </Typography>
+                    <IconButton
+                        aria-label="close"
+                        onClick={closeMenu}
+                        sx={(theme) => ({
+                            position: 'absolute',
+                            right: theme.spacing(2),
+                            top: theme.spacing(2),
+                            color: theme.palette.grey[500],
+                        })}>
+                        <CloseIcon />
+                    </IconButton>
+                </Stack>
+                <ThemeModeSelect themeModeAdaptive={false} />
+                {process.env.IS_ANALYTICS_ENABLED === 'true' && (
+                    <AvatarMenuItem
+                        icon={<ShieldOutlined />}
+                        onClick={() => {
+                            window.Osano?.cm?.showDrawer();
+                        }}
+                        themeModeAdaptive={false}>
+                        Privacy settings
+                    </AvatarMenuItem>
+                )}
+                <Auth0LoginLink themeModeAdaptive={false} />
+            </Box>
+        </Popover>
+    );
+};
+
 type AvatarMenuItemProps = PropsWithChildren & {
     icon?: ReactNode;
+    themeModeAdaptive?: boolean;
 } & (
         | {
               href?: never;
@@ -92,7 +193,13 @@ type AvatarMenuItemProps = PropsWithChildren & {
         | { href: string; onClick?: never }
     );
 
-export const AvatarMenuItem = ({ icon, children, href, onClick }: AvatarMenuItemProps) => {
+export const AvatarMenuItem = ({
+    icon,
+    themeModeAdaptive = true,
+    children,
+    href,
+    onClick,
+}: AvatarMenuItemProps) => {
     const isInternalLink = href != null && href.startsWith('/');
 
     const linkPropsMerged = {
@@ -153,6 +260,9 @@ export const AvatarMenuItem = ({ icon, children, href, onClick }: AvatarMenuItem
                         '& svg': { fontSize: '1.25rem' },
                         opacity: 0.5,
                         '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
+                        color: (theme) => {
+                            return themeModeAdaptive ? 'inherit' : theme.palette.common.white;
+                        },
                     }}>
                     {icon}
                 </NavigationListItemIcon>
@@ -162,6 +272,13 @@ export const AvatarMenuItem = ({ icon, children, href, onClick }: AvatarMenuItem
                         variant: 'body1',
                         fontWeight: 500,
                         component: 'span',
+                        sx: (theme) => {
+                            return themeModeAdaptive
+                                ? {}
+                                : {
+                                      color: theme.palette.common.white,
+                                  };
+                        },
                     }}>
                     {children}
                 </ListItemText>
