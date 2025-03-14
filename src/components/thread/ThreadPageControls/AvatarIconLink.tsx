@@ -6,7 +6,7 @@ import { useAppContext } from '@/AppContext';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
 
-import { AvatarMenuMobile } from './AvatarMenu';
+import { AvatarMenuMobile } from './AvatarMenuMobile';
 
 export const AvatarIconLink = () => {
     const userInfo = useAppContext((state) => state.userInfo);
