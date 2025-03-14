@@ -1,53 +1,26 @@
-import {
-    ArrowForwardIosOutlined,
-    LoginOutlined as LoginIcon,
-    RateReviewOutlined,
-    ShieldOutlined,
-} from '@mui/icons-material';
+import { ArrowForwardIosOutlined, RateReviewOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import SortIcon from '@mui/icons-material/Sort';
 import { alpha, IconButton, Link, ListItem, Stack, Typography } from '@mui/material';
 import { ComponentProps } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
-import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { useDesktopOrUp } from '../dolma/shared';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
-import { ColorModeSelection } from './ColorModeSelection';
+import { AvatarIconLink } from '../thread/ThreadPageControls/AvatarIconLink';
 import { NavigationLink } from './NavigationLink';
 import { NewChatButton } from './NewChatButton';
-
-const Auth0LoginLink = () => {
-    const { isAuthenticated } = useUserAuthInfo();
-
-    if (isAuthenticated) {
-        return (
-            <NavigationLink icon={<LogoutIcon />} href={links.logout} variant="footer">
-                Log out
-            </NavigationLink>
-        );
-    }
-
-    return (
-        <NavigationLink
-            icon={<LoginIcon />}
-            href={links.login(window.location.href)}
-            variant="footer">
-            Log in
-        </NavigationLink>
-    );
-};
 
 const doesMatchPath = (match: UIMatch, ...paths: string[]) => {
     return paths.some((path) => {
@@ -79,7 +52,7 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
     const { isDatasetExplorerEnabled } = useFeatureToggles();
-
+    const isDesktop = useDesktopOrUp();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     useCloseDrawerOnNavigation({
@@ -156,17 +129,7 @@ export const NavigationDrawer = ({
                             variant="footer">
                             Give feedback
                         </NavigationLink>
-                        {process.env.IS_ANALYTICS_ENABLED === 'true' && (
-                            <NavigationLink
-                                icon={<ShieldOutlined />}
-                                onClick={() => {
-                                    window.Osano?.cm?.showDrawer();
-                                }}>
-                                Privacy settings
-                            </NavigationLink>
-                        )}
-                        <ColorModeSelection />
-                        <Auth0LoginLink />
+                        {!isDesktop && <AvatarIconLink />}
                         <ListItem
                             sx={(theme) => ({
                                 paddingInline: 4,
