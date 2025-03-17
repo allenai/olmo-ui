@@ -1,3 +1,4 @@
+import { auth0Client } from '@/api/auth/auth0Client';
 import { OlmoStateCreator } from '@/AppContext';
 
 import { User, UserClient, WhoamiApiUrl } from '../api/User';
@@ -20,8 +21,12 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
     getUserInfo: async () => {
         const { addSnackMessage } = get();
         set({ userRemoteState: RemoteState.Loading });
+
         try {
             const user = await userClient.whoAmI();
+            const authenticatedUserInfo = await auth0Client.getUserInfo();
+            user.email = authenticatedUserInfo?.email;
+            user.pictureLink = authenticatedUserInfo?.picture;
 
             set({
                 userInfo: user,

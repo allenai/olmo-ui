@@ -1,7 +1,8 @@
 import { PopperOwnProps } from '@mui/base';
 import { ShieldOutlined } from '@mui/icons-material';
-import { Box, Popper, SxProps, Theme } from '@mui/material';
+import { Box, ListItemText, Popper, SxProps, Theme } from '@mui/material';
 
+import { useAppContext } from '@/AppContext';
 import { ThemeModeSelect } from '@/components/OlmoAppBar/ThemeModeSelect';
 
 import { Auth0LoginLink } from './Auth0LoginLink';
@@ -12,6 +13,7 @@ type AvatarMenuProps = Pick<PopperOwnProps, 'anchorEl' | 'placement'> & {
 };
 
 export const AvatarMenu = ({ anchorEl, placement, sx }: AvatarMenuProps) => {
+    const userInfo = useAppContext((state) => state.userInfo);
     return (
         <>
             <Popper
@@ -33,6 +35,22 @@ export const AvatarMenu = ({ anchorEl, placement, sx }: AvatarMenuProps) => {
                         flexDirection: 'column',
                         gap: 1,
                     })}>
+                    {!!userInfo?.email && (
+                        <ListItemText
+                            sx={{
+                                margin: 0,
+                                marginInlineEnd: 'auto',
+                                opacity: 0.5,
+                                marginBottom: 1.5,
+                            }}
+                            primaryTypographyProps={{
+                                variant: 'body1',
+                                fontWeight: 500,
+                                component: 'span',
+                            }}>
+                            {userInfo.email}
+                        </ListItemText>
+                    )}
                     <ThemeModeSelect />
                     {process.env.IS_ANALYTICS_ENABLED === 'true' && (
                         <AvatarMenuItem

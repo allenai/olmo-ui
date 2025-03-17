@@ -2,13 +2,17 @@ import { ArrowForwardIosOutlined } from '@mui/icons-material';
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import React from 'react';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
+import { useDesktopOrUp } from '@/components/dolma/shared';
 import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
 
 import { AvatarMenuMobile } from './AvatarMenuMobile';
 
 export const AvatarIconLink = () => {
+    const isDesktop = useDesktopOrUp();
+    const { isAuthenticated } = useUserAuthInfo();
     const userInfo = useAppContext((state) => state.userInfo);
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
@@ -23,6 +27,10 @@ export const AvatarIconLink = () => {
     const onAvatarMenuClose = () => {
         setIsMenuOpen(false);
     };
+
+    if (!isAuthenticated || isDesktop) {
+        return null;
+    }
 
     return (
         <ListItem>
@@ -74,7 +82,7 @@ export const AvatarIconLink = () => {
                         fontWeight: 500,
                         component: 'span',
                     }}>
-                    {userInfo && userInfo.id}
+                    {userInfo && userInfo.email}
                 </ListItemText>
                 <ArrowForwardIosOutlined
                     sx={{
