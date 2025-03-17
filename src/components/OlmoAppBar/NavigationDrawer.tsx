@@ -15,10 +15,10 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { useDesktopOrUp } from '../dolma/shared';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { AvatarIconLink } from '../thread/ThreadPageControls/AvatarIconLink';
+import { LoginLink } from '../thread/ThreadPageControls/LoginLink';
 import { NavigationLink } from './NavigationLink';
 import { NewChatButton } from './NewChatButton';
 
@@ -52,7 +52,6 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
 
     const { isDatasetExplorerEnabled } = useFeatureToggles();
-    const isDesktop = useDesktopOrUp();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     useCloseDrawerOnNavigation({
@@ -129,7 +128,8 @@ export const NavigationDrawer = ({
                             variant="footer">
                             Give feedback
                         </NavigationLink>
-                        {!isDesktop && <AvatarIconLink />}
+                        <LoginLink />
+                        <AvatarIconLink />
                         <ListItem
                             sx={(theme) => ({
                                 paddingInline: 4,
