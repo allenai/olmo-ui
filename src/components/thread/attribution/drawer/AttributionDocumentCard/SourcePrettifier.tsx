@@ -15,9 +15,13 @@ export const deduceUsageFromSource = (source: string): string => {
         case 'dolmino':
             return 'Mid-training';
         case 'tulu-3-sft-olmo-2-mixture':
+        case 'tulu-3-sft-olmo-2-mixture-0225':
             return 'Post-training (SFT)';
+        case 'olmoe-0125-1b-7b-preference-mix':
         case 'olmo-2-1124-13b-preference-mix':
+        case 'olmo-2-0325-32b-preference-mix':
             return 'Post-training (DPO)';
+        case 'RLVR-GSM':
         case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
             return 'Post-training (RLVR)';
         default:
@@ -54,9 +58,25 @@ export const prettifySource = (source: string): ReactNode => {
             displayName = 'tulu-3-sft-olmo-2-mixture';
             url = 'https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture';
             break;
+        case 'tulu-3-sft-olmo-2-mixture-0225':
+            displayName = 'tulu-3-sft-olmo-2-mixture-0225';
+            url = 'https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture-0225';
+            break;
+        case 'olmoe-0125-1b-7b-preference-mix':
+            displayName = 'olmoe-0125-1b-7b-preference-mix';
+            url = 'https://huggingface.co/datasets/allenai/olmoe-0125-1b-7b-preference-mix';
+            break;
         case 'olmo-2-1124-13b-preference-mix':
             displayName = 'olmo-2-1124-13b-preference-mix';
             url = 'https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix';
+            break;
+        case 'olmo-2-0325-32b-preference-mix':
+            displayName = 'olmo-2-0325-32b-preference-mix';
+            url = 'https://huggingface.co/datasets/allenai/olmo-2-0325-32b-preference-mix';
+            break;
+        case 'RLVR-GSM':
+            displayName = 'RLVR-GSM';
+            url = 'https://huggingface.co/datasets/allenai/RLVR-GSM';
             break;
         case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
             displayName = 'RLVR-GSM-MATH-IF-Mixed-Constraints';
