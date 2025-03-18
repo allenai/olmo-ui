@@ -1,3 +1,5 @@
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import {
     alpha,
     Box,
@@ -9,9 +11,11 @@ import {
     menuItemClasses,
     Select,
     selectClasses,
+    Stack,
     styled,
     SxProps,
     Theme,
+    Typography,
 } from '@mui/material';
 import { useEffect, useId, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -126,12 +130,37 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
                             }),
                         },
                     }}
-                    value={selectedModelId}>
-                    {models.map((model) => (
-                        <CustomMenuItem key={model.name} value={model.id}>
-                            {model.name}
-                        </CustomMenuItem>
-                    ))}
+                    value={selectedModelId}
+                    renderValue={(value) => {
+                        return models.find((model) => model.id === value)?.name;
+                    }}>
+                    {models.map((model) => {
+                        return (
+                            <CustomMenuItem key={model.name} value={model.id}>
+                                <Stack direction="row">
+                                    <Box
+                                        sx={{
+                                            padding: 1,
+                                            '>svg': {
+                                                verticalAlign: 'middle',
+                                            },
+                                        }}>
+                                        {model.accepts_files ? (
+                                            <ImageOutlinedIcon />
+                                        ) : (
+                                            <ChatOutlinedIcon />
+                                        )}
+                                    </Box>
+                                    <Stack direction="column">
+                                        <Typography>{model.name}</Typography>
+                                        <Typography sx={{ opacity: 0.5 }}>
+                                            {model.accepts_files ? 'Multimodal' : 'Text-only'}
+                                        </Typography>
+                                    </Stack>
+                                </Stack>
+                            </CustomMenuItem>
+                        );
+                    })}
                 </Select>
             </FormControl>
             <ModelSwitchWarningModal />
