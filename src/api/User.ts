@@ -7,8 +7,6 @@ export const MigrateFromAnonymousUserUrl = '/v3/migrate-user';
 export interface User {
     client: string;
     hasAcceptedTermsAndConditions: boolean;
-    email?: string;
-    pictureLink?: string;
 }
 
 interface MigrationResponse {

@@ -3,7 +3,6 @@ import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import React from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
-import { useAppContext } from '@/AppContext';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
@@ -12,8 +11,7 @@ import { AvatarMenuMobile } from '../menu/AvatarMenuMobile';
 
 export const AvatarMenuLink = () => {
     const isDesktop = useDesktopOrUp();
-    const { isAuthenticated } = useUserAuthInfo();
-    const userInfo = useAppContext((state) => state.userInfo);
+    const { userAuthInfo, isAuthenticated } = useUserAuthInfo();
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
     const toggleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -82,7 +80,7 @@ export const AvatarMenuLink = () => {
                         fontWeight: 500,
                         component: 'span',
                     }}>
-                    {userInfo && userInfo.email}
+                    {userAuthInfo?.email}
                 </ListItemText>
                 <ArrowForwardIosOutlined
                     sx={{

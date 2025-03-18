@@ -1,4 +1,4 @@
-import { User } from '@auth0/auth0-spa-js';
+import { User as Auth0User } from '@auth0/auth0-spa-js';
 import {
     ActionFunction,
     ErrorResponse,
@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
+import { User as ApiUser } from '@/api/User';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
@@ -20,15 +21,16 @@ import { auth0Client } from './auth0Client';
 // adapted from https://github.com/brophdawg11/react-router-auth0-example/blob/91ad7ba916d8a3ecc348c037e1e534b4d87360cd/src/auth.ts
 
 export interface UserAuthInfo {
-    userInfo?: User;
+    userInfo?: ApiUser;
+    userAuthInfo?: Auth0User;
     isAuthenticated: boolean;
 }
 
 const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
-    const userInfo = await auth0Client.getUserInfo();
+    const userAuthInfo = await auth0Client.getUserInfo();
     const isAuthenticated = await auth0Client.isAuthenticated();
 
-    return { userInfo, isAuthenticated };
+    return { userAuthInfo, isAuthenticated };
 };
 
 export const requireAuthorizationLoader: LoaderFunction = async (props) => {
@@ -138,6 +140,7 @@ export const useUserAuthInfo = (): UserAuthInfo => {
 
     return {
         userInfo: userInfo ?? undefined,
+        userAuthInfo: userInfoFromLoader?.userAuthInfo?.userAuthInfo,
         isAuthenticated: Boolean(userInfoFromLoader?.userAuthInfo?.isAuthenticated),
     };
 };
