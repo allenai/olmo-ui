@@ -4,9 +4,9 @@ import React from 'react';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
-import { AvatarMenu } from './AvatarMenu';
+import { AvatarMenu } from '../../menu/AvatarMenu';
 
-export const AvatarIconButton = () => {
+export const AvatarMenuIconButton = () => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
     const toggleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {

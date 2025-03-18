@@ -17,8 +17,8 @@ import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation
 
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
-import { AvatarIconLink } from '../thread/ThreadPageControls/AvatarIconLink';
-import { LoginLink } from '../thread/ThreadPageControls/LoginLink';
+import { AvatarMenuLink } from './AvatarMenuLink';
+import { LoginLink } from './LoginLink';
 import { NavigationLink } from './NavigationLink';
 import { NewChatButton } from './NewChatButton';
 
@@ -129,7 +129,7 @@ export const NavigationDrawer = ({
                             Give feedback
                         </NavigationLink>
                         <LoginLink />
-                        <AvatarIconLink />
+                        <AvatarMenuLink />
                         <ListItem
                             sx={(theme) => ({
                                 paddingInline: 4,

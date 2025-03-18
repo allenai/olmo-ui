@@ -8,9 +8,9 @@ import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
 
-import { AvatarMenuMobile } from './AvatarMenuMobile';
+import { AvatarMenuMobile } from '../menu/AvatarMenuMobile';
 
-export const AvatarIconLink = () => {
+export const AvatarMenuLink = () => {
     const isDesktop = useDesktopOrUp();
     const { isAuthenticated } = useUserAuthInfo();
     const userInfo = useAppContext((state) => state.userInfo);
