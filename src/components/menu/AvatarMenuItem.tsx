@@ -1,40 +1,12 @@
-import { SvgIconComponent } from '@mui/icons-material';
-import {
-    ListItem,
-    ListItemButton,
-    ListItemButtonProps,
-    ListItemIcon,
-    ListItemText,
-} from '@mui/material';
-import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import { ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { NavigationListItemIcon } from '@/components/OlmoAppBar/NavigationLink';
 
-export const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
-    <ListItemIcon
-        sx={[
-            {
-                color: 'inherit',
-                minWidth: 'unset',
-            },
-            // Array.isArray doesn't preserve Sx's array type
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            ...(Array.isArray(sx) ? sx : [sx]),
-        ]}
-        {...props}
-    />
-);
-
-type NavigationLinkProps = PropsWithChildren & {
-    buttonId?: string;
+type AvatarMenuItemProps = PropsWithChildren & {
     icon?: ReactNode;
-    selected?: boolean;
-    isExternalLink?: boolean;
-    variant?: 'default' | 'footer';
-    DisclosureIcon?: SvgIconComponent;
-    inset?: boolean;
-    dense?: boolean;
-    linkProps?: Partial<ListItemButtonProps>;
+    themeModeAdaptive?: boolean;
 } & (
         | {
               href?: never;
@@ -43,21 +15,16 @@ type NavigationLinkProps = PropsWithChildren & {
         | { href: string; onClick?: never }
     );
 
-export const NavigationLink = ({
+export const AvatarMenuItem = ({
     icon,
+    themeModeAdaptive = true,
     children,
     href,
     onClick,
-    selected,
-    variant = 'default',
-    DisclosureIcon,
-    inset,
-    linkProps = {},
-}: NavigationLinkProps) => {
+}: AvatarMenuItemProps) => {
     const isInternalLink = href != null && href.startsWith('/');
 
     const linkPropsMerged = {
-        ...linkProps,
         ...(href == null
             ? {}
             : {
@@ -78,15 +45,11 @@ export const NavigationLink = ({
         <ListItem disablePadding dense>
             <ListItemButton
                 alignItems="center"
-                selected={selected}
                 disableGutters
-                dense={variant === 'footer'}
                 onClick={handleClick}
                 sx={(theme) => ({
                     paddingBlock: 1,
-                    paddingInline: 4,
                     gap: theme.spacing(2),
-                    color: theme.palette.text.drawer.primary,
 
                     ':hover': {
                         backgroundColor: 'transparent',
@@ -119,9 +82,10 @@ export const NavigationLink = ({
                         '& svg': { fontSize: '1.25rem' },
                         opacity: 0.5,
                         '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
+                        color: (theme) => {
+                            return themeModeAdaptive ? 'inherit' : theme.palette.common.white;
+                        },
                     }}>
-                    {/* We need something to take up space if this item is inset */}
-                    {inset && icon == null && <div />}
                     {icon}
                 </NavigationListItemIcon>
                 <ListItemText
@@ -130,19 +94,16 @@ export const NavigationLink = ({
                         variant: 'body1',
                         fontWeight: 500,
                         component: 'span',
+                        sx: (theme) => {
+                            return themeModeAdaptive
+                                ? {}
+                                : {
+                                      color: theme.palette.common.white,
+                                  };
+                        },
                     }}>
                     {children}
                 </ListItemText>
-                <NavigationListItemIcon>
-                    {DisclosureIcon ? (
-                        <DisclosureIcon
-                            sx={{
-                                fontSize: '1rem',
-                                opacity: 0.5,
-                            }}
-                        />
-                    ) : null}
-                </NavigationListItemIcon>
             </ListItemButton>
         </ListItem>
     );

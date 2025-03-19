@@ -20,6 +20,7 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
     getUserInfo: async () => {
         const { addSnackMessage } = get();
         set({ userRemoteState: RemoteState.Loading });
+
         try {
             const user = await userClient.whoAmI();
 
