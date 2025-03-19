@@ -1,9 +1,11 @@
 import { IosShareOutlined } from '@mui/icons-material';
+import { alpha } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
+import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
@@ -33,7 +35,14 @@ export const ShareThreadIconButton = (): ReactNode => {
             desktopPlacement="left"
             onClick={handleShareThread}
             disabled={shouldDisableShareButton}
-            label="Share this thread">
+            label="Share this thread"
+            sx={(theme) => ({
+                [theme.breakpoints.down(DESKTOP_LAYOUT_BREAKPOINT)]: {
+                    '&.Mui-disabled': {
+                        color: alpha(theme.palette.common.white, 0.26),
+                    },
+                },
+            })}>
             <IosShareOutlined
                 sx={{
                     // This Icon looks visually off when centered
