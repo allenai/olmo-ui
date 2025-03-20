@@ -1,6 +1,6 @@
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -9,8 +9,6 @@ import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
-
-import { MessageInteractionIcon } from './MessageInteractionIcon';
 
 interface SelectMessageButtonProps {
     messageId: Message['id'];
@@ -63,6 +61,7 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     }
 
     const showHideText = isMessageSelected ? 'Hide OLMoTrace' : 'Show OLMoTrace';
+    const mobileTooltip = showOlmotrace ? 'Try OlmoTrace' : showHideText;
 
     if (isDesktop) {
         return (
@@ -94,11 +93,19 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     }
 
     return (
-        <MessageInteractionIcon
-            onClick={handleClick}
-            tooltip={showHideText}
-            Icon={isMessageSelected ? Article : ArticleOutlined}
-            selected={isMessageSelected}
-        />
+        <StyledTooltip title={mobileTooltip} placement="top" open={showOlmotrace || undefined}>
+            <IconButton
+                onClick={handleClick}
+                aria-pressed={isMessageSelected}
+                aria-label={mobileTooltip}
+                sx={{
+                    color: 'primary.main',
+                    '&:hover': {
+                        color: 'text.primary',
+                    },
+                }}>
+                {isMessageSelected ? <Article /> : <ArticleOutlined />}
+            </IconButton>
+        </StyledTooltip>
     );
 };
