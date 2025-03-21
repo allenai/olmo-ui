@@ -82,10 +82,10 @@ export const MessageInteraction = ({
                         opacity: autoHideControls ? 0 : 1,
                         transition: 'opacity 300ms linear',
                         [`.${CHAT_MESSAGE_CLASS_NAME}:hover &, .${CHAT_MESSAGE_CLASS_NAME}:focus-within &`]:
-                            {
-                                opacity: 1,
-                                transitionDelay: '0s',
-                            },
+                        {
+                            opacity: 1,
+                            transitionDelay: '0s',
+                        },
                     },
                 },
             })}>
@@ -124,7 +124,7 @@ export const MessageInteraction = ({
                 }}
                 message="LLM Response Copied."
             />
-            <SelectMessageButton messageId={messageId} />
+            <SelectMessageButton messageId={messageId} isLastButton={!autoHideControls} />
         </Stack>
     );
 };

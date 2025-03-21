@@ -1,6 +1,7 @@
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { alpha, Button, IconButton, Stack, Typography } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -12,11 +13,39 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 
 interface SelectMessageButtonProps {
     messageId: Message['id'];
+    isLastButton?: boolean;
 }
 
-const EXPOSED_BROWSER_IDS_KEY = 'tried_olmotrace_browser_ids';
+const HAS_EXPOSED_OLMOTRACE_KEY = 'has_exposed_olmotrace_10';
 
-export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): ReactNode => {
+const OlmotraceHint = ({ onClose }: { onClose: () => void }) => {
+    const tooltipContent =
+        "Curious about how this response matches the model's training data? Click this to dig deeper.";
+    return (
+        <Stack direction="row" p={0.5}>
+            <Typography fontSize="0.875rem" pr={2}>
+                {tooltipContent}
+            </Typography>
+            <IconButton
+                aria-label="close"
+                onClick={onClose}
+                sx={(theme) => ({
+                    position: 'absolute',
+                    right: '0px',
+                    top: '0px',
+                    padding: 0.75,
+                    color: theme.palette.grey[300],
+                })}>
+                <CloseIcon />
+            </IconButton>
+        </Stack>
+    );
+};
+
+export const SelectMessageButton = ({
+    messageId,
+    isLastButton = false,
+}: SelectMessageButtonProps): ReactNode => {
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
     );
@@ -26,6 +55,25 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     const selectedModelId = useAppContext((state) => state.selectedModel?.id);
 
     const isDesktop = useDesktopOrUp();
+    const { isCorpusLinkEnabled } = useFeatureToggles();
+    const [isHintVisible, setIsHintVisible] = useState(false);
+
+    useEffect(() => {
+        const hasExposedHint = Boolean(localStorage.getItem(HAS_EXPOSED_OLMOTRACE_KEY));
+
+        if (!hasExposedHint) {
+            setIsHintVisible(true);
+        }
+    }, []);
+
+    if (!isCorpusLinkEnabled) {
+        return null;
+    }
+
+    const onCloseHint = () => {
+        setIsHintVisible(false)
+        localStorage.setItem(HAS_EXPOSED_OLMOTRACE_KEY, 'true');
+    };
 
     const handleClick = () => {
         if (isMessageSelected) {
@@ -35,39 +83,25 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
             if (isDesktop) {
                 openDrawer('attribution');
             }
+            // close the hint as the user has tried the olmotrace feature
+            onCloseHint();
         }
         if (selectedModelId !== undefined) {
             analyticsClient.trackPromptCorpusLink(selectedModelId, !isMessageSelected);
         }
     };
 
-    const { isCorpusLinkEnabled } = useFeatureToggles();
-    const [showOlmotrace, setShowOlmotrace] = useState(false);
-
-    useEffect(() => {
-        const exposedBrowserIds = (localStorage.getItem(EXPOSED_BROWSER_IDS_KEY) || '').split('&');
-        const currentUA = navigator.userAgent.toLowerCase();
-        const hasExposed = !!exposedBrowserIds.find((browserId) => browserId === currentUA);
-
-        if (!hasExposed) {
-            exposedBrowserIds.push(currentUA);
-            localStorage.setItem(EXPOSED_BROWSER_IDS_KEY, exposedBrowserIds.join('&'));
-            setShowOlmotrace(true);
-        }
-    }, []);
-
-    if (!isCorpusLinkEnabled) {
-        return null;
-    }
-
     const showHideText = isMessageSelected ? 'Hide OLMoTrace' : 'Show OLMoTrace';
-    const mobileTooltip = showOlmotrace ? 'Try OlmoTrace' : showHideText;
-
+    // We only want to show OlmotraceHint on the last button
+    const showHint = isHintVisible && isLastButton;
+    const mobileTooltip = showHint ? <OlmotraceHint onClose={onCloseHint} /> : showHideText;
+    console.log(showHint, mobileTooltip)
     if (isDesktop) {
         return (
-            // <Button startIcon={} sizes the icon to 20px regardless of what size you set
-            // this acheives a similar result, while allowing our Icon size to match an <IconButton>
-            <StyledTooltip title="Try OlmoTrace" placement="top" open={showOlmotrace}>
+            <StyledTooltip
+                title={<OlmotraceHint onClose={onCloseHint} />}
+                placement="top"
+                open={showHint}>
                 <Button
                     variant="text"
                     onClick={handleClick}
@@ -79,10 +113,9 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
                         '&:hover': {
                             color: 'text.primary',
                             backgroundColor: (theme) =>
-                                // I don't know why this comes for free with IconButton, but not Button
                                 theme.palette.mode === 'dark'
-                                    ? 'rgba(255,255,255,0.04)'
-                                    : 'rgba(0,0,0,0.04)',
+                                    ? alpha(theme.palette.common.white, 0.04)
+                                    : alpha(theme.palette.common.black, 0.04),
                         },
                     }}>
                     {isMessageSelected ? <Article /> : <ArticleOutlined />}
@@ -93,11 +126,11 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     }
 
     return (
-        <StyledTooltip title={mobileTooltip} placement="top" open={showOlmotrace || undefined}>
+        <StyledTooltip title={mobileTooltip} placement="top" open={showHint || undefined}>
             <IconButton
                 onClick={handleClick}
                 aria-pressed={isMessageSelected}
-                aria-label={mobileTooltip}
+                aria-label={typeof mobileTooltip === 'string' ? mobileTooltip : undefined}
                 sx={{
                     color: 'primary.main',
                     '&:hover': {
