@@ -71,7 +71,7 @@ export const SelectMessageButton = ({
     }
 
     const onCloseHint = () => {
-        setIsHintVisible(false)
+        setIsHintVisible(false);
         localStorage.setItem(HAS_EXPOSED_OLMOTRACE_KEY, 'true');
     };
 
@@ -95,7 +95,7 @@ export const SelectMessageButton = ({
     // We only want to show OlmotraceHint on the last button
     const showHint = isHintVisible && isLastButton;
     const mobileTooltip = showHint ? <OlmotraceHint onClose={onCloseHint} /> : showHideText;
-    console.log(showHint, mobileTooltip)
+
     if (isDesktop) {
         return (
             <StyledTooltip
