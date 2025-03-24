@@ -16,7 +16,7 @@ interface SelectMessageButtonProps {
     isLastButton?: boolean;
 }
 
-const HAS_EXPOSED_OLMOTRACE_KEY = 'has_exposed_olmotrace_10';
+const HAS_EXPOSED_OLMOTRACE_KEY = 'has_exposed_olmotrace';
 
 const OlmotraceHint = ({ onClose }: { onClose: () => void }) => {
     const tooltipContent =
