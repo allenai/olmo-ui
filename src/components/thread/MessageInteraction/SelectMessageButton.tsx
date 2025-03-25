@@ -58,6 +58,8 @@ export const SelectMessageButton = ({
     const [isHintVisible, setIsHintVisible] = useState(
         !localStorage.getItem(HAS_EXPOSED_OLMOTRACE_KEY)
     );
+    // The last mobile tooltip has an independent variable for controlling
+    // the state of the tooltip for showing showHideText after the hint is closed
     const [isLastMobileTooltipOpen, setIsLastMobileTooltipOpen] = useState(
         isLastButton && isHintVisible
     );
