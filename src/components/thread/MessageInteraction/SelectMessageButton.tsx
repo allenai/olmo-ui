@@ -117,6 +117,7 @@ export const SelectMessageButton = ({
                 <Button
                     variant="text"
                     onClick={handleClick}
+                    data-testid="select-msg-btn"
                     sx={{
                         fontWeight: 'semiBold',
                         color: 'primary.main',
@@ -143,6 +144,7 @@ export const SelectMessageButton = ({
                 onClick={handleClick}
                 aria-pressed={isMessageSelected}
                 aria-label={typeof mobileTooltip === 'string' ? mobileTooltip : undefined}
+                data-testid="select-msg-btn"
                 sx={{
                     color: 'primary.main',
                     '&:hover': {
