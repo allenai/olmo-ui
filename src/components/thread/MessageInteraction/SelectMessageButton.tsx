@@ -2,7 +2,7 @@ import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { alpha, Button, IconButton, Stack, Typography } from '@mui/material';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Message } from '@/api/Message';
@@ -23,7 +23,7 @@ const OlmotraceHint = ({ onClose }: { onClose: () => void }) => {
         "Curious about how this response matches the model's training data? Click this to dig deeper.";
     return (
         <Stack direction="row" p={0.5}>
-            <Typography fontSize="0.875rem" pr={2}>
+            <Typography variant="body2" pr={2}>
                 {tooltipContent}
             </Typography>
             <IconButton
@@ -53,18 +53,14 @@ export const SelectMessageButton = ({
     const unselectMessage = useAppContext((state) => state.unselectMessage);
     const openDrawer = useAppContext((state) => state.openDrawer);
     const selectedModelId = useAppContext((state) => state.selectedModel?.id);
-
     const isDesktop = useDesktopOrUp();
     const { isCorpusLinkEnabled } = useFeatureToggles();
-    const [isHintVisible, setIsHintVisible] = useState(false);
-
-    useEffect(() => {
-        const hasExposedHint = Boolean(localStorage.getItem(HAS_EXPOSED_OLMOTRACE_KEY));
-
-        if (!hasExposedHint) {
-            setIsHintVisible(true);
-        }
-    }, []);
+    const [isHintVisible, setIsHintVisible] = useState(
+        !localStorage.getItem(HAS_EXPOSED_OLMOTRACE_KEY)
+    );
+    const [isLastMobileTooltipOpen, setIsLastMobileTooltipOpen] = useState(
+        isLastButton && isHintVisible
+    );
 
     if (!isCorpusLinkEnabled) {
         return null;
@@ -96,6 +92,20 @@ export const SelectMessageButton = ({
     const showHint = isHintVisible && isLastButton;
     const mobileTooltip = showHint ? <OlmotraceHint onClose={onCloseHint} /> : showHideText;
 
+    const lastMobileTooltipProps = isLastButton
+        ? {
+              open: isLastMobileTooltipOpen,
+              onOpen: () => {
+                  setIsLastMobileTooltipOpen(true);
+              },
+              onClose: () => {
+                  if (!isHintVisible) {
+                      setIsLastMobileTooltipOpen(false);
+                  }
+              },
+          }
+        : {};
+
     if (isDesktop) {
         return (
             <StyledTooltip
@@ -126,7 +136,7 @@ export const SelectMessageButton = ({
     }
 
     return (
-        <StyledTooltip title={mobileTooltip} placement="top" open={showHint || undefined}>
+        <StyledTooltip title={mobileTooltip} placement="top" {...lastMobileTooltipProps}>
             <IconButton
                 onClick={handleClick}
                 aria-pressed={isMessageSelected}
