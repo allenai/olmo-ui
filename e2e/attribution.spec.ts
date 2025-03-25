@@ -5,7 +5,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
     await page.waitForLoadState('networkidle');
 
     // select message
-    await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
+    await page.getByTestId('select-msg-btn').click();
 
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
     await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(2);
@@ -20,7 +20,7 @@ test('should show highlights when message is selected', async ({ page }) => {
     await page.goto('/thread/msg_A8E5H1X2O3');
 
     // The OLMoTrace button should open the drawer
-    await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
+    await page.getByTestId('select-msg-btn').click();
 
     await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(2);
     await expect(
@@ -55,7 +55,7 @@ test('should show highlights when message is selected', async ({ page }) => {
     await page.getByRole('link', { name: 'Highlight stress test' }).click();
 
     // Show highlights
-    await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
+    await page.getByTestId('select-msg-btn').click();
 
     await expect(page.getByRole('button', { name: 'Clear Selection' })).not.toBeVisible();
     await expect(page.getByText(/\d+ documents* matching the selected span/)).not.toBeVisible();
@@ -69,7 +69,7 @@ test('should keep scroll position when going back to CorpusLink documents and re
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
 
     // select message
-    await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
+    await page.getByTestId('select-msg-btn').click();
 
     const documentWithDuplicates = page.getByRole('listitem').filter({
         has: page.getByText(

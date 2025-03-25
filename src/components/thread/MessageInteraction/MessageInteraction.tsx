@@ -26,7 +26,7 @@ interface MessageInteractionProps {
     messageLabels: Message['labels'];
     content: Message['content'];
     messageId: Message['id'];
-    autoHideControls: boolean;
+    isLastMessage: boolean;
 }
 
 export const MessageInteraction = ({
@@ -34,7 +34,7 @@ export const MessageInteraction = ({
     messageLabels,
     content,
     messageId,
-    autoHideControls,
+    isLastMessage,
 }: MessageInteractionProps): JSX.Element | null => {
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
@@ -79,7 +79,7 @@ export const MessageInteraction = ({
             sx={(theme) => ({
                 '@media (pointer: fine)': {
                     [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        opacity: autoHideControls ? 0 : 1,
+                        opacity: isLastMessage ? 1 : 0,
                         transition: 'opacity 300ms linear',
                         [`.${CHAT_MESSAGE_CLASS_NAME}:hover &, .${CHAT_MESSAGE_CLASS_NAME}:focus-within &`]:
                             {
@@ -124,7 +124,7 @@ export const MessageInteraction = ({
                 }}
                 message="LLM Response Copied."
             />
-            <SelectMessageButton messageId={messageId} />
+            <SelectMessageButton messageId={messageId} isLastButton={isLastMessage} />
         </Stack>
     );
 };

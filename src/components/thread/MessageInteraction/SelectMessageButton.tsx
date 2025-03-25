@@ -1,21 +1,51 @@
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { Button } from '@mui/material';
-import { ReactNode } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { alpha, Button, IconButton, Stack, Typography } from '@mui/material';
+import { ReactNode, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Message } from '@/api/Message';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
+import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
-
-import { MessageInteractionIcon } from './MessageInteractionIcon';
 
 interface SelectMessageButtonProps {
     messageId: Message['id'];
+    isLastButton?: boolean;
 }
 
-export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): ReactNode => {
+const HAS_EXPOSED_OLMOTRACE_KEY = 'has_exposed_olmotrace';
+
+const OlmotraceHint = ({ onClose }: { onClose: () => void }) => {
+    const tooltipContent =
+        "Curious about how this response matches the model's training data? Click this to dig deeper.";
+    return (
+        <Stack direction="row" p={0.5}>
+            <Typography variant="body2" pr={2}>
+                {tooltipContent}
+            </Typography>
+            <IconButton
+                aria-label="close"
+                onClick={onClose}
+                sx={(theme) => ({
+                    position: 'absolute',
+                    right: '0px',
+                    top: '0px',
+                    padding: 0.75,
+                    color: theme.palette.grey[300],
+                })}>
+                <CloseIcon />
+            </IconButton>
+        </Stack>
+    );
+};
+
+export const SelectMessageButton = ({
+    messageId,
+    isLastButton = false,
+}: SelectMessageButtonProps): ReactNode => {
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
     );
@@ -23,8 +53,25 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
     const unselectMessage = useAppContext((state) => state.unselectMessage);
     const openDrawer = useAppContext((state) => state.openDrawer);
     const selectedModelId = useAppContext((state) => state.selectedModel?.id);
-
     const isDesktop = useDesktopOrUp();
+    const { isCorpusLinkEnabled } = useFeatureToggles();
+    const [isHintVisible, setIsHintVisible] = useState(
+        !localStorage.getItem(HAS_EXPOSED_OLMOTRACE_KEY)
+    );
+    // The last mobile tooltip has an independent variable for controlling
+    // the state of the tooltip for showing showHideText after the hint is closed
+    const [isLastMobileTooltipOpen, setIsLastMobileTooltipOpen] = useState(
+        isLastButton && isHintVisible
+    );
+
+    if (!isCorpusLinkEnabled) {
+        return null;
+    }
+
+    const onCloseHint = () => {
+        setIsHintVisible(false);
+        localStorage.setItem(HAS_EXPOSED_OLMOTRACE_KEY, 'true');
+    };
 
     const handleClick = () => {
         if (isMessageSelected) {
@@ -34,53 +81,78 @@ export const SelectMessageButton = ({ messageId }: SelectMessageButtonProps): Re
             if (isDesktop) {
                 openDrawer('attribution');
             }
+            // close the hint as the user has tried the olmotrace feature
+            onCloseHint();
         }
         if (selectedModelId !== undefined) {
             analyticsClient.trackPromptCorpusLink(selectedModelId, !isMessageSelected);
         }
     };
 
-    const { isCorpusLinkEnabled } = useFeatureToggles();
-
-    if (!isCorpusLinkEnabled) {
-        return null;
-    }
-
     const showHideText = isMessageSelected ? 'Hide OLMoTrace' : 'Show OLMoTrace';
+    // We only want to show OlmotraceHint on the last button
+    const showHint = isHintVisible && isLastButton;
+    const mobileTooltip = showHint ? <OlmotraceHint onClose={onCloseHint} /> : showHideText;
+
+    const lastMobileTooltipProps = isLastButton
+        ? {
+              open: isLastMobileTooltipOpen,
+              onOpen: () => {
+                  setIsLastMobileTooltipOpen(true);
+              },
+              onClose: () => {
+                  if (!isHintVisible) {
+                      setIsLastMobileTooltipOpen(false);
+                  }
+              },
+          }
+        : {};
 
     if (isDesktop) {
         return (
-            // <Button startIcon={} sizes the icon to 20px regardless of what size you set
-            // this acheives a similar result, while allowing our Icon size to match an <IconButton>
-            <Button
-                variant="text"
-                onClick={handleClick}
-                sx={{
-                    fontWeight: 'semiBold',
-                    color: 'primary.main',
-                    gap: 1,
-                    padding: 1,
-                    '&:hover': {
-                        color: 'text.primary',
-                        backgroundColor: (theme) =>
-                            // I don't know why this comes for free with IconButton, but not Button
-                            theme.palette.mode === 'dark'
-                                ? 'rgba(255,255,255,0.04)'
-                                : 'rgba(0,0,0,0.04)',
-                    },
-                }}>
-                {isMessageSelected ? <Article /> : <ArticleOutlined />}
-                <span>{showHideText}</span>
-            </Button>
+            <StyledTooltip
+                title={<OlmotraceHint onClose={onCloseHint} />}
+                placement="top"
+                open={showHint}>
+                <Button
+                    variant="text"
+                    onClick={handleClick}
+                    data-testid="select-msg-btn"
+                    sx={{
+                        fontWeight: 'semiBold',
+                        color: 'primary.main',
+                        gap: 1,
+                        padding: 1,
+                        '&:hover': {
+                            color: 'text.primary',
+                            backgroundColor: (theme) =>
+                                theme.palette.mode === 'dark'
+                                    ? alpha(theme.palette.common.white, 0.04)
+                                    : alpha(theme.palette.common.black, 0.04),
+                        },
+                    }}>
+                    {isMessageSelected ? <Article /> : <ArticleOutlined />}
+                    <span>{showHideText}</span>
+                </Button>
+            </StyledTooltip>
         );
     }
 
     return (
-        <MessageInteractionIcon
-            onClick={handleClick}
-            tooltip={showHideText}
-            Icon={isMessageSelected ? Article : ArticleOutlined}
-            selected={isMessageSelected}
-        />
+        <StyledTooltip title={mobileTooltip} placement="top" {...lastMobileTooltipProps}>
+            <IconButton
+                onClick={handleClick}
+                aria-pressed={isMessageSelected}
+                aria-label={typeof mobileTooltip === 'string' ? mobileTooltip : undefined}
+                data-testid="select-msg-btn"
+                sx={{
+                    color: 'primary.main',
+                    '&:hover': {
+                        color: 'text.primary',
+                    },
+                }}>
+                {isMessageSelected ? <Article /> : <ArticleOutlined />}
+            </IconButton>
+        </StyledTooltip>
     );
 };

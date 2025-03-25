@@ -60,7 +60,7 @@ export const MessageView = ({
                 content={content}
                 messageLabels={messageLabels}
                 messageId={messageId}
-                autoHideControls={!isLastMessageInThread}
+                isLastMessage={isLastMessageInThread}
             />
         </ChatMessage>
     );
