@@ -32,7 +32,7 @@ interface AttributionResponse {
     index: string;
 }
 
-const AttributionApiUrl = '/v3/attribution?spansAndDocumentsAsList=true';
+const AttributionApiUrl = '/v3/attribution';
 
 export class AttributionClient extends ClientBase {
     getAttributionDocuments = async (

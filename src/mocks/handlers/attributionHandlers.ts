@@ -3,6 +3,7 @@ import { http, HttpResponse, passthrough } from 'msw';
 import documentWithMultipleSnippetsResponse from './responses/attribution/documentWithMultipleSnippetsAttributionResponse.json';
 import duplicateDocumentsResponse from './responses/attribution/duplicateDocumentAttributionResponse.json';
 import highlightStressTestResponse from './responses/attribution/highlightStressTestResponse.json';
+import overlappingSpansResponse from './responses/attribution/overlappingSpansAttributionResponse.json';
 
 const fakeAttributionResponse = {
     documents: [
@@ -87,9 +88,18 @@ export const attributionHandlers = [
 
         if (
             typeof requestBody.model_response === 'string' &&
-            requestBody.model_response.startsWith('multipleSnippets:')
+            requestBody.model_response.startsWith(
+                'Seattle, a vibrant city full of culture, nature, and innovation,'
+            )
         ) {
             return HttpResponse.json(documentWithMultipleSnippetsResponse);
+        }
+
+        if (
+            typeof requestBody.model_response === 'string' &&
+            requestBody.model_response.startsWith('To approach this problem,')
+        ) {
+            return HttpResponse.json(overlappingSpansResponse);
         }
 
         return passthrough();

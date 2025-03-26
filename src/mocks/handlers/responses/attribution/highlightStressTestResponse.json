@@ -76,12 +76,22 @@
       "nested_spans": []
     },
     {
-      "text": "    code block with four spaces in the span",
+      "text": " **span with a space at the start**",
+      "documents": [],
+      "nested_spans": [
+        {
+          "text": "**span with a space at the start**",
+          "documents": []
+        }
+      ]
+    },
+    {
+      "text": "code block with a span in it",
       "documents": [],
       "nested_spans": []
     },
     {
-      "text": "code block with a span in it",
+      "text": "    code block with four spaces in the span",
       "documents": [],
       "nested_spans": []
     },
@@ -184,16 +194,6 @@
       "text": "*span that starts with a * but shouldn't get changed",
       "documents": [],
       "nested_spans": []
-    },
-    {
-      "text": " **span with a space at the start**",
-      "documents": [],
-      "nested_spans": [
-        {
-          "text": "**span with a space at the start**",
-          "documents": []
-        }
-      ]
     }
   ],
   "documents": [
