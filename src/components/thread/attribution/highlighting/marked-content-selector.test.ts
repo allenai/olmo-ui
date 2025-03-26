@@ -111,4 +111,104 @@ describe('markedContentSelector', () => {
             '<attribution-highlight span="2">Spring (March to May):</attribution-highlight>'
         );
     });
+
+    it('should not nest spans inside others', () => {
+        const testState: DeepPartial<AppContextState> = {
+            selectedThreadRootId: 'userMessage',
+            selectedThreadMessages: ['userMessage', 'llmMessage'],
+            selectedThreadMessagesById: {
+                userMessage: {
+                    id: 'userMessage',
+                    childIds: ['llmMessage'],
+                    selectedChildId: 'llmMessage',
+                    content: 'user prompt',
+                    role: Role.User,
+                    labels: [],
+                    creator: 'currentUser',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    model_id: 'model',
+                    opts: {},
+                },
+                llmMessage: {
+                    id: 'llmMessage',
+                    childIds: [],
+                    content: 'longer span with text inside - shorter span - span with text',
+                    role: Role.LLM,
+                    labels: [],
+                    creator: 'currentUser',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    parent: 'userMessage',
+                    model_id: 'model',
+                    opts: {},
+                },
+            },
+            attribution: {
+                selectedMessageId: 'llmMessage',
+                selection: { type: 'document', documentIndex: '1' },
+                attributionsByMessageId: {
+                    llmMessage: {
+                        orderedDocumentIndexes: ['1'],
+                        loadingState: RemoteState.Loaded,
+                        documents: {
+                            1: {
+                                corresponding_spans: [0, 1, 2],
+                                corresponding_span_texts: ['123', '45', '2'],
+                                index: '12345',
+                                source: 'c4',
+                                text: 'document 1',
+                                relevance_score: 1.6,
+                                snippets: [
+                                    {
+                                        text: 'longer span with text inside',
+                                        corresponding_span_text: 'longer span with text inside',
+                                    },
+                                    {
+                                        text: 'shorter span',
+                                        corresponding_span_text: 'shorter span',
+                                    },
+                                    {
+                                        text: 'span with text',
+                                        corresponding_span_text: 'span with text',
+                                    },
+                                ],
+                                title: 'Title',
+                            },
+                        },
+                        spans: {
+                            0: {
+                                documents: [1],
+                                text: 'longer span with text inside',
+                                nested_spans: [],
+                            },
+                            1: {
+                                documents: [1],
+                                text: 'shorter span',
+                                nested_spans: [],
+                            },
+                            2: {
+                                documents: [1],
+                                text: 'span with text',
+                                nested_spans: [],
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        // @ts-expect-error - I don't want to make the whole state, just what's relevant
+        const result = markedContentSelector('llmMessage')(testState);
+
+        expect(result).toContain(
+            '<attribution-highlight span="0">longer span with text inside</attribution-highlight>'
+        );
+        expect(result).toContain(
+            '<attribution-highlight span="1">shorter span</attribution-highlight>'
+        );
+        expect(result).toContain(
+            '<attribution-highlight span="2">span with text</attribution-highlight>'
+        );
+    });
 });

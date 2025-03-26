@@ -20,6 +20,7 @@ export interface Document {
 export interface AttributionSpan {
     text: string;
     documents: number[];
+    start_index: number;
 }
 
 export interface TopLevelAttributionSpan extends AttributionSpan {

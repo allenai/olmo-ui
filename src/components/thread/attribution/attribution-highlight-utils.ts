@@ -17,6 +17,6 @@ export const getAttributionHighlightString = (
 export const createSpanReplacementRegex = (spanToReplace: string) => {
     return new RegExp(
         // Make sure this tracks the actual highlight string above
-        `(?<!<attribution-highlight span="\\d*">)${escapeRegExp(spanToReplace)}(?!<\\/attribution-highlight>)`
+        `${escapeRegExp(spanToReplace)}(?!(?:.*<\\/attribution-highlight))`
     );
 };
