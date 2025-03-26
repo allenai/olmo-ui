@@ -15,38 +15,18 @@ export const addHighlightsToText = (
         return initialText;
     }
 
-    let textWithReplacements = '';
-    let textWithoutReplacements = initialText;
-
-    spans.forEach(([spanKey, span]) => {
+    const textWithHighlights = spans.reduce((acc, [spanKey, span]) => {
         if (span?.text) {
             const escapedSpanText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
-            const highlight = getAttributionHighlightString(spanKey, escapedSpanText);
 
-            const newReplacement = textWithoutReplacements.replace(
+            return acc.replace(
                 createSpanReplacementRegex(escapedSpanText),
-                highlight
+                getAttributionHighlightString(spanKey, escapedSpanText)
             );
-            const [beforeHighlight, afterHighlight] = newReplacement.split(highlight);
-            textWithReplacements += beforeHighlight + highlight;
-            textWithoutReplacements = afterHighlight;
+        } else {
+            return acc;
         }
-    });
+    }, initialText);
 
-    return textWithReplacements;
-
-    // const textWithHighlights = spans.reduce((acc, [spanKey, span]) => {
-    //     if (span?.text) {
-    //         const escapedSpanText = removeMarkdownCharactersFromStartAndEndOfSpan(span.text);
-
-    //         return acc.replace(
-    //             createSpanReplacementRegex(escapedSpanText),
-    //             getAttributionHighlightString(spanKey, escapedSpanText)
-    //         );
-    //     } else {
-    //         return acc;
-    //     }
-    // }, initialText);
-
-    // return textWithHighlights;
+    return textWithHighlights;
 };
