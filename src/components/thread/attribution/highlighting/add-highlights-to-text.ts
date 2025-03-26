@@ -1,8 +1,10 @@
 import { TopLevelAttributionSpan } from '@/api/AttributionClient';
 
-import { createSpanReplacementRegex } from '../span-replacement-regex';
+import {
+    createSpanReplacementRegex,
+    getAttributionHighlightString,
+} from '../attribution-highlight-utils';
 import { removeMarkdownCharactersFromStartAndEndOfSpan } from './escape-markdown-in-span';
-import { getAttributionHighlightString } from './get-attribution-highlight-string';
 
 // Replace first instance of span, get position
 // acc += string including the highlight
