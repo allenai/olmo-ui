@@ -6,7 +6,5 @@ export const removeMarkdownCharactersFromStartAndEndOfSpan = (spanText: string):
      * At the start and end of a string it looks for markdown symbols that can wrap something. This includes things like emphasis (any number of *, any number of _) and code blocks (`)
      * We also trim after doing the regex matching to make sure there's spaces before and after the highlight as needed
      */
-    return spanText
-        .trim()
-        .replaceAll(/^(?:[+\->`]|#+|\d\.|\*+\s|_+|\s)+\s*|(?<!\s)(?:\*+|_+|`)$/gm, '');
+    return spanText.trim().replaceAll(/^(?:[+\->`]|#+|\d\.|\*+\s)+\s*|(?<!\s)(?:\*+|_+|`)$/gm, '');
 };
