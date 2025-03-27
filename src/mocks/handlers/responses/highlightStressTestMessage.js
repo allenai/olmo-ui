@@ -30,6 +30,7 @@ export default `HighlightStressTest
 1. second in list
 1. list item with a space after 1.
 1. **span with a space at the start**
+1. **span that contains bolding** and stuff afterward
 
 \`\`\`js
 code block with a span in it

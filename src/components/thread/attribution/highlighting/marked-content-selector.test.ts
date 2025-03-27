@@ -53,7 +53,7 @@ describe('markedContentSelector', () => {
                                 corresponding_span_texts: [
                                     'This is a',
                                     'message from the LLM',
-                                    '- **Spring (March to May):**',
+                                    '- **Spring (March to May):** Milder weather with fewer tourists',
                                 ],
                                 index: '12345',
                                 source: 'c4',
@@ -70,7 +70,8 @@ describe('markedContentSelector', () => {
                                     },
                                     {
                                         text: '**Best Time to Visit Paris for Climate:** - **Spring (March to May):** Milder weather with fewer tourists, making it ideal for exploring without the crowds.',
-                                        corresponding_span_text: '- **Spring (March to May):**',
+                                        corresponding_span_text:
+                                            '- **Spring (March to May):** Milder weather with fewer tourists',
                                     },
                                 ],
                                 title: 'Title',
@@ -89,7 +90,7 @@ describe('markedContentSelector', () => {
                             },
                             2: {
                                 documents: [12345],
-                                text: '- **Spring (March to May):**',
+                                text: '- **Spring (March to May):** Milder weather with fewer tourists',
                                 nested_spans: [],
                             },
                         },
@@ -108,7 +109,7 @@ describe('markedContentSelector', () => {
             '<attribution-highlight span="0">This is a</attribution-highlight>'
         );
         expect(result).toContain(
-            '<attribution-highlight span="2">Spring (March to May):</attribution-highlight>'
+            '<attribution-highlight span="2">**Spring (March to May):** Milder weather with fewer tourists</attribution-highlight>'
         );
     });
 

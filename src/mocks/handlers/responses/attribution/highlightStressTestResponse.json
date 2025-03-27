@@ -86,6 +86,11 @@
       ]
     },
     {
+      "text": "**span that contains bolding** and stuff afterward",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
       "text": "code block with a span in it",
       "documents": [],
       "nested_spans": []

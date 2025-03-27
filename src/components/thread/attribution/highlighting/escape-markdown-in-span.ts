@@ -8,5 +8,5 @@ export const removeMarkdownCharactersFromStartAndEndOfSpan = (spanText: string):
      */
     return spanText
         .trim()
-        .replaceAll(/^(?:[+\->`]|#+|\d\.|\*+|_+|\s)+\s*|(?<!\s)(?:\*+|_+|`)$/gm, '');
+        .replaceAll(/^(?:[+\->`]|#+|\d\.|\*+\s|_+|\s)+\s*|(?<!\s)(?:\*+|_+|`)$/gm, '');
 };
