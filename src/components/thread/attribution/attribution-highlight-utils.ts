@@ -18,6 +18,7 @@ export const createSpanReplacementRegex = (spanToReplace: string) => {
     return new RegExp(
         // Make sure this tracks the actual highlight string above
         // This uses a negative lookahead to make sure there's no highlights ahead of it in the text
+        // This makes it so we can replace the first match after other highlights
         `${escapeRegExp(spanToReplace)}(?!(?:.*<\\/attribution-highlight))`
     );
 };
