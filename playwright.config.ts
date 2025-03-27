@@ -44,7 +44,11 @@ export default defineConfig<TestOptions>({
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'setup',
+            name: 'unauth-setup',
+            testMatch: 'e2e/unauth-setup.ts',
+        },
+        {
+            name: 'auth-setup',
             testMatch: 'e2e/auth-setup.ts',
             use: bypassCSP,
         },
@@ -55,7 +59,12 @@ export default defineConfig<TestOptions>({
         },
         {
             name: 'anonymous-chromium',
-            use: { ...devices['Desktop Chrome'], isAnonymousTest: true },
+            use: {
+                ...devices['Desktop Chrome'],
+                isAnonymousTest: true,
+                storageState: 'e2e/.auth/unauthStorageState.json',
+            },
+            dependencies: ['unauth-setup'],
         },
         {
             name: 'chromium',
@@ -63,7 +72,7 @@ export default defineConfig<TestOptions>({
                 ...devices['Desktop Chrome'],
                 storageState: 'e2e/.auth/storageState.json',
             },
-            dependencies: ['setup'],
+            dependencies: ['auth-setup'],
         },
 
         {
@@ -72,7 +81,7 @@ export default defineConfig<TestOptions>({
                 ...devices['Desktop Firefox'],
                 storageState: 'e2e/.auth/storageState.json',
             },
-            dependencies: ['setup'],
+            dependencies: ['auth-setup'],
             // This test is flaky on FF. It seems to work just fine in browser, but be extra careful when you make changes to this!
             testIgnore: ['*sticky-scroll*'],
         },
@@ -83,7 +92,7 @@ export default defineConfig<TestOptions>({
                 ...devices['Desktop Safari'],
                 storageState: 'e2e/.auth/storageState.json',
             },
-            dependencies: ['setup'],
+            dependencies: ['auth-setup'],
             // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
             testIgnore: ['*sticky-scroll*'],
         },

@@ -10,6 +10,12 @@ test('set up auth', async ({ page }) => {
     }
 
     await page.goto('/');
+
+    // HACK: The OLMoTrace tooltip gets in the way, this disables it on future loads.
+    await page.evaluate(() => {
+        localStorage.setItem('has_exposed_olmotrace', 'true');
+    });
+
     await page.getByRole('link', { name: 'Log in' }).click();
 
     await page.getByLabel('Email address').fill(process.env.E2E_TEST_USER);

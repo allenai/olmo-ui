@@ -102,7 +102,7 @@ export const AttributionDocumentCard = ({
     const [open, setOpen] = useState(false);
     const documentId = document.index;
 
-    const snippets = useAppContext(
+    const { snippets, correspondingSpanCount } = useAppContext(
         useShallow((state) => {
             const selectedMessageId = state.attribution.selectedMessageId;
 
@@ -112,9 +112,12 @@ export const AttributionDocumentCard = ({
 
                 const document = documents[documentId];
 
-                return document?.snippets ?? [];
+                return {
+                    snippets: document?.snippets ?? [],
+                    correspondingSpanCount: document?.corresponding_spans.length ?? 0,
+                };
             } else {
-                return [];
+                return { snippets: [], correspondingSpanCount: 0 };
             }
         })
     );
@@ -149,7 +152,7 @@ export const AttributionDocumentCard = ({
                         </Button>
                         <LocateSpanButton
                             documentId={documentId}
-                            snippetCount={snippets.length}
+                            correspondingSpanCount={correspondingSpanCount}
                             isDocumentSelected={isDocumentSelected}
                         />
                     </Box>
@@ -185,13 +188,13 @@ export const AttributionDocumentCard = ({
 interface LocateSpanProps {
     documentId: string;
     isDocumentSelected: boolean;
-    snippetCount: number;
+    correspondingSpanCount: number;
 }
 
 const LocateSpanButton = ({
     documentId,
     isDocumentSelected,
-    snippetCount,
+    correspondingSpanCount,
 }: LocateSpanProps): ReactNode => {
     const selectDocument = useAppContext((state) => state.selectDocument);
     const unselectDocument = useAppContext((state) => state.unselectDocument);
@@ -229,7 +232,9 @@ const LocateSpanButton = ({
                     }
                 }
             }}>
-            {isDocumentSelected ? 'Show all spans' : `Locate span${snippetCount > 1 ? 's' : ''}`}
+            {isDocumentSelected
+                ? 'Show all spans'
+                : `Locate span${correspondingSpanCount > 1 ? 's' : ''}`}
         </Button>
     );
 

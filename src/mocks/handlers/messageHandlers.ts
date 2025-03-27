@@ -7,6 +7,7 @@ import documentWithMultipleSnippetsResponse from './responses/documentWithMultip
 import duplicateDocumentsResponse from './responses/duplicateDocumentMessageResponse.json';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import multiplePointerMessageResponse from './responses/multiplePointerMessageResponse.json';
+import { overlappingSpansResponse } from './responses/overlappingSpansResponse';
 import { newMessageId } from './responses/stream/default';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -215,5 +216,9 @@ export const messageHandlers = [
 
     http.get(`*${MessageApiUrl}/msg_multiple_points`, () => {
         return HttpResponse.json(multiplePointerMessageResponse);
+    }),
+
+    http.get(`*${MessageApiUrl}/msg_overlapping_spans`, () => {
+        return HttpResponse.json(overlappingSpansResponse);
     }),
 ];
