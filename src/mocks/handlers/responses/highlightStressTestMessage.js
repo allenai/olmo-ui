@@ -78,4 +78,12 @@ span with both [ braces ] in it
 
 span with reversed ] braces [ in it
 
-*span that starts with a * but shouldn't get changed`;
+*span that starts with a * but shouldn't get changed
+
+span with <strong>html</strong> in it
+
+<strong>span inside html</strong>
+
+span with < in it
+
+span with > in it`;

@@ -484,6 +484,10 @@ describe('markedContentSelector', () => {
                 "*span that starts with a * but shouldn't get changed"
             ),
         },
+        {
+            span: 'span with <strong>html</strong> in it',
+            expected: makeTestAttributionHighlight('span with <strong>html</strong> in it'),
+        },
     ])('should escape $span correctly', ({ span, response = span, expected }) => {
         const testState: DeepPartial<AppContextState> = {
             selectedThreadRootId: 'userMessage',
