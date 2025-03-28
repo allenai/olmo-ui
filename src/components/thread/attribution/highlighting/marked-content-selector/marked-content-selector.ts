@@ -1,6 +1,6 @@
 import { AppContextState } from '@/AppContext';
 
-import { addHighlightsToText } from './add-highlights-to-text';
+import { addHighlightsToText } from '../add-highlights-to-text';
 
 export const markedContentSelector =
     (messageId: string) =>
