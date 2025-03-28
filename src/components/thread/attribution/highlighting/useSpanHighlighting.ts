@@ -1,7 +1,7 @@
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
-import { markedContentSelector } from './marked-content-selector/marked-content-selector';
+import { markedContentSelector } from './marked-content-selector';
 
 export const useSpanHighlighting = (messageId: string) => {
     const { isCorpusLinkEnabled } = useFeatureToggles();

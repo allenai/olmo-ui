@@ -4,7 +4,7 @@ import { Role } from '@/api/Role';
 import { AppContextState } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
-import { getAttributionHighlightString } from '../../attribution-highlight-utils';
+import { getAttributionHighlightString } from '../attribution-highlight-utils';
 import { markedContentSelector } from './marked-content-selector';
 
 describe('markedContentSelector', () => {
