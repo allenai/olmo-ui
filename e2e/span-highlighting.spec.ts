@@ -156,7 +156,9 @@ test('span highlighting', async ({ page }) => {
         .soft(
             orderedList
                 .getByRole('listitem')
-                .filter({ has: page.getByText('span that contains bolding') })
+                // This span is special. It's a list item with a bold bit at the start of the span.
+                // I didn't find a great way to check for a strong element with the text, so we're just making sure that an element has this text exactly
+                .filter({ has: page.getByText('span that contains bolding', { exact: true }) })
         )
         .toBeVisible();
     // #endregion
