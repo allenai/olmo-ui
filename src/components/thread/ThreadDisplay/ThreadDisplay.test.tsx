@@ -156,8 +156,7 @@ describe('ThreadDisplay', () => {
         expect.soft(screen.getByText('(parens)')).toHaveRole('button');
         expect.soft(screen.getByText('[braces]')).toHaveRole('button');
         expect.soft(screen.getByText('.dot')).toHaveRole('button');
-        // this one is special because we need to escape markdown stuff, the * gets rendered right in front of it
-        expect.soft(screen.getByText('star')).toHaveRole('button');
+        expect.soft(screen.getByText('*star')).toHaveRole('button');
         expect.soft(screen.getByText('|pipe')).toHaveRole('button');
         expect.soft(screen.getByText('\\backslash')).toHaveRole('button');
         expect.soft(screen.getByText('"quotes"')).toHaveRole('button');

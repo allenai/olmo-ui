@@ -446,7 +446,8 @@ describe('markedContentSelector', () => {
         },
         {
             span: 'italics _ with the italics ending in the span_',
-            expected: 'fail',
+            response: '_italics _ with the italics ending in the span_',
+            expected: `_${makeTestAttributionHighlight('italics _ with the italics ending in the span_')}`,
         },
         {
             span: '__italics with __ in the span__',
