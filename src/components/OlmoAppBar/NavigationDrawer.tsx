@@ -1,7 +1,10 @@
-import { ArrowForwardIosOutlined, RateReviewOutlined } from '@mui/icons-material';
+import {
+    ArrowForwardIosOutlined,
+    RateReviewOutlined,
+    StickyNote2Outlined,
+} from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
-import HelpCenterIcon from '@mui/icons-material/HelpCenterOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SortIcon from '@mui/icons-material/Sort';
@@ -100,7 +103,7 @@ export const NavigationDrawer = ({
                             </NavigationLink>
                         )}
                         <NavigationLink
-                            icon={<HelpCenterIcon />}
+                            icon={<StickyNote2Outlined />}
                             selected={curriedDoesMatchPath(links.faqs)}
                             href={links.faqs}
                             variant="footer">
