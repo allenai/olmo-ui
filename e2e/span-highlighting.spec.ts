@@ -1,5 +1,3 @@
-// import type { Locator, Page } from '@playwright/test';
-
 import { expect, test } from './playwright-utils';
 
 test('span highlighting', async ({ page }) => {
