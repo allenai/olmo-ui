@@ -182,7 +182,7 @@ export const AttributionHighlight = ({
     useEffect(() => {
         if (isSelectedSpan) {
             document.querySelector('mark[data-selection-type="document"]')?.scrollIntoView({
-                behavior: 'instant',
+                behavior: 'auto',
                 block: 'center',
             });
         }
