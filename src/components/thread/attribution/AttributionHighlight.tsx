@@ -248,10 +248,10 @@ export const AttributionHighlight = ({
                     },
                 };
             }}>
+            {children}
             <Box id={labelId} sx={visuallyHidden}>
                 Show documents related to this span
             </Box>
-            {children}
         </Box>
     );
 };
