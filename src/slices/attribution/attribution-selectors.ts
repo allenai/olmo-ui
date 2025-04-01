@@ -19,26 +19,13 @@ export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
 export const hasAttributionSelectionSelector = (state: AppContextState): boolean =>
     state.attribution.selection != null;
 
-export const isAttributionAvailableSelector = (state: AppContextState): boolean => {
+export const attributionErrorSelector = (state: AppContextState) => {
     const { selectedMessageId, attributionsByMessageId } = state.attribution;
     if (selectedMessageId !== null) {
         const selectedMessageAttribution = attributionsByMessageId[selectedMessageId];
 
-        return selectedMessageAttribution?.isModelSupported !== false;
+        return selectedMessageAttribution?.attributionRequestError;
     }
-
-    return true;
-};
-
-export const isAttributionBlockedSelector = (state: AppContextState): boolean => {
-    const { selectedMessageId, attributionsByMessageId } = state.attribution;
-    if (selectedMessageId !== null) {
-        const selectedMessageAttribution = attributionsByMessageId[selectedMessageId];
-
-        return selectedMessageAttribution?.isRequestBlocked === true;
-    }
-
-    return false;
 };
 
 export const messageLengthSelector = (state: AppContextState): number => {

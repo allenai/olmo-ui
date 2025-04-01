@@ -3,13 +3,11 @@ import { Fragment, useMemo } from 'react';
 
 import { Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
-import { NoDocsIcon } from '@/components/assets/NoDocsIcon';
 import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 import {
+    attributionErrorSelector,
     hasSelectedSpansSelector,
-    isAttributionAvailableSelector,
-    isAttributionBlockedSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -19,6 +17,7 @@ import {
     getBucketForScorePercentile,
 } from '../calculate-relevance-score';
 import { AttributionDocumentCard } from './AttributionDocumentCard/AttributionDocumentCard';
+import { BlockedMessage, OverloadedMessage, UnavailableMessage } from './AttributionErrorMessages';
 import { useAttributionDocumentsForMessage } from './message-attribution-documents-selector';
 
 interface DedupedDocument extends Document {
@@ -45,60 +44,6 @@ const MatchingDocumentsText = ({
     );
 };
 
-const UnavailableMessage = () => {
-    return (
-        <Stack
-            sx={{
-                margin: 2,
-                alignItems: 'center',
-                justifyContent: 'center',
-                display: 'flex',
-                gap: 1.5,
-                flex: 1,
-            }}>
-            <NoDocsIcon
-                sx={(theme) => ({
-                    width: 52.5,
-                    height: 55,
-                    fill: theme.palette.text.primary,
-                    opacity: 0.5,
-                })}
-            />
-            <Typography align="center">
-                This message used a model that doesn&apos;t have OLMoTrace supported. View OLMoTrace
-                for another message or prompt a model that does have OLMoTrace supported.
-            </Typography>
-        </Stack>
-    );
-};
-
-const BlockedMessage = () => {
-    return (
-        <Stack
-            sx={{
-                margin: 2,
-                alignItems: 'center',
-                justifyContent: 'center',
-                display: 'flex',
-                gap: 1.5,
-                flex: 1,
-            }}>
-            <NoDocsIcon
-                sx={(theme) => ({
-                    width: 52.5,
-                    height: 55,
-                    fill: theme.palette.text.primary,
-                    opacity: 0.5,
-                })}
-            />
-            <Typography align="center">
-                OLMoTrace is blocked for this message due to legal compliance. Please try another
-                message.
-            </Typography>
-        </Stack>
-    );
-};
-
 const AttributionDocumentGroupTitle = styled(Typography)(({ theme }) => ({
     fontWeight: theme.font.weight.semiBold,
     color:
@@ -119,11 +64,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         Boolean(state.attribution.selectedMessageId)
     );
     const attributionForMessage = useAttributionDocumentsForMessage();
-    const messageLength = useAppContext((state) => messageLengthSelector(state));
-    const isCorpusLinkUnavailable = useAppContext(
-        (state) => !isAttributionAvailableSelector(state)
-    );
-    const isCorpusLinkBlocked = useAppContext((state) => isAttributionBlockedSelector(state));
+    const messageLength = useAppContext(messageLengthSelector);
+    const attributionRequestError = useAppContext(attributionErrorSelector);
     const { documents, loadingState } = attributionForMessage;
 
     const isSelectedMessageLoading = useAppContext(
@@ -233,12 +175,16 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     }
 
     if (loadingState === RemoteState.Error) {
-        if (isCorpusLinkUnavailable) {
+        if (attributionRequestError === 'model-not-supported') {
             return <UnavailableMessage />;
         }
 
-        if (isCorpusLinkBlocked) {
+        if (attributionRequestError === 'request-blocked') {
             return <BlockedMessage />;
+        }
+
+        if (attributionRequestError === 'overloaded') {
+            return <OverloadedMessage />;
         }
 
         return (

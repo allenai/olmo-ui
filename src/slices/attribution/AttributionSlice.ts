@@ -12,8 +12,7 @@ export interface MessageWithAttributionDocuments {
     spans: { [span: string]: TopLevelAttributionSpan | undefined };
     loadingState: RemoteState | null;
     index: string | null;
-    isModelSupported?: boolean;
-    isRequestBlocked?: boolean;
+    attributionRequestError?: 'model-not-supported' | 'request-blocked' | 'overloaded';
 }
 
 export interface DocumentSelection {
@@ -173,8 +172,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 (state) => {
                     const attributions = getAttributionsByMessageIdOrDefault(state, messageId);
                     attributions.loadingState = RemoteState.Loading;
-                    attributions.isModelSupported = undefined;
-                    attributions.isRequestBlocked = undefined;
+                    attributions.attributionRequestError = undefined;
                 },
                 false,
                 'attribution/startGetAttributionsForMessage'
@@ -205,8 +203,6 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                         );
 
                         attributions.loadingState = RemoteState.Loaded;
-                        attributions.isModelSupported = true;
-                        attributions.isRequestBlocked = false;
                     },
                     false,
                     'attribution/finishGetAttributionsForMessage'
@@ -222,13 +218,19 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                                     validationError.loc.some((loc) => loc === 'model_id')
                                 )
                             ) {
-                                attributions.isModelSupported = false;
+                                attributions.attributionRequestError = 'model-not-supported';
                             } else if (
                                 e.validationErrors.some((validationError) =>
                                     validationError.msg.includes('blocked')
                                 )
                             ) {
-                                attributions.isRequestBlocked = true;
+                                attributions.attributionRequestError = 'request-blocked';
+                            }
+                        }
+
+                        if (e instanceof error.HTTPError) {
+                            if (e.status === 503) {
+                                attributions.attributionRequestError = 'overloaded';
                             }
                         }
                     },
