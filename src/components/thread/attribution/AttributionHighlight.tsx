@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
-import { PropsWithChildren, useId } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
@@ -10,6 +9,7 @@ import {
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
+import { ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID } from './AttributionHighlightDescription';
 import { calculateRelevanceScore, getBucketForScorePercentile } from './calculate-relevance-score';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
@@ -180,8 +180,6 @@ export const AttributionHighlight = ({
         selectionType,
     } = useAttributionHighlights(span);
 
-    const labelId = useId();
-
     if (!shouldShowHighlight) {
         return <>{children}</>;
     }
@@ -192,7 +190,7 @@ export const AttributionHighlight = ({
         <Box
             component="mark"
             role="button"
-            aria-describedby={labelId}
+            aria-describedby={ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID}
             onClick={(e) => {
                 e.preventDefault();
                 toggleSelectedSpans();
@@ -249,9 +247,6 @@ export const AttributionHighlight = ({
                 };
             }}>
             {children}
-            <Box id={labelId} sx={visuallyHidden}>
-                Show documents related to this span
-            </Box>
         </Box>
     );
 };

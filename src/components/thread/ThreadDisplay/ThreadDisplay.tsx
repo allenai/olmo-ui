@@ -5,7 +5,9 @@ import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
+import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
+import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { MessageView } from './MessageView';
@@ -42,6 +44,11 @@ export const ThreadDisplay = (): ReactNode => {
             });
         }
     }, []);
+
+    const shouldShowAttributionHighlightDescription = useAppContext((state) => {
+        const attributions = messageAttributionsSelector(state);
+        return attributions != null && Object.keys(attributions.spans).length > 0;
+    });
 
     const location = useLocation();
 
@@ -199,6 +206,7 @@ export const ThreadDisplay = (): ReactNode => {
                     boxShadow: (theme) => `0 -12px 50px 12px ${theme.palette.background.paper}`,
                 }}
             />
+            {shouldShowAttributionHighlightDescription && <AttributionHighlightDescription />}
             <ScrollToBottomButton
                 isVisible={isScrollToBottomButtonVisible}
                 onScrollToBottom={handleScrollToBottomButtonClick}
