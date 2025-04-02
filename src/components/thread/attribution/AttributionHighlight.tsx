@@ -9,6 +9,7 @@ import {
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
+import { ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID } from './AttributionHighlightDescription';
 import { calculateRelevanceScore, getBucketForScorePercentile } from './calculate-relevance-score';
 
 export type AttributionHighlightVariant = 'selected' | 'preview' | 'default';
@@ -189,7 +190,7 @@ export const AttributionHighlight = ({
         <Box
             component="mark"
             role="button"
-            aria-label="Show documents related to this span"
+            aria-describedby={ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID}
             onClick={(e) => {
                 e.preventDefault();
                 toggleSelectedSpans();

@@ -60,47 +60,50 @@ const testStrings = [
         testString: '`code span entirely contained inside a highlight`',
         expectedResult: 'code span entirely contained inside a highlight',
     },
-    { testString: '*emphasis with * in the span*', expectedResult: 'emphasis with * in the span' },
+    {
+        testString: '*emphasis with * in the span*',
+        expectedResult: '*emphasis with * in the span*',
+    },
     {
         testString: '*emphasis * with the emphasis starting in the span',
-        expectedResult: 'emphasis * with the emphasis starting in the span',
+        expectedResult: '*emphasis * with the emphasis starting in the span',
     },
     {
         testString: 'emphasis * with the emphasis ending in the span*',
-        expectedResult: 'emphasis * with the emphasis ending in the span',
+        expectedResult: 'emphasis * with the emphasis ending in the span*',
     },
     {
         testString: '**emphasis with ** in the span**',
-        expectedResult: 'emphasis with ** in the span',
+        expectedResult: '**emphasis with ** in the span**',
     },
     {
         testString: '**emphasis ** with the emphasis starting in the span',
-        expectedResult: 'emphasis ** with the emphasis starting in the span',
+        expectedResult: '**emphasis ** with the emphasis starting in the span',
     },
     {
         testString: 'emphasis ** with the emphasis ending in the span**',
-        expectedResult: 'emphasis ** with the emphasis ending in the span',
+        expectedResult: 'emphasis ** with the emphasis ending in the span**',
     },
-    { testString: '_italics with _ in the span_', expectedResult: 'italics with _ in the span' },
+    { testString: '_italics with _ in the span_', expectedResult: '_italics with _ in the span_' },
     {
         testString: '_italics _ with the italics starting in the span',
-        expectedResult: 'italics _ with the italics starting in the span',
+        expectedResult: '_italics _ with the italics starting in the span',
     },
     {
         testString: 'italics _ with the italics ending in the span_',
-        expectedResult: 'italics _ with the italics ending in the span',
+        expectedResult: 'italics _ with the italics ending in the span_',
     },
     {
         testString: '__italics with __ in the span__',
-        expectedResult: 'italics with __ in the span',
+        expectedResult: '__italics with __ in the span__',
     },
     {
         testString: '__italics __ with the italics starting in the span',
-        expectedResult: 'italics __ with the italics starting in the span',
+        expectedResult: '__italics __ with the italics starting in the span',
     },
     {
         testString: 'italics __ with the italics ending in the span__',
-        expectedResult: 'italics __ with the italics ending in the span',
+        expectedResult: 'italics __ with the italics ending in the span__',
     },
     {
         testString: 'span with opening brace in it [',
