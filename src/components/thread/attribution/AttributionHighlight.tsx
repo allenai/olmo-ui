@@ -192,7 +192,7 @@ export const AttributionHighlight = ({
         <Box
             component="mark"
             role="button"
-            aria-details={labelId}
+            aria-describedby={labelId}
             onClick={(e) => {
                 e.preventDefault();
                 toggleSelectedSpans();
