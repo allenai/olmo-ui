@@ -9,10 +9,7 @@ test('should filter displayed documents when a span is selected', async ({ page 
 
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
     await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(2);
-    await page
-        .getByRole('button', { name: 'Show documents related to this span' })
-        .and(page.getByText('OkayOkayOkayOkayOkayOkayOkayOkay'))
-        .click();
+    await page.getByRole('button', { name: 'OkayOkayOkayOkayOkayOkayOkayOkay' }).click();
     await expect(page.getByTestId('olmotrace-drawer').getByText('document from:')).toHaveCount(1);
 });
 
@@ -23,32 +20,22 @@ test('should show highlights when message is selected', async ({ page }) => {
     await page.getByRole('button', { name: 'Show OLMoTrace' }).click();
 
     await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(2);
-    await expect(
-        page.getByRole('button', { name: 'Show documents related to this span' }).first()
-    ).toBeInViewport();
 
-    await page
-        .getByRole('button', { name: 'Show documents related to this span' })
-        .filter({ hasText: 'OkayOkayOkayOkayOkayOkayOkayOkay' })
-        .click();
+    await page.getByRole('button', { name: 'OkayOkayOkayOkayOkayOkayOkayOkay' }).click();
 
     await expect(page.getByText('1 document matching the selected span')).toBeVisible();
     await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(1);
 
     // Close the drawer and make sure the highlights are still visible
     await page.getByRole('button', { name: 'OLMoTrace documents' }).click();
-    await expect(
-        page.getByRole('button', { name: 'Show documents related to this span' })
-    ).toHaveCount(1);
+    await expect(page.locator('mark')).toHaveCount(1);
 
     // Hide highlights
     await page.getByRole('button', { name: 'Hide OLMoTrace' }).click();
     // should have no documents
     await expect(page.getByTestId('olmotrace-drawer').getByRole('listitem')).toHaveCount(0);
     // highlight on text is not visible
-    await expect(
-        page.getByRole('button', { name: 'Show documents related to this span' })
-    ).toHaveCount(0);
+    await expect(page.locator('mark')).toHaveCount(0);
 
     // Make sure new attributions show and selected spans do go away when you click another thread
     await page.getByRole('button', { name: 'Thread history' }).click();

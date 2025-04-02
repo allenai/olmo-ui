@@ -17,12 +17,28 @@ export namespace error {
         validation_errors: ValidationErrorPayload[];
     }
 
+    // adapted from https://github.com/sindresorhus/ky/blob/main/source/errors/HTTPError.ts
+    export class HTTPError extends Error {
+        public response: Response;
+        public status: number | null;
+        public title: string;
+
+        constructor(message: string, response: Response) {
+            super(message);
+
+            this.name = 'HTTPError';
+            this.response = response;
+            this.status = response.status || response.status === 0 ? response.status : null;
+            this.title = response.statusText || '';
+        }
+    }
     export class ValidationError extends Error {
         constructor(
             public message: string,
             public validationErrors: ValidationErrorPayload[]
         ) {
             super(message);
+            this.name = 'ValidationError';
         }
     }
 
@@ -43,12 +59,12 @@ export namespace error {
                 if (isValidationErrorPayload(err.error)) {
                     return new ValidationError(err.error.message, err.error.validation_errors);
                 }
-                return new Error(err.error.message);
+                return new HTTPError(err.error.message, r);
             }
             // This is probably an error returned by the NGINX reverse proxy. Don't attempt to
             // parse the response. Use the HTTP status information.
             default:
-                return new Error(`HTTP ${r.status}: ${r.statusText}`);
+                return new HTTPError(`HTTP ${r.status}: ${r.statusText}`, r);
         }
     }
 }

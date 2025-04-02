@@ -86,6 +86,11 @@
       ]
     },
     {
+      "text": "**span that contains bolding** and stuff afterward",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
       "text": "code block with a span in it",
       "documents": [],
       "nested_spans": []
@@ -192,6 +197,26 @@
     },
     {
       "text": "*span that starts with a * but shouldn't get changed",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with <strong>html</strong> in it",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span inside html",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with < in it",
+      "documents": [],
+      "nested_spans": []
+    },
+    {
+      "text": "span with > in it",
       "documents": [],
       "nested_spans": []
     }
