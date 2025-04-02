@@ -29,8 +29,10 @@ export const CodeBlock = ({
                   .filter((spanId) => spanId != null)
             : [];
 
-    const { toggleSelectedSpans } = useAttributionHighlights(spansInsideThisCodeBlock);
+    const { toggleSelectedSpans, isSelectedSpan, selectionType } =
+        useAttributionHighlights(spansInsideThisCodeBlock);
 
+    const isShowMatchesButtonClicked = isSelectedSpan && selectionType === 'span';
     if (typeof children === 'string') {
         const childrenWithoutAttributionHighlights = children
             // the attributionHighlightRegex uses a capture group, $<spanText> gets replaced with the spanText capture group
@@ -57,19 +59,26 @@ export const CodeBlock = ({
                     </SyntaxHighlighter>
                     {spansInsideThisCodeBlock.length > 0 && (
                         <Button
-                            variant="outlined"
+                            variant={'outlined'}
                             sx={(theme) => ({
                                 color: theme.palette.primary.contrastText,
                                 borderColor: theme.palette.primary.contrastText,
+                                backgroundColor: isShowMatchesButtonClicked
+                                    ? theme.palette.secondary.main
+                                    : undefined,
                                 '&:hover': {
-                                    backgroundColor: theme.palette.action.hover,
+                                    backgroundColor: isShowMatchesButtonClicked
+                                        ? theme.palette.secondary.main
+                                        : theme.palette.action.hover,
                                     borderColor: (theme) => theme.palette.primary.contrastText,
                                 },
                             })}
                             onClick={() => {
                                 toggleSelectedSpans();
                             }}>
-                            View code dataset matches
+                            {isShowMatchesButtonClicked
+                                ? 'Hide code dataset matches'
+                                : 'View code dataset matches'}
                         </Button>
                     )}
                 </>
