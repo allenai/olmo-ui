@@ -66,9 +66,8 @@ describe('AttributionHighlight', () => {
         );
 
         const highlight = screen.getByRole('button', {
-            name: /Show documents related to this span*/,
+            name: 'This is a',
         });
-        expect(highlight).toHaveTextContent('This is a');
         expect(highlight).not.toHaveAttribute('data-selection-type');
     });
 
@@ -129,9 +128,8 @@ describe('AttributionHighlight', () => {
         );
 
         const highlight = screen.getByRole('button', {
-            name: /Show documents related to this span*/,
+            name: 'This is a',
         });
-        expect(highlight).toHaveTextContent('This is a');
         expect(highlight).toHaveAttribute('data-selection-type', 'span');
     });
 
@@ -254,9 +252,8 @@ describe('AttributionHighlight', () => {
         );
 
         const highlight = screen.getByRole('button', {
-            name: /Show documents related to this span*/,
+            name: 'This is a',
         });
-        expect(highlight).toHaveTextContent('This is a');
         expect(highlight).toHaveAttribute('data-selection-type', 'document');
     });
 
