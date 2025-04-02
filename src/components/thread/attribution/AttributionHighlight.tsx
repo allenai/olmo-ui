@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
@@ -179,6 +179,15 @@ export const AttributionHighlight = ({
         isSelectedSpan,
         selectionType,
     } = useAttributionHighlights(span);
+
+    useEffect(() => {
+        if (isSelectedSpan) {
+            document.querySelector('mark[data-selection-type="document"]')?.scrollIntoView({
+                behavior: 'auto',
+                block: 'center',
+            });
+        }
+    }, [isSelectedSpan]);
 
     if (!shouldShowHighlight) {
         return <>{children}</>;
