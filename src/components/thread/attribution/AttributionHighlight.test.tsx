@@ -197,6 +197,9 @@ describe('AttributionHighlight', () => {
 
     it('should show a highlight when a corresponding document is selected', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        vi.spyOn(document, 'querySelector').mockImplementation(() => {
+            return null;
+        });
 
         const initialState: DeepPartial<AppContextState> = {
             currentOpenDrawer: 'attribution',
