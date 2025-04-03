@@ -59,7 +59,7 @@ export const CodeBlock = ({
                     </SyntaxHighlighter>
                     {spansInsideThisCodeBlock.length > 0 && (
                         <Button
-                            variant={'outlined'}
+                            variant="outlined"
                             sx={(theme) => ({
                                 color: theme.palette.primary.contrastText,
                                 borderColor: theme.palette.primary.contrastText,
