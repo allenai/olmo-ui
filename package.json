@@ -5,6 +5,7 @@
   "license": "UNLICENSED",
   "author": "reviz@allenai.org",
   "scripts": {
+    "add-git-hooks": "husky",
     "build": "webpack --mode production --env production",
     "lint": "eslint '**/*.{js,ts,tsx,json}' && echo '💫  Lint complete.'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json && echo '🛠  Lint --fix complete'",
@@ -13,8 +14,7 @@
     "test:coverage": "test --coverage",
     "test:e2e": "playwright test",
     "test:watch": "vitest",
-    "vitest-preview": "vitest-preview",
-    "add-git-hooks": "husky"
+    "vitest-preview": "vitest-preview"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
