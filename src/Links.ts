@@ -19,8 +19,6 @@ export const links = {
     },
     logout: '/logout',
     loginResult: '/login-result',
-    feedbackForm:
-        'https://docs.google.com/forms/d/e/1FAIpQLSfmPUnxBss08X8aq7Aiy17YSPhH-OqHzHMIzXg4zsIhAbvqxg/viewform?usp=sf_link',
     document: (documentId: string, index?: string | null) =>
         index == null ? `/document/${documentId}` : `/${index}/document/${documentId}`,
     search: '/search',
@@ -34,4 +32,6 @@ export const links = {
     documentation: 'http://allenai.org/documentation',
     googlePrivacy: 'https://policies.google.com/privacy',
     googleTerms: 'https://policies.google.com/terms',
+    discord: 'https://discord.gg/NE5xPufNwu',
+    contactUs: 'https://allenai.org/contact',
 } as const;
