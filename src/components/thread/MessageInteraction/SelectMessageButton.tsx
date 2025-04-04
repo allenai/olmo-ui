@@ -3,6 +3,7 @@ import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { alpha, Button, IconButton, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Message } from '@/api/Message';
@@ -10,6 +11,8 @@ import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
+
+import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 
 interface SelectMessageButtonProps {
     messageId: Message['id'];
@@ -46,6 +49,7 @@ export const SelectMessageButton = ({
     messageId,
     isLastButton = false,
 }: SelectMessageButtonProps): ReactNode => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
     );
@@ -76,14 +80,19 @@ export const SelectMessageButton = ({
     const handleClick = () => {
         if (isMessageSelected) {
             unselectMessage(messageId);
+            searchParams.delete(PARAM_SELECTED_MESSAGE);
         } else {
             selectMessage(messageId);
+            searchParams.set(PARAM_SELECTED_MESSAGE, messageId);
+
             if (isDesktop) {
                 openDrawer('attribution');
             }
             // close the hint as the user has tried the olmotrace feature
             onCloseHint();
         }
+
+        setSearchParams(searchParams);
         if (selectedModelId !== undefined) {
             analyticsClient.trackPromptCorpusLink(selectedModelId, !isMessageSelected);
         }

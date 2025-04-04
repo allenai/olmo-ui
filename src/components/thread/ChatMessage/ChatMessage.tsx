@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
@@ -8,6 +9,7 @@ import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { RemoteState } from '@/contexts/util';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
+import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 import { LLMMessage } from './LLMMessage';
 import { UserMessage } from './UserMessage';
 
@@ -24,6 +26,8 @@ export const ChatMessage = ({
     messageId,
     children,
 }: ChatMessageProps): JSX.Element => {
+    const messageRef = useRef<HTMLElement>();
+    const [searchParams, _] = useSearchParams();
     const streamPromptState = useAppContext((state) => state.streamPromptState);
     const finalMessageContent = useAppContext((state) => {
         if (
@@ -35,11 +39,21 @@ export const ChatMessage = ({
         return state.selectedThreadMessagesById[messageId].content || null;
     });
 
+    useEffect(() => {
+        if (searchParams.get(PARAM_SELECTED_MESSAGE) === messageId) {
+            messageRef.current?.scrollIntoView({
+                behavior: 'auto',
+                block: 'start',
+            });
+        }
+    }, [searchParams, messageId, messageRef]);
+
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
         <Box
+            ref={messageRef}
             className={CHAT_MESSAGE_CLASS_NAME}
             sx={{
                 display: 'grid',
