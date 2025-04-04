@@ -92,8 +92,10 @@ export enum MessageStreamErrorReason {
     ABORTED = 'aborted',
     FINALIZATION = 'finalization failure',
     GRPC = 'grpc inference failed',
-    UNKNOWN = 'unkown',
     MODEL_OVERLOADED = 'model overloaded',
+    BAD_CONNECTION = 'bad connection',
+    VALUE_ERROR = 'value error',
+    UNKNOWN = 'unkown',
 }
 
 export class MessageStreamError extends Error {
