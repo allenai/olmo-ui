@@ -92,7 +92,7 @@ export const SelectMessageButton = ({
             onCloseHint();
         }
 
-        setSearchParams(searchParams);
+        setSearchParams(searchParams, { preventScrollReset: true, replace: true });
         if (selectedModelId !== undefined) {
             analyticsClient.trackPromptCorpusLink(selectedModelId, !isMessageSelected);
         }
@@ -105,16 +105,16 @@ export const SelectMessageButton = ({
 
     const lastMobileTooltipProps = isLastButton
         ? {
-              open: isLastMobileTooltipOpen,
-              onOpen: () => {
-                  setIsLastMobileTooltipOpen(true);
-              },
-              onClose: () => {
-                  if (!isHintVisible) {
-                      setIsLastMobileTooltipOpen(false);
-                  }
-              },
-          }
+            open: isLastMobileTooltipOpen,
+            onOpen: () => {
+                setIsLastMobileTooltipOpen(true);
+            },
+            onClose: () => {
+                if (!isHintVisible) {
+                    setIsLastMobileTooltipOpen(false);
+                }
+            },
+        }
         : {};
 
     if (isDesktop) {

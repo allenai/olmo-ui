@@ -39,14 +39,14 @@ export const ChatMessage = ({
         return state.selectedThreadMessagesById[messageId].content || null;
     });
 
-    useEffect(() => {
-        if (searchParams.get(PARAM_SELECTED_MESSAGE) === messageId) {
-            messageRef.current?.scrollIntoView({
-                behavior: 'auto',
-                block: 'start',
-            });
-        }
-    }, [searchParams, messageId, messageRef]);
+    // useEffect(() => {
+    //     if (searchParams.get(PARAM_SELECTED_MESSAGE) === messageId) {
+    //         messageRef.current?.scrollIntoView({
+    //             behavior: 'auto',
+    //             block: 'start',
+    //         });
+    //     }
+    // }, []);
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
