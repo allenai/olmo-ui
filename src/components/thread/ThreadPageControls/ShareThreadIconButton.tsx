@@ -6,7 +6,6 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 export const ShareThreadIconButton = (): ReactNode => {
@@ -18,7 +17,7 @@ export const ShareThreadIconButton = (): ReactNode => {
     const shouldDisableShareButton = !selectedThreadId || !isAuthenticated;
 
     const handleShareThread = async () => {
-        await navigator.clipboard.writeText(location.origin + links.thread(selectedThreadId));
+        await navigator.clipboard.writeText(location.href);
         addSnackMessage({
             id: `thread-copy-${new Date().getTime()}`.toLowerCase(),
             type: SnackMessageType.Brief,

@@ -4,7 +4,9 @@ import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 
-export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
+export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
+
+export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
         getSelectedThread,
         selectedThreadRootId,
@@ -25,13 +27,10 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         abortPrompt();
 
         const selectedThread = await getSelectedThread(params.id);
+        const url = new URL(request.url);
+        const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
 
         const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
-        const lastPromptId = selectedThreadMessages
-            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.User)
-            .at(-1);
-        const lastPrompt =
-            lastPromptId != null ? selectedThreadMessagesById[lastPromptId].content : '';
         const lastResponseId = selectedThreadMessages
             .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
             .at(-1);
@@ -57,10 +56,14 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ params }) => {
         }
 
         if (isCorpusLinkEnabled) {
-            const attributionsPromise =
-                lastResponseId != null
-                    ? getAttributionsForMessage(lastPrompt, lastResponseId)
-                    : undefined;
+            let attributionsPromise;
+
+            if (selectedMessageId != null) {
+                const parentId = selectedThreadMessagesById[selectedMessageId].parent;
+                const parentPrompt =
+                    parentId != null ? selectedThreadMessagesById[parentId].content : '';
+                attributionsPromise = getAttributionsForMessage(parentPrompt, selectedMessageId);
+            }
 
             return defer({
                 selectedThread,
