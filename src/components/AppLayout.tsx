@@ -6,9 +6,8 @@ import { DESKTOP_LAYOUT_BREAKPOINT, SMALL_LAYOUT_BREAKPOINT } from '@/constants'
 import { DesktopPageControls } from './DesktopPageControls';
 import { GlobalSnackMessageList } from './GlobalSnackMessageList';
 import { OlmoAppBar } from './OlmoAppBar';
-import { ScrollRestoration } from 'react-router-dom';
 
-interface AppLayout extends PropsWithChildren { }
+interface AppLayout extends PropsWithChildren {}
 
 export const AppLayout = ({ children }: AppLayout) => {
     return (
@@ -54,12 +53,6 @@ export const AppLayout = ({ children }: AppLayout) => {
                 maxWidth={false}>
                 {children}
             </Container>
-            <ScrollRestoration
-                getKey={(location, matches) => {
-                    console.log(location, matches)
-                    // default behavior
-                    return location.pathname;
-                }} />
             <DesktopPageControls />
         </OuterContainer>
     );

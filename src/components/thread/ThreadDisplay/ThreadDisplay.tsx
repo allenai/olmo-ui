@@ -60,7 +60,7 @@ export const ThreadDisplay = (): ReactNode => {
                 behavior: 'instant',
             });
         }
-    }, [location.key]);
+    }, [location.pathname]);
 
     // Scroll to the bottom when a new message is added
     useEffect(() => {

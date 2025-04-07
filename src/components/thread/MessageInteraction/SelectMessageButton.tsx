@@ -105,16 +105,16 @@ export const SelectMessageButton = ({
 
     const lastMobileTooltipProps = isLastButton
         ? {
-            open: isLastMobileTooltipOpen,
-            onOpen: () => {
-                setIsLastMobileTooltipOpen(true);
-            },
-            onClose: () => {
-                if (!isHintVisible) {
-                    setIsLastMobileTooltipOpen(false);
-                }
-            },
-        }
+              open: isLastMobileTooltipOpen,
+              onOpen: () => {
+                  setIsLastMobileTooltipOpen(true);
+              },
+              onClose: () => {
+                  if (!isHintVisible) {
+                      setIsLastMobileTooltipOpen(false);
+                  }
+              },
+          }
         : {};
 
     if (isDesktop) {
