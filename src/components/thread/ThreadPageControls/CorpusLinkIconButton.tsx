@@ -12,11 +12,14 @@ export const CorpusLinkIconButton = () => {
         toggleDrawer(ATTRIBUTION_DRAWER_ID);
     };
 
+    const isActive = useAppContext((state) => state.currentOpenDrawer === ATTRIBUTION_DRAWER_ID);
+
     return (
         <IconButtonWithTooltip
             desktopPlacement="left"
             onClick={toggleParametersDrawer}
-            label="OLMoTrace documents">
+            label="OLMoTrace documents"
+            isActive={isActive}>
             <ArticleOutlined />
         </IconButtonWithTooltip>
     );
