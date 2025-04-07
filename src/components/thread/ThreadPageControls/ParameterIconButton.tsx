@@ -12,11 +12,14 @@ export const ParameterIconButton = () => {
         toggleDrawer(PARAMETERS_DRAWER_ID);
     };
 
+    const isActive = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
+
     return (
         <IconButtonWithTooltip
             desktopPlacement="left"
             onClick={toggleParametersDrawer}
-            label="Show parameters">
+            label="Show parameters"
+            isActive={isActive}>
             <TuneOutlined />
         </IconButtonWithTooltip>
     );
