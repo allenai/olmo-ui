@@ -63,13 +63,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                 const parentPrompt =
                     parentId != null ? selectedThreadMessagesById[parentId].content : '';
                 attributionsPromise = getAttributionsForMessage(parentPrompt, selectedMessageId);
-            } else if (lastResponseId != null) {
-                const lastPromptId = selectedThreadMessages
-                    .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.User)
-                    .at(-1);
-                const lastPrompt =
-                    lastPromptId != null ? selectedThreadMessagesById[lastPromptId].content : '';
-                attributionsPromise = getAttributionsForMessage(lastPrompt, lastResponseId);
             }
 
             return defer({

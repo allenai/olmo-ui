@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { PropsWithChildren } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
@@ -25,7 +24,6 @@ export const ChatMessage = ({
     messageId,
     children,
 }: ChatMessageProps): JSX.Element => {
-    const messageRef = useRef<HTMLElement>();
     const streamPromptState = useAppContext((state) => state.streamPromptState);
     const finalMessageContent = useAppContext((state) => {
         if (
@@ -42,7 +40,6 @@ export const ChatMessage = ({
 
     return (
         <Box
-            ref={messageRef}
             className={CHAT_MESSAGE_CLASS_NAME}
             sx={{
                 display: 'grid',
