@@ -1,6 +1,6 @@
 import {
     ArrowForwardIosOutlined,
-    RateReviewOutlined,
+    ChatBubbleOutline,
     StickyNote2Outlined,
 } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,6 +14,7 @@ import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
+import DiscordIcon from '@/components/assets/discord.svg?react';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
@@ -125,11 +126,17 @@ export const NavigationDrawer = ({
                             Documentation
                         </NavigationLink>
                         <NavigationLink
-                            icon={<RateReviewOutlined />}
-                            href={links.feedbackForm}
+                            href={links.contactUs}
+                            icon={<ChatBubbleOutline />}
+                            DisclosureIcon={LaunchOutlinedIcon}>
+                            Contact us
+                        </NavigationLink>
+                        <NavigationLink
+                            icon={<DiscordIcon />}
+                            href={links.discord}
                             DisclosureIcon={LaunchOutlinedIcon}
                             variant="footer">
-                            Give feedback
+                            Discord
                         </NavigationLink>
                         <LoginLink />
                         <AvatarMenuLink />

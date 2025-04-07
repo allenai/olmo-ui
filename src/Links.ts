@@ -34,4 +34,6 @@ export const links = {
     documentation: 'http://allenai.org/documentation',
     googlePrivacy: 'https://policies.google.com/privacy',
     googleTerms: 'https://policies.google.com/terms',
+    discord: 'https://discord.gg/NE5xPufNwu',
+    contactUs: 'https://allenai.org/contact',
 } as const;
