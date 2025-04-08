@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { PropsWithChildren, useEffect } from 'react';
 
 import { AppContextState, useAppContext } from '@/AppContext';
-import { useDesktopOrUp } from '@/components/dolma/shared';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
     hasAttributionSelectionSelector,
@@ -19,8 +18,6 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     const selectSpans = useAppContext((state) => state.selectSpans);
     const resetSelectedSpans = useAppContext((state) => state.resetCorpusLinkSelection);
     const openDrawer = useAppContext((state) => state.openDrawer);
-
-    const isDesktop = useDesktopOrUp();
 
     const [isSelectedSpan, selectionType] = useAppContext(
         (state): [boolean, 'span' | 'document' | null] => {
@@ -61,9 +58,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
             resetSelectedSpans();
         } else {
             selectSpans(spanIds);
-            if (!isDesktop) {
-                openDrawer('attribution');
-            }
+            openDrawer('attribution');
         }
     };
 
@@ -179,9 +174,6 @@ export const AttributionHighlight = ({
         isSelectedSpan,
         selectionType,
     } = useAttributionHighlights(span);
-    const openDrawer = useAppContext((state) => state.openDrawer);
-
-    const isDesktop = useDesktopOrUp();
 
     useEffect(() => {
         if (isSelectedSpan) {
@@ -198,14 +190,6 @@ export const AttributionHighlight = ({
 
     const spanRelevance = getBucketForScorePercentile(spanScorePercentile);
 
-    const handleSpanSelect = () => {
-        if (isDesktop) {
-            openDrawer('attribution');
-        }
-
-        toggleSelectedSpans();
-    };
-
     return (
         <Box
             component="mark"
@@ -213,11 +197,11 @@ export const AttributionHighlight = ({
             aria-describedby={ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID}
             onClick={(e) => {
                 e.preventDefault();
-                handleSpanSelect();
+                toggleSelectedSpans();
             }}
             onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                    handleSpanSelect();
+                    toggleSelectedSpans();
                 }
             }}
             tabIndex={0}
