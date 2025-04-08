@@ -179,6 +179,9 @@ export const AttributionHighlight = ({
         isSelectedSpan,
         selectionType,
     } = useAttributionHighlights(span);
+    const openDrawer = useAppContext((state) => state.openDrawer);
+
+    const isDesktop = useDesktopOrUp();
 
     useEffect(() => {
         if (isSelectedSpan) {
@@ -195,6 +198,14 @@ export const AttributionHighlight = ({
 
     const spanRelevance = getBucketForScorePercentile(spanScorePercentile);
 
+    const handleSpanSelect = () => {
+        if (isDesktop) {
+            openDrawer('attribution');
+        }
+
+        toggleSelectedSpans();
+    };
+
     return (
         <Box
             component="mark"
@@ -202,11 +213,11 @@ export const AttributionHighlight = ({
             aria-describedby={ATTRIBUTION_HIGHLIGHT_DESCRIPTION_ID}
             onClick={(e) => {
                 e.preventDefault();
-                toggleSelectedSpans();
+                handleSpanSelect();
             }}
             onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                    toggleSelectedSpans();
+                    handleSpanSelect();
                 }
             }}
             tabIndex={0}
