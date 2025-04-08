@@ -16,6 +16,7 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         updateInferenceOpts,
         models,
         abortPrompt,
+        selectMessage,
     } = appContext.getState();
 
     const { isCorpusLinkEnabled } = getFeatureToggles();
@@ -62,7 +63,9 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                 const parentId = selectedThreadMessagesById[selectedMessageId].parent;
                 const parentPrompt =
                     parentId != null ? selectedThreadMessagesById[parentId].content : '';
+
                 attributionsPromise = getAttributionsForMessage(parentPrompt, selectedMessageId);
+                selectMessage(selectedMessageId);
             }
 
             return defer({
