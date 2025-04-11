@@ -6,9 +6,7 @@ const plausibleClient = Plausible({ domain: 'playground.allenai.org' });
 
 type Primitive = string | number | boolean | undefined;
 
-const flattenObject = <T extends Record<string, unknown>>(
-    object?: T | null
-): Record<string, Primitive> => {
+const flattenObject = (object?: Record<string, unknown> | null): Record<string, Primitive> => {
     if (object == null) {
         return {};
     }
