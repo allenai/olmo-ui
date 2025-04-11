@@ -84,8 +84,6 @@ export const loginResultLoader: LoaderFunction = async ({ request }) => {
         // HACK: this re-fetches user info after we log in. It'd be nice to have this happen automatically when someone logs in!
         await getUserInfo();
 
-        window.heap?.identify(authenticatedUserInfo.sub);
-
         return redirect(redirectTo);
     } else {
         const responseData: LoginError['data'] = {

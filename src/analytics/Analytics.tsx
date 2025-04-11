@@ -1,5 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 const OsanoSetup = (): ReactNode => (
     <Helmet>
@@ -35,9 +37,33 @@ const HeapSetup = (): ReactNode => (
     </Helmet>
 );
 
-export const Analytics = (): ReactNode => (
-    <>
-        <OsanoSetup />
-        <HeapSetup />
-    </>
-);
+export const Analytics = (): ReactNode => {
+    const { userInfo, userAuthInfo, isAuthenticated } = useUserAuthInfo();
+
+    useEffect(() => {
+        const sendIdentity = () => {
+            if (userInfo && userAuthInfo?.sub && window.heap) {
+                window.heap.identify(userAuthInfo.sub);
+                window.heap.addUserProperties({
+                    email: userAuthInfo.email,
+                    email_verified: userAuthInfo.email_verified,
+                    name: userAuthInfo.name,
+                    has_accepted_terms: userInfo.hasAcceptedTermsAndConditions,
+                });
+            } else {
+                setTimeout(sendIdentity, 1000);
+            }
+        };
+
+        if (isAuthenticated) {
+            sendIdentity();
+        }
+    }, [userInfo, userAuthInfo, isAuthenticated]);
+
+    return (
+        <>
+            <OsanoSetup />
+            <HeapSetup />
+        </>
+    );
+};
