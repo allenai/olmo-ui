@@ -1,10 +1,12 @@
 module.exports = {
     extends: ['@allenai/eslint-config-varnish'],
-    plugins: ['simple-import-sort'],
+    plugins: ['simple-import-sort', 'eslint-plugin-react-compiler', 'react-refresh'],
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
+        'react-compiler/react-compiler': 'warn',
+        'react-refresh/only-export-components': 'warn',
     },
     parserOptions: {
         project: true,
