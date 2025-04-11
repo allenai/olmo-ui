@@ -1,10 +1,12 @@
 module.exports = {
     extends: ['@allenai/eslint-config-varnish'],
-    plugins: ['simple-import-sort'],
+    plugins: ['simple-import-sort', 'eslint-plugin-react-compiler', 'react-refresh'],
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
+        'react-compiler/react-compiler': 'warn',
+        'react-refresh/only-export-components': 'warn',
     },
     parserOptions: {
         project: true,
@@ -25,7 +27,19 @@ module.exports = {
                 '@typescript-eslint/no-unsafe-call': 'warn',
                 '@typescript-eslint/no-unsafe-member-access': 'warn',
                 '@typescript-eslint/no-unnecessary-condition': 'warn',
-                '@typescript-eslint/switch-exhaustiveness-check': 'error',
+                '@typescript-eslint/no-deprecated': 'warn',
+                '@typescript-eslint/no-empty-object-type': [
+                    'error',
+                    {
+                        allowInterfaces: 'with-single-extends',
+                    },
+                ],
+                '@typescript-eslint/switch-exhaustiveness-check': [
+                    'error',
+                    {
+                        considerDefaultExhaustiveForUnions: true,
+                    },
+                ],
                 // This interferes with simple-import-sort so it's disabled!
                 'import/order': 'off',
                 '@typescript-eslint/no-unused-vars': [

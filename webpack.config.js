@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-require-imports */
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -31,7 +32,7 @@ module.exports = (env) => ({
                 use: ['style-loader', 'css-loader'],
             },
             // This tells webpack to hand TypeScript files to the TypeScript compiler
-            // before bundling them.
+            // before bundling them.yar
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,

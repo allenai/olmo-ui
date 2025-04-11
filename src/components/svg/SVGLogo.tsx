@@ -37,7 +37,7 @@ export const SVGLogo = ({
             role="img"
             // Array.isArray doesn't preserve Sx's array type
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            sx={{ ...svgDefaultProps, ...(Array.isArray(sx) ? sx : [sx]) }}>
+            sx={[svgDefaultProps, ...(Array.isArray(sx) ? sx : [sx])]}>
             <title>{title}</title>
             {children}
         </Box>
