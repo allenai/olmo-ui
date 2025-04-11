@@ -40,6 +40,7 @@ export const ChatMessage = ({
 
     return (
         <Box
+            data-messageid={messageId}
             className={CHAT_MESSAGE_CLASS_NAME}
             sx={{
                 display: 'grid',
