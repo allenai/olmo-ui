@@ -1,7 +1,7 @@
 import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -11,10 +11,12 @@ import { AttributionHighlightDescription } from '../attribution/AttributionHighl
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { MessageView } from './MessageView';
+import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
 import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
 export const ThreadDisplay = (): ReactNode => {
+    const [searchParams, _] = useSearchParams();
     // useShallow is used here to prevent triggering re-render. However, it
     // doesn't save the job to traverse the whole message tree. If it
     // becomes a performance bottleneck, it's better to change back to
@@ -103,6 +105,14 @@ export const ThreadDisplay = (): ReactNode => {
             mutationObserver.disconnect();
         };
     }, [isUpdatingMessageContent, scrollToBottom]);
+
+    // effect of auto-scrolling to the message appended in the url
+    useEffect(() => {
+        if (searchParams.has(PARAM_SELECTED_MESSAGE)) {
+            const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE) || '';
+            document.querySelector(`div[data-messageid=${selectedMessageId}]`)?.scrollIntoView();
+        }
+    }, []);
 
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
