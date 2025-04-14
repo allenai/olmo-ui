@@ -54,7 +54,7 @@ export const LegalNotice = () => {
         <LegalNoticeTypography>
             {ModelSpecificLegalNotice && <ModelSpecificLegalNotice />}
             Ai2 Playground is a free scientific and educational tool and by using it you agree to
-            Ai2's{' '}
+            Ai2&apos;s{' '}
             <TermAndConditionsLink link="https://allenai.org/terms">
                 Terms of use
             </TermAndConditionsLink>
