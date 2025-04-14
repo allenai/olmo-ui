@@ -1,22 +1,16 @@
 import { useShallow } from 'zustand/react/shallow';
 
-import { Document } from '@/api/AttributionClient';
+import { Document as AttributionDocument } from '@/api/AttributionClient';
 import { type AppContextState, useAppContext } from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
 import {
     hasSelectedSpansSelector,
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 import { SpansSelection } from '@/slices/attribution/AttributionSlice';
 
-interface MessageAttributionsFromSelector {
-    documents: Document[];
-    loadingState: RemoteState | null;
-}
-
 export const messageAttributionDocumentsSelector = (
     state: AppContextState
-): MessageAttributionsFromSelector => {
+): AttributionDocument[] => {
     const attributions = messageAttributionsSelector(state);
     const hasSelectedSpan = hasSelectedSpansSelector(state);
 
@@ -38,13 +32,10 @@ export const messageAttributionDocumentsSelector = (
             )
             .filter((document) => document != null);
 
-        return {
-            documents,
-            loadingState: attributions?.loadingState ?? null,
-        };
+        return documents;
     }
 
-    const documents: Document[] = (attributions?.orderedDocumentIndexes ?? [])
+    const documents: AttributionDocument[] = (attributions?.orderedDocumentIndexes ?? [])
         .map((docId) => {
             return attributions?.documents[docId.toString()];
         })
@@ -54,10 +45,7 @@ export const messageAttributionDocumentsSelector = (
         new Map(documents.map((doc) => [doc.index, doc])).values()
     );
 
-    return {
-        documents: filteredDocuments,
-        loadingState: attributions?.loadingState ?? null,
-    };
+    return filteredDocuments;
 };
 
 export const useAttributionDocumentsForMessage = () => {
