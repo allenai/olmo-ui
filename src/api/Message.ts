@@ -244,14 +244,19 @@ export class MessageClient extends ClientBase {
                 };
 
                 if (body.error.validation_errors) {
-                    if (
-                        body.error.validation_errors.some(
-                            (error) =>
-                                error.loc.some((location) => location === 'captchaToken') &&
-                                error.type === 'missing'
-                        )
-                    ) {
-                        analyticsClient.trackCaptchaMissing();
+                    const captchaTokenValidationErrors = body.error.validation_errors.filter(
+                        (error) => error.loc.some((location) => location === 'captchaToken')
+                    );
+                    if (captchaTokenValidationErrors.length > 0) {
+                        const captchaErrorTypes = captchaTokenValidationErrors.reduce(
+                            (acc, curr) => {
+                                acc.add(curr.type);
+                                return acc;
+                            },
+                            new Set<string>()
+                        );
+
+                        analyticsClient.trackCaptchaError(Array.from(captchaErrorTypes.values()));
                     }
 
                     throw new StreamValidationError(

@@ -18,7 +18,7 @@ export enum EventType {
     PromptErrorInappropriate = 'prompt.error.inappropriate',
     QueryFormSubmit = 'queryform.submit',
     PromptOlmoTrace = 'prompt.corpuslink',
-    CaptchaMissing = 'queryform.captcha-missing',
+    CaptchaError = 'queryform.captcha-error',
 }
 
 export type SearchQueryDetails = {
@@ -184,12 +184,15 @@ export class AnalyticsClient {
         });
     }
 
-    trackCaptchaMissing() {
-        window.heap?.track(EventType.CaptchaMissing);
+    trackCaptchaError(errorTypes: string[]) {
+        window.heap?.track(EventType.CaptchaError);
 
         return this.track({
-            type: EventType.CaptchaMissing,
+            type: EventType.CaptchaError,
             occurred: new Date(),
+            details: {
+                types: errorTypes,
+            },
         });
     }
 }
