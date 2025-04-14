@@ -16,8 +16,9 @@ export enum EventType {
     ModelOverloadedError = 'model.overloaded.error',
     // ----- HEAP -----
     PromptErrorInappropriate = 'prompt.error.inappropriate',
-    QueryformSubmit = 'queryform.submit',
-    PromptCorpusLink = 'prompt.corpuslink',
+    QueryFormSubmit = 'queryform.submit',
+    PromptOlmoTrace = 'prompt.corpuslink',
+    CaptchaError = 'queryform.captcha-error',
 }
 
 export type SearchQueryDetails = {
@@ -142,21 +143,56 @@ export class AnalyticsClient {
         });
     }
 
-    trackQueryformSubmission(modelId: string, isNewThread: boolean) {
-        window.heap?.track(EventType.QueryformSubmit, {
+    trackQueryFormSubmission(modelId: string, isNewThread: boolean) {
+        window.heap?.track(EventType.QueryFormSubmit, {
             model: modelId,
             isNewThread,
+        });
+
+        return this.track({
+            type: EventType.QueryFormSubmit,
+            occurred: new Date(),
+            details: {
+                model: modelId,
+                isNewThread,
+            },
         });
     }
 
     trackInappropriatePrompt() {
         window.heap?.track(EventType.PromptErrorInappropriate);
+
+        return this.track({
+            type: EventType.PromptErrorInappropriate,
+            occurred: new Date(),
+        });
     }
 
-    trackPromptCorpusLink(modelId: string, isEnabling: boolean) {
-        window.heap?.track(EventType.PromptCorpusLink, {
+    trackPromptOlmoTrace(modelId: string, isEnabling: boolean) {
+        window.heap?.track(EventType.PromptOlmoTrace, {
             model: modelId,
             isEnabling,
+        });
+
+        return this.track({
+            type: EventType.PromptOlmoTrace,
+            occurred: new Date(),
+            details: {
+                model: modelId,
+                isEnabling,
+            },
+        });
+    }
+
+    trackCaptchaError(errorTypes: string[]) {
+        window.heap?.track(EventType.CaptchaError);
+
+        return this.track({
+            type: EventType.CaptchaError,
+            occurred: new Date(),
+            details: {
+                types: errorTypes,
+            },
         });
     }
 }
