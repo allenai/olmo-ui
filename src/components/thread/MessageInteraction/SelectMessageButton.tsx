@@ -94,7 +94,7 @@ export const SelectMessageButton = ({
 
         setSearchParams(searchParams, { preventScrollReset: true, replace: true });
         if (selectedModelId !== undefined) {
-            analyticsClient.trackPromptCorpusLink(selectedModelId, !isMessageSelected);
+            analyticsClient.trackPromptOlmoTrace(selectedModelId, !isMessageSelected);
         }
     };
 

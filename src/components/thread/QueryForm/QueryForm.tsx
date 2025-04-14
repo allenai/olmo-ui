@@ -110,10 +110,11 @@ export const QueryForm = (): JSX.Element => {
         if (!canEditThread || isSelectedThreadLoading) {
             return;
         }
+        const isReCaptchaEnabled = process.env.IS_RECAPTCHA_ENABLED;
 
         // TODO: Make sure executeRecaptcha is present when we require recaptchas
         const token =
-            process.env.IS_RECAPTCHA_ENABLED === 'true'
+            isReCaptchaEnabled === 'true'
                 ? await executeRecaptcha?.('prompt_submission')
                 : undefined;
 
@@ -126,7 +127,7 @@ export const QueryForm = (): JSX.Element => {
         try {
             await streamPrompt(request);
             if (selectedModel !== undefined) {
-                analyticsClient.trackQueryformSubmission(
+                analyticsClient.trackQueryFormSubmission(
                     selectedModel.id,
                     location.pathname === links.playground
                 );
