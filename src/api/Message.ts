@@ -1,3 +1,4 @@
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
@@ -243,9 +244,26 @@ export class MessageClient extends ClientBase {
                 };
 
                 if (body.error.validation_errors) {
+                    const captchaTokenValidationErrors = body.error.validation_errors.filter(
+                        (error) => error.loc.some((location) => location === 'captchaToken')
+                    );
+                    if (captchaTokenValidationErrors.length > 0) {
+                        const captchaErrorTypes = captchaTokenValidationErrors.reduce(
+                            (acc, curr) => {
+                                acc.add(curr.type);
+                                return acc;
+                            },
+                            new Set<string>()
+                        );
+
+                        analyticsClient.trackCaptchaError(Array.from(captchaErrorTypes.values()));
+                    }
+
                     throw new StreamValidationError(
                         response.status,
-                        body.error.validation_errors.map((err) => err.msg)
+                        body.error.validation_errors.map(
+                            (err) => `${err.loc.join(', ')}: ${err.msg}`
+                        )
                     );
                 }
                 throw new StreamBadRequestError(response.status, body.error.message);
