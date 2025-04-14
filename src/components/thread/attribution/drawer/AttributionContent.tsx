@@ -149,11 +149,11 @@ export const RepeatedAttributionDocumentsContent = () => {
         useShallow((state) => {
             const selectedRepeatedDocumentIndex = state.attribution.selectedRepeatedDocumentIndex;
 
-            const selectedDocument = attributionDocuments.documents.find(
+            const selectedDocument = attributionDocuments.find(
                 (document) => document.index === selectedRepeatedDocumentIndex
             );
 
-            const documentsWithTheSameUrl = attributionDocuments.documents.filter(
+            const documentsWithTheSameUrl = attributionDocuments.filter(
                 (document) => document.url === selectedDocument?.url
             );
 

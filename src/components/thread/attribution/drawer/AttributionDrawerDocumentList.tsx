@@ -8,6 +8,7 @@ import { RemoteState } from '@/contexts/util';
 import {
     attributionErrorSelector,
     hasSelectedSpansSelector,
+    messageAttributionsSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -63,10 +64,12 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const isThereASelectedMessage = useAppContext((state) =>
         Boolean(state.attribution.selectedMessageId)
     );
-    const attributionForMessage = useAttributionDocumentsForMessage();
+    const attributionDocumentsLoadingState = useAppContext(
+        messageAttributionsSelector
+    )?.loadingState;
+    const attributionDocuments = useAttributionDocumentsForMessage();
     const messageLength = useAppContext(messageLengthSelector);
     const attributionRequestError = useAppContext(attributionErrorSelector);
-    const { documents, loadingState } = attributionForMessage;
 
     const isSelectedMessageLoading = useAppContext(
         (state) =>
@@ -77,7 +80,8 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
     const deduplicatedDocuments = useMemo(() => {
         // the key to this map is either the URL or the document index
         const documentsDedupedByUrl = new Map<string, DedupedDocument>();
-        documents.forEach((currentDocument) => {
+
+        attributionDocuments.forEach((currentDocument) => {
             if (currentDocument.url != null) {
                 if (documentsDedupedByUrl.has(currentDocument.url)) {
                     documentsDedupedByUrl
@@ -104,7 +108,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         });
 
         return Array.from(documentsDedupedByUrl.values());
-    }, [documents]);
+    }, [attributionDocuments]);
 
     const relevance = deduplicatedDocuments.reduce<Record<AttributionBucket, RelevanceGroup>>(
         (acc, doc) => {
@@ -152,7 +156,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (loadingState === RemoteState.Loading) {
+    if (attributionDocumentsLoadingState === RemoteState.Loading) {
         return (
             <Stack
                 flexGrow={1}
@@ -174,7 +178,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (loadingState === RemoteState.Error) {
+    if (attributionDocumentsLoadingState === RemoteState.Error) {
         if (attributionRequestError === 'model-not-supported') {
             return <UnavailableMessage />;
         }
@@ -197,7 +201,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
         );
     }
 
-    if (documents.length === 0) {
+    if (attributionDocuments.length === 0) {
         return (
             <Card>
                 <CardContent>
@@ -220,7 +224,7 @@ export const AttributionDrawerDocumentList = (): JSX.Element => {
                 MatchingDocumentsText is in this component for now because I don't want to get into the memoizing selectors rabbit hole.
                 When we do that we can move this up to the AttributionDrawer and have it get its own documentCount
             */}
-            <MatchingDocumentsText documentCount={documents.length} />
+            <MatchingDocumentsText documentCount={attributionDocuments.length} />
             <Box
                 component="ol"
                 sx={{
