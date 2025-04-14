@@ -1,3 +1,4 @@
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
@@ -243,9 +244,21 @@ export class MessageClient extends ClientBase {
                 };
 
                 if (body.error.validation_errors) {
+                    if (
+                        body.error.validation_errors.some(
+                            (error) =>
+                                error.loc.some((location) => location === 'captchaToken') &&
+                                error.type === 'missing'
+                        )
+                    ) {
+                        analyticsClient.trackCaptchaMissing();
+                    }
+
                     throw new StreamValidationError(
                         response.status,
-                        body.error.validation_errors.map((err) => err.msg)
+                        body.error.validation_errors.map(
+                            (err) => `${err.loc.join(', ')}: ${err.msg}`
+                        )
                     );
                 }
                 throw new StreamBadRequestError(response.status, body.error.message);
