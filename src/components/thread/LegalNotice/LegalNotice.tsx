@@ -20,6 +20,7 @@ export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
             component="p"
             variant="caption"
             sx={{
+                textWrap: 'pretty',
                 fontSize: '0.7rem',
                 lineHeight: '1.33',
                 margin: '0',
@@ -53,8 +54,8 @@ export const LegalNotice = () => {
     return (
         <LegalNoticeTypography>
             {ModelSpecificLegalNotice && <ModelSpecificLegalNotice />}
-            Ai2 Playground is a free scientific research and educational tool. By using Ai2
-            Playground, you agree to Ai2’s{' '}
+            Ai2 Playground is a free scientific and educational tool and by using it you agree to
+            Ai2&rsquo;s{' '}
             <TermAndConditionsLink link="https://allenai.org/terms">
                 Terms of use
             </TermAndConditionsLink>

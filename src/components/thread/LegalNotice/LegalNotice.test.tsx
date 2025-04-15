@@ -30,7 +30,7 @@ describe('LegalNotice', () => {
                 (_, element) =>
                     element?.tagName.toLowerCase() === 'div' &&
                     element.textContent ===
-                        'Ai2 Playground is a free scientific research and educational tool. By using Ai2 Playground, you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'
+                        'Ai2 Playground is a free scientific and educational tool and by using it you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'
             )
         ).toBeVisible();
     });
@@ -49,7 +49,7 @@ describe('LegalNotice', () => {
                 (_, element) =>
                     element?.tagName.toLowerCase() === 'div' &&
                     element.textContent ===
-                        'Ai2 Playground is a free scientific research and educational tool. By using Ai2 Playground, you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply. Llama Tulu3 models were built with Llama subject to the Meta Llama 3.1 Community License Agreement.'
+                        'Ai2 Playground is a free scientific and educational tool and by using it you agree to Ai2’s Terms of use, Privacy policy, and Responsible use guidelines. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply. Llama Tulu3 models were built with Llama subject to the Meta Llama 3.1 Community License Agreement.'
             )
         ).toBeVisible();
     });
