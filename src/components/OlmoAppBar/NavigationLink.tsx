@@ -5,6 +5,8 @@ import {
     ListItemButtonProps,
     ListItemIcon,
     ListItemText,
+    SxProps,
+    Theme,
 } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
 
@@ -35,6 +37,7 @@ type NavigationLinkProps = PropsWithChildren & {
     inset?: boolean;
     dense?: boolean;
     linkProps?: Partial<ListItemButtonProps>;
+    textSx?: SxProps<Theme>;
 } & (
         | {
               href?: never;
@@ -53,6 +56,7 @@ export const NavigationLink = ({
     DisclosureIcon,
     inset,
     linkProps = {},
+    textSx,
 }: NavigationLinkProps) => {
     const isInternalLink = href != null && href.startsWith('/');
 
@@ -125,7 +129,7 @@ export const NavigationLink = ({
                     {icon}
                 </NavigationListItemIcon>
                 <ListItemText
-                    sx={{ margin: 0, marginInlineEnd: 'auto' }}
+                    sx={textSx || { margin: 0, marginInlineEnd: 'auto' }}
                     primaryTypographyProps={{
                         variant: 'body1',
                         fontWeight: 500,
