@@ -4,6 +4,7 @@ import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRe
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
+import { StyledTooltip } from '@/components/StyledTooltip';
 import { RemoteState } from '@/contexts/util';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
@@ -57,18 +58,24 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     }
 
     return (
-        <Label ref={labelRef} aria-label="Upload file">
-            <AddAPhotoOutlinedIcon />
-            <Input
-                {...props}
-                disabled={isSendingPrompt || isFileUploadDisabled}
-                accept={acceptedFileTypes}
-                multiple={acceptsMultiple}
-                type="file"
-                ref={ref}
-                data-testid="file-upload-btn"
-            />
-        </Label>
+        <StyledTooltip
+            title="This model only supports one image per thread. Start a new chat to submit a new file."
+            disableFocusListener
+            disableHoverListener={!isFileUploadDisabled}
+            disableTouchListener>
+            <Label ref={labelRef} aria-label="Upload file">
+                <AddAPhotoOutlinedIcon />
+                <Input
+                    {...props}
+                    disabled={isSendingPrompt || isFileUploadDisabled}
+                    accept={acceptedFileTypes}
+                    multiple={acceptsMultiple}
+                    type="file"
+                    ref={ref}
+                    data-testid="file-upload-btn"
+                />
+            </Label>
+        </StyledTooltip>
     );
 });
 
@@ -90,6 +97,9 @@ const Label = styled('label')(({ theme }) => ({
 
     ':has(input[type="file"]:disabled)': {
         color: theme.palette.action.disabled,
+        ':hover': {
+            cursor: 'default',
+        },
     },
 
     '@supports not (selector(:focus-visible) or selector(:has(*)))': {
