@@ -20,6 +20,7 @@ export const LegalNoticeTypography = ({ children }: PropsWithChildren) => {
             component="p"
             variant="caption"
             sx={{
+                textWrap: 'pretty',
                 fontSize: '0.7rem',
                 lineHeight: '1.33',
                 margin: '0',
