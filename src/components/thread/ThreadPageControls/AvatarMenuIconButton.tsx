@@ -22,7 +22,7 @@ export const AvatarMenuIconButton = () => {
                 },
             })}
             onClick={toggleMenu}>
-            <UserAvatar />
+            <UserAvatar useProfilePicture={true} />
             <AvatarMenu
                 anchorEl={anchorEl}
                 placement="left"

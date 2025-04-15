@@ -36,7 +36,7 @@ export const ChatMessage = ({
     });
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
-    const icon = variant === Role.User ? <UserAvatar useDefault={true} /> : <Ai2Avatar />;
+    const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     return (
         <Box

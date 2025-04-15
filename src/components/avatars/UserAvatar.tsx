@@ -6,13 +6,13 @@ import defaultUserAvatarURL from '../assets/user.svg';
 import { ChatAvatar } from './ChatAvatar';
 
 interface UserAvatarProps {
-    useDefault?: boolean;
+    useProfilePicture?: boolean;
 }
 
-export const UserAvatar = ({ useDefault = false }: UserAvatarProps) => {
+export const UserAvatar = ({ useProfilePicture = false }: UserAvatarProps) => {
     const { userAuthInfo, isAuthenticated } = useUserAuthInfo();
 
-    if (!useDefault && isAuthenticated && userAuthInfo?.picture) {
+    if (useProfilePicture && isAuthenticated && userAuthInfo?.picture) {
         return (
             <ChatAvatar
                 alt={userAuthInfo.email}
