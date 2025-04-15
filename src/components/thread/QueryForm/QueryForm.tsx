@@ -141,6 +141,24 @@ export const QueryForm = (): JSX.Element => {
                     });
                 }
 
+                if (e.description === 'inappropriate_prompt_text') {
+                    formContext.setError('content', {
+                        type: 'inappropriate',
+                        message:
+                            'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
+                    });
+                    analyticsClient.trackInappropriatePrompt('text');
+                }
+
+                if (e.description === 'inappropriate_prompt_file') {
+                    formContext.setError('content', {
+                        type: 'inappropriate',
+                        message:
+                            'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
+                    });
+                    analyticsClient.trackInappropriatePrompt('file');
+                }
+
                 if (e.description === 'inappropriate_prompt') {
                     formContext.setError('content', {
                         type: 'inappropriate',
