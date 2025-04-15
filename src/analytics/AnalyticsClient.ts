@@ -16,6 +16,8 @@ export enum EventType {
     ModelOverloadedError = 'model.overloaded.error',
     // ----- HEAP -----
     PromptErrorInappropriate = 'prompt.error.inappropriate',
+    PromptErrorInappropriateText = 'prompt.error.inappropriate.text',
+    PromptErrorInappropriateFile = 'prompt.error.inappropriate.file',
     QueryFormSubmit = 'queryform.submit',
     PromptOlmoTrace = 'prompt.corpuslink',
     CaptchaError = 'queryform.captcha-error',
@@ -159,11 +161,21 @@ export class AnalyticsClient {
         });
     }
 
-    trackInappropriatePrompt() {
-        window.heap?.track(EventType.PromptErrorInappropriate);
+    trackInappropriatePrompt(type?: string) {
+        const eventType = (() => {
+            if (type === 'text') {
+                return EventType.PromptErrorInappropriateText;
+            }
+            if (type === 'file') {
+                return EventType.PromptErrorInappropriateFile;
+            }
+
+            return EventType.PromptErrorInappropriate;
+        })();
+        window.heap?.track(eventType);
 
         return this.track({
-            type: EventType.PromptErrorInappropriate,
+            type: eventType,
             occurred: new Date(),
         });
     }
