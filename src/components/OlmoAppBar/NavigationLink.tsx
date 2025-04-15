@@ -129,7 +129,10 @@ export const NavigationLink = ({
                     {icon}
                 </NavigationListItemIcon>
                 <ListItemText
-                    sx={textSx || { margin: 0, marginInlineEnd: 'auto' }}
+                    sx={[
+                        { margin: 0, marginInlineEnd: 'auto' },
+                        ...(Array.isArray(textSx) ? textSx : [textSx]),
+                    ]}
                     primaryTypographyProps={{
                         variant: 'body1',
                         fontWeight: 500,
