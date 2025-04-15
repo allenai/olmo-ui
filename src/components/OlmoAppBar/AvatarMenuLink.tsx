@@ -71,7 +71,7 @@ export const AvatarMenuLink = () => {
                         '& svg': { fontSize: '1.25rem' },
                         marginLeft: '2px',
                     }}>
-                    <UserAvatar />
+                    <UserAvatar useProfilePicture={true} />
                 </NavigationListItemIcon>
                 <ListItemText
                     sx={{ margin: 0, marginInlineEnd: 'auto' }}

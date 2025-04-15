@@ -55,7 +55,7 @@ export const AvatarMenuMobile = ({ anchorEl, open, onClose, sx }: AvatarMenuMobi
                     gap: 1,
                 })}>
                 <Stack direction="row" gap={2} mb={2}>
-                    <UserAvatar />
+                    <UserAvatar useProfilePicture={true} />
                     <Typography
                         component="span"
                         variant="body1"
