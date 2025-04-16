@@ -71,7 +71,7 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
                 formContext.setError('content', {
                     type: 'recaptcha',
                     message:
-                        'We were unable to verify your captcha. Please reload the page and try again.',
+                        'We were unable to verify your request. Please reload the page and try again.',
                 });
                 break;
 
