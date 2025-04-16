@@ -1,4 +1,5 @@
 export const links = {
+    ai2: 'https://allenai.org/',
     home: '/',
     playground: '/',
     datasetExplorer: '/dolma',

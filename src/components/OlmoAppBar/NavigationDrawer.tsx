@@ -1,24 +1,21 @@
-import {
-    ArrowForwardIosOutlined,
-    ChatBubbleOutline,
-    StickyNote2Outlined,
-} from '@mui/icons-material';
+import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
-import LanguageIcon from '@mui/icons-material/Language';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SortIcon from '@mui/icons-material/Sort';
-import { alpha, IconButton, Link, ListItem, Stack, Typography } from '@mui/material';
+import { IconButton, Link, ListItem, Stack } from '@mui/material';
 import { ComponentProps } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useAppContext } from '@/AppContext';
+import Ai2Icon from '@/components/assets/ai2.svg?react';
 import DiscordIcon from '@/components/assets/discord.svg?react';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
+import { useDesktopOrUp } from '../dolma/shared';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { AvatarMenuLink } from './AvatarMenuLink';
@@ -51,6 +48,7 @@ export const NavigationDrawer = ({
     open,
     ...props
 }: NavigationDrawerProps): JSX.Element => {
+    const isDesktop = useDesktopOrUp();
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
@@ -118,51 +116,54 @@ export const NavigationDrawer = ({
                         component="ul"
                         padding="0"
                         marginBottom="0">
-                        <NavigationLink
-                            href={links.documentation}
-                            icon={<LanguageIcon />}
-                            selected={curriedDoesMatchPath(links.documentation)}
-                            DisclosureIcon={LaunchOutlinedIcon}>
-                            Documentation
-                        </NavigationLink>
-                        <NavigationLink
-                            href={links.contactUs}
-                            icon={<ChatBubbleOutline />}
-                            DisclosureIcon={LaunchOutlinedIcon}>
-                            Contact us
-                        </NavigationLink>
-                        <NavigationLink
-                            icon={<DiscordIcon />}
-                            href={links.discord}
-                            DisclosureIcon={LaunchOutlinedIcon}
-                            variant="footer">
-                            Discord
-                        </NavigationLink>
+                        {!isDesktop && (
+                            <NavigationLink
+                                icon={<Ai2Icon height={20} width={20} viewBox="0 0 72 72" />}
+                                href={links.ai2}
+                                DisclosureIcon={LaunchOutlinedIcon}
+                                textSx={(theme) => ({
+                                    color: theme.palette.primary.main,
+                                })}>
+                                allenai.org
+                            </NavigationLink>
+                        )}
+                        {!isDesktop && (
+                            <NavigationLink
+                                icon={<DiscordIcon />}
+                                href={links.discord}
+                                DisclosureIcon={LaunchOutlinedIcon}
+                                textSx={(theme) => ({
+                                    color: theme.palette.primary.main,
+                                })}>
+                                Discord
+                            </NavigationLink>
+                        )}
+
                         <LoginLink />
                         <AvatarMenuLink />
-                        <ListItem
-                            sx={(theme) => ({
-                                paddingInline: 4,
-                                color: theme.color['gray-50'].hex,
-                                paddingBlock: 2,
-                            })}>
-                            <Typography
-                                component="span"
-                                variant="subtitle2"
-                                fontWeight={400}
-                                sx={(theme) => ({
-                                    color: alpha(theme.color['off-white'].hex, 0.5),
-                                })}>
-                                Proudly built by{' '}
+                        {isDesktop && (
+                            <ListItem
+                                sx={{
+                                    paddingInline: 4,
+                                    paddingBlock: 2,
+                                    gap: 3,
+                                }}>
                                 <Link
-                                    href="https://allenai.org/"
+                                    href={links.ai2}
                                     target="_blank"
                                     rel="noreferer"
                                     fontWeight={600}>
-                                    Ai2
+                                    allenai.org
                                 </Link>
-                            </Typography>
-                        </ListItem>
+                                <Link
+                                    href={links.discord}
+                                    target="_blank"
+                                    rel="noreferer"
+                                    fontWeight={600}>
+                                    Discord
+                                </Link>
+                            </ListItem>
+                        )}
                     </Stack>
                 </Stack>
             </ResponsiveDrawer>
