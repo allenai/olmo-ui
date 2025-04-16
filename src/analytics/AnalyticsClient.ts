@@ -56,7 +56,7 @@ export interface AnalyticsEvent {
         | Record<string, unknown>;
 }
 
-const generatePlausibleEvent = (et: EventType, details?: any): AnalyticsEvent => {
+const generatePlausibleEvent = (et: EventType, details?: object): AnalyticsEvent => {
     return {
         type: et,
         occurred: new Date(),
@@ -71,7 +71,7 @@ export class AnalyticsClient {
      * Rather it enqueues the request for eventual, background delivery by the browser.
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
-    track(et: EventType, details?: any) {
+    track(et: EventType, details?: object) {
         window.heap?.track(et, details);
         plausibleTrackEvent(generatePlausibleEvent(et, details));
 
