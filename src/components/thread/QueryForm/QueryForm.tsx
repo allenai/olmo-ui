@@ -1,7 +1,13 @@
 import { Box, Stack, Typography } from '@mui/material';
 import React, { UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
+import {
+    Controller,
+    FormContainer,
+    SubmitHandler,
+    useForm,
+    type UseFormReturn,
+} from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -23,6 +29,67 @@ interface QueryFormValues {
     private: boolean;
     files?: FileList;
 }
+
+const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryFormValues>) => {
+    if (e instanceof StreamBadRequestError) {
+        if (e instanceof StreamValidationError) {
+            formContext.setError('content', {
+                type: 'validation',
+                message: e.description,
+            });
+        }
+
+        switch (e.description) {
+            case 'inappropriate_prompt_text':
+                formContext.setError('content', {
+                    type: 'inappropriate',
+                    message:
+                        'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
+                });
+                analyticsClient.trackInappropriatePrompt('text');
+                break;
+
+            case 'inappropriate_prompt_file':
+                formContext.setError('content', {
+                    type: 'inappropriate',
+                    message:
+                        'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
+                });
+                analyticsClient.trackInappropriatePrompt('file');
+                break;
+
+            case 'inappropriate_prompt':
+                formContext.setError('content', {
+                    type: 'inappropriate',
+                    message:
+                        'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
+                });
+                analyticsClient.trackInappropriatePrompt();
+                break;
+
+            case 'invalid_captcha':
+                formContext.setError('content', {
+                    type: 'recaptcha',
+                    message:
+                        'We were unable to verify your captcha. Please reload the page and try again.',
+                });
+                break;
+
+            case 'failed_captcha_assessment':
+                formContext.setError('content', {
+                    type: 'recaptcha',
+                    message:
+                        'You have reached your message limit. Please log in to continue sending messages.',
+                });
+                break;
+
+            default:
+                break;
+        }
+    } else {
+        throw e;
+    }
+};
 
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
@@ -133,43 +200,7 @@ export const QueryForm = (): JSX.Element => {
                 );
             }
         } catch (e) {
-            if (e instanceof StreamBadRequestError) {
-                if (e instanceof StreamValidationError) {
-                    formContext.setError('content', {
-                        type: 'validation',
-                        message: e.description,
-                    });
-                }
-
-                if (e.description === 'inappropriate_prompt_text') {
-                    formContext.setError('content', {
-                        type: 'inappropriate',
-                        message:
-                            'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
-                    });
-                    analyticsClient.trackInappropriatePrompt('text');
-                }
-
-                if (e.description === 'inappropriate_prompt_file') {
-                    formContext.setError('content', {
-                        type: 'inappropriate',
-                        message:
-                            'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
-                    });
-                    analyticsClient.trackInappropriatePrompt('file');
-                }
-
-                if (e.description === 'inappropriate_prompt') {
-                    formContext.setError('content', {
-                        type: 'inappropriate',
-                        message:
-                            'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
-                    });
-                    analyticsClient.trackInappropriatePrompt();
-                }
-            } else {
-                throw e;
-            }
+            handleFormSubmitException(e, formContext);
         }
     };
 
@@ -209,10 +240,6 @@ export const QueryForm = (): JSX.Element => {
         formContext.setValue('files', dataTransfer.files);
     };
 
-    const renderErrorMessage = (message?: string) => {
-        return <>{message}</>;
-    };
-
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -232,7 +259,10 @@ export const QueryForm = (): JSX.Element => {
                             <PromptInput
                                 name={name}
                                 onChange={onChange}
-                                errorMessage={error && renderErrorMessage(error.message)}
+                                errorMessage={
+                                    error?.message != null &&
+                                    error.message.length > 0 && <>{error.message}</>
+                                }
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}

@@ -29,7 +29,7 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
             return <>{children}</>;
         }
         return (
-            <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
+            <GoogleReCaptchaProvider reCaptchaKey={siteKey} useEnterprise>
                 <GlobalStyle />
                 {children}
             </GoogleReCaptchaProvider>
