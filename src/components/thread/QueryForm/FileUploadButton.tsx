@@ -60,6 +60,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
     return (
         <StyledTooltip
             title="This model only supports one image per thread. Start a new chat to submit a new file."
+            disableFocusListener
             disableHoverListener={!isFileUploadDisabled}
             disableTouchListener={!isFileUploadDisabled}>
             <Label ref={labelRef} aria-label="Upload file">
