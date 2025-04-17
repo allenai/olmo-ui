@@ -73,9 +73,10 @@ export class AnalyticsClient {
      */
     track(et: EventType, details?: object) {
         window.heap?.track(et, details);
-        plausibleTrackEvent(generatePlausibleEvent(et, details));
+        const event = generatePlausibleEvent(et, details);
+        plausibleTrackEvent(event);
 
-        const data = new Blob([JSON.stringify(et)], { type: 'application/json' });
+        const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
         return navigator.sendBeacon('/api/v1/event', data);
     }
 
