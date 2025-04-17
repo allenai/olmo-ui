@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
-import React, { UIEvent, useCallback, useEffect } from 'react';
+import React, { JSX, UIEvent, useCallback, useEffect } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
     Controller,
@@ -47,7 +47,7 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
                         'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
                 });
                 analyticsClient.trackInappropriatePrompt('text');
-                break;
+                return;
 
             case 'inappropriate_prompt_file':
                 formContext.setError('content', {
@@ -56,7 +56,7 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
                         'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
                 });
                 analyticsClient.trackInappropriatePrompt('file');
-                break;
+                return;
 
             case 'inappropriate_prompt':
                 formContext.setError('content', {
@@ -65,7 +65,7 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
                         'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
                 });
                 analyticsClient.trackInappropriatePrompt();
-                break;
+                return;
 
             case 'invalid_captcha':
                 formContext.setError('content', {
@@ -73,18 +73,18 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
                     message:
                         'We were unable to verify your request. Please reload the page and try again.',
                 });
-                break;
+                return;
 
             case 'failed_captcha_assessment':
                 formContext.setError('content', {
                     type: 'recaptcha',
                     message:
-                        'You have reached your message limit. Please log in to continue sending messages.',
+                        'Our systems have detected unusual traffic. Please log in to send new messages.',
                 });
-                break;
+                return;
 
             default:
-                break;
+                throw e;
         }
     } else {
         throw e;
@@ -259,10 +259,7 @@ export const QueryForm = (): JSX.Element => {
                             <PromptInput
                                 name={name}
                                 onChange={onChange}
-                                errorMessage={
-                                    error?.message != null &&
-                                    error.message.length > 0 && <>{error.message}</>
-                                }
+                                errorMessage={!!error?.message && <>{error.message}</>}
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
