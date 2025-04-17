@@ -56,6 +56,14 @@ export interface AnalyticsEvent {
         | Record<string, unknown>;
 }
 
+const generatePlausibleEvent = (et: EventType, details?: object): AnalyticsEvent => {
+    return {
+        type: et,
+        occurred: new Date(),
+        ...(details || {}),
+    };
+};
+
 export class AnalyticsClient {
     /**
      * Enqueues an event to be tracked and returns true upon it being enqueued.
@@ -63,35 +71,37 @@ export class AnalyticsClient {
      * Rather it enqueues the request for eventual, background delivery by the browser.
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
-    track(e: AnalyticsEvent): boolean {
-        plausibleTrackEvent(e);
+    track(et: EventType, details?: object) {
+        window.heap?.track(et, details);
+        const event = generatePlausibleEvent(et, details);
+        plausibleTrackEvent(event);
 
-        const data = new Blob([JSON.stringify(e)], { type: 'application/json' });
+        const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
         return navigator.sendBeacon('/api/v1/event', data);
     }
 
     trackSearchQuery(details: SearchQueryDetails): boolean {
-        return this.track({ type: EventType.SearchQuery, occurred: new Date(), details });
+        return this.track(EventType.SearchQuery, details);
     }
 
     trackSearchResultClick(details: SearchResultClickDetails): boolean {
-        return this.track({ type: EventType.SearchResultClick, occurred: new Date(), details });
+        return this.track(EventType.SearchResultClick, details);
     }
 
     trackDocumentView(details: DocumentEventDetails): boolean {
-        return this.track({ type: EventType.DocumentView, occurred: new Date(), details });
+        return this.track(EventType.DocumentView, details);
     }
 
     trackDocumentShare(details: DocumentEventDetails): boolean {
-        return this.track({ type: EventType.DocumentShare, occurred: new Date(), details });
+        return this.track(EventType.DocumentShare, details);
     }
 
     trackNewPrompt(): boolean {
-        return this.track({ type: EventType.NewPrompt, occurred: new Date() });
+        return this.track(EventType.NewPrompt);
     }
 
     trackFollowUpPrompt(details: PromptMessageDetails): boolean {
-        return this.track({ type: EventType.FollowUpPrompt, occurred: new Date(), details });
+        return this.track(EventType.FollowUpPrompt, details);
     }
 
     trackPageView(url: string): void {
@@ -99,65 +109,33 @@ export class AnalyticsClient {
     }
 
     trackParametersUpdate(details: { parameterUpdated: string }): boolean {
-        return this.track({
-            type: EventType.ParametersUpdate,
-            occurred: new Date(),
-            details,
-        });
+        return this.track(EventType.ParametersUpdate, details);
     }
 
     trackModelUpdate(details: { modelChosen: string }): boolean {
-        return this.track({
-            type: EventType.ModelUpdate,
-            occurred: new Date(),
-            details,
-        });
+        return this.track(EventType.ModelUpdate, details);
     }
 
     trackExternalNavigationLinkClick(details: { url: string }): boolean {
-        return this.track({
-            type: EventType.ExternalNavigationLinkClick,
-            occurred: new Date(),
-            details,
-        });
+        return this.track(EventType.ExternalNavigationLinkClick, details);
     }
 
     trackTermsLogOut(): boolean {
-        return this.track({
-            type: EventType.TermsLogOut,
-            occurred: new Date(),
-        });
+        return this.track(EventType.TermsLogOut);
     }
 
     trackColorModeChange(details: { colorMode: string }): boolean {
-        return this.track({
-            type: EventType.ColorModeChange,
-            occurred: new Date(),
-            details,
-        });
+        return this.track(EventType.ColorModeChange, details);
     }
 
     trackModelOverloadedError(modelId: string): boolean {
-        return this.track({
-            type: EventType.ModelOverloadedError,
-            occurred: new Date(),
-            details: { modelId },
-        });
+        return this.track(EventType.ModelOverloadedError, { modelId });
     }
 
     trackQueryFormSubmission(modelId: string, isNewThread: boolean) {
-        window.heap?.track(EventType.QueryFormSubmit, {
+        this.track(EventType.QueryFormSubmit, {
             model: modelId,
             isNewThread,
-        });
-
-        return this.track({
-            type: EventType.QueryFormSubmit,
-            occurred: new Date(),
-            details: {
-                model: modelId,
-                isNewThread,
-            },
         });
     }
 
@@ -172,40 +150,19 @@ export class AnalyticsClient {
 
             return EventType.PromptErrorInappropriate;
         })();
-        window.heap?.track(eventType);
 
-        return this.track({
-            type: eventType,
-            occurred: new Date(),
-        });
+        this.track(eventType);
     }
 
     trackPromptOlmoTrace(modelId: string, isEnabling: boolean) {
-        window.heap?.track(EventType.PromptOlmoTrace, {
+        this.track(EventType.PromptOlmoTrace, {
             model: modelId,
             isEnabling,
-        });
-
-        return this.track({
-            type: EventType.PromptOlmoTrace,
-            occurred: new Date(),
-            details: {
-                model: modelId,
-                isEnabling,
-            },
         });
     }
 
     trackCaptchaError(errorTypes: string[]) {
-        window.heap?.track(EventType.CaptchaError);
-
-        return this.track({
-            type: EventType.CaptchaError,
-            occurred: new Date(),
-            details: {
-                types: errorTypes,
-            },
-        });
+        this.track(EventType.CaptchaError, { types: errorTypes });
     }
 }
 
