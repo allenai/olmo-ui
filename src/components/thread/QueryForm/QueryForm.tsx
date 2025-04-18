@@ -41,6 +41,7 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
 
         switch (e.description) {
             case 'inappropriate_prompt_text':
+            case 'inappropriate_prompt': // fallthrough
                 formContext.setError('content', {
                     type: 'inappropriate',
                     message:
@@ -56,15 +57,6 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
                         'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
                 });
                 analyticsClient.trackInappropriatePrompt('file');
-                return;
-
-            case 'inappropriate_prompt':
-                formContext.setError('content', {
-                    type: 'inappropriate',
-                    message:
-                        'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
-                });
-                analyticsClient.trackInappropriatePrompt();
                 return;
 
             case 'invalid_captcha':
@@ -259,7 +251,7 @@ export const QueryForm = (): JSX.Element => {
                             <PromptInput
                                 name={name}
                                 onChange={onChange}
-                                errorMessage={!!error?.message && <>{error.message}</>}
+                                errorMessage={error?.message}
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}

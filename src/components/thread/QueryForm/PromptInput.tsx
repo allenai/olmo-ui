@@ -158,7 +158,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                     sx={{
                         [formHelperTextClasses.error]: {},
                     }}>
-                    {errorMessage}
+                    {!!errorMessage && errorMessage}
                 </FormHelperText>
             </FormControl>
         );
