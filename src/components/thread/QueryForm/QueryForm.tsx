@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { useGoogleReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { JSX, UIEvent, useCallback, useEffect } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
     Controller,
     FormContainer,

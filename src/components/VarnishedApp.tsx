@@ -1,6 +1,6 @@
 import { GlobalStyles, ThemeOptions } from '@mui/material';
+import { GoogleReCaptchaProvider } from '@wojtekmaj/react-recaptcha-v3';
 import { PropsWithChildren } from 'react';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
