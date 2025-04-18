@@ -1,95 +1,13 @@
 import { Link, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-export const deduceUsageFromSource = (source: string): string => {
-    switch (source) {
-        case 'dclm-hero-run-fasttext_for_HF':
-        case 'dclm':
-        case 'arxiv':
-        case 'algebraic-stack':
-        case 'open-web-math':
-        case 'pes2o':
-        case 'starcoder':
-        case 'wiki':
-            return 'Pre-training';
-        case 'dolmino':
-            return 'Mid-training';
-        case 'tulu-3-sft-olmo-2-mixture':
-        case 'tulu-3-sft-olmo-2-mixture-0225':
-            return 'Post-training (SFT)';
-        case 'olmoe-0125-1b-7b-preference-mix':
-        case 'olmo-2-1124-13b-preference-mix':
-        case 'olmo-2-0325-32b-preference-mix':
-            return 'Post-training (DPO)';
-        case 'RLVR-GSM':
-        case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
-            return 'Post-training (RLVR)';
-        default:
-            return '';
-    }
-};
+import { Document as AttributionDocument } from '@/api/AttributionClient';
 
-export const prettifySource = (source: string): ReactNode => {
-    let displayName = '';
-    let url = '';
-    let secondaryName = '';
-    switch (source) {
-        case 'dclm-hero-run-fasttext_for_HF':
-        case 'dclm':
-            displayName = 'olmo-mix-1124';
-            url = 'https://huggingface.co/datasets/allenai/olmo-mix-1124';
-            secondaryName = 'web corpus (DCLM)';
-            break;
-        case 'arxiv':
-        case 'algebraic-stack':
-        case 'open-web-math':
-        case 'pes2o':
-        case 'starcoder':
-        case 'wiki':
-            displayName = 'olmo-mix-1124';
-            url = 'https://huggingface.co/datasets/allenai/olmo-mix-1124';
-            secondaryName = source;
-            break;
-        case 'dolmino':
-            displayName = 'dolmino-mix-1124';
-            url = 'https://huggingface.co/datasets/allenai/dolmino-mix-1124';
-            break;
-        case 'tulu-3-sft-olmo-2-mixture':
-            displayName = 'tulu-3-sft-olmo-2-mixture';
-            url = 'https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture';
-            break;
-        case 'tulu-3-sft-olmo-2-mixture-0225':
-            displayName = 'tulu-3-sft-olmo-2-mixture-0225';
-            url = 'https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture-0225';
-            break;
-        case 'olmoe-0125-1b-7b-preference-mix':
-            displayName = 'olmoe-0125-1b-7b-preference-mix';
-            url = 'https://huggingface.co/datasets/allenai/olmoe-0125-1b-7b-preference-mix';
-            break;
-        case 'olmo-2-1124-13b-preference-mix':
-            displayName = 'olmo-2-1124-13b-preference-mix';
-            url = 'https://huggingface.co/datasets/allenai/olmo-2-1124-13b-preference-mix';
-            break;
-        case 'olmo-2-0325-32b-preference-mix':
-            displayName = 'olmo-2-0325-32b-preference-mix';
-            url = 'https://huggingface.co/datasets/allenai/olmo-2-0325-32b-preference-mix';
-            break;
-        case 'RLVR-GSM':
-            displayName = 'RLVR-GSM';
-            url = 'https://huggingface.co/datasets/allenai/RLVR-GSM';
-            break;
-        case 'RLVR-GSM-MATH-IF-Mixed-Constraints':
-            displayName = 'RLVR-GSM-MATH-IF-Mixed-Constraints';
-            url = 'https://huggingface.co/datasets/allenai/RLVR-GSM-MATH-IF-Mixed-Constraints';
-            break;
-        default:
-            return <></>;
-    }
-
+export const prettifySource = (document: AttributionDocument): ReactNode => {
     return (
         <>
             <Link
-                href={url}
+                href={document.source_url}
                 target="_blank"
                 fontWeight={600}
                 color="primary"
@@ -100,9 +18,9 @@ export const prettifySource = (source: string): ReactNode => {
                         textDecorationColor: 'currentColor',
                     },
                 }}>
-                {displayName}
+                {document.display_name}
             </Link>
-            {secondaryName !== '' && (
+            {document.secondary_name != null && (
                 <Typography
                     variant="body2"
                     component="span"
@@ -113,7 +31,7 @@ export const prettifySource = (source: string): ReactNode => {
                         },
                     })}>
                     {' > '}
-                    {secondaryName}
+                    {document.secondary_name}
                 </Typography>
             )}
         </>

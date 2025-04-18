@@ -13,6 +13,10 @@ export interface Document {
     index: string;
     url?: string;
     source: string;
+    usage: string;
+    display_name: string;
+    source_url: string;
+    secondary_name?: string;
     title?: string;
     relevance_score: number;
 }
