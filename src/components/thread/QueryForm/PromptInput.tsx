@@ -43,7 +43,7 @@ interface AutoSizedInputProps {
     onChange: ChangeEventHandler<HTMLTextAreaElement>;
     name: string;
     value: string;
-    errorMessage?: ReactNode;
+    errorMessage?: string;
     onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
     startAdornment?: ReactNode;
     endAdornment?: ReactNode;
@@ -158,7 +158,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                     sx={{
                         [formHelperTextClasses.error]: {},
                     }}>
-                    {errorMessage}
+                    {!!errorMessage && errorMessage}
                 </FormHelperText>
             </FormControl>
         );
