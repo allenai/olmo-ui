@@ -52,7 +52,7 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 
 export interface StreamMessageRequest {
     content: string;
-    captchaToken?: string;
+    captchaToken?: string | null;
     parent?: string;
     files?: FileList;
 }

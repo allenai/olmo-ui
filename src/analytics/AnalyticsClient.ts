@@ -21,6 +21,7 @@ export enum EventType {
     QueryFormSubmit = 'queryform.submit',
     PromptOlmoTrace = 'prompt.corpuslink',
     CaptchaError = 'queryform.captcha-error',
+    CaptchaNotLoaded = 'queryform.captcha-not-loaded',
 }
 
 export type SearchQueryDetails = {
@@ -163,6 +164,10 @@ export class AnalyticsClient {
 
     trackCaptchaError(errorTypes: string[]) {
         this.track(EventType.CaptchaError, { types: errorTypes });
+    }
+
+    trackCaptchaNotLoaded() {
+        this.track(EventType.CaptchaNotLoaded);
     }
 }
 
