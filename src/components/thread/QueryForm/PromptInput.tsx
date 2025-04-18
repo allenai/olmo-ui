@@ -43,7 +43,7 @@ interface AutoSizedInputProps {
     onChange: ChangeEventHandler<HTMLTextAreaElement>;
     name: string;
     value: string;
-    errorMessage?: ReactNode;
+    errorMessage?: string;
     onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
     startAdornment?: ReactNode;
     endAdornment?: ReactNode;
