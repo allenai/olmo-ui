@@ -21,7 +21,7 @@ interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
 
-const GoogleReCaptchaWrapper = ({ children }: PropsWithChildren) => {
+const ReCaptchaWrapper = ({ children }: PropsWithChildren) => {
     const siteKey = process.env.RECAPTCHA_SITE_KEY;
 
     if (process.env.IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
@@ -41,7 +41,7 @@ export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: Varnished
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
             <ColorModeProvider theme={theme}>
-                <GoogleReCaptchaWrapper>{children}</GoogleReCaptchaWrapper>
+                <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
             </ColorModeProvider>
         </FeatureToggleProvider>
     );
