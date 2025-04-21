@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { JSX, UIEvent, useCallback, useEffect } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
     Controller,
     FormContainer,
@@ -90,7 +90,7 @@ export const QueryForm = (): JSX.Element => {
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
 
-    const { executeRecaptcha } = useGoogleReCaptcha();
+    const { executeRecaptcha } = useReCaptcha();
 
     const formContext = useForm<QueryFormValues>({
         defaultValues: {
@@ -170,6 +170,10 @@ export const QueryForm = (): JSX.Element => {
             return;
         }
         const isReCaptchaEnabled = process.env.IS_RECAPTCHA_ENABLED;
+
+        if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
+            analyticsClient.trackCaptchaNotLoaded();
+        }
 
         // TODO: Make sure executeRecaptcha is present when we require recaptchas
         const token =
