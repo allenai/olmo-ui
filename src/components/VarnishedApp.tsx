@@ -1,6 +1,6 @@
 import { GlobalStyles, ThemeOptions } from '@mui/material';
+import { ReCaptchaProvider } from '@wojtekmaj/react-recaptcha-v3';
 import { PropsWithChildren } from 'react';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
@@ -21,26 +21,27 @@ interface VarnishedAppProps extends PropsWithChildren {
     theme?: ThemeOptions;
 }
 
-export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
+const ReCaptchaWrapper = ({ children }: PropsWithChildren) => {
     const siteKey = process.env.RECAPTCHA_SITE_KEY;
 
-    const GoogleReCaptchaWrapper = () => {
-        if (process.env.IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
-            return <>{children}</>;
-        }
-        return (
-            <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
-                <GlobalStyle />
-                {children}
-            </GoogleReCaptchaProvider>
-        );
-    };
+    if (process.env.IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
+        return <>{children}</>;
+    }
 
+    return (
+        <ReCaptchaProvider reCaptchaKey={siteKey} useEnterprise useRecaptchaNet>
+            <GlobalStyle />
+            {children}
+        </ReCaptchaProvider>
+    );
+};
+
+export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
     return (
         <FeatureToggleProvider>
             <ScrollToTopOnPageChange />
             <ColorModeProvider theme={theme}>
-                <GoogleReCaptchaWrapper />
+                <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
             </ColorModeProvider>
         </FeatureToggleProvider>
     );

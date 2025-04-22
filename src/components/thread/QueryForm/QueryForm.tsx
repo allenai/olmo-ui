@@ -1,7 +1,13 @@
 import { Box, Stack, Typography } from '@mui/material';
-import React, { UIEvent, useCallback, useEffect } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
+import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
+import React, { JSX, UIEvent, useCallback, useEffect } from 'react';
+import {
+    Controller,
+    FormContainer,
+    SubmitHandler,
+    useForm,
+    type UseFormReturn,
+} from 'react-hook-form-mui';
 import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -24,6 +30,59 @@ interface QueryFormValues {
     files?: FileList;
 }
 
+const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryFormValues>) => {
+    if (e instanceof StreamBadRequestError) {
+        if (e instanceof StreamValidationError) {
+            formContext.setError('content', {
+                type: 'validation',
+                message: e.description,
+            });
+        }
+
+        switch (e.description) {
+            case 'inappropriate_prompt_text':
+            case 'inappropriate_prompt': // fallthrough
+                formContext.setError('content', {
+                    type: 'inappropriate',
+                    message:
+                        'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
+                });
+                analyticsClient.trackInappropriatePrompt('text');
+                return;
+
+            case 'inappropriate_prompt_file':
+                formContext.setError('content', {
+                    type: 'inappropriate',
+                    message:
+                        'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
+                });
+                analyticsClient.trackInappropriatePrompt('file');
+                return;
+
+            case 'invalid_captcha':
+                formContext.setError('content', {
+                    type: 'recaptcha',
+                    message:
+                        'We were unable to verify your request. Please reload the page and try again.',
+                });
+                return;
+
+            case 'failed_captcha_assessment':
+                formContext.setError('content', {
+                    type: 'recaptcha',
+                    message:
+                        'Our systems have detected unusual traffic. Please log in to send new messages.',
+                });
+                return;
+
+            default:
+                throw e;
+        }
+    } else {
+        throw e;
+    }
+};
+
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
     const location = useLocation();
@@ -31,7 +90,7 @@ export const QueryForm = (): JSX.Element => {
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
 
-    const { executeRecaptcha } = useGoogleReCaptcha();
+    const { executeRecaptcha } = useReCaptcha();
 
     const formContext = useForm<QueryFormValues>({
         defaultValues: {
@@ -112,6 +171,10 @@ export const QueryForm = (): JSX.Element => {
         }
         const isReCaptchaEnabled = process.env.IS_RECAPTCHA_ENABLED;
 
+        if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
+            analyticsClient.trackCaptchaNotLoaded();
+        }
+
         // TODO: Make sure executeRecaptcha is present when we require recaptchas
         const token =
             isReCaptchaEnabled === 'true'
@@ -133,43 +196,7 @@ export const QueryForm = (): JSX.Element => {
                 );
             }
         } catch (e) {
-            if (e instanceof StreamBadRequestError) {
-                if (e instanceof StreamValidationError) {
-                    formContext.setError('content', {
-                        type: 'validation',
-                        message: e.description,
-                    });
-                }
-
-                if (e.description === 'inappropriate_prompt_text') {
-                    formContext.setError('content', {
-                        type: 'inappropriate',
-                        message:
-                            'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
-                    });
-                    analyticsClient.trackInappropriatePrompt('text');
-                }
-
-                if (e.description === 'inappropriate_prompt_file') {
-                    formContext.setError('content', {
-                        type: 'inappropriate',
-                        message:
-                            'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
-                    });
-                    analyticsClient.trackInappropriatePrompt('file');
-                }
-
-                if (e.description === 'inappropriate_prompt') {
-                    formContext.setError('content', {
-                        type: 'inappropriate',
-                        message:
-                            'This prompt was flagged as inappropriate. Please change your prompt and resubmit.',
-                    });
-                    analyticsClient.trackInappropriatePrompt();
-                }
-            } else {
-                throw e;
-            }
+            handleFormSubmitException(e, formContext);
         }
     };
 
@@ -209,10 +236,6 @@ export const QueryForm = (): JSX.Element => {
         formContext.setValue('files', dataTransfer.files);
     };
 
-    const renderErrorMessage = (message?: string) => {
-        return <>{message}</>;
-    };
-
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -232,7 +255,7 @@ export const QueryForm = (): JSX.Element => {
                             <PromptInput
                                 name={name}
                                 onChange={onChange}
-                                errorMessage={error && renderErrorMessage(error.message)}
+                                errorMessage={error?.message}
                                 value={value}
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
