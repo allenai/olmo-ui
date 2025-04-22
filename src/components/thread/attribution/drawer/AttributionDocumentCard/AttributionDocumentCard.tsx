@@ -2,7 +2,7 @@ import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/ma
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Document } from '@/api/AttributionClient';
+import { Document as AttributionDocument, Document } from '@/api/AttributionClient';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
@@ -10,13 +10,13 @@ import { StyledTooltip } from '@/components/StyledTooltip';
 import { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 import { AttributionDocumentModal } from './AttributionDocumentModal';
-import { deduceUsageFromSource, prettifySource } from './SourcePrettifier';
+import { PrettifySource } from './SourcePrettifier';
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
 interface AttributionDocumentCardBaseProps extends AttributionDocumentCardActionWrapperProps {
     snippets: ReactNode;
-    source: string;
+    document: AttributionDocument;
     actions?: ReactNode;
     isSelected?: boolean;
     relevanceBucket: AttributionBucket;
@@ -24,7 +24,7 @@ interface AttributionDocumentCardBaseProps extends AttributionDocumentCardAction
 
 const AttributionDocumentCardBase = ({
     snippets,
-    source,
+    document,
     actions,
     isSelected,
     relevanceBucket,
@@ -68,11 +68,11 @@ const AttributionDocumentCardBase = ({
             <CardContent component={Stack} direction="column" gap={1}>
                 <div>
                     <Typography variant="body2" fontWeight={600} component="span">
-                        {deduceUsageFromSource(source)} document from:
+                        {document.usage} document from:
                         <br />
                     </Typography>
                     <Typography variant="body2" component="span">
-                        {prettifySource(source)}
+                        <PrettifySource document={document} />
                     </Typography>
                 </div>
                 <Typography variant="body1" component="span">
@@ -131,7 +131,7 @@ export const AttributionDocumentCard = ({
     return (
         <AttributionDocumentCardBase
             snippets={<AttributionDocumentCardSnippets snippets={snippets} />}
-            source={document.source}
+            document={document}
             isSelected={isDocumentSelected}
             relevanceBucket={relevanceBucket}
             actions={

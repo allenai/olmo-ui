@@ -40,6 +40,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 1'],
                                 corresponding_spans: [0],
                                 source: 'made up',
+                                usage: 'Pre-training',
+                                display_name: 'Made-up source',
+                                source_url: 'http://made_up',
                                 relevance_score: 1.5,
                                 url: undefined,
                                 snippets: [
@@ -53,6 +56,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 2'],
                                 corresponding_spans: [1],
                                 source: 'made up',
+                                usage: 'Pre-training',
+                                display_name: 'Made-up source',
+                                source_url: 'http://made_up',
                                 relevance_score: 1.2,
                                 url: undefined,
                                 snippets: [
@@ -66,6 +72,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 3'],
                                 corresponding_spans: [2],
                                 source: 'made up',
+                                usage: 'Pre-training',
+                                display_name: 'Made-up source',
+                                source_url: 'http://made_up',
                                 relevance_score: 1,
                                 url: undefined,
                                 snippets: [
@@ -79,6 +88,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 4'],
                                 corresponding_spans: [3],
                                 source: 'made up',
+                                usage: 'Pre-training',
+                                display_name: 'Made-up source',
+                                source_url: 'http://made_up',
                                 relevance_score: 0.9,
                                 url: undefined,
                                 snippets: [
@@ -92,6 +104,9 @@ describe('AttributionDrawerDocumentList', () => {
                                 corresponding_span_texts: ['span 5'],
                                 corresponding_spans: [4],
                                 source: 'made up',
+                                usage: 'Pre-training',
+                                display_name: 'Made-up source',
+                                source_url: 'http://made_up',
                                 relevance_score: 0.7,
                                 url: undefined,
                                 snippets: [
