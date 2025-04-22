@@ -3,7 +3,11 @@ import { ReactNode } from 'react';
 
 import { Document as AttributionDocument } from '@/api/AttributionClient';
 
-export const prettifySource = (document: AttributionDocument): ReactNode => {
+interface PrettySourceProps {
+    document: AttributionDocument;
+}
+
+export const PrettifySource = ({ document }: PrettySourceProps): ReactNode => {
     return (
         <>
             <Link

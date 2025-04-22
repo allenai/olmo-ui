@@ -10,7 +10,7 @@ import { StyledTooltip } from '@/components/StyledTooltip';
 import { AttributionBucket } from '../../calculate-relevance-score';
 import { AttributionDocumentCardSnippets } from './AttributionDocumentCardSnippets';
 import { AttributionDocumentModal } from './AttributionDocumentModal';
-import { prettifySource } from './SourcePrettifier';
+import { PrettifySource } from './SourcePrettifier';
 
 interface AttributionDocumentCardActionWrapperProps extends PropsWithChildren {}
 
@@ -72,7 +72,7 @@ const AttributionDocumentCardBase = ({
                         <br />
                     </Typography>
                     <Typography variant="body2" component="span">
-                        {prettifySource(document)}
+                        <PrettifySource document={document} />
                     </Typography>
                 </div>
                 <Typography variant="body1" component="span">

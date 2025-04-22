@@ -10,7 +10,7 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 
 import { BoldTextForDocumentAttribution } from './BoldTextForDocumentAttribution';
-import { prettifySource } from './SourcePrettifier';
+import { PrettifySource } from './SourcePrettifier';
 
 interface AttributionDocumentModalProps {
     document: Document;
@@ -38,7 +38,7 @@ export const AttributionDocumentModal = ({
                         {document.usage} document from:&nbsp;
                     </Typography>
                     <Typography variant="h4" component="span">
-                        {prettifySource(document)}
+                        <PrettifySource document={document} />
                     </Typography>
                 </Box>
                 {!!document.url && (
