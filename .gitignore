@@ -24,3 +24,4 @@ e2e/.auth/
 
 .gcloudignore
 .cache
+*storybook.log
