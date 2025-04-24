@@ -7,7 +7,7 @@ import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 import {
     attributionErrorSelector,
-    hasSelectedSpansSelector,
+    hasSelectedAttributionSelector,
     messageAttributionsSelector,
     messageLengthSelector,
 } from '@/slices/attribution/attribution-selectors';
@@ -30,7 +30,9 @@ interface MatchingDocumentsTextProps {
 const MatchingDocumentsText = ({
     documentCount,
 }: MatchingDocumentsTextProps): JSX.Element | null => {
-    const hasSelectedSpan = useAppContext(hasSelectedSpansSelector);
+    const hasSelectedSpan = useAppContext((context) =>
+        hasSelectedAttributionSelector(context, 'span')
+    );
 
     if (!hasSelectedSpan) {
         return null;
