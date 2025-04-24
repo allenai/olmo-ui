@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { createBrowserRouter, Navigate, Outlet, RouteObject, redirect } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import {
     loginAction,
@@ -11,6 +11,7 @@ import {
 import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
+import { ModelConfiguration } from './components/model-configuration/ModelConfiguration';
 import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
@@ -30,8 +31,6 @@ import {
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-import { ModelConfiguration } from './components/model-configuration/ModelConfiguration';
-import { appContext } from './AppContext';
 
 const DolmaPage = (): JSX.Element => {
     return (
@@ -92,14 +91,14 @@ export const routes: RouteObject[] = [
                             {
                                 path: links.admin,
                                 loader: () => {
-                                    // put this in here as a reminder that we only wants to let user do this if 
+                                    // put this in here as a reminder that we only wants to let user do this if
                                     // they have the right permission
                                     // const { userInfo } = appContext.getState();
                                     // if (!userInfo?.isAdmin) {
                                     //      throw new Response('Unauthorized', { status: 401 });
                                     // }
                                     return redirect(links.modelConfiguration); // redirect to model configuration route until we figure out what to do with admin route.
-                                }
+                                },
                             },
                             {
                                 path: links.playground + '/thread',
