@@ -28,7 +28,6 @@ export const links = {
         index == null ? `/document/${documentId}` : `/${index}/document/${documentId}`,
     search: '/search',
     promptTemplates: '/prompt-templates',
-    admin: '/admin',
     olmoeMixAnnouncement:
         'https://blog.allenai.org/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514',
     olmoeMixDownload: 'https://huggingface.co/datasets/allenai/OLMoE-mix-0924',
