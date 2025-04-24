@@ -9,3 +9,4 @@ skiff.json
 /playwright/.cache/
 /api
 public/mockServiceWorker.js
+/vitest.workspace.ts

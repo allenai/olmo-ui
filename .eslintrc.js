@@ -1,5 +1,5 @@
 module.exports = {
-    extends: ['@allenai/eslint-config-varnish'],
+    extends: ['@allenai/eslint-config-varnish', 'plugin:storybook/recommended'],
     plugins: ['simple-import-sort', 'eslint-plugin-react-compiler', 'react-refresh'],
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
