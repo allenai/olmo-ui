@@ -25,8 +25,7 @@ jobs:
           node-version: lts/*
           cache: "yarn"
       - run: yarn install --frozen-lockfile
-      - run: yarn playwright install
-      - run: yarn test
+      - run: yarn test:base
 
   build:
     timeout-minutes: 10

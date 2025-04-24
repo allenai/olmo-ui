@@ -5,6 +5,7 @@ import { configDefaults, defineConfig } from 'vitest/config';
 export default defineConfig(({mode}) => ({
     plugins: [tsconfigPaths()],
     test: {
+        name: "base",
         globals: true,
         environment: 'jsdom',
         setupFiles: ['./vitest-setup.ts'],

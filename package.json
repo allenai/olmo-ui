@@ -13,6 +13,7 @@
     "start": "webpack serve --mode development --env development",
     "storybook": "storybook dev -p 6006",
     "test": "vitest run",
+    "test:base": "vitest --project=base",
     "test:coverage": "test --coverage",
     "test:e2e": "playwright test",
     "test:storybook": "vitest --project=storybook",
