@@ -28,6 +28,8 @@ jobs:
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
         run: yarn test:e2e
+      - name: Run Storybook tests
+        run: yarn test-storybook
         env:
           NODE_ENV: test
           E2E_TEST_USER: ${{ vars.E2E_TEST_USER }}
