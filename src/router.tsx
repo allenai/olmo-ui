@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouteObject, redirect } from 'react-router-dom';
 
 import {
     loginAction,
@@ -30,6 +30,8 @@ import {
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
+import { ModelConfiguration } from './components/model-configuration/ModelConfiguration';
+import { appContext } from './AppContext';
 
 const DolmaPage = (): JSX.Element => {
     return (
@@ -88,6 +90,18 @@ export const routes: RouteObject[] = [
                                 handle: { pageControls: <ThreadPageControls /> },
                             },
                             {
+                                path: links.admin,
+                                loader: () => {
+                                    // put this in here as a reminder that we only wants to let user do this if 
+                                    // they have the right permission
+                                    // const { userInfo } = appContext.getState();
+                                    // if (!userInfo?.isAdmin) {
+                                    //     throw redirect(links.playground)
+                                    // }
+                                    return redirect(links.modelConfiguration); // redirect to model configuration route until we figure out what to do with admin route.
+                                }
+                            },
+                            {
                                 path: links.playground + '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
                                 // We just redirect to the playground to make sure people going to /thread get what they want
@@ -102,6 +116,11 @@ export const routes: RouteObject[] = [
                         ],
                         loader: playgroundLoader,
                         shouldRevalidate: handleRevalidation,
+                    },
+                    {
+                        path: links.modelConfiguration,
+                        element: <ModelConfiguration />,
+                        handle: { pageControls: <ThreadPageControls /> },
                     },
                     {
                         element: <DolmaPage />,
