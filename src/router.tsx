@@ -96,7 +96,7 @@ export const routes: RouteObject[] = [
                                     // they have the right permission
                                     // const { userInfo } = appContext.getState();
                                     // if (!userInfo?.isAdmin) {
-                                    //     throw redirect(links.playground)
+                                    //      throw new Response('Unauthorized', { status: 401 });
                                     // }
                                     return redirect(links.modelConfiguration); // redirect to model configuration route until we figure out what to do with admin route.
                                 }
