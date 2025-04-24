@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:coverage": "test --coverage",
     "test:e2e": "playwright test",
+    "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
     "storybook": "storybook dev -p 6006",
