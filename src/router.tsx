@@ -88,18 +88,7 @@ export const routes: RouteObject[] = [
                                 element: <ThreadPlaceholder />,
                                 handle: { pageControls: <ThreadPageControls /> },
                             },
-                            {
-                                path: links.admin,
-                                loader: () => {
-                                    // put this in here as a reminder that we only wants to let user do this if
-                                    // they have the right permission
-                                    // const { userInfo } = appContext.getState();
-                                    // if (!userInfo?.isAdmin) {
-                                    //      throw new Response('Unauthorized', { status: 401 });
-                                    // }
-                                    return redirect(links.modelConfiguration); // redirect to model configuration route until we figure out what to do with admin route.
-                                },
-                            },
+
                             {
                                 path: links.playground + '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
@@ -115,11 +104,6 @@ export const routes: RouteObject[] = [
                         ],
                         loader: playgroundLoader,
                         shouldRevalidate: handleRevalidation,
-                    },
-                    {
-                        path: links.modelConfiguration,
-                        element: <ModelConfiguration />,
-                        handle: { pageControls: <ThreadPageControls /> },
                     },
                     {
                         element: <DolmaPage />,
@@ -183,6 +167,22 @@ export const routes: RouteObject[] = [
                         },
                         element: <NewApp />,
                         children: [],
+                    },
+                ],
+            },
+            {
+                path: links.admin,
+                loader: async ({ request }) => {
+                    const url = new URL(request.url);
+                    if (url.pathname === links.admin) {
+                        return redirect(links.modelConfiguration);
+                    }
+                    return null;
+                },
+                children: [
+                    {
+                        path: links.modelConfiguration,
+                        element: <ModelConfiguration />,
                     },
                 ],
             },
