@@ -6,7 +6,7 @@
   "author": "reviz@allenai.org",
   "scripts": {
     "add-git-hooks": "husky",
-    "build": "webpack --mode production --env production",
+    "build": "panda codegen && webpack --mode production --env production",
     "build-storybook": "storybook build",
     "lint": "eslint '**/*.{js,ts,tsx,json}'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json",
@@ -19,7 +19,8 @@
     "test:e2e": "playwright test",
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
-    "vitest-preview": "vitest-preview"
+    "vitest-preview": "vitest-preview",
+    "watch:css": "panda --watch -o public/styles.css"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
@@ -77,6 +78,7 @@
     "remark-directive-rehype": "^0.4.2",
     "storybook": "^8.6.12",
     "styled-components": "^5.3.5",
+    "varnish-panda-runtime": "link:./varnish-panda-runtime",
     "webpack-retry-chunk-load-plugin": "^3.1.1",
     "zustand": "^4.5.2"
   },

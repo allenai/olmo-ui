@@ -27,4 +27,4 @@ e2e/.auth/
 *storybook.log
 
 # Pandacss
-/styled-system/
+varnish-panda-runtime/dist/
