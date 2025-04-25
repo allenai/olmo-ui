@@ -121,7 +121,9 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
 
 export const logoutAction: ActionFunction = async () => {
     await auth0Client.logout();
-    window.heap?.resetIdentity();
+    if (window.heap?.resetIdentity != null) {
+        window.heap.resetIdentity();
+    }
 
     return null;
 };
