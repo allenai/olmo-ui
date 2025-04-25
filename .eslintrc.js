@@ -1,6 +1,6 @@
 module.exports = {
     extends: ['@allenai/eslint-config-varnish', 'plugin:storybook/recommended'],
-    plugins: ['simple-import-sort', 'eslint-plugin-react-compiler', 'react-refresh'],
+    plugins: ['simple-import-sort', 'eslint-plugin-react-compiler', 'react-refresh', '@pandacss'],
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
         'simple-import-sort/imports': 'error',
@@ -54,6 +54,7 @@ module.exports = {
                         ignoreRestSiblings: true,
                     },
                 ],
+                '@pandacss/no-debug': 'error',
             },
         },
         {
