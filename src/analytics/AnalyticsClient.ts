@@ -84,7 +84,7 @@ export class AnalyticsClient {
             const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
             return navigator.sendBeacon('/api/v1/event', data);
         } catch (e: unknown) {
-            console.error(e);
+            console.error('Something went wrong when sending analytics', e);
             return false;
         }
     }
