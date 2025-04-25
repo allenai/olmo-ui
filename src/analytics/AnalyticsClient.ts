@@ -73,7 +73,10 @@ export class AnalyticsClient {
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
     track(et: EventType, details?: object) {
-        window.heap?.track(et, details);
+        if (window.heap?.track != null) {
+            window.heap.track(et, details);
+        }
+
         const event = generatePlausibleEvent(et, details);
         plausibleTrackEvent(event);
 
