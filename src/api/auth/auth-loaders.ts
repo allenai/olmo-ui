@@ -121,7 +121,13 @@ export const loginLoader: LoaderFunction = async ({ request }) => {
 
 export const logoutAction: ActionFunction = async () => {
     await auth0Client.logout();
-    window.heap?.resetIdentity();
+    try {
+        if (window.heap?.resetIdentity != null) {
+            window.heap.resetIdentity();
+        }
+    } catch (e: unknown) {
+        console.error('Something went wrong when calling Heap', e);
+    }
 
     return null;
 };

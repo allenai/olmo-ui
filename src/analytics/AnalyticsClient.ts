@@ -72,13 +72,21 @@ export class AnalyticsClient {
      * Rather it enqueues the request for eventual, background delivery by the browser.
      * See https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
      */
-    track(et: EventType, details?: object) {
-        window.heap?.track(et, details);
-        const event = generatePlausibleEvent(et, details);
-        plausibleTrackEvent(event);
+    track(et: EventType, details?: object): boolean {
+        try {
+            if (window.heap?.track != null) {
+                window.heap.track(et, details);
+            }
 
-        const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
-        return navigator.sendBeacon('/api/v1/event', data);
+            const event = generatePlausibleEvent(et, details);
+            plausibleTrackEvent(event);
+
+            const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
+            return navigator.sendBeacon('/api/v1/event', data);
+        } catch (e: unknown) {
+            console.error('Something went wrong when sending analytics', e);
+            return false;
+        }
     }
 
     trackSearchQuery(details: SearchQueryDetails): boolean {

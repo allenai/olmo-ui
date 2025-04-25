@@ -43,13 +43,17 @@ export const Analytics = (): ReactNode => {
     useEffect(() => {
         const sendIdentity = () => {
             if (userInfo && userAuthInfo?.sub && window.heap) {
-                window.heap.identify(userAuthInfo.sub);
-                window.heap.addUserProperties({
-                    email: userAuthInfo.email,
-                    email_verified: userAuthInfo.email_verified,
-                    name: userAuthInfo.name,
-                    has_accepted_terms: userInfo.hasAcceptedTermsAndConditions,
-                });
+                try {
+                    window.heap.identify(userAuthInfo.sub);
+                    window.heap.addUserProperties({
+                        email: userAuthInfo.email,
+                        email_verified: userAuthInfo.email_verified,
+                        name: userAuthInfo.name,
+                        has_accepted_terms: userInfo.hasAcceptedTermsAndConditions,
+                    });
+                } catch (e: unknown) {
+                    console.error('Something went wrong when calling Heap', e);
+                }
             } else {
                 setTimeout(sendIdentity, 1000);
             }
