@@ -53,7 +53,6 @@
     "@storybook/react-vite": "^8.6.12",
     "@types/jest": "^29.5.12",
     "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
-    "autoprefixer": "^10.4.21",
     "dayjs": "^1.8.30",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.0.6",
