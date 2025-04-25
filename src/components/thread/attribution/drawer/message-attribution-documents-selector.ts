@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { Document as AttributionDocument } from '@/api/AttributionClient';
 import { type AppContextState, useAppContext } from '@/AppContext';
 import {
-    hasSelectedSpansSelector,
+    hasSelectedAttributionSelector,
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 import { SpansSelection } from '@/slices/attribution/AttributionSlice';
@@ -12,7 +12,7 @@ export const messageAttributionDocumentsSelector = (
     state: AppContextState
 ): AttributionDocument[] => {
     const attributions = messageAttributionsSelector(state);
-    const hasSelectedSpan = hasSelectedSpansSelector(state);
+    const hasSelectedSpan = hasSelectedAttributionSelector(state, 'span');
 
     if (hasSelectedSpan) {
         // TODO: See if there's a better way to handle the typing here. We know we're in a "spans" selection mode because of hasSelectedSpan

@@ -4,7 +4,7 @@ import { PropsWithChildren, useEffect } from 'react';
 import { AppContextState, useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import {
-    hasAttributionSelectionSelector,
+    hasSelectedAttributionSelector,
     messageAttributionsSelector,
 } from '@/slices/attribution/attribution-selectors';
 
@@ -63,7 +63,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
     };
 
     const shouldShowHighlight = useAppContext((state) => {
-        const hasSelection = hasAttributionSelectionSelector(state);
+        const hasSelection = hasSelectedAttributionSelector(state);
         // If there aren't any selected spans we want to show all highlights
         if (!hasSelection) {
             return true;

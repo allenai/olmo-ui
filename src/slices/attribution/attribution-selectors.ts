@@ -2,22 +2,22 @@ import type { AppContextState } from '@/AppContext';
 
 import { MessageWithAttributionDocuments } from './AttributionSlice';
 
-export const messageAttributionsSelector = (
-    state: AppContextState
-): MessageWithAttributionDocuments | undefined => {
-    if (state.attribution.selectedMessageId != null) {
-        return state.attribution.attributionsByMessageId[state.attribution.selectedMessageId];
+export const hasSelectedAttributionSelector = (
+    state: AppContextState,
+    type?: 'document' | 'span'
+): boolean => {
+    const selection = state.attribution.selection;
+    if (type === 'span' && selection?.type === 'span' && selection.selectedSpanIds.length > 0)
+        return true;
+
+    if (type === 'document' && selection?.type === 'document') return true;
+
+    if (type === undefined) {
+        return selection != null;
     }
 
-    return undefined;
+    return false;
 };
-
-export const hasSelectedSpansSelector = (state: AppContextState): boolean =>
-    state.attribution.selection?.type === 'span' &&
-    state.attribution.selection.selectedSpanIds.length > 0;
-
-export const hasAttributionSelectionSelector = (state: AppContextState): boolean =>
-    state.attribution.selection != null;
 
 export const attributionErrorSelector = (state: AppContextState) => {
     const { selectedMessageId, attributionsByMessageId } = state.attribution;
@@ -26,6 +26,16 @@ export const attributionErrorSelector = (state: AppContextState) => {
 
         return selectedMessageAttribution?.attributionRequestError;
     }
+};
+
+export const messageAttributionsSelector = (
+    state: AppContextState
+): MessageWithAttributionDocuments | undefined => {
+    if (state.attribution.selectedMessageId != null) {
+        return state.attribution.attributionsByMessageId[state.attribution.selectedMessageId];
+    }
+
+    return undefined;
 };
 
 export const messageLengthSelector = (state: AppContextState): number => {
