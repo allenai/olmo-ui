@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { jwtDecode } from "jwt-decode";
 import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import {
@@ -8,7 +9,6 @@ import {
     logoutAction,
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
-import { auth0Client } from './api/auth/auth0Client';
 import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
@@ -25,13 +25,14 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { ModelConfiguration } from './pages/ModelConfiguration';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
+import { ModelConfiguration } from './pages/ModelConfiguration';
+import { auth0Client } from './api/auth/auth0Client';
 
 const DolmaPage = (): JSX.Element => {
     return (
@@ -172,16 +173,27 @@ export const routes: RouteObject[] = [
                     {
                         path: links.admin,
                         loader: async ({ request }) => {
-                            const isAuthenticated = await auth0Client.getToken();
+                            const token = await auth0Client.getToken();
                             const userInfo = await auth0Client.getUserInfo();
-                            if (!isAuthenticated && !userInfo) {
-                                return redirect(links.login());
+                          
+                            if (!token || !userInfo) {
+                              return redirect(links.login());
                             }
+                          
+                            try {
+                              const decodedToken = jwtDecode(token);
+                              const url = new URL(request.url);
 
-                            const url = new URL(request.url);
-                            if (url.pathname === links.admin) {
+                              console.log(decodedToken);
+                          
+                              if (url.pathname === links.admin && decodedToken.permissions?.includes('write:model-config')) {
                                 return redirect(links.modelConfiguration);
+                              }
+                            } catch (error) {
+                              console.error('Failed to decode token:', error);
+                              return redirect(links.login());
                             }
+                          
                             return null;
                         },
                         children: [
