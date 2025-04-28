@@ -4,14 +4,14 @@
   "private": true,
   "license": "UNLICENSED",
   "author": "reviz@allenai.org",
-  "scripts": {
+ "scripts": {
     "add-git-hooks": "husky",
     "build": "panda && webpack --mode production --env production",
     "build-storybook": "storybook build",
     "lint": "eslint '**/*.{js,ts,tsx,json}'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json",
     "prepare": "panda",
-    "start": "yarn watch:css -w & webpack serve --mode development --env development",
+    "start": "yarn watch:css & webpack serve --mode development --env development",
     "storybook": "storybook dev -p 6006",
     "test": "vitest run",
     "test:base": "vitest --project=base",
@@ -20,7 +20,7 @@
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "watch:css": "panda --watch -o public/styles.css"
+    "watch:css": "panda --watch"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
