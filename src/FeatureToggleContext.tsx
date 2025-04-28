@@ -16,6 +16,7 @@ export enum FeatureToggle {
     isDatasetExplorerEnabled = 'isDatasetExplorerEnabled',
     isPeteishModelEnabled = 'isPeteishModelEnabled',
     isMultiModalEnabled = 'isMultiModalEnabled',
+    isModelConfigEnabled = 'isModelConfigEnabled',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
@@ -28,6 +29,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isDatasetExplorerEnabled]: false,
     [FeatureToggle.isPeteishModelEnabled]: false,
     [FeatureToggle.isMultiModalEnabled]: false,
+    [FeatureToggle.isModelConfigEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -86,6 +88,7 @@ function createToggles(initialToggles = defaultFeatureToggles) {
         bucketColors: process.env.BUCKET_COLORS,
         isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
         isMultiModalEnabled: process.env.IS_MULTI_MODAL_ENABLED,
+        isModelConfigEnabled: process.env.IS_MODEL_CONFIG_ENABLED,
     });
 
     const toggles = {

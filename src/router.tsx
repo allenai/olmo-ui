@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import { jwtDecode } from "jwt-decode";
 import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import {
@@ -9,6 +8,7 @@ import {
     logoutAction,
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
+import { auth0Client } from './api/auth/auth0Client';
 import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
@@ -25,14 +25,13 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
+import { ModelConfiguration } from './pages/ModelConfiguration';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-import { ModelConfiguration } from './pages/ModelConfiguration';
-import { auth0Client } from './api/auth/auth0Client';
 
 const DolmaPage = (): JSX.Element => {
     return (
@@ -173,28 +172,26 @@ export const routes: RouteObject[] = [
                     {
                         path: links.admin,
                         loader: async ({ request }) => {
-                            const token = await auth0Client.getToken();
+                            const isAuthenticated = await auth0Client.getToken();
                             const userInfo = await auth0Client.getUserInfo();
-                          
-                            if (!token || !userInfo) {
-                              return redirect(links.login());
-                            }
-                          
-                            try {
-                              const decodedToken = jwtDecode(token);
-                              const url = new URL(request.url);
 
-                              console.log(decodedToken);
-                          
-                              if (url.pathname === links.admin && decodedToken.permissions?.includes('write:model-config')) {
-                                return redirect(links.modelConfiguration);
-                              }
-                            } catch (error) {
-                              console.error('Failed to decode token:', error);
-                              return redirect(links.login());
+                            if (!isAuthenticated || !userInfo) {
+                                return redirect(links.login());
                             }
-                          
-                            return null;
+
+                            const url = new URL(request.url);
+
+                            const isModelConfigEnabled = process.env.IS_MODEL_CONFIG_ENABLED;
+
+                            // Note: Github(#338) we need to check for user permission
+                            // before we allow the redirection to the page.
+                            // since we dont have any page for the admin page and if the
+                            // flag is not enabled we need to redirect to the home page.
+                            if (url.pathname === links.admin && isModelConfigEnabled) {
+                                return redirect(links.modelConfiguration);
+                            } else {
+                                return redirect(links.playground);
+                            }
                         },
                         children: [
                             {
