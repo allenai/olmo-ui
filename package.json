@@ -53,6 +53,7 @@
     "@nivo/treemap": "^0.84.0",
     "@pandacss/dev": "^0.53.4",
     "@storybook/react-vite": "^8.6.12",
+    "@tanstack/react-query": "^5.74.7",
     "@types/jest": "^29.5.12",
     "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
     "dayjs": "^1.8.30",
