@@ -1,17 +1,11 @@
-import { Button } from '@allenai/varnish-ui';
 import { Box, Typography } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 
-import { css } from '../../../styled-system/css';
 import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
-
-const buttonStyles = css({
-    backgroundColor: '[orange]',
-});
 
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
@@ -35,9 +29,6 @@ export const ThreadPlaceholder = () => {
             <ThreadMaxWidthContainer gridTemplateRows="auto 1fr auto" sx={{ height: '100%' }}>
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
-                    <Button color="primary" variant="contained" className={buttonStyles}>
-                        Asdasd
-                    </Button>
                 </Box>
                 <Box
                     display="flex"

@@ -15,11 +15,24 @@
     "paths": {
       "@test-utils": ["src/utils/test-utils"],
       "@playwright-utils": ["e2e/playwright-utils"],
-      "@/*": ["src/*"],
       "@/styled-system/*": ["styled-system/*"],
+      "@/*": ["src/*"]
     },
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*", "@types", "./vitest-setup.ts", "index.d.ts", "__mocks__", "webpack.config.js", "vitest.config.mts", ".eslintrc.js", "e2e", "playwright.config.ts", "panda.config.ts", "styled-system"],
+  "include": [
+    "src/**/*",
+    "@types",
+    "./vitest-setup.ts",
+    "index.d.ts",
+    "__mocks__",
+    "webpack.config.js",
+    "vitest.config.mts",
+    ".eslintrc.js",
+    "e2e",
+    "playwright.config.ts",
+    "panda.config.ts",
+    "styled-system"
+  ],
   "exclude": ["node_modules", "dist"]
 }
