@@ -8,6 +8,7 @@ import {
     logoutAction,
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
+import { auth0Client } from './api/auth/auth0Client';
 import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
@@ -24,14 +25,13 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
+import { ModelConfiguration } from './pages/ModelConfiguration';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-import { ModelConfiguration } from './pages/ModelConfiguration';
-import { auth0Client } from './api/auth/auth0Client';
 
 const DolmaPage = (): JSX.Element => {
     return (
@@ -175,9 +175,9 @@ export const routes: RouteObject[] = [
                             const isAuthenticated = await auth0Client.getToken();
                             const userInfo = await auth0Client.getUserInfo();
                             if (!isAuthenticated && !userInfo) {
-                               return redirect(links.login());
+                                return redirect(links.login());
                             }
-                          
+
                             const url = new URL(request.url);
                             if (url.pathname === links.admin) {
                                 return redirect(links.modelConfiguration);
