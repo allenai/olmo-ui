@@ -13,7 +13,7 @@ export default defineConfig({
     exclude: [],
     strictTokens: true,
     jsxFramework: 'react',
-    outdir: './varnish-panda-runtime/dist',
+    outdir: 'styled-system',
     theme: {
         extend: {},
     },
