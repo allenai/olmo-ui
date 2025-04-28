@@ -10,3 +10,5 @@ skiff.json
 /api
 public/mockServiceWorker.js
 /vitest.workspace.ts
+/styled-system
+/public
