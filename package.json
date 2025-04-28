@@ -20,7 +20,8 @@
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "watch:css": "panda --watch"
+    "watch:css": "panda --watch",
+    "generate-olmo-api-client": "openapi-typescript http://localhost:8000/openapi.json - ./src/api/olmo-api/v1.d.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
@@ -62,6 +63,8 @@
     "immer": "^10.0.4",
     "marked": "^5.1.2",
     "marked-highlight": "^2.0.1",
+    "openapi-fetch": "^0.13.5",
+    "openapi-react-query": "^0.3.1",
     "plausible-tracker": "^0.3.8",
     "react": "^18.3.1",
     "react-aria-components": "^1.8.0",
@@ -144,6 +147,7 @@
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
     "msw": "^2.2.13",
+    "openapi-typescript": "^7.6.1",
     "playwright": "^1.52.0",
     "playwright-msw": "^3.0.1",
     "prettier": "^3.2.5",

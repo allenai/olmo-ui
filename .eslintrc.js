@@ -75,5 +75,11 @@ module.exports = {
                 ],
             },
         },
+        {
+            files: ['src/api/olmo-api/*.d.ts'],
+            rules: {
+                'no-use-before-define': 'off',
+            },
+        },
     ],
 };
