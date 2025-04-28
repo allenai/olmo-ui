@@ -24,10 +24,8 @@ e2e/.auth/
 
 .gcloudignore
 .cache
-<<<<<<< HEAD
 *storybook.log
-=======
 
+# Pandacss
 styled-system
-varnish-panda-runtime
->>>>>>> befc82d (Add check for permission)
+public
