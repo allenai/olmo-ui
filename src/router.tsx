@@ -11,7 +11,6 @@ import {
 import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
-import { ModelConfiguration } from './components/model-configuration/ModelConfiguration';
 import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
@@ -31,6 +30,8 @@ import {
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
+import { ModelConfiguration } from './pages/ModelConfiguration';
+import { auth0Client } from './api/auth/auth0Client';
 
 const DolmaPage = (): JSX.Element => {
     return (
@@ -168,21 +169,27 @@ export const routes: RouteObject[] = [
                         element: <NewApp />,
                         children: [],
                     },
-                ],
-            },
-            {
-                path: links.admin,
-                loader: async ({ request }) => {
-                    const url = new URL(request.url);
-                    if (url.pathname === links.admin) {
-                        return redirect(links.modelConfiguration);
-                    }
-                    return null;
-                },
-                children: [
                     {
-                        path: links.modelConfiguration,
-                        element: <ModelConfiguration />,
+                        path: links.admin,
+                        loader: async ({ request }) => {
+                            const isAuthenticated = await auth0Client.getToken();
+                            const userInfo = await auth0Client.getUserInfo();
+                            if (!isAuthenticated && !userInfo) {
+                               return redirect(links.login());
+                            }
+                          
+                            const url = new URL(request.url);
+                            if (url.pathname === links.admin) {
+                                return redirect(links.modelConfiguration);
+                            }
+                            return null;
+                        },
+                        children: [
+                            {
+                                path: links.modelConfiguration,
+                                element: <ModelConfiguration />,
+                            },
+                        ],
                     },
                 ],
             },
