@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import {
@@ -27,8 +28,8 @@ import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
 import { ModelConfiguration } from './pages/ModelConfiguration';
-import { TestQueryFetch } from './pages/model_config/QueryTest';
-import { queryTestLoader } from './pages/model_config/queryTestLoader';
+import { QueryTestPage } from './pages/model_config/QueryTest';
+import { queryTestCreateAction, queryTestLoader } from './pages/model_config/queryTestLoader';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -36,7 +37,7 @@ import {
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
 
-const DolmaPage = (): JSX.Element => {
+const DolmaPage = (): ReactNode => {
     return (
         <Box
             sx={{
@@ -68,6 +69,12 @@ export const routes: RouteObject[] = [
             </AppWrapper>
         ),
         children: [
+            {
+                path: '/test',
+                Component: QueryTestPage,
+                loader: queryTestLoader(queryClient),
+                action: queryTestCreateAction(queryClient),
+            },
             {
                 path: links.login(),
                 action: loginAction,

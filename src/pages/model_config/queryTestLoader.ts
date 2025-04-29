@@ -1,13 +1,14 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { ActionFunction, LoaderFunction } from 'react-router-dom';
 
-import { $olmoApiQueryClient, olmoApiClient } from '@/api/olmo-api/olmo-api-client';
+import { $olmoApiQueryClient, olmoApiClient } from '@/api/olmo-api/olmoApiClient';
 import type { SchemaModelHost, SchemaModelType, SchemaPromptType } from '@/api/olmo-api/v1';
 
 export const queryTestLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async () => {
         await queryClient.ensureQueryData($olmoApiQueryClient.queryOptions('get', '/v4/models/'));
+        return null;
     };
 
 export const queryTestCreateAction =
@@ -30,4 +31,6 @@ export const queryTestCreateAction =
             queryKey: $olmoApiQueryClient.queryOptions('get', '/v4/models/').queryKey,
             exact: true,
         });
+
+        return null;
     };
