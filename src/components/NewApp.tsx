@@ -1,6 +1,6 @@
 import '../osano.css';
 import '@allenai/varnish-theme/tokens.css';
-import '@allenai/varnish-ui/styles.global.css';
+import '@/styled-system/styles.css';
 
 import { Outlet } from 'react-router-dom';
 

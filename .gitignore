@@ -25,3 +25,7 @@ e2e/.auth/
 .gcloudignore
 .cache
 *storybook.log
+
+# Pandacss
+styled-system
+public
