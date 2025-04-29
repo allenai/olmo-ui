@@ -76,7 +76,7 @@ module.exports = {
             },
         },
         {
-            files: ['src/api/olmo-api/*.d.ts'],
+            files: ['src/api/playgroundApi/*.d.ts'],
             rules: {
                 'no-use-before-define': 'off',
             },

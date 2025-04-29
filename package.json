@@ -21,7 +21,7 @@
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
     "watch:css": "panda --watch",
-    "generate-olmo-api-client": "openapi-typescript --default-non-nullable=false --empty-objects-unknown=true --immutable=true --root-types=true -t http://localhost:8000/openapi.json -o ./src/api/olmo-api/v1.d.ts"
+    "generate-playground-api-client": "openapi-typescript --default-non-nullable=false --empty-objects-unknown=true --immutable=true --root-types=true -t http://localhost:8000/openapi.json -o ./src/api/playgroundApi/playgroundApiSchema.d.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",

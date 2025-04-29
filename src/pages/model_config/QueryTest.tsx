@@ -4,32 +4,34 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
-import { $olmoApiQueryClient } from '@/api/olmo-api/olmoApiClient';
-import type { SchemaCreateModelConfigRequest } from '@/api/olmo-api/v1';
+import { $playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
+import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
 export const ModelsList = (): ReactNode => {
-    const { data: models } = $olmoApiQueryClient.useSuspenseQuery('get', '/v4/models/');
+    const { data: models } = $playgroundApiQueryClient.useSuspenseQuery('get', '/v4/models/');
 
     return (
         <div>
-            {models.map((model) => (
-                <div key={model.id}>
-                    <div>{model.id}</div>
-                    <div>{model.host}</div>
-                    <div>{model.internal}</div>
-                </div>
-            ))}
+            {(models as unknown as { id: string; host: string; internal: boolean }[]).map(
+                (model) => (
+                    <div key={model.id}>
+                        <div>{model.id}</div>
+                        <div>{model.host}</div>
+                        <div>{model.internal}</div>
+                    </div>
+                )
+            )}
         </div>
     );
 };
 
 // Taken from https://github.com/orgs/react-hook-form/discussions/9910#discussioncomment-9627947
 export const QueryTestForm = (): ReactNode => {
-    const { register, handleSubmit } = useForm<SchemaCreateModelConfigRequest>();
+    const { register, handleSubmit } = useForm<SchemaRootCreateModelConfigRequest>();
     const submit = useSubmit();
 
-    const onSubmit = (data: SchemaCreateModelConfigRequest) => {
-        const fullData: SchemaCreateModelConfigRequest = {
+    const onSubmit = (data: SchemaRootCreateModelConfigRequest) => {
+        const fullData: SchemaRootCreateModelConfigRequest = {
             ...data,
             host: 'modal',
             description: 'description',

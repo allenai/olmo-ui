@@ -1,13 +1,18 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { ActionFunction, LoaderFunction } from 'react-router-dom';
 
-import { $olmoApiQueryClient, olmoApiClient } from '@/api/olmo-api/olmoApiClient';
-import type { SchemaModelHost, SchemaModelType, SchemaPromptType } from '@/api/olmo-api/v1';
+import {
+    $playgroundApiQueryClient,
+    playgroundApiClient,
+} from '@/api/playgroundApi/playgroundApiClient';
+import type { SchemaModelHost, SchemaModelType, SchemaPromptType } from '@/api/playgroundApi/v1';
 
 export const queryTestLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async () => {
-        await queryClient.ensureQueryData($olmoApiQueryClient.queryOptions('get', '/v4/models/'));
+        await queryClient.ensureQueryData(
+            $playgroundApiQueryClient.queryOptions('get', '/v4/models/')
+        );
         return null;
     };
 
@@ -16,7 +21,7 @@ export const queryTestCreateAction =
     async ({ request }) => {
         const formData = await request.formData();
 
-        await olmoApiClient.POST('/v4/models/', {
+        await playgroundApiClient.POST('/v4/models/', {
             body: {
                 id: formData.get('id') as string,
                 name: formData.get('name') as string,
@@ -28,7 +33,7 @@ export const queryTestCreateAction =
             },
         });
         await queryClient.invalidateQueries({
-            queryKey: $olmoApiQueryClient.queryOptions('get', '/v4/models/').queryKey,
+            queryKey: $playgroundApiQueryClient.queryOptions('get', '/v4/models/').queryKey,
             exact: true,
         });
 

@@ -182,9 +182,7 @@ export type paths = {
                     headers: {
                         readonly [name: string]: unknown;
                     };
-                    content: {
-                        readonly 'application/json': readonly components['schemas']['ResponseModel'][];
-                    };
+                    content?: never;
                 };
             };
         };
@@ -220,10 +218,10 @@ export type paths = {
                 readonly path?: never;
                 readonly cookie?: never;
             };
-            /** @description A CreateModelConfigRequest */
+            /** @description A RootCreateModelConfigRequest */
             readonly requestBody: {
                 readonly content: {
-                    readonly 'application/json': components['schemas']['CreateModelConfigRequest'];
+                    readonly 'application/json': components['schemas']['RootCreateModelConfigRequest'];
                 };
             };
             readonly responses: {
@@ -262,12 +260,10 @@ export type paths = {
                 };
                 readonly cookie?: never;
             };
-            /** @description A UpdateTextOnlyModelConfigRequest or UpdateMultiModalModelConfigRequest */
+            /** @description A RootUpdateModelConfigRequest */
             readonly requestBody: {
                 readonly content: {
-                    readonly 'application/json':
-                        | components['schemas']['UpdateTextOnlyModelConfigRequest']
-                        | components['schemas']['UpdateMultiModalModelConfigRequest'];
+                    readonly 'application/json': components['schemas']['RootUpdateModelConfigRequest'];
                 };
             };
             readonly responses: {
@@ -411,8 +407,77 @@ export type components = {
              */
             readonly topP?: number;
         };
-        /** CreateModelConfigRequest */
-        readonly CreateModelConfigRequest: {
+        /** CreateMultiModalModelConfigRequest */
+        readonly CreateMultiModalModelConfigRequest: {
+            /** Acceptedfiletypes */
+            readonly acceptedFileTypes: readonly string[];
+            /**
+             * Allowfilesinfollowups
+             * @default null
+             */
+            readonly allowFilesInFollowups?: boolean | null;
+            /**
+             * Availabletime
+             * @default null
+             */
+            readonly availableTime?: string | null;
+            /**
+             * Defaultsystemprompt
+             * @default null
+             */
+            readonly defaultSystemPrompt?: string | null;
+            /**
+             * Deprecationtime
+             * @default null
+             */
+            readonly deprecationTime?: string | null;
+            /** Description */
+            readonly description: string;
+            /**
+             * Familyid
+             * @default null
+             */
+            readonly familyId?: string | null;
+            /**
+             * Familyname
+             * @default null
+             */
+            readonly familyName?: string | null;
+            readonly host: components['schemas']['ModelHost'];
+            /** Id */
+            readonly id: string;
+            /**
+             * Internal
+             * @default true
+             */
+            readonly internal?: boolean;
+            /**
+             * Maxfilespermessage
+             * @default null
+             */
+            readonly maxFilesPerMessage?: number | null;
+            /**
+             * Maxtotalfilesize
+             * @default null
+             */
+            readonly maxTotalFileSize?: number | null;
+            /** Modelidonhost */
+            readonly modelIdOnHost: string;
+            readonly modelType: components['schemas']['ModelType'];
+            /** Name */
+            readonly name: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            readonly promptType: 'multi_modal';
+            /** @default null */
+            readonly requireFileToPrompt?:
+                | components['schemas']['FileRequiredToPromptOption']
+                | null;
+        };
+        /** CreateTextOnlyModelConfigRequest */
+        readonly CreateTextOnlyModelConfigRequest: {
             /**
              * Availabletime
              * @default null
@@ -453,7 +518,11 @@ export type components = {
             readonly modelType: components['schemas']['ModelType'];
             /** Name */
             readonly name: string;
-            readonly promptType: components['schemas']['PromptType'];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            readonly promptType: 'text_only';
         };
         /**
          * FileRequiredToPromptOption
@@ -529,18 +598,109 @@ export type components = {
          * @enum {string}
          */
         readonly ModelType: 'base' | 'chat';
-        /**
-         * PromptType
-         * @enum {string}
-         */
-        readonly PromptType: 'text_only' | 'multi_modal';
+        /** MultiModalResponseModel */
+        readonly MultiModalResponseModel: {
+            /** Acceptedfiletypes */
+            readonly acceptedFileTypes: readonly string[];
+            /**
+             * Allowfilesinfollowups
+             * @default null
+             */
+            readonly allowFilesInFollowups?: boolean | null;
+            /**
+             * Availabletime
+             * @default null
+             */
+            readonly availableTime?: string | null;
+            /**
+             * Createdtime
+             * Format: date-time
+             */
+            readonly createdTime: string;
+            /**
+             * Defaultsystemprompt
+             * @default null
+             */
+            readonly defaultSystemPrompt?: string | null;
+            /**
+             * Deprecationtime
+             * @default null
+             */
+            readonly deprecationTime?: string | null;
+            /** Description */
+            readonly description: string;
+            /**
+             * Familyid
+             * @default null
+             */
+            readonly familyId?: string | null;
+            /**
+             * Familyname
+             * @default null
+             */
+            readonly familyName?: string | null;
+            /** Host */
+            readonly host: string;
+            /** Id */
+            readonly id: string;
+            /** Internal */
+            readonly internal: boolean;
+            /**
+             * Maxfilespermessage
+             * @default null
+             */
+            readonly maxFilesPerMessage?: number | null;
+            /**
+             * Maxtotalfilesize
+             * @default null
+             */
+            readonly maxTotalFileSize?: number | null;
+            /** Modelidonhost */
+            readonly modelIdOnHost: string;
+            readonly modelType: components['schemas']['ModelType'];
+            /** Name */
+            readonly name: string;
+            /** Order */
+            readonly order: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            readonly promptType: 'multi_modal';
+            /** @default null */
+            readonly requireFileToPrompt?:
+                | components['schemas']['FileRequiredToPromptOption']
+                | null;
+            /**
+             * Updatedtime
+             * Format: date-time
+             */
+            readonly updatedTime: string;
+        };
         /** ReorderModelConfigRequest */
         readonly ReorderModelConfigRequest: {
             /** Orderedmodels */
             readonly orderedModels: readonly components['schemas']['ModelOrder'][];
         };
         /** ResponseModel */
-        readonly ResponseModel: {
+        readonly ResponseModel:
+            | components['schemas']['TextOnlyResponseModel']
+            | components['schemas']['MultiModalResponseModel'];
+        /**
+         * Role
+         * @enum {string}
+         */
+        readonly Role: 'user' | 'assistant' | 'system';
+        /** RootCreateModelConfigRequest */
+        readonly RootCreateModelConfigRequest:
+            | components['schemas']['CreateTextOnlyModelConfigRequest']
+            | components['schemas']['CreateMultiModalModelConfigRequest'];
+        /** RootUpdateModelConfigRequest */
+        readonly RootUpdateModelConfigRequest:
+            | components['schemas']['UpdateTextOnlyModelConfigRequest']
+            | components['schemas']['UpdateMultiModalModelConfigRequest'];
+        /** TextOnlyResponseModel */
+        readonly TextOnlyResponseModel: {
             /**
              * Availabletime
              * @default null
@@ -586,18 +746,17 @@ export type components = {
             readonly name: string;
             /** Order */
             readonly order: number;
-            readonly promptType: components['schemas']['PromptType'];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            readonly promptType: 'text_only';
             /**
              * Updatedtime
              * Format: date-time
              */
             readonly updatedTime: string;
         };
-        /**
-         * Role
-         * @enum {string}
-         */
-        readonly Role: 'user' | 'assistant' | 'system';
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
             /** Acceptedfiletypes */
@@ -656,8 +815,8 @@ export type components = {
             /** Name */
             readonly name: string;
             /**
-             * Prompttype
-             * @constant
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
              */
             readonly promptType: 'multi_modal';
             /** @default null */
@@ -706,8 +865,8 @@ export type components = {
             /** Name */
             readonly name: string;
             /**
-             * Prompttype
-             * @constant
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
              */
             readonly promptType: 'text_only';
         };
@@ -720,17 +879,25 @@ export type components = {
 };
 export type SchemaCreateMessageRequestV3 = components['schemas']['CreateMessageRequestV3'];
 export type SchemaCreateMessageRequestV4 = components['schemas']['CreateMessageRequestV4'];
-export type SchemaCreateModelConfigRequest = components['schemas']['CreateModelConfigRequest'];
+export type SchemaCreateMultiModalModelConfigRequest =
+    components['schemas']['CreateMultiModalModelConfigRequest'];
+export type SchemaCreateTextOnlyModelConfigRequest =
+    components['schemas']['CreateTextOnlyModelConfigRequest'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
 export type SchemaInferenceOpts = components['schemas']['InferenceOpts'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
 export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelType = components['schemas']['ModelType'];
-export type SchemaPromptType = components['schemas']['PromptType'];
+export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
 export type SchemaRole = components['schemas']['Role'];
+export type SchemaRootCreateModelConfigRequest =
+    components['schemas']['RootCreateModelConfigRequest'];
+export type SchemaRootUpdateModelConfigRequest =
+    components['schemas']['RootUpdateModelConfigRequest'];
+export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
