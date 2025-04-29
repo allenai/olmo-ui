@@ -3,711 +3,713 @@
  * Do not make direct changes to the file.
  */
 
-export interface paths {
-    '/v3/attribution': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+export type paths = {
+    readonly '/v3/attribution': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
         };
-        get?: never;
-        put?: never;
+        readonly get?: never;
+        readonly put?: never;
         /** Get CorpusLink spans and documents from a prompt */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
             /** @description A GetAttributionRequest */
-            requestBody: {
-                content: {
-                    'application/json': components['schemas']['GetAttributionRequest'];
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['GetAttributionRequest'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content?: never;
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
     };
-    '/v3/message/': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    readonly '/v3/message/': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
         };
-        get?: never;
-        put?: never;
+        readonly get?: never;
+        readonly put?: never;
         /** Stream a prompt response */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
             /** @description A CreateMessageRequestV3 */
-            requestBody: {
-                content: {
-                    'application/json': components['schemas']['CreateMessageRequestV3'];
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['CreateMessageRequestV3'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content?: never;
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
     };
-    '/v3/message/stream': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    readonly '/v3/message/stream': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
         };
-        get?: never;
-        put?: never;
+        readonly get?: never;
+        readonly put?: never;
         /** Stream a prompt response */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
             /** @description A CreateMessageRequestV3 */
-            requestBody: {
-                content: {
-                    'application/json': components['schemas']['CreateMessageRequestV3'];
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['CreateMessageRequestV3'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content?: never;
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
     };
-    '/v4/message/stream': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    readonly '/v4/message/stream': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
         };
-        get?: never;
-        put?: never;
+        readonly get?: never;
+        readonly put?: never;
         /** Stream a prompt response */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
             /** @description A CreateMessageRequestV4 */
-            requestBody: {
-                content: {
-                    'application/json': components['schemas']['CreateMessageRequestV4'];
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['CreateMessageRequestV4'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content?: never;
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
     };
-    '/v4/models/': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    readonly '/v4/models/': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
         };
         /** Get available models and their configuration */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly get: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
-            requestBody?: never;
-            responses: {
+            readonly requestBody?: never;
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content: {
-                        'application/json': components['schemas']['ResponseModel'][];
+                        readonly 'application/json': readonly components['schemas']['ResponseModel'][];
                     };
                 };
             };
         };
         /** Reorder models */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly put: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
             /** @description A ReorderModelConfigRequest */
-            requestBody: {
-                content: {
-                    'application/json': components['schemas']['ReorderModelConfigRequest'];
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['ReorderModelConfigRequest'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content?: never;
                 };
             };
         };
         /** Add a new model */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
             };
             /** @description A CreateModelConfigRequest */
-            requestBody: {
-                content: {
-                    'application/json': components['schemas']['CreateModelConfigRequest'];
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['CreateModelConfigRequest'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description A ResponseModel */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content: {
-                        'application/json': components['schemas']['ResponseModel'];
+                        readonly 'application/json': components['schemas']['ResponseModel'];
                     };
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
     };
-    '/v4/models/{model_id}': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    readonly '/v4/models/{model_id}': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
         };
-        get?: never;
+        readonly get?: never;
         /** Update a model */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    model_id: string;
+        readonly put: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path: {
+                    readonly model_id: string;
                 };
-                cookie?: never;
+                readonly cookie?: never;
             };
             /** @description A UpdateTextOnlyModelConfigRequest or UpdateMultiModalModelConfigRequest */
-            requestBody: {
-                content: {
-                    'application/json':
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json':
                         | components['schemas']['UpdateTextOnlyModelConfigRequest']
                         | components['schemas']['UpdateMultiModalModelConfigRequest'];
                 };
             };
-            responses: {
+            readonly responses: {
                 /** @description A ResponseModel */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content: {
-                        'application/json': components['schemas']['ResponseModel'];
+                        readonly 'application/json': components['schemas']['ResponseModel'];
                     };
                 };
             };
         };
-        post?: never;
+        readonly post?: never;
         /** Delete a model */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    model_id: string;
+        readonly delete: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path: {
+                    readonly model_id: string;
                 };
-                cookie?: never;
+                readonly cookie?: never;
             };
-            requestBody?: never;
-            responses: {
+            readonly requestBody?: never;
+            readonly responses: {
                 /** @description Empty Response */
-                200: {
+                readonly 200: {
                     headers: {
-                        [name: string]: unknown;
+                        readonly [name: string]: unknown;
                     };
                     content?: never;
                 };
             };
         };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
     };
-}
+};
 export type webhooks = Record<string, never>;
-export interface components {
+export type components = {
     schemas: {
         /** CreateMessageRequestV3 */
-        CreateMessageRequestV3: {
+        readonly CreateMessageRequestV3: {
             /**
              * Captchatoken
              * @default null
              */
-            captchaToken: string | null;
+            readonly captchaToken?: string | null;
             /** Content */
-            content: string;
+            readonly content: string;
             /** Host */
-            host: string;
+            readonly host: string;
             /** Model */
-            model: string;
-            opts?: components['schemas']['InferenceOpts'];
+            readonly model: string;
+            readonly opts?: components['schemas']['InferenceOpts'];
             /**
              * Original
              * @default null
              */
-            original: string | null;
+            readonly original?: string | null;
             /**
              * Parent
              * @default null
              */
-            parent: string | null;
+            readonly parent?: string | null;
             /**
              * Private
              * @default false
              */
-            private: boolean;
+            readonly private?: boolean;
             /** @default user */
-            role: components['schemas']['Role'] | null;
+            readonly role?: components['schemas']['Role'] | null;
             /**
              * Template
              * @default null
              */
-            template: string | null;
+            readonly template?: string | null;
         };
         /** CreateMessageRequestV4 */
-        CreateMessageRequestV4: {
+        readonly CreateMessageRequestV4: {
             /**
              * Captchatoken
              * @default null
              */
-            captchaToken: string | null;
+            readonly captchaToken?: string | null;
             /** Content */
-            content: string;
+            readonly content: string;
             /** Host */
-            host: string;
+            readonly host: string;
             /**
              * Logprobs
              * @default null
              */
-            logprobs: number | null;
+            readonly logprobs?: number | null;
             /**
              * Maxtokens
              * @default 2048
              */
-            maxTokens: number;
+            readonly maxTokens?: number;
             /** Model */
-            model: string;
+            readonly model: string;
             /**
              * N
              * @default 1
              */
-            n: number;
+            readonly n?: number;
             /**
              * Original
              * @default null
              */
-            original: string | null;
+            readonly original?: string | null;
             /**
              * Parent
              * @default null
              */
-            parent: string | null;
+            readonly parent?: string | null;
             /**
              * Private
              * @default false
              */
-            private: boolean;
+            readonly private?: boolean;
             /** @default user */
-            role: components['schemas']['Role'] | null;
+            readonly role?: components['schemas']['Role'] | null;
             /**
              * Temperature
              * @default 0.7
              */
-            temperature: number;
+            readonly temperature?: number;
             /**
              * Template
              * @default null
              */
-            template: string | null;
+            readonly template?: string | null;
             /**
              * Topp
              * @default 1
              */
-            topP: number;
+            readonly topP?: number;
         };
         /** CreateModelConfigRequest */
-        CreateModelConfigRequest: {
+        readonly CreateModelConfigRequest: {
             /**
              * Availabletime
              * @default null
              */
-            availableTime: string | null;
+            readonly availableTime?: string | null;
             /**
              * Defaultsystemprompt
              * @default null
              */
-            defaultSystemPrompt: string | null;
+            readonly defaultSystemPrompt?: string | null;
             /**
              * Deprecationtime
              * @default null
              */
-            deprecationTime: string | null;
+            readonly deprecationTime?: string | null;
             /** Description */
-            description: string;
+            readonly description: string;
             /**
              * Familyid
              * @default null
              */
-            familyId: string | null;
+            readonly familyId?: string | null;
             /**
              * Familyname
              * @default null
              */
-            familyName: string | null;
-            host: components['schemas']['ModelHost'];
+            readonly familyName?: string | null;
+            readonly host: components['schemas']['ModelHost'];
             /** Id */
-            id: string;
+            readonly id: string;
             /**
              * Internal
              * @default true
              */
-            internal: boolean;
+            readonly internal?: boolean;
             /** Modelidonhost */
-            modelIdOnHost: string;
-            modelType: components['schemas']['ModelType'];
+            readonly modelIdOnHost: string;
+            readonly modelType: components['schemas']['ModelType'];
             /** Name */
-            name: string;
-            promptType: components['schemas']['PromptType'];
+            readonly name: string;
+            readonly promptType: components['schemas']['PromptType'];
         };
         /**
          * FileRequiredToPromptOption
          * @enum {string}
          */
-        FileRequiredToPromptOption: 'first_message' | 'all_messages' | 'no_requirement';
+        readonly FileRequiredToPromptOption: 'first_message' | 'all_messages' | 'no_requirement';
         /** GetAttributionRequest */
-        GetAttributionRequest: {
+        readonly GetAttributionRequest: {
             /**
              * Maxdisplaycontextlength
              * @default 250
              */
-            maxDisplayContextLength: number;
+            readonly maxDisplayContextLength?: number;
             /**
              * Maxdocuments
              * @default 10
              */
-            maxDocuments: number;
+            readonly maxDocuments?: number;
             /** Modelid */
-            modelId: string;
+            readonly modelId: string;
             /** Modelresponse */
-            modelResponse: string;
+            readonly modelResponse: string;
             /** Prompt */
-            prompt: string;
+            readonly prompt: string;
         };
         /** InferenceOpts */
-        InferenceOpts: {
+        readonly InferenceOpts: {
             /**
              * Logprobs
              * @default null
              */
-            logprobs: number | null;
+            readonly logprobs?: number | null;
             /**
              * Max Tokens
              * @default 2048
              */
-            max_tokens: number;
+            readonly max_tokens?: number;
             /**
              * N
              * @default 1
              */
-            n: number;
+            readonly n?: number;
             /**
              * Stop
              * @default null
              */
-            stop: string[] | null;
+            readonly stop?: readonly string[] | null;
             /**
              * Temperature
              * @default 0.7
              */
-            temperature: number;
+            readonly temperature?: number;
             /**
              * Top P
              * @default 1
              */
-            top_p: number;
+            readonly top_p?: number;
         };
         /**
          * ModelHost
          * @enum {string}
          */
-        ModelHost: 'inferd' | 'modal';
+        readonly ModelHost: 'inferd' | 'modal';
         /** ModelOrder */
-        ModelOrder: {
+        readonly ModelOrder: {
             /** Id */
-            id: string;
+            readonly id: string;
             /** Order */
-            order: number;
+            readonly order: number;
         };
         /**
          * ModelType
          * @enum {string}
          */
-        ModelType: 'base' | 'chat';
+        readonly ModelType: 'base' | 'chat';
         /**
          * PromptType
          * @enum {string}
          */
-        PromptType: 'text_only' | 'multi_modal';
+        readonly PromptType: 'text_only' | 'multi_modal';
         /** ReorderModelConfigRequest */
-        ReorderModelConfigRequest: {
+        readonly ReorderModelConfigRequest: {
             /** Orderedmodels */
-            orderedModels: components['schemas']['ModelOrder'][];
+            readonly orderedModels: readonly components['schemas']['ModelOrder'][];
         };
         /** ResponseModel */
-        ResponseModel: {
+        readonly ResponseModel: {
             /**
              * Availabletime
              * @default null
              */
-            availableTime: string | null;
+            readonly availableTime?: string | null;
             /**
              * Createdtime
              * Format: date-time
              */
-            createdTime: string;
+            readonly createdTime: string;
             /**
              * Defaultsystemprompt
              * @default null
              */
-            defaultSystemPrompt: string | null;
+            readonly defaultSystemPrompt?: string | null;
             /**
              * Deprecationtime
              * @default null
              */
-            deprecationTime: string | null;
+            readonly deprecationTime?: string | null;
             /** Description */
-            description: string;
+            readonly description: string;
             /**
              * Familyid
              * @default null
              */
-            familyId: string | null;
+            readonly familyId?: string | null;
             /**
              * Familyname
              * @default null
              */
-            familyName: string | null;
+            readonly familyName?: string | null;
             /** Host */
-            host: string;
+            readonly host: string;
             /** Id */
-            id: string;
+            readonly id: string;
             /** Internal */
-            internal: boolean;
+            readonly internal: boolean;
             /** Modelidonhost */
-            modelIdOnHost: string;
-            modelType: components['schemas']['ModelType'];
+            readonly modelIdOnHost: string;
+            readonly modelType: components['schemas']['ModelType'];
             /** Name */
-            name: string;
+            readonly name: string;
             /** Order */
-            order: number;
-            promptType: components['schemas']['PromptType'];
+            readonly order: number;
+            readonly promptType: components['schemas']['PromptType'];
             /**
              * Updatedtime
              * Format: date-time
              */
-            updatedTime: string;
+            readonly updatedTime: string;
         };
         /**
          * Role
          * @enum {string}
          */
-        Role: 'user' | 'assistant' | 'system';
+        readonly Role: 'user' | 'assistant' | 'system';
         /** UpdateMultiModalModelConfigRequest */
-        UpdateMultiModalModelConfigRequest: {
+        readonly UpdateMultiModalModelConfigRequest: {
             /** Acceptedfiletypes */
-            acceptedFileTypes: string[];
+            readonly acceptedFileTypes: readonly string[];
             /**
              * Allowfilesinfollowups
              * @default null
              */
-            allowFilesInFollowups: boolean | null;
+            readonly allowFilesInFollowups?: boolean | null;
             /**
              * Availabletime
              * @default null
              */
-            availableTime: string | null;
+            readonly availableTime?: string | null;
             /**
              * Defaultsystemprompt
              * @default null
              */
-            defaultSystemPrompt: string | null;
+            readonly defaultSystemPrompt?: string | null;
             /**
              * Deprecationtime
              * @default null
              */
-            deprecationTime: string | null;
+            readonly deprecationTime?: string | null;
             /** Description */
-            description: string;
+            readonly description: string;
             /**
              * Familyid
              * @default null
              */
-            familyId: string | null;
+            readonly familyId?: string | null;
             /**
              * Familyname
              * @default null
              */
-            familyName: string | null;
-            host: components['schemas']['ModelHost'];
+            readonly familyName?: string | null;
+            readonly host: components['schemas']['ModelHost'];
             /**
              * Internal
              * @default true
              */
-            internal: boolean;
+            readonly internal?: boolean;
             /**
              * Maxfilespermessage
              * @default null
              */
-            maxFilesPerMessage: number | null;
+            readonly maxFilesPerMessage?: number | null;
             /**
              * Maxtotalfilesize
              * @default null
              */
-            maxTotalFileSize: number | null;
+            readonly maxTotalFileSize?: number | null;
             /** Modelidonhost */
-            modelIdOnHost: string;
-            modelType: components['schemas']['ModelType'];
+            readonly modelIdOnHost: string;
+            readonly modelType: components['schemas']['ModelType'];
             /** Name */
-            name: string;
+            readonly name: string;
             /**
              * Prompttype
              * @constant
              */
-            promptType: 'multi_modal';
+            readonly promptType: 'multi_modal';
             /** @default null */
-            requireFileToPrompt: components['schemas']['FileRequiredToPromptOption'] | null;
+            readonly requireFileToPrompt?:
+                | components['schemas']['FileRequiredToPromptOption']
+                | null;
         };
         /** UpdateTextOnlyModelConfigRequest */
-        UpdateTextOnlyModelConfigRequest: {
+        readonly UpdateTextOnlyModelConfigRequest: {
             /**
              * Availabletime
              * @default null
              */
-            availableTime: string | null;
+            readonly availableTime?: string | null;
             /**
              * Defaultsystemprompt
              * @default null
              */
-            defaultSystemPrompt: string | null;
+            readonly defaultSystemPrompt?: string | null;
             /**
              * Deprecationtime
              * @default null
              */
-            deprecationTime: string | null;
+            readonly deprecationTime?: string | null;
             /** Description */
-            description: string;
+            readonly description: string;
             /**
              * Familyid
              * @default null
              */
-            familyId: string | null;
+            readonly familyId?: string | null;
             /**
              * Familyname
              * @default null
              */
-            familyName: string | null;
-            host: components['schemas']['ModelHost'];
+            readonly familyName?: string | null;
+            readonly host: components['schemas']['ModelHost'];
             /**
              * Internal
              * @default true
              */
-            internal: boolean;
+            readonly internal?: boolean;
             /** Modelidonhost */
-            modelIdOnHost: string;
-            modelType: components['schemas']['ModelType'];
+            readonly modelIdOnHost: string;
+            readonly modelType: components['schemas']['ModelType'];
             /** Name */
-            name: string;
+            readonly name: string;
             /**
              * Prompttype
              * @constant
              */
-            promptType: 'text_only';
+            readonly promptType: 'text_only';
         };
     };
     responses: never;
@@ -715,6 +717,23 @@ export interface components {
     requestBodies: never;
     headers: never;
     pathItems: never;
-}
+};
+export type SchemaCreateMessageRequestV3 = components['schemas']['CreateMessageRequestV3'];
+export type SchemaCreateMessageRequestV4 = components['schemas']['CreateMessageRequestV4'];
+export type SchemaCreateModelConfigRequest = components['schemas']['CreateModelConfigRequest'];
+export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
+export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
+export type SchemaInferenceOpts = components['schemas']['InferenceOpts'];
+export type SchemaModelHost = components['schemas']['ModelHost'];
+export type SchemaModelOrder = components['schemas']['ModelOrder'];
+export type SchemaModelType = components['schemas']['ModelType'];
+export type SchemaPromptType = components['schemas']['PromptType'];
+export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
+export type SchemaResponseModel = components['schemas']['ResponseModel'];
+export type SchemaRole = components['schemas']['Role'];
+export type SchemaUpdateMultiModalModelConfigRequest =
+    components['schemas']['UpdateMultiModalModelConfigRequest'];
+export type SchemaUpdateTextOnlyModelConfigRequest =
+    components['schemas']['UpdateTextOnlyModelConfigRequest'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

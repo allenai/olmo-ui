@@ -1,17 +1,19 @@
 import type { ReactNode } from 'react';
 
-import { olmoApiQueryClient } from '@/api/olmo-api/olmo-api-client';
+import { $olmoApiQueryClient } from '@/api/olmo-api/olmo-api-client';
 
 export const TestQueryFetch = (): ReactNode => {
-    const { data, error, isLoading } = olmoApiQueryClient.useQuery('get', '/v4/models/');
+    const { data: models } = $olmoApiQueryClient.useSuspenseQuery('get', '/v4/models/');
 
-    if (isLoading || data == null) {
-        return 'Loading...';
-    }
-
-    if (error != null) {
-        return `Error ${error}`;
-    }
-
-    return <div>{JSON.stringify(data, undefined, 2)}</div>;
+    return (
+        <div>
+            {models.map((model) => (
+                <div key={model.id}>
+                    <div>{model.id}</div>
+                    <div>{model.host}</div>
+                    <div>{model.internal}</div>
+                </div>
+            ))}
+        </div>
+    );
 };

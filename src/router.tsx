@@ -9,7 +9,9 @@ import {
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
 import { auth0Client } from './api/auth/auth0Client';
+import { queryClient } from './api/query-client';
 import { userInfoLoader } from './api/user-info-loader';
+import { AppWrapper } from './components/AppWrapper';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -17,7 +19,6 @@ import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/sele
 import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
-import { VarnishedApp } from './components/VarnishedApp';
 import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
@@ -26,6 +27,8 @@ import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
 import { ModelConfiguration } from './pages/ModelConfiguration';
+import { TestQueryFetch } from './pages/model_config/QueryTest';
+import { queryTestLoader } from './pages/model_config/queryTestLoader';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -53,16 +56,16 @@ export const routes: RouteObject[] = [
     {
         id: 'root',
         element: (
-            <VarnishedApp theme={uiRefreshOlmoTheme}>
+            <AppWrapper theme={uiRefreshOlmoTheme}>
                 <MetaTags />
                 <NewApp />
-            </VarnishedApp>
+            </AppWrapper>
         ),
         errorElement: (
-            <VarnishedApp theme={uiRefreshOlmoTheme}>
+            <AppWrapper theme={uiRefreshOlmoTheme}>
                 <MetaTags />
                 <ErrorPage />
-            </VarnishedApp>
+            </AppWrapper>
         ),
         children: [
             {
