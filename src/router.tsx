@@ -170,7 +170,7 @@ export const routes: RouteObject[] = [
                         children: [],
                     },
                     {
-                        path: links.admin,
+                        path: '/admin',
                         loader: async ({ request }) => {
                             const isAuthenticated = await auth0Client.getToken();
                             const userInfo = await auth0Client.getUserInfo();
@@ -180,24 +180,23 @@ export const routes: RouteObject[] = [
                             }
 
                             const url = new URL(request.url);
-
                             const isModelConfigEnabled = process.env.IS_MODEL_CONFIG_ENABLED;
 
-                            // Note: Github(#338) we need to check for user permission
-                            // before we allow the redirection to the page.
-                            // since we dont have any page for the admin page and if the
-                            // flag is not enabled we need to redirect to the home page.
                             if (url.pathname === links.admin && isModelConfigEnabled) {
                                 return redirect(links.modelConfiguration);
-                            } else {
+                            }
+
+                            if (url.pathname === links.admin) {
                                 // React-router recommends throwing a
                                 // eslint-disable-next-line @typescript-eslint/only-throw-error
                                 throw new Response('Not Found', { status: 404 });
                             }
+
+                            return null;
                         },
                         children: [
                             {
-                                path: links.modelConfiguration,
+                                path: links.modelConfiguration, // this must be relative to /admin so no absolute path just relative path
                                 element: <ModelConfiguration />,
                             },
                         ],

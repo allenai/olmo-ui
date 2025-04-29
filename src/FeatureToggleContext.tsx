@@ -29,7 +29,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isDatasetExplorerEnabled]: false,
     [FeatureToggle.isPeteishModelEnabled]: false,
     [FeatureToggle.isMultiModalEnabled]: false,
-    [FeatureToggle.isModelConfigEnabled]: false,
+    [FeatureToggle.isModelConfigEnabled]: true,
 };
 
 const localStorageKey = 'feature-toggles';

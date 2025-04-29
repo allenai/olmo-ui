@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material';
+import { ModelConfigList } from '@/components/ModelConfigList';
 
 export const ModelConfiguration = () => {
-    return <Typography>Model Configuration Page</Typography>;
+    return <ModelConfigList />;
 };
