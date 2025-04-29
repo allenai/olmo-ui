@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import {
     loginAction,
@@ -8,6 +8,7 @@ import {
     logoutAction,
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
+import { auth0Client } from './api/auth/auth0Client';
 import { userInfoLoader } from './api/user-info-loader';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
@@ -24,6 +25,7 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
+import { ModelConfiguration } from './pages/ModelConfiguration';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -87,6 +89,7 @@ export const routes: RouteObject[] = [
                                 element: <ThreadPlaceholder />,
                                 handle: { pageControls: <ThreadPageControls /> },
                             },
+
                             {
                                 path: links.playground + '/thread',
                                 // We don't have anything at /thread but it would make sense for it to exist since we have things at /thread/:id
@@ -165,6 +168,39 @@ export const routes: RouteObject[] = [
                         },
                         element: <NewApp />,
                         children: [],
+                    },
+                    {
+                        path: links.admin,
+                        loader: async ({ request }) => {
+                            const isAuthenticated = await auth0Client.getToken();
+                            const userInfo = await auth0Client.getUserInfo();
+
+                            if (!isAuthenticated || !userInfo) {
+                                return redirect(links.login());
+                            }
+
+                            const url = new URL(request.url);
+
+                            const isModelConfigEnabled = process.env.IS_MODEL_CONFIG_ENABLED;
+
+                            // Note: Github(#338) we need to check for user permission
+                            // before we allow the redirection to the page.
+                            // since we dont have any page for the admin page and if the
+                            // flag is not enabled we need to redirect to the home page.
+                            if (url.pathname === links.admin && isModelConfigEnabled) {
+                                return redirect(links.modelConfiguration);
+                            } else {
+                                // React-router recommends throwing a
+                                // eslint-disable-next-line @typescript-eslint/only-throw-error
+                                throw new Response('Not Found', { status: 404 });
+                            }
+                        },
+                        children: [
+                            {
+                                path: links.modelConfiguration,
+                                element: <ModelConfiguration />,
+                            },
+                        ],
                     },
                 ],
             },
