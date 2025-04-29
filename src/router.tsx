@@ -190,7 +190,9 @@ export const routes: RouteObject[] = [
                             if (url.pathname === links.admin && isModelConfigEnabled) {
                                 return redirect(links.modelConfiguration);
                             } else {
-                                return redirect(links.playground);
+                                // React-router recommends throwing a
+                                // eslint-disable-next-line @typescript-eslint/only-throw-error
+                                throw new Response('Not Found', { status: 404 });
                             }
                         },
                         children: [
