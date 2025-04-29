@@ -198,6 +198,9 @@ export const routes: RouteObject[] = [
                             {
                                 path: links.modelConfiguration, // this must be relative to /admin so no absolute path just relative path
                                 element: <ModelConfiguration />,
+                                handle: {
+                                    title: 'Models',
+                                },
                             },
                         ],
                     },
