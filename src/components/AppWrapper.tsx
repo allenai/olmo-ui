@@ -1,5 +1,6 @@
 import { GlobalStyles, ThemeOptions } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReCaptchaProvider } from '@wojtekmaj/react-recaptcha-v3';
 import { PropsWithChildren } from 'react';
 
@@ -48,6 +49,7 @@ export const AppWrapper = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAp
                     <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
                 </ColorModeProvider>
             </FeatureToggleProvider>
+            <ReactQueryDevtools />
         </QueryClientProvider>
     );
 };
