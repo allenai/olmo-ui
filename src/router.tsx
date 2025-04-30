@@ -205,18 +205,10 @@ export const routes: RouteObject[] = [
                         },
                         children: [
                             {
-<<<<<<< HEAD
                                 path: links.modelConfiguration,
                                 element: <RootModelConfigurationPage />,
                                 loader: modelsLoader(queryClient),
                                 action: createModelAction(queryClient),
-=======
-                                path: links.modelConfiguration, // this must be relative to /admin so no absolute path just relative path
-                                element: <ModelConfiguration />,
-                                handle: {
-                                    title: 'Models',
-                                },
->>>>>>> f3b5491 (WIP)
                             },
                         ],
                     },
