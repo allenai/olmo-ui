@@ -14,11 +14,11 @@ const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const { RetryChunkLoadPlugin } = require('webpack-retry-chunk-load-plugin');
 const dotenv = require('dotenv');
 
+const path = require('path');
+
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
 dotenv.config({ path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'] });
-
-const path = require('path');
 
 const Extensions = ['.tsx', '.ts', '.js', '.jsx'];
 
@@ -32,7 +32,7 @@ module.exports = (env) => ({
                 use: ['style-loader', 'css-loader'],
             },
             // This tells webpack to hand TypeScript files to the TypeScript compiler
-            // before bundling them.yar
+            // before bundling them
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
@@ -41,9 +41,9 @@ module.exports = (env) => ({
                         loader: require.resolve('ts-loader'),
                         options: {
                             getCustomTransformers: () => ({
-                                before: [env.development && ReactRefreshTypeScript()].filter(
-                                    Boolean
-                                ),
+                                before: [
+                                    env.development && ReactRefreshTypeScript.default(),
+                                ].filter(Boolean),
                             }),
                             transpileOnly: env.development,
                         },
@@ -145,6 +145,20 @@ module.exports = (env) => ({
                 port: 8080,
             },
         },
+        proxy: [
+            {
+                context: ['/v3', '/v4'],
+                target: 'http://localhost:8000',
+                secure: false,
+                changeOrigin: true,
+            },
+            {
+                context: ['/api'],
+                target: 'https://playground.allenai.org',
+                secure: false,
+                changeOrigin: true,
+            },
+        ],
     },
     devtool: env.production ? 'source-map' : 'eval-source-map',
 });
