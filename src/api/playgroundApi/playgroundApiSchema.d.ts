@@ -170,19 +170,24 @@ export type paths = {
         /** Get available models and their configuration */
         readonly get: {
             readonly parameters: {
-                readonly query?: never;
+                readonly query?: {
+                    /** @description Get the internal models for modification */
+                    readonly admin?: boolean;
+                };
                 readonly header?: never;
                 readonly path?: never;
                 readonly cookie?: never;
             };
             readonly requestBody?: never;
             readonly responses: {
-                /** @description Empty Response */
+                /** @description A RootModelResponse */
                 readonly 200: {
                     headers: {
                         readonly [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        readonly 'application/json': components['schemas']['RootModelResponse'];
+                    };
                 };
             };
         };
@@ -581,6 +586,41 @@ export type components = {
              */
             readonly top_p?: number;
         };
+        /** Model */
+        readonly Model: {
+            /**
+             * Accepts Files
+             * @default false
+             */
+            readonly accepts_files?: boolean;
+            /** Description */
+            readonly description: string;
+            /**
+             * Family Id
+             * @default null
+             */
+            readonly family_id?: string | null;
+            /**
+             * Family Name
+             * @default null
+             */
+            readonly family_name?: string | null;
+            readonly host: components['schemas']['ModelHost'];
+            /** Id */
+            readonly id: string;
+            /** Is Deprecated */
+            readonly is_deprecated: boolean;
+            /** Is Visible */
+            readonly is_visible: boolean;
+            readonly model_type: components['schemas']['ModelType'];
+            /** Name */
+            readonly name: string;
+            /**
+             * System Prompt
+             * @default null
+             */
+            readonly system_prompt?: string | null;
+        };
         /**
          * ModelHost
          * @enum {string}
@@ -598,6 +638,69 @@ export type components = {
          * @enum {string}
          */
         readonly ModelType: 'base' | 'chat';
+        /** MultiModalModel */
+        readonly MultiModalModel: {
+            /**
+             * Accepted File Types
+             * @description A list of file type specifiers: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#unique_file_type_specifiers
+             */
+            readonly accepted_file_types: readonly string[];
+            /**
+             * Accepts Files
+             * @default false
+             */
+            readonly accepts_files?: boolean;
+            /**
+             * Allow Files In Followups
+             * @description Defines if a user is allowed to send files with follow-up prompts. To require a file to prompt, use require_file_to_prompt
+             * @default false
+             */
+            readonly allow_files_in_followups?: boolean;
+            /** Description */
+            readonly description: string;
+            /**
+             * Family Id
+             * @default null
+             */
+            readonly family_id?: string | null;
+            /**
+             * Family Name
+             * @default null
+             */
+            readonly family_name?: string | null;
+            readonly host: components['schemas']['ModelHost'];
+            /** Id */
+            readonly id: string;
+            /** Is Deprecated */
+            readonly is_deprecated: boolean;
+            /** Is Visible */
+            readonly is_visible: boolean;
+            /**
+             * Max Files Per Message
+             * @description The maximum number of files the user is allowed to send with a message
+             * @default null
+             */
+            readonly max_files_per_message?: number | null;
+            /**
+             * Max Total File Size
+             * @description The maximum total file size a user is allowed to send. Adds up the size of every file.
+             * @default null
+             */
+            readonly max_total_file_size?: number | null;
+            readonly model_type: components['schemas']['ModelType'];
+            /** Name */
+            readonly name: string;
+            /**
+             * @description Defines if a user is required to send files with messages. Not intended to prevent users from sending files with follow-up messages.
+             * @default no_requirement
+             */
+            readonly require_file_to_prompt?: components['schemas']['FileRequiredToPromptOption'];
+            /**
+             * System Prompt
+             * @default null
+             */
+            readonly system_prompt?: string | null;
+        };
         /** MultiModalResponseModel */
         readonly MultiModalResponseModel: {
             /** Acceptedfiletypes */
@@ -695,6 +798,10 @@ export type components = {
         readonly RootCreateModelConfigRequest:
             | components['schemas']['CreateTextOnlyModelConfigRequest']
             | components['schemas']['CreateMultiModalModelConfigRequest'];
+        /** RootModelResponse */
+        readonly RootModelResponse:
+            | readonly (components['schemas']['Model'] | components['schemas']['MultiModalModel'])[]
+            | readonly components['schemas']['ResponseModel'][];
         /** RootUpdateModelConfigRequest */
         readonly RootUpdateModelConfigRequest:
             | components['schemas']['UpdateTextOnlyModelConfigRequest']
@@ -886,15 +993,18 @@ export type SchemaCreateTextOnlyModelConfigRequest =
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
 export type SchemaInferenceOpts = components['schemas']['InferenceOpts'];
+export type SchemaModel = components['schemas']['Model'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
 export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelType = components['schemas']['ModelType'];
+export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
+export type SchemaRootModelResponse = components['schemas']['RootModelResponse'];
 export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];

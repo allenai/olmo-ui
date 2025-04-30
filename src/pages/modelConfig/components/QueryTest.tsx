@@ -4,23 +4,22 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
-import { $playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
+import { useGetAdminModels } from './useGetAdminModels';
+
 export const ModelsList = (): ReactNode => {
-    const { data: models } = $playgroundApiQueryClient.useSuspenseQuery('get', '/v4/models/');
+    const models = useGetAdminModels();
 
     return (
         <div>
-            {(models as unknown as { id: string; host: string; internal: boolean }[]).map(
-                (model) => (
-                    <div key={model.id}>
-                        <div>{model.id}</div>
-                        <div>{model.host}</div>
-                        <div>{model.internal}</div>
-                    </div>
-                )
-            )}
+            {models.map((model) => (
+                <div key={model.id}>
+                    <div>{model.id}</div>
+                    <div>{model.host}</div>
+                    <div>{model.internal}</div>
+                </div>
+            ))}
         </div>
     );
 };

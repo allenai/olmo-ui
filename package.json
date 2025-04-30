@@ -4,7 +4,7 @@
   "private": true,
   "license": "UNLICENSED",
   "author": "reviz@allenai.org",
- "scripts": {
+  "scripts": {
     "add-git-hooks": "husky",
     "build": "panda && webpack --mode production --env production",
     "build-storybook": "storybook build",
@@ -103,6 +103,7 @@
     "@storybook/react-webpack5": "^8.6.12",
     "@storybook/test": "^8.6.12",
     "@svgr/webpack": "^8.1.0",
+    "@tanstack/eslint-plugin-query": "^5.74.7",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",

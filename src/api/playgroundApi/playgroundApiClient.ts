@@ -26,4 +26,4 @@ export const playgroundApiClient = createFetchClient<paths>({
 });
 playgroundApiClient.use(authMiddleware);
 
-export const $playgroundApiQueryClient = createClient(playgroundApiClient);
+export const playgroundApiQueryClient = createClient(playgroundApiClient);

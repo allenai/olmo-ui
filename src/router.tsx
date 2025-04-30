@@ -27,9 +27,9 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { ModelConfiguration } from './pages/ModelConfiguration';
-import { QueryTestPage } from './pages/model_config/QueryTest';
-import { queryTestCreateAction, queryTestLoader } from './pages/model_config/queryTestLoader';
+import { QueryTestPage } from './pages/modelConfig/components/QueryTest';
+import { createModelAction, modelsLoader } from './pages/modelConfig/queryTestLoader';
+import { RootModelConfigurationPage } from './pages/modelConfig/RootModelConfigurationPage';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -72,8 +72,8 @@ export const routes: RouteObject[] = [
             {
                 path: '/test',
                 Component: QueryTestPage,
-                loader: queryTestLoader(queryClient),
-                action: queryTestCreateAction(queryClient),
+                loader: modelsLoader(queryClient),
+                action: createModelAction(queryClient),
             },
             {
                 path: links.login(),
@@ -191,7 +191,8 @@ export const routes: RouteObject[] = [
 
                             const url = new URL(request.url);
 
-                            const isModelConfigEnabled = process.env.IS_MODEL_CONFIG_ENABLED;
+                            const isModelConfigEnabled =
+                                process.env.IS_MODEL_CONFIG_ENABLED === 'true';
 
                             // Note: Github(#338) we need to check for user permission
                             // before we allow the redirection to the page.
@@ -208,7 +209,7 @@ export const routes: RouteObject[] = [
                         children: [
                             {
                                 path: links.modelConfiguration,
-                                element: <ModelConfiguration />,
+                                element: <RootModelConfigurationPage />,
                             },
                         ],
                     },
