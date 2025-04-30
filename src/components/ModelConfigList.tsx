@@ -1,16 +1,28 @@
 import { Button, IconButton, Stack } from '@allenai/varnish-ui';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Card, CardContent, Typography } from '@mui/material';
 import { useState } from 'react';
-import { GridList, GridListItem, useDragAndDrop } from 'react-aria-components';
+import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { css } from '@/styled-system/css';
 
+import { GridList } from './grid/GridList';
+import { GridListItem } from './grid/GridListItem';
 import { MetaTags } from './MetaTags';
+
+const containerStyle = css({
+    gridArea: 'content',
+    overflow: 'auto',
+    paddingInline: '[16px]',
+});
+
+const contentStyle = css({
+    backgroundColor: '[background.default]',
+    paddingInline: '[16px]',
+});
 
 const modelGridStyle = css({
     display: 'flex',
@@ -49,8 +61,17 @@ const gridCellRight = css({
     flexDirection: 'row',
     textAlign: 'center',
     alignItems: 'center',
-    justifyContent: 'ceneter',
+    justifyContent: 'center',
     gap: '[16px]',
+});
+
+const body1Text = css({
+    margin: '0',
+    fontFamily: '[Manrope, Arial, sans-serif]',
+    fontWeight: '[400]',
+    lineHeight: '[1.5]',
+    fontSize: '[1rem]',
+    letterSpacing: '0rem',
 });
 
 const iconButton = css({
@@ -71,7 +92,7 @@ export const ModelConfigList = () => {
         'General Kenobi',
     ];
 
-    const [isReorderMode, setIsReorderMode] = useState(false);
+    const [hasReordered, setHasReordered] = useState(false);
 
     const list = useListData({
         initialItems: gridData.map((title, index) => ({ id: index, title })),
@@ -87,8 +108,10 @@ export const ModelConfigList = () => {
         onReorder(e) {
             if (e.target.dropPosition === 'before') {
                 list.moveBefore(e.target.key, e.keys);
+                setHasReordered(true);
             } else if (e.target.dropPosition === 'after') {
                 list.moveAfter(e.target.key, e.keys);
+                setHasReordered(true);
             }
         },
     });
@@ -96,29 +119,11 @@ export const ModelConfigList = () => {
     return (
         <>
             <MetaTags />
-            <Card
-                elevation={0}
-                sx={{
-                    gridArea: 'content',
-                    overflow: 'auto',
-                    paddingInline: 2,
-                }}>
-                <CardContent
-                    sx={(theme) => ({
-                        backgroundColor: 'background.default',
-                        paddingInline: 2,
-                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            paddingInline: 4,
-                        },
-                    })}>
+            <div className={containerStyle}>
+                <div className={contentStyle}>
                     <Stack align="start" spacing={16}>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => {
-                                setIsReorderMode(!isReorderMode);
-                            }}>
-                            Change Order
+                        <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
+                            Add New Model
                         </Button>
                         <GridList
                             className={modelGridStyle}
@@ -130,7 +135,7 @@ export const ModelConfigList = () => {
                                         <IconButton variant="text" className={iconButton}>
                                             <MenuIcon />
                                         </IconButton>
-                                        <Typography variant="body1">{item.title}</Typography>
+                                        <p className={body1Text}>{item.title}</p>
                                     </div>
                                     <div className={gridCellRight}>
                                         <IconButton variant="text" className={iconButton}>
@@ -143,9 +148,19 @@ export const ModelConfigList = () => {
                                 </GridListItem>
                             )}
                         </GridList>
+                        {hasReordered && (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    setHasReordered(false);
+                                }}>
+                                Save Reorder
+                            </Button>
+                        )}
                     </Stack>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </>
     );
 };
