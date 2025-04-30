@@ -45,7 +45,7 @@ export const useAttributionHighlights = (spanIds: string | string[]) => {
                               // spanId is a string here but a number in corresponding_spans. It's always a number in a string right now
                               document?.corresponding_spans.includes(Number(spanId))
                           )
-                        : document?.corresponding_spans.includes(Number(spanIds)) ?? false;
+                        : (document?.corresponding_spans.includes(Number(spanIds)) ?? false);
 
                     return [isSelectedSpan, 'document'];
                 }
