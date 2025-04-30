@@ -13,7 +13,8 @@
     "lint": "eslint '**/*.{js,ts,tsx,json}'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json",
     "prepare": "panda",
-    "start": "run-p -r watch:css build:dev",
+    "start": "WEBPACK_DEV_SERVER_PORT=3000 run-p -r watch:css build:dev",
+    "dev": "WEBPACK_DEV_SERVER_PORT=8080 ENABLE_WEBPACK_PROXY=true run-p -r watch:css build:dev",
     "storybook": "run-p -r  watch:css storybook-start-dev",
     "storybook-start-dev": "storybook dev -p 6006",
     "test": "vitest run",
@@ -26,8 +27,7 @@
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "watch:css": "panda --watch",
-    "dev": "yarn webpack serve --mode development --env development --node-env development"
+    "watch:css": "panda --watch"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",

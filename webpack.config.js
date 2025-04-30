@@ -145,20 +145,22 @@ module.exports = (env) => ({
                 port: 8080,
             },
         },
-        proxy: [
-            {
-                context: ['/v3', '/v4'],
-                target: process.env.LOCAL_PLAYGROUND_API_URL,
-                secure: false,
-                changeOrigin: true,
-            },
-            {
-                context: ['/api'],
-                target: process.env.LOCAL_DOLMA_API_URL,
-                secure: false,
-                changeOrigin: true,
-            },
-        ],
+        ...(process.env.ENABLE_WEBPACK_PROXY === 'true' ? {
+            proxy: [
+                {
+                    context: ['/v3', '/v4'],
+                    target: process.env.LOCAL_PLAYGROUND_API_URL,
+                    secure: false,
+                    changeOrigin: true,
+                },
+                {
+                    context: ['/api'],
+                    target: process.env.LOCAL_DOLMA_API_URL,
+                    secure: false,
+                    changeOrigin: true,
+                },
+            ],
+        } : {}),
     },
     devtool: env.production ? 'source-map' : 'eval-source-map',
 });
