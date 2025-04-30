@@ -14,11 +14,11 @@ const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const { RetryChunkLoadPlugin } = require('webpack-retry-chunk-load-plugin');
 const dotenv = require('dotenv');
 
+const path = require('path');
+
 const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
 dotenv.config({ path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'] });
-
-const path = require('path');
 
 const Extensions = ['.tsx', '.ts', '.js', '.jsx'];
 
@@ -32,7 +32,7 @@ module.exports = (env) => ({
                 use: ['style-loader', 'css-loader'],
             },
             // This tells webpack to hand TypeScript files to the TypeScript compiler
-            // before bundling them.yar
+            // before bundling them
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
@@ -41,9 +41,9 @@ module.exports = (env) => ({
                         loader: require.resolve('ts-loader'),
                         options: {
                             getCustomTransformers: () => ({
-                                before: [env.development && ReactRefreshTypeScript()].filter(
-                                    Boolean
-                                ),
+                                before: [
+                                    env.development && ReactRefreshTypeScript.default(),
+                                ].filter(Boolean),
                             }),
                             transpileOnly: env.development,
                         },
@@ -112,7 +112,7 @@ module.exports = (env) => ({
             HEAP_ANALYTICS_ID: '341313142',
             IS_ANALYTICS_ENABLED: 'true',
             IS_MULTI_MODAL_ENABLED: 'true',
-            IS_MODEL_CONFIG_ENABLED: 'false',
+            IS_MODEL_CONFIG_ENABLED: 'true',
             BASE_URL: 'https://playground.allenai.org',
         }),
         ...[env.development && new ReactRefreshWebpackPlugin()].filter(Boolean),
@@ -129,7 +129,7 @@ module.exports = (env) => ({
         // The `ui` host is used by the reverse proxy when requesting the UI while working locally.
         allowedHosts: ['ui'],
         historyApiFallback: true,
-        port: 3000,
+        port: 8080,
         webSocketServer: 'sockjs',
         devMiddleware: {
             // Apparently webpack's dev server doesn't write files to disk. This makes it hard to
@@ -143,6 +143,20 @@ module.exports = (env) => ({
                 port: 8080,
             },
         },
+        proxy: [
+            {
+                context: ['/v3', '/v4'],
+                target: 'http://localhost:8000',
+                secure: false,
+                changeOrigin: true,
+            },
+            {
+                context: ['/api'],
+                target: 'https://playground.allenai.org',
+                secure: false,
+                changeOrigin: true,
+            },
+        ],
     },
     devtool: env.production ? 'source-map' : 'eval-source-map',
 });
