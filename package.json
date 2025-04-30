@@ -26,7 +26,8 @@
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "watch:css": "panda --watch"
+    "watch:css": "panda --watch",
+    "dev": "yarn webpack serve --mode development --env development --node-env development"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
