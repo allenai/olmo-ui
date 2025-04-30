@@ -29,6 +29,7 @@ import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
 import { QueryTestPage } from './pages/modelConfig/components/QueryTest';
 import { createModelAction, modelsLoader } from './pages/modelConfig/queryTestLoader';
+import { RootModelConfigurationPage } from './pages/modelConfig/RootModelConfigurationPage';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -212,7 +213,7 @@ export const routes: RouteObject[] = [
                         children: [
                             {
                                 path: links.modelConfiguration,
-                                element: <QueryTestPage />,
+                                element: <RootModelConfigurationPage />,
                                 loader: modelsLoader(queryClient),
                                 action: createModelAction(queryClient),
                             },

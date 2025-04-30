@@ -1,6 +1,4 @@
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
@@ -51,24 +49,5 @@ export const QueryTestForm = (): ReactNode => {
             <input {...register('id')} />
             <button type="submit">Submit</button>
         </form>
-    );
-};
-
-export const QueryTestPage = (): ReactNode => {
-    return (
-        <div style={{ gridArea: 'content' }}>
-            <QueryErrorResetBoundary>
-                {({ reset }) => (
-                    <ErrorBoundary
-                        onReset={reset}
-                        fallback={<div>Something went wrong boundary</div>}>
-                        <div>
-                            <ModelsList />
-                            <QueryTestForm />
-                        </div>
-                    </ErrorBoundary>
-                )}
-            </QueryErrorResetBoundary>
-        </div>
     );
 };
