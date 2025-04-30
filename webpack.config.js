@@ -146,13 +146,13 @@ module.exports = (env) => ({
         proxy: [
             {
                 context: ['/v3', '/v4'],
-                target: 'http://localhost:8000',
+                target: process.env.LOCAL_PLAYGROUND_API_URL,
                 secure: false,
                 changeOrigin: true,
             },
             {
                 context: ['/api'],
-                target: 'https://playground.allenai.org',
+                target: process.env.LOCAL_DOLMA_API_URL,
                 secure: false,
                 changeOrigin: true,
             },
