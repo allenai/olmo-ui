@@ -197,13 +197,17 @@ export const routes: RouteObject[] = [
                             // before we allow the redirection to the page.
                             // since we dont have any page for the admin page and if the
                             // flag is not enabled we need to redirect to the home page.
-                            if (url.pathname === links.admin && isModelConfigEnabled) {
-                                return redirect(links.modelConfiguration);
-                            } else {
-                                // React-router recommends throwing a
+                            if (!isModelConfigEnabled) {
+                                // React-router recommends throwing a response
                                 // eslint-disable-next-line @typescript-eslint/only-throw-error
                                 throw new Response('Not Found', { status: 404 });
                             }
+
+                            if (url.pathname === links.admin) {
+                                return redirect(links.modelConfiguration);
+                            }
+
+                            return null;
                         },
                         children: [
                             {
