@@ -27,7 +27,6 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { QueryTestPage } from './pages/modelConfig/components/QueryTest';
 import { createModelAction, modelsLoader } from './pages/modelConfig/queryTestLoader';
 import { RootModelConfigurationPage } from './pages/modelConfig/RootModelConfigurationPage';
 import { Search, searchPageLoader } from './pages/Search';
@@ -69,12 +68,6 @@ export const routes: RouteObject[] = [
             </AppWrapper>
         ),
         children: [
-            {
-                path: '/test',
-                Component: QueryTestPage,
-                loader: modelsLoader(queryClient),
-                action: createModelAction(queryClient),
-            },
             {
                 path: links.login(),
                 action: loginAction,
