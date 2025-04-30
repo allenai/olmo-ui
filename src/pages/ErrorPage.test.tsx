@@ -5,7 +5,7 @@ import { render, screen, waitFor } from '@test-utils';
 import { createMemoryRouter, json, RouterProvider } from 'react-router-dom';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
-import { VarnishedApp } from '@/components/VarnishedApp';
+import { AppWrapper } from '@/components/AppWrapper';
 import { links } from '@/Links';
 
 import { ErrorPage } from './ErrorPage';
@@ -21,9 +21,9 @@ describe('Error Page', () => {
                     path: '/',
                     element: <div>shouldnt be here</div>,
                     errorElement: (
-                        <VarnishedApp>
+                        <AppWrapper>
                             <ErrorPage />
-                        </VarnishedApp>
+                        </AppWrapper>
                     ),
                     loader: () => {
                         const responseData: LoginError['data'] = {

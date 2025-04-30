@@ -2,7 +2,7 @@ import { LinearProgress } from '@mui/material';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
-import { VarnishedApp } from './components/VarnishedApp';
+import { AppWrapper } from './components/AppWrapper';
 
 const enableMocking = async () => {
     if (process.env.NODE_ENV === 'production' || process.env.ENABLE_MOCKING !== 'true') {
@@ -30,9 +30,9 @@ enableMocking().then(async () => {
         <RouterProvider
             router={router}
             fallbackElement={
-                <VarnishedApp>
+                <AppWrapper>
                     <LinearProgress />
-                </VarnishedApp>
+                </AppWrapper>
             }
         />
     );

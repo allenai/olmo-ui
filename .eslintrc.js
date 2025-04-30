@@ -3,8 +3,15 @@ module.exports = {
         '@allenai/eslint-config-varnish',
         'plugin:storybook/recommended',
         'plugin:@pandacss/recommended',
+        'plugin:@tanstack/eslint-plugin-query/recommended',
     ],
-    plugins: ['simple-import-sort', 'eslint-plugin-react-compiler', 'react-refresh', '@pandacss'],
+    plugins: [
+        'simple-import-sort',
+        'eslint-plugin-react-compiler',
+        'react-refresh',
+        '@pandacss',
+        '@tanstack/query',
+    ],
     rules: {
         '@typescript-eslint/no-use-before-define': 0,
         'simple-import-sort/imports': 'error',
@@ -73,6 +80,12 @@ module.exports = {
                             'Import from @test-utils instead. It provides a VarnishApp wrapper for our themed components.',
                     },
                 ],
+            },
+        },
+        {
+            files: ['src/api/playgroundApi/*.d.ts'],
+            rules: {
+                'no-use-before-define': 'off',
             },
         },
     ],
