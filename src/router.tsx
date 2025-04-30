@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import {
@@ -9,7 +10,9 @@ import {
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
 import { auth0Client } from './api/auth/auth0Client';
+import { queryClient } from './api/query-client';
 import { userInfoLoader } from './api/user-info-loader';
+import { AppWrapper } from './components/AppWrapper';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
@@ -17,7 +20,6 @@ import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/sele
 import { ThreadDisplay } from './components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
-import { VarnishedApp } from './components/VarnishedApp';
 import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
@@ -25,7 +27,8 @@ import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { ModelConfiguration } from './pages/ModelConfiguration';
+import { createModelAction, modelsLoader } from './pages/modelConfig/queryTestLoader';
+import { RootModelConfigurationPage } from './pages/modelConfig/RootModelConfigurationPage';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -33,7 +36,7 @@ import {
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
 
-const DolmaPage = (): JSX.Element => {
+const DolmaPage = (): ReactNode => {
     return (
         <Box
             sx={{
@@ -53,16 +56,16 @@ export const routes: RouteObject[] = [
     {
         id: 'root',
         element: (
-            <VarnishedApp theme={uiRefreshOlmoTheme}>
+            <AppWrapper theme={uiRefreshOlmoTheme}>
                 <MetaTags />
                 <NewApp />
-            </VarnishedApp>
+            </AppWrapper>
         ),
         errorElement: (
-            <VarnishedApp theme={uiRefreshOlmoTheme}>
+            <AppWrapper theme={uiRefreshOlmoTheme}>
                 <MetaTags />
                 <ErrorPage />
-            </VarnishedApp>
+            </AppWrapper>
         ),
         children: [
             {
@@ -181,24 +184,31 @@ export const routes: RouteObject[] = [
 
                             const url = new URL(request.url);
 
-                            const isModelConfigEnabled = process.env.IS_MODEL_CONFIG_ENABLED;
+                            const isModelConfigEnabled =
+                                process.env.IS_MODEL_CONFIG_ENABLED === 'true';
 
                             // Note: Github(#338) we need to check for user permission
                             // before we allow the redirection to the page.
                             // since we dont have any page for the admin page and if the
                             // flag is not enabled we need to redirect to the home page.
-                            if (url.pathname === links.admin && isModelConfigEnabled) {
-                                return redirect(links.modelConfiguration);
-                            } else {
-                                // React-router recommends throwing a
+                            if (!isModelConfigEnabled) {
+                                // React-router recommends throwing a response
                                 // eslint-disable-next-line @typescript-eslint/only-throw-error
                                 throw new Response('Not Found', { status: 404 });
                             }
+
+                            if (url.pathname === links.admin) {
+                                return redirect(links.modelConfiguration);
+                            }
+
+                            return null;
                         },
                         children: [
                             {
                                 path: links.modelConfiguration,
-                                element: <ModelConfiguration />,
+                                element: <RootModelConfigurationPage />,
+                                loader: modelsLoader(queryClient),
+                                action: createModelAction(queryClient),
                             },
                         ],
                     },

@@ -4,7 +4,7 @@
   "private": true,
   "license": "UNLICENSED",
   "author": "reviz@allenai.org",
- "scripts": {
+  "scripts": {
     "add-git-hooks": "husky",
     "build": "panda && webpack --mode production --env production",
     "build-storybook": "storybook build",
@@ -20,7 +20,8 @@
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "watch:css": "panda --watch"
+    "watch:css": "panda --watch",
+    "generate-playground-api-client": "openapi-typescript --default-non-nullable=false --empty-objects-unknown=true --immutable=true --root-types=true -t http://localhost:8000/openapi.json -o ./src/api/playgroundApi/playgroundApiSchema.d.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",
@@ -52,6 +53,8 @@
     "@nivo/treemap": "^0.84.0",
     "@pandacss/dev": "^0.53.4",
     "@storybook/react-vite": "^8.6.12",
+    "@tanstack/react-query": "^5.74.11",
+    "@tanstack/react-query-devtools": "^5.74.11",
     "@types/jest": "^29.5.12",
     "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
     "dayjs": "^1.8.30",
@@ -62,6 +65,8 @@
     "immer": "^10.0.4",
     "marked": "^5.1.2",
     "marked-highlight": "^2.0.1",
+    "openapi-fetch": "^0.13.5",
+    "openapi-react-query": "^0.3.1",
     "plausible-tracker": "^0.3.8",
     "react": "^18.3.1",
     "react-aria-components": "^1.8.0",
@@ -97,6 +102,7 @@
     "@storybook/react-webpack5": "^8.6.12",
     "@storybook/test": "^8.6.12",
     "@svgr/webpack": "^8.1.0",
+    "@tanstack/eslint-plugin-query": "^5.74.7",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -144,6 +150,7 @@
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
     "msw": "^2.2.13",
+    "openapi-typescript": "^7.6.1",
     "playwright": "^1.52.0",
     "playwright-msw": "^3.0.1",
     "prettier": "^3.2.5",

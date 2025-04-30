@@ -4,7 +4,7 @@ import { createLoginRedirectURL } from './auth/auth-utils';
 import { auth0Client } from './auth/auth0Client';
 import { error } from './error';
 
-const ANONYMOUS_USER_ID_KEY = 'anonymousUserId';
+export const ANONYMOUS_USER_ID_KEY = 'anonymousUserId';
 
 export abstract class ClientBase {
     anonymousUserId: string;

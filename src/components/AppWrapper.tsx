@@ -1,6 +1,10 @@
 import { GlobalStyles, ThemeOptions } from '@mui/material';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReCaptchaProvider } from '@wojtekmaj/react-recaptcha-v3';
 import { PropsWithChildren } from 'react';
+
+import { queryClient } from '@/api/query-client';
 
 import { FeatureToggleProvider } from '../FeatureToggleContext';
 import { uiRefreshOlmoTheme } from '../olmoTheme';
@@ -36,13 +40,16 @@ const ReCaptchaWrapper = ({ children }: PropsWithChildren) => {
     );
 };
 
-export const VarnishedApp = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
+export const AppWrapper = ({ children, theme = uiRefreshOlmoTheme }: VarnishedAppProps) => {
     return (
-        <FeatureToggleProvider>
-            <ScrollToTopOnPageChange />
-            <ColorModeProvider theme={theme}>
-                <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
-            </ColorModeProvider>
-        </FeatureToggleProvider>
+        <QueryClientProvider client={queryClient}>
+            <FeatureToggleProvider>
+                <ScrollToTopOnPageChange />
+                <ColorModeProvider theme={theme}>
+                    <ReCaptchaWrapper>{children}</ReCaptchaWrapper>
+                </ColorModeProvider>
+            </FeatureToggleProvider>
+            <ReactQueryDevtools />
+        </QueryClientProvider>
     );
 };
