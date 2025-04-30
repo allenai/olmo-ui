@@ -6,14 +6,18 @@ import { useSubmit } from 'react-router-dom';
 
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
-import { useGetAdminModels } from './useGetAdminModels';
+import { useAdminModels } from './useGetAdminModels';
 
 export const ModelsList = (): ReactNode => {
-    const models = useGetAdminModels();
+    const { data, status } = useAdminModels();
+
+    if (status === 'error' || !data) {
+        return 'something went wrong';
+    }
 
     return (
         <div>
-            {models.map((model) => (
+            {data.map((model) => (
                 <div key={model.id}>
                     <div>{model.id}</div>
                     <div>{model.host}</div>
@@ -52,15 +56,19 @@ export const QueryTestForm = (): ReactNode => {
 
 export const QueryTestPage = (): ReactNode => {
     return (
-        <QueryErrorResetBoundary>
-            {({ reset }) => (
-                <ErrorBoundary onReset={reset} fallback={<div>Something went wrong</div>}>
-                    <div>
-                        <ModelsList />
-                        <QueryTestForm />
-                    </div>
-                </ErrorBoundary>
-            )}
-        </QueryErrorResetBoundary>
+        <div style={{ gridArea: 'content' }}>
+            <QueryErrorResetBoundary>
+                {({ reset }) => (
+                    <ErrorBoundary
+                        onReset={reset}
+                        fallback={<div>Something went wrong boundary</div>}>
+                        <div>
+                            <ModelsList />
+                            <QueryTestForm />
+                        </div>
+                    </ErrorBoundary>
+                )}
+            </QueryErrorResetBoundary>
+        </div>
     );
 };

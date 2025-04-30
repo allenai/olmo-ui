@@ -7,6 +7,8 @@ import {
 } from '@/api/playgroundApi/playgroundApiClient';
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
+import { getAdminModelsQueryOptions } from './components/useGetAdminModels';
+
 export const modelsLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async () => {
@@ -32,7 +34,7 @@ export const createModelAction =
             body: await mapCreateModelRequest(request),
         });
         await queryClient.invalidateQueries({
-            queryKey: playgroundApiQueryClient.queryOptions('get', '/v4/models/').queryKey,
+            queryKey: getAdminModelsQueryOptions.queryKey,
             exact: true,
         });
 
