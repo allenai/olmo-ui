@@ -2,14 +2,12 @@ module.exports = {
     extends: [
         '@allenai/eslint-config-varnish',
         'plugin:storybook/recommended',
-        'plugin:@pandacss/recommended',
         'plugin:@tanstack/eslint-plugin-query/recommended',
     ],
     plugins: [
         'simple-import-sort',
         'eslint-plugin-react-compiler',
         'react-refresh',
-        '@pandacss',
         '@tanstack/query',
     ],
     rules: {
