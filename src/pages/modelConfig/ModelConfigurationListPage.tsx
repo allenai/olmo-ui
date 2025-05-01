@@ -75,8 +75,8 @@ const body1Text = css({
 });
 
 const iconButton = css({
-    '& svg.MuiSvgIcon-root': {
-        fill: 'white!important',
+    '& svg': {
+        color: 'white',
     },
 });
 
