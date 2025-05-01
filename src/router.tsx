@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import type { ReactNode } from 'react';
-import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
     loginAction,
@@ -9,7 +9,6 @@ import {
     logoutAction,
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
-import { auth0Client } from './api/auth/auth0Client';
 import { queryClient } from './api/query-client';
 import { userInfoLoader } from './api/user-info-loader';
 import { AppWrapper } from './components/AppWrapper';
