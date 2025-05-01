@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
+import { useAdminModels } from '@/pages/modelConfig/components/useGetAdminModels';
 import { css } from '@/styled-system/css';
 
 import { GridList } from './grid/GridList';
@@ -72,6 +73,9 @@ const body1Text = css({
     lineHeight: '[1.5]',
     fontSize: '[1rem]',
     letterSpacing: '0rem',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
 });
 
 const iconButton = css({
@@ -81,21 +85,12 @@ const iconButton = css({
 });
 
 export const ModelConfigList = () => {
-    const gridData = [
-        'OLMo 2 32B',
-        'Tulu 3 405B',
-        'Molmo',
-        'OLMoE 1B 7B 0125',
-        'Hello Kitty',
-        'Hello World',
-        'Hello There',
-        'General Kenobi',
-    ];
-
     const [hasReordered, setHasReordered] = useState(false);
 
+    const { data, status } = useAdminModels();
+
     const list = useListData({
-        initialItems: gridData.map((title, index) => ({ id: index, title })),
+        initialItems: data?.map((model) => ({ ...model })) ?? [],
         getKey: (item) => item.id,
     });
 
@@ -103,7 +98,7 @@ export const ModelConfigList = () => {
         getItems: (keys) =>
             [...keys].map((key) => {
                 const item = list.getItem(key);
-                return { 'text/plain': item?.title || '' };
+                return { 'text/plain': item?.name || '' };
             }),
         onReorder(e) {
             if (e.target.dropPosition === 'before') {
@@ -115,6 +110,10 @@ export const ModelConfigList = () => {
             }
         },
     });
+
+    if (status === 'error' || !data) {
+        return 'something went wrong';
+    }
 
     return (
         <>
@@ -135,7 +134,7 @@ export const ModelConfigList = () => {
                                         <IconButton variant="text" className={iconButton}>
                                             <MenuIcon />
                                         </IconButton>
-                                        <p className={body1Text}>{item.title}</p>
+                                        <p className={body1Text}>{item.name}</p>
                                     </div>
                                     <div className={gridCellRight}>
                                         <IconButton variant="text" className={iconButton}>
