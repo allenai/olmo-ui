@@ -6,6 +6,7 @@ import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
+import { DatePicker } from '../varnish-ui/DatePicker';
 
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
@@ -29,6 +30,7 @@ export const ThreadPlaceholder = () => {
             <ThreadMaxWidthContainer gridTemplateRows="auto 1fr auto" sx={{ height: '100%' }}>
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
+                    <DatePicker />
                 </Box>
                 <Box
                     display="flex"

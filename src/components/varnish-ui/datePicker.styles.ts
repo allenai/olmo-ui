@@ -5,11 +5,12 @@ const datePickerRecipe = sva({
     slots: ['root', 'label', 'group', 'input', 'popover','calendar', 'dateInput'],
     base: {
         root: {
+            background: '[red]',    
         },
         group: {
-            display: 'flex !important',
-            width: '[fit-content !important]',
-            alignItems: 'center !important',
+            display: 'flex',
+            width: '[fit-content]',
+            alignItems: 'center',
         },
         input: {
             padding: '[4px 2.5rem 4px 8px]',

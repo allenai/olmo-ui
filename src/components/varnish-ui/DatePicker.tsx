@@ -19,9 +19,10 @@ type DatePickerProps = {
     placeHolder?: DateValue;
     children?: React.ReactNode;
     className?: string;
+    groupClassName?: string;
 } & DatePickerRecipeProps;
 
-const DatePicker = ({ value, placeHolder, children, className, ...rest }: DatePickerProps) => {
+const DatePicker = ({ value, placeHolder, children, className, groupClassName, ...rest }: DatePickerProps) => {
     const [variantProps, localProps] = datePickerRecipe.splitVariantProps(rest);
     const recipeClassNames = datePickerRecipe(variantProps);
     console.log(recipeClassNames.group);
@@ -34,7 +35,7 @@ const DatePicker = ({ value, placeHolder, children, className, ...rest }: DatePi
             className={cx(recipeClassNames.root, className)}
             {...localProps}>
             <Label>Time available to all users</Label>
-            <AriaGroup className={cx(recipeClassNames.group, className)}>
+            <AriaGroup className={cx(recipeClassNames.group, groupClassName)}>
                 <AriaDateInput>{(segment) => <AriaDateSegment segment={segment} />}</AriaDateInput>
                 <Button>▼</Button>
             </AriaGroup>
