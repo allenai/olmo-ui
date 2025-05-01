@@ -1,4 +1,4 @@
-import { Button, Stack } from '@allenai/varnish-ui';
+import { Button } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { useDragAndDrop } from 'react-aria-components';
@@ -12,11 +12,18 @@ import { css } from '@/styled-system/css';
 const containerStyle = css({
     gridArea: 'content',
     paddingInline: '2',
+    display: 'flex',
+    flexDirection: 'column',
 });
 
 const contentStyle = css({
     backgroundColor: 'background',
     paddingInline: '2',
+    flex: '[1]',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '2',
 });
 
 export const ModelConfigurationListPage = () => {
@@ -57,25 +64,23 @@ export const ModelConfigurationListPage = () => {
             <MetaTags />
             <div className={containerStyle}>
                 <div className={contentStyle}>
-                    <Stack align="center" spacing={16}>
-                        <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
-                            Add New Model
+                    <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
+                        Add New Model
+                    </Button>
+                    <ModelConfigurationList
+                        items={list.items}
+                        dragAndDropHooks={dragAndDropHooks}
+                    />
+                    {hasReordered && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                setHasReordered(false);
+                            }}>
+                            Save Reorder
                         </Button>
-                        <ModelConfigurationList
-                            items={list.items}
-                            dragAndDropHooks={dragAndDropHooks}
-                        />
-                        {hasReordered && (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                    setHasReordered(false);
-                                }}>
-                                Save Reorder
-                            </Button>
-                        )}
-                    </Stack>
+                    )}
                 </div>
             </div>
         </>

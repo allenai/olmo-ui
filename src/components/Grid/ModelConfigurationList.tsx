@@ -15,7 +15,7 @@ const modelGridStyle = css({
     gap: '2',
     width: '[100%]',
     maxWidth: '[469px]',
-    height: '[100%]',
+    flex: '1',
     overflow: 'auto',
 });
 
