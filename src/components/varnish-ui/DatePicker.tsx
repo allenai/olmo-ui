@@ -1,9 +1,5 @@
-// I am just PRing what I already have. There is a lot of work to be done but here is the foundation. 
-// Also my storybook story fails: TypeError: Failed to fetch dynamically imported module: http://localhost:6006/src/components/varnish-ui/DatePicker.stories.tsx?t=1745862183705
-
-
 import { cx } from '@allenai/varnish-panda-runtime/css';
-import { Button, Dialog, Input, Label, Popover } from '@allenai/varnish-ui';
+import { Button, Dialog, Label, Popover } from '@allenai/varnish-ui';
 import {
     Calendar as AriaCalendar,
     CalendarCell as AriaCalendarCell,
@@ -16,7 +12,7 @@ import {
     DateValue,
 } from 'react-aria-components';
 
-import datePickerRecipe, { DatePickerRecipeProps } from '@/components/varnish-ui/datePicker.styles';
+import datePickerRecipe, { DatePickerRecipeProps } from './datePicker.styles';
 
 type DatePickerProps = {
     value?: DateValue;
@@ -28,13 +24,15 @@ type DatePickerProps = {
 const DatePicker = ({ value, placeHolder, children, className, ...rest }: DatePickerProps) => {
     const [variantProps, localProps] = datePickerRecipe.splitVariantProps(rest);
     const recipeClassNames = datePickerRecipe(variantProps);
+    console.log(recipeClassNames.group);
 
     return (
         <AriaDatePicker
             value={value}
             placeholderValue={placeHolder}
             data-color-mode="dark"
-            className={cx(recipeClassNames.root, className)}>
+            className={cx(recipeClassNames.root, className)}
+            {...localProps}>
             <Label>Time available to all users</Label>
             <AriaGroup className={cx(recipeClassNames.group, className)}>
                 <AriaDateInput>{(segment) => <AriaDateSegment segment={segment} />}</AriaDateInput>
