@@ -1,7 +1,7 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { DragAndDropHooks, GridList } from 'react-aria-components';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
-import { css } from '@/styled-system/css';
 
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
@@ -15,7 +15,7 @@ const modelGridStyle = css({
     gap: '2',
     width: '[100%]',
     maxWidth: '[469px]',
-    maxHeight: '[425px]',
+    height: '[100%]',
     overflow: 'auto',
 });
 

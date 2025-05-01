@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
+import { ModelConfigurationList } from '@/components/Grid/ModelConfigurationList';
 import { MetaTags } from '@/components/MetaTags';
 import { useAdminModels } from '@/pages/modelConfig/components/useGetAdminModels';
 import { css } from '@/styled-system/css';
-import { ModelConfigurationList } from '@/components/Grid/ModelConfigurationList';
 
 const containerStyle = css({
     gridArea: 'content',
@@ -15,7 +15,7 @@ const containerStyle = css({
 });
 
 const contentStyle = css({
-    backgroundColor: 'background.reversed',
+    backgroundColor: 'background',
     paddingInline: '2',
 });
 
@@ -57,11 +57,14 @@ export const ModelConfigurationListPage = () => {
             <MetaTags />
             <div className={containerStyle}>
                 <div className={contentStyle}>
-                    <Stack align="start" spacing={16}>
+                    <Stack align="center" spacing={16}>
                         <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
                             Add New Model
                         </Button>
-                        <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />
+                        <ModelConfigurationList
+                            items={list.items}
+                            dragAndDropHooks={dragAndDropHooks}
+                        />
                         {hasReordered && (
                             <Button
                                 variant="contained"

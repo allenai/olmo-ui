@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { IconButton } from '@allenai/varnish-ui';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -5,7 +6,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { GridListItem } from 'react-aria-components';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
-import { css } from '@/styled-system/css';
 
 interface Props {
     item: SchemaResponseModel;
@@ -49,13 +49,10 @@ const body1Text = css({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
+    color: 'text.primary',
 });
 
-const iconButton = css({
-    '& svg': {
-        color: 'white',
-    },
-});
+const iconButton = css({});
 
 export const ModelConfigurationListItem = ({ item }: Props) => (
     <GridListItem className={gridCell} id={item.id}>
