@@ -36,13 +36,13 @@ const DatePicker = ({ value, placeHolder, children, className, groupClassName, .
             {...localProps}>
             <Label>Time available to all users</Label>
             <AriaGroup className={cx(recipeClassNames.group, groupClassName)}>
-                <AriaDateInput>{(segment) => <AriaDateSegment segment={segment} />}</AriaDateInput>
-                <Button>▼</Button>
+                <AriaDateInput className={cx(recipeClassNames.dateInput)}>{(segment) => <AriaDateSegment segment={segment} />}</AriaDateInput>
+                <Button className={cx(recipeClassNames.button)}>▼</Button>
             </AriaGroup>
             <Popover className={cx(recipeClassNames.popover)} >
                 <Dialog>
                     <AriaCalendar className={cx(recipeClassNames.calendar)}>
-                        <header>
+                        <header className={cx(recipeClassNames.calendarHeader)}>
                             <Button
                                 color="primary"
                                 variant="contained"
