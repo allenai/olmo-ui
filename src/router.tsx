@@ -209,6 +209,9 @@ export const routes: RouteObject[] = [
                                 element: <RootModelConfigurationPage />,
                                 loader: modelsLoader(queryClient),
                                 action: createModelAction(queryClient),
+                                handle: {
+                                    title: 'Models',
+                                },
                             },
                         ],
                     },

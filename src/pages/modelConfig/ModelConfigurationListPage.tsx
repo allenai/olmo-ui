@@ -15,13 +15,12 @@ import { css } from '@/styled-system/css';
 
 const containerStyle = css({
     gridArea: 'content',
-    overflow: 'auto',
-    paddingInline: '[16px]',
+    paddingInline: 'var(--spacing-2)',
 });
 
 const contentStyle = css({
     backgroundColor: '[background.default]',
-    paddingInline: '[16px]',
+    paddingInline: 'var(--spacing-2)',
 });
 
 const modelGridStyle = css({
@@ -30,11 +29,11 @@ const modelGridStyle = css({
     border: '1px solid',
     borderColor: 'teal.80',
     borderRadius: 'sm',
-    padding: '[18px]',
-    gap: '[16px]',
+    padding: 'var(--spacing-2)',
+    gap: 'var(--spacing-2)',
     width: '[469px]',
     maxHeight: '[425px]',
-    overflowY: 'scroll',
+    overflow: 'auto',
 });
 
 const gridCell = css({
@@ -44,7 +43,7 @@ const gridCell = css({
     border: '1px solid',
     borderColor: 'teal.80',
     justifyContent: 'space-between',
-    padding: '[18px]',
+    padding: 'var(--spacing-2)',
 });
 
 const gridCellLeft = css({
@@ -53,7 +52,7 @@ const gridCellLeft = css({
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '[16px]',
+    gap: 'var(--spacing-2)',
 });
 
 const gridCellRight = css({
@@ -62,16 +61,16 @@ const gridCellRight = css({
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '[16px]',
+    gap: 'var(--spacing-2)',
 });
 
 const body1Text = css({
     margin: '0',
     fontFamily: '[Manrope, Arial, sans-serif]',
-    fontWeight: '[400]',
-    lineHeight: '[1.5]',
-    fontSize: '[1rem]',
-    letterSpacing: '0rem',
+    fontWeight: 'var(--font-weight-regular)',
+    lineHeight: 'var(--line-height-4)',
+    fontSize: 'var(--font-size-md)',
+    letterSpacing: 'var(--letter-spacing-0)',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
