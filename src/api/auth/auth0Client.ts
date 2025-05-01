@@ -68,7 +68,7 @@ class Auth0Client {
 
         await client.loginWithRedirect({
             authorizationParams: {
-                scope: 'openid profile email read:internal-models write:model-config',
+                scope: 'openid profile email',
                 redirect_uri:
                     window.location.origin +
                     '/login-result?' +
