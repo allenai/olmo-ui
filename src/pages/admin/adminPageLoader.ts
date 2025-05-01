@@ -1,20 +1,12 @@
 import { type LoaderFunction, redirect } from 'react-router-dom';
 
-import { auth0Client } from '@/api/auth/auth0Client';
 import { appContext } from '@/AppContext';
 import { links } from '@/Links';
 
 export const adminPageLoader: LoaderFunction = async ({ request }) => {
-    const isAuthenticated = await auth0Client.getToken();
-    const userInfo = await auth0Client.getUserInfo();
-
     const hasAdminPermission = appContext
         .getState()
         .userInfo?.permissions?.some((permission) => permission === 'write:model-config');
-
-    if (!isAuthenticated || !userInfo || !hasAdminPermission) {
-        return redirect(links.login(request.url));
-    }
 
     const url = new URL(request.url);
 
@@ -24,7 +16,7 @@ export const adminPageLoader: LoaderFunction = async ({ request }) => {
     // before we allow the redirection to the page.
     // since we dont have any page for the admin page and if the
     // flag is not enabled we need to redirect to the home page.
-    if (!isModelConfigEnabled) {
+    if (!isModelConfigEnabled || !hasAdminPermission) {
         // React-router recommends throwing a response
         // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw new Response('Not Found', { status: 404 });
