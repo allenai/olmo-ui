@@ -7,77 +7,16 @@ import { useListData } from 'react-stately';
 import { MetaTags } from '@/components/MetaTags';
 import { useAdminModels } from '@/pages/modelConfig/components/useGetAdminModels';
 import { css } from '@/styled-system/css';
-
-import { ModelConfigurationList } from './ModelConfigurationList';
+import { ModelConfigurationList } from '@/components/Grid/ModelConfigurationList';
 
 const containerStyle = css({
     gridArea: 'content',
-    paddingInline: 'var(--spacing-2)',
+    paddingInline: '2',
 });
 
 const contentStyle = css({
-    backgroundColor: '[background.default]',
-    paddingInline: 'var(--spacing-2)',
-});
-
-const modelGridStyle = css({
-    display: 'flex',
-    flexDirection: 'column',
-    border: '1px solid',
-    borderColor: 'teal.80',
-    borderRadius: 'sm',
-    padding: 'var(--spacing-2)',
-    gap: 'var(--spacing-2)',
-    width: '[100%]',
-    maxWidth: '[469px]',
-    maxHeight: '[425px]',
-    overflow: 'auto',
-});
-
-const gridCell = css({
-    display: 'flex',
-    flexDirection: 'row',
-    textAlign: 'center',
-    border: '1px solid',
-    borderColor: 'teal.80',
-    justifyContent: 'space-between',
-    padding: 'var(--spacing-2)',
-});
-
-const gridCellLeft = css({
-    display: 'flex',
-    flexDirection: 'row',
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 'var(--spacing-2)',
-});
-
-const gridCellRight = css({
-    display: 'flex',
-    flexDirection: 'row',
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 'var(--spacing-2)',
-});
-
-const body1Text = css({
-    margin: '0',
-    fontFamily: '[Manrope, Arial, sans-serif]',
-    fontWeight: 'var(--font-weight-regular)',
-    lineHeight: 'var(--line-height-4)',
-    fontSize: 'var(--font-size-md)',
-    letterSpacing: 'var(--letter-spacing-0)',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-});
-
-const iconButton = css({
-    '& svg': {
-        color: 'white',
-    },
+    backgroundColor: 'background.reversed',
+    paddingInline: '2',
 });
 
 export const ModelConfigurationListPage = () => {
@@ -111,6 +50,8 @@ export const ModelConfigurationListPage = () => {
         return 'something went wrong';
     }
 
+    console.log(data);
+
     return (
         <>
             <MetaTags />
@@ -120,16 +61,7 @@ export const ModelConfigurationListPage = () => {
                         <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
                             Add New Model
                         </Button>
-                        <ModelConfigurationList
-                            items={list.items}
-                            dragAndDropHooks={dragAndDropHooks}
-                            gridCellClass={gridCell}
-                            gridCellLeftClass={gridCellLeft}
-                            gridCellRightClass={gridCellRight}
-                            body1TextClass={body1Text}
-                            iconButtonClass={iconButton}
-                            className={modelGridStyle}
-                        />
+                        <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />
                         {hasReordered && (
                             <Button
                                 variant="contained"

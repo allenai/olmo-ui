@@ -7,6 +7,7 @@ export default defineConfig({
     prefix: 'vui',
     include: [
         './src/**/*.{js,jsx,ts,tsx}',
+        './src/**/*.stories.{js,jsx,ts,tsx}',
         './stories/**/*.{js,jsx,ts,tsx}',
         './node_modules/@allenai/varnish-ui/dist/varnish.panda.include.json',
     ],
