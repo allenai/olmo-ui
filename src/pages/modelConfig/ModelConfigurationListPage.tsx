@@ -1,17 +1,14 @@
-import { Button, IconButton, Stack } from '@allenai/varnish-ui';
+import { Button, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import EditIcon from '@mui/icons-material/Edit';
-import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
-import { GridList } from '@/components/Grid/GridList';
-import { GridListItem } from '@/components/Grid/GridListItem';
 import { MetaTags } from '@/components/MetaTags';
 import { useAdminModels } from '@/pages/modelConfig/components/useGetAdminModels';
 import { css } from '@/styled-system/css';
+
+import { ModelConfigurationList } from './ModelConfigurationList';
 
 const containerStyle = css({
     gridArea: 'content',
@@ -31,7 +28,8 @@ const modelGridStyle = css({
     borderRadius: 'sm',
     padding: 'var(--spacing-2)',
     gap: 'var(--spacing-2)',
-    width: '[469px]',
+    width: '[100%]',
+    maxWidth: '[469px]',
     maxHeight: '[425px]',
     overflow: 'auto',
 });
@@ -122,29 +120,16 @@ export const ModelConfigurationListPage = () => {
                         <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
                             Add New Model
                         </Button>
-                        <GridList
-                            className={modelGridStyle}
+                        <ModelConfigurationList
                             items={list.items}
-                            dragAndDropHooks={dragAndDropHooks}>
-                            {(item) => (
-                                <GridListItem className={gridCell} key={item.id}>
-                                    <div className={gridCellLeft}>
-                                        <IconButton variant="text" className={iconButton}>
-                                            <MenuIcon />
-                                        </IconButton>
-                                        <p className={body1Text}>{item.name}</p>
-                                    </div>
-                                    <div className={gridCellRight}>
-                                        <IconButton variant="text" className={iconButton}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton variant="text" className={iconButton}>
-                                            <DeleteOutlineIcon />
-                                        </IconButton>
-                                    </div>
-                                </GridListItem>
-                            )}
-                        </GridList>
+                            dragAndDropHooks={dragAndDropHooks}
+                            gridCellClass={gridCell}
+                            gridCellLeftClass={gridCellLeft}
+                            gridCellRightClass={gridCellRight}
+                            body1TextClass={body1Text}
+                            iconButtonClass={iconButton}
+                            className={modelGridStyle}
+                        />
                         {hasReordered && (
                             <Button
                                 variant="contained"
