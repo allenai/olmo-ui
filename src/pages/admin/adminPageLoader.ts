@@ -1,14 +1,18 @@
 import { type LoaderFunction, redirect } from 'react-router-dom';
 
 import { auth0Client } from '@/api/auth/auth0Client';
+import { appContext } from '@/AppContext';
 import { links } from '@/Links';
 
 export const adminPageLoader: LoaderFunction = async ({ request }) => {
     const isAuthenticated = await auth0Client.getToken();
     const userInfo = await auth0Client.getUserInfo();
-    const permissions = await auth0Client.getPermissions();
 
-    if (!isAuthenticated || !userInfo) {
+    const hasAdminPermission = appContext
+        .getState()
+        .userInfo?.permissions?.some((permission) => permission === 'write:model-config');
+
+    if (!isAuthenticated || !userInfo || !hasAdminPermission) {
         return redirect(links.login(request.url));
     }
 

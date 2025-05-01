@@ -1,7 +1,4 @@
 import { Auth0Client as Auth0ClientClass, createAuth0Client, User } from '@auth0/auth0-spa-js';
-import { c } from 'node_modules/vite/dist/node/types.d-AKzkD8vd';
-
-import { decodeToken } from './auth-utils';
 
 // adapted from https://github.com/brophdawg11/react-router-auth0-example/blob/91ad7ba916d8a3ecc348c037e1e534b4d87360cd/src/auth.ts
 
@@ -64,28 +61,6 @@ class Auth0Client {
         const client = await this.#getClient();
 
         return await client.getUser();
-    };
-
-    getPermissions = async () => {
-        const client = await this.#getClient();
-        const claims = await client.getIdTokenClaims();
-
-        if (!claims) {
-            return [];
-        }
-
-        const rawToken = claims.__raw;
-        const decodedToken = decodeToken(rawToken);
-
-        if (
-            decodedToken != null &&
-            typeof decodedToken === 'object' &&
-            'permissions' in decodedToken
-        ) {
-            return decodedToken.permissions;
-        } else {
-            return [];
-        }
     };
 
     login = async (redirectTo: string): Promise<void> => {
