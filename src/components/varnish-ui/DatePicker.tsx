@@ -44,7 +44,7 @@ const DatePicker = ({
             data-color-mode="dark"
             className={cx(recipeClassNames.root, className)}
             {...localProps}>
-            <Label>Time available to all users</Label>
+            <Label className={cx(recipeClassNames.label)}>Time available to all users</Label>
             <AriaGroup className={cx(recipeClassNames.group, groupClassName)}>
                 <AriaDateInput className={cx(recipeClassNames.dateInput)}>
                     {(segment) => <AriaDateSegment segment={segment} />}

@@ -20,7 +20,10 @@ const datePickerRecipe = sva({
     ],
     base: {
         root: {
-            color: 'gray.60',
+            color: 'text.primary',
+        },
+        label: {
+            color: 'text.primary',
         },
         group: {
             display: 'flex',
@@ -60,7 +63,6 @@ const datePickerRecipe = sva({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            width: '[100%]',
             margin: '[0 4px .5rem]',
         },
         previous: {
@@ -85,14 +87,11 @@ const datePickerRecipe = sva({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width:'[9]',
-            height: '[9]',
         },
         calendarGrid: {
             width: '[100%]',
             borderCollapse: 'separate',
             borderSpacing: '1',
-         
         },
     },
 });
