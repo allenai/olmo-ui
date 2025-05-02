@@ -52,21 +52,19 @@ const body1Text = css({
     color: 'text.primary',
 });
 
-const iconButton = css({});
-
 export const ModelConfigurationListItem = ({ item }: Props) => (
     <GridListItem className={gridCell} id={item.id}>
         <div className={gridCellLeft}>
-            <IconButton variant="text" className={iconButton}>
+            <IconButton variant="text">
                 <MenuIcon />
             </IconButton>
             <p className={body1Text}>{item.name}</p>
         </div>
         <div className={gridCellRight}>
-            <IconButton variant="text" className={iconButton}>
+            <IconButton variant="text">
                 <EditIcon />
             </IconButton>
-            <IconButton variant="text" className={iconButton}>
+            <IconButton variant="text">
                 <DeleteOutlineIcon />
             </IconButton>
         </div>
