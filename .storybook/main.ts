@@ -12,7 +12,7 @@ const config: StorybookConfig = {
     options: {
       docs: false,
     },
-  }, '@storybook/addon-onboarding', '@storybook/experimental-addon-test'],
+  }, '@storybook/addon-onboarding', '@storybook/experimental-addon-test', '@storybook/addon-themes'],
   framework: {
     name: '@storybook/react-vite',
     options: {},
