@@ -4,6 +4,9 @@ import {
     Calendar as AriaCalendar,
     CalendarCell as AriaCalendarCell,
     CalendarGrid as AriaCalendarGrid,
+    CalendarGridBody as AriaCalendarGridBody,
+    CalendarGridHeader as AriaCalendarGridHeader,
+    CalendarHeaderCell as AriaCalendarHeaderCell,
     DateInput as AriaDateInput,
     DatePicker as AriaDatePicker,
     DateSegment as AriaDateSegment,
@@ -49,23 +52,37 @@ const DatePicker = ({
                 <Button className={cx(recipeClassNames.button)}>▼</Button>
             </AriaGroup>
             <Popover className={cx(recipeClassNames.popover)}>
-                <Dialog>
+                <Dialog className={cx(recipeClassNames.dialog)}>
                     <AriaCalendar className={cx(recipeClassNames.calendar)}>
                         <header className={cx(recipeClassNames.calendarHeader)}>
                             <Button
-                                color="primary"
                                 variant="contained"
                                 size="small"
-                                slot="previous">
+                                slot="previous"
+                                className={cx(recipeClassNames.previous)}>
                                 ◀
                             </Button>
                             <AriaHeading />
-                            <Button color="primary" variant="contained" size="small" slot="next">
+                            <Button
+                                variant="contained"
+                                size="small"
+                                slot="next"
+                                className={cx(recipeClassNames.next)}>
                                 ▶
                             </Button>
                         </header>
-                        <AriaCalendarGrid>
-                            {(date) => <AriaCalendarCell date={date} />}
+                        <AriaCalendarGrid className={cx(recipeClassNames.calendarGrid)}>
+                            <AriaCalendarGridHeader>
+                                {(day) => <AriaCalendarHeaderCell>{day}</AriaCalendarHeaderCell>}
+                            </AriaCalendarGridHeader>
+                            <AriaCalendarGridBody>
+                                {(date) => (
+                                    <AriaCalendarCell
+                                        date={date}
+                                        className={cx(recipeClassNames.calendarCell)}
+                                    />
+                                )}
+                            </AriaCalendarGridBody>
                         </AriaCalendarGrid>
                     </AriaCalendar>
                 </Dialog>

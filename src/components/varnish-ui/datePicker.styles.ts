@@ -12,6 +12,11 @@ const datePickerRecipe = sva({
         'dateInput',
         'button',
         'calendarHeader',
+        'previous',
+        'next',
+        'dialog',
+        'calendarGrid',
+        'calendarCell',
     ],
     base: {
         root: {
@@ -34,6 +39,8 @@ const datePickerRecipe = sva({
             '& button': {
                 height: '[fit-content]',
             },
+            width: '[fit-content]',
+            maxWidth: '[100%]',
         },
         dateInput: {
             padding: '[4px 2.5rem 4px 8px]',
@@ -53,6 +60,41 @@ const datePickerRecipe = sva({
         calendarHeader: {
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '[100%]',
+            margin: '[0 4px .5rem]',
+        },
+        previous: {
+            width: '[2rem]',
+            height: '[2rem]',
+            padding: '0',
+            backgroundColor: '[transparent]',
+            border: '1px solid',
+            borderColor: 'gray.60',
+        },
+        next: {
+            width: '[2rem]',
+            height: '[2rem]',
+            padding: '0',
+            backgroundColor: '[transparent]',
+            border: '1px solid',
+            borderColor: 'gray.60',
+        },
+        dialog: {
+            padding: '[30px !important]',
+        },
+        popover: {
+            '&[data-trigger=DatePicker]': {
+                maxWidth: '[unset]',
+            },
+        },
+        calendarCell: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        calendarGrid: {
+            width: '[100%]',
         },
     },
 });
