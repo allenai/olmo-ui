@@ -26,4 +26,3 @@ type Story = StoryObj<typeof DatePicker>;
 export const Primary: Story = {
     args: {},
 };
-

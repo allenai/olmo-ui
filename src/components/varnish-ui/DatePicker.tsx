@@ -7,9 +7,9 @@ import {
     DateInput as AriaDateInput,
     DatePicker as AriaDatePicker,
     DateSegment as AriaDateSegment,
+    DateValue,
     Group as AriaGroup,
     Heading as AriaHeading,
-    DateValue,
 } from 'react-aria-components';
 
 import datePickerRecipe, { DatePickerRecipeProps } from './datePicker.styles';
@@ -22,7 +22,14 @@ type DatePickerProps = {
     groupClassName?: string;
 } & DatePickerRecipeProps;
 
-const DatePicker = ({ value, placeHolder, children, className, groupClassName, ...rest }: DatePickerProps) => {
+const DatePicker = ({
+    value,
+    placeHolder,
+    children,
+    className,
+    groupClassName,
+    ...rest
+}: DatePickerProps) => {
     const [variantProps, localProps] = datePickerRecipe.splitVariantProps(rest);
     const recipeClassNames = datePickerRecipe(variantProps);
     console.log(recipeClassNames.group);
@@ -36,10 +43,12 @@ const DatePicker = ({ value, placeHolder, children, className, groupClassName, .
             {...localProps}>
             <Label>Time available to all users</Label>
             <AriaGroup className={cx(recipeClassNames.group, groupClassName)}>
-                <AriaDateInput className={cx(recipeClassNames.dateInput)}>{(segment) => <AriaDateSegment segment={segment} />}</AriaDateInput>
+                <AriaDateInput className={cx(recipeClassNames.dateInput)}>
+                    {(segment) => <AriaDateSegment segment={segment} />}
+                </AriaDateInput>
                 <Button className={cx(recipeClassNames.button)}>▼</Button>
             </AriaGroup>
-            <Popover className={cx(recipeClassNames.popover)} >
+            <Popover className={cx(recipeClassNames.popover)}>
                 <Dialog>
                     <AriaCalendar className={cx(recipeClassNames.calendar)}>
                         <header className={cx(recipeClassNames.calendarHeader)}>

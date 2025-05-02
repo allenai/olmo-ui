@@ -4,9 +4,9 @@ import { useAppContext } from '@/AppContext';
 import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 
+import { DatePicker } from '../varnish-ui/DatePicker';
 import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
-import { DatePicker } from '../varnish-ui/DatePicker';
 
 export const ThreadPlaceholder = () => {
     const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);

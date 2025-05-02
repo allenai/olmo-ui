@@ -2,7 +2,17 @@ import { sva } from '@allenai/varnish-panda-runtime/css';
 import type { RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 
 const datePickerRecipe = sva({
-    slots: ['root', 'label', 'group', 'input', 'popover','calendar', 'dateInput', 'button', 'calendarHeader'],
+    slots: [
+        'root',
+        'label',
+        'group',
+        'input',
+        'popover',
+        'calendar',
+        'dateInput',
+        'button',
+        'calendarHeader',
+    ],
     base: {
         root: {
             color: 'gray.60',
@@ -23,7 +33,7 @@ const datePickerRecipe = sva({
             flexDir: 'column',
             '& button': {
                 height: '[fit-content]',
-            }
+            },
         },
         dateInput: {
             padding: '[4px 2.5rem 4px 8px]',
@@ -43,7 +53,7 @@ const datePickerRecipe = sva({
         calendarHeader: {
             display: 'flex',
             alignItems: 'center',
-        }
+        },
     },
 });
 
