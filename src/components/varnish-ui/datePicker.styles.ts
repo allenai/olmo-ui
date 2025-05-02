@@ -21,16 +21,22 @@ const datePickerRecipe = sva({
     base: {
         root: {
             color: 'text.primary',
+            _light: {
+                color: 'text.primary.reversed',
+            },
         },
         label: {
             color: 'text.primary',
+            _light: {
+                color: 'text.primary.reversed',
+            },
         },
         group: {
             display: 'flex',
             width: '[fit-content]',
             alignItems: 'center',
             border: '1px solid',
-            borderColor: 'gray.100',
+            borderColor: 'gray.30',
             borderRadius: 'sm',
             padding: '1',
         },
@@ -51,13 +57,14 @@ const datePickerRecipe = sva({
             width: '[fit-content]',
         },
         button: {
-            background: '[white]',
-            color: 'extra-dark-teal.100',
             border: '2px solid',
             borderColor: 'gray.100',
             borderRadius: 'sm',
             padding: '[0]',
             boxSizing: '[content-box]',
+            _light: {
+                color: 'text.primary.reversed',
+            },
         },
         calendarHeader: {
             display: 'flex',
