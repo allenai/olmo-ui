@@ -24,5 +24,7 @@ export default meta;
 type Story = StoryObj<typeof DatePicker>;
 
 export const Primary: Story = {
-    args: {},
+    args: {
+        labelText: 'Time available to all users',
+    },
 };
