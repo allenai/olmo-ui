@@ -29,6 +29,7 @@ const datePickerRecipe = sva({
             border: '1px solid',
             borderColor: 'gray.100',
             borderRadius: 'sm',
+            padding: '1',
         },
         input: {
             padding: '[4px 2.5rem 4px 8px]',
@@ -39,14 +40,12 @@ const datePickerRecipe = sva({
             '& button': {
                 height: '[fit-content]',
             },
-            width: '[fit-content]',
-            maxWidth: '[100%]',
+            width: '[250px]',
         },
         dateInput: {
             padding: '[4px 2.5rem 4px 8px]',
             display: 'inline',
             width: '[fit-content]',
-            background: '[black]',
         },
         button: {
             background: '[white]',
@@ -80,21 +79,20 @@ const datePickerRecipe = sva({
             border: '1px solid',
             borderColor: 'gray.60',
         },
-        dialog: {
-            padding: '[30px !important]',
-        },
-        popover: {
-            '&[data-trigger=DatePicker]': {
-                maxWidth: '[unset]',
-            },
-        },
+        dialog: {},
+        popover: {},
         calendarCell: {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            width:'[9]',
+            height: '[9]',
         },
         calendarGrid: {
             width: '[100%]',
+            borderCollapse: 'separate',
+            borderSpacing: '1',
+         
         },
     },
 });
