@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import type { ReactNode } from 'react';
-import { createBrowserRouter, Navigate, Outlet, redirect, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
     loginAction,
@@ -9,7 +9,6 @@ import {
     logoutAction,
     requireAuthorizationLoader,
 } from './api/auth/auth-loaders';
-import { auth0Client } from './api/auth/auth0Client';
 import { queryClient } from './api/query-client';
 import { userInfoLoader } from './api/user-info-loader';
 import { AppWrapper } from './components/AppWrapper';
@@ -23,12 +22,13 @@ import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
+import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
+import { RootModelConfigurationPage } from './pages/admin/modelConfig/RootModelConfigurationPage';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { createModelAction, modelsLoader } from './pages/modelConfig/queryTestLoader';
-import { RootModelConfigurationPage } from './pages/modelConfig/RootModelConfigurationPage';
 import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
@@ -174,35 +174,7 @@ export const routes: RouteObject[] = [
                     },
                     {
                         path: links.admin,
-                        loader: async ({ request }) => {
-                            const isAuthenticated = await auth0Client.getToken();
-                            const userInfo = await auth0Client.getUserInfo();
-
-                            if (!isAuthenticated || !userInfo) {
-                                return redirect(links.login());
-                            }
-
-                            const url = new URL(request.url);
-
-                            const isModelConfigEnabled =
-                                process.env.IS_MODEL_CONFIG_ENABLED === 'true';
-
-                            // Note: Github(#338) we need to check for user permission
-                            // before we allow the redirection to the page.
-                            // since we dont have any page for the admin page and if the
-                            // flag is not enabled we need to redirect to the home page.
-                            if (!isModelConfigEnabled) {
-                                // React-router recommends throwing a response
-                                // eslint-disable-next-line @typescript-eslint/only-throw-error
-                                throw new Response('Not Found', { status: 404 });
-                            }
-
-                            if (url.pathname === links.admin) {
-                                return redirect(links.modelConfiguration);
-                            }
-
-                            return null;
-                        },
+                        loader: adminPageLoader,
                         children: [
                             {
                                 path: links.modelConfiguration,

@@ -1,13 +1,11 @@
 import { ClientBase } from './ClientBase';
+import type { SchemaAuthenticatedClient } from './playgroundApi/playgroundApiSchema';
 
 export const WhoamiApiUrl = `/v3/whoami`;
 export const AcceptTermsAndConditionsUrl = `/v3/user`;
 export const MigrateFromAnonymousUserUrl = '/v3/migrate-user';
 
-export interface User {
-    client: string;
-    hasAcceptedTermsAndConditions: boolean;
-}
+export type User = SchemaAuthenticatedClient;
 
 interface MigrationResponse {
     updated_user?: User | null;

@@ -1,4 +1,5 @@
 import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-material';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
@@ -8,6 +9,7 @@ import { ComponentProps } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import Ai2Icon from '@/components/assets/ai2.svg?react';
 import DiscordIcon from '@/components/assets/discord.svg?react';
@@ -52,6 +54,7 @@ export const NavigationDrawer = ({
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
+    const userAuthInfo = useUserAuthInfo();
 
     const { isDatasetExplorerEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
@@ -108,6 +111,16 @@ export const NavigationDrawer = ({
                             variant="footer">
                             FAQ
                         </NavigationLink>
+                        {userAuthInfo.userInfo?.permissions?.some(
+                            (permission) => permission === 'write:model-config'
+                        ) && (
+                            <NavigationLink
+                                icon={<AdminPanelSettingsOutlinedIcon />}
+                                selected={curriedDoesMatchPath(links.admin)}
+                                href={links.admin}>
+                                Admin
+                            </NavigationLink>
+                        )}
                     </Stack>
                     <Stack
                         marginBlockStart="auto"

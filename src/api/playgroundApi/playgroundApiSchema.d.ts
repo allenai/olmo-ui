@@ -121,6 +121,42 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/v3/whoami': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /** Get info for the current user */
+        readonly get: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            readonly requestBody?: never;
+            readonly responses: {
+                /** @description A AuthenticatedClient */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['AuthenticatedClient'];
+                    };
+                };
+            };
+        };
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly '/v4/message/stream': {
         readonly parameters: {
             readonly query?: never;
@@ -314,6 +350,20 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AuthenticatedClient */
+        readonly AuthenticatedClient: {
+            /** Client */
+            readonly client: string;
+            /** Hasacceptedtermsandconditions */
+            readonly hasAcceptedTermsAndConditions: boolean;
+            /**
+             * Id
+             * @default null
+             */
+            readonly id?: string | null;
+            /** Permissions */
+            readonly permissions?: readonly string[];
+        };
         /** CreateMessageRequestV3 */
         readonly CreateMessageRequestV3: {
             /**
@@ -984,6 +1034,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaCreateMessageRequestV3 = components['schemas']['CreateMessageRequestV3'];
 export type SchemaCreateMessageRequestV4 = components['schemas']['CreateMessageRequestV4'];
 export type SchemaCreateMultiModalModelConfigRequest =

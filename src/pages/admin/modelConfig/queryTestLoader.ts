@@ -1,10 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { ActionFunction, LoaderFunction } from 'react-router-dom';
 
-import {
-    playgroundApiClient,
-    playgroundApiQueryClient,
-} from '@/api/playgroundApi/playgroundApiClient';
+import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
 import { getAdminModelsQueryOptions } from './components/useGetAdminModels';
@@ -12,9 +9,7 @@ import { getAdminModelsQueryOptions } from './components/useGetAdminModels';
 export const modelsLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async () => {
-        await queryClient.ensureQueryData(
-            playgroundApiQueryClient.queryOptions('get', '/v4/models/')
-        );
+        await queryClient.ensureQueryData(getAdminModelsQueryOptions);
         return null;
     };
 
