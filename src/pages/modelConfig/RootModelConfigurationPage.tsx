@@ -1,10 +1,5 @@
-import { ModelsList, QueryTestForm } from './components/QueryTest';
+import { ModelConfigurationListPage } from './ModelConfigurationListPage';
 
 export const RootModelConfigurationPage = () => {
-    return (
-        <>
-            <ModelsList />
-            <QueryTestForm />
-        </>
-    );
+    return <ModelConfigurationListPage />;
 };
