@@ -94,6 +94,11 @@ const datePickerRecipe = sva({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            '&[data-selected]': {
+                background: 'accent.tertiary',
+                border: '1px solid',
+                borderColor: 'gray.30',
+            },
         },
         calendarGrid: {
             width: '[100%]',
