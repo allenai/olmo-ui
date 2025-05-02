@@ -6,7 +6,7 @@ import { useListData } from 'react-stately';
 
 import { ModelConfigurationList } from '@/components/Grid/ModelConfigurationList';
 import { MetaTags } from '@/components/MetaTags';
-import { useAdminModels } from '@/pages/modelConfig/components/useGetAdminModels';
+import { useAdminModels } from '@/pages/admin/modelConfig/components/useGetAdminModels';
 import { css } from '@/styled-system/css';
 
 const containerStyle = css({
