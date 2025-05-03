@@ -1,20 +1,14 @@
 import { cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, Dialog, Label, Popover } from '@allenai/varnish-ui';
 import {
-    Calendar as AriaCalendar,
-    CalendarCell as AriaCalendarCell,
-    CalendarGrid as AriaCalendarGrid,
-    CalendarGridBody as AriaCalendarGridBody,
-    CalendarGridHeader as AriaCalendarGridHeader,
-    CalendarHeaderCell as AriaCalendarHeaderCell,
     DateInput as AriaDateInput,
     DatePicker as AriaDatePicker,
     DateSegment as AriaDateSegment,
     DateValue,
     Group as AriaGroup,
-    Heading as AriaHeading,
 } from 'react-aria-components';
 
+import Calendar from './Calendar';
 import datePickerRecipe, { DatePickerRecipeProps } from './datePicker.styles';
 
 type DatePickerProps = {
@@ -37,7 +31,6 @@ const DatePicker = ({
 }: DatePickerProps) => {
     const [variantProps, localProps] = datePickerRecipe.splitVariantProps(rest);
     const recipeClassNames = datePickerRecipe(variantProps);
-    console.log(recipeClassNames.group);
 
     return (
         <AriaDatePicker
@@ -55,38 +48,15 @@ const DatePicker = ({
             </AriaGroup>
             <Popover className={cx(recipeClassNames.popover)}>
                 <Dialog className={cx(recipeClassNames.dialog)}>
-                    <AriaCalendar className={cx(recipeClassNames.calendar)}>
-                        <header className={cx(recipeClassNames.calendarHeader)}>
-                            <Button
-                                variant="contained"
-                                size="small"
-                                slot="previous"
-                                className={cx(recipeClassNames.previous)}>
-                                ◀
-                            </Button>
-                            <AriaHeading />
-                            <Button
-                                variant="contained"
-                                size="small"
-                                slot="next"
-                                className={cx(recipeClassNames.next)}>
-                                ▶
-                            </Button>
-                        </header>
-                        <AriaCalendarGrid className={cx(recipeClassNames.calendarGrid)}>
-                            <AriaCalendarGridHeader>
-                                {(day) => <AriaCalendarHeaderCell>{day}</AriaCalendarHeaderCell>}
-                            </AriaCalendarGridHeader>
-                            <AriaCalendarGridBody>
-                                {(date) => (
-                                    <AriaCalendarCell
-                                        date={date}
-                                        className={cx(recipeClassNames.calendarCell)}
-                                    />
-                                )}
-                            </AriaCalendarGridBody>
-                        </AriaCalendarGrid>
-                    </AriaCalendar>
+                    <Calendar
+                        classNames={{
+                            calendar: recipeClassNames.calendar,
+                            calendarHeader: recipeClassNames.calendarHeader,
+                            navButton: recipeClassNames.navButton,
+                            calendarGrid: recipeClassNames.calendarGrid,
+                            calendarCell: recipeClassNames.calendarCell,
+                        }}
+                    />
                 </Dialog>
             </Popover>
         </AriaDatePicker>
