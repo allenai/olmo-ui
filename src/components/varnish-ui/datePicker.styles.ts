@@ -6,7 +6,6 @@ const datePickerRecipe = sva({
         'root',
         'label',
         'group',
-        'input',
         'popover',
         'calendar',
         'dateInput',
@@ -38,9 +37,6 @@ const datePickerRecipe = sva({
             borderColor: 'gray.30',
             borderRadius: 'sm',
             padding: '1',
-        },
-        input: {
-            padding: '[4px 2.5rem 4px 8px]',
         },
         calendar: {
             display: 'flex',
