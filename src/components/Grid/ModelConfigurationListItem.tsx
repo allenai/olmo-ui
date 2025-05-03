@@ -6,6 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { GridListItem } from 'react-aria-components';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { useDeleteModel } from '@/pages/admin/modelConfig/components/useDeleteAdminModel';
 
 interface Props {
     item: SchemaResponseModel;
@@ -52,21 +53,23 @@ const body1Text = css({
     color: 'text.primary',
 });
 
-export const ModelConfigurationListItem = ({ item }: Props) => (
-    <GridListItem className={gridCell} id={item.id}>
-        <div className={gridCellLeft}>
-            <IconButton variant="text">
-                <MenuIcon />
-            </IconButton>
-            <p className={body1Text}>{item.name}</p>
-        </div>
-        <div className={gridCellRight}>
-            <IconButton variant="text">
-                <EditIcon />
-            </IconButton>
-            <IconButton variant="text">
-                <DeleteOutlineIcon />
-            </IconButton>
-        </div>
-    </GridListItem>
-);
+export const ModelConfigurationListItem = ({ item }: Props) => {
+    return (
+        <GridListItem className={gridCell} id={item.id}>
+            <div className={gridCellLeft}>
+                <IconButton variant="text">
+                    <MenuIcon />
+                </IconButton>
+                <p className={body1Text}>{item.name}</p>
+            </div>
+            <div className={gridCellRight}>
+                <IconButton variant="text">
+                    <EditIcon />
+                </IconButton>
+                <IconButton variant="text" onClick={() => useDeleteModel(item.id)}>
+                    <DeleteOutlineIcon />
+                </IconButton>
+            </div>
+        </GridListItem>
+    );
+};
