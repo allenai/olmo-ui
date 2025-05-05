@@ -19,6 +19,12 @@ const contentStyle = css({
     height: '[100%]',
 });
 
+const buttonGroup = css({
+    display: 'flex',
+    flexFlow: 'row wrap',
+    gap: '2',
+});
+
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
     const [userIsReordering, setUserIsReordering] = useState(false);
@@ -34,26 +40,28 @@ export const ModelConfigurationListPage = () => {
     return (
         <>
             <div className={contentStyle}>
-                <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
-                    Add New Model
-                </Button>
+                <div className={buttonGroup}>
+                    <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
+                        Add New Model
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        isDisabled={userIsReordering}
+                        onClick={() => {
+                            setUserIsReordering(true);
+                        }}>
+                        Reorder models
+                    </Button>
+                    <Button
+                        isDisabled={!userIsReordering}
+                        onClick={() => {
+                            setUserIsReordering(false);
+                        }}>
+                        Save model order
+                    </Button>
+                </div>
                 <ListComponent items={data} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    isDisabled={userIsReordering}
-                    onClick={() => {
-                        setUserIsReordering(true);
-                    }}>
-                    Reorder models
-                </Button>
-                <Button
-                    isDisabled={!userIsReordering}
-                    onClick={() => {
-                        setUserIsReordering(false);
-                    }}>
-                    Save model order
-                </Button>
             </div>
         </>
     );
