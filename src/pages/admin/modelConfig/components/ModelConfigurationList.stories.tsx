@@ -1,6 +1,4 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { useDragAndDrop } from 'react-aria-components';
-import { useListData } from 'react-stately';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
@@ -63,6 +61,7 @@ const mockModels: SchemaResponseModel[] = [
         updatedTime: '2025-04-25T21:26:41.187139+00:00',
     },
 ];
+
 const meta: Meta<typeof ModelConfigurationList> = {
     title: 'Components/ModelConfigurationList',
     component: ModelConfigurationList,
@@ -73,30 +72,6 @@ export default meta;
 
 type Story = StoryObj<typeof ModelConfigurationList>;
 
-const WithDragAndDropWrapper = () => {
-    const list = useListData({
-        initialItems: mockModels,
-        getKey: (item) => item.id,
-    });
-
-    const { dragAndDropHooks } = useDragAndDrop({
-        getItems: (keys) =>
-            [...keys].map((key) => {
-                const item = list.getItem(key);
-                return { 'text/plain': item?.name || '' };
-            }),
-        onReorder(e) {
-            if (e.target.dropPosition === 'before') {
-                list.moveBefore(e.target.key, e.keys);
-            } else if (e.target.dropPosition === 'after') {
-                list.moveAfter(e.target.key, e.keys);
-            }
-        },
-    });
-
-    return <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />;
-};
-
 export const Default: Story = {
-    render: () => <WithDragAndDropWrapper />,
+    render: () => <ModelConfigurationList items={mockModels} />,
 };

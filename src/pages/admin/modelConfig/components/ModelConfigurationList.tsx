@@ -5,7 +5,7 @@ import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchem
 
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
-const modelGridStyle = css({
+const modelListContainer = css({
     display: 'flex',
     flexDirection: 'column',
     border: '1px solid',
@@ -17,18 +17,25 @@ const modelGridStyle = css({
     maxWidth: '[469px]',
     flex: '1',
     overflow: 'auto',
+
+    '& .react-aria-DropIndicator': {
+        '&[data-drop-target]': {
+            outline: '1px solid red',
+            outlineColor: 'accent.tertiary',
+        },
+    },
 });
 
 interface ModelConfigurationListProps {
     items: SchemaResponseModel[];
-    dragAndDropHooks: DragAndDropHooks;
+    dragAndDropHooks?: DragAndDropHooks;
 }
 
 export const ModelConfigurationList = ({
     items,
     dragAndDropHooks,
 }: ModelConfigurationListProps) => (
-    <GridList items={items} dragAndDropHooks={dragAndDropHooks} className={modelGridStyle}>
+    <GridList items={items} dragAndDropHooks={dragAndDropHooks} className={modelListContainer}>
         {(item) => <ModelConfigurationListItem key={item.id} item={item} />}
     </GridList>
 );
