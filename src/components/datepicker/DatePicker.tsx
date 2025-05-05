@@ -3,10 +3,10 @@ import { Button, Dialog, Label, Popover } from '@allenai/varnish-ui';
 import {
     DateInput as AriaDateInput,
     DatePicker as AriaDatePicker,
+    DatePickerProps as AriaDatePickerProps,
     DateSegment as AriaDateSegment,
     DateValue,
     Group as AriaGroup,
-    DatePickerProps as AriaDatePickerProps,
 } from 'react-aria-components';
 
 import Calendar from './Calendar';
@@ -19,8 +19,8 @@ type DatePickerProps<T extends DateValue = DateValue> = {
     className?: string;
     groupClassName?: string;
     labelText?: string;
-} & DatePickerRecipeProps & AriaDatePickerProps<T>;
-
+} & DatePickerRecipeProps &
+    AriaDatePickerProps<T>;
 
 const DatePicker = ({
     value,

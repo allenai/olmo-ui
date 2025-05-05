@@ -1,10 +1,10 @@
 import { getTheme } from '@allenai/varnish2/theme';
+import { now } from '@internationalized/date';
 import { ThemeProvider } from '@mui/material/styles';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { uiRefreshOlmoTheme } from '../../olmoTheme';
 import { DatePicker } from './DatePicker';
-import { now } from '@internationalized/date';
 
 const theme = getTheme(uiRefreshOlmoTheme);
 
