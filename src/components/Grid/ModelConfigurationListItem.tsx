@@ -54,6 +54,8 @@ const body1Text = css({
 });
 
 export const ModelConfigurationListItem = ({ item }: Props) => {
+    const { mutate: deleteModel } = useDeleteModel();
+
     return (
         <GridListItem className={gridCell} id={item.id}>
             <div className={gridCellLeft}>
@@ -66,7 +68,11 @@ export const ModelConfigurationListItem = ({ item }: Props) => {
                 <IconButton variant="text">
                     <EditIcon />
                 </IconButton>
-                <IconButton variant="text" onClick={() => useDeleteModel(item.id)}>
+                <IconButton
+                    variant="text"
+                    onClick={() => {
+                        deleteModel(item.id);
+                    }}>
                     <DeleteOutlineIcon />
                 </IconButton>
             </div>
