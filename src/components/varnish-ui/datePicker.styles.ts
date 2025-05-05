@@ -41,7 +41,7 @@ const datePickerRecipe = sva({
             width: '[16rem]',
         },
         dateInput: {
-            padding: '[0.25rem 2.5rem 0.25rem 0.5rem]',
+            padding: '2',
             display: 'inline',
             width: '[fit-content]',
         },
