@@ -1,7 +1,9 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { useState } from 'react';
 import { DragAndDropHooks, GridList } from 'react-aria-components';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { deleteModel } from '@/pages/admin/modelConfig/deleteAdminModel';
 
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
