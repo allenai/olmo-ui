@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
 
-import { ModelConfigurationList } from '@/pages/admin/modelConfig/components/ModelConfigurationList';
+import { ModelConfigurationList } from '@/pages/admin/modelConfig/ModelConfigurationListPage/components/ModelConfigurationList';
 
 interface ModelConfigurationListWithReorderProps
     extends ComponentProps<typeof ModelConfigurationList> {

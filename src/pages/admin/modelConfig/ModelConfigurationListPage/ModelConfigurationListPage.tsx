@@ -3,8 +3,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 
 import { MetaTags } from '@/components/MetaTags';
-import { ModelConfigurationList } from '@/pages/admin/modelConfig/components/ModelConfigurationList';
-import { useAdminModels } from '@/pages/admin/modelConfig/components/useGetAdminModels';
+import { ModelConfigurationList } from '@/pages/admin/modelConfig/ModelConfigurationListPage/components/ModelConfigurationList';
+import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 import { css } from '@/styled-system/css';
 
 import { ModelConfigurationListWithReorder } from './components/ModelConfigurationListWithReorder';

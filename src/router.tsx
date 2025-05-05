@@ -24,8 +24,8 @@ import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
 import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
-import { RootModelConfigurationPage } from './pages/admin/modelConfig/RootModelConfigurationPage';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
@@ -180,7 +180,7 @@ export const routes: RouteObject[] = [
                         children: [
                             {
                                 path: links.modelConfiguration,
-                                element: <RootModelConfigurationPage />,
+                                element: <ModelConfigurationListPage />,
                                 loader: modelsLoader(queryClient),
                                 action: createModelAction(queryClient),
                                 handle: {
