@@ -63,8 +63,6 @@ const datePickerRecipe = sva({
             height: '[2rem]',
             padding: '0',
             backgroundColor: '[transparent]',
-            border: '1px solid',
-            borderColor: 'gray.60',
         },
         dialog: {},
         popover: {},
@@ -73,7 +71,10 @@ const datePickerRecipe = sva({
             alignItems: 'center',
             justifyContent: 'center',
             '&[data-selected]': {
-                background: 'accent.tertiary',
+                background: 'accent.primary',
+                _dark: {
+                    background: 'accent.secondary',
+                },
                 border: '1px solid',
                 borderColor: 'gray.30',
             },
