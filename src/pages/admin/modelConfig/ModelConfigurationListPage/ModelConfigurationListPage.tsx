@@ -33,7 +33,6 @@ export const ModelConfigurationListPage = () => {
 
     return (
         <>
-            <MetaTags />
             <div className={contentStyle}>
                 <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
                     Add New Model

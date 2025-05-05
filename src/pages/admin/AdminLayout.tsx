@@ -10,8 +10,11 @@ const containerStyle = css({
 
 export const AdminLayout = () => {
     return (
-        <div className={containerStyle}>
-            <Outlet />
-        </div>
+        <>
+            <MetaTags />
+            <div className={containerStyle}>
+                <Outlet />
+            </div>
+        </>
     );
 };
