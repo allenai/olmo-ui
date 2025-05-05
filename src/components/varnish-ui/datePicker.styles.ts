@@ -18,16 +18,10 @@ const datePickerRecipe = sva({
     ],
     base: {
         root: {
-            color: 'text.primary',
-            _light: {
-                color: 'text.primary.reversed',
-            },
+            color: 'text',
         },
         label: {
-            color: 'text.primary',
-            _light: {
-                color: 'text.primary.reversed',
-            },
+            color: 'text',
         },
         group: {
             display: 'flex',
@@ -56,9 +50,7 @@ const datePickerRecipe = sva({
             borderColor: 'gray.100',
             borderRadius: 'sm',
             padding: '[0]',
-            _light: {
-                color: 'text.primary.reversed',
-            },
+            color: 'text',
         },
         calendarHeader: {
             display: 'flex',

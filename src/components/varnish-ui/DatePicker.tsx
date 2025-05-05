@@ -36,7 +36,6 @@ const DatePicker = ({
         <AriaDatePicker
             value={value}
             placeholderValue={placeHolder}
-            data-color-mode="dark"
             className={cx(recipeClassNames.root, className)}
             {...localProps}>
             <Label className={cx(recipeClassNames.label)}>{labelText}</Label>
