@@ -92,6 +92,7 @@
     "@allenai/eslint-config-varnish": "^2.0.3",
     "@happy-dom/jest-environment": "^16.5.3",
     "@hookform/devtools": "^4.3.1",
+    "@internationalized/date": "^3.8.0",
     "@pandacss/eslint-plugin": "^0.2.9",
     "@playwright/test": "^1.52.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",

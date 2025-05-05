@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { uiRefreshOlmoTheme } from '../../olmoTheme';
 import { DatePicker } from './DatePicker';
+import { now } from '@internationalized/date';
 
 const theme = getTheme(uiRefreshOlmoTheme);
 
@@ -27,5 +28,6 @@ export const Primary: Story = {
     args: {
         labelText: 'Time available to all users',
         granularity: 'second',
+        placeholderValue: now('America/New_York'),
     },
 };
