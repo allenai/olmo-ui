@@ -26,5 +26,6 @@ type Story = StoryObj<typeof DatePicker>;
 export const Primary: Story = {
     args: {
         labelText: 'Time available to all users',
+        granularity: 'second',
     },
 };

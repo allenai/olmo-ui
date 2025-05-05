@@ -6,19 +6,21 @@ import {
     DateSegment as AriaDateSegment,
     DateValue,
     Group as AriaGroup,
+    DatePickerProps as AriaDatePickerProps,
 } from 'react-aria-components';
 
 import Calendar from './Calendar';
 import datePickerRecipe, { DatePickerRecipeProps } from './datePicker.styles';
 
-type DatePickerProps = {
-    value?: DateValue;
-    placeHolder?: DateValue;
+type DatePickerProps<T extends DateValue = DateValue> = {
+    value?: T;
+    placeHolder?: T;
     children?: React.ReactNode;
     className?: string;
     groupClassName?: string;
     labelText?: string;
-} & DatePickerRecipeProps;
+} & DatePickerRecipeProps & AriaDatePickerProps<T>;
+
 
 const DatePicker = ({
     value,
