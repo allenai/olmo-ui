@@ -9,13 +9,6 @@ import { MetaTags } from '@/components/MetaTags';
 import { useAdminModels } from '@/pages/admin/modelConfig/components/useGetAdminModels';
 import { css } from '@/styled-system/css';
 
-const containerStyle = css({
-    gridArea: 'content',
-    paddingInline: '2',
-    display: 'flex',
-    flexDirection: 'column',
-});
-
 const contentStyle = css({
     backgroundColor: 'background',
     paddingInline: '2',
@@ -62,26 +55,21 @@ export const ModelConfigurationListPage = () => {
     return (
         <>
             <MetaTags />
-            <div className={containerStyle}>
-                <div className={contentStyle}>
-                    <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
-                        Add New Model
+            <div className={contentStyle}>
+                <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
+                    Add New Model
+                </Button>
+                <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />
+                {hasReordered && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            setHasReordered(false);
+                        }}>
+                        Save Reorder
                     </Button>
-                    <ModelConfigurationList
-                        items={list.items}
-                        dragAndDropHooks={dragAndDropHooks}
-                    />
-                    {hasReordered && (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                setHasReordered(false);
-                            }}>
-                            Save Reorder
-                        </Button>
-                    )}
-                </div>
+                )}
             </div>
         </>
     );

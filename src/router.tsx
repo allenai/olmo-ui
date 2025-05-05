@@ -22,6 +22,7 @@ import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
+import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
 import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { RootModelConfigurationPage } from './pages/admin/modelConfig/RootModelConfigurationPage';
@@ -175,6 +176,7 @@ export const routes: RouteObject[] = [
                     {
                         path: links.admin,
                         loader: adminPageLoader,
+                        element: <AdminLayout />,
                         children: [
                             {
                                 path: links.modelConfiguration,
