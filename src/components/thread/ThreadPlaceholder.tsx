@@ -4,7 +4,6 @@ import { useAppContext } from '@/AppContext';
 import { ImageSpinner } from '@/components/ImageSpinner';
 import { RemoteState } from '@/contexts/util';
 
-import { DatePicker } from '../varnish-ui/DatePicker';
 import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
 
@@ -30,7 +29,6 @@ export const ThreadPlaceholder = () => {
             <ThreadMaxWidthContainer gridTemplateRows="auto 1fr auto" sx={{ height: '100%' }}>
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
-                    <DatePicker />
                 </Box>
                 <Box
                     display="flex"

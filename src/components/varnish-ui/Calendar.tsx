@@ -1,5 +1,6 @@
 import { cx } from '@allenai/varnish-panda-runtime/css';
 import { Button } from '@allenai/varnish-ui';
+import { ReactNode } from 'react';
 import {
     Calendar as AriaCalendar,
     CalendarCell as AriaCalendarCell,
@@ -18,38 +19,46 @@ type AriaCalendarComponentProps = {
         calendarGrid?: string;
         calendarCell?: string;
     };
+    children?: ReactNode;
 };
 
-const Calendar = ({ classNames }: AriaCalendarComponentProps) => {
+const Calendar = ({ classNames, children }: AriaCalendarComponentProps) => {
     return (
         <AriaCalendar className={cx(classNames.calendar)}>
-            <header className={cx(classNames.calendarHeader)}>
-                <Button
-                    variant="contained"
-                    size="small"
-                    slot="previous"
-                    className={cx(classNames.navButton)}>
-                    ◀
-                </Button>
-                <AriaHeading />
-                <Button
-                    variant="contained"
-                    size="small"
-                    slot="next"
-                    className={cx(classNames.navButton)}>
-                    ▶
-                </Button>
-            </header>
-            <AriaCalendarGrid className={cx(classNames.calendarGrid)}>
-                <AriaCalendarGridHeader>
-                    {(day) => <AriaCalendarHeaderCell>{day}</AriaCalendarHeaderCell>}
-                </AriaCalendarGridHeader>
-                <AriaCalendarGridBody>
-                    {(date) => (
-                        <AriaCalendarCell date={date} className={cx(classNames.calendarCell)} />
-                    )}
-                </AriaCalendarGridBody>
-            </AriaCalendarGrid>
+            {children ?? (
+                <>
+                    <header className={cx(classNames.calendarHeader)}>
+                        <Button
+                            variant="contained"
+                            size="small"
+                            slot="previous"
+                            className={cx(classNames.navButton)}>
+                            ◀
+                        </Button>
+                        <AriaHeading />
+                        <Button
+                            variant="contained"
+                            size="small"
+                            slot="next"
+                            className={cx(classNames.navButton)}>
+                            ▶
+                        </Button>
+                    </header>
+                    <AriaCalendarGrid className={cx(classNames.calendarGrid)}>
+                        <AriaCalendarGridHeader>
+                            {(day) => <AriaCalendarHeaderCell>{day}</AriaCalendarHeaderCell>}
+                        </AriaCalendarGridHeader>
+                        <AriaCalendarGridBody>
+                            {(date) => (
+                                <AriaCalendarCell
+                                    date={date}
+                                    className={cx(classNames.calendarCell)}
+                                />
+                            )}
+                        </AriaCalendarGridBody>
+                    </AriaCalendarGrid>
+                </>
+            )}
         </AriaCalendar>
     );
 };
