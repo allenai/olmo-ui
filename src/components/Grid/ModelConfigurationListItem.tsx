@@ -1,15 +1,15 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { IconButton } from '@allenai/varnish-ui';
+import { Button, IconButton, Modal, ModalTrigger } from '@allenai/varnish-ui';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import MenuIcon from '@mui/icons-material/Menu';
 import { GridListItem } from 'react-aria-components';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
-import { useDeleteModel } from '@/pages/admin/modelConfig/components/useDeleteAdminModel';
 
 interface Props {
     item: SchemaResponseModel;
+    onDelete?: (id: string) => void;
 }
 
 const gridCell = css({
@@ -53,9 +53,11 @@ const body1Text = css({
     color: 'text.primary',
 });
 
-export const ModelConfigurationListItem = ({ item }: Props) => {
-    const { mutate: deleteModel } = useDeleteModel();
+const modalStyling = css({
+    padding: '[2rem]',
+});
 
+export const ModelConfigurationListItem = ({ item, onDelete }: Props) => {
     return (
         <GridListItem className={gridCell} id={item.id}>
             <div className={gridCellLeft}>
@@ -68,13 +70,34 @@ export const ModelConfigurationListItem = ({ item }: Props) => {
                 <IconButton variant="text">
                     <EditIcon />
                 </IconButton>
-                <IconButton
-                    variant="text"
-                    onClick={() => {
-                        deleteModel(item.id);
-                    }}>
-                    <DeleteOutlineIcon />
-                </IconButton>
+                <ModalTrigger>
+                    <IconButton variant="text">
+                        <DeleteOutlineIcon />
+                    </IconButton>
+                    <Modal
+                        heading="Delete Mode"
+                        className={modalStyling}
+                        buttons={[
+                            <>
+                                <Button variant="outlined" slot="close">
+                                    Close
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    slot="close"
+                                    onClick={() => {
+                                        if (onDelete) {
+                                            onDelete(item.id);
+                                        }
+                                    }}>
+                                    Confirm
+                                </Button>
+                            </>,
+                        ]}>
+                        <p>Are you sure you want to delete this model?</p>
+                    </Modal>
+                </ModalTrigger>
             </div>
         </GridListItem>
     );

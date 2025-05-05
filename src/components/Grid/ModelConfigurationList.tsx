@@ -1,7 +1,9 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { useState } from 'react';
 import { DragAndDropHooks, GridList } from 'react-aria-components';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { deleteModel } from '@/pages/admin/modelConfig/components/deleteAdminModel';
 
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
@@ -21,14 +23,24 @@ const modelGridStyle = css({
 
 interface ModelConfigurationListProps {
     items: SchemaResponseModel[];
-    dragAndDropHooks: DragAndDropHooks;
+    dragAndDropHooks?: DragAndDropHooks;
 }
 
 export const ModelConfigurationList = ({
     items,
     dragAndDropHooks,
-}: ModelConfigurationListProps) => (
-    <GridList items={items} dragAndDropHooks={dragAndDropHooks} className={modelGridStyle}>
-        {(item) => <ModelConfigurationListItem key={item.id} item={item} />}
-    </GridList>
-);
+}: ModelConfigurationListProps) => {
+    const [models, setModels] = useState<SchemaResponseModel[]>(items);
+    const handleDelete = (id: string): void => {
+        deleteModel(id);
+        setModels((prev) => prev.filter((model) => model.id !== id));
+    };
+
+    return (
+        <GridList items={models} dragAndDropHooks={dragAndDropHooks} className={modelGridStyle}>
+            {(item) => (
+                <ModelConfigurationListItem key={item.id} item={item} onDelete={handleDelete} />
+            )}
+        </GridList>
+    );
+};
