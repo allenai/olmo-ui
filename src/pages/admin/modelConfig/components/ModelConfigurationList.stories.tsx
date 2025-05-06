@@ -1,4 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { useDragAndDrop } from 'react-aria-components';
+import { useListData } from 'react-stately';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
@@ -74,4 +76,31 @@ type Story = StoryObj<typeof ModelConfigurationList>;
 
 export const Default: Story = {
     render: () => <ModelConfigurationList items={mockModels} />,
+};
+
+export const WithReordering: Story = {
+    render: () => {
+        const list = useListData({
+            initialItems: mockModels,
+            getKey: (item) => item.id,
+        });
+
+        const { dragAndDropHooks } = useDragAndDrop({
+            getItems: (keys) =>
+                [...keys].map((key) => {
+                    // Something's gone terribly wrong if the list doesn't have an item with its key
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    return { 'text/plain': list.getItem(key)!.name };
+                }),
+            onReorder(e) {
+                if (e.target.dropPosition === 'before') {
+                    list.moveBefore(e.target.key, e.keys);
+                } else if (e.target.dropPosition === 'after') {
+                    list.moveAfter(e.target.key, e.keys);
+                }
+            },
+        });
+
+        return <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />;
+    },
 };

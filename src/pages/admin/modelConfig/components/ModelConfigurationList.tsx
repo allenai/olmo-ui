@@ -13,8 +13,8 @@ const modelListContainer = css({
     borderRadius: 'sm',
     padding: '2',
     gap: '2',
-    width: '[100%]',
-    maxWidth: '[469px]',
+    width: '[fit-content]',
+    maxWidth: '[100%]',
     flex: '1',
     overflow: 'auto',
 

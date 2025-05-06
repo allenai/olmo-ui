@@ -1,13 +1,12 @@
-import { Button, useDragAndDrop } from '@allenai/varnish-ui';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Button } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
-import { useSubmit } from 'react-router-dom';
-import { useListData } from 'react-stately';
 
+import { LinkButton } from '@/components/LinkButton';
+import { links } from '@/Links';
 import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
-import { css } from '@/styled-system/css';
 
-import { ModelConfigurationList } from './components/ModelConfigurationList';
+import { ModelConfigurationList } from '../components/ModelConfigurationList';
 
 const contentStyle = css({
     backgroundColor: 'background',
@@ -28,30 +27,6 @@ const buttonGroup = css({
 
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
-    const [userIsReordering, setUserIsReordering] = useState(false);
-
-    const submit = useSubmit();
-
-    const list = useListData({
-        initialItems: data,
-        getKey: (item) => item.id,
-    });
-
-    const { dragAndDropHooks } = useDragAndDrop({
-        getItems: (keys) =>
-            [...keys].map((key) => {
-                const item = list.getItem(key);
-                return { 'text/plain': item?.name || '' };
-            }),
-        onReorder(e) {
-            if (e.target.dropPosition === 'before') {
-                list.moveBefore(e.target.key, e.keys);
-            } else if (e.target.dropPosition === 'after') {
-                list.moveAfter(e.target.key, e.keys);
-            }
-        },
-        isDisabled: !userIsReordering,
-    });
 
     if (status === 'error' || !data) {
         return 'something went wrong';
@@ -64,27 +39,9 @@ export const ModelConfigurationListPage = () => {
                     <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
                         Add New Model
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        isDisabled={userIsReordering}
-                        onPress={() => {
-                            setUserIsReordering(true);
-                        }}>
-                        Reorder models
-                    </Button>
-                    <Button
-                        type="submit"
-                        name="reorder-models"
-                        isDisabled={!userIsReordering}
-                        onPress={(e) => {
-                            setUserIsReordering(false);
-                            // submit();
-                        }}>
-                        Save model order
-                    </Button>
+                    <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
                 </div>
-                <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />
+                <ModelConfigurationList items={data} />
             </div>
         </>
     );
