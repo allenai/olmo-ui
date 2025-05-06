@@ -6,13 +6,14 @@ import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchem
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
 const modelListContainer = css({
+    '--list-gap': 'token(spacing.2)',
     display: 'flex',
     flexDirection: 'column',
     border: '1px solid',
     borderColor: 'teal.80',
     borderRadius: 'sm',
     padding: '2',
-    gap: '2',
+    gap: 'var(--list-gap)',
     width: '[fit-content]',
     maxWidth: '[100%]',
     flex: '1',
@@ -20,9 +21,10 @@ const modelListContainer = css({
     scrollbarGutter: 'stable both-edges',
 
     '& .react-aria-DropIndicator': {
+        // This margin-block negates the gap for all the drop indicators that get added
+        marginBlock: '[calc(var(--list-gap) / 2 * -1)]',
         '&[data-drop-target]': {
-            outline: '1px solid red',
-            outlineColor: 'accent.tertiary',
+            outline: '1px solid token(colors.accent.tertiary)',
         },
     },
 });

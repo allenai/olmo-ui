@@ -22,6 +22,10 @@ const gridListItemContainer = css({
         outlineStyle: 'solid',
         outlineColor: 'accent.tertiary',
     },
+
+    '&[data-dragging]': {
+        opacity: '0.6',
+    },
 });
 
 const modelName = css({

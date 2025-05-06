@@ -48,13 +48,14 @@ export const ReorderModelsPage = () => {
     };
 
     return (
-        <Stack direction="column" spacing={16} className={containerStyle}>
+        <Stack direction="column" spacing={16} className={containerStyle} align="center">
             <Stack direction="row" spacing={16}>
                 <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                 <Button
                     type="submit"
                     name="reorder-models"
                     variant="contained"
+                    color="secondary"
                     onPress={handleSaveModelOrder}>
                     Save model order
                 </Button>
