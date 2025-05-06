@@ -16,7 +16,8 @@ const modelListContainer = css({
     width: '[fit-content]',
     maxWidth: '[100%]',
     flex: '1',
-    overflow: 'auto',
+    overflowY: 'auto',
+    scrollbarGutter: 'stable both-edges',
 
     '& .react-aria-DropIndicator': {
         '&[data-drop-target]': {

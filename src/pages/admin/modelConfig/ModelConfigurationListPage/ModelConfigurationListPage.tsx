@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Button } from '@allenai/varnish-ui';
+import { Button, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
 
 import { LinkButton } from '@/components/LinkButton';
@@ -11,18 +11,12 @@ import { ModelConfigurationList } from '../components/ModelConfigurationList';
 const contentStyle = css({
     backgroundColor: 'background',
     paddingInline: '2',
-    flex: '[1]',
+    flex: '1',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '2',
     height: '[100%]',
-});
-
-const buttonGroup = css({
-    display: 'flex',
-    flexFlow: 'row wrap',
-    gap: '2',
 });
 
 export const ModelConfigurationListPage = () => {
@@ -35,12 +29,12 @@ export const ModelConfigurationListPage = () => {
     return (
         <>
             <div className={contentStyle}>
-                <div className={buttonGroup}>
+                <Stack spacing={8} direction="row" wrap="wrap">
                     <Button variant="contained" color="secondary" endIcon={<AddIcon />}>
                         Add New Model
                     </Button>
                     <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
-                </div>
+                </Stack>
                 <ModelConfigurationList items={data} />
             </div>
         </>
