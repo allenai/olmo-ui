@@ -53,10 +53,9 @@ const dragButton = css({
 
 interface ModelConfigurationListItemProps {
     item: SchemaResponseModel;
-    onDelete?: (id: string) => void;
 }
 
-export const ModelConfigurationListItem = ({ item, onDelete }: ModelConfigurationListItemProps) => (
+export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemProps) => (
     <GridListItem className={gridListItemContainer} id={item.id} textValue={item.name}>
         {({ allowsDragging }) => (
             <>
@@ -71,7 +70,7 @@ export const ModelConfigurationListItem = ({ item, onDelete }: ModelConfiguratio
                 <IconButton variant="text" isDisabled={allowsDragging}>
                     <EditIcon />
                 </IconButton>
-                <DeleteModelDialog onDelete={onDelete} item={item} />
+                <DeleteModelDialog item={item} />
             </>
         )}
     </GridListItem>

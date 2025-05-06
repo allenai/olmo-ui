@@ -32,17 +32,13 @@ const modelListContainer = css({
 interface ModelConfigurationListProps {
     items: SchemaResponseModel[];
     dragAndDropHooks?: DragAndDropHooks;
-    onDeleteModel?: (id: string) => void;
 }
 
 export const ModelConfigurationList = ({
     items,
     dragAndDropHooks,
-    onDeleteModel,
 }: ModelConfigurationListProps) => (
     <GridList items={items} dragAndDropHooks={dragAndDropHooks} className={modelListContainer}>
-        {(item) => (
-            <ModelConfigurationListItem key={item.id} item={item} onDelete={onDeleteModel} />
-        )}
+        {(item) => <ModelConfigurationListItem key={item.id} item={item} />}
     </GridList>
 );

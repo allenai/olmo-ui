@@ -25,6 +25,7 @@ import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
 import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
+import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
 import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
@@ -199,6 +200,10 @@ export const routes: RouteObject[] = [
                                         element: <ReorderModelsPage />,
                                         action: reorderModelsAction(queryClient),
                                         handle: { title: 'Model Order' },
+                                    },
+                                    {
+                                        path: links.deleteModel(':modelId'),
+                                        action: deleteModelAction(queryClient),
                                     },
                                 ],
                             },

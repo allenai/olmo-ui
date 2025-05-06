@@ -6,7 +6,6 @@ import { links } from '@/Links';
 import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 
 import { ModelConfigurationList } from '../components/ModelConfigurationList';
-import { deleteModel } from '../deleteAdminModel';
 
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
@@ -30,7 +29,7 @@ export const ModelConfigurationListPage = () => {
                 </Button>
                 <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
             </Stack>
-            <ModelConfigurationList items={data} onDeleteModel={deleteModel} />
+            <ModelConfigurationList items={data} />
         </>
     );
 };
