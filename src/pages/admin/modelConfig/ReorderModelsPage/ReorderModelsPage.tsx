@@ -1,4 +1,3 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, Stack } from '@allenai/varnish-ui';
 import { useDragAndDrop } from 'react-aria-components';
 import { useSubmit } from 'react-router-dom';
@@ -9,11 +8,6 @@ import { links } from '@/Links';
 
 import { ModelConfigurationList } from '../components/ModelConfigurationList';
 import { useAdminModels } from '../useGetAdminModels';
-
-const containerStyle = css({
-    maxHeight: '[100%]',
-    alignSelf: 'center',
-});
 
 export const ReorderModelsPage = () => {
     const { data } = useAdminModels();
@@ -48,7 +42,7 @@ export const ReorderModelsPage = () => {
     };
 
     return (
-        <Stack direction="column" spacing={16} className={containerStyle} align="center">
+        <>
             <Stack direction="row" spacing={16}>
                 <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                 <Button
@@ -61,6 +55,6 @@ export const ReorderModelsPage = () => {
                 </Button>
             </Stack>
             <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />
-        </Stack>
+        </>
     );
 };
