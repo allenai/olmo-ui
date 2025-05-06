@@ -17,6 +17,10 @@ const gridListItemContainer = css({
     gap: '3',
     alignItems: 'center',
 
+    '&[draggable]': {
+        cursor: 'grab',
+    },
+
     '&[data-focus-visible]': {
         outlineWidth: '2px',
         outlineStyle: 'solid',
