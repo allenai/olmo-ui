@@ -70,7 +70,7 @@ export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemP
                 <IconButton variant="text" isDisabled={allowsDragging}>
                     <EditIcon />
                 </IconButton>
-                <DeleteModelDialog item={item} />
+                <DeleteModelDialog modelId={item.id} />
             </>
         )}
     </GridListItem>
