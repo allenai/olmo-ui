@@ -4,7 +4,7 @@ import { useSubmit } from 'react-router-dom';
 
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
-import { useAdminModels } from './useGetAdminModels';
+import { useAdminModels } from '../useGetAdminModels';
 
 export const ModelsList = (): ReactNode => {
     const { data, status } = useAdminModels();

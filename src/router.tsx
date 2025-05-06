@@ -22,9 +22,13 @@ import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
+import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
+import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
 import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
-import { RootModelConfigurationPage } from './pages/admin/modelConfig/RootModelConfigurationPage';
+import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
+import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
@@ -175,15 +179,28 @@ export const routes: RouteObject[] = [
                     {
                         path: links.admin,
                         loader: adminPageLoader,
+                        element: <AdminLayout />,
                         children: [
                             {
                                 path: links.modelConfiguration,
-                                element: <RootModelConfigurationPage />,
                                 loader: modelsLoader(queryClient),
-                                action: createModelAction(queryClient),
-                                handle: {
-                                    title: 'Models',
-                                },
+                                element: <ModelConfigurationLayout />,
+                                children: [
+                                    {
+                                        path: links.modelConfiguration,
+                                        element: <ModelConfigurationListPage />,
+                                        action: createModelAction(queryClient),
+                                        handle: {
+                                            title: 'Models',
+                                        },
+                                    },
+                                    {
+                                        path: links.modelOrder,
+                                        element: <ReorderModelsPage />,
+                                        action: reorderModelsAction(queryClient),
+                                        handle: { title: 'Model Order' },
+                                    },
+                                ],
                             },
                         ],
                     },

@@ -5,30 +5,40 @@ import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchem
 
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
-const modelGridStyle = css({
+const modelListContainer = css({
+    '--list-gap': 'token(spacing.2)',
     display: 'flex',
     flexDirection: 'column',
     border: '1px solid',
     borderColor: 'teal.80',
     borderRadius: 'sm',
     padding: '2',
-    gap: '2',
-    width: '[100%]',
-    maxWidth: '[469px]',
+    gap: 'var(--list-gap)',
+    width: '[fit-content]',
+    maxWidth: '[100%]',
     flex: '1',
-    overflow: 'auto',
+    overflowY: 'auto',
+    scrollbarGutter: 'stable both-edges',
+
+    '& .react-aria-DropIndicator': {
+        // This margin-block negates the gap for all the drop indicators that get added
+        marginBlock: '[calc(var(--list-gap) / 2 * -1)]',
+        '&[data-drop-target]': {
+            outline: '1px solid token(colors.accent.tertiary)',
+        },
+    },
 });
 
 interface ModelConfigurationListProps {
     items: SchemaResponseModel[];
-    dragAndDropHooks: DragAndDropHooks;
+    dragAndDropHooks?: DragAndDropHooks;
 }
 
 export const ModelConfigurationList = ({
     items,
     dragAndDropHooks,
 }: ModelConfigurationListProps) => (
-    <GridList items={items} dragAndDropHooks={dragAndDropHooks} className={modelGridStyle}>
+    <GridList items={items} dragAndDropHooks={dragAndDropHooks} className={modelListContainer}>
         {(item) => <ModelConfigurationListItem key={item.id} item={item} />}
     </GridList>
 );

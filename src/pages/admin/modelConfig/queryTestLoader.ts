@@ -4,7 +4,7 @@ import type { ActionFunction, LoaderFunction } from 'react-router-dom';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 
-import { getAdminModelsQueryOptions } from './components/useGetAdminModels';
+import { getAdminModelsQueryOptions } from './useGetAdminModels';
 
 export const modelsLoader =
     (queryClient: QueryClient): LoaderFunction =>

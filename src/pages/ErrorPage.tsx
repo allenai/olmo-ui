@@ -71,7 +71,7 @@ export const ErrorPage = () => {
         }
     }
 
-    console.log(statusMessage, statusText);
+    console.log(statusMessage, statusText, error);
 
     return (
         <AppLayout>

@@ -2,6 +2,7 @@ export const links = {
     ai2: 'https://allenai.org/',
     admin: '/admin',
     modelConfiguration: '/admin/models',
+    modelOrder: '/admin/models/order',
     home: '/',
     playground: '/',
     datasetExplorer: '/dolma',
