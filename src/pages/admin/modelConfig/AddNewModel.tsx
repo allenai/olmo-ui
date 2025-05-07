@@ -1,5 +1,5 @@
 
-import { Controller, FormContainer, RadioButtonGroup, SelectElement, SwitchElement, useForm, UseFormReturn } from 'react-hook-form-mui';
+import { Controller, FormContainer, RadioButtonGroup, SelectElement, SwitchElement, TextFieldElement, useForm, UseFormReturn } from 'react-hook-form-mui';
 import { Autocomplete, Box, Input, InputLabel, Stack, TextField } from '@mui/material';
 import { StandardModal } from '@/components/StandardModal';
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
@@ -35,11 +35,18 @@ const renderMultiModalSection = (formContext: UseFormReturn<SchemaRootCreateMode
                     name="allowFilesInFollowups"
                     label="Allow files in followup prompts"
                     control={formContext.control}
+                    sx={{ flex: 1 }}
                 />
-                <Controller
+                <TextFieldElement
                     name="maxFilesPerMessage"
                     control={formContext.control}
-                    render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Max files per message' type="number" variant="outlined" {...field} />}
+                    label="Max files per message"
+                    type="number"
+                    variant='standard'
+                    required
+                    fullWidth
+                    InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
+                    sx={{ flex: 1 }}
                 />
             </Box>
 
@@ -60,22 +67,6 @@ const renderTimeSection = (formContext: UseFormReturn<SchemaRootCreateModelConfi
             render={({ field }) => <DatePicker labelText='Deprecation time' />}
         />
     </Box>
-}
-
-const TextfieldItem = ({
-    itemName,
-    itemLabel,
-    isRequired,
-    ...extra
-}: {
-    itemName: string,
-    itemLabel: string,
-    isRequired?: boolean,
-}) => {
-    return <Stack flex={1}>
-        <InputLabel required={isRequired} htmlFor={itemName}>{itemLabel}</InputLabel>
-        <Input required={isRequired} {...extra} id={itemName} />
-    </Stack>
 }
 
 interface AddNewModelProps {
@@ -104,17 +95,24 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                 <Stack spacing={3}>
                     <Box flexDirection="row" display="flex" gap={2}>
-                        <Controller
+                        <TextFieldElement
                             name="name"
                             control={formContext.control}
-                            render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Name' isRequired={true} {...field} />}
+                            label="Name"
+                            variant='standard'
+                            required
+                            fullWidth
+                            InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
                         />
-                        <Controller
+                        <TextFieldElement
                             name="id"
                             control={formContext.control}
-                            render={({ field }) =>
-                                <TextfieldItem itemName={field.name} itemLabel='ID' isRequired={true} {...field} placeholder='The ID you see when linking to this model' />
-                            }
+                            label="ID"
+                            variant='standard'
+                            required
+                            fullWidth
+                            InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
+                            placeholder='The ID you see when linking to this model'
                         />
                     </Box>
                     <Autocomplete
@@ -137,23 +135,33 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
                             required
                             sx={{ width: '300px' }}
                         />
-                        <Controller
+                        <TextFieldElement
                             name="modelIdOnHost"
                             control={formContext.control}
-                            render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Model host ID' isRequired={true} placeholder="The ID of this model on the host" {...field} />}
+                            label="Model host ID"
+                            variant='standard'
+                            required
+                            fullWidth
+                            InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
+                            placeholder='The ID of this model on the host'
                         />
                     </Box>
-
-
-                    <Controller
+                    <TextFieldElement
                         name="description"
                         control={formContext.control}
-                        render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Description' isRequired={true} {...field} />}
+                        label="Description"
+                        variant='standard'
+                        required
+                        fullWidth
+                        InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
                     />
-                    <Controller
+                    <TextFieldElement
                         name="defaultSystemPrompt"
                         control={formContext.control}
-                        render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Default system prompt' {...field} />}
+                        label="Default system prompt"
+                        variant='standard'
+                        fullWidth
+                        InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
                     />
                     <RadioButtonGroup
                         name="promptType"
