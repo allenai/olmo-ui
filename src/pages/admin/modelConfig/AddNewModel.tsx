@@ -1,6 +1,6 @@
 
 import { Controller, FormContainer, RadioButtonGroup, SelectElement, SwitchElement, TextFieldElement, useForm, UseFormReturn } from 'react-hook-form-mui';
-import { Autocomplete, Box, Input, InputLabel, Stack, TextField } from '@mui/material';
+import { Autocomplete, Box, Stack, TextField } from '@mui/material';
 import { StandardModal } from '@/components/StandardModal';
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import React from 'react';
@@ -77,8 +77,6 @@ interface AddNewModelProps {
 export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
     const formContext = useForm<SchemaRootCreateModelConfigRequest>({
         defaultValues: {
-            modelIdOnHost: "",
-            description: "",
             promptType: "text_only"
         },
         mode: 'onChange',
@@ -141,9 +139,9 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
                             label="Model host ID"
                             variant='standard'
                             required
-                            fullWidth
                             InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
                             placeholder='The ID of this model on the host'
+                            sx={{ flex: 1 }}
                         />
                     </Box>
                     <TextFieldElement
@@ -168,7 +166,6 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
                         label='Prompt type'
                         options={[{ id: 'text_only', label: 'Text only' }, { id: 'multimodal', label: 'Multimodal' }]}
                         onChange={(value) => {
-                            console.log(value)
                             setPromptTypeState(value)
                         }}
                         row />
