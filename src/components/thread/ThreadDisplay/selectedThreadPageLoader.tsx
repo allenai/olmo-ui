@@ -1,5 +1,6 @@
 import { defer, LoaderFunction } from 'react-router-dom';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
@@ -48,22 +49,16 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
             if (lastThreadContent) {
                 const models = await modelsPromise;
-                const modelIdList = models
-                    .filter(
-                        (model) =>
-                            'model_type' in model &&
-                            model.model_type === 'chat' &&
-                            !model.is_deprecated
-                    )
-                    .map((model) => model.id);
 
                 if (
                     lastThreadContent.model_id &&
-                    modelIdList.includes(lastThreadContent.model_id)
+                    models.some((model) => model.id === lastThreadContent.model_id)
                 ) {
-                    setSelectedModel(lastThreadContent.model_id);
+                    setSelectedModel(
+                        models.find((model) => model.id === lastThreadContent.model_id) as Model
+                    );
                 } else {
-                    setSelectedModel(modelIdList[0]);
+                    setSelectedModel(models[0] as Model);
                 }
                 if (lastThreadContent.opts) {
                     updateInferenceOpts(lastThreadContent.opts);

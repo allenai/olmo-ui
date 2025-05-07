@@ -10,7 +10,7 @@ type ModelsSelectFunction<TData> = (data: ModelsData) => TData;
 
 // I feel like there's a better way to handle passing a selector in here but i couldn't figure it out
 // There's a lot of typing I need to do just to make it so we can use a selector
-export const useVisibleModels = <TData = ModelsData>({
+export const useModels = <TData = ModelsData>({
     select,
 }: { select?: ModelsSelectFunction<TData> } = {}) => {
     const { data } = useSuspenseQuery({ ...getModelsQueryOptions, select }, undefined);

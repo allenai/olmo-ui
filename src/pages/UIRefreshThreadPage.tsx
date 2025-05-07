@@ -120,7 +120,7 @@ export const playgroundLoader =
         // abort the current streaming prompt if there is any
         abortPrompt();
 
-        await queryClient.ensureQueryData(getModelsQueryOptions);
+        const models = await queryClient.ensureQueryData(getModelsQueryOptions);
 
         if (schema == null) {
             promises.push(getSchema());
@@ -135,9 +135,9 @@ export const playgroundLoader =
 
         const preselectedModelId = new URL(request.url).searchParams.get('model');
         if (preselectedModelId != null) {
-            const { models: loadedModels, setSelectedModel } = appContext.getState();
+            const { setSelectedModel } = appContext.getState();
 
-            const selectedModel = loadedModels.find((model) => model.id === preselectedModelId);
+            const selectedModel = models.find((model) => model.id === preselectedModelId);
             if (selectedModel != null) {
                 setSelectedModel(selectedModel.id);
             }

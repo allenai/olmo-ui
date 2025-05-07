@@ -19,11 +19,11 @@ import {
 } from '@mui/material';
 import { useId } from 'react';
 
-import type { SchemaModel, SchemaMultiModalModel } from '@/api/playgroundApi/playgroundApiSchema';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 
 import { useHandleChangeModel } from './useHandleChangeModel';
-import { useVisibleModels } from './useModels';
+import { useModels } from './useModels';
 
 type ModelSelectionDisplayProps = {
     sx?: SxProps<Theme>;
@@ -34,13 +34,13 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
     const labelId = selectId + '-label';
     const selectedModelIdFromState = useAppContext((state) => state.selectedModel?.id);
 
-    const models = useVisibleModels({
+    const models = useModels({
         select: (data) =>
             data.filter(
                 (model) =>
                     ('is_deprecated' in model && !model.is_deprecated) ||
                     model.id === selectedModelIdFromState
-            ) as Array<SchemaModel | SchemaMultiModalModel>,
+            ) as Array<Model>,
     });
 
     const selectedModelId = selectedModelIdFromState ?? models[0]?.id;

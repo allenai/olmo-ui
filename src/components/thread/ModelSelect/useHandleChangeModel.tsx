@@ -3,10 +3,12 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { ModelChangeWarningModal } from './ModelChangeWarningModal';
+import { useModels } from './useModels';
 
 export const useHandleChangeModel = () => {
     const setSelectedModel = useAppContext((state) => state.setSelectedModel);
@@ -14,17 +16,19 @@ export const useHandleChangeModel = () => {
     const navigate = useNavigate();
 
     const modelIdToSwitchTo = useRef<string>();
+    const models = useModels();
 
     const selectModel = (modelId: string) => {
         analyticsClient.trackModelUpdate({ modelChosen: modelId });
-        setSelectedModel(modelId);
+        const model = models.find((model) => model.id === modelId) as Model;
+        setSelectedModel(model);
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {
         const selectedModel = appContext.getState().selectedModel;
-        const newModel = appContext
-            .getState()
-            .models.find((model) => model.id === event.target.value);
+        const newModel = models.find((model) => model.id === event.target.value) as
+            | Model
+            | undefined;
         const hasSelectedThread = Boolean(appContext.getState().selectedThreadRootId);
 
         const bothModelsAreDefined = selectedModel != null && newModel != null;

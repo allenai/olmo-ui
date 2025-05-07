@@ -1,3 +1,3 @@
-import type { SchemaModel, SchemaMultiModalModel } from './playgroundApiSchema';
+import type { SchemaResponseModel, SchemaRootModelResponse } from './playgroundApiSchema';
 
-export type Model = SchemaModel | SchemaMultiModalModel;
+export type Model = Exclude<SchemaRootModelResponse, readonly SchemaResponseModel[]>[number];

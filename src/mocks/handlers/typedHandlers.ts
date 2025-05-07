@@ -1,11 +1,7 @@
 import { createOpenApiHttp } from 'openapi-msw';
 
-import type {
-    paths,
-    SchemaModel,
-    SchemaMultiModalModel,
-    SchemaResponseModel,
-} from '@/api/playgroundApi/playgroundApiSchema';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { paths, SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
 const http = createOpenApiHttp<paths>();
 
@@ -52,7 +48,7 @@ const fakeModelsResponse = [
         accepted_file_types: ['image/*'],
         is_visible: true,
     },
-] satisfies Array<SchemaModel | SchemaMultiModalModel>;
+] satisfies Array<Model>;
 
 const fakeAdminModelsResponse = [
     {
