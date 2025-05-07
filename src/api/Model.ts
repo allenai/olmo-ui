@@ -1,6 +1,8 @@
 import { ClientBase } from './ClientBase';
+import { SchemaRootCreateModelConfigRequest } from './playgroundApi/playgroundApiSchema';
 
 export const ModelApiUrl = '/v3/models';
+export const ModelApiUrlv4 = '/v4/models';
 
 export type ModelFamilyId = 'tulu' | 'olmo';
 
@@ -40,5 +42,16 @@ export class ModelClient extends ClientBase {
         const url = this.createURL(ModelApiUrl);
 
         return await this.fetch(url);
+    };
+
+    addModel = async (
+        data: SchemaRootCreateModelConfigRequest
+    ): Promise<SchemaRootCreateModelConfigRequest> => {
+        const url = this.createURL(ModelApiUrl);
+
+        return await this.fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        })
     };
 }

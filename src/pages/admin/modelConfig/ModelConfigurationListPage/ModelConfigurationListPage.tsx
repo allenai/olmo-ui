@@ -1,17 +1,17 @@
 import { Button, Icon, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
+import React from 'react';
 
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 
-import { ModelConfigurationList } from '../components/ModelConfigurationList';
 import { AddNewModel } from '../AddNewModel';
-import React from 'react';
+import { ModelConfigurationList } from '../components/ModelConfigurationList';
 
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
-    const [open, setOpen] = React.useState(true)
+    const [open, setOpen] = React.useState(false);
     if (status === 'error' || !data) {
         return 'something went wrong';
     }
@@ -22,7 +22,9 @@ export const ModelConfigurationListPage = () => {
                 <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => { setOpen(true) }}
+                    onClick={() => {
+                        setOpen(true);
+                    }}
                     endIcon={
                         <Icon>
                             <AddIcon />
@@ -33,8 +35,12 @@ export const ModelConfigurationListPage = () => {
                 <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
             </Stack>
             <ModelConfigurationList items={data} />
-            <AddNewModel open={open}
-                onClose={() => { setOpen(false) }} />
+            <AddNewModel
+                open={open}
+                onClose={() => {
+                    setOpen(false);
+                }}
+            />
         </>
     );
 };
