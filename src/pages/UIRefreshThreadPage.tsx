@@ -93,8 +93,8 @@ export const UIRefreshThreadPage = () => {
     );
 };
 
-const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-05-07T17:37:24.875Z';
-const MODEL_DEPRECATION_DATE = new Date('2025-05-16T07:00:00Z');
+const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-05-09T07:00:00Z';
+const MODEL_DEPRECATION_DATE = new Date('2025-05-09T07:00:00Z');
 
 const createModelDeprecationNotice = () => {
     const modelsBeingDeprecated = [
@@ -104,7 +104,7 @@ const createModelDeprecationNotice = () => {
         'OLMoE 1B 7B 0125',
     ];
 
-    return `The following models will be removed on May 16: ${modelsBeingDeprecated.join(', ')}`;
+    return `We are reworking our model hosting system and will be removing the following models on ${MODEL_DEPRECATION_DATE.toLocaleDateString()}: ${modelsBeingDeprecated.join(', ')}`;
 };
 
 export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
@@ -152,10 +152,7 @@ export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
         MODEL_DEPRECATION_NOTICE_GIVEN_KEY
     );
 
-    if (
-        !hasModelDeprecationNoticeBeenGiven &&
-        Date.now() < MODEL_DEPRECATION_DATE.getMilliseconds()
-    ) {
+    if (!hasModelDeprecationNoticeBeenGiven && Date.now() < MODEL_DEPRECATION_DATE.getTime()) {
         const { addSnackMessage } = appContext.getState();
         addSnackMessage({
             id: MODEL_DEPRECATION_NOTICE_GIVEN_KEY,
