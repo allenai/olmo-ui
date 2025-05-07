@@ -1,11 +1,12 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { IconButton } from '@allenai/varnish-ui';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import { GridListItem } from 'react-aria-components';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+
+import { DeleteModelDialog } from './DeleteModelDialog';
 
 const gridListItemContainer = css({
     display: 'flex',
@@ -69,9 +70,7 @@ export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemP
                 <IconButton variant="text" isDisabled={allowsDragging}>
                     <EditIcon />
                 </IconButton>
-                <IconButton variant="text" isDisabled={allowsDragging}>
-                    <DeleteOutlineIcon />
-                </IconButton>
+                <DeleteModelDialog modelId={item.id} />
             </>
         )}
     </GridListItem>
