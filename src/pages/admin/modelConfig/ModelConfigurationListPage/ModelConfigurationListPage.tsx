@@ -7,10 +7,11 @@ import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 
 import { ModelConfigurationList } from '../components/ModelConfigurationList';
 import { AddNewModel } from '../AddNewModel';
+import React from 'react';
 
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
-
+    const [open, setOpen] = React.useState(true)
     if (status === 'error' || !data) {
         return 'something went wrong';
     }
@@ -21,6 +22,7 @@ export const ModelConfigurationListPage = () => {
                 <Button
                     variant="contained"
                     color="secondary"
+                    onClick={() => { setOpen(true) }}
                     endIcon={
                         <Icon>
                             <AddIcon />
@@ -31,7 +33,8 @@ export const ModelConfigurationListPage = () => {
                 <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
             </Stack>
             <ModelConfigurationList items={data} />
-            <AddNewModel />
+            <AddNewModel open={open}
+                onClose={() => { setOpen(false) }} />
         </>
     );
 };

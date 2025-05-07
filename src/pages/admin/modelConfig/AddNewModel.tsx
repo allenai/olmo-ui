@@ -78,11 +78,14 @@ const TextfieldItem = ({
     </Stack>
 }
 
-export const AddNewModel = () => {
+interface AddNewModelProps {
+    open: boolean,
+    onClose: () => void,
+}
+
+export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
     const formContext = useForm<SchemaRootCreateModelConfigRequest>({
         defaultValues: {
-            id: "",
-            name: "",
             modelIdOnHost: "",
             description: "",
             promptType: "text_only"
@@ -97,7 +100,7 @@ export const AddNewModel = () => {
         console.log(formData)
     }
     return (
-        <StandardModal open={true}>
+        <StandardModal open={open}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
                 <Stack spacing={3}>
                     <Box flexDirection="row" display="flex" gap={2}>
@@ -123,6 +126,7 @@ export const AddNewModel = () => {
                             />
                         }}
                         sx={{ width: '300px' }}
+                        freeSolo
                     />
                     <Box flexDirection="row" display="flex" gap={2}>
                         <SelectElement
@@ -136,7 +140,7 @@ export const AddNewModel = () => {
                         <Controller
                             name="modelIdOnHost"
                             control={formContext.control}
-                            render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Model host ID (The ID of this model on the host)' isRequired={true} {...field} />}
+                            render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Model host ID' isRequired={true} placeholder="The ID of this model on the host" {...field} />}
                         />
                     </Box>
 
@@ -151,17 +155,6 @@ export const AddNewModel = () => {
                         control={formContext.control}
                         render={({ field }) => <TextfieldItem itemName={field.name} itemLabel='Default system prompt' {...field} />}
                     />
-                    {/* <SelectElement
-                        name="promptType"
-                        label='Prompt type'
-                        options={[{ id: 'text_only', label: 'Text only' }, { id: 'multimodal', label: 'Multimodal' }]}
-                        onChange={(value) => {
-                            console.log(value)
-                            setPromptTypeState(value)
-                        }}
-                        required
-                        fullWidth
-                    /> */}
                     <RadioButtonGroup
                         name="promptType"
                         label='Prompt type'
@@ -197,17 +190,8 @@ export const AddNewModel = () => {
                     />
                     {showTimeSection && renderTimeSection(formContext)}
                     <Box flexDirection="row" display="flex" gap={2}>
-                        <Button
-                            variant="outlined"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            type="submit"
-                        >
-                            Save
-                        </Button>
+                        <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                        <Button variant="contained" type="submit">Save</Button>
                     </Box>
                 </Stack>
             </FormContainer>
