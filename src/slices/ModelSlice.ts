@@ -1,9 +1,10 @@
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { SchemaModel, SchemaMultiModalModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { OlmoStateCreator } from '@/AppContext';
 
 export interface ModelSlice {
-    selectedModel?: SchemaModel | SchemaMultiModalModel;
-    setSelectedModel: (model: SchemaModel | SchemaMultiModalModel) => void;
+    selectedModel?: Model;
+    setSelectedModel: (model: Model) => void;
 }
 
 export const createModelSlice: OlmoStateCreator<ModelSlice> = (set) => ({
