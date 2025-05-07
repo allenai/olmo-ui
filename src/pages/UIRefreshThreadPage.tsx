@@ -17,6 +17,7 @@ import { QueryForm } from '@/components/thread/QueryForm/QueryForm';
 import { QueryFormNotice } from '@/components/thread/QueryForm/QueryFormNotices';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 export const UIRefreshThreadPage = () => {
     const isDesktop = useDesktopOrUp();
@@ -92,6 +93,19 @@ export const UIRefreshThreadPage = () => {
     );
 };
 
+const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-05-07T17:37:24.875Z';
+
+const createModelDeprecationNotice = () => {
+    const modelsBeingDeprecated = [
+        'OLMo 2 13B Instruct',
+        'Llama Tülu 3 70B',
+        'Llama Tülu 3 8B',
+        'OLMoE 1B 7B 0125',
+    ];
+
+    return `The following models will be removed on May 16: ${modelsBeingDeprecated.join(', ')}`;
+};
+
 export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
     const {
         models,
@@ -131,6 +145,20 @@ export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
         if (selectedModel != null) {
             setSelectedModel(selectedModel.id);
         }
+    }
+
+    const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
+        MODEL_DEPRECATION_NOTICE_GIVEN_KEY
+    );
+
+    if (!hasModelDeprecationNoticeBeenGiven) {
+        const { addSnackMessage } = appContext.getState();
+        addSnackMessage({
+            id: MODEL_DEPRECATION_NOTICE_GIVEN_KEY,
+            message: createModelDeprecationNotice(),
+            type: SnackMessageType.Brief,
+        });
+        localStorage.setItem(MODEL_DEPRECATION_NOTICE_GIVEN_KEY, Date.now().toString());
     }
 
     return null;
