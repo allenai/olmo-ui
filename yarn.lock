@@ -11842,6 +11842,11 @@ openapi-fetch@^0.13.5:
   dependencies:
     openapi-typescript-helpers "^0.0.15"
 
+openapi-msw@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/openapi-msw/-/openapi-msw-1.2.0.tgz#4c270d538d5c2604699875d6a25ab66c2ab86032"
+  integrity sha512-Ksm8xG8Lm8O9IU0rC7d1rQ0kcqYf5+qW+iz94G5fuZ/tfinjzSPnhBEwRj7dStvlqCMFQEriVWt7rplbvg0zqA==
+
 openapi-react-query@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/openapi-react-query/-/openapi-react-query-0.3.1.tgz#d284f8d7e4bbc26f825c5837d74528dad930dd67"

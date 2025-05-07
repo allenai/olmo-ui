@@ -11,12 +11,14 @@ import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
+import { typedHandlers } from './typedHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
     ...dolmaHandlers,
     ...attributionHandlers,
     ...messageHandlers,
+    ...typedHandlers,
 
     http.get(`${process.env.LLMX_API_URL}${SchemaApiUrl}`, () => {
         return HttpResponse.json(fakeSchemaResponse);
