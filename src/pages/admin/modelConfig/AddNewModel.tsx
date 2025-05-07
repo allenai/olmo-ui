@@ -121,9 +121,11 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
 
     const handleSubmit = (formData: SchemaRootCreateModelConfigRequest) => {
         console.log(formData);
-        modelClient.addModel(formData).then(() => {
-            onClose();
-            formContext.reset();
+        modelClient.addModel(formData).then((result) => {
+            if (result.isSuccess) {
+                onClose();
+                formContext.reset();
+            }
         });
     };
     return (
