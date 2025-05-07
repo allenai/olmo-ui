@@ -180,6 +180,7 @@ export const routes: RouteObject[] = [
                         path: links.admin,
                         loader: adminPageLoader,
                         element: <AdminLayout />,
+                        handle: { pageControls: <ThreadPageControls /> },
                         children: [
                             {
                                 path: links.modelConfiguration,
