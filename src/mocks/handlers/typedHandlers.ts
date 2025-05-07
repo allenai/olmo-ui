@@ -3,7 +3,7 @@ import { createOpenApiHttp } from 'openapi-msw';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { paths, SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
-const http = createOpenApiHttp<paths>();
+const http = createOpenApiHttp<paths>({ baseUrl: process.env.LLMX_API_URL });
 
 const fakeModelsResponse = [
     {
