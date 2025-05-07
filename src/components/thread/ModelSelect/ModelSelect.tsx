@@ -17,46 +17,13 @@ import {
     Theme,
     Typography,
 } from '@mui/material';
-import { useEffect, useId, useRef } from 'react';
-import { useShallow } from 'zustand/react/shallow';
+import { useId } from 'react';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { AppContextState, useAppContext } from '@/AppContext';
+import type { SchemaModel, SchemaMultiModalModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { useAppContext } from '@/AppContext';
 
-import { selectMessagesToShow } from '../ThreadDisplay/selectMessagesToShow';
 import { useHandleChangeModel } from './useHandleChangeModel';
-
-// HACK: This is here because we don't always have the models loaded when the selectedThreadPageLoader is called (if first load is a thread, for example)
-// If we find a nice way to wait for models to be populated in that loader we can replace this
-const useUpdateSelectedModelWhenLoadingAThread = (models: Model[]) => {
-    const previousSelectedThreadIdRef = useRef<string>();
-    const selectedThreadId = useAppContext((state) => state.selectedThreadRootId);
-    const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
-    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
-
-    const latestThreadContent = useAppContext(
-        (state) => state.selectedThreadMessagesById[viewingMessageIds[viewingMessageIds.length - 1]]
-    );
-
-    useEffect(() => {
-        if (previousSelectedThreadIdRef.current !== selectedThreadId) {
-            previousSelectedThreadIdRef.current = selectedThreadId;
-            const modelIdList = models.map((model) => model.id);
-            // the types for selectedThreadMessagesById aren't quite right
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (latestThreadContent) {
-                if (
-                    latestThreadContent.model_id &&
-                    modelIdList.includes(latestThreadContent.model_id)
-                ) {
-                    setSelectedModel(latestThreadContent.model_id);
-                } else {
-                    setSelectedModel(modelIdList[0]);
-                }
-            }
-        }
-    }, [latestThreadContent, models, selectedThreadId, setSelectedModel, viewingMessageIds]);
-};
+import { useVisibleModels } from './useModels';
 
 type ModelSelectionDisplayProps = {
     sx?: SxProps<Theme>;
@@ -65,23 +32,22 @@ type ModelSelectionDisplayProps = {
 export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
     const selectId = useId();
     const labelId = selectId + '-label';
+    const selectedModelIdFromState = useAppContext((state) => state.selectedModel?.id);
 
-    const models = useAppContext(
-        useShallow((state: AppContextState) => {
-            const nonDeprecatedModels = state.models.filter(
+    const models = useVisibleModels({
+        select: (data) =>
+            data.filter(
                 (model) =>
-                    model.internal || !model.is_deprecated || model.id === state.selectedModel?.id
-            );
+                    ('is_deprecated' in model && !model.is_deprecated) ||
+                    model.id === selectedModelIdFromState
+            ) as Array<SchemaModel | SchemaMultiModalModel>,
+    });
 
-            return nonDeprecatedModels;
-        })
-    );
-
-    const selectedModelId = useAppContext((state) => (state.selectedModel ?? models[0]).id);
+    const selectedModelId = selectedModelIdFromState ?? models[0]?.id;
 
     const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeModel();
 
-    useUpdateSelectedModelWhenLoadingAThread(models);
+    // useUpdateSelectedModelWhenLoadingAThread(models);
 
     return (
         <Box sx={sx} paddingInline={2} paddingBlockEnd={2}>

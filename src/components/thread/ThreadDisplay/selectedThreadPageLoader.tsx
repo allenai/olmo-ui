@@ -1,8 +1,12 @@
 import { defer, LoaderFunction } from 'react-router-dom';
 
+import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
+import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
+
+import { getModelsQueryOptions } from '../ModelSelect/useModels';
 
 export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
@@ -14,7 +18,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         handleAttributionForChangingThread,
         setSelectedModel,
         updateInferenceOpts,
-        models,
         abortPrompt,
         selectMessage,
     } = appContext.getState();
@@ -27,6 +30,8 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         // abort the current streaming prompt if there is any
         abortPrompt();
 
+        const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
+
         const selectedThread = await getSelectedThread(params.id);
         const url = new URL(request.url);
         const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
@@ -37,11 +42,21 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
             .at(-1);
 
         if (lastResponseId != null) {
-            const lastThreadContent = selectedThreadMessagesById[lastResponseId];
-            const modelIdList = models
-                .filter((model) => model.model_type === 'chat' && !model.is_deprecated)
-                .map((model) => model.id);
+            const lastThreadContent = selectedThreadMessagesById[lastResponseId] as
+                | SelectedThreadMessage
+                | undefined;
+
             if (lastThreadContent) {
+                const models = await modelsPromise;
+                const modelIdList = models
+                    .filter(
+                        (model) =>
+                            'model_type' in model &&
+                            model.model_type === 'chat' &&
+                            !model.is_deprecated
+                    )
+                    .map((model) => model.id);
+
                 if (
                     lastThreadContent.model_id &&
                     modelIdList.includes(lastThreadContent.model_id)

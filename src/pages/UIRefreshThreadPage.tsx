@@ -1,4 +1,5 @@
 import { Card, Stack } from '@mui/material';
+import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import { appContext } from '@/AppContext';
@@ -9,6 +10,7 @@ import {
     MobileAttributionDrawer,
 } from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
+import { getModelsQueryOptions } from '@/components/thread/ModelSelect/useModels';
 import {
     DesktopParameterDrawer,
     MobileParameterDrawer,
@@ -107,63 +109,56 @@ const createModelDeprecationNotice = () => {
     return `We are reworking our model hosting system and will be removing the following models on ${MODEL_DEPRECATION_DATE.toLocaleDateString()}: ${modelsBeingDeprecated.join(', ')}`;
 };
 
-export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
-    const {
-        models,
-        getAllModels,
-        resetSelectedThreadState,
-        resetAttribution,
-        getSchema,
-        schema,
-        abortPrompt,
-    } = appContext.getState();
+export const playgroundLoader =
+    (queryClient: QueryClient): LoaderFunction =>
+    async ({ params, request }) => {
+        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt } =
+            appContext.getState();
 
-    const promises = [];
+        const promises = [];
 
-    // abort the current streaming prompt if there is any
-    abortPrompt();
+        // abort the current streaming prompt if there is any
+        abortPrompt();
 
-    if (models.length === 0) {
-        promises.push(getAllModels());
-    }
+        await queryClient.ensureQueryData(getModelsQueryOptions);
 
-    if (schema == null) {
-        promises.push(getSchema());
-    }
-
-    if (params.id === undefined) {
-        resetSelectedThreadState();
-        resetAttribution();
-    }
-
-    await Promise.all(promises);
-
-    const preselectedModelId = new URL(request.url).searchParams.get('model');
-    if (preselectedModelId != null) {
-        const { models: loadedModels, setSelectedModel } = appContext.getState();
-
-        const selectedModel = loadedModels.find((model) => model.id === preselectedModelId);
-        if (selectedModel != null) {
-            setSelectedModel(selectedModel.id);
+        if (schema == null) {
+            promises.push(getSchema());
         }
-    }
 
-    const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
-        MODEL_DEPRECATION_NOTICE_GIVEN_KEY
-    );
+        if (params.id === undefined) {
+            resetSelectedThreadState();
+            resetAttribution();
+        }
 
-    if (!hasModelDeprecationNoticeBeenGiven && Date.now() < MODEL_DEPRECATION_DATE.getTime()) {
-        const { addSnackMessage } = appContext.getState();
-        addSnackMessage({
-            id: MODEL_DEPRECATION_NOTICE_GIVEN_KEY,
-            message: createModelDeprecationNotice(),
-            type: SnackMessageType.Brief,
-        });
-        localStorage.setItem(MODEL_DEPRECATION_NOTICE_GIVEN_KEY, Date.now().toString());
-    }
+        await Promise.all(promises);
 
-    return null;
-};
+        const preselectedModelId = new URL(request.url).searchParams.get('model');
+        if (preselectedModelId != null) {
+            const { models: loadedModels, setSelectedModel } = appContext.getState();
+
+            const selectedModel = loadedModels.find((model) => model.id === preselectedModelId);
+            if (selectedModel != null) {
+                setSelectedModel(selectedModel.id);
+            }
+        }
+
+        const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
+            MODEL_DEPRECATION_NOTICE_GIVEN_KEY
+        );
+
+        if (!hasModelDeprecationNoticeBeenGiven && Date.now() < MODEL_DEPRECATION_DATE.getTime()) {
+            const { addSnackMessage } = appContext.getState();
+            addSnackMessage({
+                id: MODEL_DEPRECATION_NOTICE_GIVEN_KEY,
+                message: createModelDeprecationNotice(),
+                type: SnackMessageType.Brief,
+            });
+            localStorage.setItem(MODEL_DEPRECATION_NOTICE_GIVEN_KEY, Date.now().toString());
+        }
+
+        return null;
+    };
 
 export const handleRevalidation: ShouldRevalidateFunction = ({ nextUrl }) => {
     return nextUrl.pathname === links.playground;
