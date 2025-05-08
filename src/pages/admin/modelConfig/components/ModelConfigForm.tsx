@@ -2,6 +2,7 @@ import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@
 import { DevTool } from '@hookform/devtools';
 import { Autocomplete, TextField } from '@mui/material';
 import { type ReactNode } from 'react';
+import type { DateValue } from 'react-aria-components';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import {
@@ -13,6 +14,8 @@ import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';
+import { LinkButton } from '@/components/LinkButton';
+import { links } from '@/Links';
 
 type MultiModalFormValues = Pick<
     SchemaCreateMultiModalModelConfigRequest,
@@ -89,11 +92,13 @@ const TimeFields = (): ReactNode => {
     );
 };
 
-type BaseModelFormFieldValues = { availability: 'public' | 'internal' | 'prerelease' } & Pick<
+type BaseModelFormFieldValues = {
+    availability: 'public' | 'internal' | 'prerelease';
+    availableTime?: DateValue;
+    deprecationTime?: DateValue;
+} & Pick<
     SchemaRootCreateModelConfigRequest,
-    | 'availableTime'
     | 'defaultSystemPrompt'
-    | 'deprecationTime'
     | 'description'
     | 'familyId'
     | 'host'
@@ -144,6 +149,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         label="Model family"
                         controllerProps={{ rules: { required: true } }}>
                         <SelectListBoxSection>
+                            <SelectListBoxItem text="No family" id="no_family" />
                             <SelectListBoxItem text="OLMo" id="olmo" />
                             <SelectListBoxItem text="Tülu" id="tulu" />
                         </SelectListBoxSection>
@@ -175,9 +181,11 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         name="defaultSystemPrompt"
                         label="Default System Prompt"
                         fullWidth
-                        controllerProps={{ rules: { required: true } }}
                     />
-
+                    <ControlledSelect name="modelType" label="Model type" fullWidth>
+                        <SelectListBoxItem text="Chat" id="chat" />
+                        <SelectListBoxItem text="Base" id="base" />
+                    </ControlledSelect>
                     <ControlledRadioGroup name="promptType" label="Prompt type">
                         <Radio value="text_only">Text only</Radio>
                         <Radio value="multi_modal">Multimodal</Radio>
@@ -192,7 +200,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                     </ControlledSelect>
                     {showTimeSection && <TimeFields />}
                     <Stack direction="row" align="center" justify="center" spacing={3}>
-                        <Button variant="outlined">Cancel</Button>
+                        <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                         <Button variant="contained" type="submit">
                             Save
                         </Button>
