@@ -27,12 +27,9 @@ import { adminPageLoader } from './pages/admin/adminPageLoader';
 import { AddNewModel } from './pages/admin/modelConfig/AddNewModel';
 import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
+import { updateModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/updateModelAction';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
-import {
-    createModelAction,
-    modelsLoader,
-    updateModelAction,
-} from './pages/admin/modelConfig/queryTestLoader';
+import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { Document } from './pages/Document';

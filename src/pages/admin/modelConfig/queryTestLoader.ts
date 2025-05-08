@@ -36,25 +36,3 @@ export const createModelAction =
 
         return null;
     };
-
-export const updateModelAction =
-    (queryClient: QueryClient): ActionFunction =>
-    async ({ params, request }) => {
-        const { modelId } = params;
-        if (!modelId) {
-            throw Error('Model Id is required!');
-        }
-
-        await playgroundApiClient.PUT('/v4/models/{model_id}', {
-            params: {
-                path: { model_id: modelId },
-            },
-            body: await mapCreateModelRequest(request),
-        });
-        await queryClient.invalidateQueries({
-            queryKey: getAdminModelsQueryOptions.queryKey,
-            exact: true,
-        });
-
-        return redirect(links.modelConfiguration);
-    };
