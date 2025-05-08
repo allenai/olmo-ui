@@ -48,7 +48,7 @@ const MultiModalFields = (): ReactNode => {
                     textValue="No requirement"
                 />
             </ControlledSelect>
-            <Stack direction="row" spacing={10}>
+            <Stack direction="column" spacing={10}>
                 <ControlledSwitch name="allowFilesInFollowups">
                     Allow files in followup prompts
                 </ControlledSwitch>

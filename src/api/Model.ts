@@ -1,14 +1,6 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-
 import { ClientBase } from './ClientBase';
-import { playgroundApiQueryClient } from './playgroundApi/playgroundApiClient';
-import {
-    SchemaResponseModel,
-    SchemaRootCreateModelConfigRequest,
-} from './playgroundApi/playgroundApiSchema';
 
 export const ModelApiUrl = '/v3/models';
-export const ModelApiUrlv4 = '/v4/models/';
 
 export type ModelFamilyId = 'tulu' | 'olmo';
 
@@ -48,19 +40,5 @@ export class ModelClient extends ClientBase {
         const url = this.createURL(ModelApiUrl);
 
         return await this.fetch(url);
-    };
-
-    addModel = async (formData: SchemaRootCreateModelConfigRequest) => {
-        const postNewModelQueryOptions = playgroundApiQueryClient.queryOptions(
-            'post',
-            ModelApiUrlv4,
-            {
-                body: formData,
-            }
-        );
-
-        const { data, error, isSuccess, isError } = useSuspenseQuery(postNewModelQueryOptions);
-
-        return { data: data as SchemaResponseModel | undefined, error, isSuccess, isError };
     };
 }

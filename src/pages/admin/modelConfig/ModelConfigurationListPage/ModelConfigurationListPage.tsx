@@ -1,13 +1,11 @@
 import { Button, Icon, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 
-import { AddNewModel } from '../AddNewModel';
 import { ModelConfigurationList } from '../components/ModelConfigurationList';
 
 export const ModelConfigurationListPage = () => {
