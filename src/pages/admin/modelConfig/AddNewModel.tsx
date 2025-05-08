@@ -1,5 +1,5 @@
-import { Button } from '@allenai/varnish-ui';
-import { Autocomplete, Box, Stack, TextField } from '@mui/material';
+import { Button, Input, Select, Stack } from '@allenai/varnish-ui';
+import { Autocomplete, Box, TextField } from '@mui/material';
 import React from 'react';
 import {
     Controller,
@@ -11,11 +11,12 @@ import {
     useForm,
     UseFormReturn,
 } from 'react-hook-form-mui';
+import { useSubmit } from 'react-router-dom';
 
 import { ModelClient } from '@/api/Model';
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { DatePicker } from '@/components/datepicker/DatePicker';
-import { StandardModal } from '@/components/StandardModal';
+import { MetaTags } from '@/components/MetaTags';
 
 const renderMultiModalSection = (
     formContext: UseFormReturn<SchemaRootCreateModelConfigRequest>
@@ -102,12 +103,9 @@ const renderTimeSection = (formContext: UseFormReturn<SchemaRootCreateModelConfi
     );
 };
 
-interface AddNewModelProps {
-    open: boolean;
-    onClose: () => void;
-}
+const availability = ['Public', 'Internal', 'Pre-release'];
 
-export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
+export const AddNewModel = () => {
     const formContext = useForm<SchemaRootCreateModelConfigRequest>({
         defaultValues: {
             promptType: 'text_only',
@@ -115,53 +113,44 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
         mode: 'onChange',
     });
 
+    const submit = useSubmit();
     const [promptTypeState, setPromptTypeState] = React.useState<string>();
     const [showTimeSection, setShowTimeSection] = React.useState<boolean>(false);
-    const modelClient = new ModelClient();
-
     const handleSubmit = (formData: SchemaRootCreateModelConfigRequest) => {
-        console.log(formData);
-        modelClient.addModel(formData).then((result) => {
-            if (result.isSuccess) {
-                onClose();
-                formContext.reset();
-            }
-        });
+        submit(formData, { method: 'post' });
     };
     return (
-        <StandardModal open={open}>
-            <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                <Stack spacing={3}>
-                    <Box flexDirection="row" display="flex" gap={2}>
-                        <TextFieldElement
+        <>
+            <MetaTags />
+            <Stack spacing={8} direction="row" wrap="wrap">
+                <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+                    <Stack spacing={8} direction="column">
+                        <Controller
                             name="name"
                             control={formContext.control}
-                            label="Name"
-                            variant="standard"
-                            required
-                            fullWidth
-                            InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
+                            render={({ field }) => (
+                                <Input label="Name" value={field.value} fullWidth={true} />
+                            )}
                         />
-                        <TextFieldElement
+                        <Controller
                             name="id"
                             control={formContext.control}
-                            label="ID"
-                            variant="standard"
-                            required
-                            fullWidth
-                            InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
-                            placeholder="The ID you see when linking to this model"
+                            render={({ field }) => (
+                                <Input
+                                    label="ID (The ID you see when linking to this model)"
+                                    value={field.value}
+                                    fullWidth={true}
+                                />
+                            )}
                         />
-                    </Box>
-                    <Autocomplete
-                        options={['Olmo', 'Tulu']}
-                        renderInput={(params) => {
-                            return <TextField {...params} label="Model family" />;
-                        }}
-                        sx={{ width: '300px' }}
-                        freeSolo
-                    />
-                    <Box flexDirection="row" display="flex" gap={2}>
+                        <Autocomplete
+                            options={['Olmo', 'Tulu']}
+                            renderInput={(params) => {
+                                return <TextField {...params} label="Model family" />;
+                            }}
+                            sx={{ width: '300px' }}
+                            freeSolo
+                        />
                         <SelectElement
                             name="host"
                             label="Model host"
@@ -173,85 +162,70 @@ export const AddNewModel = ({ open, onClose }: AddNewModelProps) => {
                             required
                             sx={{ width: '300px' }}
                         />
-                        <TextFieldElement
+                        <Controller
                             name="modelIdOnHost"
                             control={formContext.control}
-                            label="Model host ID"
-                            variant="standard"
-                            required
-                            InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
-                            placeholder="The ID of this model on the host"
-                            sx={{ flex: 1 }}
+                            render={({ field }) => (
+                                <Input
+                                    label="Model host Id (The ID of this model on the host)"
+                                    value={field.value}
+                                    fullWidth={true}
+                                />
+                            )}
                         />
-                    </Box>
-                    <TextFieldElement
-                        name="description"
-                        control={formContext.control}
-                        label="Description"
-                        variant="standard"
-                        required
-                        fullWidth
-                        InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
-                    />
-                    <TextFieldElement
-                        name="defaultSystemPrompt"
-                        control={formContext.control}
-                        label="Default system prompt"
-                        variant="standard"
-                        fullWidth
-                        InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
-                    />
-                    <RadioButtonGroup
-                        name="promptType"
-                        label="Prompt type"
-                        options={[
-                            { id: 'text_only', label: 'Text only' },
-                            { id: 'multimodal', label: 'Multimodal' },
-                        ]}
-                        onChange={(value) => {
-                            setPromptTypeState(value);
-                        }}
-                        row
-                    />
-                    {promptTypeState === 'multimodal' && renderMultiModalSection(formContext)}
-                    <SelectElement
-                        name="availability"
-                        label="Availability"
-                        options={[
-                            { id: 'public', label: 'Public' },
-                            { id: 'internal', label: 'Internal' },
-                            { id: 'prerelease', label: 'Pre-release' },
-                        ]}
-                        onChange={(value) => {
-                            if (value === 'public') {
-                                formContext.setValue('internal', false);
-                                formContext.setValue('availableTime', null);
-                                formContext.setValue('deprecationTime', null);
-                                setShowTimeSection(false);
-                            } else if (value === 'internal') {
-                                formContext.setValue('internal', true);
-                                formContext.setValue('availableTime', null);
-                                formContext.setValue('deprecationTime', null);
-                                setShowTimeSection(false);
-                            } else if (value === 'prerelease') {
-                                formContext.setValue('internal', false);
-                                setShowTimeSection(true);
-                            }
-                        }}
-                        required
-                        fullWidth
-                    />
-                    {showTimeSection && renderTimeSection(formContext)}
-                    <Box flexDirection="row" display="flex" gap={2}>
-                        <Button variant="outlined" onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button variant="contained" type="submit">
-                            Save
-                        </Button>
-                    </Box>
-                </Stack>
-            </FormContainer>
-        </StandardModal>
+
+                        <Controller
+                            name="description"
+                            control={formContext.control}
+                            render={({ field }) => (
+                                <Input label="Description" value={field.value} fullWidth={true} />
+                            )}
+                        />
+                        <Controller
+                            name="defaultSystemPrompt"
+                            control={formContext.control}
+                            render={({ field }) => (
+                                <Input
+                                    label="Default system prompt"
+                                    value={field.value}
+                                    fullWidth={true}
+                                />
+                            )}
+                        />
+                        <RadioButtonGroup
+                            name="promptType"
+                            label="Prompt type"
+                            options={[
+                                { id: 'text_only', label: 'Text only' },
+                                { id: 'multimodal', label: 'Multimodal' },
+                            ]}
+                            onChange={(value) => {
+                                setPromptTypeState(value);
+                            }}
+                            row
+                        />
+                        {promptTypeState === 'multimodal' && renderMultiModalSection(formContext)}
+                        <Controller
+                            name="availability"
+                            control={formContext.control}
+                            render={({ field }) => (
+                                <Select
+                                    label="Availability"
+                                    items={availability}
+                                    placeholder="Availability"
+                                />
+                            )}
+                        />
+                        {showTimeSection && renderTimeSection(formContext)}
+                        <Stack direction="row" align="center" justify="center" spacing={3}>
+                            <Button variant="outlined">Cancel</Button>
+                            <Button variant="contained" type="submit">
+                                Save
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </FormContainer>
+            </Stack>
+        </>
     );
 };
