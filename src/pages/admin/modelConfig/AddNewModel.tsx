@@ -1,26 +1,14 @@
-import {
-    Button,
-    Radio,
-    Select,
-    SelectListBoxItem,
-    SelectListBoxSection,
-    Stack,
-} from '@allenai/varnish-ui';
+import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import { Autocomplete, Box, TextField } from '@mui/material';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import {
-    RadioButtonGroup,
-    SelectElement,
-    SwitchElement,
-    TextFieldElement,
-} from 'react-hook-form-mui';
+import { SelectElement, SwitchElement, TextFieldElement } from 'react-hook-form-mui';
 import { useSubmit } from 'react-router-dom';
 
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
-import { ControlledInput } from '@/components/ControlledInput';
 import { DatePicker } from '@/components/datepicker/DatePicker';
+import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { MetaTags } from '@/components/MetaTags';
@@ -110,10 +98,10 @@ const TimeFields = (): ReactNode => {
     );
 };
 
-const availability = ['Public', 'Internal', 'Pre-release'];
-
 export const AddNewModel = () => {
-    const formContext = useForm<SchemaRootCreateModelConfigRequest>({
+    const formContext = useForm<
+        SchemaRootCreateModelConfigRequest & { availability: 'public' | 'internal' | 'prerelease' }
+    >({
         defaultValues: {
             promptType: 'text_only',
         },
@@ -121,8 +109,8 @@ export const AddNewModel = () => {
     });
 
     const submit = useSubmit();
-    const [promptTypeState, setPromptTypeState] = React.useState<string>();
-    const [showTimeSection, setShowTimeSection] = React.useState<boolean>(false);
+    const promptTypeState = formContext.watch('promptType');
+    const showTimeSection = formContext.watch('availability') === 'prerelease';
     const handleSubmit = (formData: SchemaRootCreateModelConfigRequest) => {
         submit(formData, { method: 'post' });
     };
@@ -189,23 +177,14 @@ export const AddNewModel = () => {
 
                             <ControlledRadioGroup name="promptType" label="Prompt type">
                                 <Radio value="text_only">Text only</Radio>
-                                <Radio value="multimodal">Multimodal</Radio>
+                                <Radio value="multi_modal">Multimodal</Radio>
                             </ControlledRadioGroup>
-                            {promptTypeState === 'multimodal' && <MultiModalFields />}
+                            {promptTypeState === 'multi_modal' && <MultiModalFields />}
                             <ControlledSelect name="availability" label="Availability">
                                 <SelectListBoxSection>
-                                    <SelectListBoxItem
-                                        text="Public"
-                                        value={{ id: 'public', label: 'Public' }}
-                                    />
-                                    <SelectListBoxItem
-                                        text="Internal"
-                                        value={{ id: 'internal', label: 'Internal' }}
-                                    />
-                                    <SelectListBoxItem
-                                        text="Pre-release"
-                                        value={{ id: 'prerelease', label: 'Pre-release' }}
-                                    />
+                                    <SelectListBoxItem text="Public" id="public" />
+                                    <SelectListBoxItem text="Internal" id="internal" />
+                                    <SelectListBoxItem text="Pre-release" id="prerelease" />
                                 </SelectListBoxSection>
                             </ControlledSelect>
                             {showTimeSection && <TimeFields />}
