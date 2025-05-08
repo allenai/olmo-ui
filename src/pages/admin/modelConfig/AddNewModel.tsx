@@ -17,15 +17,15 @@ export const AddNewModel = () => {
     });
 
     const submit = useSubmit();
-    const handleSubmit = (formData: SchemaRootCreateModelConfigRequest) => {
-        submit(formData, { method: 'post' });
-    };
-
     return (
         <>
             <MetaTags />
             <FormProvider {...formContext}>
-                <ModelConfigForm onSubmit={handleSubmit} />
+                <ModelConfigForm
+                    onSubmit={(formData) => {
+                        submit(formData, { method: 'post' });
+                    }}
+                />
             </FormProvider>
         </>
     );

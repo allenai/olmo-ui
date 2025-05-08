@@ -104,7 +104,7 @@ type BaseModelFormFieldValues = { availability: 'public' | 'internal' | 'prerele
     | 'promptType'
 >;
 
-type ModelConfigFormValues = BaseModelFormFieldValues & Partial<MultiModalFormValues>;
+export type ModelConfigFormValues = BaseModelFormFieldValues & Partial<MultiModalFormValues>;
 
 interface ModelConfigFormProps {
     onSubmit: (formData: ModelConfigFormValues) => void;
