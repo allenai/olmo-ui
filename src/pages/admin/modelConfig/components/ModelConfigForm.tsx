@@ -4,15 +4,23 @@ import { Autocomplete, TextField } from '@mui/material';
 import { type ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import {
+    type SchemaCreateMultiModalModelConfigRequest,
+    SchemaRootCreateModelConfigRequest,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';
 
+type MultiModalFormValues = Pick<
+    SchemaCreateMultiModalModelConfigRequest,
+    'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
+>;
+
 const MultiModalFields = (): ReactNode => {
-    const formContext = useFormContext<SchemaRootCreateModelConfigRequest>();
+    const formContext = useFormContext<MultiModalFormValues>();
     return (
         <>
             <Controller
@@ -81,20 +89,35 @@ const TimeFields = (): ReactNode => {
     );
 };
 
+type BaseModelFormFieldValues = { availability: 'public' | 'internal' | 'prerelease' } & Pick<
+    SchemaRootCreateModelConfigRequest,
+    | 'availableTime'
+    | 'defaultSystemPrompt'
+    | 'deprecationTime'
+    | 'description'
+    | 'familyId'
+    | 'host'
+    | 'id'
+    | 'modelIdOnHost'
+    | 'modelType'
+    | 'name'
+    | 'promptType'
+>;
+
+type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
+
 interface ModelConfigFormProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSubmit: (formData: any) => void;
 }
 
 export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
-    const formContext = useFormContext<
-        SchemaRootCreateModelConfigRequest & { availability: 'public' | 'internal' | 'prerelease' }
-    >();
+    const formContext = useFormContext<ModelConfigFormValues>();
 
     const promptTypeState = formContext.watch('promptType');
     const showTimeSection = formContext.watch('availability') === 'prerelease';
 
-    const handleSubmit = (formData: SchemaRootCreateModelConfigRequest) => {
+    const handleSubmit = (formData: ModelConfigFormValues) => {
         onSubmit(formData);
     };
 
