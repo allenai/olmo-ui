@@ -32,6 +32,7 @@ export const ControlledSelect = ({
             errorMessage={error?.message}
             isRequired={isRequired}
             onSelectionChange={field.onChange}
+            selectedKey={field.value}
             {...field}
             {...rest}
         />
