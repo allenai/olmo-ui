@@ -6,7 +6,7 @@ import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-fo
 import { useSubmit } from 'react-router-dom';
 
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
-import { DatePicker } from '@/components/datepicker/DatePicker';
+import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
@@ -63,34 +63,17 @@ const MultiModalFields = (): ReactNode => {
 };
 
 const TimeFields = (): ReactNode => {
-    const formContext = useFormContext<SchemaRootCreateModelConfigRequest>();
     return (
         <Stack direction="row" spacing={10}>
-            <Controller
+            <ControlledDatePicker
                 name="availableTime"
-                control={formContext.control}
-                render={() => (
-                    <DatePicker
-                        labelText="Available time"
-                        granularity="second"
-                        onChange={(value) => {
-                            formContext.setValue('availableTime', value?.toString());
-                        }}
-                    />
-                )}
+                label="Available time"
+                granularity="minute"
             />
-            <Controller
+            <ControlledDatePicker
                 name="deprecationTime"
-                control={formContext.control}
-                render={() => (
-                    <DatePicker
-                        labelText="Deprecation time"
-                        granularity="second"
-                        onChange={(value) => {
-                            formContext.setValue('availableTime', value?.toString());
-                        }}
-                    />
-                )}
+                label="Deprecation time"
+                granularity="minute"
             />
         </Stack>
     );
@@ -129,7 +112,8 @@ export const AddNewModel = () => {
                             />
                             <ControlledInput
                                 name="id"
-                                label="ID (The ID you see when linking to this model)"
+                                label="ID"
+                                description="The ID you see when linking to this model"
                                 fullWidth
                                 controllerProps={{ rules: { required: true } }}
                             />
@@ -155,7 +139,7 @@ export const AddNewModel = () => {
                             <ControlledInput
                                 name="modelIdOnHost"
                                 label="Model host ID"
-                                description="The ID on this model on the host"
+                                description="The ID of this model on the host"
                                 fullWidth
                                 controllerProps={{ rules: { required: true } }}
                             />
