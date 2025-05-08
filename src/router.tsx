@@ -28,7 +28,11 @@ import { AddNewModel } from './pages/admin/modelConfig/AddNewModel';
 import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
-import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
+import {
+    createModelAction,
+    modelsLoader,
+    updateModelAction,
+} from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { Document } from './pages/Document';
@@ -212,6 +216,12 @@ export const routes: RouteObject[] = [
                                         element: <AddNewModel />,
                                         action: createModelAction(queryClient),
                                         handle: { title: 'Add Model' },
+                                    },
+                                    {
+                                        path: links.editModel(':modelId'),
+                                        element: <AddNewModel />,
+                                        action: updateModelAction(queryClient),
+                                        handle: { title: 'Edit Model' },
                                     },
                                 ],
                             },
