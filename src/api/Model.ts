@@ -1,6 +1,6 @@
 import { ClientBase } from './ClientBase';
 
-export const ModelApiUrl = '/v3/models';
+export const ModelApiUrl = '/v4/models';
 
 export type ModelFamilyId = 'tulu' | 'olmo';
 
