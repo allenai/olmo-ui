@@ -104,11 +104,10 @@ type BaseModelFormFieldValues = { availability: 'public' | 'internal' | 'prerele
     | 'promptType'
 >;
 
-type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
+type ModelConfigFormValues = BaseModelFormFieldValues & Partial<MultiModalFormValues>;
 
 interface ModelConfigFormProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onSubmit: (formData: any) => void;
+    onSubmit: (formData: ModelConfigFormValues) => void;
 }
 
 export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
