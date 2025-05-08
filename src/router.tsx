@@ -24,6 +24,7 @@ import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { AddNewModel } from './pages/admin/modelConfig/AddNewModel';
 import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
 import { createModelAction, modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
@@ -199,6 +200,12 @@ export const routes: RouteObject[] = [
                                         element: <ReorderModelsPage />,
                                         action: reorderModelsAction(queryClient),
                                         handle: { title: 'Model Order' },
+                                    },
+                                    {
+                                        path: links.addModel,
+                                        element: <AddNewModel />,
+                                        action: createModelAction(queryClient),
+                                        handle: { title: 'Add Model' },
                                     },
                                 ],
                             },

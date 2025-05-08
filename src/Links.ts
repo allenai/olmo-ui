@@ -3,6 +3,7 @@ export const links = {
     admin: '/admin',
     modelConfiguration: '/admin/models',
     modelOrder: '/admin/models/order',
+    addModel: '/admin/models/add-model',
     home: '/',
     playground: '/',
     datasetExplorer: '/dolma',
