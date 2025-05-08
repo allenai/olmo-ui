@@ -118,7 +118,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                     />
 
                     <ControlledSelect
-                        name="familyName"
+                        name="familyId"
                         label="Model family"
                         controllerProps={{ rules: { required: true } }}>
                         <SelectListBoxSection>
