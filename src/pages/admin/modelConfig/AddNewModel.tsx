@@ -25,7 +25,11 @@ const MultiModalFields = (): ReactNode => {
                         id={field.name}
                         multiple
                         freeSolo
-                        options={['.jpg', '.png', '*']}
+                        fullWidth
+                        options={[]}
+                        onChange={(_e, value) => {
+                            field.onChange(value);
+                        }}
                         renderInput={(params) => {
                             return <TextField {...params} label="Accepted file types" />;
                         }}
