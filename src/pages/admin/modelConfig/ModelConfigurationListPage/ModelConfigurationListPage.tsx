@@ -1,5 +1,6 @@
 import { Button, Icon, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
 
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
@@ -9,6 +10,7 @@ import { ModelConfigurationList } from '../components/ModelConfigurationList';
 
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
+    const navigate = useNavigate();
 
     if (status === 'error' || !data) {
         return 'something went wrong';
@@ -20,6 +22,9 @@ export const ModelConfigurationListPage = () => {
                 <Button
                     variant="contained"
                     color="secondary"
+                    onClick={() => {
+                        navigate(links.addModel);
+                    }}
                     endIcon={
                         <Icon>
                             <AddIcon />

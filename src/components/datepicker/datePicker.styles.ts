@@ -15,6 +15,7 @@ const datePickerRecipe = sva({
         'dialog',
         'calendarGrid',
         'calendarCell',
+        'error',
     ],
     base: {
         root: {
@@ -84,6 +85,7 @@ const datePickerRecipe = sva({
             borderCollapse: 'separate',
             borderSpacing: '1',
         },
+        error: {},
     },
 });
 

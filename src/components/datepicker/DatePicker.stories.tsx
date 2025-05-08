@@ -26,7 +26,7 @@ type Story = StoryObj<typeof DatePicker>;
 
 export const Primary: Story = {
     args: {
-        labelText: 'Time available to all users',
+        label: 'Time available to all users',
         granularity: 'second',
         placeholderValue: now('America/New_York'),
     },

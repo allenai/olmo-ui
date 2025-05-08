@@ -24,6 +24,7 @@ import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { AddNewModel } from './pages/admin/modelConfig/AddNewModel';
 import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
@@ -205,6 +206,12 @@ export const routes: RouteObject[] = [
                                     {
                                         path: links.deleteModel(':modelId'),
                                         action: deleteModelAction(queryClient),
+                                    },
+                                    {
+                                        path: links.addModel,
+                                        element: <AddNewModel />,
+                                        action: createModelAction(queryClient),
+                                        handle: { title: 'Add Model' },
                                     },
                                 ],
                             },
