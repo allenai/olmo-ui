@@ -4,6 +4,7 @@ export const links = {
     modelConfiguration: '/admin/models',
     modelOrder: '/admin/models/order',
     addModel: '/admin/models/add-model',
+    editModel: (modelId: string) => `/admin/models/edit-model/${modelId}`,
     deleteModel: (modelId: string) => `/admin/models/${modelId}`,
     home: '/',
     playground: '/',

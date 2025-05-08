@@ -1,8 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSubmit } from 'react-router-dom';
+import { useLocation, useSubmit } from 'react-router-dom';
 
 import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { MetaTags } from '@/components/MetaTags';
+import { links } from '@/Links';
 import type { Mutable } from '@/util';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
@@ -26,8 +27,10 @@ const mapConfigFormDataToRequest = (
 };
 
 export const CreateModelPage = () => {
+    const location = useLocation();
+    const model = location.state?.modelToEdit as ModelConfigFormValues;
     const formContext = useForm<ModelConfigFormValues>({
-        defaultValues: {
+        defaultValues: model || {
             promptType: 'text_only',
             host: 'modal',
             availability: 'internal',
@@ -37,13 +40,24 @@ export const CreateModelPage = () => {
         mode: 'onChange',
     });
 
+    const isEditMode = !!model;
+
     const submit = useSubmit();
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
-        submit(mapConfigFormDataToRequest(formData), {
-            method: 'post',
-            encType: 'application/json',
-        });
+        if (isEditMode) {
+            const path = links.editModel(model.id);
+            submit(mapConfigFormDataToRequest(formData), {
+                method: 'put',
+                action: path,
+                encType: 'application/json',
+            });
+        } else {
+            submit(mapConfigFormDataToRequest(formData), {
+                method: 'post',
+                encType: 'application/json',
+            });
+        }
     };
     return (
         <>
