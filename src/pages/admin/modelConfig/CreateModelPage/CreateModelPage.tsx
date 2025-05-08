@@ -18,6 +18,7 @@ const mapConfigFormDataToRequest = (
     const request = {
         ...rest,
         internal,
+        availability,
         familyId: mappedFamilyId,
         availableTime: availableTime?.toString(),
         deprecationTime: deprecationTime?.toString(),
