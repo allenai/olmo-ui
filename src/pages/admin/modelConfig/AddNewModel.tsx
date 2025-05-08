@@ -1,4 +1,11 @@
-import { Button, Select, Stack } from '@allenai/varnish-ui';
+import {
+    Button,
+    Radio,
+    Select,
+    SelectListBoxItem,
+    SelectListBoxSection,
+    Stack,
+} from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import { Autocomplete, Box, TextField } from '@mui/material';
 import React, { type ReactNode } from 'react';
@@ -14,6 +21,8 @@ import { useSubmit } from 'react-router-dom';
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledInput } from '@/components/ControlledInput';
 import { DatePicker } from '@/components/datepicker/DatePicker';
+import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
+import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { MetaTags } from '@/components/MetaTags';
 
 const MultiModalFields = (): ReactNode => {
@@ -139,28 +148,28 @@ export const AddNewModel = () => {
                                 controllerProps={{ rules: { required: true } }}
                             />
 
-                            <Autocomplete
-                                options={['Olmo', 'Tulu']}
-                                renderInput={(params) => {
-                                    return <TextField {...params} label="Model family" />;
-                                }}
-                                sx={{ width: '300px' }}
-                                freeSolo
-                            />
-                            <SelectElement
+                            <ControlledSelect
+                                name="modelFamily"
+                                label="Model family"
+                                controllerProps={{ rules: { required: true } }}>
+                                <SelectListBoxSection>
+                                    <SelectListBoxItem text="OLMo" id="olmo" />
+                                    <SelectListBoxItem text="Tülu" id="tulu" />
+                                </SelectListBoxSection>
+                            </ControlledSelect>
+                            <ControlledSelect
                                 name="host"
                                 label="Model host"
-                                control={formContext.control}
-                                options={[
-                                    { id: 'modal', label: 'Modal' },
-                                    { id: 'inferd', label: 'InferD' },
-                                ]}
-                                required
-                                sx={{ width: '300px' }}
-                            />
+                                controllerProps={{ rules: { required: true } }}>
+                                <SelectListBoxSection>
+                                    <SelectListBoxItem text="Modal" id="modal" />
+                                    <SelectListBoxItem text="InferD" id="inferd" />
+                                </SelectListBoxSection>
+                            </ControlledSelect>
                             <ControlledInput
                                 name="modelIdOnHost"
-                                label="Model host Id (The ID of this model on the host)"
+                                label="Model host ID"
+                                description="The ID on this model on the host"
                                 fullWidth
                                 controllerProps={{ rules: { required: true } }}
                             />
@@ -173,35 +182,32 @@ export const AddNewModel = () => {
 
                             <ControlledInput
                                 name="defaultSystemPrompt"
-                                label="Description"
+                                label="Default System Prompt"
                                 fullWidth
                                 controllerProps={{ rules: { required: true } }}
                             />
 
-                            <RadioButtonGroup
-                                name="promptType"
-                                label="Prompt type"
-                                options={[
-                                    { id: 'text_only', label: 'Text only' },
-                                    { id: 'multimodal', label: 'Multimodal' },
-                                ]}
-                                onChange={(value) => {
-                                    setPromptTypeState(value);
-                                }}
-                                row
-                            />
+                            <ControlledRadioGroup name="promptType" label="Prompt type">
+                                <Radio value="text_only">Text only</Radio>
+                                <Radio value="multimodal">Multimodal</Radio>
+                            </ControlledRadioGroup>
                             {promptTypeState === 'multimodal' && <MultiModalFields />}
-                            <Controller
-                                name="availability"
-                                control={formContext.control}
-                                render={({ field }) => (
-                                    <Select
-                                        label="Availability"
-                                        items={availability}
-                                        placeholder="Availability"
+                            <ControlledSelect name="availability" label="Availability">
+                                <SelectListBoxSection>
+                                    <SelectListBoxItem
+                                        text="Public"
+                                        value={{ id: 'public', label: 'Public' }}
                                     />
-                                )}
-                            />
+                                    <SelectListBoxItem
+                                        text="Internal"
+                                        value={{ id: 'internal', label: 'Internal' }}
+                                    />
+                                    <SelectListBoxItem
+                                        text="Pre-release"
+                                        value={{ id: 'prerelease', label: 'Pre-release' }}
+                                    />
+                                </SelectListBoxSection>
+                            </ControlledSelect>
                             {showTimeSection && <TimeFields />}
                             <Stack direction="row" align="center" justify="center" spacing={3}>
                                 <Button variant="outlined">Cancel</Button>

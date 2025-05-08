@@ -1,30 +1,31 @@
-import { Input, type InputProps } from '@allenai/varnish-ui';
+import { RadioGroup, type RadioGroupProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
-interface ControlledInputProps extends Omit<InputProps, 'onChange' | 'name'> {
+interface ControlledRadioGroupProps
+    extends Omit<RadioGroupProps, 'onChange' | 'name' | 'errorMessage' | 'onBlur'> {
     name: string;
-    controllerProps: Omit<UseControllerProps, 'name'>;
+    controllerProps?: Omit<UseControllerProps, 'name'>;
 }
 
-export const ControlledInput = ({
+export const ControlledRadioGroup = ({
     name,
     controllerProps,
     ...rest
-}: ControlledInputProps): ReactNode => {
+}: ControlledRadioGroupProps): ReactNode => {
     const {
         field,
         fieldState: { error, invalid },
     } = useController({ name, ...controllerProps });
 
     const isRequired =
-        controllerProps.rules?.required === true ||
-        (typeof controllerProps.rules?.required === 'object' &&
+        controllerProps?.rules?.required === true ||
+        (typeof controllerProps?.rules?.required === 'object' &&
             controllerProps.rules.required.value) ||
-        !!controllerProps.rules?.required;
+        !!controllerProps?.rules?.required;
 
     return (
-        <Input
+        <RadioGroup
             validationBehavior="aria"
             isInvalid={invalid}
             errorMessage={error?.message}
