@@ -1,9 +1,8 @@
 import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
-import { Autocomplete, Box, TextField } from '@mui/material';
+import { Autocomplete, TextField } from '@mui/material';
 import { type ReactNode } from 'react';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { SelectElement, SwitchElement, TextFieldElement } from 'react-hook-form-mui';
 import { useSubmit } from 'react-router-dom';
 
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
@@ -11,6 +10,7 @@ import { DatePicker } from '@/components/datepicker/DatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
+import { ControlledSwitch } from '@/components/form/ControlledSwitch';
 import { MetaTags } from '@/components/MetaTags';
 
 const MultiModalFields = (): ReactNode => {
@@ -32,34 +32,32 @@ const MultiModalFields = (): ReactNode => {
                     />
                 )}
             />
-            <SelectElement
+            <ControlledSelect
                 name="requireFileToPrompt"
                 label="File prompt requirement"
-                options={[
-                    { id: 'first_message', label: 'First message' },
-                    { id: 'all_messages', label: 'All messages' },
-                    { id: 'no_requirement', label: 'No requirement' },
-                ]}
-            />
-            <Box flexDirection="row" display="flex" gap={10}>
-                <SwitchElement
-                    name="allowFilesInFollowups"
-                    label="Allow files in followup prompts"
-                    control={formContext.control}
-                    sx={{ flex: 1 }}
+                controllerProps={{ rules: { required: true } }}>
+                <SelectListBoxItem
+                    id="first_message"
+                    text="First message"
+                    textValue="First message"
                 />
-                <TextFieldElement
+                <SelectListBoxItem id="all_messages" text="All messages" textValue="All messages" />
+                <SelectListBoxItem
+                    id="no_requirement"
+                    text="No requirement"
+                    textValue="No requirement"
+                />
+            </ControlledSelect>
+            <Stack direction="row" spacing={10}>
+                <ControlledSwitch name="allowFilesInFollowups">
+                    Allow files in followup prompts
+                </ControlledSwitch>
+                <ControlledInput
                     name="maxFilesPerMessage"
-                    control={formContext.control}
                     label="Max files per message"
                     type="number"
-                    variant="standard"
-                    required
-                    fullWidth
-                    InputLabelProps={{ shrink: true, sx: { fontSize: '18px' } }}
-                    sx={{ flex: 1 }}
                 />
-            </Box>
+            </Stack>
         </>
     );
 };
@@ -67,7 +65,7 @@ const MultiModalFields = (): ReactNode => {
 const TimeFields = (): ReactNode => {
     const formContext = useFormContext<SchemaRootCreateModelConfigRequest>();
     return (
-        <Box flexDirection="row" display="flex" gap={10}>
+        <Stack direction="row" spacing={10}>
             <Controller
                 name="availableTime"
                 control={formContext.control}
@@ -94,7 +92,7 @@ const TimeFields = (): ReactNode => {
                     />
                 )}
             />
-        </Box>
+        </Stack>
     );
 };
 
