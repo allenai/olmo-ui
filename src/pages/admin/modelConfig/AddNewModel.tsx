@@ -1,4 +1,5 @@
-import { Button, Input, Select, Stack } from '@allenai/varnish-ui';
+import { Button, Select, Stack } from '@allenai/varnish-ui';
+import { DevTool } from '@hookform/devtools';
 import { Autocomplete, Box, TextField } from '@mui/material';
 import React, { type ReactNode } from 'react';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
@@ -11,6 +12,7 @@ import {
 import { useSubmit } from 'react-router-dom';
 
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { ControlledInput } from '@/components/ControlledInput';
 import { DatePicker } from '@/components/datepicker/DatePicker';
 import { MetaTags } from '@/components/MetaTags';
 
@@ -123,24 +125,20 @@ export const AddNewModel = () => {
                 <Stack spacing={8} direction="row" wrap="wrap">
                     <form onSubmit={formContext.handleSubmit(handleSubmit)}>
                         <Stack spacing={8} direction="column">
-                            <Controller
+                            <DevTool control={formContext.control} />
+                            <ControlledInput
                                 name="name"
-                                control={formContext.control}
-                                render={({ field }) => (
-                                    <Input label="Name" value={field.value} fullWidth={true} />
-                                )}
+                                label="Name"
+                                fullWidth
+                                controllerProps={{ rules: { required: true } }}
                             />
-                            <Controller
+                            <ControlledInput
                                 name="id"
-                                control={formContext.control}
-                                render={({ field }) => (
-                                    <Input
-                                        label="ID (The ID you see when linking to this model)"
-                                        value={field.value}
-                                        fullWidth={true}
-                                    />
-                                )}
+                                label="ID (The ID you see when linking to this model)"
+                                fullWidth
+                                controllerProps={{ rules: { required: true } }}
                             />
+
                             <Autocomplete
                                 options={['Olmo', 'Tulu']}
                                 renderInput={(params) => {
@@ -160,40 +158,26 @@ export const AddNewModel = () => {
                                 required
                                 sx={{ width: '300px' }}
                             />
-                            <Controller
+                            <ControlledInput
                                 name="modelIdOnHost"
-                                control={formContext.control}
-                                render={({ field }) => (
-                                    <Input
-                                        label="Model host Id (The ID of this model on the host)"
-                                        value={field.value}
-                                        fullWidth={true}
-                                    />
-                                )}
+                                label="Model host Id (The ID of this model on the host)"
+                                fullWidth
+                                controllerProps={{ rules: { required: true } }}
+                            />
+                            <ControlledInput
+                                name="description"
+                                label="Description"
+                                fullWidth
+                                controllerProps={{ rules: { required: true } }}
                             />
 
-                            <Controller
-                                name="description"
-                                control={formContext.control}
-                                render={({ field }) => (
-                                    <Input
-                                        label="Description"
-                                        value={field.value}
-                                        fullWidth={true}
-                                    />
-                                )}
-                            />
-                            <Controller
+                            <ControlledInput
                                 name="defaultSystemPrompt"
-                                control={formContext.control}
-                                render={({ field }) => (
-                                    <Input
-                                        label="Default system prompt"
-                                        value={field.value}
-                                        fullWidth={true}
-                                    />
-                                )}
+                                label="Description"
+                                fullWidth
+                                controllerProps={{ rules: { required: true } }}
                             />
+
                             <RadioButtonGroup
                                 name="promptType"
                                 label="Prompt type"
@@ -206,9 +190,7 @@ export const AddNewModel = () => {
                                 }}
                                 row
                             />
-                            {promptTypeState === 'multimodal' && (
-                                <MultiModalFields formContext={formContext} />
-                            )}
+                            {promptTypeState === 'multimodal' && <MultiModalFields />}
                             <Controller
                                 name="availability"
                                 control={formContext.control}
@@ -220,7 +202,7 @@ export const AddNewModel = () => {
                                     />
                                 )}
                             />
-                            {showTimeSection && <TimeFields formContext={formContext} />}
+                            {showTimeSection && <TimeFields />}
                             <Stack direction="row" align="center" justify="center" spacing={3}>
                                 <Button variant="outlined">Cancel</Button>
                                 <Button variant="contained" type="submit">
