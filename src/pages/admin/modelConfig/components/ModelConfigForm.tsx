@@ -1,9 +1,8 @@
 import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
-import { now } from '@internationalized/date';
+import { now, type ZonedDateTime } from '@internationalized/date';
 import { Autocomplete, TextField } from '@mui/material';
 import { type ReactNode } from 'react';
-import type { DateValue } from 'react-aria-components';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import {
@@ -98,8 +97,8 @@ const TimeFields = (): ReactNode => {
 
 type BaseModelFormFieldValues = {
     availability: 'public' | 'internal' | 'prerelease';
-    availableTime?: DateValue;
-    deprecationTime?: DateValue;
+    availableTime?: ZonedDateTime;
+    deprecationTime?: ZonedDateTime;
 } & Pick<
     SchemaRootCreateModelConfigRequest,
     | 'defaultSystemPrompt'

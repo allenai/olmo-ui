@@ -1,8 +1,11 @@
-import { parseAbsolute } from '@internationalized/date';
+import { parseAbsolute, parseAbsoluteToLocal } from '@internationalized/date';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useLocation, useSubmit } from 'react-router-dom';
 
-import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import type {
+    SchemaResponseModel,
+    SchemaRootCreateModelConfigRequest,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { MetaTags } from '@/components/MetaTags';
 import { links } from '@/Links';
 import type { Mutable } from '@/util';
@@ -16,13 +19,12 @@ const mapConfigFormDataToRequest = (
 
     const internal = availability === 'internal';
     const mappedFamilyId = familyId === 'no_family' ? undefined : familyId;
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const request = {
         ...rest,
         internal,
         familyId: mappedFamilyId,
-        availableTime: availableTime?.toDate(userTimeZone).toISOString().replace('Z', '+00:00'),
-        deprecationTime: deprecationTime?.toDate(userTimeZone).toISOString().replace('Z', '+00:00'),
+        availableTime: availableTime?.toAbsoluteString(),
+        deprecationTime: deprecationTime?.toAbsoluteString(),
     } as Mutable<SchemaRootCreateModelConfigRequest>;
 
     return request;
@@ -32,12 +34,10 @@ const mapModelEditFormData = (model: ModelConfigFormValues) => {
     const { availableTime, deprecationTime, internal } = model;
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    const modifiedAvailableTime = availableTime
-        ? parseAbsolute(availableTime.toString(), userTimeZone)
-        : undefined;
+    const modifiedAvailableTime = availableTime ? parseAbsoluteToLocal(availableTime.toString()) : undefined;
 
     const modifiedDeprecationTime = deprecationTime
-        ? parseAbsolute(deprecationTime.toString(), userTimeZone)
+        ? parseAbsoluteToLocal(deprecationTime.toString())
         : undefined;
 
     const availability: 'public' | 'internal' | 'prerelease' = internal
