@@ -90,7 +90,7 @@ export const routes: RouteObject[] = [
             { path: links.loginResult, loader: loginResultLoader },
             {
                 id: 'userInfoRoot',
-                loader: userInfoLoader,
+                loader: userInfoLoader(queryClient),
                 children: [
                     {
                         path: links.playground,
@@ -183,7 +183,7 @@ export const routes: RouteObject[] = [
                     },
                     {
                         path: links.admin,
-                        loader: adminPageLoader(queryClient),
+                        loader: adminPageLoader,
                         element: <AdminLayout />,
                         handle: { pageControls: <ThreadPageControls /> },
                         children: [

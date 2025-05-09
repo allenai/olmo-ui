@@ -1,3 +1,6 @@
+import { QueryClient } from '@tanstack/react-query';
+
+import { getUserModel } from '@/api/getWhoAmIModel';
 import { OlmoStateCreator } from '@/AppContext';
 
 import { User, UserClient, WhoamiApiUrl } from '../api/User';
@@ -7,7 +10,7 @@ import { errorToAlert } from './SnackMessageSlice';
 export interface UserSlice {
     userRemoteState?: RemoteState;
     userInfo: User | null;
-    getUserInfo: () => Promise<User>;
+    getUserInfo: (queryClient: QueryClient) => Promise<User>;
     resetTermsAndConditionsAcceptance: () => void;
     acceptTermsAndConditions: () => Promise<void>;
 }
@@ -17,12 +20,12 @@ const userClient = new UserClient();
 export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
     userRemoteState: undefined,
     userInfo: null,
-    getUserInfo: async () => {
+    getUserInfo: async (queryClient: QueryClient) => {
         const { addSnackMessage } = get();
         set({ userRemoteState: RemoteState.Loading });
 
         try {
-            const user = await userClient.whoAmI();
+            const user = await queryClient.ensureQueryData(getUserModel);
 
             set({
                 userInfo: user,
