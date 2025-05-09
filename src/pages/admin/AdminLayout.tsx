@@ -8,6 +8,11 @@ const containerStyle = css({
     paddingInline: '2',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: 'background',
+    paddingBlockEnd: '2',
+    minWidth: '[0]',
+    minHeight: '[0]',
+    gap: '2',
 });
 
 export const AdminLayout = () => {
