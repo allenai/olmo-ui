@@ -1,5 +1,6 @@
 import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
+import { now } from '@internationalized/date';
 import { Autocomplete, TextField } from '@mui/material';
 import { type ReactNode } from 'react';
 import type { DateValue } from 'react-aria-components';
@@ -76,17 +77,20 @@ const MultiModalFields = (): ReactNode => {
 };
 
 const TimeFields = (): ReactNode => {
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return (
         <Stack direction="row" spacing={10}>
             <ControlledDatePicker
                 name="availableTime"
                 label="Available time"
                 granularity="minute"
+                placeholderValue={now(userTimeZone)}
             />
             <ControlledDatePicker
                 name="deprecationTime"
                 label="Deprecation time"
                 granularity="minute"
+                placeholderValue={now(userTimeZone)}
             />
         </Stack>
     );
@@ -107,6 +111,7 @@ type BaseModelFormFieldValues = {
     | 'modelType'
     | 'name'
     | 'promptType'
+    | 'internal'
 >;
 
 export type ModelConfigFormValues = BaseModelFormFieldValues & Partial<MultiModalFormValues>;

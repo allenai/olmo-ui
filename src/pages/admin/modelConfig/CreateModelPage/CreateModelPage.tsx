@@ -1,3 +1,4 @@
+import { parseAbsolute } from '@internationalized/date';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useLocation, useSubmit } from 'react-router-dom';
 
@@ -15,29 +16,58 @@ const mapConfigFormDataToRequest = (
 
     const internal = availability === 'internal';
     const mappedFamilyId = familyId === 'no_family' ? undefined : familyId;
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const request = {
         ...rest,
         internal,
         availability,
         familyId: mappedFamilyId,
-        availableTime: availableTime?.toString(),
-        deprecationTime: deprecationTime?.toString(),
+        availableTime: availableTime?.toDate(userTimeZone).toISOString().replace('Z', '+00:00'),
+        deprecationTime: deprecationTime?.toDate(userTimeZone).toISOString().replace('Z', '+00:00'),
     } as Mutable<SchemaRootCreateModelConfigRequest>;
 
     return request;
+};
+
+const mapModelEditFormData = (model: ModelConfigFormValues) => {
+    const { availableTime, deprecationTime, internal } = model;
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const modifiedAvailableTime = availableTime
+        ? parseAbsolute(availableTime.toString(), userTimeZone)
+        : undefined;
+
+    const modifiedDeprecationTime = deprecationTime
+        ? parseAbsolute(deprecationTime.toString(), userTimeZone)
+        : undefined;
+
+    const availability: 'public' | 'internal' | 'prerelease' = internal
+        ? 'internal'
+        : modifiedAvailableTime || modifiedDeprecationTime
+          ? 'prerelease'
+          : 'public';
+
+    return {
+        ...model,
+        availableTime: modifiedAvailableTime,
+        deprecationTime: modifiedDeprecationTime,
+        availability,
+    };
 };
 
 export const CreateModelPage = () => {
     const location = useLocation();
     const model = location.state?.modelToEdit as ModelConfigFormValues;
     const formContext = useForm<ModelConfigFormValues>({
-        defaultValues: model || {
-            promptType: 'text_only',
-            host: 'modal',
-            availability: 'internal',
-            familyId: 'no_family',
-            modelType: 'chat',
-        },
+        defaultValues: model
+            ? mapModelEditFormData(model)
+            : {
+                  promptType: 'text_only',
+                  host: 'modal',
+                  availability: 'internal',
+                  familyId: 'no_family',
+                  modelType: 'chat',
+              },
         mode: 'onChange',
     });
 
