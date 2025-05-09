@@ -1,29 +1,10 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
-import type { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { MetaTags } from '@/components/MetaTags';
-import type { Mutable } from '@/util';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
-
-const mapConfigFormDataToRequest = (
-    formData: ModelConfigFormValues
-): SchemaRootCreateModelConfigRequest => {
-    const { availability, availableTime, deprecationTime, familyId, ...rest } = formData;
-
-    const internal = availability === 'internal';
-    const mappedFamilyId = familyId === 'no_family' ? undefined : familyId;
-    const request = {
-        ...rest,
-        internal,
-        familyId: mappedFamilyId,
-        availableTime: availableTime?.toString(),
-        deprecationTime: deprecationTime?.toString(),
-    } as Mutable<SchemaRootCreateModelConfigRequest>;
-
-    return request;
-};
+import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
 
 export const CreateModelPage = () => {
     const formContext = useForm<ModelConfigFormValues>({

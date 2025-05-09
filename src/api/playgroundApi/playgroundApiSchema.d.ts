@@ -672,6 +672,11 @@ export type components = {
             readonly system_prompt?: string | null;
         };
         /**
+         * ModelAvailability
+         * @enum {string}
+         */
+        readonly ModelAvailability: 'public' | 'internal' | 'prerelease';
+        /**
          * ModelHost
          * @enum {string}
          */
@@ -760,6 +765,7 @@ export type components = {
              * @default null
              */
             readonly allowFilesInFollowups?: boolean | null;
+            readonly availability: components['schemas']['ModelAvailability'];
             /**
              * Availabletime
              * @default null
@@ -792,8 +798,7 @@ export type components = {
              * @default null
              */
             readonly familyName?: string | null;
-            /** Host */
-            readonly host: string;
+            readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
             /** Internal */
@@ -858,6 +863,7 @@ export type components = {
             | components['schemas']['UpdateMultiModalModelConfigRequest'];
         /** TextOnlyResponseModel */
         readonly TextOnlyResponseModel: {
+            readonly availability: components['schemas']['ModelAvailability'];
             /**
              * Availabletime
              * @default null
@@ -890,8 +896,7 @@ export type components = {
              * @default null
              */
             readonly familyName?: string | null;
-            /** Host */
-            readonly host: string;
+            readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
             /** Internal */
@@ -1045,6 +1050,7 @@ export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequir
 export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
 export type SchemaInferenceOpts = components['schemas']['InferenceOpts'];
 export type SchemaModel = components['schemas']['Model'];
+export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
 export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelType = components['schemas']['ModelType'];

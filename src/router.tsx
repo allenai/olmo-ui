@@ -32,6 +32,8 @@ import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfi
 import { modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
+import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelActiont';
+import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
@@ -213,6 +215,12 @@ export const routes: RouteObject[] = [
                                         element: <CreateModelPage />,
                                         action: createModelAction(queryClient),
                                         handle: { title: 'Add Model' },
+                                    },
+                                    {
+                                        path: links.editModel(':modelId'),
+                                        element: <UpdateModelPage />,
+                                        action: updateModelAction(queryClient),
+                                        handle: { title: 'Edit Model' },
                                     },
                                 ],
                             },

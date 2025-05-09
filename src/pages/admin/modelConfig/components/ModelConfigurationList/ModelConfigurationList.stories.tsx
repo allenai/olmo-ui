@@ -10,6 +10,7 @@ import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
 const mockModels: SchemaResponseModel[] = [
     {
+        availability: 'internal',
         availableTime: null,
         createdTime: '2025-04-25T18:16:49.831683+00:00',
         defaultSystemPrompt: null,
@@ -28,6 +29,7 @@ const mockModels: SchemaResponseModel[] = [
         updatedTime: '2025-04-25T20:16:09.543846+00:00',
     },
     {
+        availability: 'internal',
         availableTime: null,
         createdTime: '2025-04-25T20:25:13.122286+00:00',
         defaultSystemPrompt: null,
@@ -46,6 +48,7 @@ const mockModels: SchemaResponseModel[] = [
         updatedTime: '2025-04-25T21:15:10.861378+00:00',
     },
     {
+        availability: 'public',
         availableTime: null,
         createdTime: '2025-04-25T21:26:41.187139+00:00',
         defaultSystemPrompt: null,

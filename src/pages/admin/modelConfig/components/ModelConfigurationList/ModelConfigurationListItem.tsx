@@ -3,8 +3,10 @@ import { IconButton } from '@allenai/varnish-ui';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import { GridListItem } from 'react-aria-components';
+import { useNavigate } from 'react-router-dom';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { links } from '@/Links';
 
 import { DeleteModelDialog } from './DeleteModelDialog';
 
@@ -55,23 +57,31 @@ interface ModelConfigurationListItemProps {
     item: SchemaResponseModel;
 }
 
-export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemProps) => (
-    <GridListItem className={gridListItemContainer} id={item.id} textValue={item.name}>
-        {({ allowsDragging }) => (
-            <>
-                <IconButton
-                    variant="text"
-                    isDisabled={!allowsDragging}
-                    className={dragButton}
-                    slot="drag">
-                    <DragIndicatorOutlinedIcon />
-                </IconButton>
-                <p className={modelName}>{item.name}</p>
-                <IconButton variant="text" isDisabled={allowsDragging}>
-                    <EditIcon />
-                </IconButton>
-                <DeleteModelDialog modelId={item.id} />
-            </>
-        )}
-    </GridListItem>
-);
+export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemProps) => {
+    const navigate = useNavigate();
+    return (
+        <GridListItem className={gridListItemContainer} id={item.id} textValue={item.name}>
+            {({ allowsDragging }) => (
+                <>
+                    <IconButton
+                        variant="text"
+                        isDisabled={!allowsDragging}
+                        className={dragButton}
+                        slot="drag">
+                        <DragIndicatorOutlinedIcon />
+                    </IconButton>
+                    <p className={modelName}>{item.name}</p>
+                    <IconButton
+                        variant="text"
+                        isDisabled={allowsDragging}
+                        onPress={() => {
+                            navigate(links.editModel(item.id));
+                        }}>
+                        <EditIcon />
+                    </IconButton>
+                    <DeleteModelDialog modelId={item.id} />
+                </>
+            )}
+        </GridListItem>
+    );
+};
