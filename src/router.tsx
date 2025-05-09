@@ -183,7 +183,7 @@ export const routes: RouteObject[] = [
                     },
                     {
                         path: links.admin,
-                        loader: adminPageLoader,
+                        loader: adminPageLoader(queryClient),
                         element: <AdminLayout />,
                         handle: { pageControls: <ThreadPageControls /> },
                         children: [
