@@ -20,7 +20,6 @@ const mapConfigFormDataToRequest = (
     const request = {
         ...rest,
         internal,
-        availability,
         familyId: mappedFamilyId,
         availableTime: availableTime?.toDate(userTimeZone).toISOString().replace('Z', '+00:00'),
         deprecationTime: deprecationTime?.toDate(userTimeZone).toISOString().replace('Z', '+00:00'),
