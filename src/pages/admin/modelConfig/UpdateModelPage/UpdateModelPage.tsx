@@ -18,18 +18,11 @@ const mapModelEditFormData = (model: SchemaResponseModel): ModelConfigFormValues
         ? parseAbsoluteToLocal(deprecationTime)
         : undefined;
 
-    const availability: ModelConfigFormValues['availability'] = internal
-        ? 'internal'
-        : modifiedAvailableTime || modifiedDeprecationTime
-          ? 'prerelease'
-          : 'public';
-
     return {
         ...rest,
         familyId: familyId ?? 'no_family',
         availableTime: modifiedAvailableTime,
         deprecationTime: modifiedDeprecationTime,
-        availability,
     };
 };
 
