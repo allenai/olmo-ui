@@ -20,3 +20,12 @@ export const useAdminModels = () => {
     // We, the devs, know that the admin query param will always return this model!
     return { data: data as SchemaResponseModel[] | undefined, error, isFetching, status };
 };
+
+export const useAdminModelById = (modelId: string) => {
+    const { data, error, status, isFetching } = useSuspenseQuery({
+        ...getAdminModelsQueryOptions,
+        select: (models) => models.find((model) => model.id === modelId),
+    });
+
+    return { data: data as SchemaResponseModel | undefined, error, isFetching, status };
+};

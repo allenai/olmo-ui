@@ -1,6 +1,6 @@
 import { parseAbsoluteToLocal } from '@internationalized/date';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useLocation, useSubmit } from 'react-router-dom';
+import { useParams, useSubmit } from 'react-router-dom';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { MetaTags } from '@/components/MetaTags';
@@ -8,6 +8,7 @@ import { links } from '@/Links';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
 import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
+import { useAdminModelById } from '../useGetAdminModels';
 
 const mapModelEditFormData = (model: SchemaResponseModel): ModelConfigFormValues => {
     const { availableTime, deprecationTime, internal, familyId, ...rest } = model;
@@ -27,23 +28,39 @@ const mapModelEditFormData = (model: SchemaResponseModel): ModelConfigFormValues
 };
 
 export const UpdateModelPage = () => {
-    const location = useLocation();
-    const model = location.state?.modelToEdit as SchemaResponseModel;
+    const { modelId } = useParams();
+    const { data, status } = useAdminModelById(modelId ?? '');
+    const submit = useSubmit();
     const formContext = useForm<ModelConfigFormValues>({
-        defaultValues: mapModelEditFormData(model),
+        defaultValues: data
+            ? mapModelEditFormData(data)
+            : {
+                  promptType: 'text_only',
+                  host: 'modal',
+                  availability: 'internal',
+                  familyId: 'no_family',
+                  modelType: 'chat',
+              },
         mode: 'onChange',
     });
 
-    const submit = useSubmit();
+    if (!modelId) {
+        return 'Model Id is missing';
+    }
+
+    if (status === 'error' || !data) {
+        return 'something went wrong';
+    }
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
-        const path = links.editModel(model.id);
+        const path = links.editModel(data.id);
         submit(mapConfigFormDataToRequest(formData), {
             method: 'put',
             action: path,
             encType: 'application/json',
         });
     };
+
     return (
         <>
             <MetaTags />

@@ -75,7 +75,7 @@ export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemP
                         variant="text"
                         isDisabled={allowsDragging}
                         onPress={() => {
-                            navigate(links.editModel(item.id), { state: { modelToEdit: item } });
+                            navigate(links.editModel(item.id));
                         }}>
                         <EditIcon />
                     </IconButton>
