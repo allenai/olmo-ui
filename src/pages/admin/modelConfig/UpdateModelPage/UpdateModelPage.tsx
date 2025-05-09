@@ -33,40 +33,23 @@ const mapModelEditFormData = (model: ModelConfigFormValues) => {
     };
 };
 
-export const CreateModelPage = () => {
+export const UpdateModelPage = () => {
     const location = useLocation();
     const model = location.state?.modelToEdit as ModelConfigFormValues;
     const formContext = useForm<ModelConfigFormValues>({
-        defaultValues: model
-            ? mapModelEditFormData(model)
-            : {
-                  promptType: 'text_only',
-                  host: 'modal',
-                  availability: 'internal',
-                  familyId: 'no_family',
-                  modelType: 'chat',
-              },
+        defaultValues: mapModelEditFormData(model),
         mode: 'onChange',
     });
-
-    const isEditMode = !!model;
 
     const submit = useSubmit();
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
-        if (isEditMode) {
-            const path = links.editModel(model.id);
-            submit(mapConfigFormDataToRequest(formData), {
-                method: 'put',
-                action: path,
-                encType: 'application/json',
-            });
-        } else {
-            submit(mapConfigFormDataToRequest(formData), {
-                method: 'post',
-                encType: 'application/json',
-            });
-        }
+        const path = links.editModel(model.id);
+        submit(mapConfigFormDataToRequest(formData), {
+            method: 'put',
+            action: path,
+            encType: 'application/json',
+        });
     };
     return (
         <>

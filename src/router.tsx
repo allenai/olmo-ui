@@ -28,11 +28,12 @@ import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/M
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { createModelAction } from './pages/admin/modelConfig/CreateModelPage/createModelAction';
 import { CreateModelPage } from './pages/admin/modelConfig/CreateModelPage/CreateModelPage';
-import { updateModelAction } from './pages/admin/modelConfig/CreateModelPage/updateModelActiont';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
 import { modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
+import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelActiont';
+import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
@@ -217,7 +218,7 @@ export const routes: RouteObject[] = [
                                     },
                                     {
                                         path: links.editModel(':modelId'),
-                                        element: <CreateModelPage />,
+                                        element: <UpdateModelPage />,
                                         action: updateModelAction(queryClient),
                                         handle: { title: 'Edit Model' },
                                     },
