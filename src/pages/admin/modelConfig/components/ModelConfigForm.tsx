@@ -110,7 +110,6 @@ type BaseModelFormFieldValues = {
     | 'modelType'
     | 'name'
     | 'promptType'
-    | 'internal'
 >;
 
 export type ModelConfigFormValues = BaseModelFormFieldValues & Partial<MultiModalFormValues>;
