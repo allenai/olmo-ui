@@ -1,4 +1,5 @@
 import { User as Auth0User } from '@auth0/auth0-spa-js';
+import { QueryClient } from '@tanstack/react-query';
 import {
     ActionFunction,
     ErrorResponse,
@@ -13,6 +14,7 @@ import { User as ApiUser } from '@/api/User';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
+import { getUserModel } from '../getWhoAmIModel';
 import { UserClient } from '../User';
 import { UserInfoLoaderResponse } from '../user-info-loader';
 import { createLoginRedirectURL } from './auth-utils';
@@ -68,38 +70,41 @@ export interface LoginError extends ErrorResponse {
 
 const userClient = new UserClient();
 
-export const loginResultLoader: LoaderFunction = async ({ request }) => {
-    await auth0Client.handleLoginRedirect();
-    const redirectTo = new URL(request.url).searchParams.get('redirectTo') || links.playground;
+export const loginResultLoader = (queryClient: QueryClient): LoaderFunction => {
+    return async ({ request }) => {
+        await auth0Client.handleLoginRedirect();
+        const redirectTo = new URL(request.url).searchParams.get('redirectTo') || links.playground;
 
-    const isAuthenticated = await auth0Client.isAuthenticated();
-    const authenticatedUserInfo = await auth0Client.getUserInfo();
+        const isAuthenticated = await auth0Client.isAuthenticated();
+        const authenticatedUserInfo = await auth0Client.getUserInfo();
 
-    // Checking for just falsiness for .sub because an empty string also isn't valid
-    if (isAuthenticated && !!authenticatedUserInfo?.sub) {
-        const { getUserInfo } = appContext.getState();
+        if (isAuthenticated && !!authenticatedUserInfo?.sub) {
+            const { getUserInfo } = appContext.getState();
 
-        await userClient.migrateFromAnonymousUser(authenticatedUserInfo.sub);
+            await userClient.migrateFromAnonymousUser(authenticatedUserInfo.sub);
 
-        // HACK: this re-fetches user info after we log in. It'd be nice to have this happen automatically when someone logs in!
-        await getUserInfo();
+            // Re-fetch user info after login
+            await getUserInfo(queryClient);
 
-        return redirect(redirectTo);
-    } else {
-        const responseData: LoginError['data'] = {
-            type: LOGIN_ERROR_TYPE,
-            title: 'Login error',
-            detail: 'Something went wrong when logging in. Please try again.',
-            redirectTo,
-        };
+            // Optionally, prefetch user model data
+            await queryClient.ensureQueryData(getUserModel);
 
-        // react-router seems to recommend throwing Responses
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
-        throw json(responseData, {
-            status: 502,
-            statusText: 'Something went wrong when logging in. Please try again.',
-        });
-    }
+            return redirect(redirectTo);
+        } else {
+            const responseData: LoginError['data'] = {
+                type: LOGIN_ERROR_TYPE,
+                title: 'Login error',
+                detail: 'Something went wrong when logging in. Please try again.',
+                redirectTo,
+            };
+
+            // eslint-disable-next-line @typescript-eslint/only-throw-error
+            throw json(responseData, {
+                status: 502,
+                statusText: 'Something went wrong when logging in. Please try again.',
+            });
+        }
+    };
 };
 
 export const loginLoader: LoaderFunction = async ({ request }) => {

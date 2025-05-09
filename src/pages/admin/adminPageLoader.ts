@@ -7,8 +7,8 @@ import { links } from '@/Links';
 
 export const adminPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ request }) => {
-        const data = await queryClient.ensureQueryData(getUserModel);
-        const hasAdminPermission = data.permissions?.includes('write:model-config');
+        const userData = await queryClient.ensureQueryData(getUserModel);
+        const hasAdminPermission = userData.permissions?.includes('write:model-config');
         const isModelConfigEnabled = process.env.IS_MODEL_CONFIG_ENABLED === 'true';
 
         if (!isModelConfigEnabled || !hasAdminPermission) {

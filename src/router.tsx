@@ -87,7 +87,7 @@ export const routes: RouteObject[] = [
                 action: logoutAction,
                 loader: logoutAction,
             },
-            { path: links.loginResult, loader: loginResultLoader },
+            { path: links.loginResult, loader: loginResultLoader(queryClient) },
             {
                 id: 'userInfoRoot',
                 loader: userInfoLoader(queryClient),
