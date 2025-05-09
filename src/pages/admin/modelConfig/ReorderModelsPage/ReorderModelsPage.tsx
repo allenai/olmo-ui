@@ -1,4 +1,4 @@
-import { Button, Stack } from '@allenai/varnish-ui';
+import { Button, Card, CardHeader, Stack } from '@allenai/varnish-ui';
 import { useDragAndDrop } from 'react-aria-components';
 import { useSubmit } from 'react-router-dom';
 import { useListData } from 'react-stately';
@@ -42,19 +42,21 @@ export const ReorderModelsPage = () => {
     };
 
     return (
-        <>
-            <Stack direction="row" spacing={16}>
-                <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
-                <Button
-                    type="submit"
-                    name="reorder-models"
-                    variant="contained"
-                    color="secondary"
-                    onPress={handleSaveModelOrder}>
-                    Save model order
-                </Button>
-            </Stack>
+        <Card>
+            <CardHeader>
+                <Stack direction="row" spacing={16}>
+                    <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
+                    <Button
+                        type="submit"
+                        name="reorder-models"
+                        variant="contained"
+                        color="secondary"
+                        onPress={handleSaveModelOrder}>
+                        Save model order
+                    </Button>
+                </Stack>
+            </CardHeader>
             <ModelConfigurationList items={list.items} dragAndDropHooks={dragAndDropHooks} />
-        </>
+        </Card>
     );
 };
