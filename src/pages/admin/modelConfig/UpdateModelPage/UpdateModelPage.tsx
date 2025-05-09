@@ -2,31 +2,31 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useLocation, useSubmit } from 'react-router-dom';
 
+import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { MetaTags } from '@/components/MetaTags';
 import { links } from '@/Links';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
 import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
 
-const mapModelEditFormData = (model: ModelConfigFormValues) => {
-    const { availableTime, deprecationTime, internal } = model;
+const mapModelEditFormData = (model: SchemaResponseModel): ModelConfigFormValues => {
+    const { availableTime, deprecationTime, internal, familyId, ...rest } = model;
 
-    const modifiedAvailableTime = availableTime
-        ? parseAbsoluteToLocal(availableTime.toString())
-        : undefined;
+    const modifiedAvailableTime = availableTime ? parseAbsoluteToLocal(availableTime) : undefined;
 
     const modifiedDeprecationTime = deprecationTime
-        ? parseAbsoluteToLocal(deprecationTime.toString())
+        ? parseAbsoluteToLocal(deprecationTime)
         : undefined;
 
-    const availability: 'public' | 'internal' | 'prerelease' = internal
+    const availability: ModelConfigFormValues['availability'] = internal
         ? 'internal'
         : modifiedAvailableTime || modifiedDeprecationTime
           ? 'prerelease'
           : 'public';
 
     return {
-        ...model,
+        ...rest,
+        familyId: familyId ?? 'no_family',
         availableTime: modifiedAvailableTime,
         deprecationTime: modifiedDeprecationTime,
         availability,
@@ -35,7 +35,7 @@ const mapModelEditFormData = (model: ModelConfigFormValues) => {
 
 export const UpdateModelPage = () => {
     const location = useLocation();
-    const model = location.state?.modelToEdit as ModelConfigFormValues;
+    const model = location.state?.modelToEdit as SchemaResponseModel;
     const formContext = useForm<ModelConfigFormValues>({
         defaultValues: mapModelEditFormData(model),
         mode: 'onChange',
