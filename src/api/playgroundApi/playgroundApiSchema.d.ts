@@ -792,8 +792,7 @@ export type components = {
              * @default null
              */
             readonly familyName?: string | null;
-            /** Host */
-            readonly host: string;
+            readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
             /** Internal */
@@ -890,8 +889,7 @@ export type components = {
              * @default null
              */
             readonly familyName?: string | null;
-            /** Host */
-            readonly host: string;
+            readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
             /** Internal */

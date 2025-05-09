@@ -1,6 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
+import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { MetaTags } from '@/components/MetaTags';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
