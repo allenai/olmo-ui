@@ -29,7 +29,7 @@ const mapModelEditFormData = (model: SchemaResponseModel): ModelConfigFormValues
 
 export const UpdateModelPage = () => {
     const { modelId } = useParams();
-    const { data, status } = useAdminModelById(modelId ?? '');
+    const { data, status } = useAdminModelById(modelId as string);
     const submit = useSubmit();
     const formContext = useForm<ModelConfigFormValues>({
         defaultValues: data
