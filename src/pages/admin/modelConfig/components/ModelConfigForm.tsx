@@ -66,6 +66,7 @@ const MultiModalFields = (): ReactNode => {
                                     {...params}
                                     label="Accepted file types"
                                     error={!!errorText || !!fieldState.error}
+                                    helperText={errorText}
                                 />
                             );
                         }}
