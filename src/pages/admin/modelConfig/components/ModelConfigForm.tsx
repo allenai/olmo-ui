@@ -2,7 +2,7 @@ import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@
 import { DevTool } from '@hookform/devtools';
 import { now, type ZonedDateTime } from '@internationalized/date';
 import { Autocomplete, TextField } from '@mui/material';
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import {
@@ -22,25 +22,52 @@ type MultiModalFormValues = Pick<
     'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
 >;
 
+const mimeTypeOptions = [
+    'application/json',
+    'text/plain',
+    'image/png',
+    'image/jpeg',
+    'application/pdf',
+    // Add other MIME types as needed
+];
+
 const MultiModalFields = (): ReactNode => {
     const formContext = useFormContext<MultiModalFormValues>();
+    const [errorText, setErrorText] = useState('');
+    const [inputValue, setInputValue] = useState('');
+
     return (
         <>
             <Controller
                 name="acceptedFileTypes"
                 control={formContext.control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                     <Autocomplete
                         id={field.name}
                         multiple
                         freeSolo
                         fullWidth
-                        options={[]}
+                        inputValue={inputValue}
+                        options={mimeTypeOptions}
                         onChange={(_e, value) => {
                             field.onChange(value);
                         }}
+                        onInputChange={(_e, newInputValue) => {
+                            setInputValue(newInputValue);
+                            if (newInputValue && !mimeTypeOptions.includes(newInputValue)) {
+                                setErrorText(`"${newInputValue}" is not a valid file type.`);
+                            } else {
+                                setErrorText('');
+                            }
+                        }}
                         renderInput={(params) => {
-                            return <TextField {...params} label="Accepted file types" />;
+                            return (
+                                <TextField
+                                    {...params}
+                                    label="Accepted file types"
+                                    error={!!errorText || !!fieldState.error}
+                                />
+                            );
                         }}
                     />
                 )}
