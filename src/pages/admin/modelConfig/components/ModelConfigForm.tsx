@@ -156,14 +156,14 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         name="name"
                         label="Name"
                         fullWidth
-                        controllerProps={{ rules: { required: true } }}
+                        controllerProps={{ rules: { required: true, minLength: 1 } }}
                     />
                     <ControlledInput
                         name="id"
                         label="ID"
                         description="The ID you see when linking to this model"
                         fullWidth
-                        controllerProps={{ rules: { required: true } }}
+                        controllerProps={{ rules: { required: true, minLength: 1 } }}
                     />
 
                     <ControlledSelect
@@ -196,7 +196,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         name="description"
                         label="Description"
                         fullWidth
-                        controllerProps={{ rules: { required: true } }}
+                        controllerProps={{ rules: { required: true, minLength: 1 } }}
                     />
 
                     <ControlledInput
