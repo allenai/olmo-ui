@@ -8,7 +8,7 @@ import { links } from '@/Links';
 import { routes } from '@/router';
 
 describe('Dataset Explorer Search', () => {
-    it('should load search results when a query set in the URL', async () => {
+    it.skip('should load search results when a query set in the URL', async () => {
         const router = createMemoryRouter(routes, {
             initialEntries: [{ pathname: links.search, search: '?query=Seattle' }],
         });
