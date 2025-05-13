@@ -24,14 +24,23 @@ type MultiModalFormValues = Pick<
     'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
 >;
 
+const mimeTypeRegex = /^[\w.-]+\/[\w+.-]+$/;
+
 const MultiModalFields = (): ReactNode => {
     const formContext = useFormContext<MultiModalFormValues>();
+
     return (
         <>
             <Controller
                 name="acceptedFileTypes"
                 control={formContext.control}
-                render={({ field }) => (
+                rules={{
+                    validate: (value) => {
+                        const invalidItem = value.find((item) => !mimeTypeRegex.test(item));
+                        return !invalidItem || `"${invalidItem}" is not a valid file type.`;
+                    },
+                }}
+                render={({ field, fieldState }) => (
                     <Autocomplete
                         id={field.name}
                         multiple
@@ -42,7 +51,14 @@ const MultiModalFields = (): ReactNode => {
                             field.onChange(value);
                         }}
                         renderInput={(params) => {
-                            return <TextField {...params} label="Accepted file types" />;
+                            return (
+                                <TextField
+                                    {...params}
+                                    label="Accepted file types"
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
+                                />
+                            );
                         }}
                     />
                 )}
