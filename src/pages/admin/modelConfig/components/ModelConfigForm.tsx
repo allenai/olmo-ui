@@ -17,6 +17,8 @@ import { ControlledSwitch } from '@/components/form/ControlledSwitch';
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 
+import { FileSizeInput } from './FileSizeInput/FileSizeInput';
+
 type MultiModalFormValues = Pick<
     SchemaCreateMultiModalModelConfigRequest,
     'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
@@ -45,6 +47,7 @@ const MultiModalFields = (): ReactNode => {
                     />
                 )}
             />
+            <FileSizeInput />
             <ControlledSelect
                 name="requireFileToPrompt"
                 label="File prompt requirement"
