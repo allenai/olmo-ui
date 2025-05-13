@@ -42,7 +42,7 @@ export namespace error {
         }
     }
 
-    function isValidationErrorPayload(error: object): error is ValidationErrorDetails {
+    export function isValidationErrorPayload(error: object): error is ValidationErrorDetails {
         return 'validation_errors' in (error as ValidationErrorDetails);
     }
 

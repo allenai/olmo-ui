@@ -1,6 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
+import { usePydanticValidationActionData } from '@/api/usePydanticValidationActionData';
 import { MetaTags } from '@/components/MetaTags';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
@@ -15,10 +16,11 @@ export const CreateModelPage = () => {
             familyId: 'no_family',
             modelType: 'chat',
         },
-        mode: 'onChange',
+        mode: 'onBlur',
     });
 
     const submit = useSubmit();
+    usePydanticValidationActionData(formContext.setError);
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
         submit(mapConfigFormDataToRequest(formData), {

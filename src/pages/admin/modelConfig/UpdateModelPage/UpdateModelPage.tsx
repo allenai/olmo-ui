@@ -3,6 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useParams, useSubmit } from 'react-router-dom';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import { usePydanticValidationActionData } from '@/api/usePydanticValidationActionData';
 import { MetaTags } from '@/components/MetaTags';
 import { links } from '@/Links';
 
@@ -41,8 +42,10 @@ export const UpdateModelPage = () => {
                   familyId: 'no_family',
                   modelType: 'chat',
               },
-        mode: 'onChange',
+        mode: 'onBlur',
     });
+
+    usePydanticValidationActionData(formContext.setError);
 
     if (!modelId) {
         return 'Model Id is missing';
