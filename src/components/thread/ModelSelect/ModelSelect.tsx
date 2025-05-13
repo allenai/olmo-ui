@@ -63,7 +63,8 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
     const models = useAppContext(
         useShallow((state: AppContextState) => {
             const nonDeprecatedModels = state.models.filter(
-                (model) => !model.is_deprecated || model.id === state.selectedModel?.id
+                (model) =>
+                    model.internal || !model.is_deprecated || model.id === state.selectedModel?.id
             );
 
             return nonDeprecatedModels;
