@@ -26,6 +26,7 @@ export const handlers = [
         return HttpResponse.json({
             client: 'murphy@allenai.org',
             hasAcceptedTermsAndConditions: true,
+            permissions: [],
         });
     }),
 

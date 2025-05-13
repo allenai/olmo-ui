@@ -86,10 +86,10 @@ export const routes: RouteObject[] = [
                 action: logoutAction,
                 loader: logoutAction,
             },
-            { path: links.loginResult, loader: loginResultLoader },
+            { path: links.loginResult, loader: loginResultLoader(queryClient) },
             {
                 id: 'userInfoRoot',
-                loader: userInfoLoader,
+                loader: userInfoLoader(queryClient),
                 children: [
                     {
                         path: links.playground,
@@ -182,7 +182,7 @@ export const routes: RouteObject[] = [
                     },
                     {
                         path: links.admin,
-                        loader: adminPageLoader,
+                        loader: adminPageLoader(queryClient),
                         element: <AdminLayout />,
                         handle: { pageControls: <ThreadPageControls /> },
                         children: [
