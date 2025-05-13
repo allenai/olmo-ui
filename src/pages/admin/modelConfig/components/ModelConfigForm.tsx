@@ -22,7 +22,7 @@ type MultiModalFormValues = Pick<
     'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
 >;
 
-const mimeTypeRegex = /^(?<main>\w+|\*)\/(?<sub>\w+|\*)(\s*;\s*(?<param>\w+)=\s*(?<val>\S+))?$/;
+const mimeTypeRegex = /^[\w.-]+\/[\w+.-]+$/;
 
 const MultiModalFields = (): ReactNode => {
     const formContext = useFormContext<MultiModalFormValues>();
