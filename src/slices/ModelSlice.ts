@@ -1,6 +1,7 @@
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { OlmoStateCreator } from '@/AppContext';
 
-import { Model, ModelClient, ModelList } from '../api/Model';
+import { ModelClient, ModelList } from '../api/Model';
 import { WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
 import { errorToAlert } from './SnackMessageSlice';

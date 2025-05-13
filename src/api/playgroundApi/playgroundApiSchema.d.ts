@@ -43,84 +43,6 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly '/v3/message/': {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path?: never;
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Stream a prompt response */
-        readonly post: {
-            readonly parameters: {
-                readonly query?: never;
-                readonly header?: never;
-                readonly path?: never;
-                readonly cookie?: never;
-            };
-            /** @description A CreateMessageRequestV3 */
-            readonly requestBody: {
-                readonly content: {
-                    readonly 'application/json': components['schemas']['CreateMessageRequestV3'];
-                };
-            };
-            readonly responses: {
-                /** @description Empty Response */
-                readonly 200: {
-                    headers: {
-                        readonly [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly '/v3/message/stream': {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path?: never;
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Stream a prompt response */
-        readonly post: {
-            readonly parameters: {
-                readonly query?: never;
-                readonly header?: never;
-                readonly path?: never;
-                readonly cookie?: never;
-            };
-            /** @description A CreateMessageRequestV3 */
-            readonly requestBody: {
-                readonly content: {
-                    readonly 'application/json': components['schemas']['CreateMessageRequestV3'];
-                };
-            };
-            readonly responses: {
-                /** @description Empty Response */
-                readonly 200: {
-                    headers: {
-                        readonly [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
     readonly '/v3/whoami': {
         readonly parameters: {
             readonly query?: never;
@@ -364,43 +286,6 @@ export type components = {
             /** Permissions */
             readonly permissions?: readonly string[];
         };
-        /** CreateMessageRequestV3 */
-        readonly CreateMessageRequestV3: {
-            /**
-             * Captchatoken
-             * @default null
-             */
-            readonly captchaToken?: string | null;
-            /** Content */
-            readonly content: string;
-            /** Host */
-            readonly host: string;
-            /** Model */
-            readonly model: string;
-            readonly opts?: components['schemas']['InferenceOpts'];
-            /**
-             * Original
-             * @default null
-             */
-            readonly original?: string | null;
-            /**
-             * Parent
-             * @default null
-             */
-            readonly parent?: string | null;
-            /**
-             * Private
-             * @default false
-             */
-            readonly private?: boolean;
-            /** @default user */
-            readonly role?: components['schemas']['Role'] | null;
-            /**
-             * Template
-             * @default null
-             */
-            readonly template?: string | null;
-        };
         /** CreateMessageRequestV4 */
         readonly CreateMessageRequestV4: {
             /**
@@ -515,7 +400,7 @@ export type components = {
              * Maxtotalfilesize
              * @default null
              */
-            readonly maxTotalFileSize?: number | null;
+            readonly maxTotalFileSize?: string | number | null;
             /** Modelidonhost */
             readonly modelIdOnHost: string;
             readonly modelType: components['schemas']['ModelType'];
@@ -603,39 +488,6 @@ export type components = {
             /** Prompt */
             readonly prompt: string;
         };
-        /** InferenceOpts */
-        readonly InferenceOpts: {
-            /**
-             * Logprobs
-             * @default null
-             */
-            readonly logprobs?: number | null;
-            /**
-             * Max Tokens
-             * @default 2048
-             */
-            readonly max_tokens?: number;
-            /**
-             * N
-             * @default 1
-             */
-            readonly n?: number;
-            /**
-             * Stop
-             * @default null
-             */
-            readonly stop?: readonly string[] | null;
-            /**
-             * Temperature
-             * @default 0.7
-             */
-            readonly temperature?: number;
-            /**
-             * Top P
-             * @default 1
-             */
-            readonly top_p?: number;
-        };
         /** Model */
         readonly Model: {
             /**
@@ -658,6 +510,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** Internal */
+            readonly internal: boolean;
             /** Is Deprecated */
             readonly is_deprecated: boolean;
             /** Is Visible */
@@ -726,6 +580,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** Internal */
+            readonly internal: boolean;
             /** Is Deprecated */
             readonly is_deprecated: boolean;
             /** Is Visible */
@@ -1040,7 +896,6 @@ export type components = {
     pathItems: never;
 };
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
-export type SchemaCreateMessageRequestV3 = components['schemas']['CreateMessageRequestV3'];
 export type SchemaCreateMessageRequestV4 = components['schemas']['CreateMessageRequestV4'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
@@ -1048,7 +903,6 @@ export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
-export type SchemaInferenceOpts = components['schemas']['InferenceOpts'];
 export type SchemaModel = components['schemas']['Model'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
