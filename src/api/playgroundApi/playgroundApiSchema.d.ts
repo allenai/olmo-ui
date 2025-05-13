@@ -826,7 +826,7 @@ export type components = {
              * Maxtotalfilesize
              * @default null
              */
-            readonly maxTotalFileSize?: number | null;
+            readonly maxTotalFileSize?: string | number | null;
             /** Modelidonhost */
             readonly modelIdOnHost: string;
             readonly modelType: components['schemas']['ModelType'];

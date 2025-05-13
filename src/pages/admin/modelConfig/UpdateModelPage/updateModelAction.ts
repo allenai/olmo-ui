@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { ActionFunction, redirect } from 'react-router-dom';
 
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { type SchemaRootUpdateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { links } from '@/Links';
 
 import { getAdminModelsQueryOptions } from '../useGetAdminModels';
@@ -19,7 +19,7 @@ export const updateModelAction =
             params: {
                 path: { model_id: modelId },
             },
-            body: (await request.json()) as SchemaRootCreateModelConfigRequest,
+            body: (await request.json()) as SchemaRootUpdateModelConfigRequest,
         });
         await queryClient.invalidateQueries({
             queryKey: getAdminModelsQueryOptions.queryKey,
