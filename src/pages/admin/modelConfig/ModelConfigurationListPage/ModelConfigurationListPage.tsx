@@ -1,4 +1,4 @@
-import { Button, Icon, Stack } from '@allenai/varnish-ui';
+import { Button, Card, CardHeader, Icon, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,24 +17,26 @@ export const ModelConfigurationListPage = () => {
     }
 
     return (
-        <>
-            <Stack spacing={8} direction="row" wrap="wrap">
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                        navigate(links.addModel);
-                    }}
-                    endIcon={
-                        <Icon>
-                            <AddIcon />
-                        </Icon>
-                    }>
-                    Add New Model
-                </Button>
-                <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
-            </Stack>
+        <Card>
+            <CardHeader>
+                <Stack spacing={8} direction="row" wrap="wrap">
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => {
+                            navigate(links.addModel);
+                        }}
+                        endIcon={
+                            <Icon>
+                                <AddIcon />
+                            </Icon>
+                        }>
+                        Add New Model
+                    </Button>
+                    <LinkButton to={links.modelOrder}>Reorder models</LinkButton>
+                </Stack>
+            </CardHeader>
             <ModelConfigurationList items={data} />
-        </>
+        </Card>
     );
 };

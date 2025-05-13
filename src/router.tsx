@@ -24,7 +24,6 @@ import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
-import { ModelConfigurationLayout } from './pages/admin/modelConfig/components/ModelConfigurationLayout';
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { createModelAction } from './pages/admin/modelConfig/CreateModelPage/createModelAction';
 import { CreateModelPage } from './pages/admin/modelConfig/CreateModelPage/CreateModelPage';
@@ -190,7 +189,6 @@ export const routes: RouteObject[] = [
                             {
                                 path: links.modelConfiguration,
                                 loader: modelsLoader(queryClient),
-                                element: <ModelConfigurationLayout />,
                                 children: [
                                     {
                                         path: links.modelConfiguration,
