@@ -9,6 +9,7 @@ export const FileSizeInput = () => {
             <ControlledInput
                 name="fileSize.amount"
                 label="File Size"
+                type="number"
                 controllerProps={{ rules: { required: true } }}
             />
             <ControlledSelect
