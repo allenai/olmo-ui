@@ -147,16 +147,24 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         controllerProps={{ rules: { required: true } }}
                     />
 
-                    <ControlledSelect
-                        name="familyId"
-                        label="Model family"
-                        controllerProps={{ rules: { required: true } }}>
-                        <SelectListBoxSection>
-                            <SelectListBoxItem text="No family" id="no_family" />
-                            <SelectListBoxItem text="OLMo" id="olmo" />
-                            <SelectListBoxItem text="Tülu" id="tulu" />
-                        </SelectListBoxSection>
-                    </ControlledSelect>
+                    <Stack direction="row" spacing={16} align="center">
+                        <ControlledSelect
+                            name="familyId"
+                            label="Model family"
+                            controllerProps={{ rules: { required: true } }}>
+                            <SelectListBoxSection>
+                                <SelectListBoxItem text="OLMo" id="olmo" />
+                                <SelectListBoxItem text="Tülu" id="tulu" />
+                            </SelectListBoxSection>
+                        </ControlledSelect>
+                        <Button
+                            variant="contained"
+                            onPress={() => {
+                                formContext.setValue('familyId', null);
+                            }}>
+                            Clear
+                        </Button>
+                    </Stack>
                     <ControlledSelect
                         name="host"
                         label="Model host"
