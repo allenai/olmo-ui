@@ -97,20 +97,12 @@ const MultiModalFields = (): ReactNode => {
 const TimeFields = (): ReactNode => {
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return (
-        <Stack direction="row" spacing={10}>
-            <ControlledDatePicker
-                name="availableTime"
-                label="Available time"
-                granularity="minute"
-                placeholderValue={now(userTimeZone)}
-            />
-            <ControlledDatePicker
-                name="deprecationTime"
-                label="Deprecation time"
-                granularity="minute"
-                placeholderValue={now(userTimeZone)}
-            />
-        </Stack>
+        <ControlledDatePicker
+            name="availableTime"
+            label="Available time"
+            granularity="minute"
+            placeholderValue={now(userTimeZone)}
+        />
     );
 };
 
@@ -139,6 +131,7 @@ interface ModelConfigFormProps {
 
 export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
     const formContext = useFormContext<ModelConfigFormValues>();
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const promptTypeState = formContext.watch('promptType');
     const showTimeSection = formContext.watch('availability') === 'prerelease';
@@ -221,6 +214,12 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         </SelectListBoxSection>
                     </ControlledSelect>
                     {showTimeSection && <TimeFields />}
+                    <ControlledDatePicker
+                        name="deprecationTime"
+                        label="Deprecation time"
+                        granularity="minute"
+                        placeholderValue={now(userTimeZone)}
+                    />
                     <Stack direction="row" align="center" justify="center" spacing={3}>
                         <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                         <Button variant="contained" type="submit">
