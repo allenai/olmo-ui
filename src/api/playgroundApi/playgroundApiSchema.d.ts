@@ -520,6 +520,11 @@ export type components = {
             /** Name */
             readonly name: string;
             /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            readonly prompt_type: 'text_only';
+            /**
              * System Prompt
              * @default null
              */
@@ -601,6 +606,11 @@ export type components = {
             readonly model_type: components['schemas']['ModelType'];
             /** Name */
             readonly name: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            readonly prompt_type: 'multi_modal';
             /**
              * @description Defines if a user is required to send files with messages. Not intended to prevent users from sending files with follow-up messages.
              * @default no_requirement
