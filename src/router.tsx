@@ -31,7 +31,7 @@ import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfi
 import { modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
-import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelActiont';
+import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';

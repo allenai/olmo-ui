@@ -28,9 +28,9 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
                     allowFilesInFollowups: false,
                 };
 
-                if (state.selectedModel?.accepts_files) {
+                if (state.selectedModel?.prompt_type === 'multi_modal') {
                     const selectedModel = state.selectedModel;
-                    values.acceptsFileUpload = selectedModel.accepts_files;
+                    values.acceptsFileUpload = selectedModel.accepts_files ?? false;
                     values.acceptedFileTypes = selectedModel.accepted_file_types.join('');
                     values.acceptsMultiple =
                         selectedModel.max_files_per_message != null &&
