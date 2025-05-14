@@ -1,11 +1,9 @@
 import { ComponentType } from 'react';
 
-import { ModelFamilyId } from '@/api/Model';
-
 import { OlmoeLegalNotice } from './OlmoeLegalNotice';
 import { TuluFamilyLegalNotice } from './TuluFamilyLegalNotice';
 
-export const familySpecificLegalNoticesMap: Partial<Record<ModelFamilyId, ComponentType>> = {
+export const familySpecificLegalNoticesMap: Partial<Record<string, ComponentType>> = {
     tulu: TuluFamilyLegalNotice,
 };
 
