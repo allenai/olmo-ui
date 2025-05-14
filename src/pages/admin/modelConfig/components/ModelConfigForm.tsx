@@ -1,4 +1,11 @@
-import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
+import {
+    Button,
+    Link,
+    Radio,
+    SelectListBoxItem,
+    SelectListBoxSection,
+    Stack,
+} from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import { now, type ZonedDateTime } from '@internationalized/date';
 import { Autocomplete, TextField } from '@mui/material';
@@ -19,12 +26,14 @@ import { links } from '@/Links';
 
 import { FileSizeInput } from './FileSizeInput/FileSizeInput';
 
-type MultiModalFormValues = Pick<
-    SchemaCreateMultiModalModelConfigRequest,
-    'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
+type MultiModalFormValues = Partial<
+    Pick<
+        SchemaCreateMultiModalModelConfigRequest,
+        'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
+    >
 >;
 
-const mimeTypeRegex = /^[\w.-]+\/[\w+.-]+$/;
+const mimeTypeRegex = /^[\w.-]+\/[\w+.-\\*]+$/;
 
 const MultiModalFields = (): ReactNode => {
     const formContext = useFormContext<MultiModalFormValues>();
@@ -36,8 +45,16 @@ const MultiModalFields = (): ReactNode => {
                 control={formContext.control}
                 rules={{
                     validate: (value) => {
-                        const invalidItem = value.find((item) => !mimeTypeRegex.test(item));
-                        return !invalidItem || `"${invalidItem}" is not a valid file type.`;
+                        const invalidValues =
+                            value?.filter((item) => !mimeTypeRegex.test(item)) ?? [];
+
+                        if (invalidValues.length === 0) {
+                            return true;
+                        }
+
+                        return invalidValues.length === 1
+                            ? `"${invalidValues[0]}" is not a valid file type.`
+                            : `"${invalidValues.join(', ')}" are not valid file types`;
                     },
                 }}
                 render={({ field, fieldState }) => (
@@ -46,7 +63,7 @@ const MultiModalFields = (): ReactNode => {
                         multiple
                         freeSolo
                         fullWidth
-                        options={[]}
+                        options={['image/*', 'application/pdf']}
                         onChange={(_e, value) => {
                             field.onChange(value);
                         }}
@@ -56,7 +73,17 @@ const MultiModalFields = (): ReactNode => {
                                     {...params}
                                     label="Accepted file types"
                                     error={!!fieldState.error}
-                                    helperText={fieldState.error?.message}
+                                    helperText={
+                                        fieldState.error?.message ?? (
+                                            <>
+                                                Must match the{' '}
+                                                <Link href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types#structure_of_a_mime_type">
+                                                    MIME type format
+                                                </Link>
+                                                .
+                                            </>
+                                        )
+                                    }
                                 />
                             );
                         }}
@@ -110,20 +137,22 @@ type BaseModelFormFieldValues = {
     availability: 'public' | 'internal' | 'prerelease';
     availableTime?: ZonedDateTime;
     deprecationTime?: ZonedDateTime;
-} & Pick<
-    SchemaRootCreateModelConfigRequest,
-    | 'defaultSystemPrompt'
-    | 'description'
-    | 'familyId'
-    | 'host'
-    | 'id'
-    | 'modelIdOnHost'
-    | 'modelType'
-    | 'name'
-    | 'promptType'
+} & Partial<
+    Pick<
+        SchemaRootCreateModelConfigRequest,
+        | 'defaultSystemPrompt'
+        | 'description'
+        | 'familyId'
+        | 'host'
+        | 'id'
+        | 'modelIdOnHost'
+        | 'modelType'
+        | 'name'
+        | 'promptType'
+    >
 >;
 
-export type ModelConfigFormValues = BaseModelFormFieldValues & Partial<MultiModalFormValues>;
+export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
 
 interface ModelConfigFormProps {
     onSubmit: (formData: ModelConfigFormValues) => void;
