@@ -13,9 +13,6 @@ const cardContainer = css({
     margin: '[0 auto]',
     paddingRight: '2',
     paddingLeft: '2',
-    // 100vh - height of navbar and title
-    // this makes scrollbar work on mobile
-    maxHeight: '[calc(100vh - 132px)]',
 });
 
 export const ModelConfigurationListPage = () => {
