@@ -539,7 +539,7 @@ export type components = {
          * ModelHost
          * @enum {string}
          */
-        readonly ModelHost: 'inferd' | 'modal';
+        readonly ModelHost: 'inferd' | 'modal' | 'beaker_queues';
         /** ModelOrder */
         readonly ModelOrder: {
             /** Id */
