@@ -53,6 +53,20 @@ const dragButton = css({
     },
 });
 
+const modelDetailContainer = css({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    flex: '1',
+});
+
+const modelMetadata = css({
+    display: 'flex',
+    gap: '2',
+    fontSize: 'sm',
+    flexWrap: 'wrap',
+});
+
 interface ModelConfigurationListItemProps {
     item: SchemaResponseModel;
 }
@@ -70,7 +84,27 @@ export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemP
                         slot="drag">
                         <DragIndicatorOutlinedIcon />
                     </IconButton>
-                    <p className={modelName}>{item.name}</p>
+                    <div className={modelDetailContainer}>
+                        <p className={modelName}>{item.name}</p>
+                        <div className={modelMetadata}>
+                            <span>
+                                <strong>Id:</strong> {item.id}
+                            </span>
+                            <span>
+                                <strong>Prompt Type:</strong> {item.promptType}
+                            </span>
+                            <span>
+                                <strong>Description:</strong> {item.description}
+                            </span>
+                            <span>
+                                <strong>Model Type:</strong> {item.modelType}
+                            </span>
+                            <span>
+                                <strong>Internal:</strong> {item.internal ? 'Yes' : 'No'}
+                            </span>
+                        </div>
+                    </div>
+
                     <IconButton
                         variant="text"
                         isDisabled={allowsDragging}
