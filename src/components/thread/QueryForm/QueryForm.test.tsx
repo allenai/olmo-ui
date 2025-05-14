@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { ComponentProps } from 'react';
 import * as RouterDom from 'react-router-dom';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -283,7 +284,15 @@ describe('QueryForm', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-            },
+                prompt_type: 'multi_modal',
+                description: '',
+                host: 'modal',
+                internal: false,
+                is_deprecated: false,
+                is_visible: true,
+                model_type: 'chat',
+                name: 'Molmo',
+            } satisfies Model,
         };
         render(
             <FakeAppContextProvider initialState={initialStates}>
