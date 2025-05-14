@@ -1,5 +1,6 @@
 import { render, screen } from '@test-utils';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -13,7 +14,15 @@ describe('FileUploadButton', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-            },
+                prompt_type: 'multi_modal',
+                description: '',
+                host: 'modal',
+                internal: false,
+                is_deprecated: false,
+                is_visible: true,
+                model_type: 'chat',
+                name: 'Molmo',
+            } satisfies Model,
             selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
         };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
@@ -40,8 +49,15 @@ describe('FileUploadButton', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-                allow_files_in_followups: false,
-            },
+                prompt_type: 'multi_modal',
+                description: '',
+                host: 'modal',
+                internal: false,
+                is_deprecated: false,
+                is_visible: true,
+                model_type: 'chat',
+                name: 'Molmo',
+            } satisfies Model,
             selectedThreadMessages: ['userMessage', 'llmMessage'],
         };
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
@@ -68,7 +84,15 @@ describe('FileUploadButton', () => {
                 id: 'Molmo',
                 accepts_files: true,
                 accepted_file_types: ['image/png'],
-            },
+                prompt_type: 'multi_modal',
+                description: '',
+                host: 'modal',
+                internal: false,
+                is_deprecated: false,
+                is_visible: true,
+                model_type: 'chat',
+                name: 'Molmo',
+            } satisfies Model,
             selectedThreadMessages: ['userMessage', 'llmMessage'],
             streamPromptState: RemoteState.Loading,
         };

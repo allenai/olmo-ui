@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { Model } from '@/api/Model';
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -47,6 +47,9 @@ const getInitialState = () =>
                 model_type: 'chat',
                 name: 'OLMo-peteish-dpo-preview',
                 accepts_files: false,
+                prompt_type: 'text_only',
+                internal: false,
+                is_visible: true,
             },
             {
                 description: "A preview version of Ai2's latest Tulu model",
@@ -56,6 +59,9 @@ const getInitialState = () =>
                 model_type: 'chat',
                 name: 'Llama Tülu 3 8B',
                 accepts_files: false,
+                prompt_type: 'text_only',
+                internal: false,
+                is_visible: true,
             },
         ] satisfies Model[],
         setSelectedModel: () => {},

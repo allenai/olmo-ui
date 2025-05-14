@@ -84,6 +84,7 @@ const fakeModelsResponse: ModelList = [
         family_name: 'OLMo',
         accepts_files: false,
         internal: false,
+        prompt_type: 'text_only',
     },
     {
         description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
@@ -97,6 +98,7 @@ const fakeModelsResponse: ModelList = [
         family_name: 'Tülu',
         accepts_files: false,
         internal: false,
+        prompt_type: 'text_only',
     },
     {
         description: "AI2's 7B model following the 'peteish' thread of improvements.",
@@ -108,6 +110,7 @@ const fakeModelsResponse: ModelList = [
         name: 'OLMo-peteish-dpo-preview',
         accepts_files: false,
         internal: false,
+        prompt_type: 'text_only',
     },
     {
         description: 'Molmo',
@@ -120,6 +123,7 @@ const fakeModelsResponse: ModelList = [
         accepts_files: true,
         accepted_file_types: ['image/*'],
         internal: false,
+        prompt_type: 'multi_modal',
     },
     {
         description: 'Internal Molmo',
@@ -132,6 +136,7 @@ const fakeModelsResponse: ModelList = [
         accepts_files: true,
         accepted_file_types: ['image/*'],
         internal: true,
+        prompt_type: 'multi_modal',
     },
 ];
 
