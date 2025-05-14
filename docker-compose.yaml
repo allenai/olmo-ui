@@ -32,7 +32,7 @@ services:
       - IS_DATASET_EXPLORER_ENABLED
       - IS_PETEISH_MODEL_ENABLED
       - IS_MULTI_MODAL_ENABLED
-      - IS_MODEL_CONFIG_ENABLED=${NODE_ENV:-true}
+      - IS_MODEL_CONFIG_ENABLED=${IS_MODEL_CONFIG_ENABLED:-true}
   nginx:
     image: nginx:1.25.1-alpine
     volumes:
