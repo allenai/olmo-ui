@@ -97,6 +97,7 @@
     "@playwright/test": "^1.52.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@storybook/addon-essentials": "^8.6.12",
+    "@storybook/addon-interactions": "^8.6.12",
     "@storybook/addon-onboarding": "^8.6.12",
     "@storybook/addon-themes": "^8.6.12",
     "@storybook/addon-webpack5-compiler-swc": "^3.0.0",
