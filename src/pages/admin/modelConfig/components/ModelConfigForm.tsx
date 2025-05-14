@@ -216,7 +216,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                     {showTimeSection && <TimeFields />}
                     <ControlledDatePicker
                         name="deprecationTime"
-                        label="Deprecation time"
+                        label="Model expiration time"
                         granularity="minute"
                         placeholderValue={now(userTimeZone)}
                     />
