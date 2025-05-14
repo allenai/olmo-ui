@@ -10,9 +10,12 @@ const modelListContainer = css({
     display: 'flex',
     flexDirection: 'column',
     gap: 'var(--list-gap)',
-    maxWidth: '[100%]',
     overflowY: 'auto',
     scrollbarGutter: 'stable both-edges',
+    // this helping with the border cut off on the gridlist item.
+    paddingRight: '[16px]',
+    // we gotta set height for this otherwise no scrollbar for mobile.
+    height: '[100%]',
 
     '& .react-aria-DropIndicator': {
         // This margin-block negates the gap for all the drop indicators that get added
