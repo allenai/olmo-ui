@@ -58,6 +58,9 @@ const modelDetailContainer = css({
     flexDirection: 'column',
     alignItems: 'flex-start',
     flex: '1',
+    whiteSpace: 'nowrap',
+    overflowX: 'hidden',
+    textOverflow: 'ellipsis',
 });
 
 const modelMetadata = css({
@@ -65,23 +68,21 @@ const modelMetadata = css({
     flexWrap: 'wrap',
     gap: '2',
     fontSize: 'sm',
+    color: 'text',
 
-    '& span': {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'flex-start',
+    '& p': {
+        display: 'inline-flex',
+        alignItems: 'baseline',
         gap: '1',
-        width: '[100%]',
+        margin: '[0]',
+        flex: '[1 1 100%]',
+        minWidth: '[fit-content]',
     },
-    '@media (min-width: 640px)': {
-        flexDirection: 'row',
-        gap: '3',
 
-        '& span': {
-            width: '[auto]',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
+    '@media (min-width: 640px)': {
+        '& p': {
+            flex: '[0 1 auto]',
+            minWidth: '[fit-content]',
         },
     },
 });
@@ -96,31 +97,33 @@ export const ModelConfigurationListItem = ({ item }: ModelConfigurationListItemP
         <GridListItem className={gridListItemContainer} id={item.id} textValue={item.name}>
             {({ allowsDragging }) => (
                 <>
-                    <IconButton
-                        variant="text"
-                        isDisabled={!allowsDragging}
-                        className={dragButton}
-                        slot="drag">
-                        <DragIndicatorOutlinedIcon />
-                    </IconButton>
+                    {allowsDragging && (
+                        <IconButton
+                            variant="text"
+                            isDisabled={!allowsDragging}
+                            className={dragButton}
+                            slot="drag">
+                            <DragIndicatorOutlinedIcon />
+                        </IconButton>
+                    )}
                     <div className={modelDetailContainer}>
                         <p className={modelName}>{item.name}</p>
                         <div className={modelMetadata}>
-                            <span>
+                            <p>
                                 <strong>Id:</strong> {item.id}
-                            </span>
-                            <span>
+                            </p>
+                            <p>
                                 <strong>Prompt Type:</strong> {item.promptType}
-                            </span>
-                            <span>
+                            </p>
+                            <p>
                                 <strong>Description:</strong> {item.description}
-                            </span>
-                            <span>
+                            </p>
+                            <p>
                                 <strong>Model Type:</strong> {item.modelType}
-                            </span>
-                            <span>
+                            </p>
+                            <p>
                                 <strong>Internal:</strong> {item.internal ? 'Yes' : 'No'}
-                            </span>
+                            </p>
                         </div>
                     </div>
 
