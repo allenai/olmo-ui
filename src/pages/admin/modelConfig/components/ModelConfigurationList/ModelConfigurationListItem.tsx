@@ -62,9 +62,28 @@ const modelDetailContainer = css({
 
 const modelMetadata = css({
     display: 'flex',
+    flexWrap: 'wrap',
     gap: '2',
     fontSize: 'sm',
-    flexWrap: 'wrap',
+
+    '& span': {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        gap: '1',
+        width: '[100%]',
+    },
+    '@media (min-width: 640px)': {
+        flexDirection: 'row',
+        gap: '3',
+
+        '& span': {
+            width: '[auto]',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        },
+    },
 });
 
 interface ModelConfigurationListItemProps {
