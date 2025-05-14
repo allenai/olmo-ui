@@ -126,11 +126,11 @@ const fakeModelsResponse: ModelList = [
         prompt_type: 'multi_modal',
     },
     {
-        description: 'Internal Molmo',
+        description: 'Internal',
         id: 'internal-molmo',
         model_type: 'chat',
         host: 'inferd',
-        name: 'Molmo',
+        name: 'Internal',
         is_deprecated: false,
         is_visible: true,
         accepts_files: true,
