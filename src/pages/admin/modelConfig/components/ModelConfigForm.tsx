@@ -213,6 +213,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         <SelectListBoxSection>
                             <SelectListBoxItem text="Modal" id="modal" />
                             <SelectListBoxItem text="InferD" id="inferd" />
+                            <SelectListBoxItem text="Beaker Queues" id="beaker-queues" />
                         </SelectListBoxSection>
                     </ControlledSelect>
                     <ControlledInput
