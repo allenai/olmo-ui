@@ -13,7 +13,7 @@ const modelListContainer = css({
     overflowY: 'auto',
     scrollbarGutter: 'stable both-edges',
     // this helping with the border cut off on the gridlist item.
-    paddingRight: '[16px]',
+    paddingRight: '4',
 
     '& .react-aria-DropIndicator': {
         // This margin-block negates the gap for all the drop indicators that get added
