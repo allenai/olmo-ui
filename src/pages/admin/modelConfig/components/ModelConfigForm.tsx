@@ -186,6 +186,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         description="The ID you see when linking to this model"
                         fullWidth
                         controllerProps={{ rules: { required: true, minLength: 1 } }}
+                        isDisabled={!!formContext.getValues('id')}
                     />
 
                     <ControlledSelect
