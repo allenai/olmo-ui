@@ -32,7 +32,8 @@
     "e2e",
     "playwright.config.ts",
     "panda.config.ts",
-    "styled-system"
+    "styled-system",
+    ".storybook/**/*"
   ],
   "exclude": ["node_modules", "dist"]
 }

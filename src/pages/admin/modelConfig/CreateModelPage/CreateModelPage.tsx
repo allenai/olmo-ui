@@ -15,6 +15,7 @@ export const CreateModelPage = () => {
             availability: 'internal',
             familyId: 'no_family',
             modelType: 'chat',
+            requireFileToPrompt: 'no_requirement',
         },
         mode: 'onBlur',
     });

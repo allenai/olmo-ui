@@ -29,7 +29,11 @@ import { FileSizeInput } from './FileSizeInput/FileSizeInput';
 type MultiModalFormValues = Partial<
     Pick<
         SchemaCreateMultiModalModelConfigRequest,
-        'acceptedFileTypes' | 'allowFilesInFollowups' | 'requireFileToPrompt' | 'maxFilesPerMessage'
+        | 'acceptedFileTypes'
+        | 'allowFilesInFollowups'
+        | 'requireFileToPrompt'
+        | 'maxFilesPerMessage'
+        | 'maxTotalFileSize'
     >
 >;
 
@@ -90,7 +94,11 @@ const MultiModalFields = (): ReactNode => {
                     />
                 )}
             />
-            <FileSizeInput />
+            <Controller
+                name="maxTotalFileSize"
+                control={formContext.control}
+                render={({ field }) => <FileSizeInput {...field} />}
+            />
             <ControlledSelect
                 name="requireFileToPrompt"
                 label="File prompt requirement"
