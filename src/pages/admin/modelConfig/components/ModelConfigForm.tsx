@@ -164,9 +164,10 @@ export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormVal
 
 interface ModelConfigFormProps {
     onSubmit: (formData: ModelConfigFormValues) => void;
+    disableIdField?: boolean;
 }
 
-export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
+export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfigFormProps) => {
     const formContext = useFormContext<ModelConfigFormValues>();
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -194,6 +195,7 @@ export const ModelConfigForm = ({ onSubmit }: ModelConfigFormProps) => {
                         description="The ID you see when linking to this model"
                         fullWidth
                         controllerProps={{ rules: { required: true, minLength: 1 } }}
+                        isDisabled={disableIdField}
                     />
 
                     <ControlledSelect
