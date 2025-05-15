@@ -215,6 +215,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                         <SelectListBoxSection>
                             <SelectListBoxItem text="Modal" id="modal" />
                             <SelectListBoxItem text="InferD" id="inferd" />
+                            <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
                         </SelectListBoxSection>
                     </ControlledSelect>
                     <ControlledInput
