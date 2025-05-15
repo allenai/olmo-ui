@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -38,32 +37,6 @@ const getInitialState = () =>
                 parent: 'userMessage',
             },
         },
-        models: [
-            {
-                description: "AI2's 7B model following the 'peteish' thread of improvements.",
-                host: 'modal',
-                id: 'OLMo-peteish-dpo-preview',
-                is_deprecated: true,
-                model_type: 'chat',
-                name: 'OLMo-peteish-dpo-preview',
-                accepts_files: false,
-                prompt_type: 'text_only',
-                internal: false,
-                is_visible: true,
-            },
-            {
-                description: "A preview version of Ai2's latest Tulu model",
-                host: 'modal',
-                id: 'Llama-3-1-Tulu-3-8B',
-                is_deprecated: false,
-                model_type: 'chat',
-                name: 'Llama Tülu 3 8B',
-                accepts_files: false,
-                prompt_type: 'text_only',
-                internal: false,
-                is_visible: true,
-            },
-        ] satisfies Model[],
         setSelectedModel: () => {},
     }) satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
 

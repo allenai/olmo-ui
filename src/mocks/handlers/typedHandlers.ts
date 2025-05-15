@@ -16,6 +16,8 @@ const fakeModelsResponse = [
         family_id: 'olmo',
         family_name: 'OLMo',
         is_visible: true,
+        prompt_type: 'text_only',
+        internal: false,
     },
     {
         description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
@@ -27,6 +29,8 @@ const fakeModelsResponse = [
         family_id: 'tulu',
         family_name: 'Tülu',
         is_visible: true,
+        prompt_type: 'text_only',
+        internal: false,
     },
     {
         description: "AI2's 7B model following the 'peteish' thread of improvements.",
@@ -36,6 +40,8 @@ const fakeModelsResponse = [
         model_type: 'chat',
         name: 'OLMo-peteish-dpo-preview',
         is_visible: true,
+        prompt_type: 'text_only',
+        internal: false,
     },
     {
         description: 'Molmo',
@@ -47,6 +53,8 @@ const fakeModelsResponse = [
         accepts_files: true,
         accepted_file_types: ['image/*'],
         is_visible: true,
+        prompt_type: 'multi_modal',
+        internal: false,
     },
 ] satisfies Array<Model>;
 
@@ -68,6 +76,7 @@ const fakeAdminModelsResponse = [
         order: 0,
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
+        availability: 'public',
     },
     {
         availableTime: null,
@@ -86,6 +95,7 @@ const fakeAdminModelsResponse = [
         order: 1,
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
+        availability: 'public',
     },
     {
         availableTime: null,
@@ -104,6 +114,7 @@ const fakeAdminModelsResponse = [
         order: 2,
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
+        availability: 'public',
     },
     {
         availableTime: null,
@@ -122,6 +133,7 @@ const fakeAdminModelsResponse = [
         order: 3,
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
+        availability: 'public',
     },
     {
         acceptedFileTypes: ['image/*', 'application/pdf'],
@@ -145,6 +157,7 @@ const fakeAdminModelsResponse = [
         promptType: 'multi_modal',
         requireFileToPrompt: null,
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
+        availability: 'public',
     },
 ] satisfies SchemaResponseModel[];
 

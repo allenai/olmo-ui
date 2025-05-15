@@ -1,5 +1,4 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import type { SchemaModel, SchemaMultiModalModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { OlmoStateCreator } from '@/AppContext';
 
 export interface ModelSlice {
@@ -9,8 +8,10 @@ export interface ModelSlice {
 
 export const createModelSlice: OlmoStateCreator<ModelSlice> = (set) => ({
     selectedModel: undefined,
-    setSelectedModel: (model: SchemaModel | SchemaMultiModalModel) => {
+    setSelectedModel: (model: Model) => {
         set((state) => {
+            // @ts-expect-error - Readonly error, something funky with WriteableDraft and readonly
+            // It's OK for us to overwrite here so we can ignore this safely
             state.selectedModel = model;
         });
     },

@@ -2,6 +2,7 @@ import { Card, Stack } from '@mui/material';
 import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
@@ -120,7 +121,7 @@ export const playgroundLoader =
         // abort the current streaming prompt if there is any
         abortPrompt();
 
-        const models = await queryClient.ensureQueryData(getModelsQueryOptions);
+        const models = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
 
         if (schema == null) {
             promises.push(getSchema());
@@ -139,7 +140,7 @@ export const playgroundLoader =
 
             const selectedModel = models.find((model) => model.id === preselectedModelId);
             if (selectedModel != null) {
-                setSelectedModel(selectedModel.id);
+                setSelectedModel(selectedModel);
             }
         }
 
