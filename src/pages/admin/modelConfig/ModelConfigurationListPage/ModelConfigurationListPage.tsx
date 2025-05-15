@@ -10,9 +10,8 @@ import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 import { ModelConfigurationList } from '../components/ModelConfigurationList';
 
 const cardContainer = css({
+    border: 'none',
     margin: '[0 auto]',
-    paddingRight: '2',
-    paddingLeft: '2',
 });
 
 export const ModelConfigurationListPage = () => {
