@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, Card, CardHeader, Icon, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +9,11 @@ import { useAdminModels } from '@/pages/admin/modelConfig/useGetAdminModels';
 
 import { ModelConfigurationList } from '../components/ModelConfigurationList';
 
+const cardContainer = css({
+    border: 'none',
+    margin: '[0 auto]',
+});
+
 export const ModelConfigurationListPage = () => {
     const { data, status } = useAdminModels();
     const navigate = useNavigate();
@@ -17,7 +23,7 @@ export const ModelConfigurationListPage = () => {
     }
 
     return (
-        <Card>
+        <Card className={cardContainer}>
             <CardHeader>
                 <Stack spacing={8} direction="row" wrap="wrap">
                     <Button
