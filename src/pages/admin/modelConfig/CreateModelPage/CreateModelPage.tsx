@@ -32,7 +32,7 @@ export const CreateModelPage = () => {
         <>
             <MetaTags />
             <FormProvider {...formContext}>
-                <ModelConfigForm onSubmit={handleSubmit} disableIdField={false} />
+                <ModelConfigForm onSubmit={handleSubmit} />
             </FormProvider>
         </>
     );

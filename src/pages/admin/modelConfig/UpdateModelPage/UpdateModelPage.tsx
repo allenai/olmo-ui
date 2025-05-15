@@ -68,7 +68,7 @@ export const UpdateModelPage = () => {
         <>
             <MetaTags />
             <FormProvider {...formContext}>
-                <ModelConfigForm onSubmit={handleSubmit} disableIdField={true} />
+                <ModelConfigForm onSubmit={handleSubmit} disableIdField />
             </FormProvider>
         </>
     );

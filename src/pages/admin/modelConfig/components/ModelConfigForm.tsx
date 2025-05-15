@@ -156,10 +156,10 @@ export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormVal
 
 interface ModelConfigFormProps {
     onSubmit: (formData: ModelConfigFormValues) => void;
-    disableIdField: boolean;
+    disableIdField?: boolean;
 }
 
-export const ModelConfigForm = ({ onSubmit, disableIdField }: ModelConfigFormProps) => {
+export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfigFormProps) => {
     const formContext = useFormContext<ModelConfigFormValues>();
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
