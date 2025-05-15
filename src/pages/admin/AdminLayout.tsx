@@ -13,6 +13,7 @@ const containerStyle = css({
     minWidth: '[0]',
     minHeight: '[0]',
     gap: '2',
+    overflow: 'auto',
 });
 
 export const AdminLayout = () => {
