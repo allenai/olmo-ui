@@ -9,7 +9,15 @@ interface ConflictErrorPayload {
     message: string;
 }
 
-export const usePydanticValidationActionData = <TFieldValues extends FieldValues = FieldValues>(
+function isConflictErrorPayload(data: unknown): data is ConflictErrorPayload {
+    if (typeof data !== 'object' || data === null) return false;
+
+    const maybePayload = data as Record<string, unknown>;
+
+    return maybePayload.code === 409 && typeof maybePayload.message === 'string';
+}
+
+export const useModelConfigValidationActionData = <TFieldValues extends FieldValues = FieldValues>(
     setError: UseFormSetError<TFieldValues>
 ) => {
     const actionData = useActionData();
@@ -20,7 +28,6 @@ export const usePydanticValidationActionData = <TFieldValues extends FieldValues
             typeof actionData === 'object' &&
             error.isValidationErrorPayload(actionData)
         ) {
-            console.log('Validation error detected, setting form errors');
             actionData.validation_errors.forEach((error) => {
                 // Since the response models can be polymorphic Pydantic sometimes puts the type in the first loc element
                 // Getting the last element gets us the right form field
@@ -30,15 +37,10 @@ export const usePydanticValidationActionData = <TFieldValues extends FieldValues
                 setError(errorLoc, { type: error.type, message: error.msg });
             });
         }
-        if (
-            actionData != null &&
-            typeof actionData === 'object' &&
-            'code' in actionData &&
-            (actionData as ConflictErrorPayload).code === 409
-        ) {
+        if (isConflictErrorPayload(actionData)) {
             setError('id' as Path<TFieldValues>, {
                 type: 'conflict',
-                message: (actionData as ConflictErrorPayload).message,
+                message: actionData.message,
             });
         }
     }, [actionData, setError]);

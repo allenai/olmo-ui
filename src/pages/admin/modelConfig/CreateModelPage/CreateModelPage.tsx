@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSubmit } from 'react-router-dom';
 
-import { usePydanticValidationActionData } from '@/api/usePydanticValidationActionData';
+import { useModelConfigValidationActionData } from '@/api/useModelConfigValidationActionData';
 import { MetaTags } from '@/components/MetaTags';
 
 import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
@@ -21,7 +21,7 @@ export const CreateModelPage = () => {
     });
 
     const submit = useSubmit();
-    usePydanticValidationActionData(formContext.setError);
+    useModelConfigValidationActionData(formContext.setError);
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
         submit(mapConfigFormDataToRequest(formData), {
