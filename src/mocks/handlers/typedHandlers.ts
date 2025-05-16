@@ -15,7 +15,7 @@ const fakeModelsResponse = [
         is_deprecated: true,
         family_id: 'olmo',
         family_name: 'OLMo',
-        is_visible: true,
+        is_visible: false,
         prompt_type: 'text_only',
         internal: false,
     },

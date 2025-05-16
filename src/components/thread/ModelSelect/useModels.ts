@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
+import type { SchemaRootModelResponse } from '@/api/playgroundApi/playgroundApiSchema';
 
 export const getModelsQueryOptions = playgroundApiQueryClient.queryOptions('get', '/v4/models/');
 
@@ -9,7 +10,7 @@ type ModelsData = Parameters<NonNullable<(typeof getModelsQueryOptions)['select'
 type ModelsSelectFunction<TData> = (data: ModelsData) => TData;
 
 // I feel like there's a better way to handle passing a selector in here but i couldn't figure it out
-// There's a lot of typing I need to do just to make it so we can use a selector
+// There's a lot of typing I need to do just to make it so we can use a selector that returns anything
 export const useModels = <TData = ModelsData>({
     select,
 }: { select?: ModelsSelectFunction<TData> } = {}) => {
@@ -17,3 +18,6 @@ export const useModels = <TData = ModelsData>({
 
     return data;
 };
+
+export const isModelVisible = (model: SchemaRootModelResponse[number]) =>
+    'is_visible' in model && model.is_visible;

@@ -11,7 +11,7 @@ import {
     MobileAttributionDrawer,
 } from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
-import { getModelsQueryOptions } from '@/components/thread/ModelSelect/useModels';
+import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
 import {
     DesktopParameterDrawer,
     MobileParameterDrawer,
@@ -134,14 +134,17 @@ export const playgroundLoader =
 
         await Promise.all(promises);
 
+        const { setSelectedModel, selectedModel } = appContext.getState();
         const preselectedModelId = new URL(request.url).searchParams.get('model');
         if (preselectedModelId != null) {
-            const { setSelectedModel } = appContext.getState();
-
             const selectedModel = models.find((model) => model.id === preselectedModelId);
             if (selectedModel != null) {
                 setSelectedModel(selectedModel);
             }
+        } else if (params.id == null && selectedModel == null) {
+            // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
+            const visibleModels = models.filter(isModelVisible);
+            setSelectedModel(visibleModels[0]);
         }
 
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(

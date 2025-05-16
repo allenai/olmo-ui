@@ -1,6 +1,5 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
-import { ModelApiUrl, ModelList } from '@/api/Model';
 import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 import { Schema, SchemaApiUrl } from '@/api/Schema';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
@@ -42,10 +41,6 @@ export const handlers = [
         });
     }),
 
-    http.get(`${process.env.LLMX_API_URL}${ModelApiUrl}`, () => {
-        return HttpResponse.json(fakeModelsResponse);
-    }),
-
     http.get(`${process.env.LLMX_API_URL}${PromptTemplatesApiUrl}`, () => {
         return HttpResponse.json(fakePromptsResponse);
     }),
@@ -71,75 +66,6 @@ export const handlers = [
             return HttpResponse.json(datasetDocumentResponse);
         }
     ),
-];
-
-const fakeModelsResponse: ModelList = [
-    {
-        description: "AI2's 7B model trained on the Dolma dataset and fine-tuned for chat.",
-        id: 'olmo-7b-chat',
-        model_type: 'chat',
-        host: 'modal',
-        name: 'OLMo 7B - Chat',
-        is_deprecated: true,
-        is_visible: true,
-        family_id: 'olmo',
-        family_name: 'OLMo',
-        accepts_files: false,
-        internal: false,
-        prompt_type: 'text_only',
-    },
-    {
-        description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
-        id: 'tulu2',
-        model_type: 'chat',
-        host: 'inferd',
-        name: 'Tulu2.5',
-        is_deprecated: false,
-        is_visible: true,
-        family_id: 'tulu',
-        family_name: 'Tülu',
-        accepts_files: false,
-        internal: false,
-        prompt_type: 'text_only',
-    },
-    {
-        description: "AI2's 7B model following the 'peteish' thread of improvements.",
-        host: 'modal',
-        id: 'OLMo-peteish-dpo-preview',
-        is_deprecated: false,
-        is_visible: true,
-        model_type: 'chat',
-        name: 'OLMo-peteish-dpo-preview',
-        accepts_files: false,
-        internal: false,
-        prompt_type: 'text_only',
-    },
-    {
-        description: 'Molmo',
-        id: 'molmo',
-        model_type: 'chat',
-        host: 'inferd',
-        name: 'Molmo',
-        is_deprecated: false,
-        is_visible: true,
-        accepts_files: true,
-        accepted_file_types: ['image/*'],
-        internal: false,
-        prompt_type: 'multi_modal',
-    },
-    {
-        description: 'Internal',
-        id: 'internal-molmo',
-        model_type: 'chat',
-        host: 'inferd',
-        name: 'Internal',
-        is_deprecated: false,
-        is_visible: true,
-        accepts_files: true,
-        accepted_file_types: ['image/*'],
-        internal: true,
-        prompt_type: 'multi_modal',
-    },
 ];
 
 const fakePromptsResponse: JSONPromptTemplateList = [

@@ -7,7 +7,7 @@ import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 
-import { getModelsQueryOptions } from '../ModelSelect/useModels';
+import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels';
 
 export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
@@ -58,7 +58,8 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                         models.find((model) => model.id === lastThreadContent.model_id) as Model
                     );
                 } else {
-                    setSelectedModel(models[0] as Model);
+                    const visibleModels = models.filter(isModelVisible);
+                    setSelectedModel(visibleModels[0] as Model);
                 }
                 if (lastThreadContent.opts) {
                     updateInferenceOpts(lastThreadContent.opts);

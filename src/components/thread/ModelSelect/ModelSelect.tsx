@@ -19,11 +19,10 @@ import {
 } from '@mui/material';
 import { useId } from 'react';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 
 import { useHandleChangeModel } from './useHandleChangeModel';
-import { useModels } from './useModels';
+import { isModelVisible, useModels } from './useModels';
 
 type ModelSelectionDisplayProps = {
     sx?: SxProps<Theme>;
@@ -36,18 +35,12 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
 
     const models = useModels({
         select: (data) =>
-            data.filter(
-                (model) =>
-                    ('is_deprecated' in model && !model.is_deprecated) ||
-                    model.id === selectedModelIdFromState
-            ) as Array<Model>,
+            data.filter((model) => isModelVisible(model) || model.id === selectedModelIdFromState),
     });
 
     const selectedModelId = selectedModelIdFromState ?? models[0]?.id;
 
     const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeModel();
-
-    // useUpdateSelectedModelWhenLoadingAThread(models);
 
     return (
         <Box sx={sx} paddingInline={2} paddingBlockEnd={2}>
