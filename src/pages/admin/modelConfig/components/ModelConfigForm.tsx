@@ -14,6 +14,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import {
     type SchemaCreateMultiModalModelConfigRequest,
+    SchemaModelHost,
     SchemaRootCreateModelConfigRequest,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
@@ -160,7 +161,7 @@ type BaseModelFormFieldValues = {
     >
 >;
 
-const hostIdFieldMeta: Record<string, { label: string; description: React.ReactNode }> = {
+const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: React.ReactNode }> = {
     modal: {
         label: 'App ID',
         description: (
@@ -174,11 +175,11 @@ const hostIdFieldMeta: Record<string, { label: string; description: React.ReactN
     },
     inferd: {
         label: 'Compute Source ID',
-        description: 'N/A',
+        description: undefined,
     },
     beaker_queues: {
         label: 'Queue ID',
-        description: 'TBD',
+        description: undefined,
     },
 };
 
