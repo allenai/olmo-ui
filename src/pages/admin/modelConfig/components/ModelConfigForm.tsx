@@ -14,6 +14,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import {
     type SchemaCreateMultiModalModelConfigRequest,
+    SchemaModelHost,
     SchemaRootCreateModelConfigRequest,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
@@ -160,6 +161,28 @@ type BaseModelFormFieldValues = {
     >
 >;
 
+const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: React.ReactNode }> = {
+    modal: {
+        label: 'App ID',
+        description: (
+            <Link
+                href="https://github.com/allenai/reviz-modal/blob/main/docs/self-serve-hosting.md"
+                target="_blank"
+                rel="noopener">
+                View Modal hosting docs
+            </Link>
+        ),
+    },
+    inferd: {
+        label: 'Compute Source ID',
+        description: undefined,
+    },
+    beaker_queues: {
+        label: 'Queue ID',
+        description: undefined,
+    },
+};
+
 export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
 
 interface ModelConfigFormProps {
@@ -177,6 +200,17 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     const handleSubmit = (formData: ModelConfigFormValues) => {
         onSubmit(formData);
     };
+
+    const modelHostSelection = formContext.watch('host');
+    const modelHostIdLabel =
+        modelHostSelection && hostIdFieldMeta[modelHostSelection].label
+            ? hostIdFieldMeta[modelHostSelection].label
+            : 'Model Host Id';
+
+    const modelHostIdDescription =
+        modelHostSelection && hostIdFieldMeta[modelHostSelection].description
+            ? hostIdFieldMeta[modelHostSelection].description
+            : 'The ID of this model on the host';
 
     return (
         <Stack spacing={8} direction="row" wrap="wrap">
@@ -218,11 +252,12 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                             <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
                         </SelectListBoxSection>
                     </ControlledSelect>
+
                     <ControlledInput
                         name="modelIdOnHost"
-                        label="Model host ID"
-                        description="The ID of this model on the host"
-                        fullWidth
+                        label={modelHostIdLabel}
+                        // @ts-expect-error: description can be a ReactNode, not just string
+                        description={modelHostIdDescription}
                         controllerProps={{ rules: { required: true } }}
                     />
                     <ControlledInput
