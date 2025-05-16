@@ -22,6 +22,9 @@ beforeAll(async () => {
     server = importedServer;
 
     server.listen({ onUnhandledRequest: 'error' });
+    server.events.on('request:start', ({ request }) => {
+        console.debug('Outgoing:', request.method, request.url);
+    });
     // need to mock sendBeacon, which is a part of our analytics tracking
     Object.assign(navigator, {
         sendBeacon: async () => {},

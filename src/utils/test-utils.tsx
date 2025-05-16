@@ -3,8 +3,9 @@
 import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
-import { ComponentProps, PropsWithChildren, ReactNode } from 'react';
+import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
 import {
     defaultFeatureToggles,
     FeatureToggleContext,
@@ -39,15 +40,23 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
     // If we need to test with react router Link functionality we can add it back but we'd need to do some router setup in here
     const theme = getTheme(uiRefreshOlmoTheme);
 
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
     return (
-        <FakeFeatureToggleProvider featureToggles={featureToggles}>
-            <ThemeProvider theme={theme}>
-                <VarnishApp theme={theme}>
-                    {/* for some reason VarnishApp isn't properly passing the theme in tests */}
-                    <MUIThemeProvider theme={theme}>{children}</MUIThemeProvider>
-                </VarnishApp>
-            </ThemeProvider>
-        </FakeFeatureToggleProvider>
+        <QueryClientProvider client={queryClient}>
+            <FakeFeatureToggleProvider featureToggles={featureToggles}>
+                <ThemeProvider theme={theme}>
+                    <VarnishApp theme={theme}>
+                        {/* for some reason VarnishApp isn't properly passing the theme in tests */}
+                        <MUIThemeProvider theme={theme}>
+                            <Suspense fallback={<div data-test-id="suspense" />}>
+                                {children}
+                            </Suspense>
+                        </MUIThemeProvider>
+                    </VarnishApp>
+                </ThemeProvider>
+            </FakeFeatureToggleProvider>
+        </QueryClientProvider>
     );
 };
 

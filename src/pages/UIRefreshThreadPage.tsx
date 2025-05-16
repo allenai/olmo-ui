@@ -1,6 +1,8 @@
 import { Card, Stack } from '@mui/material';
+import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { MetaTags } from '@/components/MetaTags';
@@ -9,6 +11,7 @@ import {
     MobileAttributionDrawer,
 } from '@/components/thread/attribution/drawer/AttributionDrawer';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
+import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
 import {
     DesktopParameterDrawer,
     MobileParameterDrawer,
@@ -107,63 +110,61 @@ const createModelDeprecationNotice = () => {
     return `We are reworking our model hosting system and will be removing the following models on ${MODEL_DEPRECATION_DATE.toLocaleDateString()}: ${modelsBeingDeprecated.join(', ')}`;
 };
 
-export const playgroundLoader: LoaderFunction = async ({ params, request }) => {
-    const {
-        models,
-        getAllModels,
-        resetSelectedThreadState,
-        resetAttribution,
-        getSchema,
-        schema,
-        abortPrompt,
-    } = appContext.getState();
+export const playgroundLoader =
+    (queryClient: QueryClient): LoaderFunction =>
+    async ({ params, request }) => {
+        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt } =
+            appContext.getState();
 
-    const promises = [];
+        const promises = [];
 
-    // abort the current streaming prompt if there is any
-    abortPrompt();
+        // abort the current streaming prompt if there is any
+        abortPrompt();
 
-    if (models.length === 0) {
-        promises.push(getAllModels());
-    }
+        const models = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
 
-    if (schema == null) {
-        promises.push(getSchema());
-    }
-
-    if (params.id === undefined) {
-        resetSelectedThreadState();
-        resetAttribution();
-    }
-
-    await Promise.all(promises);
-
-    const preselectedModelId = new URL(request.url).searchParams.get('model');
-    if (preselectedModelId != null) {
-        const { models: loadedModels, setSelectedModel } = appContext.getState();
-
-        const selectedModel = loadedModels.find((model) => model.id === preselectedModelId);
-        if (selectedModel != null) {
-            setSelectedModel(selectedModel.id);
+        if (schema == null) {
+            promises.push(getSchema());
         }
-    }
 
-    const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
-        MODEL_DEPRECATION_NOTICE_GIVEN_KEY
-    );
+        if (params.id === undefined) {
+            resetSelectedThreadState();
+            resetAttribution();
+        }
 
-    if (!hasModelDeprecationNoticeBeenGiven && Date.now() < MODEL_DEPRECATION_DATE.getTime()) {
-        const { addSnackMessage } = appContext.getState();
-        addSnackMessage({
-            id: MODEL_DEPRECATION_NOTICE_GIVEN_KEY,
-            message: createModelDeprecationNotice(),
-            type: SnackMessageType.Brief,
-        });
-        localStorage.setItem(MODEL_DEPRECATION_NOTICE_GIVEN_KEY, Date.now().toString());
-    }
+        await Promise.all(promises);
 
-    return null;
-};
+        const { setSelectedModel, selectedModel } = appContext.getState();
+        const preselectedModelId = new URL(request.url).searchParams.get('model');
+        if (preselectedModelId != null) {
+            const selectedModel = models.find((model) => model.id === preselectedModelId);
+            if (selectedModel != null) {
+                setSelectedModel(selectedModel);
+            } else {
+                setSelectedModel(models.filter(isModelVisible)[0]);
+            }
+        } else if (params.id == null && selectedModel == null) {
+            // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
+            const visibleModels = models.filter(isModelVisible);
+            setSelectedModel(visibleModels[0]);
+        }
+
+        const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
+            MODEL_DEPRECATION_NOTICE_GIVEN_KEY
+        );
+
+        if (!hasModelDeprecationNoticeBeenGiven && Date.now() < MODEL_DEPRECATION_DATE.getTime()) {
+            const { addSnackMessage } = appContext.getState();
+            addSnackMessage({
+                id: MODEL_DEPRECATION_NOTICE_GIVEN_KEY,
+                message: createModelDeprecationNotice(),
+                type: SnackMessageType.Brief,
+            });
+            localStorage.setItem(MODEL_DEPRECATION_NOTICE_GIVEN_KEY, Date.now().toString());
+        }
+
+        return null;
+    };
 
 export const handleRevalidation: ShouldRevalidateFunction = ({ nextUrl }) => {
     return nextUrl.pathname === links.playground;

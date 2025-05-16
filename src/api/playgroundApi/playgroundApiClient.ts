@@ -23,6 +23,9 @@ const authMiddleware: Middleware = {
 
 export const playgroundApiClient = createFetchClient<paths>({
     baseUrl: process.env.LLMX_API_URL,
+    // This fixes an issue with openapi-fetch not cooperating with MSW
+    // https://www.martinrichards.me/post/an_idiots_guide_to_msw/
+    fetch: (req) => fetch(req),
 });
 playgroundApiClient.use(authMiddleware);
 

@@ -114,7 +114,7 @@ export const routes: RouteObject[] = [
                                 handle: { pageControls: <ThreadPageControls /> },
                             },
                         ],
-                        loader: playgroundLoader,
+                        loader: playgroundLoader(queryClient),
                         shouldRevalidate: handleRevalidation,
                     },
                     {

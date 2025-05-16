@@ -1,8 +1,13 @@
 import { defer, LoaderFunction } from 'react-router-dom';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
+import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
+
+import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels';
 
 export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
@@ -14,7 +19,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         handleAttributionForChangingThread,
         setSelectedModel,
         updateInferenceOpts,
-        models,
         abortPrompt,
         selectMessage,
     } = appContext.getState();
@@ -27,6 +31,8 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         // abort the current streaming prompt if there is any
         abortPrompt();
 
+        const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
+
         const selectedThread = await getSelectedThread(params.id);
         const url = new URL(request.url);
         const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
@@ -37,18 +43,23 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
             .at(-1);
 
         if (lastResponseId != null) {
-            const lastThreadContent = selectedThreadMessagesById[lastResponseId];
-            const modelIdList = models
-                .filter((model) => model.model_type === 'chat' && !model.is_deprecated)
-                .map((model) => model.id);
+            const lastThreadContent = selectedThreadMessagesById[lastResponseId] as
+                | SelectedThreadMessage
+                | undefined;
+
             if (lastThreadContent) {
+                const models = await modelsPromise;
+
                 if (
                     lastThreadContent.model_id &&
-                    modelIdList.includes(lastThreadContent.model_id)
+                    models.some((model) => model.id === lastThreadContent.model_id)
                 ) {
-                    setSelectedModel(lastThreadContent.model_id);
+                    setSelectedModel(
+                        models.find((model) => model.id === lastThreadContent.model_id) as Model
+                    );
                 } else {
-                    setSelectedModel(modelIdList[0]);
+                    const visibleModels = models.filter(isModelVisible);
+                    setSelectedModel(visibleModels[0] as Model);
                 }
                 if (lastThreadContent.opts) {
                     updateInferenceOpts(lastThreadContent.opts);
