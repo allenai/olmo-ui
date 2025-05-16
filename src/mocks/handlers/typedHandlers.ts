@@ -3,7 +3,9 @@ import { createOpenApiHttp } from 'openapi-msw';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { paths, SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
-const http = createOpenApiHttp<paths>({ baseUrl: process.env.LLMX_API_URL });
+const http = createOpenApiHttp<paths>({
+    baseUrl: process.env.LLMX_API_URL,
+});
 
 const fakeModelsResponse = [
     {
@@ -166,6 +168,7 @@ const v4ModelsHandler = http.get('/v4/models/', ({ query, response }) => {
         return response(200).json(fakeAdminModelsResponse);
     }
 
+    console.log('handling mocked models');
     return response(200).json(fakeModelsResponse);
 });
 
