@@ -2,8 +2,12 @@ import { Select, type SelectProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
+type SelectItem = { id: string | number; name: string };
 interface ControlledSelectProps
-    extends Omit<SelectProps, 'onSelectionChange' | 'name' | 'errorMessage' | 'onBlur'> {
+    extends Omit<
+        SelectProps<SelectItem>,
+        'onSelectionChange' | 'name' | 'errorMessage' | 'onBlur'
+    > {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }
@@ -25,7 +29,6 @@ export const ControlledSelect = ({
         !!controllerProps?.rules?.required;
 
     return (
-        // @ts-expect-error - Select doesn't like being passed ...rest for some reason
         <Select
             validationBehavior="aria"
             isInvalid={invalid}
