@@ -4,12 +4,7 @@ import { useActionData } from 'react-router-dom';
 
 import { error } from '@/api/error';
 
-interface ConflictErrorPayload {
-    code: number;
-    message: string;
-}
-
-function isConflictErrorPayload(data: unknown): data is ConflictErrorPayload {
+function isConflictErrorPayload(data: unknown): data is error.Details {
     if (typeof data !== 'object' || data === null) return false;
 
     const maybePayload = data as Record<string, unknown>;
