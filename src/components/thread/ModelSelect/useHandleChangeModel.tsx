@@ -26,9 +26,7 @@ export const useHandleChangeModel = () => {
 
     const handleModelChange = (event: SelectChangeEvent) => {
         const selectedModel = appContext.getState().selectedModel;
-        const newModel = models.find((model) => model.id === event.target.value) as
-            | Model
-            | undefined;
+        const newModel = models.find((model) => model.id === event.target.value);
         const hasSelectedThread = Boolean(appContext.getState().selectedThreadRootId);
 
         const bothModelsAreDefined = selectedModel != null && newModel != null;
