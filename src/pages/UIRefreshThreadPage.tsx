@@ -140,6 +140,8 @@ export const playgroundLoader =
             const selectedModel = models.find((model) => model.id === preselectedModelId);
             if (selectedModel != null) {
                 setSelectedModel(selectedModel);
+            } else {
+                setSelectedModel(models.filter(isModelVisible)[0]);
             }
         } else if (params.id == null && selectedModel == null) {
             // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!

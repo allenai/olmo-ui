@@ -168,7 +168,6 @@ const v4ModelsHandler = http.get('/v4/models/', ({ query, response }) => {
         return response(200).json(fakeAdminModelsResponse);
     }
 
-    console.log('handling mocked models');
     return response(200).json(fakeModelsResponse);
 });
 
