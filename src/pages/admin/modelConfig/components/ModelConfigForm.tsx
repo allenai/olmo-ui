@@ -160,6 +160,28 @@ type BaseModelFormFieldValues = {
     >
 >;
 
+const hostIdFieldMeta: Record<string, { label: string; description: React.ReactNode }> = {
+    modal: {
+        label: 'App ID',
+        description: (
+            <Link
+                href="https://github.com/allenai/reviz-modal/blob/main/docs/self-serve-hosting.md"
+                target="_blank"
+                rel="noopener">
+                View Modal hosting docs
+            </Link>
+        ),
+    },
+    inferd: {
+        label: 'Compute Source ID',
+        description: 'N/A',
+    },
+    beaker_queues: {
+        label: 'Queue ID',
+        description: 'TBD',
+    },
+};
+
 export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
 
 interface ModelConfigFormProps {
@@ -178,27 +200,6 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
         onSubmit(formData);
     };
 
-    const hostIdFieldMeta: Record<string, { label: string; description: React.ReactNode }> = {
-        modal: {
-            label: 'App ID',
-            description: (
-                <Link
-                    href="https://github.com/allenai/reviz-modal/blob/main/docs/self-serve-hosting.md"
-                    target="_blank"
-                    rel="noopener">
-                    View Modal hosting docs
-                </Link>
-            ),
-        },
-        inferd: {
-            label: 'Compute Source ID',
-            description: 'N/A',
-        },
-        beaker_queues: {
-            label: 'Queue ID',
-            description: 'TBD',
-        },
-    };
     const modelHostSelection = formContext.watch('host');
     const modelHostIdLabel =
         modelHostSelection && hostIdFieldMeta[modelHostSelection].label

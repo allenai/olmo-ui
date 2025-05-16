@@ -5,7 +5,7 @@ import { MetaTags } from '@/components/MetaTags';
 
 const containerStyle = css({
     gridArea: 'content',
-    paddingInline: '2',
+    paddingInline: '5',
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'background',
