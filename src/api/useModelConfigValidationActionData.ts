@@ -1,10 +1,18 @@
 import { useEffect } from 'react';
-import { type FieldValues, type UseFormSetError } from 'react-hook-form';
+import { type FieldValues, Path, type UseFormSetError } from 'react-hook-form';
 import { useActionData } from 'react-router-dom';
 
 import { error } from '@/api/error';
 
-export const usePydanticValidationActionData = <TFieldValues extends FieldValues = FieldValues>(
+function isDetailPayload(data: unknown): data is error.Details {
+    if (typeof data !== 'object' || data === null) return false;
+
+    const maybePayload = data as Record<string, unknown>;
+
+    return maybePayload.code === 409 && typeof maybePayload.message === 'string';
+}
+
+export const useModelConfigValidationActionData = <TFieldValues extends FieldValues = FieldValues>(
     setError: UseFormSetError<TFieldValues>
 ) => {
     const actionData = useActionData();
@@ -22,6 +30,12 @@ export const usePydanticValidationActionData = <TFieldValues extends FieldValues
                 const errorLoc = error.loc.at(-1);
                 // @ts-expect-error - There's probably some mapping we need to do here to make this perfect
                 setError(errorLoc, { type: error.type, message: error.msg });
+            });
+        }
+        if (isDetailPayload(actionData)) {
+            setError('id' as Path<TFieldValues>, {
+                type: 'conflict',
+                message: actionData.message,
             });
         }
     }, [actionData, setError]);

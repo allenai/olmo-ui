@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useParams, useSubmit } from 'react-router-dom';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
-import { usePydanticValidationActionData } from '@/api/usePydanticValidationActionData';
+import { useModelConfigValidationActionData } from '@/api/useModelConfigValidationActionData';
 import { MetaTags } from '@/components/MetaTags';
 import { links } from '@/Links';
 
@@ -45,7 +45,7 @@ export const UpdateModelPage = () => {
         mode: 'onBlur',
     });
 
-    usePydanticValidationActionData(formContext.setError);
+    useModelConfigValidationActionData(formContext.setError);
 
     if (!modelId) {
         return 'Model Id is missing';
