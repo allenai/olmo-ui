@@ -5,12 +5,7 @@ import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchem
 
 export const getAdminModelsQueryOptions = playgroundApiQueryClient.queryOptions(
     'get',
-    '/v4/models/',
-    {
-        params: {
-            query: { admin: true },
-        },
-    }
+    '/v4/admin-models/'
 );
 
 export const useAdminModels = () => {
@@ -27,5 +22,5 @@ export const useAdminModelById = (modelId: string) => {
         select: (models) => models.find((model) => model.id === modelId),
     });
 
-    return { data: data as SchemaResponseModel | undefined, error, isFetching, status };
+    return { data, error, isFetching, status };
 };

@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import { useId } from 'react';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 
 import { useHandleChangeModel } from './useHandleChangeModel';
@@ -36,9 +35,7 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
 
     const models = useModels({
         select: (data) =>
-            data.filter(
-                (model) => isModelVisible(model) || model.id === selectedModelIdFromState
-            ) as Model[],
+            data.filter((model) => isModelVisible(model) || model.id === selectedModelIdFromState),
     });
 
     const selectedModelId = selectedModelIdFromState ?? models[0]?.id;

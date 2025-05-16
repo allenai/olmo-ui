@@ -79,6 +79,42 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/v4/admin-models/': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /** Get full details of a model */
+        readonly get: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            readonly requestBody?: never;
+            readonly responses: {
+                /** @description A AdminModelResponse */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['AdminModelResponse'];
+                    };
+                };
+            };
+        };
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly '/v4/message/stream': {
         readonly parameters: {
             readonly query?: never;
@@ -125,26 +161,23 @@ export type paths = {
             readonly path?: never;
             readonly cookie?: never;
         };
-        /** Get available models and their configuration */
+        /** Get available models */
         readonly get: {
             readonly parameters: {
-                readonly query?: {
-                    /** @description Get the internal models for modification */
-                    readonly admin?: boolean;
-                };
+                readonly query?: never;
                 readonly header?: never;
                 readonly path?: never;
                 readonly cookie?: never;
             };
             readonly requestBody?: never;
             readonly responses: {
-                /** @description A RootModelResponse */
+                /** @description A ModelResponse */
                 readonly 200: {
                     headers: {
                         readonly [name: string]: unknown;
                     };
                     content: {
-                        readonly 'application/json': components['schemas']['RootModelResponse'];
+                        readonly 'application/json': components['schemas']['ModelResponse'];
                     };
                 };
             };
@@ -272,6 +305,8 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AdminModelResponse */
+        readonly AdminModelResponse: readonly components['schemas']['ResponseModel'][];
         /** AuthenticatedClient */
         readonly AuthenticatedClient: {
             /** Client */
@@ -547,6 +582,11 @@ export type components = {
             /** Order */
             readonly order: number;
         };
+        /** ModelResponse */
+        readonly ModelResponse: readonly (
+            | components['schemas']['Model']
+            | components['schemas']['MultiModalModel']
+        )[];
         /**
          * ModelType
          * @enum {string}
@@ -719,10 +759,6 @@ export type components = {
         readonly RootCreateModelConfigRequest:
             | components['schemas']['CreateTextOnlyModelConfigRequest']
             | components['schemas']['CreateMultiModalModelConfigRequest'];
-        /** RootModelResponse */
-        readonly RootModelResponse:
-            | readonly (components['schemas']['Model'] | components['schemas']['MultiModalModel'])[]
-            | readonly components['schemas']['ResponseModel'][];
         /** RootUpdateModelConfigRequest */
         readonly RootUpdateModelConfigRequest:
             | components['schemas']['UpdateTextOnlyModelConfigRequest']
@@ -905,6 +941,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaCreateMessageRequestV4 = components['schemas']['CreateMessageRequestV4'];
 export type SchemaCreateMultiModalModelConfigRequest =
@@ -917,6 +954,7 @@ export type SchemaModel = components['schemas']['Model'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
 export type SchemaModelOrder = components['schemas']['ModelOrder'];
+export type SchemaModelResponse = components['schemas']['ModelResponse'];
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
@@ -925,7 +963,6 @@ export type SchemaResponseModel = components['schemas']['ResponseModel'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
-export type SchemaRootModelResponse = components['schemas']['RootModelResponse'];
 export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
