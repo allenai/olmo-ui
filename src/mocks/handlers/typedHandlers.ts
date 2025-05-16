@@ -4,7 +4,7 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { paths, SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
 const http = createOpenApiHttp<paths>({
-    baseUrl: process.env.LLMX_API_URL,
+    baseUrl: process.env.LLMX_API_URL ?? 'http://localhost:8080',
 });
 
 const fakeModelsResponse = [

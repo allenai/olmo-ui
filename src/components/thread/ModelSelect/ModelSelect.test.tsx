@@ -50,7 +50,8 @@ describe('Model Select', () => {
                 <FakeAppContextProvider
                     initialState={{
                         ...getInitialState(),
-                        selectedModel: { id: 'OLMo-peteish-dpo-preview' },
+                        // If this is failing after you changed the mocked models you'll need to update this!
+                        selectedModel: { id: 'olmo-7b-chat' },
                     }}>
                     <ModelSelect />
                 </FakeAppContextProvider>
@@ -58,12 +59,13 @@ describe('Model Select', () => {
         );
 
         const modelSelectLocator = await screen.findByRole('combobox', { name: 'Model:' });
-        expect(modelSelectLocator).toHaveTextContent('OLMo-peteish-dpo-preview');
+        expect(modelSelectLocator).toHaveTextContent('OLMo 7B - Chat');
 
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(2);
+        // If this is failing after you changed the mocked models you'll need to update this!
+        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(4);
     });
 
     it('should only show non-deprecated models as options', async () => {
@@ -83,11 +85,11 @@ describe('Model Select', () => {
 
         const modelSelectLocator = await screen.findByRole('combobox', { name: 'Model:' });
         expect(modelSelectLocator).toBeInTheDocument();
-        expect(modelSelectLocator).toHaveTextContent('Llama Tülu 3 8B');
+        expect(modelSelectLocator).toHaveTextContent('Tulu2.5');
 
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(1);
+        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(3);
     });
 });
