@@ -4,7 +4,7 @@ import { useActionData } from 'react-router-dom';
 
 import { error } from '@/api/error';
 
-function isConflictErrorPayload(data: unknown): data is error.Details {
+function isDetailPayload(data: unknown): data is error.Details {
     if (typeof data !== 'object' || data === null) return false;
 
     const maybePayload = data as Record<string, unknown>;
@@ -32,7 +32,7 @@ export const useModelConfigValidationActionData = <TFieldValues extends FieldVal
                 setError(errorLoc, { type: error.type, message: error.msg });
             });
         }
-        if (isConflictErrorPayload(actionData)) {
+        if (isDetailPayload(actionData)) {
             setError('id' as Path<TFieldValues>, {
                 type: 'conflict',
                 message: actionData.message,
