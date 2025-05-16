@@ -1,8 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -45,6 +47,37 @@ describe('Model Select', () => {
         const user = userEvent.setup();
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
+        vi.spyOn(useModel, 'useModels').mockImplementation(
+            () =>
+                [
+                    {
+                        description:
+                            "AI2's 7B model following the 'peteish' thread of improvements.",
+                        host: 'modal',
+                        id: 'OLMo-peteish-dpo-preview',
+                        is_deprecated: true,
+                        model_type: 'chat',
+                        name: 'OLMo-peteish-dpo-preview',
+                        accepts_files: false,
+                        prompt_type: 'text_only',
+                        internal: false,
+                        is_visible: true,
+                    },
+                    {
+                        description: "A preview version of Ai2's latest Tulu model",
+                        host: 'modal',
+                        id: 'Llama-3-1-Tulu-3-8B',
+                        is_deprecated: false,
+                        model_type: 'chat',
+                        name: 'Llama Tülu 3 8B',
+                        accepts_files: false,
+                        prompt_type: 'text_only',
+                        internal: false,
+                        is_visible: true,
+                    },
+                ] satisfies Model[]
+        );
+
         render(
             <MemoryRouter>
                 <FakeAppContextProvider
@@ -69,19 +102,23 @@ describe('Model Select', () => {
     it('should only show non-deprecated models as options', async () => {
         const user = userEvent.setup();
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
         render(
-            <MemoryRouter>
-                <FakeAppContextProvider
-                    initialState={{
-                        ...getInitialState(),
-                    }}>
-                    <ModelSelect />
-                </FakeAppContextProvider>
-            </MemoryRouter>
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <FakeAppContextProvider
+                        initialState={{
+                            ...getInitialState(),
+                        }}>
+                        <ModelSelect />
+                    </FakeAppContextProvider>
+                </MemoryRouter>
+            </QueryClientProvider>
         );
 
-        const modelSelectLocator = screen.getByRole('combobox', { name: 'Model:' });
+        const modelSelectLocator = await screen.findByRole('combobox', { name: 'Model:' });
+        expect(modelSelectLocator).toBeInTheDocument();
         expect(modelSelectLocator).toHaveTextContent('Llama Tülu 3 8B');
 
         await act(async () => {
