@@ -79,7 +79,7 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly '/v4/admin-models/': {
+    readonly '/v4/admin/models/': {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -107,9 +107,120 @@ export type paths = {
                 };
             };
         };
-        readonly put?: never;
-        readonly post?: never;
+        /** Reorder models */
+        readonly put: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            /** @description A ReorderModelConfigRequest */
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['ReorderModelConfigRequest'];
+                };
+            };
+            readonly responses: {
+                /** @description Empty Response */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Add a new model */
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            /** @description A RootCreateModelConfigRequest */
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['RootCreateModelConfigRequest'];
+                };
+            };
+            readonly responses: {
+                /** @description A ResponseModel */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['ResponseModel'];
+                    };
+                };
+            };
+        };
         readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly '/v4/admin/models/{model_id}': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly get?: never;
+        /** Update a model */
+        readonly put: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path: {
+                    readonly model_id: string;
+                };
+                readonly cookie?: never;
+            };
+            /** @description A RootUpdateModelConfigRequest */
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['RootUpdateModelConfigRequest'];
+                };
+            };
+            readonly responses: {
+                /** @description A ResponseModel */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['ResponseModel'];
+                    };
+                };
+            };
+        };
+        readonly post?: never;
+        /** Delete a model */
+        readonly delete: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path: {
+                    readonly model_id: string;
+                };
+                readonly cookie?: never;
+            };
+            readonly requestBody?: never;
+            readonly responses: {
+                /** @description Empty Response */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         readonly options?: never;
         readonly head?: never;
         readonly patch?: never;
@@ -182,120 +293,9 @@ export type paths = {
                 };
             };
         };
-        /** Reorder models */
-        readonly put: {
-            readonly parameters: {
-                readonly query?: never;
-                readonly header?: never;
-                readonly path?: never;
-                readonly cookie?: never;
-            };
-            /** @description A ReorderModelConfigRequest */
-            readonly requestBody: {
-                readonly content: {
-                    readonly 'application/json': components['schemas']['ReorderModelConfigRequest'];
-                };
-            };
-            readonly responses: {
-                /** @description Empty Response */
-                readonly 200: {
-                    headers: {
-                        readonly [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        /** Add a new model */
-        readonly post: {
-            readonly parameters: {
-                readonly query?: never;
-                readonly header?: never;
-                readonly path?: never;
-                readonly cookie?: never;
-            };
-            /** @description A RootCreateModelConfigRequest */
-            readonly requestBody: {
-                readonly content: {
-                    readonly 'application/json': components['schemas']['RootCreateModelConfigRequest'];
-                };
-            };
-            readonly responses: {
-                /** @description A ResponseModel */
-                readonly 200: {
-                    headers: {
-                        readonly [name: string]: unknown;
-                    };
-                    content: {
-                        readonly 'application/json': components['schemas']['ResponseModel'];
-                    };
-                };
-            };
-        };
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly '/v4/models/{model_id}': {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path?: never;
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        /** Update a model */
-        readonly put: {
-            readonly parameters: {
-                readonly query?: never;
-                readonly header?: never;
-                readonly path: {
-                    readonly model_id: string;
-                };
-                readonly cookie?: never;
-            };
-            /** @description A RootUpdateModelConfigRequest */
-            readonly requestBody: {
-                readonly content: {
-                    readonly 'application/json': components['schemas']['RootUpdateModelConfigRequest'];
-                };
-            };
-            readonly responses: {
-                /** @description A ResponseModel */
-                readonly 200: {
-                    headers: {
-                        readonly [name: string]: unknown;
-                    };
-                    content: {
-                        readonly 'application/json': components['schemas']['ResponseModel'];
-                    };
-                };
-            };
-        };
+        readonly put?: never;
         readonly post?: never;
-        /** Delete a model */
-        readonly delete: {
-            readonly parameters: {
-                readonly query?: never;
-                readonly header?: never;
-                readonly path: {
-                    readonly model_id: string;
-                };
-                readonly cookie?: never;
-            };
-            readonly requestBody?: never;
-            readonly responses: {
-                /** @description Empty Response */
-                readonly 200: {
-                    headers: {
-                        readonly [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        readonly delete?: never;
         readonly options?: never;
         readonly head?: never;
         readonly patch?: never;

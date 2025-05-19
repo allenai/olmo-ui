@@ -163,7 +163,7 @@ const v4ModelsHandler = typedHttp.get('/v4/models/', ({ response }) => {
     return response(200).json(fakeModelsResponse);
 });
 
-const adminModelsHandler = typedHttp.get('/v4/admin-models/', ({ response }) => {
+const adminModelsHandler = typedHttp.get('/v4/admin/models/', ({ response }) => {
     return response(200).json(fakeAdminModelsResponse);
 });
 

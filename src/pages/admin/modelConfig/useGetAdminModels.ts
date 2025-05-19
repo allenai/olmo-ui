@@ -5,7 +5,7 @@ import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchem
 
 export const getAdminModelsQueryOptions = playgroundApiQueryClient.queryOptions(
     'get',
-    '/v4/admin-models/'
+    '/v4/admin/models/'
 );
 
 export const useAdminModels = () => {

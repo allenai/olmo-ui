@@ -10,7 +10,7 @@ import { getAdminModelsQueryOptions } from '../useGetAdminModels';
 export const createModelAction =
     (queryClient: QueryClient): ActionFunction =>
     async ({ request }) => {
-        const response = await playgroundApiClient.POST('/v4/models/', {
+        const response = await playgroundApiClient.POST('/v4/admin/models/', {
             body: (await request.json()) as SchemaRootCreateModelConfigRequest,
         });
 

@@ -170,7 +170,7 @@ const fakeAdminModelsResponse = [
     },
 ] satisfies SchemaAdminModelResponse;
 
-const adminModelsHandler = http.get('/v4/admin-models/', ({ response }) => {
+const adminModelsHandler = http.get('/v4/admin/models/', ({ response }) => {
     return response(200).json(fakeAdminModelsResponse);
 });
 
