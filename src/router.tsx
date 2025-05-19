@@ -24,11 +24,11 @@ import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { adminModelsLoader } from './pages/admin/modelConfig/adminModelsLoader';
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { createModelAction } from './pages/admin/modelConfig/CreateModelPage/createModelAction';
 import { CreateModelPage } from './pages/admin/modelConfig/CreateModelPage/CreateModelPage';
 import { ModelConfigurationListPage } from './pages/admin/modelConfig/ModelConfigurationListPage/ModelConfigurationListPage';
-import { modelsLoader } from './pages/admin/modelConfig/queryTestLoader';
 import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage/reorderModelsAction';
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
@@ -188,7 +188,7 @@ export const routes: RouteObject[] = [
                         children: [
                             {
                                 path: links.modelConfiguration,
-                                loader: modelsLoader(queryClient),
+                                loader: adminModelsLoader(queryClient),
                                 children: [
                                     {
                                         path: links.modelConfiguration,

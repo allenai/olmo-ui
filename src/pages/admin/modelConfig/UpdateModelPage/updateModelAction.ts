@@ -15,7 +15,7 @@ export const updateModelAction =
             throw Error('Model Id is required!');
         }
 
-        await playgroundApiClient.PUT('/v4/models/{model_id}', {
+        await playgroundApiClient.PUT('/v4/admin/models/{model_id}', {
             params: {
                 path: { model_id: modelId },
             },

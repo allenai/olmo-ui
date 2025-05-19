@@ -2,7 +2,6 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
-import type { SchemaRootModelResponse } from '@/api/playgroundApi/playgroundApiSchema';
 
 export const getModelsQueryOptions = playgroundApiQueryClient.queryOptions('get', '/v4/models/');
 
@@ -20,5 +19,4 @@ export const useModels = <TData = Model[]>({
     return data;
 };
 
-export const isModelVisible = (model: SchemaRootModelResponse[number]) =>
-    'is_visible' in model && model.is_visible;
+export const isModelVisible = (model: Model) => 'is_visible' in model && model.is_visible;

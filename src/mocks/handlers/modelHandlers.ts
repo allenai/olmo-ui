@@ -1,11 +1,7 @@
-import { createOpenApiHttp } from 'openapi-msw';
-
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import type { paths, SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
+import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
-const http = createOpenApiHttp<paths>({
-    baseUrl: process.env.LLMX_API_URL ?? 'http://localhost:8080',
-});
+import { typedHttp } from './typedHttp';
 
 const fakeModelsResponse = [
     {
@@ -60,7 +56,7 @@ const fakeModelsResponse = [
     },
 ] satisfies Array<Model>;
 
-const fakeAdminModelsResponse = [
+const fakeAdminModelsResponse: SchemaResponseModel[] = [
     {
         availableTime: null,
         createdTime: '2025-04-29T17:03:50.726370+00:00',
@@ -161,14 +157,14 @@ const fakeAdminModelsResponse = [
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
     },
-] satisfies SchemaResponseModel[];
+];
 
-const v4ModelsHandler = http.get('/v4/models/', ({ query, response }) => {
-    if (query.get('admin') === 'true') {
-        return response(200).json(fakeAdminModelsResponse);
-    }
-
+const v4ModelsHandler = typedHttp.get('/v4/models/', ({ response }) => {
     return response(200).json(fakeModelsResponse);
 });
 
-export const typedHandlers = [v4ModelsHandler];
+const adminModelsHandler = typedHttp.get('/v4/admin/models/', ({ response }) => {
+    return response(200).json(fakeAdminModelsResponse);
+});
+
+export const modelHandlers = [v4ModelsHandler, adminModelsHandler];

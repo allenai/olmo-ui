@@ -10,7 +10,7 @@ import { getAdminModelsQueryOptions } from '../useGetAdminModels';
 export const reorderModelsAction =
     (queryClient: QueryClient): ActionFunction =>
     async ({ request }) => {
-        await playgroundApiClient.PUT('/v4/models/', {
+        await playgroundApiClient.PUT('/v4/admin/models/', {
             body: { orderedModels: (await request.json()) as SchemaModelOrder[] },
         });
 
