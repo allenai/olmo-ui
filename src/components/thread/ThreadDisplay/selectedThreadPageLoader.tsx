@@ -59,7 +59,7 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                     );
                 } else {
                     const visibleModels = models.filter(isModelVisible);
-                    setSelectedModel(visibleModels[0] as Model);
+                    setSelectedModel(visibleModels[0]);
                 }
                 if (lastThreadContent.opts) {
                     updateInferenceOpts(lastThreadContent.opts);
