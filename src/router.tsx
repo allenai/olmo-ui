@@ -33,6 +33,8 @@ import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
+import { ComparisonPage } from './pages/comparison/ComparisonPage';
+import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
 import { Document } from './pages/Document';
 import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
@@ -223,6 +225,12 @@ export const routes: RouteObject[] = [
                                 ],
                             },
                         ],
+                    },
+                    {
+                        path: links.comparison,
+                        element: <ComparisonPage />,
+                        loader: comparisonPageLoader(),
+                        handle: { pageControls: <ThreadPageControls /> },
                     },
                 ],
             },
