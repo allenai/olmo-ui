@@ -8,6 +8,7 @@ export const links = {
     deleteModel: (modelId: string) => `/admin/models/${modelId}`,
     home: '/',
     playground: '/',
+    comparison: '/comparison',
     datasetExplorer: '/dolma',
     ourDatasets: 'https://huggingface.co/datasets/allenai/dolma',
     thread: (threadId: string) => `/thread/${threadId}`,

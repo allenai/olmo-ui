@@ -33,6 +33,7 @@ services:
       - IS_PETEISH_MODEL_ENABLED
       - IS_MULTI_MODAL_ENABLED
       - IS_MODEL_CONFIG_ENABLED=${IS_MODEL_CONFIG_ENABLED:-true}
+      - IS_COMPARISON_PAGE_ENABLED=${IS_COMPARISON_PAGE_ENABLED:-true}
   nginx:
     image: nginx:1.25.1-alpine
     volumes:
