@@ -29,15 +29,15 @@ export default defineConfig({
     theme: {
         extend: {
             breakpoints: {
-                sm: '600rem',
-                md: '900rem',
-                lg: '1200rem',
+                sm: '600px',
+                md: '900px',
+                lg: '1200px',
                 // compat:
-                desktop: '1200rem',
+                desktop: '1200px',
             },
             containerSizes: {
-                small: '500px',
-                large: '700px',
+                small: '31.25rem',
+                large: '43.75rem',
             },
         },
     },
