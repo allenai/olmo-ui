@@ -32,9 +32,6 @@
   "resolutions": {
     "@types/react": "^18.2.55"
   },
-  "browser": {
-    "@allenai/varnish-panda-runtime": "./styled-system"
-  },
   "dependencies": {
     "@allenai/varnish-panda-runtime": "link:./styled-system",
     "@allenai/varnish-theme": "^2.0.6",
