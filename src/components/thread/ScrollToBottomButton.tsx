@@ -14,6 +14,10 @@ const containerClassName = cva({
         bottom: '[0]',
         justifySelf: 'end',
         visibility: 'hidden',
+        // This is a fix for current thread layout
+        // TODO: change this to container queries, see:
+        // * https://github.com/allenai/playground-issues-repo/issues/395
+        // * https://github.com/allenai/playground-issues-repo/issues/380
         marginRight: '[-16px]',
         '@media (min-width: 751px)': {
             marginRight: '0',
