@@ -57,7 +57,7 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
 
-    const { isDatasetExplorerEnabled } = useFeatureToggles();
+    const { isComparisonPageEnabled, isDatasetExplorerEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     useCloseDrawerOnNavigation({
@@ -105,12 +105,14 @@ export const NavigationDrawer = ({
                                 Dataset Explorer
                             </NavigationLink>
                         )}
-                        <NavigationLink
-                            icon={<ViewColumnIcon />}
-                            selected={curriedDoesMatchPath(links.comparison)}
-                            href={links.comparison}>
-                            Compare models
-                        </NavigationLink>
+                        {isComparisonPageEnabled && (
+                            <NavigationLink
+                                icon={<ViewColumnIcon />}
+                                selected={curriedDoesMatchPath(links.comparison)}
+                                href={links.comparison}>
+                                Compare models
+                            </NavigationLink>
+                        )}
                         <NavigationLink
                             icon={<StickyNote2Outlined />}
                             selected={curriedDoesMatchPath(links.faqs)}
