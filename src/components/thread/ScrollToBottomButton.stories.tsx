@@ -5,17 +5,17 @@ import { ScrollToBottomButton } from './ScrollToBottomButton';
 
 const container = cva({
     base: {
-        border: '1px solid {colors.background.reversed}',
+        border: '[1px solid {colors.background.reversed}]',
         margin: '2',
         padding: '4',
     },
     variants: {
         size: {
             desktop: {
-                width: '750px',
+                width: '[750px]',
             },
             mobile: {
-                width: '400px',
+                width: '[400px]',
             },
         },
     },
@@ -31,7 +31,7 @@ export default meta;
 type Story = StoryObj<typeof ScrollToBottomButton>;
 
 export const Default: Story = {
-    render: () => <ScrollToBottomButton isVisible={true} />,
+    render: () => <ScrollToBottomButton isVisible={true} onScrollToBottom={() => {}} />,
     decorators: [
         (Story) => (
             <div className={container({ size: 'desktop' })}>
@@ -42,7 +42,7 @@ export const Default: Story = {
 };
 
 export const Mobile: Story = {
-    render: () => <ScrollToBottomButton isVisible={true} />,
+    render: () => <ScrollToBottomButton isVisible={true} onScrollToBottom={() => {}} />,
     decorators: [
         (Story) => (
             <div className={container({ size: 'mobile' })}>
