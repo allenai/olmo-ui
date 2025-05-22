@@ -34,7 +34,6 @@
     "playwright.config.ts",
     "panda.config.ts",
     "styled-system",
-    "varnish-panda-runtime",
     ".storybook/**/*"
   ],
   "exclude": ["node_modules", "dist"]
