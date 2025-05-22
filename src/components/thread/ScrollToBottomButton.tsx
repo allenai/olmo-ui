@@ -34,7 +34,10 @@ const containerClassName = cva({
 
 const buttonClassName = css({
     border: '0',
-    backgroundColor: 'dark-teal.100',
+    backgroundColor: {
+        base: 'white',
+        _dark: 'dark-teal.100',
+    },
     width: '[54px]',
     height: '[54px]',
     fontSize: '[1.875rem]',
