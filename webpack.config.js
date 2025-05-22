@@ -70,6 +70,9 @@ module.exports = (env) => ({
                 extensions: Extensions,
             }),
         ],
+        alias: {
+            '@allenai/varnish-panda-runtime': path.resolve(__dirname, 'styled-system/'),
+        },
     },
     plugins: [
         // This copies `public/index.html` into the build output directory.

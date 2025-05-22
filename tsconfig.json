@@ -15,6 +15,7 @@
     "paths": {
       "@test-utils": ["src/utils/test-utils"],
       "@playwright-utils": ["e2e/playwright-utils"],
+      "@allenai/varnish-panda-runtime/*": ["./styled-system/*"],
       "@/styled-system/*": ["styled-system/*"],
       "@/*": ["src/*"]
     },
@@ -33,6 +34,7 @@
     "playwright.config.ts",
     "panda.config.ts",
     "styled-system",
+    "varnish-panda-runtime",
     ".storybook/**/*"
   ],
   "exclude": ["node_modules", "dist"]

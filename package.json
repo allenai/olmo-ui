@@ -32,8 +32,11 @@
   "resolutions": {
     "@types/react": "^18.2.55"
   },
+  "browser": {
+    "@allenai/varnish-panda-runtime": "./styled-system"
+  },
   "dependencies": {
-    "@allenai/varnish-panda-runtime": "^1.2.4-alpha.0",
+    "@allenai/varnish-panda-runtime": "link:./styled-system",
     "@allenai/varnish-theme": "^2.0.6",
     "@allenai/varnish-ui": "^1.2.12-alpha.0",
     "@allenai/varnish2": "2.0.6",
@@ -84,7 +87,6 @@
     "remark-directive-rehype": "^0.4.2",
     "storybook": "^8.6.12",
     "styled-components": "^5.3.5",
-    "varnish-panda-runtime": "link:./varnish-panda-runtime",
     "webpack-retry-chunk-load-plugin": "^3.1.1",
     "zustand": "^4.5.2"
   },
