@@ -14,6 +14,10 @@ const containerClassName = cva({
         bottom: '[0]',
         justifySelf: 'end',
         visibility: 'hidden',
+        marginRight: {
+            base: '[-16px]',
+            '@media(min-width: 751px)': '0',
+        },
     },
     variants: {
         isVisible: {
