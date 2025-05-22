@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SortIcon from '@mui/icons-material/Sort';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Link, ListItem, Stack } from '@mui/material';
 import { ComponentProps } from 'react';
 import { Helmet } from 'react-helmet';
@@ -56,7 +57,7 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
 
-    const { isDatasetExplorerEnabled } = useFeatureToggles();
+    const { isComparisonPageEnabled, isDatasetExplorerEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     useCloseDrawerOnNavigation({
@@ -102,6 +103,14 @@ export const NavigationDrawer = ({
                                     curriedDoesMatchPath(links.document(''))
                                 }>
                                 Dataset Explorer
+                            </NavigationLink>
+                        )}
+                        {isComparisonPageEnabled && (
+                            <NavigationLink
+                                icon={<ViewColumnIcon />}
+                                selected={curriedDoesMatchPath(links.comparison)}
+                                href={links.comparison}>
+                                Compare models
                             </NavigationLink>
                         )}
                         <NavigationLink
