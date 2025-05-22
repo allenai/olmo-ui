@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SortIcon from '@mui/icons-material/Sort';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Link, ListItem, Stack } from '@mui/material';
 import { ComponentProps } from 'react';
 import { Helmet } from 'react-helmet';
@@ -104,6 +105,13 @@ export const NavigationDrawer = ({
                                 Dataset Explorer
                             </NavigationLink>
                         )}
+                        <NavigationLink
+                            icon={<ViewColumnIcon />}
+                            selected={curriedDoesMatchPath(links.comparison)}
+                            href={links.comparison}
+                            variant="footer">
+                            Compare models
+                        </NavigationLink>
                         <NavigationLink
                             icon={<StickyNote2Outlined />}
                             selected={curriedDoesMatchPath(links.faqs)}
