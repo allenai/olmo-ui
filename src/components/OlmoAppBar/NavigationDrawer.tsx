@@ -108,8 +108,7 @@ export const NavigationDrawer = ({
                         <NavigationLink
                             icon={<ViewColumnIcon />}
                             selected={curriedDoesMatchPath(links.comparison)}
-                            href={links.comparison}
-                            variant="footer">
+                            href={links.comparison}>
                             Compare models
                         </NavigationLink>
                         <NavigationLink
