@@ -206,6 +206,10 @@ export const ThreadDisplay = (): ReactNode => {
                         paddingBlockEnd: 2,
                     }}
                 />
+                <ScrollToBottomButton
+                    isVisible={isScrollToBottomButtonVisible}
+                    onScrollToBottom={handleScrollToBottomButtonClick}
+                />
             </ThreadMaxWidthContainer>
             <Box
                 sx={{
@@ -217,10 +221,6 @@ export const ThreadDisplay = (): ReactNode => {
                 }}
             />
             {shouldShowAttributionHighlightDescription && <AttributionHighlightDescription />}
-            <ScrollToBottomButton
-                isVisible={isScrollToBottomButtonVisible}
-                onScrollToBottom={handleScrollToBottomButtonClick}
-            />
         </Box>
     );
 };

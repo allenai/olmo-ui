@@ -1,33 +1,63 @@
-import { IconButton } from '@mui/material';
-
-import { DownToBottomArrowIcon } from '@/components/assets/DownToBottomArrowIcon';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { css, cva } from '@allenai/varnish-panda-runtime/css';
+import { IconButton } from '@allenai/varnish-ui';
+import { ArrowDownward } from '@mui/icons-material';
 
 interface ScrollToBottomButtonProps {
     isVisible: boolean;
     onScrollToBottom: () => void;
 }
 
+const containerClassName = cva({
+    base: {
+        zIndex: '[10]',
+        position: 'sticky',
+        bottom: '[0]',
+        justifySelf: 'end',
+        visibility: 'hidden',
+        // This is a fix for current thread layout
+        // TODO: change this to container queries, see:
+        // * https://github.com/allenai/playground-issues-repo/issues/395
+        // * https://github.com/allenai/playground-issues-repo/issues/380
+        marginRight: '[-16px]',
+        '@media (min-width: 751px)': {
+            marginRight: '0',
+        },
+    },
+    variants: {
+        isVisible: {
+            true: {
+                visibility: 'visible',
+            },
+        },
+    },
+});
+
+const buttonClassName = css({
+    border: '0',
+    backgroundColor: {
+        base: 'white',
+        _dark: 'dark-teal.100',
+    },
+    width: '[54px]',
+    height: '[54px]',
+    fontSize: '[1.875rem]',
+});
+
 export const ScrollToBottomButton = ({
     isVisible,
     onScrollToBottom,
 }: ScrollToBottomButtonProps) => {
     return (
-        <IconButton
-            onClick={onScrollToBottom}
-            sx={(theme) => ({
-                position: 'absolute',
-                right: '30px',
-                bottom: '40px',
-                visibility: isVisible ? 'visible' : 'hidden',
-                color: theme.palette.text.secondary,
-                display: 'none',
-                [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                    display: 'block',
-                },
-            })}
-            aria-label="Scroll to bottom">
-            <DownToBottomArrowIcon sx={{ fill: (theme) => theme.palette.primary.main }} />
-        </IconButton>
+        <div className={containerClassName({ isVisible })}>
+            <IconButton
+                onPress={onScrollToBottom}
+                color="secondary"
+                shape="rounded"
+                size="large"
+                className={buttonClassName}
+                buttonAriaLabel="Scroll to bottom">
+                <ArrowDownward fontSize="inherit" />
+            </IconButton>
+        </div>
     );
 };
