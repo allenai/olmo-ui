@@ -1,24 +1,32 @@
-import { Box } from '@mui/material';
+import { Stack } from '@mui/material';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 export const ContentContainer = ({ children }: React.PropsWithChildren) => {
     return (
-        <Box
+        <Stack
+            gap={0}
             sx={(theme) => ({
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
+                containerName: 'thread-page',
+                containerType: 'inline-size',
+
+                backgroundColor: 'transparent',
+                height: 1,
+                paddingBlockEnd: 2,
+                paddingBlockStart: 2,
+
+                position: 'relative',
+                overflow: 'hidden',
+
                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                    gridArea: 'content',
-                    display: 'grid',
-                    transition: '300ms',
-                    gridTemplateColumns: '1fr auto',
-                    gridTemplateRows: 'auto 1fr',
-                    gridTemplateAreas: '"controls ." "main-content drawer"',
+                    gridArea: 'main-content',
+                    paddingBlockStart: 6,
+                    // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
+                    minHeight: 0,
+                    minWidth: 0,
                 },
             })}>
             {children}
-        </Box>
+        </Stack>
     );
 };

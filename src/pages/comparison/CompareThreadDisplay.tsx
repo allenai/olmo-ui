@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-import { ModelSelect } from '../ModelSelect/ModelSelect';
-import { ThreadDisplay } from '../ThreadDisplay/ThreadDisplay';
+import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
+import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 
 const containerStyle = css({
     gridArea: 'content',
@@ -10,12 +10,12 @@ const containerStyle = css({
     minWidth: '[0]',
     minHeight: '[0]',
     gap: '2',
-    // overflow: 'auto',
     justifyContent: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
 });
 
+// TODO Implement (columns degrate to tabs)
 export const CompareThreadDisplay = () => {
     return (
         <div className={containerStyle}>
@@ -25,6 +25,7 @@ export const CompareThreadDisplay = () => {
     );
 };
 
+// TODO get messages and handle model select
 const SingleThread = () => {
     return (
         <div>

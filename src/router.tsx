@@ -15,7 +15,6 @@ import { AppWrapper } from './components/AppWrapper';
 import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
-import { CompareThreadDisplay } from './components/thread/compare/CompareThreadDisplay';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplayContainer } from './components/thread/ThreadDisplay/ThreadDisplayContainer';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
@@ -34,6 +33,7 @@ import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
+import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
 import { Document } from './pages/Document';

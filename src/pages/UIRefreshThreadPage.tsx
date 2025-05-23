@@ -5,8 +5,8 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext, useAppContext } from '@/AppContext';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
+import { PageContainer } from '@/components/PageContainer';
 import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
-import { MainContentContainer } from '@/components/thread/MainContentContainer';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
 import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
@@ -19,15 +19,15 @@ export const UIRefreshThreadPage = () => {
     return (
         <>
             <MetaTags />
-            <ContentContainer>
-                <MainContentContainer>
+            <PageContainer>
+                <ContentContainer>
                     <ModelSelect />
                     <Outlet />
                     <QueryFormContainer selectedModelFamilyId={selectedModelFamilyId} />
-                </MainContentContainer>
+                </ContentContainer>
 
                 <ResponsiveControlsDrawer />
-            </ContentContainer>
+            </PageContainer>
         </>
     );
 };
