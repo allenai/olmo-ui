@@ -27,6 +27,18 @@ export default defineConfig({
     outdir: 'styled-system',
     outExtension: 'js',
     theme: {
-        extend: {},
+        extend: {
+            breakpoints: {
+                sm: '37.5rem', // 600px
+                md: '56.25rem', // 900px
+                lg: '75rem', // 1200px
+                // compat:
+                desktop: '75rem',
+            },
+            containerSizes: {
+                small: '31.25rem', // 500px
+                large: '43.75rem', // 700px
+            },
+        },
     },
 });
