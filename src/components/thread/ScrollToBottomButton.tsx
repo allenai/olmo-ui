@@ -55,7 +55,7 @@ export const ScrollToBottomButton = ({
                 shape="rounded"
                 size="large"
                 className={buttonClassName}
-                aria-label="Scroll to bottom">
+                buttonAriaLabel="Scroll to bottom">
                 <ArrowDownward fontSize="inherit" />
             </IconButton>
         </div>
