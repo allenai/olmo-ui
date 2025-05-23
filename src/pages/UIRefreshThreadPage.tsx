@@ -1,101 +1,38 @@
-import { Card, Stack } from '@mui/material';
 import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { appContext } from '@/AppContext';
-import { useDesktopOrUp } from '@/components/dolma/shared';
+import { appContext, useAppContext } from '@/AppContext';
+import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
-import {
-    DesktopAttributionDrawer,
-    MobileAttributionDrawer,
-} from '@/components/thread/attribution/drawer/AttributionDrawer';
+import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
+import { MainContentContainer } from '@/components/thread/MainContentContainer';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
 import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
-import {
-    DesktopParameterDrawer,
-    MobileParameterDrawer,
-} from '@/components/thread/parameter/ParameterDrawer';
-import { QueryForm } from '@/components/thread/QueryForm/QueryForm';
-import { QueryFormNotice } from '@/components/thread/QueryForm/QueryFormNotices';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 export const UIRefreshThreadPage = () => {
-    const isDesktop = useDesktopOrUp();
-
+    // somewhere that handles model selection
+    const selectedModelFamilyId = useAppContext((state) => state.selectedModel?.family_id);
     return (
         <>
             <MetaTags />
-            <Card
-                variant="elevation"
-                elevation={0}
-                sx={(theme) => ({
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                    [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                        gridArea: 'content',
-                        display: 'grid',
-                        transition: '300ms',
-                        gridTemplateColumns: '1fr auto',
-                        gridTemplateRows: 'auto 1fr',
-                        gridTemplateAreas: '"controls ." "thread-content drawer"',
-                    },
-                })}>
-                <Stack
-                    gap={0}
-                    sx={(theme) => ({
-                        containerName: 'thread-page',
-                        containerType: 'inline-size',
-
-                        backgroundColor: 'transparent',
-                        height: 1,
-                        paddingBlockEnd: 2,
-                        paddingBlockStart: 2,
-
-                        position: 'relative',
-                        overflow: 'hidden',
-
-                        [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
-                            gridArea: 'thread-content',
-                            paddingBlockStart: 6,
-                            // these are needed because grid automatically sets them to auto, which breaks the overflow behavior we want
-                            minHeight: 0,
-                            minWidth: 0,
-                        },
-                    })}>
+            <ContentContainer>
+                <MainContentContainer>
                     <ModelSelect />
                     <Outlet />
-                    <Stack
-                        gap={1}
-                        sx={{
-                            width: '100%',
-                            maxWidth: '750px',
-                            margin: '0 auto',
-                        }}>
-                        <QueryForm />
-                        <QueryFormNotice />
-                    </Stack>
-                </Stack>
+                    <QueryFormContainer selectedModelFamilyId={selectedModelFamilyId} />
+                </MainContentContainer>
 
-                {isDesktop ? (
-                    <>
-                        <DesktopParameterDrawer />
-                        <DesktopAttributionDrawer />
-                    </>
-                ) : (
-                    <>
-                        <MobileAttributionDrawer />
-                        <MobileParameterDrawer />
-                    </>
-                )}
-            </Card>
+                <ResponsiveControlsDrawer />
+            </ContentContainer>
         </>
     );
 };
 
+// should be external
 const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-05-09T07:00:00Z';
 const MODEL_DEPRECATION_DATE = new Date('2025-05-09T07:00:00Z');
 

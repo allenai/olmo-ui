@@ -1,28 +1,23 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { Outlet } from 'react-router-dom';
 
+import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
-
-const containerStyle = css({
-    gridArea: 'content',
-    paddingInline: '5',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: 'background',
-    paddingBlockEnd: '2',
-    minWidth: '[0]',
-    minHeight: '[0]',
-    gap: '2',
-    overflow: 'auto',
-});
+import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
+import { MainContentContainer } from '@/components/thread/MainContentContainer';
+import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
 
 export const ComparisonPage = () => {
     return (
         <>
             <MetaTags />
-            <div className={containerStyle}>
-                <Outlet />
-            </div>
+            <ContentContainer>
+                <MainContentContainer>
+                    <Outlet />
+                    <QueryFormContainer selectedModelFamilyId={null} />
+                </MainContentContainer>
+
+                <ResponsiveControlsDrawer />
+            </ContentContainer>
         </>
     );
 };
