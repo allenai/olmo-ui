@@ -13,7 +13,7 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
 
 import { ATTRIBUTION_DRAWER_ID } from '../attribution/drawer/AttributionDrawer';
-import { ThreadDisplay } from './ThreadDisplay';
+import { ThreadDisplayContainer } from './ThreadDisplayContainer';
 
 describe('ThreadDisplay', () => {
     beforeEach(() => {
@@ -139,7 +139,7 @@ describe('ThreadDisplay', () => {
                     },
                 }}>
                 <MemoryRouter initialEntries={[links.thread('userMessage')]}>
-                    <ThreadDisplay />
+                    <ThreadDisplayContainer />
                 </MemoryRouter>
             </FakeAppContextProvider>,
             {
@@ -209,7 +209,7 @@ describe('ThreadDisplay', () => {
                     },
                 }}>
                 <MemoryRouter initialEntries={[links.thread('userMessage')]}>
-                    <ThreadDisplay />
+                    <ThreadDisplayContainer />
                 </MemoryRouter>
             </FakeAppContextProvider>
         );
