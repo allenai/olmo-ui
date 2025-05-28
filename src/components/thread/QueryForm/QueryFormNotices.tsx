@@ -1,13 +1,13 @@
 import { alpha, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { useAppContext } from '@/AppContext';
-
 import { familySpecificQueryFormNoticesMap } from './family-specific-query-form-notices-map';
 
-export const QueryFormNotice = (): ReactNode => {
-    const selectedModelFamilyId = useAppContext((state) => state.selectedModel?.family_id);
+export interface QueryFormNoticeProps {
+    selectedModelFamilyId?: string | null;
+}
 
+export const QueryFormNotice = ({ selectedModelFamilyId }: QueryFormNoticeProps): ReactNode => {
     const FamilySpecificFormNotice =
         selectedModelFamilyId != null
             ? familySpecificQueryFormNoticesMap[selectedModelFamilyId]

@@ -1,30 +1,30 @@
 import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { useShallow } from 'zustand/react/shallow';
-
-import { useAppContext } from '@/AppContext';
-import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
+import { useLocation } from 'react-router-dom';
 
 import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
 import { MessageView } from './MessageView';
-import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
-import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
-export const ThreadDisplay = (): ReactNode => {
-    const [searchParams, _] = useSearchParams();
-    // useShallow is used here to prevent triggering re-render. However, it
-    // doesn't save the job to traverse the whole message tree. If it
-    // becomes a performance bottleneck, it's better to change back to
-    // maintain a message list in store.
-    const childMessageIds = useAppContext(useShallow(selectMessagesToShow));
+interface ThreadDisplayProps {
+    childMessageIds: string[];
+    shouldShowAttributionHighlightDescription: boolean;
+    streamingMessageId: string | null;
+    isUpdatingMessageContent: boolean;
+    selectedMessageId?: string | null;
+}
 
+export const ThreadDisplay = ({
+    childMessageIds,
+    shouldShowAttributionHighlightDescription,
+    streamingMessageId,
+    isUpdatingMessageContent,
+    selectedMessageId,
+}: ThreadDisplayProps): ReactNode => {
     const previousStreamingMessageId = useRef<string | null>(null);
-    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
@@ -36,7 +36,6 @@ export const ThreadDisplay = (): ReactNode => {
     };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
-    const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
     const hasUserScrolledSinceSendingMessage = useRef(false);
 
     const scrollToBottom = useCallback(() => {
@@ -46,11 +45,6 @@ export const ThreadDisplay = (): ReactNode => {
             });
         }
     }, []);
-
-    const shouldShowAttributionHighlightDescription = useAppContext((state) => {
-        const attributions = messageAttributionsSelector(state);
-        return attributions != null && Object.keys(attributions.spans).length > 0;
-    });
 
     const location = useLocation();
 
@@ -108,11 +102,10 @@ export const ThreadDisplay = (): ReactNode => {
 
     // effect of auto-scrolling to the message appended in the url
     useEffect(() => {
-        if (searchParams.has(PARAM_SELECTED_MESSAGE)) {
-            const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE) || '';
+        if (selectedMessageId) {
             document.querySelector(`div[data-messageid=${selectedMessageId}]`)?.scrollIntoView();
         }
-    }, []);
+    }, [selectedMessageId]);
 
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
