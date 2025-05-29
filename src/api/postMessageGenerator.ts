@@ -1,3 +1,5 @@
+import { experimental_streamedQuery as streamedQuery, queryOptions } from '@tanstack/react-query';
+
 import {
     isFirstMessage,
     isMessageStreamError,
@@ -13,9 +15,18 @@ const messageClient = new MessageClient();
 // This is a generator function. for more info, see MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 export const postMessageGenerator = async function* (
     newMessage: V4CreateMessageRequest,
-    abortController: AbortController
+    // abortController: AbortController
 ) {
-    const resp = await messageClient.sendMessage(newMessage, abortController);
+    // const chatQueryOptions = () =>
+    //     queryOptions({
+    //         queryKey: ['chat', newMessage.content],
+    //         queryFn: streamedQuery({
+    //             queryFn: async () => { return messageClient.sendMessage(newMessage)},
+    //         }),
+    //         staleTime: Infinity,
+    //     })
+
+    const resp = await messageClient.sendMessage(newMessage);
 
     const rdr = resp.pipeThrough(new ReadableJSONLStream<MessageStreamPart>()).getReader();
     let firstPart = true;

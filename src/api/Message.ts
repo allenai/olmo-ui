@@ -203,7 +203,7 @@ export class MessageClient extends ClientBase {
 
     sendMessage = async (
         createMessageRequest: V4CreateMessageRequest,
-        abortController: AbortController
+        // abortController: AbortController
     ) => {
         const url = this.createURL(v4MessageApiUrl, 'stream');
 
@@ -221,7 +221,7 @@ export class MessageClient extends ClientBase {
             body: formData,
             headers: await this.createStandardHeaders(undefined, true),
             credentials: 'include',
-            signal: abortController.signal,
+            // signal: abortController.signal,
         });
 
         if (response.status === 401) {

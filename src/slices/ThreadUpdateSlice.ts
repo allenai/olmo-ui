@@ -1,3 +1,9 @@
+import {
+    experimental_streamedQuery as streamedQuery,
+    queryOptions,
+    useQuery,
+} from '@tanstack/react-query';
+
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     isFinalMessage,
@@ -165,12 +171,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             ...inferenceOpts,
         };
 
+
         try {
             const messageChunks = postMessageGenerator(request, abortController);
 
             // We're taking advantage of postMessageGenerator being a generator here and using it as an iterable.
             // See MDN for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
-            for await (const message of messageChunks) {
+            for (const message of messageChunks) {
+                console.log(message)
                 if (isFirstMessage(message)) {
                     const parsedMessage = parseMessage(message);
                     if (isCreatingNewThread) {
@@ -223,6 +231,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     }
                 }
             }
+
         } catch (err) {
             set(
                 (state) => {

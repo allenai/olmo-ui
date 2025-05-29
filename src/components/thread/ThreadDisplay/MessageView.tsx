@@ -2,6 +2,7 @@ import { ImageList, ImageListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Message } from '@/api/Message';
+import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 
@@ -41,7 +42,11 @@ export const MessageView = ({
     if (role === Role.System) {
         return null;
     }
-
+    const queryCache = queryClient.getQueryCache()
+    const queryData = queryClient.getQueryData(['chat', 'queryform'])
+    const currentQuery = queryCache.find({ queryKey: ['chat', 'queryform'] })
+    console.log(currentQuery)
+    console.log(queryData)
     const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
 
     return (

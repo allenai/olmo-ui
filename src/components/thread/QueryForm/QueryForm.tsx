@@ -1,4 +1,9 @@
 import { Box, Stack, Typography } from '@mui/material';
+import {
+    experimental_streamedQuery as streamedQuery,
+    queryOptions,
+    // useQuery,
+} from '@tanstack/react-query';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { JSX, UIEvent, useCallback, useEffect } from 'react';
 import {
@@ -12,7 +17,21 @@ import { useLocation, useNavigation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
+import {
+    isFinalMessage,
+    isFirstMessage,
+    isMessageChunk,
+    Message,
+    MessageStreamError,
+    MessageStreamErrorReason,
+    parseMessage,
+    RequestInferenceOpts,
+    StreamBadRequestError,
+    StreamValidationError,
+    V4CreateMessageRequest,
+} from '@/api/Message';
+import { postMessageGenerator } from '@/api/postMessageGenerator';
+import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
@@ -23,6 +42,9 @@ import { FileUploadButton } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
+import { router } from '@/router';
+import { Role } from '@/api/Role';
+import { getFeatureToggles } from '@/FeatureToggleContext';
 
 interface QueryFormValues {
     content: string;
@@ -86,11 +108,17 @@ const handleFormSubmitException = (e: unknown, formContext: UseFormReturn<QueryF
 export const QueryForm = (): JSX.Element => {
     const navigation = useNavigation();
     const location = useLocation();
-    const streamPrompt = useAppContext((state) => state.streamPrompt);
+    // const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
-
+    const inferenceOpts = useAppContext((state) => state.inferenceOpts)
+    const addContentToMessage = useAppContext((state) => state.addContentToMessage)
+    const { isCorpusLinkEnabled } = getFeatureToggles();
     const { executeRecaptcha } = useReCaptcha();
+    const handleFinalMessage = useAppContext((state) => state.handleFinalMessage)
+    const getAttributionsForMessage = useAppContext((state) => state.getAttributionsForMessage)
+    const setSelectedThread = useAppContext((state) => state.setSelectedThread)
+    const addChildToSelectedThread = useAppContext((state) => state.addChildToSelectedThread)
 
     const formContext = useForm<QueryFormValues>({
         defaultValues: {
@@ -105,7 +133,7 @@ export const QueryForm = (): JSX.Element => {
         return (
             state.selectedThreadRootId === '' ||
             state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
-                state.userInfo?.client
+            state.userInfo?.client
         );
     });
 
@@ -170,25 +198,100 @@ export const QueryForm = (): JSX.Element => {
             return;
         }
         const isReCaptchaEnabled = process.env.IS_RECAPTCHA_ENABLED;
-
-        if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
-            analyticsClient.trackCaptchaNotLoaded();
+        if (isReCaptchaEnabled === 'true') {
+            if (executeRecaptcha == null) {
+                analyticsClient.trackCaptchaNotLoaded();
+            } else {
+                // TODO: Make sure executeRecaptcha is present when we require recaptchas
+                await executeRecaptcha?.('prompt_submission')
+            }
         }
 
-        // TODO: Make sure executeRecaptcha is present when we require recaptchas
-        const token =
-            isReCaptchaEnabled === 'true'
-                ? await executeRecaptcha?.('prompt_submission')
-                : undefined;
+        const isCreatingNewThread = lastMessageId == null
+        const request: V4CreateMessageRequest = {
+            model: selectedModel?.id || '',
+            host: selectedModel?.host || '',
+            parent: isCreatingNewThread ? undefined : lastMessageId,
+            ...data,
+            ...inferenceOpts,
+        };
 
-        const request: StreamMessageRequest = { ...data, captchaToken: token };
 
-        if (lastMessageId != null) {
-            request.parent = lastMessageId;
-        }
+        const chatQueryOptions = () =>
+            queryOptions({
+                queryKey: ['chat', 'queryform'],
+                queryFn: streamedQuery({
+                    queryFn: async ({ signal }) => {
+                        const messageChunks = postMessageGenerator(request);
+                        let streamingMessageId;
+                        for await (const message of messageChunks) {
+                            console.log(message)
+                            if (isFirstMessage(message)) {
+                                const parsedMessage = parseMessage(message);
+                                if (isCreatingNewThread) {
+                                    setSelectedThread(parsedMessage);
+                                    await router.navigate(links.thread(parsedMessage.id));
+                                } else {
+                                    addChildToSelectedThread(parsedMessage);
+                                }
+
+                                // store the message id that olmo is generating reponse
+                                // the first chunk in the message will have no content
+                                let targetMessageList;
+                                if (parsedMessage.role === Role.User) {
+                                    targetMessageList = parsedMessage.children;
+                                } else if (parsedMessage.role === Role.System) {
+                                    // system prompt message should only have 1 child
+                                    targetMessageList = parsedMessage.children?.[0].children;
+                                }
+
+                                const streamingMessage = targetMessageList?.find(
+                                    (message) => !message.final && message.content.length === 0
+                                );
+                                streamingMessageId = streamingMessage?.id
+                            }
+
+                            if (isMessageChunk(message)) {
+                                // if (!get().isUpdatingMessageContent) {
+                                //     set((state) => {
+                                //         state.isUpdatingMessageContent = true;
+                                //     });
+                                // }
+
+                                addContentToMessage(message.message, message.content);
+                            }
+
+                            if (isFinalMessage(message)) {
+                                // const streamedResponseId = get().streamingMessageId;
+
+                                if (streamingMessageId == null) {
+                                    throw new Error(
+                                        'The streaming message ID was reset before streaming ended'
+                                    );
+                                }
+
+                                handleFinalMessage(parseMessage(message), isCreatingNewThread);
+
+                                if (isCorpusLinkEnabled) {
+                                    await getAttributionsForMessage(
+                                        request.content,
+                                        streamingMessageId
+                                    );
+                                }
+                            }
+                        }
+                        return messageChunks
+                    },
+                }),
+            })
 
         try {
-            await streamPrompt(request);
+
+            // await streamPrompt(request);
+            queryClient.fetchQuery(chatQueryOptions()).then((messageChunks) => {
+                console.log(messageChunks)
+
+            })
             if (selectedModel !== undefined) {
                 analyticsClient.trackQueryFormSubmission(
                     selectedModel.id,
