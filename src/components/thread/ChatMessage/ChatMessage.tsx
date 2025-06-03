@@ -16,11 +16,13 @@ export const CHAT_MESSAGE_CLASS_NAME = 'chat-message';
 
 interface ChatMessageProps extends PropsWithChildren {
     role: Role;
+    threadId: string;
     messageId: string;
 }
 
 export const ChatMessage = ({
     role: variant,
+    threadId: _threadIdUnusedCurrently,
     messageId,
     children,
 }: ChatMessageProps): JSX.Element => {
