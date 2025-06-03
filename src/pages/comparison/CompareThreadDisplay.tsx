@@ -4,7 +4,6 @@ import { SelectChangeEvent } from '@mui/material';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext, useAppContext } from '@/AppContext';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
-// import { areModelThreadsCompatible } from '@/components/thread/ModelSelect/useHandleChangeModel';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 
@@ -52,21 +51,17 @@ interface SingleThreadProps {
     threadRootId?: string;
 }
 
-// TODO get messages and handle model select
 const SingleThread = ({
     threadViewIdx,
     models,
-    threadRootId: _, // not used, yet
+    threadRootId: _threadIdNotUsedYet,
 }: SingleThreadProps) => {
-    const childMessageIds: string[] = []; // query via threadRootId
+    // fetch from query/cache via threadRootId
+    const childMessageIds: string[] = [];
 
     return (
         <div>
-            <CompareModelSelect
-                threadViewId={threadViewIdx}
-                models={models}
-                // selectedModelId={selectedModelId}
-            />
+            <CompareModelSelect threadViewId={threadViewIdx} models={models} />
             <ThreadDisplay
                 childMessageIds={childMessageIds}
                 shouldShowAttributionHighlightDescription={false}
@@ -92,8 +87,7 @@ const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) =
     });
 
     const handleModelChange = (e: SelectChangeEvent) => {
-        // all models -- is compatible
-        // change selected model
+        // TODO: are all models compatible
         const selectedModel = models.find((model) => model.id === e.target.value);
         if (selectedModel) {
             setSelectedCompareModelAt(threadViewId, selectedModel);
