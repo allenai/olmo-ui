@@ -1,9 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { SelectChangeEvent } from '@mui/material';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { appContext, useAppContext } from '@/AppContext';
-import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
+import { appContext } from '@/AppContext';
+import { ThreadModelSelect } from '@/components/thread/ModelSelect/ThreadModelSelect';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 
@@ -61,7 +60,7 @@ const SingleThread = ({
 
     return (
         <div>
-            <CompareModelSelect threadViewId={threadViewIdx} models={models} />
+            <ThreadModelSelect threadViewId={threadViewIdx} models={models} />
             <ThreadDisplay
                 childMessageIds={childMessageIds}
                 shouldShowAttributionHighlightDescription={false}
@@ -69,37 +68,5 @@ const SingleThread = ({
                 isUpdatingMessageContent={false}
             />
         </div>
-    );
-};
-
-interface CompareModelSelectProps {
-    threadViewId: string;
-    models: Model[];
-}
-
-const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) => {
-    const { setSelectedCompareModelAt } = useAppContext();
-
-    const selectedModelId = useAppContext((state) => {
-        return state.selectedCompareModels?.find((model) => {
-            return model.threadViewId === threadViewId;
-        })?.model.id;
-    });
-
-    const handleModelChange = (e: SelectChangeEvent) => {
-        // TODO: are all models compatible
-        const selectedModel = models.find((model) => model.id === e.target.value);
-        if (selectedModel) {
-            setSelectedCompareModelAt(threadViewId, selectedModel);
-        }
-    };
-
-    return (
-        <ModelSelect
-            id={threadViewId}
-            models={models}
-            selectedModelId={selectedModelId}
-            onModelChange={handleModelChange}
-        />
     );
 };

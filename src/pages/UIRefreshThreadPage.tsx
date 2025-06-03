@@ -7,7 +7,7 @@ import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
 import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
-import { SingleThreadModelSelect } from '@/components/thread/ModelSelect/SingleThreadModelSelect';
+import { SingleThreadModelSelect } from '@/components/thread/ModelSelect/ThreadModelSelect';
 import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
 import { links } from '@/Links';

@@ -7,7 +7,7 @@ import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
-import { SingleThreadModelSelect } from './SingleThreadModelSelect';
+import { SingleThreadModelSelect } from './ThreadModelSelect';
 
 const getInitialState = () =>
     ({

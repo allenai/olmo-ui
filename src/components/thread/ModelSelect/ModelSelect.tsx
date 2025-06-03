@@ -10,7 +10,6 @@ import {
     MenuItem,
     menuItemClasses,
     Select,
-    SelectChangeEvent,
     selectClasses,
     SelectProps,
     Stack,
@@ -20,7 +19,6 @@ import {
 import { useId } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { useAppContext } from '@/AppContext';
 
 export interface ModelSelectProps {
     models: Model[];
@@ -181,35 +179,3 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
         },
     },
 }));
-
-interface ThreadModelSelectProps {
-    threadViewId: string;
-    models: Model[];
-}
-
-export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectProps) => {
-    const { setSelectedCompareModelAt } = useAppContext();
-
-    const selectedModelId = useAppContext((state) => {
-        return state.selectedCompareModels?.find((model) => {
-            return model.threadViewId === threadViewId;
-        })?.model.id;
-    });
-
-    const handleModelChange = (e: SelectChangeEvent) => {
-        // TODO: are all models compatible
-        const selectedModel = models.find((model) => model.id === e.target.value);
-        if (selectedModel) {
-            setSelectedCompareModelAt(threadViewId, selectedModel);
-        }
-    };
-
-    return (
-        <ModelSelect
-            id={threadViewId}
-            models={models}
-            selectedModelId={selectedModelId}
-            onModelChange={handleModelChange}
-        />
-    );
-};
