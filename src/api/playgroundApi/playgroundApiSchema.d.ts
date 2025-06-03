@@ -365,7 +365,7 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly '/v4/threads/<string:id>': {
+    readonly '/v4/threads/{thread_id}': {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -378,7 +378,7 @@ export type paths = {
                 readonly query?: never;
                 readonly header?: never;
                 readonly path: {
-                    readonly id: string;
+                    readonly thread_id: string;
                 };
                 readonly cookie?: never;
             };

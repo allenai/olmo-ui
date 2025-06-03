@@ -2,7 +2,7 @@ import { ImageList, ImageListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Label } from '@/api/Label';
-import { type FlatMessage, getMessage } from '@/api/playgroundApi/message';
+import { type FlatMessage, getMessageFromCache } from '@/api/playgroundApi/message';
 import { type Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 
@@ -35,7 +35,7 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const message = getMessage(threadId, messageId);
+    const message = getMessageFromCache(threadId, messageId);
 
     const { role, content, fileUrls, labels } = message;
 

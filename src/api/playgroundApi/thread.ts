@@ -1,37 +1,38 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
-
-import { messageClient } from '@/slices/ThreadSlice';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { queryClient } from '../query-client';
+import { playgroundApiQueryClient } from './playgroundApiClient';
 import type { SchemaThread as Thread } from './playgroundApiSchema';
 
-export const threadQueryFn = (threadId: string) => {
-    // playgroundApiQueryClient...
-    return async () => await messageClient.getThread(threadId);
+const threadFetchParams = (threadId: string) => ({
+    params: {
+        path: {
+            thread_id: threadId,
+        },
+    },
+});
+
+export const threadQueryOptions = (threadId: string) => {
+    const fetchParams = threadFetchParams(threadId);
+    return playgroundApiQueryClient.queryOptions('get', '/v4/threads/{thread_id}', fetchParams);
 };
 
-// pass additional options
-export const threadQueryOptions = (threadId: string) =>
-    queryOptions({
-        queryKey: ['thread', threadId],
-        queryFn: threadQueryFn(threadId),
-    });
-
-// pass queryClient ?
+// async fetch/cache lookup
 export const getThread = async (threadId: string): Promise<Thread> => {
     return await queryClient.ensureQueryData(threadQueryOptions(threadId));
 };
 
-// pass queryClient ?
+// sync, may throw
 export const getThreadFromCache = (threadId: string): Thread => {
-    const thread = queryClient.getQueryData<Thread>(['thread', threadId]);
+    const { queryKey } = threadQueryOptions(threadId);
+    const thread = queryClient.getQueryData<Thread>(queryKey);
     if (!thread) {
         throw new Error(`No thread found with ID: ${threadId}`);
     }
     return thread;
 };
 
-// non throwing
-export const useThread = (threadId: string) => useQuery(threadQueryOptions(threadId));
+// hook
+export const useThread = (threadId: string) => useSuspenseQuery(threadQueryOptions(threadId));
 
 export type { Thread };

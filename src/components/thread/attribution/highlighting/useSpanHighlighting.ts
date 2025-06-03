@@ -1,4 +1,4 @@
-import { getMessage } from '@/api/playgroundApi/message';
+import { getMessageFromCache } from '@/api/playgroundApi/message';
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
@@ -28,7 +28,7 @@ export const useSpanHighlightingQuery = (threadId: string, messageId: string) =>
         (state) => state.attribution.attributionsByMessageId[messageId]?.spans ?? {}
     );
 
-    const { content } = getMessage(threadId, messageId);
+    const { content } = getMessageFromCache(threadId, messageId);
 
     if (isCorpusLinkEnabled) {
         return addHighlightsToText(content, Object.entries(spans));
