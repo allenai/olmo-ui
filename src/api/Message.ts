@@ -4,12 +4,14 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
+import type { Thread } from './playgroundApi/thread';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 export const v4MessageApiUrl = '/v4/message';
+export const ThreadApiUrl = '/v4/threads';
 
 export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
@@ -164,6 +166,15 @@ export const parseMessage = (message: JSONMessage): Message => {
 };
 
 export class MessageClient extends ClientBase {
+    // ThreadClient?
+    getThread = async (threadId: string): Promise<Thread> => {
+        const url = this.createURL(ThreadApiUrl, threadId);
+
+        const messageResponse = await this.fetch<Thread>(url);
+
+        return messageResponse;
+    };
+
     getMessage = async (threadId: string): Promise<Message> => {
         const url = this.createURL(MessageApiUrl, threadId);
 

@@ -1,11 +1,12 @@
 import { ImageList, ImageListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { Message } from '@/api/Message';
+import { Label } from '@/api/Label';
+import { type FlatMessage, getMessage } from '@/api/playgroundApi/message';
+import { type Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { useAppContext } from '@/AppContext';
 
-import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
+import { useSpanHighlightingQuery } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
@@ -14,21 +15,18 @@ import { hasPoints } from '../points/isPointResponse';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 
 export interface MessageProps {
-    threadId: Message['id'];
-    messageId: Message['id'];
+    threadId: Thread['id'];
+    messageId: FlatMessage['id'];
 }
 
-export const StandardMessage = ({
-    threadId: _theadUnsedForNow,
-    messageId,
-}: MessageProps): ReactNode => {
-    const contentWithMarks = useSpanHighlighting(messageId);
+export const StandardMessage = ({ threadId, messageId }: MessageProps): ReactNode => {
+    const contentWithMarks = useSpanHighlightingQuery(threadId, messageId);
 
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
 interface MessageViewProps extends MessageProps {
-    threadId: string;
+    threadId: Thread['id'];
     isLastMessageInThread?: boolean;
 }
 
@@ -37,21 +35,22 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const {
-        role,
-        content,
-        labels: messageLabels,
-        fileUrls,
-    } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
+    const message = getMessage(threadId, messageId);
+
+    const { role, content, fileUrls, labels } = message;
 
     if (role === Role.System) {
         return null;
     }
 
+    const messageLabels = labels
+        ? labels.map((label) => ({ ...label, created: new Date(label.created) }) as Label)
+        : [];
+
     const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
 
     return (
-        <ChatMessage role={role} threadId={threadId} messageId={messageId}>
+        <ChatMessage role={role as Role} threadId={threadId} messageId={messageId}>
             <MessageComponent threadId={threadId} messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (

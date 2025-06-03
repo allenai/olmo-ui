@@ -1,22 +1,16 @@
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useShallow } from 'zustand/react/shallow';
 
+import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
-import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadDisplay } from './ThreadDisplay';
 
 export const ThreadDisplayContainer = () => {
-    const params = useParams();
-    const selectedThreadRootId = params.id || 'asdf';
+    // reworking how the "global" state for threads works
+    const { id: selectedThreadRootId = '' } = useParams();
 
-    // useShallow is used here to prevent triggering re-render. However, it
-    // doesn't save the job to traverse the whole message tree. If it
-    // becomes a performance bottleneck, it's better to change back to
-    // maintain a message list in store.
-    const childMessageIds = useAppContext(useShallow(selectMessagesToShow));
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
         const attributions = messageAttributionsSelector(state);
         return attributions != null && Object.keys(attributions.spans).length > 0;
@@ -27,10 +21,20 @@ export const ThreadDisplayContainer = () => {
     const [searchParams, _] = useSearchParams();
     const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
 
+    let childIds: string[] = [];
+
+    const { data } = useThread(selectedThreadRootId);
+    if (data) {
+        const { messages } = data;
+        childIds = messages.map((message) => {
+            return message.id;
+        });
+    }
+
     return (
         <ThreadDisplay
             threadId={selectedThreadRootId}
-            childMessageIds={childMessageIds}
+            childMessageIds={childIds}
             shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
             streamingMessageId={streamingMessageId}
             isUpdatingMessageContent={isUpdatingMessageContent}

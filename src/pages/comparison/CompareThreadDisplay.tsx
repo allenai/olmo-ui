@@ -1,8 +1,10 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
+import { SelectChangeEvent } from '@mui/material';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { appContext } from '@/AppContext';
-import { ThreadModelSelect } from '@/components/thread/ModelSelect/ThreadModelSelect';
+import { useThread } from '@/api/playgroundApi/thread';
+import { appContext, useAppContext } from '@/AppContext';
+import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 
@@ -32,7 +34,7 @@ export const CompareThreadDisplay = () => {
         <div className={containerStyle}>
             {selectedCompareModels?.map(({ threadViewId }, idx) => {
                 return (
-                    <SingleThread
+                    <SingleThreadContainer
                         key={idx}
                         threadViewIdx={threadViewId}
                         threadRootId={undefined}
@@ -44,28 +46,89 @@ export const CompareThreadDisplay = () => {
     );
 };
 
-interface SingleThreadProps {
+interface SingleThreadContainerProps {
     threadViewIdx: string;
     models: Model[];
     threadRootId?: string;
 }
 
-const SingleThread = ({ threadViewIdx, models, threadRootId }: SingleThreadProps) => {
-    // fetch from query/cache via threadRootId
-    const childMessageIds: string[] = [];
-
+const SingleThreadContainer = ({
+    threadViewIdx,
+    models,
+    threadRootId,
+}: SingleThreadContainerProps) => {
     return (
         <div>
-            <ThreadModelSelect threadViewId={threadViewIdx} models={models} />
+            <CompareModelSelect threadViewId={threadViewIdx} models={models} />
+            {/* TODO, render either placeholder or real */}
             {threadRootId ? ( // TODO: proper placeholder
-                <ThreadDisplay
-                    threadId={threadRootId}
-                    childMessageIds={childMessageIds}
-                    shouldShowAttributionHighlightDescription={false}
-                    streamingMessageId={null}
-                    isUpdatingMessageContent={false}
-                />
+                <SingleThread threadRootId={threadRootId} />
             ) : null}
         </div>
+    );
+};
+
+interface CompareModelSelectProps {
+    threadViewId: string;
+    models: Model[];
+}
+
+const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) => {
+    const { setSelectedCompareModelAt } = useAppContext();
+
+    const selectedModelId = useAppContext((state) => {
+        return state.selectedCompareModels?.find((model) => {
+            return model.threadViewId === threadViewId;
+        })?.model.id;
+    });
+
+    const handleModelChange = (e: SelectChangeEvent) => {
+        // all models -- is compatible
+        // change selected model
+        const selectedModel = models.find((model) => model.id === e.target.value);
+        if (selectedModel) {
+            setSelectedCompareModelAt(threadViewId, selectedModel);
+        }
+    };
+
+    return (
+        <ModelSelect
+            id={threadViewId}
+            models={models}
+            selectedModelId={selectedModelId}
+            onModelChange={handleModelChange}
+        />
+    );
+};
+
+interface SingleThreadProps {
+    threadRootId: string;
+}
+
+const SingleThread = ({ threadRootId = 'msg_X2R1E9R0L2' }: SingleThreadProps) => {
+    const shouldShowAttributionHighlightDescription = false;
+    const streamingMessageId = null;
+    const isUpdatingMessageContent = false;
+    const selectedMessageId = undefined;
+
+    let childMessageIds: string[] = [];
+    const { data } = useThread(threadRootId);
+
+    if (data) {
+        const { messages } = data;
+        childMessageIds = messages.map((message) => {
+            return message.id;
+        });
+    }
+
+    return (
+        <ThreadDisplay
+            threadId={threadRootId}
+            childMessageIds={childMessageIds}
+            shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
+            streamingMessageId={streamingMessageId}
+            isUpdatingMessageContent={isUpdatingMessageContent}
+            selectedMessageId={selectedMessageId}
+        />
     );
 };
