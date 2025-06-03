@@ -63,16 +63,13 @@ export const QueryFormController = ({
 
     // Autofocus the input if we're on a new thread
     useEffect(() => {
-        // TODO: verify useEffect needed
         if (autofocus) {
             formContext.setFocus('content');
         }
     }, [autofocus, formContext]);
 
-    // query all threads - using navigation.state in here?
     // Clear errors when we navigate between pages
     useEffect(() => {
-        // TODO: verify useEffect needed
         if (navigation.state === 'loading') {
             formContext.clearErrors();
         }
@@ -86,7 +83,6 @@ export const QueryFormController = ({
     }, [firstResponseId, formContext]);
 
     useEffect(() => {
-        // TODO: verify useEffect
         if (!areFilesAllowed) {
             formContext.setValue('files', undefined);
         }

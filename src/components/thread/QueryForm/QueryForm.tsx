@@ -62,6 +62,7 @@ export const QueryForm = (): JSX.Element => {
     const lastMessageId =
         viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
+    // this needs to be hoisted, and passed down, so that we can handle multiple threads
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
         const request: StreamMessageRequest = data;
 
