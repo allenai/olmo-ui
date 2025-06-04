@@ -48,12 +48,14 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
             async ([threadId, modelIdParam], idx) => {
-                const { messages } = await getThread(threadId);
                 let modelId: Model['id'] | undefined = modelIdParam;
 
-                if (!modelIdParam) {
-                    const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
-                    modelId = lastResponse?.modelId;
+                if (threadId) {
+                    const { messages } = await getThread(threadId);
+                    if (!modelIdParam) {
+                        const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
+                        modelId = lastResponse?.modelId;
+                    }
                 }
 
                 const modelObj = modelId ? models.find(modelById(modelId)) : models[0];
