@@ -32,12 +32,12 @@ export const CompareThreadDisplay = () => {
 
     return (
         <div className={containerStyle}>
-            {selectedCompareModels?.map(({ threadViewId }, idx) => {
+            {selectedCompareModels?.map(({ threadViewId, rootThreadId }, idx) => {
                 return (
                     <SingleThreadContainer
                         key={idx}
                         threadViewIdx={threadViewId}
-                        threadRootId={undefined}
+                        threadRootId={rootThreadId}
                         models={models}
                     />
                 );
