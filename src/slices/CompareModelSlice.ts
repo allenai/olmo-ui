@@ -3,7 +3,8 @@ import { OlmoStateCreator } from '@/AppContext';
 
 export interface CompareModelState {
     threadViewId: string;
-    model: Model;
+    rootThreadId?: string; // Thread['id']
+    model?: Model;
 }
 
 export interface CompareModelSlice {
@@ -14,6 +15,7 @@ export interface CompareModelSlice {
 
 export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set) => ({
     selectedCompareModels: undefined,
+    // setSelectedCompareThreads?
     setSelectedCompareModels: (compareModels: CompareModelState[]) => {
         set(
             (state) => {
@@ -30,7 +32,7 @@ export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set
             const newCompareModels = state.selectedCompareModels?.map((model) => {
                 if (model.threadViewId === threadViewId) {
                     return {
-                        threadViewId,
+                        ...model,
                         model: newModel,
                     };
                 }

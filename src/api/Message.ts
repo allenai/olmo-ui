@@ -10,6 +10,7 @@ import { InferenceOpts, PaginationData } from './Schema';
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 export const v4MessageApiUrl = '/v4/message';
+export const ThreadApiUrl = '/v4/threads';
 
 export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 

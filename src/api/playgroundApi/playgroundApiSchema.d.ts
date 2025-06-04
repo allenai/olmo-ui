@@ -243,10 +243,10 @@ export type paths = {
                 readonly path?: never;
                 readonly cookie?: never;
             };
-            /** @description A CreateMessageRequestV4 */
+            /** @description A CreateMessageRequest */
             readonly requestBody: {
                 readonly content: {
-                    readonly 'application/json': components['schemas']['CreateMessageRequestV4'];
+                    readonly 'application/json': components['schemas']['CreateMessageRequest'];
                 };
             };
             readonly responses: {
@@ -301,6 +301,108 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/v4/threads/': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /** Get messages */
+        readonly get: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            /** @description A GetThreadsRequest */
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['GetThreadsRequest'];
+                };
+            };
+            readonly responses: {
+                /** @description A GetThreadsResponse */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['GetThreadsResponse'];
+                    };
+                };
+            };
+        };
+        readonly put?: never;
+        /** Stream a prompt response */
+        readonly post: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            /** @description A CreateMessageRequest */
+            readonly requestBody: {
+                readonly content: {
+                    readonly 'application/json': components['schemas']['CreateMessageRequest'];
+                };
+            };
+            readonly responses: {
+                /** @description Empty Response */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly '/v4/threads/{thread_id}': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /** Get message */
+        readonly get: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path: {
+                    readonly thread_id: string;
+                };
+                readonly cookie?: never;
+            };
+            readonly requestBody?: never;
+            readonly responses: {
+                /** @description A Thread */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['Thread'];
+                    };
+                };
+            };
+        };
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
 };
 export type webhooks = Record<string, never>;
 export type components = {
@@ -321,8 +423,8 @@ export type components = {
             /** Permissions */
             readonly permissions?: readonly string[];
         };
-        /** CreateMessageRequestV4 */
-        readonly CreateMessageRequestV4: {
+        /** CreateMessageRequest */
+        readonly CreateMessageRequest: {
             /**
              * Captchatoken
              * @default null
@@ -504,6 +606,108 @@ export type components = {
          * @enum {string}
          */
         readonly FileRequiredToPromptOption: 'first_message' | 'all_messages' | 'no_requirement';
+        /**
+         * FinishReason
+         * @enum {string}
+         */
+        readonly FinishReason:
+            | 'unclosed stream'
+            | 'length'
+            | 'stop'
+            | 'aborted'
+            | 'model overloaded'
+            | 'bad connection'
+            | 'value error'
+            | 'unknown';
+        /** FlatMessage */
+        readonly FlatMessage: {
+            /**
+             * Children
+             * @default null
+             */
+            readonly children?: readonly string[] | null;
+            /**
+             * Completion
+             * @default null
+             */
+            readonly completion?: string | null;
+            /** Content */
+            readonly content: string;
+            /**
+             * Created
+             * Format: date-time
+             */
+            readonly created: string;
+            /** Creator */
+            readonly creator: string;
+            /**
+             * Deleted
+             * @default null
+             */
+            readonly deleted?: string | null;
+            /**
+             * Expirationtime
+             * @default null
+             */
+            readonly expirationTime?: string | null;
+            /**
+             * Fileurls
+             * @default null
+             */
+            readonly fileUrls?: readonly string[] | null;
+            /**
+             * Final
+             * @default false
+             */
+            readonly final?: boolean;
+            /** @default null */
+            readonly finishReason?: components['schemas']['FinishReason'] | null;
+            /**
+             * Harmful
+             * @default null
+             */
+            readonly harmful?: boolean | null;
+            /** Id */
+            readonly id: string;
+            /** Islimitreached */
+            readonly isLimitReached: boolean;
+            /** Isolderthan30Days */
+            readonly isOlderThan30Days: boolean;
+            /** Labels */
+            readonly labels?: readonly components['schemas']['LabelResponse'][];
+            /** Modelhost */
+            readonly modelHost: string;
+            /** Modelid */
+            readonly modelId: string;
+            /** @default null */
+            readonly modelType?: components['schemas']['ModelType'] | null;
+            readonly opts: components['schemas']['InferenceOptionsResponse'];
+            /**
+             * Original
+             * @default null
+             */
+            readonly original?: string | null;
+            /**
+             * Parent
+             * @default null
+             */
+            readonly parent?: string | null;
+            /**
+             * Private
+             * @default false
+             */
+            readonly private?: boolean;
+            readonly role: components['schemas']['Role'];
+            /** Root */
+            readonly root: string;
+            /** Snippet */
+            readonly snippet: string;
+            /**
+             * Template
+             * @default null
+             */
+            readonly template?: string | null;
+        };
         /** GetAttributionRequest */
         readonly GetAttributionRequest: {
             /**
@@ -522,6 +726,99 @@ export type components = {
             readonly modelResponse: string;
             /** Prompt */
             readonly prompt: string;
+        };
+        /** GetThreadsRequest */
+        readonly GetThreadsRequest: {
+            /**
+             * Creator
+             * @default null
+             */
+            readonly creator?: string | null;
+            /**
+             * Deleted
+             * @default false
+             */
+            readonly deleted?: boolean;
+            /**
+             * Limit
+             * @default null
+             */
+            readonly limit?: number | null;
+            /**
+             * Offset
+             * @default null
+             */
+            readonly offset?: number | null;
+            /** @default DESC */
+            readonly order?: components['schemas']['SortDirection'];
+            /**
+             * Sort
+             * @default null
+             */
+            readonly sort?: string | null;
+        };
+        /** GetThreadsResponse */
+        readonly GetThreadsResponse: {
+            /** Threads */
+            readonly threads: readonly components['schemas']['Thread'][];
+        };
+        /** InferenceOptionsResponse */
+        readonly InferenceOptionsResponse: {
+            /**
+             * Logprobs
+             * @default null
+             */
+            readonly logprobs?: number | null;
+            /**
+             * Maxtokens
+             * @default 2048
+             */
+            readonly maxTokens?: number;
+            /**
+             * N
+             * @default 1
+             */
+            readonly n?: number;
+            /**
+             * Stop
+             * @default null
+             */
+            readonly stop?: readonly string[] | null;
+            /**
+             * Temperature
+             * @default 0.7
+             */
+            readonly temperature?: number;
+            /**
+             * Topp
+             * @default 1
+             */
+            readonly topP?: number;
+        };
+        /** LabelResponse */
+        readonly LabelResponse: {
+            /**
+             * Comment
+             * @default null
+             */
+            readonly comment?: string | null;
+            /**
+             * Created
+             * Format: date-time
+             */
+            readonly created: string;
+            /** Creator */
+            readonly creator: string;
+            /**
+             * Deleted
+             * @default null
+             */
+            readonly deleted?: string | null;
+            /** Id */
+            readonly id: string;
+            /** Message */
+            readonly message: string;
+            readonly rating: components['schemas']['Rating'];
         };
         /** Model */
         readonly Model: {
@@ -741,6 +1038,11 @@ export type components = {
              */
             readonly updatedTime: string;
         };
+        /**
+         * Rating
+         * @enum {integer}
+         */
+        readonly Rating: -1 | 0 | 1;
         /** ReorderModelConfigRequest */
         readonly ReorderModelConfigRequest: {
             /** Orderedmodels */
@@ -763,6 +1065,11 @@ export type components = {
         readonly RootUpdateModelConfigRequest:
             | components['schemas']['UpdateTextOnlyModelConfigRequest']
             | components['schemas']['UpdateMultiModalModelConfigRequest'];
+        /**
+         * SortDirection
+         * @enum {string}
+         */
+        readonly SortDirection: 'ASC' | 'DESC';
         /** TextOnlyResponseModel */
         readonly TextOnlyResponseModel: {
             readonly availability: components['schemas']['ModelAvailability'];
@@ -820,6 +1127,13 @@ export type components = {
              * Format: date-time
              */
             readonly updatedTime: string;
+        };
+        /** Thread */
+        readonly Thread: {
+            /** Id */
+            readonly id: string;
+            /** Messages */
+            readonly messages: readonly components['schemas']['FlatMessage'][];
         };
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
@@ -943,13 +1257,19 @@ export type components = {
 };
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
-export type SchemaCreateMessageRequestV4 = components['schemas']['CreateMessageRequestV4'];
+export type SchemaCreateMessageRequest = components['schemas']['CreateMessageRequest'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
 export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
+export type SchemaFinishReason = components['schemas']['FinishReason'];
+export type SchemaFlatMessage = components['schemas']['FlatMessage'];
 export type SchemaGetAttributionRequest = components['schemas']['GetAttributionRequest'];
+export type SchemaGetThreadsRequest = components['schemas']['GetThreadsRequest'];
+export type SchemaGetThreadsResponse = components['schemas']['GetThreadsResponse'];
+export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
+export type SchemaLabelResponse = components['schemas']['LabelResponse'];
 export type SchemaModel = components['schemas']['Model'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
@@ -958,6 +1278,7 @@ export type SchemaModelResponse = components['schemas']['ModelResponse'];
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
+export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
 export type SchemaRole = components['schemas']['Role'];
@@ -965,7 +1286,9 @@ export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
 export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
+export type SchemaSortDirection = components['schemas']['SortDirection'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
+export type SchemaThread = components['schemas']['Thread'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
