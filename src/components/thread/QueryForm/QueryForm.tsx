@@ -19,7 +19,6 @@ interface QueryFormValues {
 }
 
 export const QueryForm = (): JSX.Element => {
-    // const navigation = useNavigation();
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
