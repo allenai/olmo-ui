@@ -10,8 +10,8 @@ import {
 import { ButtonGroup, Snackbar, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
 
-import { Label, LabelRating } from '@/api/Label';
-import { Message } from '@/api/Message';
+import { type Label, LabelRating } from '@/api/Label';
+import type { FlatMessage } from '@/api/playgroundApi/message';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -22,10 +22,10 @@ import { MessageInteractionIcon } from './MessageInteractionIcon';
 import { SelectMessageButton } from './SelectMessageButton';
 
 interface MessageInteractionProps {
-    role: Message['role'];
-    messageLabels: Message['labels'];
-    content: Message['content'];
-    messageId: Message['id'];
+    role: FlatMessage['role'];
+    messageLabels: Label[];
+    content: FlatMessage['content'];
+    messageId: FlatMessage['id'];
     isLastMessage: boolean;
 }
 

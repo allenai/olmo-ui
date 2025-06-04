@@ -20,3 +20,5 @@ export const useModels = <TData = Model[]>({
 };
 
 export const isModelVisible = (model: Model) => 'is_visible' in model && model.is_visible;
+
+export const modelById = (modelId: string) => (model: Model) => model.id === modelId;

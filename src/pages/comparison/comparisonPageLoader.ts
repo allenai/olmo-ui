@@ -2,12 +2,16 @@ import type { QueryClient } from '@tanstack/react-query';
 import type { LoaderFunction } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { getThread } from '@/api/playgroundApi/thread';
+import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
-import { getModelsQueryOptions } from '@/components/thread/ModelSelect/useModels';
+import { getModelsQueryOptions, modelById } from '@/components/thread/ModelSelect/useModels';
+import { arrayZip } from '@/utils/arrayZip';
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ params, request }) => {
         const isComparisonPageEnabled = process.env.IS_COMPARISON_PAGE_ENABLED === 'true';
+        const { setSelectedCompareModels } = appContext.getState();
 
         if (!isComparisonPageEnabled) {
             // React-router recommends throwing a response
@@ -16,8 +20,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         }
 
         // from playgroundLoader.ts
-        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt } =
-            appContext.getState();
+        const { resetAttribution, getSchema, schema, abortPrompt } = appContext.getState();
 
         const promises = [];
 
@@ -31,47 +34,43 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         }
 
         // (always true on this page at the moment)
-        // not relevent at the moment
         if (params.id === undefined) {
-            resetSelectedThreadState();
             resetAttribution();
         }
 
         await Promise.all(promises);
 
-        const { setSelectedCompareModels } = appContext.getState();
-        const modelListString = new URL(request.url).searchParams.get('models');
-        const modelListStrArray = modelListString?.split(',');
+        const threadListString = new URL(request.url).searchParams.get('threads');
+        const threadListStrArray = threadListString?.split(',').map((m) => m.trim()) ?? [];
 
-        // Set the models from the url params by default
-        // the threads selected (if any) will override this.
-        if (modelListStrArray) {
-            const preselectedModels = modelListStrArray.map((modelId, idx) => {
-                const modelObj = models.find((model) => model.id === modelId);
-                // TODO: handle non existant passed models?
-                // Also, see comment below about maybe smarter model selection (compat)
+        const modelListString = new URL(request.url).searchParams.get('models');
+        const modelListStrArray = modelListString?.split(',').map((m) => m.trim()) ?? [];
+
+        const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
+            async ([threadId, modelIdParam], idx) => {
+                let modelId: Model['id'] | undefined = modelIdParam;
+
+                if (threadId) {
+                    const { messages } = await getThread(threadId);
+                    if (!modelIdParam) {
+                        const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
+                        modelId = lastResponse?.modelId;
+                    }
+                }
+
+                const modelObj = modelId ? models.find(modelById(modelId)) : models[0];
+
                 return {
                     threadViewId: String(idx),
-                    model: modelObj ?? models[0],
+                    model: modelObj,
+                    rootThreadId: threadId,
                 };
-            });
+            }
+        );
 
-            setSelectedCompareModels(preselectedModels);
-        } else {
-            // TODO: just defaulting to model @ idx = 0
-            // this could probably be smarter (the next compatibile model?)
-            const defaultModels = [
-                {
-                    threadViewId: '0',
-                    model: models[0],
-                },
-                {
-                    threadViewId: '1',
-                    model: models[0],
-                },
-            ];
-            setSelectedCompareModels(defaultModels);
-        }
+        const threadsAndModels = await Promise.all(threadsAndModelPromises);
+
+        setSelectedCompareModels(threadsAndModels);
 
         return null;
     };
