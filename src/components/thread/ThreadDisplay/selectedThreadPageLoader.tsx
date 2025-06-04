@@ -1,9 +1,10 @@
 import { defer, LoaderFunction } from 'react-router-dom';
 
+import { RequestInferenceOpts } from '@/api/Message';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { getThread } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
-import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 
@@ -13,8 +14,7 @@ export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
-        getSelectedThread,
-        selectedThreadRootId,
+        selectedThreadRootId, // not used
         getAttributionsForMessage,
         handleAttributionForChangingThread,
         setSelectedModel,
@@ -33,50 +33,51 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
         const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
-        const selectedThread = await getSelectedThread(params.id);
+        const threadRootId = params.id;
+        const selectedThread = await getThread(threadRootId);
+
         const url = new URL(request.url);
         const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
 
-        const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
-        const lastResponseId = selectedThreadMessages
-            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
-            .at(-1);
+        // const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
+        const { messages: selectedThreadMessages } = selectedThread;
 
-        if (lastResponseId != null) {
-            const lastThreadContent = selectedThreadMessagesById[lastResponseId] as
-                | SelectedThreadMessage
-                | undefined;
+        const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
 
-            if (lastThreadContent) {
-                const models = await modelsPromise;
+        if (lastResponse != null) {
+            const models = await modelsPromise;
 
-                if (
-                    lastThreadContent.model_id &&
-                    models.some((model) => model.id === lastThreadContent.model_id)
-                ) {
-                    setSelectedModel(
-                        models.find((model) => model.id === lastThreadContent.model_id) as Model
-                    );
-                } else {
-                    const visibleModels = models.filter(isModelVisible);
-                    setSelectedModel(visibleModels[0]);
-                }
-                if (lastThreadContent.opts) {
-                    updateInferenceOpts(lastThreadContent.opts);
-                }
+            if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
+                setSelectedModel(
+                    models.find((model) => model.id === lastResponse.modelId) as Model
+                );
+            } else {
+                const visibleModels = models.filter(isModelVisible);
+                setSelectedModel(visibleModels[0]);
+            }
+            if (lastResponse.opts) {
+                updateInferenceOpts(lastResponse.opts as RequestInferenceOpts); // readonly
             }
         }
 
         if (isCorpusLinkEnabled) {
             let attributionsPromise;
 
-            if (selectedMessageId != null) {
-                const parentId = selectedThreadMessagesById[selectedMessageId].parent;
-                const parentPrompt =
-                    parentId != null ? selectedThreadMessagesById[parentId].content : '';
+            const selectedMessage = selectedThreadMessages.find(
+                (message) => message.id === selectedMessageId
+            );
 
-                attributionsPromise = getAttributionsForMessage(parentPrompt, selectedMessageId);
-                selectMessage(selectedMessageId);
+            if (selectedMessage != null) {
+                const parentPrompt = selectedThreadMessages.find((message) =>
+                    message.children?.includes(selectedMessage.id)
+                );
+
+                attributionsPromise = getAttributionsForMessage(
+                    parentPrompt?.content || '',
+                    selectedMessage.id
+                );
+
+                selectMessage(selectedMessage.id);
             }
 
             return defer({
