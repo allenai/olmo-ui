@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppContext } from '@/AppContext';
@@ -9,6 +9,9 @@ import { selectMessagesToShow } from './selectMessagesToShow';
 import { ThreadDisplay } from './ThreadDisplay';
 
 export const ThreadDisplayContainer = () => {
+    const params = useParams();
+    const selectedThreadRootId = params.id || 'asdf';
+
     // useShallow is used here to prevent triggering re-render. However, it
     // doesn't save the job to traverse the whole message tree. If it
     // becomes a performance bottleneck, it's better to change back to
@@ -26,6 +29,7 @@ export const ThreadDisplayContainer = () => {
 
     return (
         <ThreadDisplay
+            threadId={selectedThreadRootId}
             childMessageIds={childMessageIds}
             shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
             streamingMessageId={streamingMessageId}

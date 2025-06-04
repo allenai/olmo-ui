@@ -10,6 +10,7 @@ import { MessageView } from './MessageView';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
 interface ThreadDisplayProps {
+    threadId: string;
     childMessageIds: string[];
     shouldShowAttributionHighlightDescription: boolean;
     streamingMessageId: string | null;
@@ -18,6 +19,7 @@ interface ThreadDisplayProps {
 }
 
 export const ThreadDisplay = ({
+    threadId,
     childMessageIds,
     shouldShowAttributionHighlightDescription,
     streamingMessageId,
@@ -185,6 +187,7 @@ export const ThreadDisplay = ({
                 )}
                 {childMessageIds.map((messageId) => (
                     <MessageView
+                        threadId={threadId}
                         messageId={messageId}
                         key={messageId}
                         isLastMessageInThread={lastMessageId === messageId}
