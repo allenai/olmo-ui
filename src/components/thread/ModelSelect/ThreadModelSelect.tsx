@@ -47,7 +47,7 @@ export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectPro
     });
 
     const handleModelChange = (e: SelectChangeEvent) => {
-        // TODO: are all models compatible
+        // TODO: are all models compatible https://github.com/allenai/playground-issues-repo/issues/411
         const selectedModel = models.find((model) => model.id === e.target.value);
         if (selectedModel) {
             setSelectedCompareModelAt(threadViewId, selectedModel);
