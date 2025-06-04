@@ -7,7 +7,7 @@ import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
-import { ModelSelect } from './ModelSelect';
+import { SingleThreadModelSelect } from './ThreadModelSelect';
 
 const getInitialState = () =>
     ({
@@ -53,7 +53,7 @@ describe('Model Select', () => {
                         // If this is failing after you changed the mocked models you'll need to update this!
                         selectedModel: { id: 'olmo-7b-chat' },
                     }}>
-                    <ModelSelect />
+                    <SingleThreadModelSelect />
                 </FakeAppContextProvider>
             </MemoryRouter>
         );
@@ -78,7 +78,7 @@ describe('Model Select', () => {
                     initialState={{
                         ...getInitialState(),
                     }}>
-                    <ModelSelect />
+                    <SingleThreadModelSelect />
                 </FakeAppContextProvider>
             </MemoryRouter>
         );
