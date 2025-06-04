@@ -79,7 +79,7 @@ const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) =
     const selectedModelId = useAppContext((state) => {
         return state.selectedCompareModels?.find((model) => {
             return model.threadViewId === threadViewId;
-        })?.model.id;
+        })?.model?.id;
     });
 
     const handleModelChange = (e: SelectChangeEvent) => {
@@ -105,21 +105,19 @@ interface SingleThreadProps {
     threadRootId: string;
 }
 
-const SingleThread = ({ threadRootId = 'msg_X2R1E9R0L2' }: SingleThreadProps) => {
+const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     const shouldShowAttributionHighlightDescription = false;
     const streamingMessageId = null;
     const isUpdatingMessageContent = false;
     const selectedMessageId = undefined;
 
     let childMessageIds: string[] = [];
-    const { data } = useThread(threadRootId);
+    const { data, error: _ } = useThread(threadRootId);
 
-    if (data) {
-        const { messages } = data;
-        childMessageIds = messages.map((message) => {
-            return message.id;
-        });
-    }
+    const { messages } = data;
+    childMessageIds = messages.map((message) => {
+        return message.id;
+    });
 
     return (
         <ThreadDisplay
