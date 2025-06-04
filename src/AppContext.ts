@@ -6,6 +6,7 @@ import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 
 import { AttributionSlice, createAttributionSlice } from './slices/attribution/AttributionSlice';
+import { CompareModelSlice, createCompareModelSlice } from './slices/CompareModelSlice';
 import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
@@ -29,6 +30,7 @@ export type AppContextState = LabelSlice &
     SnackMessageSlice &
     UserSlice &
     ModelSlice &
+    CompareModelSlice &
     SchemaSlice &
     DrawerSlice &
     ThreadUpdateSlice &
@@ -59,6 +61,7 @@ export const createAppContext = (
                         ...createLabelSlice(...store),
                         ...createUserSlice(...store),
                         ...createModelSlice(...store),
+                        ...createCompareModelSlice(...store),
                         ...createSchemaSlice(...store),
                         ...createDrawerSlice(...store),
                         ...createSearchSlice(...store),

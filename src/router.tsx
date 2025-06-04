@@ -230,14 +230,13 @@ export const routes: RouteObject[] = [
                     {
                         path: links.comparison,
                         element: <ComparisonPage />,
-                        loader: comparisonPageLoader(),
+                        loader: comparisonPageLoader(queryClient),
                         handle: { pageControls: <ThreadPageControls /> },
 
                         children: [
                             {
                                 path: links.comparison + '/',
                                 element: <CompareThreadDisplay />,
-                                loader: selectedThreadPageLoader,
                                 handle: { pageControls: <ThreadPageControls /> },
                             },
                         ],

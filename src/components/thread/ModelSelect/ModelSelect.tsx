@@ -11,39 +11,35 @@ import {
     menuItemClasses,
     Select,
     selectClasses,
+    SelectProps,
     Stack,
     styled,
-    SxProps,
-    Theme,
     Typography,
 } from '@mui/material';
 import { useId } from 'react';
 
-import { useAppContext } from '@/AppContext';
+import type { Model } from '@/api/playgroundApi/additionalTypes';
 
-import { useHandleChangeModel } from './useHandleChangeModel';
-import { isModelVisible, useModels } from './useModels';
-
-type ModelSelectionDisplayProps = {
-    sx?: SxProps<Theme>;
-};
-
-export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
-    const selectId = useId();
+export interface ModelSelectProps {
+    models: Model[];
+    selectedModelId?: string;
+    onModelChange: SelectProps<string>['onChange'];
+    id?: string;
+}
+export const ModelSelect = ({
+    id,
+    models,
+    selectedModelId: maybeSelectedModel,
+    onModelChange: handleModelChange,
+}: ModelSelectProps): JSX.Element => {
+    const fallbackId = useId();
+    const selectId = id ?? fallbackId;
     const labelId = selectId + '-label';
-    const selectedModelIdFromState = useAppContext((state) => state.selectedModel?.id);
 
-    const models = useModels({
-        select: (data) =>
-            data.filter((model) => isModelVisible(model) || model.id === selectedModelIdFromState),
-    });
-
-    const selectedModelId = selectedModelIdFromState ?? models[0]?.id;
-
-    const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeModel();
+    const selectedModelId = maybeSelectedModel ?? models[0]?.id;
 
     return (
-        <Box sx={sx} paddingInline={2} paddingBlockEnd={2}>
+        <Box paddingInline={2} paddingBlockEnd={2}>
             <FormControl
                 variant="standard"
                 sx={{
@@ -95,21 +91,22 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
                         return models.find((model) => model.id === value)?.name;
                     }}>
                     {models.map((model) => {
+                        const MenuItemIcon =
+                            model.prompt_type === 'multi_modal'
+                                ? ImageOutlinedIcon
+                                : ChatOutlinedIcon;
+
                         return (
                             <CustomMenuItem key={model.id} value={model.id}>
                                 <Stack direction="row">
                                     <Box
                                         sx={{
                                             padding: 1,
-                                            '>svg': {
+                                            '> svg': {
                                                 verticalAlign: 'middle',
                                             },
                                         }}>
-                                        {model.prompt_type === 'multi_modal' ? (
-                                            <ImageOutlinedIcon />
-                                        ) : (
-                                            <ChatOutlinedIcon />
-                                        )}
+                                        <MenuItemIcon />
                                     </Box>
                                     <Stack direction="column">
                                         <Typography>{model.name}</Typography>
@@ -124,7 +121,6 @@ export const ModelSelect = ({ sx }: ModelSelectionDisplayProps) => {
                     })}
                 </Select>
             </FormControl>
-            <ModelSwitchWarningModal />
         </Box>
     );
 };
