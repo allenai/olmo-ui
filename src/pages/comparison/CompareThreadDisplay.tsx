@@ -50,23 +50,22 @@ interface SingleThreadProps {
     threadRootId?: string;
 }
 
-const SingleThread = ({
-    threadViewIdx,
-    models,
-    threadRootId: _threadIdNotUsedYet,
-}: SingleThreadProps) => {
+const SingleThread = ({ threadViewIdx, models, threadRootId }: SingleThreadProps) => {
     // fetch from query/cache via threadRootId
     const childMessageIds: string[] = [];
 
     return (
         <div>
             <ThreadModelSelect threadViewId={threadViewIdx} models={models} />
-            <ThreadDisplay
-                childMessageIds={childMessageIds}
-                shouldShowAttributionHighlightDescription={false}
-                streamingMessageId={null}
-                isUpdatingMessageContent={false}
-            />
+            {threadRootId ? ( // TODO: proper placeholder
+                <ThreadDisplay
+                    threadId={threadRootId}
+                    childMessageIds={childMessageIds}
+                    shouldShowAttributionHighlightDescription={false}
+                    streamingMessageId={null}
+                    isUpdatingMessageContent={false}
+                />
+            ) : null}
         </div>
     );
 };
