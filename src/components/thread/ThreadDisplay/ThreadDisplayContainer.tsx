@@ -9,7 +9,6 @@ import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
 export const ThreadDisplayContainer = () => {
-    // reworking how the "global" state for threads works
     const { id: selectedThreadRootId = '' } = useParams();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
@@ -23,13 +22,14 @@ export const ThreadDisplayContainer = () => {
     const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
 
     const { data, error: _error } = useThread(selectedThreadRootId);
+    // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
     const { messages } = data;
     const childIds = messages.map((message) => {
         return message.id;
     });
 
     return (
-        <ThreadProvider threadId={selectedThreadRootId}>
+        <ThreadProvider threadId={selectedThreadRootId} threadViewId={0}>
             <ThreadDisplay
                 childMessageIds={childIds}
                 shouldShowAttributionHighlightDescription={

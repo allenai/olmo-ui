@@ -77,7 +77,7 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                     selectedMessage.id
                 );
 
-                selectMessage(selectedMessage.id);
+                selectMessage(threadRootId, selectedMessage.id);
             }
 
             return defer({

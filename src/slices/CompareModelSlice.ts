@@ -1,9 +1,12 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { Thread } from '@/api/playgroundApi/thread';
 import { OlmoStateCreator } from '@/AppContext';
 
+export type ThreadViewId = string;
+
 export interface CompareModelState {
-    threadViewId: string;
-    rootThreadId?: string; // Thread['id']
+    threadViewId: ThreadViewId;
+    rootThreadId?: Thread['id'];
     model?: Model;
 }
 

@@ -2,12 +2,14 @@ import { ImageList, ImageListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Label } from '@/api/Label';
-import { type FlatMessage, getMessageFromCache } from '@/api/playgroundApi/message';
-import { type Thread } from '@/api/playgroundApi/thread';
+import {
+    type FlatMessage,
+    selectMessageById,
+    useCurrentThreadMessage,
+} from '@/api/playgroundApi/message';
 import { Role } from '@/api/Role';
-import { useThreadId } from '@/pages/comparison/ThreadContext';
 
-import { useSpanHighlightingQuery } from '../attribution/highlighting/useSpanHighlighting';
+import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
@@ -16,12 +18,11 @@ import { hasPoints } from '../points/isPointResponse';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 
 export interface MessageProps {
-    threadId: Thread['id'];
     messageId: FlatMessage['id'];
 }
 
-export const StandardMessage = ({ threadId, messageId }: MessageProps): ReactNode => {
-    const contentWithMarks = useSpanHighlightingQuery(threadId, messageId);
+export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
+    const contentWithMarks = useSpanHighlighting(messageId);
 
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
@@ -35,10 +36,9 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const { threadId } = useThreadId();
-    const message = getMessageFromCache(threadId, messageId);
-
-    const { role, content, fileUrls, labels } = message;
+    const { role, content, fileUrls, labels } = useCurrentThreadMessage(
+        selectMessageById(messageId)
+    );
 
     if (role === Role.System) {
         return null;
@@ -52,7 +52,7 @@ export const MessageView = ({
 
     return (
         <ChatMessage role={role as Role} messageId={messageId}>
-            <MessageComponent threadId={threadId} messageId={messageId} />
+            <MessageComponent messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
                     <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>

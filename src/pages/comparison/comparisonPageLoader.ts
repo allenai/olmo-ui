@@ -9,7 +9,7 @@ import { getModelsQueryOptions, modelById } from '@/components/thread/ModelSelec
 import { arrayZip } from '@/utils/arrayZip';
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
-    return async ({ params, request }) => {
+    return async ({ request }) => {
         const isComparisonPageEnabled = process.env.IS_COMPARISON_PAGE_ENABLED === 'true';
         const { setSelectedCompareModels } = appContext.getState();
 
@@ -20,7 +20,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         }
 
         // from playgroundLoader.ts
-        const { resetAttribution, getSchema, schema, abortPrompt } = appContext.getState();
+        const { getSchema, schema, abortPrompt } = appContext.getState();
 
         const promises = [];
 
@@ -33,10 +33,10 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             promises.push(getSchema());
         }
 
-        // (always true on this page at the moment)
-        if (params.id === undefined) {
-            resetAttribution();
-        }
+        // this should probably be reset sometimes, but not by params.id
+        // if (params.id === undefined) {
+        //     resetAttribution();
+        // }
 
         await Promise.all(promises);
 

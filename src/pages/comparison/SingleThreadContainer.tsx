@@ -48,6 +48,7 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     const selectedMessageId = undefined;
 
     const { data, error: _ } = useThread(threadRootId);
+    // TODO, handle errors: https://github.com/allenai/playground-issues-repo/issues/412
 
     const { messages } = data;
     const childMessageIds = messages.map((message) => {

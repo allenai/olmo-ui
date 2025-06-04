@@ -1,5 +1,7 @@
+import { useThreadId } from '@/pages/comparison/ThreadContext';
+
 import { SchemaFlatMessage as FlatMessage } from './playgroundApiSchema';
-import { getThread, getThreadFromCache, useThread } from './thread';
+import { getThread, getThreadFromCache, Thread, useThread } from './thread';
 
 export const selectMessageById = (messageId: string) => (message: FlatMessage) =>
     message.id === messageId;
@@ -29,10 +31,27 @@ export const getMessage = async (threadId: string, messageId: string): Promise<F
     return message;
 };
 
+interface UseMessageProps {
+    threadId: Thread['id'];
+    find: (message: FlatMessage) => boolean;
+}
+
 // hook variant
-export const useMessage = (threadId: string, messageId: string) => {
-    const { data } = useThread(threadId);
-    return data.messages.find(selectMessageById(messageId));
+export const useMessage = ({ threadId, find }: UseMessageProps): FlatMessage => {
+    const { data, error: _ } = useThread(threadId);
+    // TODO: Handle errors: https://github.com/allenai/playground-issues-repo/issues/412
+    const message = data.messages.find(find);
+
+    if (!message) {
+        // this is bad news bears, as this should be called with known
+        throw new Error(`useMessage(): No message by find found in thread with ID: '${threadId}'`);
+    }
+    return message;
+};
+
+export const useCurrentThreadMessage = (find: UseMessageProps['find']): FlatMessage => {
+    const { threadId } = useThreadId();
+    return useMessage({ threadId, find });
 };
 
 export type { FlatMessage };
