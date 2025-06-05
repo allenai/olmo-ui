@@ -6,7 +6,7 @@ import { ReactNode, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { Message } from '@/api/Message';
+import { FlatMessage } from '@/api/playgroundApi/message';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
@@ -15,7 +15,7 @@ import { useFeatureToggles } from '@/FeatureToggleContext';
 import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 
 interface SelectMessageButtonProps {
-    messageId: Message['id'];
+    messageId: FlatMessage['id'];
     isLastButton?: boolean;
 }
 

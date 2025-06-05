@@ -10,7 +10,6 @@ import { MessageView } from './MessageView';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
 interface ThreadDisplayProps {
-    threadId: string;
     childMessageIds: string[];
     shouldShowAttributionHighlightDescription: boolean;
     streamingMessageId: string | null;
@@ -18,14 +17,16 @@ interface ThreadDisplayProps {
     selectedMessageId?: string | null;
 }
 
-export const ThreadDisplay = ({
-    threadId,
-    childMessageIds,
+// same as ThreadDisplay, but children instead of props
+type ThreadDisplayViewProps = React.PropsWithChildren<Omit<ThreadDisplayProps, 'childMessageIds'>>;
+
+export const ThreadDisplayView = ({
     shouldShowAttributionHighlightDescription,
     streamingMessageId,
     isUpdatingMessageContent,
     selectedMessageId,
-}: ThreadDisplayProps): ReactNode => {
+    children,
+}: ThreadDisplayViewProps): ReactNode => {
     const previousStreamingMessageId = useRef<string | null>(null);
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -141,9 +142,6 @@ export const ThreadDisplay = ({
         }
     };
 
-    const lastMessageId =
-        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
-
     return (
         <Box
             height={1}
@@ -176,23 +174,7 @@ export const ThreadDisplay = ({
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
                 </Box>
-                {childMessageIds.length > 0 && (
-                    <Divider
-                        sx={{
-                            gridColumn: '2 / -1',
-                            borderColor: getLegalNoticeTextColor(0.25),
-                            marginY: '1em',
-                        }}
-                    />
-                )}
-                {childMessageIds.map((messageId) => (
-                    <MessageView
-                        threadId={threadId}
-                        messageId={messageId}
-                        key={messageId}
-                        isLastMessageInThread={lastMessageId === messageId}
-                    />
-                ))}
+                {children}
                 <Box
                     ref={scrollAnchorRef}
                     data-testid="bottom-scroll-anchor"
@@ -218,5 +200,41 @@ export const ThreadDisplay = ({
             />
             {shouldShowAttributionHighlightDescription && <AttributionHighlightDescription />}
         </Box>
+    );
+};
+
+export const ThreadDisplay = ({
+    childMessageIds,
+    shouldShowAttributionHighlightDescription,
+    streamingMessageId,
+    isUpdatingMessageContent,
+    selectedMessageId,
+}: ThreadDisplayProps) => {
+    const lastMessageId =
+        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
+
+    return (
+        <ThreadDisplayView
+            shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
+            streamingMessageId={streamingMessageId}
+            isUpdatingMessageContent={isUpdatingMessageContent}
+            selectedMessageId={selectedMessageId}>
+            {childMessageIds.length > 0 && (
+                <Divider
+                    sx={{
+                        gridColumn: '2 / -1',
+                        borderColor: getLegalNoticeTextColor(0.25),
+                        marginY: '1em',
+                    }}
+                />
+            )}
+            {childMessageIds.map((messageId) => (
+                <MessageView
+                    messageId={messageId}
+                    key={messageId}
+                    isLastMessageInThread={lastMessageId === messageId}
+                />
+            ))}
+        </ThreadDisplayView>
     );
 };
