@@ -5,6 +5,7 @@ import { Label } from '@/api/Label';
 import { type FlatMessage, getMessageFromCache } from '@/api/playgroundApi/message';
 import { type Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { useThreadId } from '@/pages/comparison/ThreadContext';
 
 import { useSpanHighlightingQuery } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
@@ -25,16 +26,16 @@ export const StandardMessage = ({ threadId, messageId }: MessageProps): ReactNod
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
-interface MessageViewProps extends MessageProps {
-    threadId: Thread['id'];
+interface MessageViewProps {
+    messageId: FlatMessage['id'];
     isLastMessageInThread?: boolean;
 }
 
 export const MessageView = ({
-    threadId,
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
+    const { threadId } = useThreadId();
     const message = getMessageFromCache(threadId, messageId);
 
     const { role, content, fileUrls, labels } = message;
@@ -50,7 +51,7 @@ export const MessageView = ({
     const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
 
     return (
-        <ChatMessage role={role as Role} threadId={threadId} messageId={messageId}>
+        <ChatMessage role={role as Role} messageId={messageId}>
             <MessageComponent threadId={threadId} messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (

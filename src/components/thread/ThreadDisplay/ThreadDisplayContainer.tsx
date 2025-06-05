@@ -2,6 +2,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
+import { ThreadProvider } from '@/pages/comparison/ThreadContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
@@ -21,24 +22,23 @@ export const ThreadDisplayContainer = () => {
     const [searchParams, _] = useSearchParams();
     const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
 
-    let childIds: string[] = [];
-
-    const { data } = useThread(selectedThreadRootId);
-    if (data) {
-        const { messages } = data;
-        childIds = messages.map((message) => {
-            return message.id;
-        });
-    }
+    const { data, error: _error } = useThread(selectedThreadRootId);
+    const { messages } = data;
+    const childIds = messages.map((message) => {
+        return message.id;
+    });
 
     return (
-        <ThreadDisplay
-            threadId={selectedThreadRootId}
-            childMessageIds={childIds}
-            shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
-            streamingMessageId={streamingMessageId}
-            isUpdatingMessageContent={isUpdatingMessageContent}
-            selectedMessageId={selectedMessageId}
-        />
+        <ThreadProvider threadId={selectedThreadRootId}>
+            <ThreadDisplay
+                childMessageIds={childIds}
+                shouldShowAttributionHighlightDescription={
+                    shouldShowAttributionHighlightDescription
+                }
+                streamingMessageId={streamingMessageId}
+                isUpdatingMessageContent={isUpdatingMessageContent}
+                selectedMessageId={selectedMessageId}
+            />
+        </ThreadProvider>
     );
 };
