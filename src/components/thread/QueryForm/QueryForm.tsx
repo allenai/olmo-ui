@@ -3,7 +3,6 @@ import { SubmitHandler } from 'react-hook-form-mui';
 import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
@@ -20,7 +19,6 @@ interface QueryFormValues {
 
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
-    const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
 
@@ -61,22 +59,13 @@ export const QueryForm = (): JSX.Element => {
     const lastMessageId =
         viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
-    // this needs to be hoisted, and passed down, so that we can handle multiple threads
+    const handleSingleThreadSubmission = useAppContext(
+        (state) => state.handleSingleThreadSubmission
+    );
+
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
         const request: StreamMessageRequest = data;
-
-        if (lastMessageId != null) {
-            request.parent = lastMessageId;
-        }
-
-        // try/catch in controller
-        await streamPrompt(request);
-        if (selectedModel !== undefined) {
-            analyticsClient.trackQueryFormSubmission(
-                selectedModel.id,
-                location.pathname === links.playground
-            );
-        }
+        await handleSingleThreadSubmission(request, lastMessageId);
     };
 
     const placeholderText = useAppContext((state) => {

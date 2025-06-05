@@ -69,7 +69,12 @@ export interface ThreadUpdateSlice {
     streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
     abortPrompt: () => void;
+    handleSingleThreadSubmission: (
+        request: StreamMessageRequest,
+        lastMessageId?: string
+    ) => Promise<void>;
 }
+
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
     streamingMessageId: null,
@@ -302,5 +307,22 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
     abortPrompt: () => {
         get().abortController?.abort();
+    },
+
+    handleSingleThreadSubmission: async (request: StreamMessageRequest, lastMessageId?: string) => {
+        const { streamPrompt, selectedModel } = get();
+        const location = window.location;
+
+        if (lastMessageId != null) {
+            request.parent = lastMessageId;
+        }
+
+        await streamPrompt(request);
+        if (selectedModel !== undefined) {
+            analyticsClient.trackQueryFormSubmission(
+                selectedModel.id,
+                location.pathname === links.playground
+            );
+        }
     },
 });
