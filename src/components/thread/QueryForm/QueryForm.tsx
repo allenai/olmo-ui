@@ -18,6 +18,7 @@ import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMe
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { useImageProcessing } from '@/utils/imageUtils';
 
 import { FileUploadButton } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
@@ -218,6 +219,9 @@ export const QueryForm = (): JSX.Element => {
     });
 
     const files = formContext.watch('files');
+
+    // Process and resize images when files change
+    useImageProcessing(files, formContext);
 
     const handleRemoveFile = (fileToRemove: File) => {
         if (files == null) {
