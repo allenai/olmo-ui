@@ -11,6 +11,7 @@ import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { QueryFormController } from './QueryFormController';
+import { CompareModelState } from '@/slices/CompareModelSlice';
 
 interface QueryFormValues {
     content: string;
@@ -22,7 +23,7 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
-    const selectedModel = useAppContext((state) => state.selectedModel);
+    const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
 
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
@@ -71,16 +72,23 @@ export const QueryForm = (): JSX.Element => {
 
         // try/catch in controller
         await streamPrompt(request);
-        if (selectedModel !== undefined) {
+        
+        // Track analytics for all selected models
+        selectedCompareModels?.forEach(({ model }) => {
             analyticsClient.trackQueryFormSubmission(
-                selectedModel.id,
+                model.id,
                 location.pathname === links.playground
             );
-        }
+        });
+    };
+
+    function createModelName(selectedCompareModels: CompareModelState[] | undefined) {
+        const modelNames = selectedCompareModels?.map(({ model }) => model.family_name) ?? [];
+        return  modelNames.length > 0 ? modelNames.join(' vs ') : 'the model';
     };
 
     const placeholderText = useAppContext((state) => {
-        const selectedModelFamilyName = state.selectedModel?.family_name ?? 'the model';
+        const selectedModelFamilyName = createModelName(state.selectedCompareModels);
         // since selectedThreadRootId's empty state is an empty string we just check for truthiness
         const isReply = state.selectedThreadRootId;
 
@@ -90,12 +98,13 @@ export const QueryForm = (): JSX.Element => {
     });
 
     const autoFocus = location.pathname === links.playground;
+    const areFilesAllowed = selectedCompareModels?.every(({ model }) => model.accepts_files) ?? false;
 
     return (
         <QueryFormController
             handleSubmit={handleSubmit}
             placeholderText={placeholderText}
-            areFilesAllowed={Boolean(selectedModel?.accepts_files)}
+            areFilesAllowed={areFilesAllowed}
             autofocus={autoFocus}
             canEditThread={canEditThread}
             onAbort={onAbort}
