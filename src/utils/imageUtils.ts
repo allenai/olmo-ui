@@ -4,7 +4,6 @@ import type { UseFormReturn } from 'react-hook-form-mui';
 // Image resize configuration (should this be an env var?)
 export const MAX_IMAGE_DIMENSION = 1500;
 
-// Debugging function to get image dimensions
 export const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -55,7 +54,7 @@ export const useImageProcessing = (
                                 );
 
                                 console.log(
-                                    `[IMAGE_SIZE_DEBUG] Resized file size: ${resizedSizeInKB} KB (${resizedSizeInMB} MB)`
+                                    `Resized file size: ${resizedSizeInKB} KB (${resizedSizeInMB} MB)`
                                 );
 
                                 processedFiles.push(resizedFile);
