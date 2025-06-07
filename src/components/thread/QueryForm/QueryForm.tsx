@@ -8,6 +8,7 @@ import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
+import { router } from '@/router';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { QueryFormController } from './QueryFormController';
@@ -70,16 +71,40 @@ export const QueryForm = (): JSX.Element => {
             request.parent = lastMessageId;
         }
 
-        // try/catch in controller
-        await streamPrompt(request);
-        
-        // Track analytics for all selected models
-        selectedCompareModels?.forEach(({ model }) => {
-            analyticsClient.trackQueryFormSubmission(
-                model.id,
-                location.pathname === links.playground
-            );
-        });
+        console.log('[DEBUG] selectedCompareModels:', selectedCompareModels);
+
+        // Check if multiple models are selected
+        if (selectedCompareModels && selectedCompareModels.length > 1) {
+            console.log('[DEBUG] Multiple models selected:', selectedCompareModels.map(m => m.model.name));
+            console.log('[DEBUG] TODO: Redirect to comparison view');
+            return;
+        }
+
+        // Single model - use existing logic
+        console.log('[DEBUG] Single model selected, using existing flow');
+
+        try {
+            // try/catch in controller
+            const result = await streamPrompt(request);
+            
+            // Handle navigation based on result
+            if (result.threadId) {
+                console.log('[DEBUG] Navigating to thread:', result.threadId);
+                await router.navigate(links.thread(result.threadId));
+            }
+            
+            // Track analytics for all selected models
+            selectedCompareModels?.forEach(({ model }) => {
+                analyticsClient.trackQueryFormSubmission(
+                    model.id,
+                    location.pathname === links.playground
+                );
+            });
+        } catch (error) {
+            console.error('[DEBUG] Error in streamPrompt:', error);
+            // Error handling is typically done inside streamPrompt itself,
+            // but we catch here to prevent unhandled promise rejections
+        }
     };
 
     function createModelName(selectedCompareModels: CompareModelState[] | undefined) {

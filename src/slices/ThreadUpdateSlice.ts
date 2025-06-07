@@ -59,6 +59,10 @@ export interface StreamMessageRequest {
     files?: FileList;
 }
 
+export interface StreamPromptResult {
+    threadId?: string;
+}
+
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string | null;
@@ -66,7 +70,7 @@ export interface ThreadUpdateSlice {
     updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
-    streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
+    streamPrompt: (newMessage: StreamMessageRequest) => Promise<StreamPromptResult>;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
     abortPrompt: () => void;
 }
@@ -125,7 +129,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
     },
 
-    streamPrompt: async (newMessage: StreamMessageRequest) => {
+    streamPrompt: async (newMessage: StreamMessageRequest): Promise<StreamPromptResult> => {
         const {
             inferenceOpts,
             selectedModel,
@@ -141,6 +145,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         const { isCorpusLinkEnabled } = getFeatureToggles();
         const abortController = new AbortController();
         const isCreatingNewThread = newMessage.parent == null;
+        let createdThreadId: string | undefined;
 
         set(
             (state) => {
@@ -158,7 +163,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 id: `missing-model${new Date().getTime()}`,
                 message: 'You must select a model before submitting a prompt.',
             });
-            return;
+            return {};
         }
 
         // TEMP HACK: Override default inference options for specific models.
@@ -197,7 +202,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     const parsedMessage = parseMessage(message);
                     if (isCreatingNewThread) {
                         setSelectedThread(parsedMessage);
-                        await router.navigate(links.thread(parsedMessage.id));
+                        createdThreadId = parsedMessage.id;
                     } else {
                         addChildToSelectedThread(parsedMessage);
                     }
@@ -299,6 +304,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 'threadUpdate/finishCreateNewThread'
             );
         }
+
+        return { threadId: createdThreadId };
     },
 
     abortPrompt: () => {
