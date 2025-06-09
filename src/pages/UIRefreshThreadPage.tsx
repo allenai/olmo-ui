@@ -96,18 +96,13 @@ export const UIRefreshThreadPage = () => {
     );
 };
 
-const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-05-09T07:00:00Z';
-const MODEL_DEPRECATION_DATE = new Date('2025-05-09T07:00:00Z');
+const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-06-10T22:00:00Z';
+const MODEL_DEPRECATION_DATE = new Date('2025-06-10T22:00:00Z');
 
 const createModelDeprecationNotice = () => {
-    const modelsBeingDeprecated = [
-        'OLMo 2 13B Instruct',
-        'Llama Tülu 3 70B',
-        'Llama Tülu 3 8B',
-        'OLMoE 1B 7B 0125',
-    ];
+    const modelsBeingDeprecated = ['Llama Tülu 3 405B'];
 
-    return `We are reworking our model hosting system and will be removing the following models on ${MODEL_DEPRECATION_DATE.toLocaleDateString()}: ${modelsBeingDeprecated.join(', ')}`;
+    return `We are reworking our model hosting system and will be removing the following model(s) on ${MODEL_DEPRECATION_DATE.toLocaleDateString()}: ${modelsBeingDeprecated.join(', ')}`;
 };
 
 export const playgroundLoader =
