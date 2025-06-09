@@ -13,12 +13,15 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
+import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { useAudioRecording } from '@/utils/useAudioRecording';
 
+import { AudioInputButton } from './AudioInputButton';
 import { FileUploadButton } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { PromptInput } from './PromptInput';
@@ -89,6 +92,8 @@ export const QueryForm = (): JSX.Element => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
+
+    const { startRecording, isRecording, stopRecording } = useAudioRecording({ log: true });
 
     const { executeRecaptcha } = useReCaptcha();
 
@@ -236,6 +241,24 @@ export const QueryForm = (): JSX.Element => {
         formContext.setValue('files', dataTransfer.files);
     };
 
+    const handleAudioClick = async () => {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            await startRecording({
+                pollLength: 1000,
+                onData: async (data) => {
+                    console.log('chunk: ', data);
+                    const response = await queryClient.fetchQuery({
+                        queryKey: ['transcribe'],
+                        queryFn: () => handleTranscribe(data),
+                    });
+                    console.log(response);
+                },
+            });
+        }
+    };
+
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -262,7 +285,13 @@ export const QueryForm = (): JSX.Element => {
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
                                 startAdornment={
-                                    <FileUploadButton {...formContext.register('files')} />
+                                    <>
+                                        <AudioInputButton
+                                            isRecording={isRecording}
+                                            onClick={handleAudioClick}
+                                        />
+                                        <FileUploadButton {...formContext.register('files')} />
+                                    </>
                                 }
                                 endAdornment={
                                     <SubmitPauseAdornment
@@ -271,6 +300,7 @@ export const QueryForm = (): JSX.Element => {
                                         isSubmitDisabled={
                                             isSelectedThreadLoading ||
                                             isLimitReached ||
+                                            isRecording ||
                                             !canEditThread
                                         }
                                     />
@@ -293,4 +323,11 @@ export const QueryForm = (): JSX.Element => {
             </FormContainer>
         </Box>
     );
+};
+
+const handleTranscribe = (_data: Blob) => {
+    // fetch
+    return {
+        text: 'a',
+    };
 };
