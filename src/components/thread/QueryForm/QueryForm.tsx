@@ -25,6 +25,7 @@ export const QueryForm = (): JSX.Element => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
+    const selectedModel = useAppContext((state) => state.selectedModel);
 
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
@@ -75,16 +76,29 @@ export const QueryForm = (): JSX.Element => {
         
         console.log(`[DEBUG ${timestamp()}] selectedCompareModels:`, selectedCompareModels);
         console.log(`[DEBUG ${timestamp()}] selectedCompareModels length:`, selectedCompareModels?.length);
+        console.log(`[DEBUG ${timestamp()}] selectedModel:`, selectedModel);
         console.log(`[DEBUG ${timestamp()}] location.pathname:`, location.pathname);
 
         // Determine which models to stream
-        const modelsToStream = selectedCompareModels && selectedCompareModels.length > 1 
-            ? selectedCompareModels 
-            : selectedCompareModels?.slice(0, 1) || [];
+        // but fall back to creating a single-item array from selectedModel if needed
+        let modelsToStream: CompareModelState[] = [];
+        
+        if (selectedCompareModels && selectedCompareModels.length > 0) {
+            // Use the compare models array (handles both single and multi-model cases)
+            modelsToStream = selectedCompareModels.length > 1 
+                ? selectedCompareModels 
+                : selectedCompareModels;
+        } else if (selectedModel) {
+            // Fall back: create a compare model structure from the single selected model
+            modelsToStream = [{
+                threadViewId: '0',
+                model: selectedModel
+            }];
+        }
 
         const isMultiModel = modelsToStream.length > 1;
         console.log(`[DEBUG ${timestamp()}] ${isMultiModel ? 'Multiple' : 'Single'} model${isMultiModel ? 's' : ''} selected:`, 
-                   modelsToStream.map(m => m.model.name));
+                   modelsToStream.map(m => m.model?.name || 'unknown'));
 
         try {
             // Stream to all selected models
@@ -92,6 +106,13 @@ export const QueryForm = (): JSX.Element => {
             
             for (let index = 0; index < modelsToStream.length; index++) {
                 const { model } = modelsToStream[index];
+                
+                if (!model) {
+                    console.error(`[DEBUG ${timestamp()}] No model found for index ${index}`);
+                    results.push({ threadId: undefined });
+                    continue;
+                }
+                
                 console.log(`[DEBUG ${timestamp()}] Starting stream for model ${index + 1}:`, model.name);
                 
                 try {
@@ -145,8 +166,13 @@ export const QueryForm = (): JSX.Element => {
     };
 
     function createModelName(selectedCompareModels: CompareModelState[] | undefined) {
-        const modelNames = selectedCompareModels?.map(({ model }) => model.family_name) ?? [];
-        return  modelNames.length > 0 ? modelNames.join(' vs ') : 'the model';
+        if (selectedCompareModels && selectedCompareModels.length > 0) {
+            const modelNames = selectedCompareModels.map(({ model }) => model?.family_name || 'unknown');
+            return modelNames.length > 0 ? modelNames.join(' vs ') : 'the model';
+        } else if (selectedModel) {
+            return selectedModel.family_name || 'the model';
+        }
+        return 'the model';
     };
 
     const placeholderText = useAppContext((state) => {
@@ -160,7 +186,11 @@ export const QueryForm = (): JSX.Element => {
     });
 
     const autoFocus = location.pathname === links.playground;
-    const areFilesAllowed = selectedCompareModels?.every(({ model }) => model.accepts_files) ?? false;
+    
+    // Determine file support - check compare models first, then fall back to single model
+    const areFilesAllowed = selectedCompareModels && selectedCompareModels.length > 0
+        ? selectedCompareModels.every(({ model }) => model?.accepts_files ?? false)
+        : Boolean(selectedModel?.accepts_files);
 
     return (
         <QueryFormController
