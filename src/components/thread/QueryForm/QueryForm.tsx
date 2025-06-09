@@ -9,10 +9,10 @@ import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMe
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { router } from '@/router';
+import { CompareModelState } from '@/slices/CompareModelSlice';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { QueryFormController } from './QueryFormController';
-import { CompareModelState } from '@/slices/CompareModelSlice';
 
 interface QueryFormValues {
     content: string;
@@ -72,108 +72,87 @@ export const QueryForm = (): JSX.Element => {
             request.parent = lastMessageId;
         }
 
-        const timestamp = () => new Date().toISOString();
-        
-        console.log(`[DEBUG ${timestamp()}] selectedCompareModels:`, selectedCompareModels);
-        console.log(`[DEBUG ${timestamp()}] selectedCompareModels length:`, selectedCompareModels?.length);
-        console.log(`[DEBUG ${timestamp()}] selectedModel:`, selectedModel);
-        console.log(`[DEBUG ${timestamp()}] location.pathname:`, location.pathname);
-
         // Determine which models to stream
         // but fall back to creating a single-item array from selectedModel if needed
         let modelsToStream: CompareModelState[] = [];
-        
+
         if (selectedCompareModels && selectedCompareModels.length > 0) {
             // Use the compare models array (handles both single and multi-model cases)
-            modelsToStream = selectedCompareModels.length > 1 
-                ? selectedCompareModels 
-                : selectedCompareModels;
+            modelsToStream =
+                selectedCompareModels.length > 1 ? selectedCompareModels : selectedCompareModels;
         } else if (selectedModel) {
             // Fall back: create a compare model structure from the single selected model
-            modelsToStream = [{
-                threadViewId: '0',
-                model: selectedModel
-            }];
+            modelsToStream = [
+                {
+                    threadViewId: '0',
+                    model: selectedModel,
+                },
+            ];
         }
 
         const isMultiModel = modelsToStream.length > 1;
-        console.log(`[DEBUG ${timestamp()}] ${isMultiModel ? 'Multiple' : 'Single'} model${isMultiModel ? 's' : ''} selected:`, 
-                   modelsToStream.map(m => m.model?.name || 'unknown'));
 
         try {
             // Stream to all selected models
             const results = [];
-            
+
             for (let index = 0; index < modelsToStream.length; index++) {
                 const { model } = modelsToStream[index];
-                
+
                 if (!model) {
-                    console.error(`[DEBUG ${timestamp()}] No model found for index ${index}`);
                     results.push({ threadId: undefined });
                     continue;
                 }
-                
-                console.log(`[DEBUG ${timestamp()}] Starting stream for model ${index + 1}:`, model.name);
-                
+
                 try {
                     // Track analytics for this model
                     analyticsClient.trackQueryFormSubmission(
                         model.id,
                         location.pathname === links.playground
                     );
-                    
+
                     // Each model gets its own stream and thread
                     const result = await streamPrompt(request);
-                    console.log(`[DEBUG ${timestamp()}] Stream completed for model ${index + 1}:`, model.name, 'Result:', result);
                     results.push(result);
-                } catch (error) {
-                    console.error(`[DEBUG ${timestamp()}] Error in stream for model ${index + 1}:`, model.name, error);
-                    // Continue with other models even if one fails
+                } catch (_error) {
                     results.push({ threadId: undefined });
                 }
             }
-            
-            console.log(`[DEBUG ${timestamp()}] All streams completed. Results:`, results);
-            
+
             // Handle navigation based on context and number of results
             if (isMultiModel && location.pathname === links.comparison) {
                 // Multi-model on comparison page: redirect with thread IDs
                 const threadIds = results
-                    .filter(result => result.threadId)
-                    .map(result => result.threadId);
-                
+                    .filter((result) => result.threadId)
+                    .map((result) => result.threadId);
+
                 if (threadIds.length > 0) {
                     const threadsParam = threadIds.join(',');
-                    console.log(`[DEBUG ${timestamp()}] Redirecting to comparison page with threads:`, threadsParam);
                     await router.navigate(`${links.comparison}?threads=${threadsParam}`);
-                } else {
-                    console.log(`[DEBUG ${timestamp()}] No threads created, staying on comparison page`);
                 }
             } else {
                 // Single model or multi-model on other pages: navigate to first thread
-                const firstThreadId = results.find(result => result.threadId)?.threadId;
+                const firstThreadId = results.find((result) => result.threadId)?.threadId;
                 if (firstThreadId) {
-                    console.log(`[DEBUG ${timestamp()}] Navigating to first thread:`, firstThreadId);
                     await router.navigate(links.thread(firstThreadId));
-                } else {
-                    console.log(`[DEBUG ${timestamp()}] No thread ID found in results`);
                 }
             }
-            
         } catch (error) {
-            console.error(`[DEBUG ${timestamp()}] Error in streaming:`, error);
+            console.error('Error in streaming:', error);
         }
     };
 
     function createModelName(selectedCompareModels: CompareModelState[] | undefined) {
         if (selectedCompareModels && selectedCompareModels.length > 0) {
-            const modelNames = selectedCompareModels.map(({ model }) => model?.family_name || 'unknown');
+            const modelNames = selectedCompareModels.map(
+                ({ model }) => model?.family_name || 'unknown'
+            );
             return modelNames.length > 0 ? modelNames.join(' vs ') : 'the model';
         } else if (selectedModel) {
             return selectedModel.family_name || 'the model';
         }
         return 'the model';
-    };
+    }
 
     const placeholderText = useAppContext((state) => {
         const selectedModelFamilyName = createModelName(state.selectedCompareModels);
@@ -186,11 +165,12 @@ export const QueryForm = (): JSX.Element => {
     });
 
     const autoFocus = location.pathname === links.playground;
-    
+
     // Determine file support - check compare models first, then fall back to single model
-    const areFilesAllowed = selectedCompareModels && selectedCompareModels.length > 0
-        ? selectedCompareModels.every(({ model }) => model?.accepts_files ?? false)
-        : Boolean(selectedModel?.accepts_files);
+    const areFilesAllowed =
+        selectedCompareModels && selectedCompareModels.length > 0
+            ? selectedCompareModels.every(({ model }) => model?.accepts_files ?? false)
+            : Boolean(selectedModel?.accepts_files);
 
     return (
         <QueryFormController

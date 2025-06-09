@@ -1,4 +1,6 @@
 import { Message, MessageApiUrl, MessageStreamErrorReason } from '@/api/Message';
+import { threadQueryOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
 import { mapMessages, SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
@@ -80,6 +82,12 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             false,
             'selectedThread/addChildToSelectedThread'
         );
+
+        // Invalidate React Query cache for the thread so ThreadDisplayContainer sees the new message
+        if (message.root) {
+            const { queryKey } = threadQueryOptions(message.root);
+            queryClient.invalidateQueries({ queryKey });
+        }
     },
 
     setSelectedThread: (rootMessage: Message) => {

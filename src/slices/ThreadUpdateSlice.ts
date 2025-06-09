@@ -11,7 +11,9 @@ import {
     StreamBadRequestError,
     V4CreateMessageRequest,
 } from '@/api/Message';
+import { threadQueryOptions } from '@/api/playgroundApi/thread';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
+import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { InferenceOpts } from '@/api/Schema';
 import { OlmoStateCreator } from '@/AppContext';
@@ -127,6 +129,12 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             false,
             'threadUpdate/finishCreateNewThread'
         );
+
+        // Invalidate React Query cache for the thread so ThreadDisplayContainer sees the final message
+        if (finalMessage.root) {
+            const { queryKey } = threadQueryOptions(finalMessage.root);
+            queryClient.invalidateQueries({ queryKey });
+        }
     },
 
     streamPrompt: async (newMessage: StreamMessageRequest): Promise<StreamPromptResult> => {
