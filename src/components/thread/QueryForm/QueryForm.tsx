@@ -71,39 +71,76 @@ export const QueryForm = (): JSX.Element => {
             request.parent = lastMessageId;
         }
 
-        console.log('[DEBUG] selectedCompareModels:', selectedCompareModels);
+        const timestamp = () => new Date().toISOString();
+        
+        console.log(`[DEBUG ${timestamp()}] selectedCompareModels:`, selectedCompareModels);
+        console.log(`[DEBUG ${timestamp()}] selectedCompareModels length:`, selectedCompareModels?.length);
+        console.log(`[DEBUG ${timestamp()}] location.pathname:`, location.pathname);
 
-        // Check if multiple models are selected
-        if (selectedCompareModels && selectedCompareModels.length > 1) {
-            console.log('[DEBUG] Multiple models selected:', selectedCompareModels.map(m => m.model.name));
-            console.log('[DEBUG] TODO: Redirect to comparison view');
-            return;
-        }
+        // Determine which models to stream
+        const modelsToStream = selectedCompareModels && selectedCompareModels.length > 1 
+            ? selectedCompareModels 
+            : selectedCompareModels?.slice(0, 1) || [];
 
-        // Single model - use existing logic
-        console.log('[DEBUG] Single model selected, using existing flow');
+        const isMultiModel = modelsToStream.length > 1;
+        console.log(`[DEBUG ${timestamp()}] ${isMultiModel ? 'Multiple' : 'Single'} model${isMultiModel ? 's' : ''} selected:`, 
+                   modelsToStream.map(m => m.model.name));
 
         try {
-            // try/catch in controller
-            const result = await streamPrompt(request);
+            // Stream to all selected models
+            const results = [];
             
-            // Handle navigation based on result
-            if (result.threadId) {
-                console.log('[DEBUG] Navigating to thread:', result.threadId);
-                await router.navigate(links.thread(result.threadId));
+            for (let index = 0; index < modelsToStream.length; index++) {
+                const { model } = modelsToStream[index];
+                console.log(`[DEBUG ${timestamp()}] Starting stream for model ${index + 1}:`, model.name);
+                
+                try {
+                    // Track analytics for this model
+                    analyticsClient.trackQueryFormSubmission(
+                        model.id,
+                        location.pathname === links.playground
+                    );
+                    
+                    // Each model gets its own stream and thread
+                    const result = await streamPrompt(request);
+                    console.log(`[DEBUG ${timestamp()}] Stream completed for model ${index + 1}:`, model.name, 'Result:', result);
+                    results.push(result);
+                } catch (error) {
+                    console.error(`[DEBUG ${timestamp()}] Error in stream for model ${index + 1}:`, model.name, error);
+                    // Continue with other models even if one fails
+                    results.push({ threadId: undefined });
+                }
             }
             
-            // Track analytics for all selected models
-            selectedCompareModels?.forEach(({ model }) => {
-                analyticsClient.trackQueryFormSubmission(
-                    model.id,
-                    location.pathname === links.playground
-                );
-            });
+            console.log(`[DEBUG ${timestamp()}] All streams completed. Results:`, results);
+            
+            // Handle navigation based on context and number of results
+            if (isMultiModel && location.pathname === links.comparison) {
+                // Multi-model on comparison page: redirect with thread IDs
+                const threadIds = results
+                    .filter(result => result.threadId)
+                    .map(result => result.threadId);
+                
+                if (threadIds.length > 0) {
+                    const threadsParam = threadIds.join(',');
+                    console.log(`[DEBUG ${timestamp()}] Redirecting to comparison page with threads:`, threadsParam);
+                    await router.navigate(`${links.comparison}?threads=${threadsParam}`);
+                } else {
+                    console.log(`[DEBUG ${timestamp()}] No threads created, staying on comparison page`);
+                }
+            } else {
+                // Single model or multi-model on other pages: navigate to first thread
+                const firstThreadId = results.find(result => result.threadId)?.threadId;
+                if (firstThreadId) {
+                    console.log(`[DEBUG ${timestamp()}] Navigating to first thread:`, firstThreadId);
+                    await router.navigate(links.thread(firstThreadId));
+                } else {
+                    console.log(`[DEBUG ${timestamp()}] No thread ID found in results`);
+                }
+            }
+            
         } catch (error) {
-            console.error('[DEBUG] Error in streamPrompt:', error);
-            // Error handling is typically done inside streamPrompt itself,
-            // but we catch here to prevent unhandled promise rejections
+            console.error(`[DEBUG ${timestamp()}] Error in streaming:`, error);
         }
     };
 
