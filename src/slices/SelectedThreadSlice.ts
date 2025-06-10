@@ -72,11 +72,14 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                         state.selectedThreadMessagesById[message.id] = message;
                     });
 
-                    state.selectedThreadMessagesById[message.parent].childIds.push(
-                        mappedMessages[0].id
-                    );
-                    state.selectedThreadMessagesById[message.parent].selectedChildId =
-                        mappedMessages[0].id;
+                    // Safety check: only update parent if it exists in our state
+                    // In multi-model scenarios, we might be adding children to threads
+                    // that aren't the currently "selected" thread
+                    const parentMessage = state.selectedThreadMessagesById[message.parent];
+                    if (parentMessage) {
+                        parentMessage.childIds.push(mappedMessages[0].id);
+                        parentMessage.selectedChildId = mappedMessages[0].id;
+                    }
                 }
             },
             false,

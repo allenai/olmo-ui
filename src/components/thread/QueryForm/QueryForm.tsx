@@ -68,10 +68,6 @@ export const QueryForm = (): JSX.Element => {
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
         const request: StreamMessageRequest = data;
 
-        if (lastMessageId != null) {
-            request.parent = lastMessageId;
-        }
-
         // Determine which models to stream
         // but fall back to creating a single-item array from selectedModel if needed
         let modelsToStream: CompareModelState[] = [];
@@ -91,10 +87,20 @@ export const QueryForm = (): JSX.Element => {
         }
 
         const isMultiModel = modelsToStream.length > 1;
+        
+        // For single-model, use the existing lastMessageId logic
+        // For multi-model, we'll get the last message ID per thread in the loop
+        const globalLastMessageId = !isMultiModel && lastMessageId ? lastMessageId : undefined;
+        
+        if (globalLastMessageId) {
+            request.parent = globalLastMessageId;
+        }
+
         console.log(`DEBUG: ${isMultiModel ? 'Multi' : 'Single'}-model mode detected`, {
             modelsCount: modelsToStream.length,
             models: modelsToStream.map(m => m.model?.name || 'unknown'),
             hasParent: !!request.parent,
+            globalLastMessageId,
             location: location.pathname
         });
 
@@ -103,7 +109,7 @@ export const QueryForm = (): JSX.Element => {
             const results = [];
 
             for (let index = 0; index < modelsToStream.length; index++) {
-                const { model } = modelsToStream[index];
+                const { model, rootThreadId } = modelsToStream[index];
 
                 if (!model) {
                     console.log(`DEBUG: No model found for index ${index}`);
@@ -112,7 +118,10 @@ export const QueryForm = (): JSX.Element => {
                 }
 
                 try {
-                    console.log(`DEBUG: Starting stream for model ${model.name} (${index + 1}/${modelsToStream.length})`);
+                    console.log(`DEBUG: Starting stream for model ${model.name} (${index + 1}/${modelsToStream.length})`, {
+                        rootThreadId,
+                        isFollowUp: !!rootThreadId
+                    });
                     
                     // Track analytics for this model
                     analyticsClient.trackQueryFormSubmission(
@@ -120,9 +129,30 @@ export const QueryForm = (): JSX.Element => {
                         location.pathname === links.playground
                     );
 
+                    // For multi-model follow-ups, get the last message ID from this specific thread
+                    let requestForThisModel = { ...request };
+                    
+                    if (isMultiModel && rootThreadId) {
+                        // This is a follow-up in multi-model mode - get last message from this specific thread
+                        try {
+                            const { getThread } = await import('@/api/playgroundApi/thread');
+                            const threadData = await getThread(rootThreadId);
+                            const lastMessage = threadData.messages[threadData.messages.length - 1];
+                            requestForThisModel.parent = lastMessage.id;
+                            
+                            console.log(`DEBUG: Multi-model follow-up for ${model.name}`, {
+                                threadId: rootThreadId,
+                                parentMessageId: lastMessage.id
+                            });
+                        } catch (error) {
+                            console.log(`DEBUG: Failed to get last message for thread ${rootThreadId}:`, error);
+                            // Continue without parent - will create new thread
+                        }
+                    }
+
                     // Each model gets its own stream and thread with specific model override
                     const requestWithModel = {
-                        ...request,
+                        ...requestForThisModel,
                         overrideModel: {
                             id: model.id,
                             host: model.host,
