@@ -44,7 +44,7 @@ const createModelDeprecationNotice = () => {
 export const playgroundLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async ({ params, request }) => {
-        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt } =
+        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt, setSelectedCompareModels } =
             appContext.getState();
 
         const promises = [];
@@ -62,6 +62,9 @@ export const playgroundLoader =
             resetSelectedThreadState();
             resetAttribution();
         }
+
+        // Clear comparison models when navigating to playground/single-thread mode
+        setSelectedCompareModels([]);
 
         await Promise.all(promises);
 
