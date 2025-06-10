@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 import type { UseFormReturn } from 'react-hook-form-mui';
 
-// Image resize configuration (should this be an env var?)
-export const MAX_IMAGE_DIMENSION = 1500;
+import { QueryFormValues } from '@/components/thread/QueryForm/QueryForm';
 
+// Image resize configuration (should this be an env var?)
+export const MAX_IMAGE_AREA = 25_000_000; // 25MP (roughly)
+
+// Debugging function to get image dimensions
 export const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -29,7 +32,7 @@ export const getImageDimensions = (file: File): Promise<{ width: number; height:
 // Custom hook to process and resize images when files change
 export const useImageProcessing = (
     files: FileList | undefined,
-    formContext: UseFormReturn<{ files?: FileList; [key: string]: unknown }>
+    formContext: UseFormReturn<QueryFormValues>
 ) => {
     useEffect(() => {
         if (files && files.length > 0) {
@@ -41,13 +44,11 @@ export const useImageProcessing = (
                     if (file.type.startsWith('image/')) {
                         try {
                             const originalDimensions = await getImageDimensions(file);
+                            const imageArea = originalDimensions.width * originalDimensions.height;
 
                             // Check if image needs resizing
-                            if (
-                                originalDimensions.width > MAX_IMAGE_DIMENSION ||
-                                originalDimensions.height > MAX_IMAGE_DIMENSION
-                            ) {
-                                const resizedFile = await resizeImage(file, MAX_IMAGE_DIMENSION);
+                            if (imageArea > MAX_IMAGE_AREA) {
+                                const resizedFile = await resizeImage(file, MAX_IMAGE_AREA);
                                 const resizedSizeInKB = Math.round(resizedFile.size / 1024);
                                 const resizedSizeInMB = (resizedFile.size / (1024 * 1024)).toFixed(
                                     2
@@ -87,7 +88,7 @@ export const useImageProcessing = (
 };
 
 // Function to resize image using canvas
-export const resizeImage = (file: File, maxSize: number = MAX_IMAGE_DIMENSION): Promise<File> => {
+export const resizeImage = (file: File, maxArea: number = MAX_IMAGE_AREA): Promise<File> => {
     return new Promise((resolve, reject) => {
         const img = new Image();
         const url = URL.createObjectURL(file);
@@ -104,19 +105,13 @@ export const resizeImage = (file: File, maxSize: number = MAX_IMAGE_DIMENSION): 
 
             const { width, height } = img;
 
-            // Calculate new dimensions
             let newWidth = width;
             let newHeight = height;
 
-            if (width > maxSize || height > maxSize) {
+            if (width * height > maxArea) {
                 const aspectRatio = width / height;
-                if (width > height) {
-                    newWidth = maxSize;
-                    newHeight = maxSize / aspectRatio;
-                } else {
-                    newHeight = maxSize;
-                    newWidth = maxSize * aspectRatio;
-                }
+                newWidth = Math.sqrt(maxArea * aspectRatio);
+                newHeight = Math.sqrt(maxArea / aspectRatio);
             }
 
             canvas.width = newWidth;

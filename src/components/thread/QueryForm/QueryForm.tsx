@@ -25,7 +25,7 @@ import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDispla
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
-interface QueryFormValues {
+export interface QueryFormValues {
     content: string;
     private: boolean;
     files?: FileList;
