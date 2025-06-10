@@ -43,6 +43,8 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
     },
 
     addContentToMessage: (messageId: string, content: string) => {
+        console.log(`DEBUG: addContentToMessage called`, { messageId, contentLength: content.length, content: content.substring(0, 20) + '...' });
+        
         set(
             (state) => {
                 state.selectedThreadMessagesById[messageId].content += content;
@@ -50,6 +52,40 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             false,
             'selectedThread/addContentToMessage'
         );
+        
+        // Update React Query cache for real-time UI updates in ThreadDisplayContainer
+        try {
+            const cache = queryClient.getQueryCache();
+            const queries = cache.getAll();
+            
+            queries.forEach(query => {
+                if (query.queryKey.length >= 3 && 
+                    query.queryKey[0] === 'playground-api' && 
+                    query.queryKey[1] === 'get' && 
+                    query.queryKey[2] === '/v4/threads/{thread_id}' && 
+                    query.state.data) {
+                    
+                    const thread = query.state.data as any;
+                    const message = thread.messages?.find((m: any) => m.id === messageId);
+                    if (message) {
+                        const updatedThread = {
+                            ...thread,
+                            messages: thread.messages.map((m: any) => 
+                                m.id === messageId 
+                                    ? { ...m, content: m.content + content }
+                                    : m
+                            )
+                        };
+                        queryClient.setQueryData(query.queryKey, updatedThread);
+                        console.log(`DEBUG: React Query cache updated for message ${messageId}`);
+                    } else {
+                        console.log(`DEBUG: Message ${messageId} not found in React Query cache`);
+                    }
+                }
+            });
+        } catch (error) {
+            console.log(`DEBUG: Error updating React Query cache:`, error);
+        }
     },
 
     setMessageLimitReached: (messageId: string, isLimitReached: boolean) => {
