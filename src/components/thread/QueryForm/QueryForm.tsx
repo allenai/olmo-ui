@@ -91,6 +91,12 @@ export const QueryForm = (): JSX.Element => {
         }
 
         const isMultiModel = modelsToStream.length > 1;
+        console.log(`DEBUG: ${isMultiModel ? 'Multi' : 'Single'}-model mode detected`, {
+            modelsCount: modelsToStream.length,
+            models: modelsToStream.map(m => m.model?.name || 'unknown'),
+            hasParent: !!request.parent,
+            location: location.pathname
+        });
 
         try {
             // Stream to all selected models
@@ -100,24 +106,40 @@ export const QueryForm = (): JSX.Element => {
                 const { model } = modelsToStream[index];
 
                 if (!model) {
+                    console.log(`DEBUG: No model found for index ${index}`);
                     results.push({ threadId: undefined });
                     continue;
                 }
 
                 try {
+                    console.log(`DEBUG: Starting stream for model ${model.name} (${index + 1}/${modelsToStream.length})`);
+                    
                     // Track analytics for this model
                     analyticsClient.trackQueryFormSubmission(
                         model.id,
                         location.pathname === links.playground
                     );
 
-                    // Each model gets its own stream and thread
-                    const result = await streamPrompt(request);
+                    // Each model gets its own stream and thread with specific model override
+                    const requestWithModel = {
+                        ...request,
+                        overrideModel: {
+                            id: model.id,
+                            host: model.host,
+                            name: model.name
+                        }
+                    };
+                    
+                    const result = await streamPrompt(requestWithModel);
+                    console.log(`DEBUG: Stream completed for ${model.name}:`, { threadId: result.threadId });
                     results.push(result);
                 } catch (_error) {
+                    console.log(`DEBUG: Stream failed for ${model.name}:`, _error);
                     results.push({ threadId: undefined });
                 }
             }
+
+            console.log(`DEBUG: All streams completed. Results:`, results.map(r => ({ threadId: r.threadId })));
 
             // Handle navigation based on context and number of results
             if (isMultiModel && location.pathname === links.comparison) {
@@ -126,19 +148,27 @@ export const QueryForm = (): JSX.Element => {
                     .filter((result) => result.threadId)
                     .map((result) => result.threadId);
 
+                console.log(`DEBUG: Multi-model navigation - threadIds:`, threadIds);
+
                 if (threadIds.length > 0) {
                     const threadsParam = threadIds.join(',');
+                    console.log(`DEBUG: Navigating to comparison page with threads: ${threadsParam}`);
                     await router.navigate(`${links.comparison}?threads=${threadsParam}`);
+                } else {
+                    console.log(`DEBUG: No valid thread IDs for multi-model navigation`);
                 }
             } else {
                 // Single model or multi-model on other pages: navigate to first thread
                 const firstThreadId = results.find((result) => result.threadId)?.threadId;
                 if (firstThreadId) {
+                    console.log(`DEBUG: Single-model navigation to thread: ${firstThreadId}`);
                     await router.navigate(links.thread(firstThreadId));
+                } else {
+                    console.log(`DEBUG: No valid thread ID for single-model navigation`);
                 }
             }
         } catch (error) {
-            console.error('Error in streaming:', error);
+            console.error('DEBUG: Fatal error in streaming:', error);
         }
     };
 

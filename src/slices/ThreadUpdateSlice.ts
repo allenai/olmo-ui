@@ -59,6 +59,7 @@ export interface StreamMessageRequest {
     captchaToken?: string | null;
     parent?: string;
     files?: FileList;
+    overrideModel?: { id: string; host: string; name?: string };
 }
 
 export interface StreamPromptResult {
@@ -155,6 +156,19 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         const isCreatingNewThread = newMessage.parent == null;
         let createdThreadId: string | undefined;
 
+        // Use override model if provided, otherwise fall back to selectedModel
+        const modelToUse = newMessage.overrideModel || selectedModel;
+
+        console.log(`DEBUG: streamPrompt called`, {
+            isCreatingNewThread,
+            selectedModel: selectedModel?.name || 'none',
+            overrideModel: newMessage.overrideModel?.name || 'none',
+            modelToUse: modelToUse?.name || 'none',
+            modelId: modelToUse?.id,
+            hasParent: !!newMessage.parent,
+            content: newMessage.content?.substring(0, 50) + '...'
+        });
+
         set(
             (state) => {
                 state.abortController = abortController;
@@ -164,7 +178,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             'threadUpdate/startCreateNewThread'
         );
 
-        if (selectedModel == null) {
+        if (modelToUse == null) {
+            console.log(`DEBUG: streamPrompt - No model available (selectedModel: ${selectedModel?.name}, overrideModel: ${newMessage.overrideModel?.name})`);
             // This _shouldn't_ ever happen, but there's a chance it can happen if we let the user submit before models are loaded.
             addSnackMessage({
                 type: SnackMessageType.Brief,
@@ -194,11 +209,20 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         };
 
         const request: V4CreateMessageRequest = {
-            model: selectedModel.id,
-            host: selectedModel.host,
+            model: modelToUse.id,
+            host: modelToUse.host,
             ...newMessage,
             ...adjustedInferenceOpts,
         };
+
+        // Remove the overrideModel from the request since it's not part of the API
+        delete (request as any).overrideModel;
+
+        console.log(`DEBUG: streamPrompt - Making API request`, {
+            model: request.model,
+            host: request.host,
+            hasParent: !!request.parent
+        });
 
         try {
             const messageChunks = postMessageGenerator(request, abortController);
@@ -208,9 +232,19 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             for await (const message of messageChunks) {
                 if (isFirstMessage(message)) {
                     const parsedMessage = parseMessage(message);
+                    
+                    console.log(`DEBUG: streamPrompt - First message created`, {
+                        messageId: parsedMessage.id,
+                        isCreatingNewThread
+                    });
+
                     if (isCreatingNewThread) {
                         setSelectedThread(parsedMessage);
                         createdThreadId = parsedMessage.id;
+                        
+                        console.log(`DEBUG: streamPrompt - New thread created`, {
+                            threadId: createdThreadId
+                        });
                     } else {
                         addChildToSelectedThread(parsedMessage);
                     }
@@ -251,6 +285,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                         );
                     }
 
+                    console.log(`DEBUG: streamPrompt - Final message received`, {
+                        messageId: streamedResponseId,
+                        threadId: createdThreadId
+                    });
+
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
                     if (isCorpusLinkEnabled) {
@@ -259,6 +298,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                 }
             }
         } catch (err) {
+            console.log(`DEBUG: streamPrompt - Error occurred:`, err);
             set(
                 (state) => {
                     state.streamPromptState = RemoteState.Error;
@@ -313,6 +353,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             );
         }
 
+        console.log(`DEBUG: streamPrompt - Returning result`, { threadId: createdThreadId });
         return { threadId: createdThreadId };
     },
 
