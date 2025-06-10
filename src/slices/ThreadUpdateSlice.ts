@@ -13,11 +13,13 @@ import {
 } from '@/api/Message';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
+import { InferenceOpts } from '@/api/Schema';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { router } from '@/router';
+import { NullishPartial } from '@/util';
 
 import {
     AlertMessageSeverity,
@@ -158,11 +160,30 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             return;
         }
 
+        // TEMP HACK: Override default inference options for specific models.
+        // If a user sets an option in the UI, it takes precedence.
+        // Otherwise, we fall back to the defaults defined here.
+        // This logic should be revisited.
+        // Individual override justifications are documented inline.
+        const MODEL_DEFAULT_OVERRIDES: Record<string, NullishPartial<InferenceOpts>> = {
+            // Force Olmo to use a temperature of 0 to avoid variability in outputs.
+            // TODO: Remove once https://github.com/allenai/playground-issues-repo/issues/419 is resolved.
+            'mm-olmo-uber-model-v4-synthetic': { temperature: 0.0 },
+
+            // Add additional model overrides below as needed:
+            // 'some-other-model-id': { top_p: 0.9, temperature: 0.7 },
+        };
+
+        const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
+            ...(MODEL_DEFAULT_OVERRIDES[selectedModel.id] || {}),
+            ...inferenceOpts,
+        };
+
         const request: V4CreateMessageRequest = {
             model: selectedModel.id,
             host: selectedModel.host,
             ...newMessage,
-            ...inferenceOpts,
+            ...adjustedInferenceOpts,
         };
 
         try {
