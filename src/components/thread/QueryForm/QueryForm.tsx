@@ -7,6 +7,7 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
+import { useStreamMessage } from '@/hooks/useStreamMessage';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
@@ -23,6 +24,7 @@ interface QueryFormValues {
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
+    const streamMessageMutation = useStreamMessage();
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const selectedModel = useAppContext((state) => state.selectedModel);
@@ -105,7 +107,47 @@ export const QueryForm = (): JSX.Element => {
         });
 
         try {
-            // Stream to all selected models
+            // TODO Temp:Use React Query mutation for single model, Zustand for multi-model (for now)
+            if (!isMultiModel) {
+                console.log('D$> Single model -> RQ path:', modelsToStream[0]?.model?.name);
+                const model = modelsToStream[0]?.model;
+                
+                if (!model) {
+                    console.log('DEBUG: No model found for single-model scenario');
+                    return;
+                }
+
+                // Track analytics for this model
+                analyticsClient.trackQueryFormSubmission(
+                    model.id,
+                    location.pathname === links.playground
+                );
+
+                // Use React Query mutation with model override
+                const requestWithModel = {
+                    ...request,
+                    overrideModel: {
+                        id: model.id,
+                        host: model.host,
+                        name: model.name
+                    }
+                };
+
+                const result = await streamMessageMutation.mutateAsync(requestWithModel);
+                console.log('D$> RQ complete, navigate to:', result.threadId || 'none');
+
+                // Navigate to the new thread
+                if (result.threadId) {
+                    console.log('DEBUG: Single-model navigation to thread:', result.threadId);
+                    await router.navigate(links.thread(result.threadId));
+                } else {
+                    console.log('DEBUG: No valid thread ID for single-model navigation');
+                }
+                return;
+            }
+
+            // Multi-model: use existing Zustand approach (sequential)
+            console.log('D$> Multi model -> Zustand path (temp)');
             const results = [];
 
             for (let index = 0; index < modelsToStream.length; index++) {
