@@ -7,7 +7,7 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
-import { useStreamMessage } from '@/hooks/useStreamMessage';
+import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
@@ -107,7 +107,7 @@ export const QueryForm = (): JSX.Element => {
         });
 
         try {
-            // TODO Temp:Use React Query mutation for single model, Zustand for multi-model (for now)
+            // TODO Temp: Use React Query just for single-model
             if (!isMultiModel) {
                 console.log('D$> Single model -> RQ path:', modelsToStream[0]?.model?.name);
                 const model = modelsToStream[0]?.model;
@@ -124,7 +124,7 @@ export const QueryForm = (): JSX.Element => {
                 );
 
                 // Use React Query mutation with model override
-                const requestWithModel = {
+                const requestWithModel: StreamMessageVariables = {
                     ...request,
                     overrideModel: {
                         id: model.id,
@@ -147,6 +147,7 @@ export const QueryForm = (): JSX.Element => {
             }
 
             // Multi-model: use existing Zustand approach (sequential)
+            // TEMP: This will be replaced with parallel streaming in future updates
             console.log('D$> Multi model -> Zustand path (temp)');
             const results = [];
 
@@ -202,6 +203,7 @@ export const QueryForm = (): JSX.Element => {
                         }
                     };
                     
+                    // TODO: TEMP - Will be replaced with React Query in future updates
                     const result = await streamPrompt(requestWithModel);
                     console.log(`DEBUG: Stream completed for ${model.name}:`, { threadId: result.threadId });
                     results.push(result);
