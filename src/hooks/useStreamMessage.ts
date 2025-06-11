@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import { 
@@ -71,6 +71,18 @@ export interface StreamMessageContext {
     streamingMessageId?: string;
     isUpdatingContent: boolean;
     isCreatingNewThread: boolean;
+    modelId?: string; // Added to identify which model this context belongs to
+}
+
+// New interface for tracking state per model
+export interface ModelStreamState {
+    messageId?: string;
+    threadId?: string;
+    content: string;
+    isStreaming: boolean;
+    isComplete: boolean;
+    error?: Error;
+    abortController: AbortController;
 }
 
 const ABORT_ERROR_MESSAGE: SnackMessage = {
@@ -81,7 +93,12 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
     severity: AlertMessageSeverity.Warning,
 } as const;
 
+// Creates a query key for a specific model stream
+const getModelStreamKey = (modelId: string, requestId: string) => 
+    ['streamMessage', modelId, requestId];
+
 export const useStreamMessage = () => {
+    const queryClient = useQueryClient();
     const {
         inferenceOpts,
         selectedModel,
@@ -96,7 +113,7 @@ export const useStreamMessage = () => {
     const handleFinalMessage = useAppContext((state) => state.handleFinalMessage);
 
     // Adds content to a message, with robust error handling
-    const safelyAddContentToMessage = (messageId: string, content: string) => {
+    const safelyAddContentToMessage = (messageId: string, content: string, modelId?: string) => {
         if (!messageId) {
             console.log('DEBUG: Cannot add content - missing messageId');
             return;
@@ -114,6 +131,22 @@ export const useStreamMessage = () => {
             
             // Update the message content
             addContentToMessage(messageId, content);
+            
+            // If we have a modelId, also update the query cache for this stream
+            if (modelId) {
+                // Generate a unique request ID based on messageId
+                const requestId = messageId.split('_')[1] || messageId;
+                
+                // Update the stream state in the query cache
+                queryClient.setQueryData(
+                    getModelStreamKey(modelId, requestId),
+                    (oldData: ModelStreamState | undefined) => ({
+                        ...(oldData || { content: '', isStreaming: true, isComplete: false }),
+                        content: (oldData?.content || '') + content,
+                        messageId,
+                    })
+                );
+            }
         } catch (error) {
             console.error(`DEBUG: Error adding content to message ${messageId}:`, error);
             // Continue execution despite error
@@ -125,7 +158,8 @@ export const useStreamMessage = () => {
         
         console.log(`DEBUG: First message created`, {
             messageId: parsedMessage.id,
-            isCreatingNewThread: context.isCreatingNewThread
+            isCreatingNewThread: context.isCreatingNewThread,
+            modelId: context.modelId
         });
 
         if (context.isCreatingNewThread) {
@@ -134,7 +168,8 @@ export const useStreamMessage = () => {
             result.isFirstThreadMessage = true;
             
             console.log(`DEBUG: New thread created`, {
-                threadId: result.threadId
+                threadId: result.threadId,
+                modelId: context.modelId
             });
         } else {
             addChildToSelectedThread(parsedMessage);
@@ -144,7 +179,8 @@ export const useStreamMessage = () => {
             console.log(`DEBUG: Added child to existing thread`, {
                 messageId: parsedMessage.id,
                 parentId: parsedMessage.parent,
-                rootThreadId: parsedMessage.root
+                rootThreadId: parsedMessage.root,
+                modelId: context.modelId
             });
         }
 
@@ -165,8 +201,33 @@ export const useStreamMessage = () => {
             context.streamingMessageId = streamingMessage.id;
             result.messageId = streamingMessage.id;
             
+            // If we have a modelId, update the query cache for this stream
+            if (context.modelId) {
+                // Generate a unique request ID based on message ID
+                const requestId = streamingMessage.id.split('_')[1] || streamingMessage.id;
+                
+                // Initialize or update the stream state in the query cache
+                queryClient.setQueryData(
+                    getModelStreamKey(context.modelId, requestId),
+                    (oldData: ModelStreamState | undefined) => ({
+                        ...(oldData || { 
+                            content: '', 
+                            isStreaming: true, 
+                            isComplete: false,
+                            abortController: context.abortController
+                        }),
+                        messageId: streamingMessage.id,
+                        threadId: result.threadId,
+                    })
+                );
+            }
+            
             // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
-            appContext.setState({ streamingMessageId: streamingMessage.id });
+            // Only set the global streaming message ID for the first model in multi-model
+            // or for single-model case
+            if (!appContext.getState().streamingMessageId) {
+                appContext.setState({ streamingMessageId: streamingMessage.id });
+            }
         } else {
             console.log('DEBUG: Could not find streaming message ID in first message');
         }
@@ -179,7 +240,7 @@ export const useStreamMessage = () => {
             context.isUpdatingContent = true;
         }
 
-        safelyAddContentToMessage(message.message, message.content);
+        safelyAddContentToMessage(message.message, message.content, context.modelId);
         
         // Update the content in our result for potential use by caller
         if (result.content === undefined) result.content = '';
@@ -199,12 +260,30 @@ export const useStreamMessage = () => {
 
         console.log(`DEBUG: Final message received`, {
             messageId: context.streamingMessageId,
-            threadId: result.threadId
+            threadId: result.threadId,
+            modelId: context.modelId
         });
 
         // Process the final message
         const parsedFinalMessage = parseMessage(message);
         handleFinalMessage(parsedFinalMessage, context.isCreatingNewThread);
+
+        // If we have a modelId, update the query cache to mark this stream as complete
+        if (context.modelId && result.threadId) {
+            // Generate a unique request ID based on message ID
+            const requestId = context.streamingMessageId.split('_')[1] || context.streamingMessageId;
+            
+            // Mark the stream as complete
+            queryClient.setQueryData(
+                getModelStreamKey(context.modelId, requestId),
+                (oldData: ModelStreamState | undefined) => ({
+                    ...(oldData || { content: result.content || '' }),
+                    isStreaming: false,
+                    isComplete: true,
+                    threadId: result.threadId,
+                })
+            );
+        }
 
         // Get attributions if enabled
         if (isCorpusLinkEnabled && context.streamingMessageId) {
@@ -222,7 +301,7 @@ export const useStreamMessage = () => {
 
         // Process the streaming response
         let messageCount = 0;
-        console.groupCollapsed('D$> RQ stream start');
+        console.groupCollapsed(`D$> RQ stream start${context.modelId ? ` (${context.modelId})` : ''}`);
         
         try {
             for await (const message of messageChunks) {
@@ -242,10 +321,30 @@ export const useStreamMessage = () => {
                 }
             }
             console.groupEnd();
-            console.log(`D$> RQ stream end, threadId:`, result.threadId || 'none');
+            console.log(`D$> RQ stream end, threadId:${result.threadId || 'none'}${context.modelId ? `, modelId:${context.modelId}` : ''}`);
         } catch (error) {
             console.groupEnd();
-            console.log(`D$> RQ stream error:`, error instanceof Error ? error.message : 'unknown');
+            console.log(`D$> RQ stream error:${error instanceof Error ? error.message : 'unknown'}${context.modelId ? `, modelId:${context.modelId}` : ''}`);
+            
+            // If we have a modelId, update the query cache to mark this stream as failed
+            if (context.modelId) {
+                // Generate a unique request ID based on messageId or a fallback
+                const requestId = context.streamingMessageId?.split('_')[1] || 
+                                 result.messageId?.split('_')[1] || 
+                                 `error-${new Date().getTime()}`;
+                
+                // Mark the stream as failed
+                queryClient.setQueryData(
+                    getModelStreamKey(context.modelId, requestId),
+                    (oldData: ModelStreamState | undefined) => ({
+                        ...(oldData || { content: result.content || '' }),
+                        isStreaming: false,
+                        isComplete: false,
+                        error: error instanceof Error ? error : new Error(String(error)),
+                    })
+                );
+            }
+            
             throw error;
         }
     };
@@ -264,6 +363,11 @@ export const useStreamMessage = () => {
         // TODO: Temp - Will use models array directly when model selection is unified
         // Use override model if provided, otherwise fall back to selectedModel
         const modelToUse = variables.overrideModel || selectedModel;
+
+        // If we have a modelId, add it to the context
+        if (modelToUse?.id) {
+            context.modelId = modelToUse.id;
+        }
 
         console.log(`DEBUG: useStreamMessage (single model) called`, {
             isCreatingNewThread: context.isCreatingNewThread,
@@ -358,20 +462,50 @@ export const useStreamMessage = () => {
         setSelectedThread,
         setMessageLimitReached,
         getAttributionsForMessage,
-        handleFinalMessage
+        handleFinalMessage,
+        queryClient
     ]);
 
     // Process multiple models sequentially
-    // TODO: Temp - Will be replaced with parallel execution in future updates
+    // TODO: Temp - Will be replaced with Promise.all for parallel execution
     const streamMultipleModels = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
         const models = variables.models || [];
         const modelResults: SingleModelResult[] = [];
         const threadIds: string[] = [];
         const messageIds: string[] = [];
         const errors: Error[] = [];
+        
+        // Create a unique request ID for this batch of models
+        const batchId = `batch-${Date.now()}`;
 
         console.log(`DEBUG: Processing ${models.length} models sequentially`, {
-            models: models.map(m => m.name)
+            models: models.map(m => m.name),
+            batchId
+        });
+
+        // Create a map to track per-model state
+        const modelStreamStates = new Map<string, ModelStreamState>();
+        
+        // Initialize state for all models
+        models.forEach(model => {
+            const abortController = new AbortController();
+            modelStreamStates.set(model.id, {
+                content: '',
+                isStreaming: false,
+                isComplete: false,
+                abortController,
+            });
+            
+            // Initialize query cache entry for this model
+            queryClient.setQueryData(
+                getModelStreamKey(model.id, batchId),
+                {
+                    content: '',
+                    isStreaming: false,
+                    isComplete: false,
+                    abortController,
+                }
+            );
         });
 
         // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
@@ -386,8 +520,19 @@ export const useStreamMessage = () => {
             const model = models[i];
             
             console.log(`DEBUG: Processing model ${i+1}/${models.length}: ${model.name}`, {
-                rootThreadId: model.rootThreadId || 'none'
+                rootThreadId: model.rootThreadId || 'none',
+                modelId: model.id
             });
+            
+            // Update model state to streaming
+            modelStreamStates.get(model.id)!.isStreaming = true;
+            queryClient.setQueryData(
+                getModelStreamKey(model.id, batchId),
+                (oldData: ModelStreamState) => ({
+                    ...oldData,
+                    isStreaming: true,
+                })
+            );
             
             try {
                 // For follow-ups, get the last message ID for this specific thread
@@ -403,7 +548,8 @@ export const useStreamMessage = () => {
                         
                         console.log(`DEBUG: Using last message from thread for ${model.name}`, {
                             threadId: model.rootThreadId,
-                            lastMessageId: lastMessage.id
+                            lastMessageId: lastMessage.id,
+                            modelId: model.id
                         });
                     } catch (error) {
                         console.log(`DEBUG: Failed to get last message for thread ${model.rootThreadId}:`, error);
@@ -422,8 +568,23 @@ export const useStreamMessage = () => {
                     }
                 };
                 
-                // Process this model
+                // Process this model - use the model's abort controller
                 const result = await streamSingleModel(singleModelRequest);
+                
+                // Update model state to complete
+                const modelState = modelStreamStates.get(model.id)!;
+                modelState.isStreaming = false;
+                modelState.isComplete = true;
+                modelState.threadId = result.threadId;
+                modelState.messageId = result.messageId;
+                modelState.content = result.content || '';
+                
+                queryClient.setQueryData(
+                    getModelStreamKey(model.id, batchId),
+                    {
+                        ...modelState
+                    }
+                );
                 
                 // Store the results
                 const modelResult: SingleModelResult = {
@@ -451,8 +612,22 @@ export const useStreamMessage = () => {
             } catch (error) {
                 console.log(`DEBUG: Error processing model ${model.name}:`, error);
                 
-                // Create error result with guaranteed Error object
+                // Update model state to error
+                const modelState = modelStreamStates.get(model.id)!;
                 const errorObj = error instanceof Error ? error : new Error(String(error));
+                
+                modelState.isStreaming = false;
+                modelState.isComplete = false;
+                modelState.error = errorObj;
+                
+                queryClient.setQueryData(
+                    getModelStreamKey(model.id, batchId),
+                    {
+                        ...modelState
+                    }
+                );
+                
+                // Create error result
                 const modelResult: SingleModelResult = {
                     error: errorObj,
                     modelInfo: model
@@ -479,7 +654,8 @@ export const useStreamMessage = () => {
         console.log(`DEBUG: Completed processing ${models.length} models`, {
             threadIds,
             successful: threadIds.length,
-            failed: errors.length
+            failed: errors.length,
+            batchId
         });
 
         // Return aggregated results
@@ -492,7 +668,7 @@ export const useStreamMessage = () => {
             errors: errors.length > 0 ? errors : undefined,
             modelResults
         };
-    }, [streamSingleModel, addSnackMessage]);
+    }, [streamSingleModel, addSnackMessage, queryClient]);
 
     // Main mutation function
     const streamMessage = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
@@ -555,6 +731,7 @@ export const useStreamMessage = () => {
         },
         onError: (error) => {
             console.log('D$> RQ error:', error?.message || 'unknown');
+            
             // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
             appContext.setState({ 
                 streamPromptState: RemoteState.Error,

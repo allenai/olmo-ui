@@ -14,6 +14,7 @@ import { CompareModelState } from '@/slices/CompareModelSlice';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { QueryFormController } from './QueryFormController';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface QueryFormValues {
     content: string;
@@ -23,6 +24,7 @@ interface QueryFormValues {
 
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
+    const queryClient = useQueryClient();
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const streamMessageMutation = useStreamMessage();
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
@@ -47,8 +49,24 @@ export const QueryForm = (): JSX.Element => {
         (event: UIEvent) => {
             event.preventDefault();
             abortPrompt();
+
+            // Also abort any pending React Query streams
+            // This finds all active stream queries and aborts them
+            const queryCache = queryClient.getQueryCache();
+            const streamQueries = queryCache.findAll({
+                queryKey: ['streamMessage'],
+                exact: false,
+            });
+            
+            streamQueries.forEach(query => {
+                const data = query.state.data as any;
+                if (data?.abortController) {
+                    console.log(`DEBUG: Aborting stream for query`, query.queryKey);
+                    data.abortController.abort();
+                }
+            });
         },
-        [abortPrompt]
+        [abortPrompt, queryClient]
     );
 
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
@@ -97,12 +115,16 @@ export const QueryForm = (): JSX.Element => {
             request.parent = lastMessageId;
         }
 
+        // Create a unique batch ID for tracking this group of streams
+        const batchId = `batch-${Date.now()}`;
+
         console.log(`DEBUG: ${isMultiModel ? 'Multi' : 'Single'}-model mode detected`, {
             modelsCount: modelsToStream.length,
             models: modelsToStream.map(m => m.model?.name || 'unknown'),
             hasParent: !!request.parent,
             lastMessageId,
-            location: location.pathname
+            location: location.pathname,
+            batchId
         });
 
         try {
@@ -139,7 +161,8 @@ export const QueryForm = (): JSX.Element => {
             }
             
             console.log(`DEBUG: Using ${isMultiModel ? 'unified multi-model' : 'single-model'} hook`, {
-                modelsCount: isMultiModel ? streamRequest.models?.length : 1
+                modelsCount: isMultiModel ? streamRequest.models?.length : 1,
+                batchId
             });
             
             // Use the unified hook for both cases
@@ -150,7 +173,8 @@ export const QueryForm = (): JSX.Element => {
                 threadIds: result.threadIds || [result.threadId],
                 success: result.isMultiModel 
                     ? (result.threadIds?.length || 0) > 0
-                    : !!result.threadId
+                    : !!result.threadId,
+                batchId
             });
 
             // Handle navigation based on results
