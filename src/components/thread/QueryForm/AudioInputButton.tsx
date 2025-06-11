@@ -16,8 +16,8 @@ interface AudioInputButtonProps {
 }
 
 export const AudioInputButton = ({ isRecording, onClick }: AudioInputButtonProps) => {
-    const { isOLMoASrEnabled } = useFeatureToggles();
-    if (!isOLMoASrEnabled) {
+    const { isOLMoASREnabled } = useFeatureToggles();
+    if (!isOLMoASREnabled) {
         return null;
     }
 
