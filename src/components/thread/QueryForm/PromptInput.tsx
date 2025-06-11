@@ -100,7 +100,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         },
                     })}>
                     {startAdornment != null && (
-                        <StartAdornmentContainer>{startAdornment}</StartAdornmentContainer>
+                        <Box sx={{ gridArea: 'start-adornment' }}>{startAdornment}</Box>
                     )}
                     <Box
                         component="textarea"
@@ -164,15 +164,3 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
         );
     }
 );
-
-const StartAdornmentContainer = ({ children }: React.PropsWithChildren) => {
-    return (
-        <Box
-            sx={{
-                gridArea: 'start-adornment',
-                display: 'flex',
-            }}>
-            {children}
-        </Box>
-    );
-};
