@@ -25,21 +25,45 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 
 // Define clear interfaces for mutation types
+export interface ModelInfo {
+    id: string;
+    name?: string; // Make name optional to match Model type
+    host: string;
+    rootThreadId?: string; // For follow-up messages in multi-model
+}
+
 export interface StreamMessageVariables extends StreamMessageRequest {
-    overrideModel?: {
-        id: string;
-        name: string;
-        host: string;
-    };
+    // TODO: Temp - overrideModel will be removed when model selection is unified
+    overrideModel?: ModelInfo;
+    
+    // For multiple models (new functionality)
+    models?: ModelInfo[];
 }
 
 export interface StreamMessageResult {
+    // TODO: Temp - Single model fields for backward compatibility, will be unified later
     threadId?: string;
     messageId?: string;
     content?: string;
     error?: Error;
     limitReached?: boolean;
     isFirstThreadMessage?: boolean;
+    
+    // Multi-model fields
+    threadIds?: string[];
+    messageIds?: string[];
+    errors?: Error[];
+    modelResults?: SingleModelResult[];
+    isMultiModel?: boolean;
+}
+
+export interface SingleModelResult {
+    threadId?: string;
+    messageId?: string;
+    content?: string;
+    error?: Error;
+    limitReached?: boolean;
+    modelInfo: ModelInfo;
 }
 
 export interface StreamMessageContext {
@@ -71,7 +95,7 @@ export const useStreamMessage = () => {
 
     const handleFinalMessage = useAppContext((state) => state.handleFinalMessage);
 
-    // This function safely adds content to a message, with proper error handling
+    // Adds content to a message, with robust error handling
     const safelyAddContentToMessage = (messageId: string, content: string) => {
         if (!messageId) {
             console.log('DEBUG: Cannot add content - missing messageId');
@@ -96,7 +120,6 @@ export const useStreamMessage = () => {
         }
     };
 
-    // Extracted function to handle first message processing
     const handleFirstMessageReceived = (message: any, context: StreamMessageContext, result: StreamMessageResult) => {
         const parsedMessage = parseMessage(message);
         
@@ -149,7 +172,6 @@ export const useStreamMessage = () => {
         }
     };
 
-    // Extracted function to handle message chunks
     const handleMessageChunkReceived = (message: any, context: StreamMessageContext, result: StreamMessageResult) => {
         // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
         if (!appContext.getState().isUpdatingMessageContent) {
@@ -228,8 +250,9 @@ export const useStreamMessage = () => {
         }
     };
 
-    // Main mutation function
-    const streamMessage = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
+    // Process a single model stream
+    // TODO: Temp - Will be fully replaced by the parallel multi-model approach
+    const streamSingleModel = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
         // Initialize result and context
         const result: StreamMessageResult = {};
         const context: StreamMessageContext = {
@@ -238,10 +261,11 @@ export const useStreamMessage = () => {
             isCreatingNewThread: variables.parent == null
         };
 
+        // TODO: Temp - Will use models array directly when model selection is unified
         // Use override model if provided, otherwise fall back to selectedModel
         const modelToUse = variables.overrideModel || selectedModel;
 
-        console.log(`DEBUG: useStreamMessage called`, {
+        console.log(`DEBUG: useStreamMessage (single model) called`, {
             isCreatingNewThread: context.isCreatingNewThread,
             selectedModel: selectedModel?.name || 'none',
             overrideModel: variables.overrideModel?.name || 'none',
@@ -270,6 +294,8 @@ export const useStreamMessage = () => {
 
         // Remove the overrideModel from the request since it's not part of the API
         delete (request as any).overrideModel;
+        // Also remove models array if present
+        delete (request as any).models;
 
         console.log(`DEBUG: Making API request`, {
             model: request.model,
@@ -335,6 +361,158 @@ export const useStreamMessage = () => {
         handleFinalMessage
     ]);
 
+    // Process multiple models sequentially
+    // TODO: Temp - Will be replaced with parallel execution in future updates
+    const streamMultipleModels = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
+        const models = variables.models || [];
+        const modelResults: SingleModelResult[] = [];
+        const threadIds: string[] = [];
+        const messageIds: string[] = [];
+        const errors: Error[] = [];
+
+        console.log(`DEBUG: Processing ${models.length} models sequentially`, {
+            models: models.map(m => m.name)
+        });
+
+        // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
+        appContext.setState({ 
+            streamPromptState: RemoteState.Loading,
+            abortController: new AbortController()
+        });
+
+        // TODO: Temp - Sequential processing will be replaced with Promise.all for parallel execution
+        // Process each model sequentially for now
+        for (let i = 0; i < models.length; i++) {
+            const model = models[i];
+            
+            console.log(`DEBUG: Processing model ${i+1}/${models.length}: ${model.name}`, {
+                rootThreadId: model.rootThreadId || 'none'
+            });
+            
+            try {
+                // For follow-ups, get the last message ID for this specific thread
+                let parent = variables.parent;
+                
+                if (model.rootThreadId) {
+                    try {
+                        // Dynamic import to avoid circular dependencies
+                        const { getThread } = require('@/api/playgroundApi/thread');
+                        const threadData = await getThread(model.rootThreadId);
+                        const lastMessage = threadData.messages[threadData.messages.length - 1];
+                        parent = lastMessage.id;
+                        
+                        console.log(`DEBUG: Using last message from thread for ${model.name}`, {
+                            threadId: model.rootThreadId,
+                            lastMessageId: lastMessage.id
+                        });
+                    } catch (error) {
+                        console.log(`DEBUG: Failed to get last message for thread ${model.rootThreadId}:`, error);
+                        // Continue without parent - will create new thread
+                    }
+                }
+
+                // Create a single-model request
+                const singleModelRequest: StreamMessageVariables = {
+                    ...variables,
+                    parent,
+                    overrideModel: {
+                        id: model.id,
+                        name: model.name,
+                        host: model.host
+                    }
+                };
+                
+                // Process this model
+                const result = await streamSingleModel(singleModelRequest);
+                
+                // Store the results
+                const modelResult: SingleModelResult = {
+                    threadId: result.threadId,
+                    messageId: result.messageId,
+                    content: result.content,
+                    error: result.error,
+                    limitReached: result.limitReached,
+                    modelInfo: model
+                };
+                
+                modelResults.push(modelResult);
+                
+                if (result.threadId) {
+                    threadIds.push(result.threadId);
+                }
+                
+                if (result.messageId) {
+                    messageIds.push(result.messageId);
+                }
+                
+                if (result.error) {
+                    errors.push(result.error);
+                }
+            } catch (error) {
+                console.log(`DEBUG: Error processing model ${model.name}:`, error);
+                
+                // Create error result with guaranteed Error object
+                const errorObj = error instanceof Error ? error : new Error(String(error));
+                const modelResult: SingleModelResult = {
+                    error: errorObj,
+                    modelInfo: model
+                };
+                
+                modelResults.push(modelResult);
+                errors.push(errorObj);
+                
+                // Add user-friendly error message
+                addSnackMessage({
+                    type: SnackMessageType.Brief,
+                    id: `model-error-${model.id}-${Date.now()}`,
+                    message: `Error streaming ${model.name}: ${errorObj.message}`
+                });
+            }
+        }
+        
+        // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
+        appContext.setState({ 
+            streamPromptState: RemoteState.Loaded,
+            abortController: null
+        });
+
+        console.log(`DEBUG: Completed processing ${models.length} models`, {
+            threadIds,
+            successful: threadIds.length,
+            failed: errors.length
+        });
+
+        // Return aggregated results
+        return {
+            isMultiModel: true,
+            threadIds,
+            threadId: threadIds[0], // For backward compatibility
+            messageIds,
+            messageId: messageIds[0], // For backward compatibility
+            errors: errors.length > 0 ? errors : undefined,
+            modelResults
+        };
+    }, [streamSingleModel, addSnackMessage]);
+
+    // Main mutation function
+    const streamMessage = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
+        // Determine if this is a multi-model request
+        const isMultiModel = !!variables.models && variables.models.length > 0;
+        
+        console.log(`DEBUG: Stream request received`, {
+            isMultiModel,
+            modelCount: isMultiModel ? variables.models!.length : 1
+        });
+        
+        // For multi-model case
+        if (isMultiModel) {
+            return streamMultipleModels(variables);
+        }
+        
+        // TODO: Temp - Single model case for backward compatibility, will be unified later
+        return streamSingleModel(variables);
+    }, [streamSingleModel, streamMultipleModels]);
+
     // Create the React Query mutation with proper typing
     const mutation = useMutation<
         StreamMessageResult,
@@ -343,20 +521,37 @@ export const useStreamMessage = () => {
     >({
         mutationFn: streamMessage,
         onMutate: (variables) => {
-            console.log('D$> RQ mutation start:', variables.overrideModel?.name || 'no-model');
-            // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
-            appContext.setState({ 
-                streamPromptState: RemoteState.Loading,
-                abortController: new AbortController() // This will be used by existing abort logic
-            });
+            const isMultiModel = !!variables.models && variables.models.length > 0;
+            const modelName = isMultiModel 
+                ? `${variables.models!.length} models` 
+                : variables.overrideModel?.name || 'no-model';
+                
+            console.log('D$> RQ mutation start:', modelName);
+            
+            // For single-model, set Zustand state
+            if (!isMultiModel) {
+                // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
+                appContext.setState({ 
+                    streamPromptState: RemoteState.Loading,
+                    abortController: new AbortController() // This will be used by existing abort logic
+                });
+            }
         },
         onSuccess: (result) => {
-            console.log('D$> RQ success, threadId:', result?.threadId || 'none');
-            // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
-            appContext.setState({ 
-                streamPromptState: RemoteState.Loaded,
-                abortController: null
-            });
+            const threadIdLog = result.isMultiModel 
+                ? `${result.threadIds?.length || 0} threads` 
+                : result.threadId || 'none';
+                
+            console.log('D$> RQ success:', threadIdLog);
+            
+            // For single-model, reset Zustand state
+            if (!result.isMultiModel) {
+                // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
+                appContext.setState({ 
+                    streamPromptState: RemoteState.Loaded,
+                    abortController: null
+                });
+            }
         },
         onError: (error) => {
             console.log('D$> RQ error:', error?.message || 'unknown');

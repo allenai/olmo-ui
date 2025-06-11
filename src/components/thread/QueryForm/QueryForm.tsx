@@ -7,7 +7,7 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
-import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
+import { ModelInfo, StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
@@ -71,7 +71,7 @@ export const QueryForm = (): JSX.Element => {
         const request: StreamMessageRequest = data;
 
         // Determine which models to stream
-        // but fall back to creating a single-item array from selectedModel if needed
+        // TODO: Temp - This dual model selection logic will be unified later
         let modelsToStream: CompareModelState[] = [];
 
         if (selectedCompareModels && selectedCompareModels.length > 0) {
@@ -79,6 +79,7 @@ export const QueryForm = (): JSX.Element => {
             modelsToStream =
                 selectedCompareModels.length > 1 ? selectedCompareModels : selectedCompareModels;
         } else if (selectedModel) {
+            // TODO: Temp - Fall back to single selectedModel will be removed when model selection is unified
             // Fall back: create a compare model structure from the single selected model
             modelsToStream = [
                 {
@@ -91,155 +92,85 @@ export const QueryForm = (): JSX.Element => {
         const isMultiModel = modelsToStream.length > 1;
         
         // For single-model, use the existing lastMessageId logic
-        // For multi-model, we'll get the last message ID per thread in the loop
-        const globalLastMessageId = !isMultiModel && lastMessageId ? lastMessageId : undefined;
-        
-        if (globalLastMessageId) {
-            request.parent = globalLastMessageId;
+        // For multi-model, we'll get the last message ID per thread via rootThreadId
+        if (!isMultiModel && lastMessageId) {
+            request.parent = lastMessageId;
         }
 
         console.log(`DEBUG: ${isMultiModel ? 'Multi' : 'Single'}-model mode detected`, {
             modelsCount: modelsToStream.length,
             models: modelsToStream.map(m => m.model?.name || 'unknown'),
             hasParent: !!request.parent,
-            globalLastMessageId,
+            lastMessageId,
             location: location.pathname
         });
 
         try {
-            // TODO Temp: Use React Query just for single-model
-            if (!isMultiModel) {
-                console.log('D$> Single model -> RQ path:', modelsToStream[0]?.model?.name);
-                const model = modelsToStream[0]?.model;
-                
-                if (!model) {
-                    console.log('DEBUG: No model found for single-model scenario');
-                    return;
-                }
-
-                // Track analytics for this model
-                analyticsClient.trackQueryFormSubmission(
-                    model.id,
-                    location.pathname === links.playground
-                );
-
-                // Use React Query mutation with model override
-                const requestWithModel: StreamMessageVariables = {
-                    ...request,
-                    overrideModel: {
-                        id: model.id,
-                        host: model.host,
-                        name: model.name
-                    }
-                };
-
-                const result = await streamMessageMutation.mutateAsync(requestWithModel);
-                console.log('D$> RQ complete, navigate to:', result.threadId || 'none');
-
-                // Navigate to the new thread
-                if (result.threadId) {
-                    console.log('DEBUG: Single-model navigation to thread:', result.threadId);
-                    await router.navigate(links.thread(result.threadId));
-                } else {
-                    console.log('DEBUG: No valid thread ID for single-model navigation');
-                }
-                return;
-            }
-
-            // Multi-model: use existing Zustand approach (sequential)
-            // TEMP: This will be replaced with parallel streaming in future updates
-            console.log('D$> Multi model -> Zustand path (temp)');
-            const results = [];
-
-            for (let index = 0; index < modelsToStream.length; index++) {
-                const { model, rootThreadId } = modelsToStream[index];
-
-                if (!model) {
-                    console.log(`DEBUG: No model found for index ${index}`);
-                    results.push({ threadId: undefined });
-                    continue;
-                }
-
-                try {
-                    console.log(`DEBUG: Starting stream for model ${model.name} (${index + 1}/${modelsToStream.length})`, {
-                        rootThreadId,
-                        isFollowUp: !!rootThreadId
-                    });
-                    
-                    // Track analytics for this model
+            // Track analytics for all models
+            modelsToStream.forEach(({ model }) => {
+                if (model) {
                     analyticsClient.trackQueryFormSubmission(
                         model.id,
                         location.pathname === links.playground
                     );
-
-                    // For multi-model follow-ups, get the last message ID from this specific thread
-                    let requestForThisModel = { ...request };
-                    
-                    if (isMultiModel && rootThreadId) {
-                        // This is a follow-up in multi-model mode - get last message from this specific thread
-                        try {
-                            const { getThread } = await import('@/api/playgroundApi/thread');
-                            const threadData = await getThread(rootThreadId);
-                            const lastMessage = threadData.messages[threadData.messages.length - 1];
-                            requestForThisModel.parent = lastMessage.id;
-                            
-                            console.log(`DEBUG: Multi-model follow-up for ${model.name}`, {
-                                threadId: rootThreadId,
-                                parentMessageId: lastMessage.id
-                            });
-                        } catch (error) {
-                            console.log(`DEBUG: Failed to get last message for thread ${rootThreadId}:`, error);
-                            // Continue without parent - will create new thread
-                        }
-                    }
-
-                    // Each model gets its own stream and thread with specific model override
-                    const requestWithModel = {
-                        ...requestForThisModel,
-                        overrideModel: {
-                            id: model.id,
-                            host: model.host,
-                            name: model.name
-                        }
-                    };
-                    
-                    // TODO: TEMP - Will be replaced with React Query in future updates
-                    const result = await streamPrompt(requestWithModel);
-                    console.log(`DEBUG: Stream completed for ${model.name}:`, { threadId: result.threadId });
-                    results.push(result);
-                } catch (_error) {
-                    console.log(`DEBUG: Stream failed for ${model.name}:`, _error);
-                    results.push({ threadId: undefined });
                 }
+            });
+
+            // Create request for unified hook
+            const streamRequest: StreamMessageVariables = {
+                ...request,
+            };
+            
+            if (isMultiModel) {
+                // Multi-model: Use models array
+                streamRequest.models = modelsToStream.map(({ model, rootThreadId }) => ({
+                    id: model!.id,
+                    name: model!.name,
+                    host: model!.host,
+                    rootThreadId
+                }));
+            } else if (modelsToStream[0]?.model) {
+                // TODO: Temp - Single-model with overrideModel will be replaced by unified models array later
+                streamRequest.overrideModel = {
+                    id: modelsToStream[0].model.id,
+                    name: modelsToStream[0].model.name,
+                    host: modelsToStream[0].model.host
+                };
             }
+            
+            console.log(`DEBUG: Using ${isMultiModel ? 'unified multi-model' : 'single-model'} hook`, {
+                modelsCount: isMultiModel ? streamRequest.models?.length : 1
+            });
+            
+            // Use the unified hook for both cases
+            const result = await streamMessageMutation.mutateAsync(streamRequest);
+            
+            console.log(`DEBUG: Stream completed`, {
+                isMultiModel: result.isMultiModel,
+                threadIds: result.threadIds || [result.threadId],
+                success: result.isMultiModel 
+                    ? (result.threadIds?.length || 0) > 0
+                    : !!result.threadId
+            });
 
-            console.log(`DEBUG: All streams completed. Results:`, results.map(r => ({ threadId: r.threadId })));
-
-            // Handle navigation based on context and number of results
-            if (isMultiModel && location.pathname === links.comparison) {
+            // Handle navigation based on results
+            if (isMultiModel && result.threadIds && result.threadIds.length > 0) {
                 // Multi-model on comparison page: redirect with thread IDs
-                const threadIds = results
-                    .filter((result) => result.threadId)
-                    .map((result) => result.threadId);
-
-                console.log(`DEBUG: Multi-model navigation - threadIds:`, threadIds);
-
-                if (threadIds.length > 0) {
-                    const threadsParam = threadIds.join(',');
+                if (location.pathname === links.comparison) {
+                    const threadsParam = result.threadIds.join(',');
                     console.log(`DEBUG: Navigating to comparison page with threads: ${threadsParam}`);
                     await router.navigate(`${links.comparison}?threads=${threadsParam}`);
                 } else {
-                    console.log(`DEBUG: No valid thread IDs for multi-model navigation`);
+                    // Multi-model but not on comparison page: navigate to first thread
+                    console.log(`DEBUG: Navigating to first thread of multiple: ${result.threadIds[0]}`);
+                    await router.navigate(links.thread(result.threadIds[0]));
                 }
+            } else if (result.threadId) {
+                // Single thread navigation
+                console.log(`DEBUG: Navigating to thread: ${result.threadId}`);
+                await router.navigate(links.thread(result.threadId));
             } else {
-                // Single model or multi-model on other pages: navigate to first thread
-                const firstThreadId = results.find((result) => result.threadId)?.threadId;
-                if (firstThreadId) {
-                    console.log(`DEBUG: Single-model navigation to thread: ${firstThreadId}`);
-                    await router.navigate(links.thread(firstThreadId));
-                } else {
-                    console.log(`DEBUG: No valid thread ID for single-model navigation`);
-                }
+                console.log(`DEBUG: No valid thread IDs for navigation`);
             }
         } catch (error) {
             console.error('DEBUG: Fatal error in streaming:', error);
