@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { Ai2Avatar } from '@/components/avatars/Ai2Avatar';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
-import { RemoteState } from '@/contexts/util';
+import { useIsStreamingMessage } from '@/hooks/useIsStreamingMessage';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
 import { LLMMessage } from './LLMMessage';
@@ -24,16 +24,23 @@ export const ChatMessage = ({
     messageId,
     children,
 }: ChatMessageProps): JSX.Element => {
-    const streamPromptState = useAppContext((state) => state.streamPromptState);
-    const finalMessageContent = useAppContext((state) => {
-        if (
-            state.streamingMessageId !== messageId ||
-            state.streamPromptState !== RemoteState.Loaded
-        ) {
-            return null;
+    // Use React Query hooks instead of Zustand state
+    const isMessageStreaming = useIsStreamingMessage(messageId);
+    
+    // Track final message content for screen reader announcement
+    const [finalMessageContent, setFinalMessageContent] = useState<string | null>(null);
+    
+    // Get message content from thread state for screen reader announcement
+    const messageContent = useAppContext(state => 
+        state.selectedThreadMessagesById[messageId]?.content || null
+    );
+    
+    // When streaming stops, capture the final content for screen reader announcement
+    useEffect(() => {
+        if (!isMessageStreaming && messageContent && !finalMessageContent) {
+            setFinalMessageContent(messageContent);
         }
-        return state.selectedThreadMessagesById[messageId].content || null;
-    });
+    }, [isMessageStreaming, messageContent, finalMessageContent]);
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
@@ -52,7 +59,7 @@ export const ChatMessage = ({
             </Box>
             <Box>
                 <MessageComponent messageId={messageId}>{children}</MessageComponent>
-                {streamPromptState === RemoteState.Loading && (
+                {isMessageStreaming && (
                     <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
                 )}
                 {/* This gets the latest LLM response to alert screen readers */}
