@@ -18,16 +18,14 @@ import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMe
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
-import { useAudioRecording } from '@/utils/useAudioRecording';
 
-import { AudioInputButton } from './AudioInputButton';
+import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { FileUploadButton } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
-import { handleTranscribe } from './handleTranscribe';
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
-interface QueryFormValues {
+export interface QueryFormValues {
     content: string;
     private: boolean;
     files?: FileList;
@@ -92,8 +90,7 @@ export const QueryForm = (): JSX.Element => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
-
-    const { startRecording, isRecording, stopRecording } = useAudioRecording({ log: true });
+    const isTranscribing = useAppContext((state) => state.isTranscribing);
 
     const { executeRecaptcha } = useReCaptcha();
 
@@ -241,20 +238,6 @@ export const QueryForm = (): JSX.Element => {
         formContext.setValue('files', dataTransfer.files);
     };
 
-    const handleAudioClick = async () => {
-        if (isRecording) {
-            stopRecording();
-        } else {
-            await startRecording({
-                pollLength: 1000,
-                onStop: async (data) => {
-                    const { text } = await handleTranscribe(data);
-                    formContext.setValue('content', text || '');
-                },
-            });
-        }
-    };
-
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmit}>
@@ -283,8 +266,9 @@ export const QueryForm = (): JSX.Element => {
                                 startAdornment={
                                     <>
                                         <AudioInputButton
-                                            isRecording={isRecording}
-                                            onClick={handleAudioClick}
+                                            setContent={(content) => {
+                                                formContext.setValue('content', content);
+                                            }}
                                         />
                                         <FileUploadButton {...formContext.register('files')} />
                                     </>
@@ -296,7 +280,7 @@ export const QueryForm = (): JSX.Element => {
                                         isSubmitDisabled={
                                             isSelectedThreadLoading ||
                                             isLimitReached ||
-                                            isRecording ||
+                                            isTranscribing ||
                                             !canEditThread
                                         }
                                     />

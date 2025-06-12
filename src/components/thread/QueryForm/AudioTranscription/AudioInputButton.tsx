@@ -2,8 +2,11 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { MicRounded, StopCircleOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 
-// import { IconButton } from '@allenai/varnish-ui'; // styles don't match existing
+import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
+
+import { handleTranscribe } from '../handleTranscribe';
+import { useAudioRecording } from './useAudioRecording';
 
 const iconClassName = css({
     transform: 'translateY(1px)', // Microphone looks odd sitting higher than the camera icon
@@ -11,21 +14,37 @@ const iconClassName = css({
 });
 
 interface AudioInputButtonProps {
-    isRecording: boolean;
-    onClick: () => void;
+    setContent: (content: string) => void;
 }
 
-export const AudioInputButton = ({ isRecording, onClick }: AudioInputButtonProps) => {
+export const AudioInputButton = ({ setContent }: AudioInputButtonProps) => {
     const { isOLMoASREnabled } = useFeatureToggles();
+    const isTranscribing = useAppContext((state) => state.isTranscribing);
+    const { startRecording, stopRecording } = useAudioRecording();
+
     if (!isOLMoASREnabled) {
         return null;
     }
 
-    const Icon = isRecording ? StopCircleOutlined : MicRounded;
+    const handleAudioClick = async () => {
+        if (isTranscribing) {
+            stopRecording();
+        } else {
+            await startRecording({
+                pollLength: 1000,
+                onStop: async (data) => {
+                    const { text } = await handleTranscribe(data);
+                    setContent(text || '');
+                },
+            });
+        }
+    };
+
+    const Icon = isTranscribing ? StopCircleOutlined : MicRounded;
 
     return (
         <IconButton
-            onClick={onClick}
+            onClick={handleAudioClick}
             disableRipple={true}
             sx={{
                 // style like the FileUploadButton

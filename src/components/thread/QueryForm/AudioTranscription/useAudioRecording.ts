@@ -1,9 +1,8 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-enum StreamState {
-    Idle = 'idle',
-    Init = 'init',
-}
+import { useAppContext } from '@/AppContext';
+
+type StreamState = 'idle' | 'init';
 
 interface UseAudioRecordingProps {
     log?: boolean;
@@ -16,13 +15,15 @@ interface StartRecordingProps {
     onError?: (event: Event) => void;
 }
 
-export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
-    const { log = false } = opts || {};
+export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
+    const { log = false } = opts;
     // UI State
-    const [isRecording, setIsRecording] = useState<boolean>(false);
+    // remove react state
+    // const [isRecording, setIsRecording] = useState<boolean>(false);
+    const setIsTranscribing = useAppContext((state) => state.setIsTranscribing);
 
     // Stream aquire state
-    const streamState = useRef<StreamState>(StreamState.Idle);
+    const streamState = useRef<StreamState>('idle');
 
     const mediaStream = useRef<MediaStream | null>(null);
     const mediaRecorder = useRef<MediaRecorder | null>(null);
@@ -30,7 +31,7 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
 
     const debugLog = (...args: unknown[]) => {
         if (log) {
-            console.log(...args);
+            console.debug(...args);
         }
     };
 
@@ -48,9 +49,9 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
                 throw new Error('getUserMedia is not supported in this browser');
             }
 
-            if (streamState.current === StreamState.Idle) {
+            if (streamState.current === 'idle') {
                 debugLog('Aquiring audio stream...');
-                streamState.current = StreamState.Init;
+                streamState.current = 'init';
                 mediaStream.current = await navigator.mediaDevices.getUserMedia({ audio: true });
                 debugLog('Audio stream obtained:', mediaStream.current);
             }
@@ -108,12 +109,12 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
 
                 mediaRecorder.current.start(pollLength);
                 debugLog('MediaRecorder started');
-                setIsRecording(true);
+                setIsTranscribing(true);
             }
         } catch (error: unknown) {
             console.error('Error starting recording:', error);
-            streamState.current = StreamState.Idle;
-            setIsRecording(false);
+            streamState.current = 'idle';
+            setIsTranscribing(false);
             throw error;
         }
     };
@@ -122,15 +123,14 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
         if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
             debugLog('Stopping MediaRecorder');
             mediaRecorder.current.stop();
-            streamState.current = StreamState.Idle;
-            setIsRecording(false);
+            streamState.current = 'idle';
+            setIsTranscribing(false);
         } else {
             debugLog('MediaRecorder not active, cannot stop');
         }
     };
 
     return {
-        isRecording,
         startRecording,
         stopRecording,
     };
