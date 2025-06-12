@@ -5,24 +5,20 @@ import {
     isFinalMessage, 
     isFirstMessage, 
     isMessageChunk, 
-    Message, 
     MessageStreamError, 
     MessageStreamErrorReason, 
     parseMessage, 
     StreamBadRequestError, 
     V4CreateMessageRequest 
 } from '@/api/Message';
-import { threadQueryOptions } from '@/api/playgroundApi/thread';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
-import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext, useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { getFeatureToggles } from '@/FeatureToggleContext';
-import { StreamMessageRequest, StreamPromptResult } from '@/slices/ThreadUpdateSlice';
+import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { AlertMessageSeverity, errorToAlert, SnackMessage, SnackMessageType } from '@/slices/SnackMessageSlice';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { CompareModelState } from '@/slices/CompareModelSlice';
 
 // Define clear interfaces for mutation types
 export interface ModelInfo {
@@ -526,7 +522,7 @@ export const useStreamMessage = () => {
             streamPromptState: RemoteState.Loading,
             abortController: new AbortController()
         });
-
+        
         // Process all models in parallel using Promise.allSettled
         const streamResults = await Promise.allSettled(
             models.map(async (model) => {
@@ -645,7 +641,7 @@ export const useStreamMessage = () => {
                 }
             })
         );
-        
+
         // Process results from all parallel streams
         let fastestStream = Infinity;
         let slowestStream = 0;
@@ -686,7 +682,6 @@ export const useStreamMessage = () => {
                 }
             } else {
                 // Handle rejected promise (should now be rare due to our error handling)
-                console.log('DEBUG: Promise rejection in stream:', result.reason);
                 const error = result.reason;
                 const errorObj = error instanceof Error ? error : new Error(String(error));
                 errors.push(errorObj);
@@ -706,39 +701,13 @@ export const useStreamMessage = () => {
             }
         });
         
-        // Calculate total parallel execution time
-        const totalTime = (performance.now() - startTime).toFixed(2);
-        
         // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
         appContext.setState({ 
             streamPromptState: RemoteState.Loaded,
             abortController: null,
             streamingMessageId: null // Reset to enable form clearing for next submission
         });
-
-        // Calculate average time and the time saved by parallel execution
-        const avgTime = successfulStreams > 0 ? (totalDuration / successfulStreams).toFixed(2) : 0;
-        const sequentialEquivalent = totalDuration.toFixed(2);
-        const timeSaved = (totalDuration - parseFloat(totalTime)).toFixed(2);
-        const parallelEfficiency = totalDuration > 0 ? 
-            ((totalDuration / parseFloat(totalTime)) * 100).toFixed(1) + '%' : '0%';
         
-        console.log(`DEBUG: Completed parallel processing of ${models.length} models in ${totalTime}ms`, {
-            threadIds,
-            successful: threadIds.length,
-            failed: errors.length,
-            batchId,
-            performance: {
-                totalParallelTime: totalTime + 'ms',
-                fastestStream: fastestStream !== Infinity ? fastestStream + 'ms' : 'N/A',
-                slowestStream: slowestStream > 0 ? slowestStream + 'ms' : 'N/A',
-                avgStreamTime: avgTime + 'ms',
-                sequentialEquivalent: sequentialEquivalent + 'ms',
-                timeSaved: timeSaved + 'ms',
-                parallelEfficiency,
-            }
-        });
-
         // Return aggregated results
         return {
             isMultiModel: true,

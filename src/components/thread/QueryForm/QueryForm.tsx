@@ -1,4 +1,4 @@
-import { JSX, UIEvent, useCallback } from 'react';
+import { JSX, UIEvent, useCallback, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -7,7 +7,7 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
-import { ModelInfo, StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
+import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
@@ -25,7 +25,6 @@ interface QueryFormValues {
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const queryClient = useQueryClient();
-    const streamPrompt = useAppContext((state) => state.streamPrompt);
     const streamMessageMutation = useStreamMessage();
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
