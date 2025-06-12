@@ -13,7 +13,6 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
-import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
@@ -24,6 +23,7 @@ import { useAudioRecording } from '@/utils/useAudioRecording';
 import { AudioInputButton } from './AudioInputButton';
 import { FileUploadButton } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
+import { handleTranscribe } from './handleTranscribe';
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
@@ -247,13 +247,9 @@ export const QueryForm = (): JSX.Element => {
         } else {
             await startRecording({
                 pollLength: 1000,
-                onData: async (data) => {
-                    console.log('chunk: ', data);
-                    const response = await queryClient.fetchQuery({
-                        queryKey: ['transcribe'],
-                        queryFn: () => handleTranscribe(data),
-                    });
-                    console.log(response);
+                onStop: async (data) => {
+                    const { text } = await handleTranscribe(data);
+                    formContext.setValue('content', text || '');
                 },
             });
         }
@@ -323,11 +319,4 @@ export const QueryForm = (): JSX.Element => {
             </FormContainer>
         </Box>
     );
-};
-
-const handleTranscribe = (_data: Blob) => {
-    // fetch
-    return {
-        text: 'a',
-    };
 };

@@ -11,7 +11,9 @@ interface UseAudioRecordingProps {
 
 interface StartRecordingProps {
     pollLength: number;
-    onData: (data: Blob) => Promise<void>;
+    onData?: (data: Blob) => Promise<void>;
+    onStop?: (data: Blob) => Promise<void>;
+    onError?: (event: Event) => void;
 }
 
 export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
@@ -35,6 +37,8 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
     const startRecording = async ({
         pollLength = 1_000,
         onData,
+        onStop,
+        onError,
     }: StartRecordingProps): Promise<void> => {
         try {
             debugLog('Attempting to start recording...');
@@ -53,7 +57,8 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
 
             if (mediaStream.current) {
                 // Check for supported MIME types
-                const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/ogg'];
+                // prefered order
+                const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/ogg', 'audio/wav'];
                 const selectedMimeType =
                     mimeTypes.find((type) => MediaRecorder.isTypeSupported(type)) || '';
 
@@ -65,7 +70,7 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
 
                 mediaRecorder.current = new MediaRecorder(mediaStream.current, {
                     mimeType: selectedMimeType,
-                    audioBitsPerSecond: 128000, // Adjust as needed
+                    audioBitsPerSecond: 128_000,
                 });
                 debugLog('MediaRecorder created:', mediaRecorder.current);
 
@@ -75,11 +80,13 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
                     if (event.data.size > 0) {
                         audioChunks.current.push(event.data);
                         debugLog('Audio chunk received, size:', event.data.size);
-                        await onData(event.data);
+                        if (onData) {
+                            await onData(event.data);
+                        }
                     }
                 };
 
-                mediaRecorder.current.onstop = () => {
+                mediaRecorder.current.onstop = async () => {
                     debugLog('MediaRecorder stopped');
                     const audioBlob = new Blob(audioChunks.current, { type: selectedMimeType });
                     debugLog('Audio blob created, size:', audioBlob.size);
@@ -87,6 +94,16 @@ export const useAudioRecording = (opts?: UseAudioRecordingProps) => {
                     mediaStream.current?.getTracks().forEach((track) => {
                         track.stop();
                     });
+                    if (onStop) {
+                        await onStop(audioBlob);
+                    }
+                };
+
+                mediaRecorder.current.onerror = (event: Event) => {
+                    debugLog('MediaRecorder error', event);
+                    if (onError) {
+                        onError(event);
+                    }
                 };
 
                 mediaRecorder.current.start(pollLength);
