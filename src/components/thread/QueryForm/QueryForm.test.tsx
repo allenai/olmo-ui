@@ -26,6 +26,40 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 
 import { QueryForm } from './QueryForm';
 
+// Helper function to create a mock mutation result
+const createMockStreamMessageMutation = (mockMutateAsyncFn: any): UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown> => {
+  return {
+    mutateAsync: mockMutateAsyncFn,
+    isLoading: false,
+    isError: false,
+    error: null,
+    data: undefined,
+    reset: vi.fn(),
+    status: 'idle',
+    variables: undefined,
+    context: undefined,
+    failureCount: 0,
+    failureReason: null,
+    isPaused: false,
+    isPending: false,
+    isSuccess: false,
+    mutate: vi.fn(),
+  } as unknown as UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown>;
+};
+
+// Helper to setup common mocks for router and AppContext
+const setupCommonMocks = () => {
+  vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+    pathname: '/',
+    search: '',
+    hash: '',
+    state: 'loaded',
+    key: '',
+  });
+  vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+  vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+};
+
 describe('QueryForm', () => {
     it('should render successfully', () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
@@ -42,37 +76,13 @@ describe('QueryForm', () => {
     });
 
     it('should submit prompt successfully', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         // Mock the React Query mutation instead of streamPrompt
         const mockMutateAsync = vi.fn().mockResolvedValue({ threadId: 'thread-123' });
-        const mockStreamMessageMutation = { 
-            mutateAsync: mockMutateAsync,
-            isLoading: false,
-            isError: false,
-            error: null,
-            data: undefined,
-            reset: vi.fn(),
-            status: 'idle',
-            variables: undefined,
-            context: undefined,
-            failureCount: 0,
-            failureReason: null,
-            isPaused: false,
-            isPending: false,
-            isSuccess: false,
-            mutate: vi.fn(),
-        } as unknown as UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown>;
-        
-        vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(mockStreamMessageMutation);
+        vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(
+            createMockStreamMessageMutation(mockMutateAsync)
+        );
 
         const initialStates = {
             streamPrompt: vi.fn(),
@@ -111,15 +121,7 @@ describe('QueryForm', () => {
     });
 
     it('should show the stop button when streaming', () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         const initialStates = {
             streamPromptState: RemoteState.Loading,
@@ -142,15 +144,7 @@ describe('QueryForm', () => {
     });
 
     it('should clear out prompt after receiving the first message from the response', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         // Mock React Query mutation
         const mockMutateAsync = vi.fn().mockImplementation(async () => {
@@ -159,25 +153,9 @@ describe('QueryForm', () => {
             return { threadId: 'thread-123' };
         });
         
-        const mockStreamMessageMutation = { 
-            mutateAsync: mockMutateAsync,
-            isLoading: false,
-            isError: false,
-            error: null,
-            data: undefined,
-            reset: vi.fn(),
-            status: 'idle',
-            variables: undefined,
-            context: undefined,
-            failureCount: 0,
-            failureReason: null,
-            isPaused: false,
-            isPending: false,
-            isSuccess: false,
-            mutate: vi.fn(),
-        } as unknown as UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown>;
-        
-        vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(mockStreamMessageMutation);
+        vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(
+            createMockStreamMessageMutation(mockMutateAsync)
+        );
 
         const initialState = {
             streamPrompt: vi.fn(),
@@ -212,37 +190,13 @@ describe('QueryForm', () => {
     });
 
     it('should not clear out prompt after the stream finishes', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         // Mock React Query mutation that doesn't set streamingMessageId
         const mockMutateAsync = vi.fn().mockResolvedValue({ threadId: 'thread-123' });
-        const mockStreamMessageMutation = { 
-            mutateAsync: mockMutateAsync,
-            isLoading: false,
-            isError: false,
-            error: null,
-            data: undefined,
-            reset: vi.fn(),
-            status: 'idle',
-            variables: undefined,
-            context: undefined,
-            failureCount: 0,
-            failureReason: null,
-            isPaused: false,
-            isPending: false,
-            isSuccess: false,
-            mutate: vi.fn(),
-        } as unknown as UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown>;
-        
-        vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(mockStreamMessageMutation);
+        vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(
+            createMockStreamMessageMutation(mockMutateAsync)
+        );
 
         const initialState = {
             streamingMessageId: null,
@@ -275,15 +229,7 @@ describe('QueryForm', () => {
     });
 
     it("should show a model's family name in the placeholder and label", () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         render(
             <FakeAppContextProvider
@@ -297,15 +243,7 @@ describe('QueryForm', () => {
     });
 
     it("should show a model's family name in the reply placeholder and label", () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         render(
             <FakeAppContextProvider
@@ -327,15 +265,7 @@ describe('QueryForm', () => {
     });
 
     it('should show "reply to" in the placeholder and label', () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
 
         render(
             <FakeAppContextProvider
@@ -356,15 +286,8 @@ describe('QueryForm', () => {
     });
 
     it('should show the thumbnail of an uploaded image and allow the user to remove it', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        setupCommonMocks();
+        
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',
