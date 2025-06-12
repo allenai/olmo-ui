@@ -15,9 +15,7 @@ import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import * as RouterDom from 'react-router-dom';
-import * as ReactQuery from '@tanstack/react-query';
 import { UseMutationResult } from '@tanstack/react-query';
-import React from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import * as AppContext from '@/AppContext';
