@@ -159,11 +159,20 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
     ): Promise<AttributionState> => {
         const message = get().selectedThreadMessagesById[messageId];
 
+        // Safety check - if message doesn't exist, return early
+        if (!message) {
+            console.log(`DEBUG: Cannot get attributions - message ${messageId} not found`);
+            return {
+                attribution: get().attribution,
+            };
+        }
+
         const messageDocumentsLoadingState =
             get().attribution.attributionsByMessageId[messageId]?.loadingState;
 
         // If a request is in-flight or finished we don't need to fetch again
         if (
+            message && 
             message.model_id &&
             messageDocumentsLoadingState !== RemoteState.Loading &&
             messageDocumentsLoadingState !== RemoteState.Loaded

@@ -64,6 +64,7 @@ export interface SingleModelResult {
     error?: Error;
     limitReached?: boolean;
     modelInfo: ModelInfo;
+    duration?: number; // Add duration field for performance tracking
 }
 
 export interface StreamMessageContext {
@@ -287,7 +288,18 @@ export const useStreamMessage = () => {
 
         // Get attributions if enabled
         if (isCorpusLinkEnabled && context.streamingMessageId) {
-            await getAttributionsForMessage(request.content, context.streamingMessageId);
+            try {
+                // Ensure the request has a valid model field
+                if (!request.model) {
+                    console.log('DEBUG: Skipping attributions - missing model in request');
+                    return;
+                }
+                
+                await getAttributionsForMessage(request.content, context.streamingMessageId);
+            } catch (error) {
+                // Log but don't throw - attributions are non-critical
+                console.log('DEBUG: Error fetching attributions:', error);
+            }
         }
     };
 
@@ -407,11 +419,13 @@ export const useStreamMessage = () => {
             hasParent: !!request.parent
         });
 
+        // Process the stream
         try {
-            // Process the stream
             await processMessageStream(request, context, result);
             return result;
         } catch (err) {
+            console.log(`DEBUG: Error in streamSingleModel:`, err);
+            
             // Handle different error types
             let snackMessage = errorToAlert(
                 `create-message-${new Date().getTime()}`.toLowerCase(),
@@ -450,6 +464,9 @@ export const useStreamMessage = () => {
                 }
             }
 
+            // Store the error in the result so it can be handled by the caller
+            result.error = err instanceof Error ? err : new Error(String(err));
+
             addSnackMessage(snackMessage);
             throw err;
         }
@@ -466,8 +483,8 @@ export const useStreamMessage = () => {
         queryClient
     ]);
 
-    // Process multiple models sequentially
-    // TODO: Temp - Will be replaced with Promise.all for parallel execution
+    // Process multiple models in parallel 
+    // Implementation for handling multiple model streams concurrently with independent state tracking
     const streamMultipleModels = useCallback(async (variables: StreamMessageVariables): Promise<StreamMessageResult> => {
         const models = variables.models || [];
         const modelResults: SingleModelResult[] = [];
@@ -477,11 +494,7 @@ export const useStreamMessage = () => {
         
         // Create a unique request ID for this batch of models
         const batchId = `batch-${Date.now()}`;
-
-        console.log(`DEBUG: Processing ${models.length} models sequentially`, {
-            models: models.map(m => m.name),
-            batchId
-        });
+        const startTime = performance.now();
 
         // Create a map to track per-model state
         const modelStreamStates = new Map<string, ModelStreamState>();
@@ -514,148 +527,216 @@ export const useStreamMessage = () => {
             abortController: new AbortController()
         });
 
-        // TODO: Temp - Sequential processing will be replaced with Promise.all for parallel execution
-        // Process each model sequentially for now
-        for (let i = 0; i < models.length; i++) {
-            const model = models[i];
-            
-            console.log(`DEBUG: Processing model ${i+1}/${models.length}: ${model.name}`, {
-                rootThreadId: model.rootThreadId || 'none',
-                modelId: model.id
-            });
-            
-            // Update model state to streaming
-            modelStreamStates.get(model.id)!.isStreaming = true;
-            queryClient.setQueryData(
-                getModelStreamKey(model.id, batchId),
-                (oldData: ModelStreamState) => ({
-                    ...oldData,
-                    isStreaming: true,
-                })
-            );
-            
-            try {
-                // For follow-ups, get the last message ID for this specific thread
-                let parent = variables.parent;
+        // Process all models in parallel using Promise.allSettled
+        const streamResults = await Promise.allSettled(
+            models.map(async (model) => {
+                const modelStartTime = performance.now();
                 
-                if (model.rootThreadId) {
-                    try {
-                        // Dynamic import to avoid circular dependencies
-                        const { getThread } = require('@/api/playgroundApi/thread');
-                        const threadData = await getThread(model.rootThreadId);
-                        const lastMessage = threadData.messages[threadData.messages.length - 1];
-                        parent = lastMessage.id;
-                        
-                        console.log(`DEBUG: Using last message from thread for ${model.name}`, {
-                            threadId: model.rootThreadId,
-                            lastMessageId: lastMessage.id,
-                            modelId: model.id
-                        });
-                    } catch (error) {
-                        console.log(`DEBUG: Failed to get last message for thread ${model.rootThreadId}:`, error);
-                        // Continue without parent - will create new thread
+                // Update model state to streaming
+                modelStreamStates.get(model.id)!.isStreaming = true;
+                queryClient.setQueryData(
+                    getModelStreamKey(model.id, batchId),
+                    (oldData: ModelStreamState) => ({
+                        ...oldData,
+                        isStreaming: true,
+                    })
+                );
+                
+                try {
+                    // For follow-ups, get the last message ID for this specific thread
+                    let parent = variables.parent;
+                    
+                    if (model.rootThreadId) {
+                        try {
+                            // Dynamic import to avoid circular dependencies
+                            const { getThread } = require('@/api/playgroundApi/thread');
+                            const threadData = await getThread(model.rootThreadId);
+                            const lastMessage = threadData.messages[threadData.messages.length - 1];
+                            parent = lastMessage.id;
+                        } catch (error) {
+                            // Continue without parent - will create new thread
+                        }
                     }
-                }
 
-                // Create a single-model request
-                const singleModelRequest: StreamMessageVariables = {
-                    ...variables,
-                    parent,
-                    overrideModel: {
-                        id: model.id,
-                        name: model.name,
-                        host: model.host
+                    // Create a single-model request
+                    const singleModelRequest: StreamMessageVariables = {
+                        ...variables,
+                        parent,
+                        overrideModel: {
+                            id: model.id,
+                            name: model.name,
+                            host: model.host
+                        }
+                    };
+                    
+                    try {
+                        // Process this model - use the model's abort controller
+                        const result = await streamSingleModel(singleModelRequest);
+                        
+                        const modelDuration = (performance.now() - modelStartTime).toFixed(2);
+                        
+                        // Update model state to complete
+                        const modelState = modelStreamStates.get(model.id)!;
+                        modelState.isStreaming = false;
+                        modelState.isComplete = true;
+                        modelState.threadId = result.threadId;
+                        modelState.messageId = result.messageId;
+                        modelState.content = result.content || '';
+                        
+                        queryClient.setQueryData(
+                            getModelStreamKey(model.id, batchId),
+                            {
+                                ...modelState
+                            }
+                        );
+                        
+                        // Return the successful result
+                        return {
+                            threadId: result.threadId,
+                            messageId: result.messageId,
+                            content: result.content,
+                            error: result.error,
+                            limitReached: result.limitReached,
+                            modelInfo: model,
+                            duration: parseFloat(modelDuration)
+                        } as SingleModelResult & { duration: number };
+                    } catch (streamError) {
+                        // If streamSingleModel threw an error, propagate it
+                        throw streamError;
                     }
-                };
-                
-                // Process this model - use the model's abort controller
-                const result = await streamSingleModel(singleModelRequest);
-                
-                // Update model state to complete
-                const modelState = modelStreamStates.get(model.id)!;
-                modelState.isStreaming = false;
-                modelState.isComplete = true;
-                modelState.threadId = result.threadId;
-                modelState.messageId = result.messageId;
-                modelState.content = result.content || '';
-                
-                queryClient.setQueryData(
-                    getModelStreamKey(model.id, batchId),
-                    {
-                        ...modelState
+                } catch (error) {
+                    const modelDuration = (performance.now() - modelStartTime).toFixed(2);
+                    
+                    // Update model state to error
+                    const modelState = modelStreamStates.get(model.id)!;
+                    const errorObj = error instanceof Error ? error : new Error(String(error));
+                    
+                    modelState.isStreaming = false;
+                    modelState.isComplete = false;
+                    modelState.error = errorObj;
+                    
+                    queryClient.setQueryData(
+                        getModelStreamKey(model.id, batchId),
+                        {
+                            ...modelState
+                        }
+                    );
+                    
+                    // Check if this is an abort error and use the nicer abort message
+                    if (error instanceof Error && error.name === 'AbortError') {
+                        // Use the same abort message format as single model case
+                        addSnackMessage(ABORT_ERROR_MESSAGE);
+                    } else {
+                        // For other errors, show model-specific error
+                        addSnackMessage({
+                            type: SnackMessageType.Brief,
+                            id: `model-error-${model.id}-${Date.now()}`,
+                            message: `Error streaming ${model.name}: ${errorObj.message}`
+                        });
                     }
-                );
-                
-                // Store the results
-                const modelResult: SingleModelResult = {
-                    threadId: result.threadId,
-                    messageId: result.messageId,
-                    content: result.content,
-                    error: result.error,
-                    limitReached: result.limitReached,
-                    modelInfo: model
-                };
-                
+                    
+                    // Return a result with the error, instead of throwing
+                    // This allows for graceful partial failure handling
+                    return {
+                        error: errorObj,
+                        modelInfo: model,
+                        duration: parseFloat(modelDuration)
+                    } as SingleModelResult & { duration: number };
+                }
+            })
+        );
+        
+        // Process results from all parallel streams
+        let fastestStream = Infinity;
+        let slowestStream = 0;
+        let totalDuration = 0;
+        let successfulStreams = 0;
+        
+        streamResults.forEach(result => {
+            if (result.status === 'fulfilled') {
+                // Handle successful stream (which might still contain an error)
+                const modelResult = result.value;
                 modelResults.push(modelResult);
                 
-                if (result.threadId) {
-                    threadIds.push(result.threadId);
+                // Count successful streams (those with a threadId)
+                if (modelResult.threadId) {
+                    threadIds.push(modelResult.threadId);
+                    
+                    // If this model had an error but still created a thread,
+                    // we still consider it partially successful
+                    if (!modelResult.error) {
+                        successfulStreams++;
+                    }
                 }
                 
-                if (result.messageId) {
-                    messageIds.push(result.messageId);
+                if (modelResult.messageId) {
+                    messageIds.push(modelResult.messageId);
                 }
                 
-                if (result.error) {
-                    errors.push(result.error);
+                if (modelResult.error) {
+                    errors.push(modelResult.error);
                 }
-            } catch (error) {
-                console.log(`DEBUG: Error processing model ${model.name}:`, error);
                 
-                // Update model state to error
-                const modelState = modelStreamStates.get(model.id)!;
+                // Track performance metrics
+                if ('duration' in modelResult) {
+                    const duration = modelResult.duration;
+                    if (duration < fastestStream) fastestStream = duration;
+                    if (duration > slowestStream) slowestStream = duration;
+                    totalDuration += duration;
+                }
+            } else {
+                // Handle rejected promise (should now be rare due to our error handling)
+                console.log('DEBUG: Promise rejection in stream:', result.reason);
+                const error = result.reason;
                 const errorObj = error instanceof Error ? error : new Error(String(error));
-                
-                modelState.isStreaming = false;
-                modelState.isComplete = false;
-                modelState.error = errorObj;
-                
-                queryClient.setQueryData(
-                    getModelStreamKey(model.id, batchId),
-                    {
-                        ...modelState
-                    }
-                );
-                
-                // Create error result
-                const modelResult: SingleModelResult = {
-                    error: errorObj,
-                    modelInfo: model
-                };
-                
-                modelResults.push(modelResult);
                 errors.push(errorObj);
                 
-                // Add user-friendly error message
-                addSnackMessage({
-                    type: SnackMessageType.Brief,
-                    id: `model-error-${model.id}-${Date.now()}`,
-                    message: `Error streaming ${model.name}: ${errorObj.message}`
-                });
+                // Check if this is an abort error
+                if (errorObj instanceof Error && errorObj.name === 'AbortError') {
+                    // Use the same abort message format as single model case
+                    addSnackMessage(ABORT_ERROR_MESSAGE);
+                } else {
+                    // Add a generic error message for unhandled rejections
+                    addSnackMessage({
+                        type: SnackMessageType.Brief,
+                        id: `stream-error-${Date.now()}`,
+                        message: `An unexpected error occurred: ${errorObj.message}`
+                    });
+                }
             }
-        }
+        });
+        
+        // Calculate total parallel execution time
+        const totalTime = (performance.now() - startTime).toFixed(2);
         
         // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
         appContext.setState({ 
             streamPromptState: RemoteState.Loaded,
-            abortController: null
+            abortController: null,
+            streamingMessageId: null // Reset to enable form clearing for next submission
         });
 
-        console.log(`DEBUG: Completed processing ${models.length} models`, {
+        // Calculate average time and the time saved by parallel execution
+        const avgTime = successfulStreams > 0 ? (totalDuration / successfulStreams).toFixed(2) : 0;
+        const sequentialEquivalent = totalDuration.toFixed(2);
+        const timeSaved = (totalDuration - parseFloat(totalTime)).toFixed(2);
+        const parallelEfficiency = totalDuration > 0 ? 
+            ((totalDuration / parseFloat(totalTime)) * 100).toFixed(1) + '%' : '0%';
+        
+        console.log(`DEBUG: Completed parallel processing of ${models.length} models in ${totalTime}ms`, {
             threadIds,
             successful: threadIds.length,
             failed: errors.length,
-            batchId
+            batchId,
+            performance: {
+                totalParallelTime: totalTime + 'ms',
+                fastestStream: fastestStream !== Infinity ? fastestStream + 'ms' : 'N/A',
+                slowestStream: slowestStream > 0 ? slowestStream + 'ms' : 'N/A',
+                avgStreamTime: avgTime + 'ms',
+                sequentialEquivalent: sequentialEquivalent + 'ms',
+                timeSaved: timeSaved + 'ms',
+                parallelEfficiency,
+            }
         });
 
         // Return aggregated results
@@ -725,7 +806,8 @@ export const useStreamMessage = () => {
                 // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
                 appContext.setState({ 
                     streamPromptState: RemoteState.Loaded,
-                    abortController: null
+                    abortController: null,
+                    streamingMessageId: null // Reset to enable form clearing for next submission
                 });
             }
         },
@@ -735,7 +817,8 @@ export const useStreamMessage = () => {
             // TODO: Temp compatibility - remove when Zustand streaming state is fully migrated
             appContext.setState({ 
                 streamPromptState: RemoteState.Error,
-                abortController: null
+                abortController: null,
+                streamingMessageId: null // Reset to enable form clearing for next submission
             });
         }
     });

@@ -58,6 +58,8 @@ export const QueryForm = (): JSX.Element => {
                 exact: false,
             });
             
+            console.log(`DEBUG: Aborting ${streamQueries.length} active stream queries`);
+            
             streamQueries.forEach(query => {
                 const data = query.state.data as any;
                 if (data?.abortController) {
