@@ -8,6 +8,7 @@ import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
+import { StreamingKeys } from '@/hooks/streamingQueryKeys';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
@@ -53,7 +54,7 @@ export const QueryForm = (): JSX.Element => {
             // This finds all active stream queries and aborts them
             const queryCache = queryClient.getQueryCache();
             const streamQueries = queryCache.findAll({
-                queryKey: ['streamMessage'],
+                queryKey: StreamingKeys.all(),
                 exact: false,
             });
             

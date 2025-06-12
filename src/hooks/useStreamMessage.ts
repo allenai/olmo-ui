@@ -19,6 +19,7 @@ import { getFeatureToggles } from '@/FeatureToggleContext';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { AlertMessageSeverity, errorToAlert, SnackMessage, SnackMessageType } from '@/slices/SnackMessageSlice';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { StreamingKeys } from './streamingQueryKeys';
 
 // Define clear interfaces for mutation types
 export interface ModelInfo {
@@ -91,8 +92,9 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
 } as const;
 
 // Creates a query key for a specific model stream
+// TODO: Temp - Will be removed when all direct StreamingKeys usage is in place
 const getModelStreamKey = (modelId: string, requestId: string) => 
-    ['streamMessage', modelId, requestId];
+    StreamingKeys.models.stream(modelId, requestId);
 
 export const useStreamMessage = () => {
     const queryClient = useQueryClient();
@@ -136,7 +138,7 @@ export const useStreamMessage = () => {
                 
                 // Update the stream state in the query cache
                 queryClient.setQueryData(
-                    getModelStreamKey(modelId, requestId),
+                    StreamingKeys.models.stream(modelId, requestId),
                     (oldData: ModelStreamState | undefined) => ({
                         ...(oldData || { content: '', isStreaming: true, isComplete: false }),
                         content: (oldData?.content || '') + content,
@@ -205,7 +207,7 @@ export const useStreamMessage = () => {
                 
                 // Initialize or update the stream state in the query cache
                 queryClient.setQueryData(
-                    getModelStreamKey(context.modelId, requestId),
+                    StreamingKeys.models.stream(context.modelId, requestId),
                     (oldData: ModelStreamState | undefined) => ({
                         ...(oldData || { 
                             content: '', 
@@ -272,7 +274,7 @@ export const useStreamMessage = () => {
             
             // Mark the stream as complete
             queryClient.setQueryData(
-                getModelStreamKey(context.modelId, requestId),
+                StreamingKeys.models.stream(context.modelId, requestId),
                 (oldData: ModelStreamState | undefined) => ({
                     ...(oldData || { content: result.content || '' }),
                     isStreaming: false,
@@ -343,7 +345,7 @@ export const useStreamMessage = () => {
                 
                 // Mark the stream as failed
                 queryClient.setQueryData(
-                    getModelStreamKey(context.modelId, requestId),
+                    StreamingKeys.models.stream(context.modelId, requestId),
                     (oldData: ModelStreamState | undefined) => ({
                         ...(oldData || { content: result.content || '' }),
                         isStreaming: false,
@@ -507,7 +509,7 @@ export const useStreamMessage = () => {
             
             // Initialize query cache entry for this model
             queryClient.setQueryData(
-                getModelStreamKey(model.id, batchId),
+                StreamingKeys.models.stream(model.id, batchId),
                 {
                     content: '',
                     isStreaming: false,
@@ -531,7 +533,7 @@ export const useStreamMessage = () => {
                 // Update model state to streaming
                 modelStreamStates.get(model.id)!.isStreaming = true;
                 queryClient.setQueryData(
-                    getModelStreamKey(model.id, batchId),
+                    StreamingKeys.models.stream(model.id, batchId),
                     (oldData: ModelStreamState) => ({
                         ...oldData,
                         isStreaming: true,
@@ -580,7 +582,7 @@ export const useStreamMessage = () => {
                         modelState.content = result.content || '';
                         
                         queryClient.setQueryData(
-                            getModelStreamKey(model.id, batchId),
+                            StreamingKeys.models.stream(model.id, batchId),
                             {
                                 ...modelState
                             }
@@ -612,7 +614,7 @@ export const useStreamMessage = () => {
                     modelState.error = errorObj;
                     
                     queryClient.setQueryData(
-                        getModelStreamKey(model.id, batchId),
+                        StreamingKeys.models.stream(model.id, batchId),
                         {
                             ...modelState
                         }
