@@ -2,7 +2,7 @@ import { SxProps, Typography } from '@mui/material';
 import { MouseEvent } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
+import { useIsStreamingMessage } from '@/hooks/useIsStreamingMessage';
 
 import { MessageProps, sharedMessageStyle } from './shared';
 
@@ -23,11 +23,8 @@ const streamingMessageIndicatorStyle = {
 } satisfies SxProps;
 
 export const LLMMessage = ({ messageId, children }: MessageProps): JSX.Element => {
-    const shouldShowStreamingIndicator = useAppContext(
-        (state) =>
-            state.streamingMessageId === messageId &&
-            state.streamPromptState === RemoteState.Loading
-    );
+    const shouldShowStreamingIndicator = useIsStreamingMessage(messageId);
+    
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
     );
