@@ -14,10 +14,10 @@ const iconClassName = css({
 });
 
 interface AudioInputButtonProps {
-    setContent: (content: string) => void;
+    onTranscriptionComplete: (content?: string) => void;
 }
 
-export const AudioInputButton = ({ setContent }: AudioInputButtonProps) => {
+export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonProps) => {
     const { isOLMoASREnabled } = useFeatureToggles();
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const { startRecording, stopRecording } = useAudioRecording();
@@ -34,7 +34,7 @@ export const AudioInputButton = ({ setContent }: AudioInputButtonProps) => {
                 pollLength: 1000,
                 onStop: async (data) => {
                     const { text } = await handleTranscribe(data);
-                    setContent(text || '');
+                    onTranscriptionComplete(text);
                 },
             });
         }
