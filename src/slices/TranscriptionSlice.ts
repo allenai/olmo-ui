@@ -10,12 +10,10 @@ export const createTranscriptionSlice: OlmoStateCreator<TranscriptionSlice> = (s
     setIsTranscribing: (isTranscribing: boolean) => {
         set(
             (state) => {
-                // @ts-expect-error - Readonly error, something funky with WriteableDraft and readonly
-                // It's OK for us to overwrite here so we can ignore this safely
                 state.isTranscribing = isTranscribing;
             },
             undefined,
-            'model/setSelectedModel'
+            'transcription/setIsTranscribing'
         );
     },
 });

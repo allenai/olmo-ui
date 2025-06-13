@@ -5,7 +5,7 @@ import { useAppContext } from '@/AppContext';
 type StreamState = 'idle' | 'init';
 
 interface UseAudioRecordingProps {
-    log?: boolean;
+    debug?: boolean;
 }
 
 interface StartRecordingProps {
@@ -16,10 +16,9 @@ interface StartRecordingProps {
 }
 
 export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
-    const { log = false } = opts;
-    // UI State
-    // remove react state
-    // const [isRecording, setIsRecording] = useState<boolean>(false);
+    const { debug = true } = opts;
+
+    // UI state -- needed for icon and QueryForm submit
     const setIsTranscribing = useAppContext((state) => state.setIsTranscribing);
 
     // Stream aquire state
@@ -30,7 +29,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
     const audioChunks = useRef<Blob[]>([]);
 
     const debugLog = (...args: unknown[]) => {
-        if (log) {
+        if (debug) {
             console.debug(...args);
         }
     };
@@ -59,7 +58,12 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
             if (mediaStream.current) {
                 // Check for supported MIME types
                 // prefered order
-                const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/ogg', 'audio/wav'];
+                const mimeTypes = [
+                    // 'audio/webm',
+                    'audio/mp4',
+                    'audio/ogg',
+                    'audio/wav',
+                ];
                 const selectedMimeType =
                     mimeTypes.find((type) => MediaRecorder.isTypeSupported(type)) || '';
 

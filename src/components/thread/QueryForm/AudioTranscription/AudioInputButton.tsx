@@ -4,8 +4,9 @@ import { IconButton } from '@mui/material';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
+import { errorToAlert } from '@/slices/SnackMessageSlice';
 
-import { handleTranscribe } from '../handleTranscribe';
+import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
 
 const iconClassName = css({
@@ -14,12 +15,12 @@ const iconClassName = css({
 });
 
 interface AudioInputButtonProps {
-    onTranscriptionComplete: (content?: string) => void;
+    onTranscriptionComplete: (content: string) => void;
 }
 
 export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonProps) => {
     const { isOLMoASREnabled } = useFeatureToggles();
-    const isTranscribing = useAppContext((state) => state.isTranscribing);
+    const { isTranscribing, addSnackMessage } = useAppContext();
     const { startRecording, stopRecording } = useAudioRecording();
 
     if (!isOLMoASREnabled) {
@@ -33,8 +34,18 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
             await startRecording({
                 pollLength: 1000,
                 onStop: async (data) => {
-                    const { text } = await handleTranscribe(data);
-                    onTranscriptionComplete(text);
+                    try {
+                        const { text } = await handleTranscribe(data);
+                        onTranscriptionComplete(text);
+                    } catch (error: unknown) {
+                        addSnackMessage(
+                            errorToAlert(
+                                `post-transcription-${new Date().getTime()}`.toLowerCase(),
+                                `Error making new label.`,
+                                error
+                            )
+                        );
+                    }
                 },
             });
         }

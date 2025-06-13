@@ -266,7 +266,7 @@ export const QueryForm = (): JSX.Element => {
                                 startAdornment={
                                     <>
                                         <AudioInputButton
-                                            setContent={(content) => {
+                                            onTranscriptionComplete={(content) => {
                                                 formContext.setValue('content', content);
                                             }}
                                         />
