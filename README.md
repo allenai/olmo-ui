@@ -139,3 +139,55 @@ render(
 ### Testing HEAP events on local
 
 Switch to `local` environment on HEAP Analytics, then have `IS_ANALYTICS_ENABLED=true` and set `HEAP_ANALYTICS_ID` to the Heap ID of the `local` environment in your `.env.local`. You will see your local events showing on HEAP dashboard.
+
+## React Query Streaming Hooks
+
+A set of React Query-based hooks are used for managing streaming state. These hooks provide an interface for working with streaming operations so that components do not need to know about (or become overly coupled to) the underlying streaming state management.
+
+### Core Streaming Hooks
+
+- **useStreamMessage**: Main mutation hook for streaming messages from models, supporting both single and parallel multi-model streaming.
+- **useStreamingState**: Track streaming state for a specific model (content, completion status, errors).
+- **useIsStreamingMessage**: Check if a specific message is currently streaming.
+- **useActiveStreams**: Get all currently active streams across the application.
+- **useAbortStreams**: Provides functions to abort streaming operations (all streams, by model, or by message).
+
+### Usage Examples
+
+```typescript
+// Check if a message is streaming
+const isStreaming = useIsStreamingMessage(messageId);
+
+// Get streaming state for a model
+const { isStreaming, content, error } = useStreamingState(modelId);
+
+// Abort all active streams
+const { abortAllStreams } = useAbortStreams();
+abortAllStreams();
+
+// Stream a message to multiple models in parallel
+const { mutate } = useStreamMessage();
+mutate({
+  message: userMessage,
+  models: ['gpt-4', 'claude-3', 'olmo'],
+  threadId
+});
+```
+
+### Query Key Utilities
+
+The application provides utilities for working with streaming query keys:
+
+```typescript
+// Create keys for different stream types
+StreamingKeys.models.stream('gpt-4', 'request-123');
+StreamingKeys.messages.stream('message-456');
+StreamingKeys.threads.stream('thread-789');
+
+// Check key types and extract information
+if (StreamingKeyMatchers.isModelStream(queryKey)) {
+  const modelId = StreamingQueryUtils.getModelId(queryKey);
+  // Use modelId...
+}
+```
+
