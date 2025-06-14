@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 
-import { StreamingKeyMatchers, StreamingKeys, StreamingQueryUtils } from './streamingQueryKeys';
+import { StreamingKeyMatchers, StreamingQueryUtils } from './streamingQueryKeys';
 import { ModelStreamState } from './useStreamMessage';
 
 // Hook to determine if a specific message is currently streaming

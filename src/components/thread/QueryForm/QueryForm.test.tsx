@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 
 // Mock React Query before imports
+// eslint-disable-next-line simple-import-sort/imports
 vi.mock('@tanstack/react-query', async () => {
   const actual = await vi.importActual('@tanstack/react-query');
   return {
@@ -26,19 +27,13 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 
 import { QueryForm } from './QueryForm';
 
-vi.mock('@tanstack/react-query', async () => {
-    const actual = await vi.importActual('@tanstack/react-query');
-    return {
-        ...actual,
-        useQueryClient: vi.fn().mockReturnValue({
-            getQueryCache: vi.fn().mockReturnValue({ findAll: vi.fn() }),
-        }),
-    };
-});
-
 // Helper function to create a mock mutation result
 const createMockStreamMessageMutation = (
-    mockMutateAsyncFn: any
+    mockMutateAsyncFn: UseMutationResult<
+        StreamMessageResult,
+        Error,
+        StreamMessageVariables
+    >['mutateAsync']
 ): UseMutationResult<StreamMessageResult, Error, StreamMessageVariables> => {
     return {
         mutateAsync: mockMutateAsyncFn,

@@ -19,8 +19,6 @@ import { InferenceOpts } from '@/api/Schema';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { getFeatureToggles } from '@/FeatureToggleContext';
-import { links } from '@/Links';
-import { router } from '@/router';
 import { NullishPartial } from '@/util';
 
 import {
@@ -217,8 +215,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             ...adjustedInferenceOpts,
         };
 
+        // TODO Temp: overrideModel will go away (so will the funky typing)
         // Remove the overrideModel from the request since it's not part of the API
-        delete (request as any).overrideModel;
+        delete (request as V4CreateMessageRequest & { overrideModel?: unknown }).overrideModel;
 
         console.log(`DEBUG: streamPrompt - Making API request`, {
             model: request.model,

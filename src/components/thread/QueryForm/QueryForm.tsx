@@ -9,7 +9,11 @@ import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { StreamingKeys } from '@/hooks/streamingQueryKeys';
-import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
+import {
+    ModelStreamState,
+    StreamMessageVariables,
+    useStreamMessage,
+} from '@/hooks/useStreamMessage';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
@@ -61,8 +65,8 @@ export const QueryForm = (): JSX.Element => {
             console.log(`DEBUG: Aborting ${streamQueries.length} active stream queries`);
 
             streamQueries.forEach((query) => {
-                const data = query.state.data as any;
-                if (data?.abortController) {
+                const data = query.state.data as ModelStreamState;
+                if (data.abortController) {
                     console.log(`DEBUG: Aborting stream for query`, query.queryKey);
                     data.abortController.abort();
                 }
@@ -148,9 +152,9 @@ export const QueryForm = (): JSX.Element => {
             if (isMultiModel) {
                 // Multi-model: Use models array
                 streamRequest.models = modelsToStream.map(({ model, rootThreadId }) => ({
-                    id: model!.id,
-                    name: model!.name,
-                    host: model!.host,
+                    id: model?.id || '',
+                    name: model?.name,
+                    host: model?.host || '',
                     rootThreadId,
                 }));
             } else if (modelsToStream[0]?.model) {

@@ -57,6 +57,7 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             'selectedThread/addContentToMessage'
         );
 
+        // TODO Temp: this goes away when we migrate to React Query (along with the overkill cache update)
         // Update React Query cache for real-time UI updates in ThreadDisplayContainer
         try {
             const cache = queryClient.getQueryCache();
@@ -70,12 +71,14 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
                     query.queryKey[2] === '/v4/threads/{thread_id}' &&
                     query.state.data
                 ) {
-                    const thread = query.state.data as any;
-                    const message = thread.messages?.find((m: any) => m.id === messageId);
+                    const thread = query.state.data as {
+                        messages?: Array<{ id: string; content: string }>;
+                    };
+                    const message = thread.messages?.find((m) => m.id === messageId);
                     if (message) {
                         const updatedThread = {
                             ...thread,
-                            messages: thread.messages.map((m: any) =>
+                            messages: thread.messages?.map((m) =>
                                 m.id === messageId ? { ...m, content: m.content + content } : m
                             ),
                         };

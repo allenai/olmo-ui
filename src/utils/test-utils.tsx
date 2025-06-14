@@ -4,7 +4,7 @@ import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderOptions } from '@testing-library/react';
+import { render, renderHook, RenderOptions } from '@testing-library/react';
 import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
 import {
     defaultFeatureToggles,
@@ -75,4 +75,4 @@ export * from '@testing-library/react';
 
 // override render method
 // eslint-disable-next-line import/export
-export { customRender as render };
+export { customRender as render, renderHook };

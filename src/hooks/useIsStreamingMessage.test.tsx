@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@test-utils';
 
 import { StreamingKeys } from './streamingQueryKeys';
 import { useIsStreamingMessage } from './useIsStreamingMessage';
