@@ -44,8 +44,14 @@ const createModelDeprecationNotice = () => {
 export const playgroundLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async ({ params, request }) => {
-        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt, setSelectedCompareModels } =
-            appContext.getState();
+        const {
+            resetSelectedThreadState,
+            resetAttribution,
+            getSchema,
+            schema,
+            abortPrompt,
+            setSelectedCompareModels,
+        } = appContext.getState();
 
         const promises = [];
 

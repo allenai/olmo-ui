@@ -166,7 +166,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             modelToUse: modelToUse?.name || 'none',
             modelId: modelToUse?.id,
             hasParent: !!newMessage.parent,
-            content: newMessage.content?.substring(0, 50) + '...'
+            content: newMessage.content.substring(0, 50) + '...',
         });
 
         set(
@@ -179,7 +179,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
 
         if (modelToUse == null) {
-            console.log(`DEBUG: streamPrompt - No model available (selectedModel: ${selectedModel?.name}, overrideModel: ${newMessage.overrideModel?.name})`);
+            console.log(
+                `DEBUG: streamPrompt - No model available (selectedModel: ${selectedModel?.name}, overrideModel: ${newMessage.overrideModel?.name})`
+            );
             // This _shouldn't_ ever happen, but there's a chance it can happen if we let the user submit before models are loaded.
             addSnackMessage({
                 type: SnackMessageType.Brief,
@@ -221,7 +223,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         console.log(`DEBUG: streamPrompt - Making API request`, {
             model: request.model,
             host: request.host,
-            hasParent: !!request.parent
+            hasParent: !!request.parent,
         });
 
         try {
@@ -232,18 +234,18 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             for await (const message of messageChunks) {
                 if (isFirstMessage(message)) {
                     const parsedMessage = parseMessage(message);
-                    
+
                     console.log(`DEBUG: streamPrompt - First message created`, {
                         messageId: parsedMessage.id,
-                        isCreatingNewThread
+                        isCreatingNewThread,
                     });
 
                     if (isCreatingNewThread) {
                         setSelectedThread(parsedMessage);
                         createdThreadId = parsedMessage.id;
-                        
+
                         console.log(`DEBUG: streamPrompt - New thread created`, {
-                            threadId: createdThreadId
+                            threadId: createdThreadId,
                         });
                     } else {
                         addChildToSelectedThread(parsedMessage);
@@ -287,7 +289,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                     console.log(`DEBUG: streamPrompt - Final message received`, {
                         messageId: streamedResponseId,
-                        threadId: createdThreadId
+                        threadId: createdThreadId,
                     });
 
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);

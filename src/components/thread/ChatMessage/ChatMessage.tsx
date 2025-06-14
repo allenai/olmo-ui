@@ -26,15 +26,15 @@ export const ChatMessage = ({
 }: ChatMessageProps): JSX.Element => {
     // Use React Query hooks instead of Zustand state
     const isMessageStreaming = useIsStreamingMessage(messageId);
-    
+
     // Track final message content for screen reader announcement
     const [finalMessageContent, setFinalMessageContent] = useState<string | null>(null);
-    
+
     // Get message content from thread state for screen reader announcement
-    const messageContent = useAppContext(state => 
-        state.selectedThreadMessagesById[messageId]?.content || null
+    const messageContent = useAppContext(
+        (state) => state.selectedThreadMessagesById[messageId]?.content || null
     );
-    
+
     // When streaming stops, capture the final content for screen reader announcement
     useEffect(() => {
         if (!isMessageStreaming && messageContent && !finalMessageContent) {

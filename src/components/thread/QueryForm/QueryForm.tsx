@@ -1,4 +1,5 @@
-import { JSX, UIEvent, useCallback, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { JSX, UIEvent, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 import { useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -7,15 +8,14 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
-import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
 import { StreamingKeys } from '@/hooks/streamingQueryKeys';
+import { StreamMessageVariables, useStreamMessage } from '@/hooks/useStreamMessage';
 import { links } from '@/Links';
 import { router } from '@/router';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { QueryFormController } from './QueryFormController';
-import { useQueryClient } from '@tanstack/react-query';
 
 interface QueryFormValues {
     content: string;
@@ -57,10 +57,10 @@ export const QueryForm = (): JSX.Element => {
                 queryKey: StreamingKeys.all(),
                 exact: false,
             });
-            
+
             console.log(`DEBUG: Aborting ${streamQueries.length} active stream queries`);
-            
-            streamQueries.forEach(query => {
+
+            streamQueries.forEach((query) => {
                 const data = query.state.data as any;
                 if (data?.abortController) {
                     console.log(`DEBUG: Aborting stream for query`, query.queryKey);
@@ -110,7 +110,7 @@ export const QueryForm = (): JSX.Element => {
         }
 
         const isMultiModel = modelsToStream.length > 1;
-        
+
         // For single-model, use the existing lastMessageId logic
         // For multi-model, we'll get the last message ID per thread via rootThreadId
         if (!isMultiModel && lastMessageId) {
@@ -122,11 +122,11 @@ export const QueryForm = (): JSX.Element => {
 
         console.log(`DEBUG: ${isMultiModel ? 'Multi' : 'Single'}-model mode detected`, {
             modelsCount: modelsToStream.length,
-            models: modelsToStream.map(m => m.model?.name || 'unknown'),
+            models: modelsToStream.map((m) => m.model?.name || 'unknown'),
             hasParent: !!request.parent,
             lastMessageId,
             location: location.pathname,
-            batchId
+            batchId,
         });
 
         try {
@@ -144,39 +144,42 @@ export const QueryForm = (): JSX.Element => {
             const streamRequest: StreamMessageVariables = {
                 ...request,
             };
-            
+
             if (isMultiModel) {
                 // Multi-model: Use models array
                 streamRequest.models = modelsToStream.map(({ model, rootThreadId }) => ({
                     id: model!.id,
                     name: model!.name,
                     host: model!.host,
-                    rootThreadId
+                    rootThreadId,
                 }));
             } else if (modelsToStream[0]?.model) {
                 // TODO: Temp - Single-model with overrideModel will be replaced by unified models array later
                 streamRequest.overrideModel = {
                     id: modelsToStream[0].model.id,
                     name: modelsToStream[0].model.name,
-                    host: modelsToStream[0].model.host
+                    host: modelsToStream[0].model.host,
                 };
             }
-            
-            console.log(`DEBUG: Using ${isMultiModel ? 'unified multi-model' : 'single-model'} hook`, {
-                modelsCount: isMultiModel ? streamRequest.models?.length : 1,
-                batchId
-            });
-            
+
+            console.log(
+                `DEBUG: Using ${isMultiModel ? 'unified multi-model' : 'single-model'} hook`,
+                {
+                    modelsCount: isMultiModel ? streamRequest.models?.length : 1,
+                    batchId,
+                }
+            );
+
             // Use the unified hook for both cases
             const result = await streamMessageMutation.mutateAsync(streamRequest);
-            
+
             console.log(`DEBUG: Stream completed`, {
                 isMultiModel: result.isMultiModel,
                 threadIds: result.threadIds || [result.threadId],
-                success: result.isMultiModel 
+                success: result.isMultiModel
                     ? (result.threadIds?.length || 0) > 0
                     : !!result.threadId,
-                batchId
+                batchId,
             });
 
             // Handle navigation based on results
@@ -184,11 +187,15 @@ export const QueryForm = (): JSX.Element => {
                 // Multi-model on comparison page: redirect with thread IDs
                 if (location.pathname === links.comparison) {
                     const threadsParam = result.threadIds.join(',');
-                    console.log(`DEBUG: Navigating to comparison page with threads: ${threadsParam}`);
+                    console.log(
+                        `DEBUG: Navigating to comparison page with threads: ${threadsParam}`
+                    );
                     await router.navigate(`${links.comparison}?threads=${threadsParam}`);
                 } else {
                     // Multi-model but not on comparison page: navigate to first thread
-                    console.log(`DEBUG: Navigating to first thread of multiple: ${result.threadIds[0]}`);
+                    console.log(
+                        `DEBUG: Navigating to first thread of multiple: ${result.threadIds[0]}`
+                    );
                     await router.navigate(links.thread(result.threadIds[0]));
                 }
             } else if (result.threadId) {

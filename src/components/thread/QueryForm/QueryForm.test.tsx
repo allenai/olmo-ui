@@ -12,52 +12,64 @@ vi.mock('@tanstack/react-query', async () => {
 });
 
 import { IDLE_NAVIGATION } from '@remix-run/router';
+import { UseMutationResult } from '@tanstack/react-query';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import * as RouterDom from 'react-router-dom';
-import { UseMutationResult } from '@tanstack/react-query';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import * as AppContext from '@/AppContext';
+import { RemoteState } from '@/contexts/util';
 import * as StreamMessageHook from '@/hooks/useStreamMessage';
 import { StreamMessageResult, StreamMessageVariables } from '@/hooks/useStreamMessage';
-import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { QueryForm } from './QueryForm';
 
+vi.mock('@tanstack/react-query', async () => {
+    const actual = await vi.importActual('@tanstack/react-query');
+    return {
+        ...actual,
+        useQueryClient: vi.fn().mockReturnValue({
+            getQueryCache: vi.fn().mockReturnValue({ findAll: vi.fn() }),
+        }),
+    };
+});
+
 // Helper function to create a mock mutation result
-const createMockStreamMessageMutation = (mockMutateAsyncFn: any): UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown> => {
-  return {
-    mutateAsync: mockMutateAsyncFn,
-    isLoading: false,
-    isError: false,
-    error: null,
-    data: undefined,
-    reset: vi.fn(),
-    status: 'idle',
-    variables: undefined,
-    context: undefined,
-    failureCount: 0,
-    failureReason: null,
-    isPaused: false,
-    isPending: false,
-    isSuccess: false,
-    mutate: vi.fn(),
-  } as unknown as UseMutationResult<StreamMessageResult, Error, StreamMessageVariables, unknown>;
+const createMockStreamMessageMutation = (
+    mockMutateAsyncFn: any
+): UseMutationResult<StreamMessageResult, Error, StreamMessageVariables> => {
+    return {
+        mutateAsync: mockMutateAsyncFn,
+        isLoading: false,
+        isError: false,
+        error: null,
+        data: undefined,
+        reset: vi.fn(),
+        status: 'idle',
+        variables: undefined,
+        context: undefined,
+        failureCount: 0,
+        failureReason: null,
+        isPaused: false,
+        isPending: false,
+        isSuccess: false,
+        mutate: vi.fn(),
+    } as unknown as UseMutationResult<StreamMessageResult, Error, StreamMessageVariables>;
 };
 
 // Helper to setup common mocks for router and AppContext
 const setupCommonMocks = () => {
-  vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-    pathname: '/',
-    search: '',
-    hash: '',
-    state: 'loaded',
-    key: '',
-  });
-  vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-  vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+    vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
+        pathname: '/',
+        search: '',
+        hash: '',
+        state: 'loaded',
+        key: '',
+    });
+    vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 };
 
 describe('QueryForm', () => {
@@ -86,12 +98,12 @@ describe('QueryForm', () => {
 
         const initialStates = {
             streamPrompt: vi.fn(),
-            selectedModel: { 
-                id: 'model-123', 
-                name: 'Test Model', 
+            selectedModel: {
+                id: 'model-123',
+                name: 'Test Model',
                 host: 'inferd' as const,
-                family_name: 'test-family'
-            }
+                family_name: 'test-family',
+            },
         };
 
         render(
@@ -152,19 +164,19 @@ describe('QueryForm', () => {
             AppContext.appContext.setState({ streamingMessageId: 'FirstMessage' });
             return { threadId: 'thread-123' };
         });
-        
+
         vi.spyOn(StreamMessageHook, 'useStreamMessage').mockReturnValue(
             createMockStreamMessageMutation(mockMutateAsync)
         );
 
         const initialState = {
             streamPrompt: vi.fn(),
-            selectedModel: { 
-                id: 'model-123', 
-                name: 'Test Model', 
+            selectedModel: {
+                id: 'model-123',
+                name: 'Test Model',
                 host: 'inferd' as const,
-                family_name: 'test-family'
-            }
+                family_name: 'test-family',
+            },
         };
 
         render(
@@ -200,12 +212,12 @@ describe('QueryForm', () => {
 
         const initialState = {
             streamingMessageId: null,
-            selectedModel: { 
-                id: 'model-123', 
-                name: 'Test Model', 
+            selectedModel: {
+                id: 'model-123',
+                name: 'Test Model',
                 host: 'inferd' as const,
-                family_name: 'test-family'
-            }
+                family_name: 'test-family',
+            },
         };
 
         render(
@@ -287,7 +299,7 @@ describe('QueryForm', () => {
 
     it('should show the thumbnail of an uploaded image and allow the user to remove it', async () => {
         setupCommonMocks();
-        
+
         const initialStates = {
             selectedModel: {
                 id: 'Molmo',

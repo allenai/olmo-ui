@@ -52,7 +52,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             threadListString,
             threadListStrArray,
             modelListString,
-            modelListStrArray
+            modelListStrArray,
         });
 
         // If no URL parameters provided, initialize with default models for comparison
@@ -61,7 +61,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             const defaultModels = [
                 {
                     threadViewId: '0',
-                    model: models[0], 
+                    model: models[0],
                     rootThreadId: undefined,
                 },
                 {
@@ -79,30 +79,42 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
             async ([threadId, modelIdParam], idx) => {
-                console.log(`DEBUG: comparisonPageLoader - Loading thread ${idx + 1}/${threadListStrArray.length}:`, { threadId, modelIdParam });
-                
+                console.log(
+                    `DEBUG: comparisonPageLoader - Loading thread ${idx + 1}/${threadListStrArray.length}:`,
+                    { threadId, modelIdParam }
+                );
+
                 let modelId: Model['id'] | undefined = modelIdParam;
 
                 if (threadId) {
                     try {
                         const { messages } = await getThread(threadId);
-                        console.log(`DEBUG: comparisonPageLoader - Thread ${threadId} loaded successfully`, { messageCount: messages.length });
-                        
+                        console.log(
+                            `DEBUG: comparisonPageLoader - Thread ${threadId} loaded successfully`,
+                            { messageCount: messages.length }
+                        );
+
                         if (!modelIdParam) {
                             const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
                             modelId = lastResponse?.modelId;
-                            console.log(`DEBUG: comparisonPageLoader - Detected model from thread:`, { modelId });
+                            console.log(
+                                `DEBUG: comparisonPageLoader - Detected model from thread:`,
+                                { modelId }
+                            );
                         }
                     } catch (error) {
-                        console.log(`DEBUG: comparisonPageLoader - Failed to load thread ${threadId}:`, error);
+                        console.log(
+                            `DEBUG: comparisonPageLoader - Failed to load thread ${threadId}:`,
+                            error
+                        );
                     }
                 }
 
                 const modelObj = modelId ? models.find(modelById(modelId)) : models[0];
-                console.log(`DEBUG: comparisonPageLoader - Thread ${idx} result:`, { 
-                    threadViewId: String(idx), 
-                    modelName: modelObj?.name, 
-                    rootThreadId: threadId 
+                console.log(`DEBUG: comparisonPageLoader - Thread ${idx} result:`, {
+                    threadViewId: String(idx),
+                    modelName: modelObj?.name,
+                    rootThreadId: threadId,
                 });
 
                 return {
@@ -115,7 +127,10 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         const threadsAndModels = await Promise.all(threadsAndModelPromises);
 
-        console.log('DEBUG: comparisonPageLoader - Setting selectedCompareModels:', threadsAndModels);
+        console.log(
+            'DEBUG: comparisonPageLoader - Setting selectedCompareModels:',
+            threadsAndModels
+        );
         setSelectedCompareModels(threadsAndModels);
 
         return null;

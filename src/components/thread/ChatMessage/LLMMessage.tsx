@@ -24,7 +24,7 @@ const streamingMessageIndicatorStyle = {
 
 export const LLMMessage = ({ messageId, children }: MessageProps): JSX.Element => {
     const shouldShowStreamingIndicator = useIsStreamingMessage(messageId);
-    
+
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
     );

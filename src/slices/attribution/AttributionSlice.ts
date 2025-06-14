@@ -172,7 +172,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
         // If a request is in-flight or finished we don't need to fetch again
         if (
-            message && 
+            message &&
             message.model_id &&
             messageDocumentsLoadingState !== RemoteState.Loading &&
             messageDocumentsLoadingState !== RemoteState.Loaded

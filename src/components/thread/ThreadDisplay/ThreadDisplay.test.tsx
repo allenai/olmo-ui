@@ -155,7 +155,7 @@ describe('ThreadDisplay', () => {
                 },
             }
         );
-        
+
         expect.soft(screen.getByText('(parens)')).toHaveRole('button');
         expect.soft(screen.getByText('[braces]')).toHaveRole('button');
         expect.soft(screen.getByText('.dot')).toHaveRole('button');
@@ -217,7 +217,7 @@ describe('ThreadDisplay', () => {
                 </MemoryRouter>
             </FakeAppContextProvider>
         );
-        
+
         expect(screen.getByText('user prompt')).toBeInTheDocument();
         expect(screen.queryByText('system message')).not.toBeInTheDocument();
     });
