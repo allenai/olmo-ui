@@ -682,6 +682,10 @@ export const useStreamMessage = () => {
                     const modelResult = result.value;
                     modelResults.push(modelResult);
 
+                    if (modelResult.threadId) {
+                        threadIds.push(modelResult.threadId);
+                    }
+
                     if (modelResult.messageId) {
                         messageIds.push(modelResult.messageId);
                     }

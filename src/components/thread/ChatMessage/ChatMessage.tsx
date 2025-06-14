@@ -32,7 +32,7 @@ export const ChatMessage = ({
 
     // Get message content from thread state for screen reader announcement
     const messageContent = useAppContext(
-        (state) => state.selectedThreadMessagesById[messageId].content || null
+        (state) => state.selectedThreadMessagesById[messageId]?.content || null
     );
 
     // When streaming stops, capture the final content for screen reader announcement
