@@ -1,15 +1,15 @@
 // @vitest-environment happy-dom
 
 // Mock React Query before imports
-// eslint-disable-next-line simple-import-sort/imports
+/* eslint-disable import/first, simple-import-sort/imports */
 vi.mock('@tanstack/react-query', async () => {
-  const actual = await vi.importActual('@tanstack/react-query');
-  return {
-    ...actual,
-    useQueryClient: vi.fn().mockReturnValue({
-      getQueryCache: vi.fn().mockReturnValue({ findAll: vi.fn() })
-    }),
-  };
+    const actual = await vi.importActual('@tanstack/react-query');
+    return {
+        ...actual,
+        useQueryClient: vi.fn().mockReturnValue({
+            getQueryCache: vi.fn().mockReturnValue({ findAll: vi.fn() }),
+        }),
+    };
 });
 
 import { IDLE_NAVIGATION } from '@remix-run/router';
@@ -26,6 +26,7 @@ import { StreamMessageResult, StreamMessageVariables } from '@/hooks/useStreamMe
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { QueryForm } from './QueryForm';
+/* eslint-enable import/first, simple-import-sort/imports */
 
 // Helper function to create a mock mutation result
 const createMockStreamMessageMutation = (

@@ -6,12 +6,16 @@ import {
     isFinalMessage,
     isFirstMessage,
     isMessageChunk,
+    JSONMessage,
+    MessageChunk,
     MessageStreamError,
     MessageStreamErrorReason,
+    MessageStreamPart,
     parseMessage,
     StreamBadRequestError,
     V4CreateMessageRequest,
 } from '@/api/Message';
+import { getThread } from '@/api/playgroundApi/thread';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
 import { appContext, useAppContext } from '@/AppContext';
@@ -33,6 +37,16 @@ export interface ModelInfo {
     name?: string; // Make name optional to match Model type
     host: string;
     rootThreadId?: string; // For follow-up messages in multi-model
+}
+
+export interface SingleModelResult {
+    threadId?: string;
+    messageId?: string;
+    content?: string;
+    error?: Error;
+    limitReached?: boolean;
+    modelInfo: ModelInfo;
+    duration?: number; // Add duration field for performance tracking
 }
 
 export interface StreamMessageVariables extends StreamMessageRequest {
@@ -58,16 +72,6 @@ export interface StreamMessageResult {
     errors?: Error[];
     modelResults?: SingleModelResult[];
     isMultiModel?: boolean;
-}
-
-export interface SingleModelResult {
-    threadId?: string;
-    messageId?: string;
-    content?: string;
-    error?: Error;
-    limitReached?: boolean;
-    modelInfo: ModelInfo;
-    duration?: number; // Add duration field for performance tracking
 }
 
 export interface StreamMessageContext {
@@ -96,11 +100,6 @@ const ABORT_ERROR_MESSAGE: SnackMessage = {
     message: `You stopped OLMo from generating answers to your query`,
     severity: AlertMessageSeverity.Warning,
 } as const;
-
-// Creates a query key for a specific model stream
-// TODO: Temp - Will be removed when all direct StreamingKeys usage is in place
-const getModelStreamKey = (modelId: string, requestId: string) =>
-    StreamingKeys.models.stream(modelId, requestId);
 
 export const useStreamMessage = () => {
     const queryClient = useQueryClient();
@@ -161,11 +160,11 @@ export const useStreamMessage = () => {
     };
 
     const handleFirstMessageReceived = (
-        message: any,
+        message: MessageStreamPart,
         context: StreamMessageContext,
         result: StreamMessageResult
     ) => {
-        const parsedMessage = parseMessage(message);
+        const parsedMessage = parseMessage(message as JSONMessage);
 
         console.log(`DEBUG: First message created`, {
             messageId: parsedMessage.id,
@@ -245,7 +244,7 @@ export const useStreamMessage = () => {
     };
 
     const handleMessageChunkReceived = (
-        message: any,
+        message: MessageStreamPart,
         context: StreamMessageContext,
         result: StreamMessageResult
     ) => {
@@ -255,16 +254,16 @@ export const useStreamMessage = () => {
             context.isUpdatingContent = true;
         }
 
-        safelyAddContentToMessage(message.message, message.content, context.modelId);
+        const messageData = message as MessageChunk;
+        safelyAddContentToMessage(messageData.message, messageData.content, context.modelId);
 
         // Update the content in our result for potential use by caller
         if (result.content === undefined) result.content = '';
-        result.content += message.content;
+        result.content += messageData.content;
     };
 
-    // Extracted function to handle final message
     const handleFinalMessageReceived = async (
-        message: any,
+        message: MessageStreamPart,
         context: StreamMessageContext,
         result: StreamMessageResult,
         request: V4CreateMessageRequest
@@ -285,7 +284,7 @@ export const useStreamMessage = () => {
         });
 
         // Process the final message
-        const parsedFinalMessage = parseMessage(message);
+        const parsedFinalMessage = parseMessage(message as JSONMessage);
         handleFinalMessage(parsedFinalMessage, context.isCreatingNewThread);
 
         // If we have a modelId, update the query cache to mark this stream as complete
@@ -437,9 +436,9 @@ export const useStreamMessage = () => {
             };
 
             // Remove the overrideModel from the request since it's not part of the API
-            delete (request as any).overrideModel;
+            delete (request as StreamMessageVariables).overrideModel;
             // Also remove models array if present
-            delete (request as any).models;
+            delete (request as StreamMessageVariables).models;
 
             console.log(`DEBUG: Making API request`, {
                 model: request.model,
@@ -525,7 +524,6 @@ export const useStreamMessage = () => {
 
             // Create a unique request ID for this batch of models
             const batchId = `batch-${Date.now()}`;
-            const startTime = performance.now();
 
             // Create a map to track per-model state
             const modelStreamStates = new Map<string, ModelStreamState>();
@@ -561,14 +559,17 @@ export const useStreamMessage = () => {
                     const modelStartTime = performance.now();
 
                     // Update model state to streaming
-                    modelStreamStates.get(model.id)!.isStreaming = true;
-                    queryClient.setQueryData(
-                        StreamingKeys.models.stream(model.id, batchId),
-                        (oldData: ModelStreamState) => ({
-                            ...oldData,
-                            isStreaming: true,
-                        })
-                    );
+                    const modelState = modelStreamStates.get(model.id);
+                    if (modelState) {
+                        modelState.isStreaming = true;
+                        queryClient.setQueryData(
+                            StreamingKeys.models.stream(model.id, batchId),
+                            (oldData: ModelStreamState) => ({
+                                ...oldData,
+                                isStreaming: true,
+                            })
+                        );
+                    }
 
                     try {
                         // For follow-ups, get the last message ID for this specific thread
@@ -576,14 +577,15 @@ export const useStreamMessage = () => {
 
                         if (model.rootThreadId) {
                             try {
-                                // Dynamic import to avoid circular dependencies
-                                const { getThread } = require('@/api/playgroundApi/thread');
                                 const threadData = await getThread(model.rootThreadId);
                                 const lastMessage =
                                     threadData.messages[threadData.messages.length - 1];
                                 parent = lastMessage.id;
                             } catch (error) {
-                                // Continue without parent - will create new thread
+                                console.log(
+                                    'DEBUG: Could not get thread data, creating new thread:',
+                                    error
+                                );
                             }
                         }
 
@@ -598,55 +600,57 @@ export const useStreamMessage = () => {
                             },
                         };
 
-                        try {
-                            // Process this model - use the model's abort controller
-                            const result = await streamSingleModel(singleModelRequest);
+                        // Process this model - use the model's abort controller
+                        const result = await streamSingleModel(singleModelRequest);
 
-                            const modelDuration = (performance.now() - modelStartTime).toFixed(2);
+                        const modelDuration = (performance.now() - modelStartTime).toFixed(2);
 
-                            // Update model state to complete
-                            const modelState = modelStreamStates.get(model.id)!;
-                            modelState.isStreaming = false;
-                            modelState.isComplete = true;
-                            modelState.threadId = result.threadId;
-                            modelState.messageId = result.messageId;
-                            modelState.content = result.content || '';
+                        // Update model state to complete
+                        const currentModelState = modelStreamStates.get(model.id);
+                        if (currentModelState) {
+                            currentModelState.isStreaming = false;
+                            currentModelState.isComplete = true;
+                            currentModelState.threadId = result.threadId;
+                            currentModelState.messageId = result.messageId;
+                            currentModelState.content = result.content || '';
 
                             queryClient.setQueryData(
                                 StreamingKeys.models.stream(model.id, batchId),
                                 {
-                                    ...modelState,
+                                    ...currentModelState,
                                 }
                             );
-
-                            // Return the successful result
-                            return {
-                                threadId: result.threadId,
-                                messageId: result.messageId,
-                                content: result.content,
-                                error: result.error,
-                                limitReached: result.limitReached,
-                                modelInfo: model,
-                                duration: parseFloat(modelDuration),
-                            } as SingleModelResult & { duration: number };
-                        } catch (streamError) {
-                            // If streamSingleModel threw an error, propagate it
-                            throw streamError;
                         }
+
+                        // Return the successful result
+                        return {
+                            threadId: result.threadId,
+                            messageId: result.messageId,
+                            content: result.content,
+                            error: result.error,
+                            limitReached: result.limitReached,
+                            modelInfo: model,
+                            duration: parseFloat(modelDuration),
+                        } as SingleModelResult & { duration: number };
                     } catch (error) {
                         const modelDuration = (performance.now() - modelStartTime).toFixed(2);
 
                         // Update model state to error
-                        const modelState = modelStreamStates.get(model.id)!;
+                        const currentModelState = modelStreamStates.get(model.id);
                         const errorObj = error instanceof Error ? error : new Error(String(error));
 
-                        modelState.isStreaming = false;
-                        modelState.isComplete = false;
-                        modelState.error = errorObj;
+                        if (currentModelState) {
+                            currentModelState.isStreaming = false;
+                            currentModelState.isComplete = false;
+                            currentModelState.error = errorObj;
 
-                        queryClient.setQueryData(StreamingKeys.models.stream(model.id, batchId), {
-                            ...modelState,
-                        });
+                            queryClient.setQueryData(
+                                StreamingKeys.models.stream(model.id, batchId),
+                                {
+                                    ...currentModelState,
+                                }
+                            );
+                        }
 
                         // Check if this is an abort error and use the nicer abort message
                         if (error instanceof Error && error.name === 'AbortError') {
@@ -672,28 +676,11 @@ export const useStreamMessage = () => {
                 })
             );
 
-            // Process results from all parallel streams
-            let fastestStream = Infinity;
-            let slowestStream = 0;
-            let totalDuration = 0;
-            let successfulStreams = 0;
-
             streamResults.forEach((result) => {
                 if (result.status === 'fulfilled') {
                     // Handle successful stream (which might still contain an error)
                     const modelResult = result.value;
                     modelResults.push(modelResult);
-
-                    // Count successful streams (those with a threadId)
-                    if (modelResult.threadId) {
-                        threadIds.push(modelResult.threadId);
-
-                        // If this model had an error but still created a thread,
-                        // we still consider it partially successful
-                        if (!modelResult.error) {
-                            successfulStreams++;
-                        }
-                    }
 
                     if (modelResult.messageId) {
                         messageIds.push(modelResult.messageId);
@@ -701,14 +688,6 @@ export const useStreamMessage = () => {
 
                     if (modelResult.error) {
                         errors.push(modelResult.error);
-                    }
-
-                    // Track performance metrics
-                    if ('duration' in modelResult) {
-                        const duration = modelResult.duration;
-                        if (duration < fastestStream) fastestStream = duration;
-                        if (duration > slowestStream) slowestStream = duration;
-                        totalDuration += duration;
                     }
                 } else {
                     // Handle rejected promise (should now be rare due to our error handling)
@@ -760,7 +739,7 @@ export const useStreamMessage = () => {
 
             console.log(`DEBUG: Stream request received`, {
                 isMultiModel,
-                modelCount: isMultiModel ? variables.models!.length : 1,
+                modelCount: isMultiModel ? variables.models?.length || 0 : 1,
             });
 
             // For multi-model case
@@ -780,7 +759,7 @@ export const useStreamMessage = () => {
         onMutate: (variables) => {
             const isMultiModel = !!variables.models && variables.models.length > 0;
             const modelName = isMultiModel
-                ? `${variables.models!.length} models`
+                ? `${variables.models?.length || 0} models`
                 : variables.overrideModel?.name || 'no-model';
 
             console.log('D$> RQ mutation start:', modelName);
