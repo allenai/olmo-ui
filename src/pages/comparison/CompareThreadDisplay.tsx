@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-import { appContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 
 import { SingleThreadContainer } from './SingleThreadContainer';
@@ -25,7 +25,9 @@ export const CompareThreadDisplay = () => {
         select: (data) => data.filter((model) => isModelVisible(model)),
     });
 
-    const { selectedCompareModels } = appContext.getState();
+    const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
+
+    console.log('DEBUG: CompareThreadDisplay render', { selectedCompareModels });
 
     return (
         <div className={containerStyle}>
