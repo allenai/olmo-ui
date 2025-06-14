@@ -204,7 +204,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         };
 
         const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
-            ...(MODEL_DEFAULT_OVERRIDES[selectedModel.id] || {}),
+            ...(MODEL_DEFAULT_OVERRIDES[modelToUse.id] || {}),
             ...inferenceOpts,
         };
 
