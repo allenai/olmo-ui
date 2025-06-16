@@ -11,6 +11,7 @@ import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v4ModelsHandlers } from './v4ModelsHandlers';
+import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
@@ -18,6 +19,7 @@ export const handlers = [
     ...attributionHandlers,
     ...messageHandlers,
     ...v4ModelsHandlers,
+    ...v4TranscriptionHandlers,
 
     http.get(`${process.env.LLMX_API_URL}${SchemaApiUrl}`, () => {
         return HttpResponse.json(fakeSchemaResponse);
