@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
-import { errorToAlert } from '@/slices/SnackMessageSlice';
+import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
@@ -29,15 +29,28 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
         return null;
     }
 
+    const pollLength = 1000;
+    const maxLength = 25_000;
+
     const handleAudioClick = async () => {
         if (isTranscribing) {
             stopRecording();
         } else {
             try {
                 await startRecording({
-                    pollLength: 1000,
-                    onStop: async (data) => {
+                    pollLength,
+                    maxLength,
+                    onStop: async (data, reason) => {
                         setIsProcessingAudio(true);
+                        if (reason === 'maxLength') {
+                            addSnackMessage({
+                                id: `audio-transcription-maxLength-${new Date().getTime()}`,
+                                message: `max length of ${maxLength / 1000} seconds reached`,
+                                severity: AlertMessageSeverity.Info,
+                                title: 'Max recording length',
+                                type: SnackMessageType.Alert,
+                            });
+                        }
                         try {
                             const { text } = await handleTranscribe(data);
                             onTranscriptionComplete(text);
