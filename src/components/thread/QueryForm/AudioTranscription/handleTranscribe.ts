@@ -19,7 +19,8 @@ export const handleTranscribe = async (audioData: Blob) => {
         if (error) {
             console.error('Transcription error', error);
         }
-        throw new Error('Transcription er');
+        throw new Error('Error requesting transcription');
     }
+
     return data;
 };

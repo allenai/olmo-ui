@@ -31,23 +31,33 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
         if (isTranscribing) {
             stopRecording();
         } else {
-            await startRecording({
-                pollLength: 1000,
-                onStop: async (data) => {
-                    try {
-                        const { text } = await handleTranscribe(data);
-                        onTranscriptionComplete(text);
-                    } catch (error: unknown) {
-                        addSnackMessage(
-                            errorToAlert(
-                                `post-transcription-${new Date().getTime()}`.toLowerCase(),
-                                `Error making new label.`,
-                                error
-                            )
-                        );
-                    }
-                },
-            });
+            try {
+                await startRecording({
+                    pollLength: 1000,
+                    onStop: async (data) => {
+                        try {
+                            const { text } = await handleTranscribe(data);
+                            onTranscriptionComplete(text);
+                        } catch (error: unknown) {
+                            addSnackMessage(
+                                errorToAlert(
+                                    `post-transcription-${new Date().getTime()}`.toLowerCase(),
+                                    `Error transcribing speech.`,
+                                    error
+                                )
+                            );
+                        }
+                    },
+                });
+            } catch (error: unknown) {
+                addSnackMessage(
+                    errorToAlert(
+                        `post-transcription-${new Date().getTime()}`.toLowerCase(),
+                        `Error recording audio.`,
+                        error
+                    )
+                );
+            }
         }
     };
 

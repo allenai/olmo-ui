@@ -16,8 +16,6 @@ interface StartRecordingProps {
 }
 
 export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
-    const { debug = true } = opts;
-
     // UI state -- needed for icon and QueryForm submit
     const setIsTranscribing = useAppContext((state) => state.setIsTranscribing);
 
@@ -29,7 +27,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
     const audioChunks = useRef<Blob[]>([]);
 
     const debugLog = (...args: unknown[]) => {
-        if (debug) {
+        if (opts.debug) {
             console.debug(...args);
         }
     };
@@ -58,12 +56,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
             if (mediaStream.current) {
                 // Check for supported MIME types
                 // prefered order
-                const mimeTypes = [
-                    // 'audio/webm',
-                    'audio/mp4',
-                    'audio/ogg',
-                    'audio/wav',
-                ];
+                const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/ogg', 'audio/wav'];
                 const selectedMimeType =
                     mimeTypes.find((type) => MediaRecorder.isTypeSupported(type)) || '';
 
@@ -95,7 +88,6 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
                     debugLog('MediaRecorder stopped');
                     const audioBlob = new Blob(audioChunks.current, { type: selectedMimeType });
                     debugLog('Audio blob created, size:', audioBlob.size);
-                    // await onData(audioBlob);
                     mediaStream.current?.getTracks().forEach((track) => {
                         track.stop();
                     });
