@@ -1,6 +1,3 @@
-import { createOpenApiHttp } from 'openapi-msw';
-
-import { paths } from '@/api/playgroundApi/playgroundApiSchema';
 import { Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 
@@ -9,10 +6,7 @@ import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMul
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
 import multiplePointerMessageResponse from './responses/v4/multiplePointerMessageResponse';
 import { overlappingSpansResponse } from './responses/v4/overlappingSpansResponse';
-
-const http = createOpenApiHttp<paths>({
-    baseUrl: process.env.LLMX_API_URL ?? 'http://localhost:8080',
-});
+import { typedHttp } from './typedHttp';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
 const fakeFirstThreadResponse = {
@@ -210,7 +204,7 @@ const isValidThreadRequestId = (id: string): id is v4ThreadResponseIds => {
 };
 
 export const v4ThreadHandlers = [
-    http.get('/v4/threads/{thread_id}', ({ params: { thread_id: threadId }, response }) => {
+    typedHttp.get('/v4/threads/{thread_id}', ({ params: { thread_id: threadId }, response }) => {
         if (isValidThreadRequestId(threadId)) {
             const resp = v4ThreadResponses[threadId];
             return response(200).json(resp);

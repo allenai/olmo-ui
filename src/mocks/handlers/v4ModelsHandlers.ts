@@ -1,14 +1,9 @@
-import { createOpenApiHttp } from 'openapi-msw';
-
 import type {
-    paths,
     SchemaAdminModelResponse,
     SchemaModelResponse,
 } from '@/api/playgroundApi/playgroundApiSchema';
 
-const http = createOpenApiHttp<paths>({
-    baseUrl: process.env.LLMX_API_URL ?? 'http://localhost:8080',
-});
+import { typedHttp } from './typedHttp';
 
 const fakeModelsResponse = [
     {
@@ -170,7 +165,7 @@ const fakeAdminModelsResponse = [
     },
 ] satisfies SchemaAdminModelResponse;
 
-const adminModelsHandler = http.get('/v4/admin/models/', ({ response }) => {
+const adminModelsHandler = typedHttp.get('/v4/admin/models/', ({ response }) => {
     return response(200).json(fakeAdminModelsResponse);
 });
 
