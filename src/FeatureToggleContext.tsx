@@ -18,6 +18,7 @@ export enum FeatureToggle {
     isMultiModalEnabled = 'isMultiModalEnabled',
     isModelConfigEnabled = 'isModelConfigEnabled',
     isComparisonPageEnabled = 'isComparisonPageEnabled',
+    isOLMoASREnabled = 'isOLMoASREnabled',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
@@ -32,6 +33,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isMultiModalEnabled]: false,
     [FeatureToggle.isModelConfigEnabled]: false,
     [FeatureToggle.isComparisonPageEnabled]: false,
+    [FeatureToggle.isOLMoASREnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -92,6 +94,7 @@ function createToggles(initialToggles = defaultFeatureToggles) {
         isMultiModalEnabled: process.env.IS_MULTI_MODAL_ENABLED,
         isModelConfigEnabled: process.env.IS_MODEL_CONFIG_ENABLED,
         isComparisonPageEnabled: process.env.IS_COMPARISON_PAGE_ENABLED,
+        isOLMoASREnabled: process.env.IS_OLMO_ASR_ENABLED,
     });
 
     const toggles = {

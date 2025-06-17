@@ -18,6 +18,7 @@ import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/Selecte
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
+import { createTranscriptionSlice, TranscriptionSlice } from './slices/TranscriptionSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
 
 type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
@@ -31,6 +32,7 @@ export type AppContextState = LabelSlice &
     SchemaSlice &
     DrawerSlice &
     ThreadUpdateSlice &
+    TranscriptionSlice &
     SelectedThreadSlice &
     DatasetExplorerSliceStates &
     AttributionSlice;
@@ -63,6 +65,7 @@ export const createAppContext = (
                         ...createMetaSlice(...store),
                         ...createDocumentSlice(...store),
                         ...createThreadUpdateSlice(...store),
+                        ...createTranscriptionSlice(...store),
                         ...createSelectedThreadSlice(...store),
                         ...createAttributionSlice(...store),
                     } satisfies AppContextState,

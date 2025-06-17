@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import {
     Box,
     FormControl,
@@ -34,6 +35,11 @@ const textareaStyles: SxProps<Theme> = {
         border: 'none',
     },
 };
+
+const startAdornmentClasses = css({
+    gridArea: 'start-adornment',
+    display: 'flex',
+});
 
 const AUTO_SIZED_INPUT_CLASSNAME = 'auto-sized-input';
 
@@ -100,7 +106,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         },
                     })}>
                     {startAdornment != null && (
-                        <Box sx={{ gridArea: 'start-adornment' }}>{startAdornment}</Box>
+                        <div className={startAdornmentClasses}>{startAdornment}</div>
                     )}
                     <Box
                         component="textarea"
