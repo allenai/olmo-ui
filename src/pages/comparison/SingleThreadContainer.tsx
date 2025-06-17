@@ -2,7 +2,8 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
-import { ThreadDisplay, ThreadDisplayView } from '@/components/thread/ThreadDisplay/ThreadDisplay';
+import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
+import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder';
 import { StreamingThread } from '@/contexts/submission-process';
 
 import { CompareModelSelect } from './CompareModelSelect';
@@ -11,6 +12,7 @@ import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
 const singleThreadClasses = css({
     display: 'flex',
     flexDirection: 'column',
+    height: '[100%]',
 });
 
 interface SingleThreadContainerProps {
@@ -24,8 +26,8 @@ export const SingleThreadContainer = ({
     models,
     threadRootId,
 }: SingleThreadContainerProps) => {
-    if (!threadRootId) {
-        return <ThreadPlaceholder threadViewIdx={threadViewIdx} models={models} />;
+    if (threadRootId == null) {
+        return <ThreadViewPlaceholder threadViewIdx={threadViewIdx} models={models} />;
     }
 
     return (
@@ -71,17 +73,13 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     );
 };
 
-type ThreadPlaceholderProps = Omit<SingleThreadContainerProps, 'threadRootId'>;
+type ThreadViewPlaceholderProps = Pick<SingleThreadContainerProps, 'threadViewIdx' | 'models'>;
 
-const ThreadPlaceholder = ({ threadViewIdx, models }: ThreadPlaceholderProps) => {
+const ThreadViewPlaceholder = ({ threadViewIdx, models }: ThreadViewPlaceholderProps) => {
     return (
         <div className={singleThreadClasses}>
             <CompareModelSelect threadViewId={threadViewIdx} models={models} />
-            <ThreadDisplayView
-                shouldShowAttributionHighlightDescription={false}
-                streamingMessageId={null}
-                isUpdatingMessageContent={false}
-            />
+            <ThreadPlaceholder />
         </div>
     );
 };
