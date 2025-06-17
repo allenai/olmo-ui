@@ -2,7 +2,7 @@ import { defer, LoaderFunction } from 'react-router-dom';
 
 import { RequestInferenceOpts } from '@/api/Message';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { getThread } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
@@ -34,12 +34,11 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
         const threadRootId = params.id;
-        const selectedThread = await getThread(threadRootId);
+        const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
 
         const url = new URL(request.url);
         const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
 
-        // const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
         const { messages: selectedThreadMessages } = selectedThread;
 
         const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
@@ -55,9 +54,8 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                 const visibleModels = models.filter(isModelVisible);
                 setSelectedModel(visibleModels[0]);
             }
-            if (lastResponse.opts) {
-                updateInferenceOpts(lastResponse.opts as RequestInferenceOpts); // readonly
-            }
+            // TODO (bb): this probably shouldn't be stored, and just queried from the last message
+            updateInferenceOpts(lastResponse.opts as RequestInferenceOpts);
         }
 
         if (isCorpusLinkEnabled) {
@@ -74,10 +72,11 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
                 attributionsPromise = getAttributionsForMessage(
                     parentPrompt?.content || '',
+                    threadRootId,
                     selectedMessage.id
                 );
 
-                selectMessage(selectedMessage.id);
+                selectMessage(threadRootId, selectedMessage.id);
             }
 
             return defer({

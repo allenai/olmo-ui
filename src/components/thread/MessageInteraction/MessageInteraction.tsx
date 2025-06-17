@@ -11,7 +11,7 @@ import { ButtonGroup, Snackbar, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
 
 import { type Label, LabelRating } from '@/api/Label';
-import type { FlatMessage } from '@/api/playgroundApi/message';
+import { FlatMessage, MessageId } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
@@ -25,7 +25,7 @@ interface MessageInteractionProps {
     role: FlatMessage['role'];
     messageLabels: Label[];
     content: FlatMessage['content'];
-    messageId: FlatMessage['id'];
+    messageId: MessageId;
     isLastMessage: boolean;
 }
 

@@ -1,11 +1,11 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { Thread, useThread } from '@/api/playgroundApi/thread';
+import { ThreadId, useThread } from '@/api/playgroundApi/thread';
 import { ThreadDisplay, ThreadDisplayView } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 
 import { CompareModelSelect } from './CompareModelSelect';
-import { ThreadProvider } from './ThreadContext';
+import { ThreadViewProvider } from './ThreadViewContext';
 
 const singleThreadClasses = css({
     display: 'flex',
@@ -15,7 +15,7 @@ const singleThreadClasses = css({
 interface SingleThreadContainerProps {
     threadViewIdx: string;
     models: Model[];
-    threadRootId?: Thread['id'];
+    threadRootId?: ThreadId;
 }
 
 export const SingleThreadContainer = ({
@@ -29,16 +29,16 @@ export const SingleThreadContainer = ({
 
     return (
         <div className={singleThreadClasses}>
-            <ThreadProvider threadId={threadRootId}>
+            <ThreadViewProvider threadId={threadRootId} threadViewId={threadViewIdx}>
                 <CompareModelSelect threadViewId={threadViewIdx} models={models} />
                 <SingleThread threadRootId={threadRootId} />
-            </ThreadProvider>
+            </ThreadViewProvider>
         </div>
     );
 };
 
 interface SingleThreadProps {
-    threadRootId: Thread['id'];
+    threadRootId: ThreadId;
 }
 
 const SingleThread = ({ threadRootId }: SingleThreadProps) => {
@@ -48,8 +48,9 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     const selectedMessageId = undefined;
 
     const { data, error: _ } = useThread(threadRootId);
+    // TODO, handle errors: https://github.com/allenai/playground-issues-repo/issues/412
 
-    const { messages } = data;
+    const messages = data?.messages ?? [];
     const childMessageIds = messages.map((message) => {
         return message.id;
     });
