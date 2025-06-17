@@ -2,14 +2,13 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
-import { ThreadProvider } from '@/pages/comparison/ThreadContext';
+import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
 export const ThreadDisplayContainer = () => {
-    // reworking how the "global" state for threads works
     const { id: selectedThreadRootId = '' } = useParams();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
@@ -19,17 +18,19 @@ export const ThreadDisplayContainer = () => {
     const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
 
+    // get selectedID
     const [searchParams, _] = useSearchParams();
     const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
 
-    const { data, error: _error } = useThread(selectedThreadRootId);
-    const { messages } = data;
-    const childIds = messages.map((message) => {
-        return message.id;
+    const { data, error: _error } = useThread(selectedThreadRootId, {
+        select: (thread) => thread.messages,
     });
+    // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
+    const messages = data ?? [];
+    const childIds = messages.map((message) => message.id);
 
     return (
-        <ThreadProvider threadId={selectedThreadRootId}>
+        <ThreadViewProvider threadId={selectedThreadRootId} threadViewId="0">
             <ThreadDisplay
                 childMessageIds={childIds}
                 shouldShowAttributionHighlightDescription={
@@ -39,6 +40,6 @@ export const ThreadDisplayContainer = () => {
                 isUpdatingMessageContent={isUpdatingMessageContent}
                 selectedMessageId={selectedMessageId}
             />
-        </ThreadProvider>
+        </ThreadViewProvider>
     );
 };

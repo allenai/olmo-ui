@@ -2,12 +2,11 @@ import { ImageList, ImageListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { Label } from '@/api/Label';
-import { type FlatMessage, getMessageFromCache } from '@/api/playgroundApi/message';
-import { type Thread } from '@/api/playgroundApi/thread';
+import { MessageId, selectMessageById, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { useThreadId } from '@/pages/comparison/ThreadContext';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
-import { useSpanHighlightingQuery } from '../attribution/highlighting/useSpanHighlighting';
+import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
@@ -16,18 +15,17 @@ import { hasPoints } from '../points/isPointResponse';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 
 export interface MessageProps {
-    threadId: Thread['id'];
-    messageId: FlatMessage['id'];
+    messageId: MessageId;
 }
 
-export const StandardMessage = ({ threadId, messageId }: MessageProps): ReactNode => {
-    const contentWithMarks = useSpanHighlightingQuery(threadId, messageId);
+export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
+    const contentWithMarks = useSpanHighlighting(messageId);
 
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
 interface MessageViewProps {
-    messageId: FlatMessage['id'];
+    messageId: MessageId;
     isLastMessageInThread?: boolean;
 }
 
@@ -35,9 +33,13 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const { threadId } = useThreadId();
-    const message = getMessageFromCache(threadId, messageId);
-
+    const { threadId } = useThreadView();
+    const { data: message, error: _error } = useThread(threadId, {
+        select: selectMessageById(messageId),
+    });
+    if (!message) {
+        return null; // this shouldn't happen
+    }
     const { role, content, fileUrls, labels } = message;
 
     if (role === Role.System) {
@@ -52,7 +54,7 @@ export const MessageView = ({
 
     return (
         <ChatMessage role={role as Role} messageId={messageId}>
-            <MessageComponent threadId={threadId} messageId={messageId} />
+            <MessageComponent messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
                     <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>

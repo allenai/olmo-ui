@@ -1,10 +1,20 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import { queryClient } from '../query-client';
 import { playgroundApiQueryClient } from './playgroundApiClient';
-import type { SchemaThread as Thread } from './playgroundApiSchema';
+import type {
+    SchemaFlatMessage as FlatMessage,
+    SchemaThread as Thread,
+} from './playgroundApiSchema';
 
-const threadFetchParams = (threadId: string) => ({
+export { FlatMessage, Thread };
+export type ThreadId = Thread['id'];
+export type MessageId = FlatMessage['id'];
+
+type useThreadOptions<R> = {
+    select: (thread: Thread) => R;
+};
+
+const threadParams = (threadId: ThreadId) => ({
     params: {
         path: {
             thread_id: threadId,
@@ -12,27 +22,24 @@ const threadFetchParams = (threadId: string) => ({
     },
 });
 
-export const threadQueryOptions = (threadId: string) => {
-    const fetchParams = threadFetchParams(threadId);
-    return playgroundApiQueryClient.queryOptions('get', '/v4/threads/{thread_id}', fetchParams);
+export const threadOptions = <R = Thread>(threadId: ThreadId, options?: useThreadOptions<R>) => {
+    return playgroundApiQueryClient.queryOptions(
+        'get',
+        '/v4/threads/{thread_id}',
+        threadParams(threadId),
+        options
+    );
 };
 
-// async fetch/cache lookup
-export const getThread = async (threadId: string): Promise<Thread> => {
-    return await queryClient.ensureQueryData(threadQueryOptions(threadId));
+export const selectMessageById = (messageId: MessageId) => (thread: Thread) =>
+    thread.messages.find(({ id }) => messageId === id);
+
+export const useThread = <R = Thread>(threadId: ThreadId, options?: useThreadOptions<R>) => {
+    const queryOptions = playgroundApiQueryClient.queryOptions(
+        'get',
+        '/v4/threads/{thread_id}',
+        threadParams(threadId),
+        options
+    );
+    return useQuery(queryOptions);
 };
-
-// sync, may throw
-export const getThreadFromCache = (threadId: string): Thread => {
-    const { queryKey } = threadQueryOptions(threadId);
-    const thread = queryClient.getQueryData<Thread>(queryKey);
-    if (!thread) {
-        throw new Error(`No thread found with ID: ${threadId}`);
-    }
-    return thread;
-};
-
-// hook
-export const useThread = (threadId: string) => useSuspenseQuery(threadQueryOptions(threadId));
-
-export type { Thread };

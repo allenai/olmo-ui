@@ -230,6 +230,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 if (isFinalMessage(message)) {
                     const streamedResponseId = get().streamingMessageId;
+                    const { root: threadId } = message;
 
                     if (streamedResponseId == null) {
                         throw new Error(
@@ -240,7 +241,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
                     if (isCorpusLinkEnabled) {
-                        await getAttributionsForMessage(request.content, streamedResponseId);
+                        await getAttributionsForMessage(
+                            request.content,
+                            threadId,
+                            streamedResponseId
+                        );
                     }
                 }
             }
