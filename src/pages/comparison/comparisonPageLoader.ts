@@ -2,14 +2,14 @@ import type { QueryClient } from '@tanstack/react-query';
 import type { LoaderFunction } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { getThread } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 import { getModelsQueryOptions, modelById } from '@/components/thread/ModelSelect/useModels';
 import { arrayZip } from '@/utils/arrayZip';
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
-    return async ({ params, request }) => {
+    return async ({ params: _params, request }) => {
         const isComparisonPageEnabled = process.env.IS_COMPARISON_PAGE_ENABLED === 'true';
         const { setSelectedCompareModels } = appContext.getState();
 
@@ -20,7 +20,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         }
 
         // from playgroundLoader.ts
-        const { resetAttribution, getSchema, schema, abortPrompt } = appContext.getState();
+        const { resetAttribution: _rstAtr, getSchema, schema, abortPrompt } = appContext.getState();
 
         const promises = [];
 
@@ -33,10 +33,10 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             promises.push(getSchema());
         }
 
-        // (always true on this page at the moment)
-        if (params.id === undefined) {
-            resetAttribution();
-        }
+        // TODO (bb): reset, but correctly
+        // if (params.id === undefined) {
+        //     resetAttribution();
+        // }
 
         await Promise.all(promises);
 
@@ -51,7 +51,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
                 let modelId: Model['id'] | undefined = modelIdParam;
 
                 if (threadId) {
-                    const { messages } = await getThread(threadId);
+                    const { messages } = await queryClient.fetchQuery(threadOptions(threadId));
                     if (!modelIdParam) {
                         const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
                         modelId = lastResponse?.modelId;
@@ -71,6 +71,8 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         const threadsAndModels = await Promise.all(threadsAndModelPromises);
 
         setSelectedCompareModels(threadsAndModels);
+
+        // TODO (bb): attribition on load
 
         return null;
     };

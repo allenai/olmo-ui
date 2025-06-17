@@ -1,9 +1,12 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { ThreadId } from '@/api/playgroundApi/thread';
 import { OlmoStateCreator } from '@/AppContext';
 
+export type ThreadViewId = string;
+
 export interface CompareModelState {
-    threadViewId: string;
-    rootThreadId?: string; // Thread['id']
+    threadViewId: ThreadViewId;
+    rootThreadId?: ThreadId;
     model?: Model;
 }
 
@@ -15,7 +18,6 @@ export interface CompareModelSlice {
 
 export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set) => ({
     selectedCompareModels: undefined,
-    // setSelectedCompareThreads?
     setSelectedCompareModels: (compareModels: CompareModelState[]) => {
         set(
             (state) => {

@@ -2,6 +2,13 @@ import { Draft } from 'immer';
 
 import { AttributionClient, Document, TopLevelAttributionSpan } from '@/api/AttributionClient';
 import { error } from '@/api/error';
+import {
+    type MessageId,
+    type Thread,
+    type ThreadId,
+    threadOptions,
+} from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { type AppContextState, OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
@@ -41,9 +48,13 @@ interface AttributionActions {
     selectDocument: (documentIndex: string) => void;
     unselectDocument: (documentIndex: string) => void;
     resetAttribution: () => void;
-    selectMessage: (messageId: string) => void;
+    selectMessage: (threadId: ThreadId, messageId: MessageId) => void;
     unselectMessage: (messageId: string) => void;
-    getAttributionsForMessage: (prompt: string, messageId: string) => Promise<AttributionState>;
+    getAttributionsForMessage: (
+        prompt: string,
+        threadId: ThreadId,
+        messageId: MessageId
+    ) => Promise<AttributionState>;
     selectSpans: (span: string | string[]) => void;
     resetCorpusLinkSelection: () => void;
     handleAttributionForChangingThread: () => void;
@@ -114,8 +125,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             'attribution/resetAttribution'
         );
     },
-
-    selectMessage: (messageId: string) => {
+    selectMessage: (threadId: ThreadId, messageId: MessageId) => {
         set(
             (state) => {
                 if (state.attribution.selectedMessageId !== messageId) {
@@ -127,18 +137,21 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
             'attribution/selectMessage'
         );
 
-        const selectedThreadMessagesById = get().selectedThreadMessagesById;
-        const message = selectedThreadMessagesById[messageId];
+        // no hooks here
+        const { queryKey } = threadOptions(threadId);
+        const thread = queryClient.getQueryData(queryKey) as Thread;
+
+        const selectedMessage = thread.messages.find((message) => message.id === messageId);
         let prompt = '';
-        if (message.role === Role.LLM) {
-            const parentId = selectedThreadMessagesById[messageId].parent;
-            if (parentId != null) {
-                prompt = selectedThreadMessagesById[parentId].content;
+        if (selectedMessage?.role === Role.LLM) {
+            const parent = thread.messages.find((message) => message.id === selectedMessage.parent);
+            if (parent != null) {
+                prompt = parent.content;
             }
         }
 
         get()
-            .getAttributionsForMessage(prompt, messageId)
+            .getAttributionsForMessage(prompt, threadId, messageId)
             .catch((error: unknown) => {
                 throw error;
             });
@@ -155,16 +168,19 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
 
     getAttributionsForMessage: async (
         prompt: string,
-        messageId: string
+        threadId: ThreadId,
+        messageId: MessageId
     ): Promise<AttributionState> => {
-        const message = get().selectedThreadMessagesById[messageId];
+        const { queryKey } = threadOptions(threadId);
+        const thread = queryClient.getQueryData(queryKey) as Thread;
+        const message = thread.messages.find((message) => message.id === messageId);
 
         const messageDocumentsLoadingState =
             get().attribution.attributionsByMessageId[messageId]?.loadingState;
 
         // If a request is in-flight or finished we don't need to fetch again
         if (
-            message.model_id &&
+            message?.modelId &&
             messageDocumentsLoadingState !== RemoteState.Loading &&
             messageDocumentsLoadingState !== RemoteState.Loaded
         ) {
@@ -182,7 +198,7 @@ export const createAttributionSlice: OlmoStateCreator<AttributionSlice> = (set, 
                 const attributionResponse = await attributionClient.getAttributionDocuments(
                     prompt,
                     message.content,
-                    message.model_id
+                    message.modelId
                 );
 
                 set(
