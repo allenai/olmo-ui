@@ -12,12 +12,14 @@ import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v4ModelsHandlers } from './v4ModelsHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
+import { v4ThreadHandlers } from './v4ThreadHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
     ...dolmaHandlers,
     ...attributionHandlers,
     ...messageHandlers,
+    ...v4ThreadHandlers,
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
 
