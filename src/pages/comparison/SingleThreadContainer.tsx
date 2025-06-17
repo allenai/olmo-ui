@@ -1,16 +1,10 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
-
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
-import { ThreadDisplay, ThreadDisplayView } from '@/components/thread/ThreadDisplay/ThreadDisplay';
+import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
+import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder';
 
 import { CompareModelSelect } from './CompareModelSelect';
 import { ThreadViewProvider } from './ThreadViewContext';
-
-const singleThreadClasses = css({
-    display: 'flex',
-    flexDirection: 'column',
-});
 
 interface SingleThreadContainerProps {
     threadViewIdx: string;
@@ -24,16 +18,14 @@ export const SingleThreadContainer = ({
     threadRootId,
 }: SingleThreadContainerProps) => {
     if (!threadRootId) {
-        return <ThreadPlaceholder threadViewIdx={threadViewIdx} models={models} />;
+        return <CompareThreadPlaceholder threadViewIdx={threadViewIdx} models={models} />;
     }
 
     return (
-        <div className={singleThreadClasses}>
-            <ThreadViewProvider threadId={threadRootId} threadViewId={threadViewIdx}>
-                <CompareModelSelect threadViewId={threadViewIdx} models={models} />
-                <SingleThread threadRootId={threadRootId} />
-            </ThreadViewProvider>
-        </div>
+        <ThreadViewProvider threadId={threadRootId} threadViewId={threadViewIdx}>
+            <CompareModelSelect threadViewId={threadViewIdx} models={models} />
+            <SingleThread threadRootId={threadRootId} />
+        </ThreadViewProvider>
     );
 };
 
@@ -66,17 +58,13 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     );
 };
 
-type ThreadPlaceholderProps = Omit<SingleThreadContainerProps, 'threadRootId'>;
+type CompareThreadPlaceholderProps = Omit<SingleThreadContainerProps, 'threadRootId'>;
 
-const ThreadPlaceholder = ({ threadViewIdx, models }: ThreadPlaceholderProps) => {
+const CompareThreadPlaceholder = ({ threadViewIdx, models }: CompareThreadPlaceholderProps) => {
     return (
-        <div className={singleThreadClasses}>
+        <>
             <CompareModelSelect threadViewId={threadViewIdx} models={models} />
-            <ThreadDisplayView
-                shouldShowAttributionHighlightDescription={false}
-                streamingMessageId={null}
-                isUpdatingMessageContent={false}
-            />
-        </div>
+            <ThreadPlaceholder />
+        </>
     );
 };
