@@ -11,6 +11,7 @@ import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v4ModelsHandlers } from './v4ModelsHandlers';
+import { v4ThreadHandlers } from './v4ThreadHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
 
 export const handlers = [
@@ -18,6 +19,7 @@ export const handlers = [
     ...dolmaHandlers,
     ...attributionHandlers,
     ...messageHandlers,
+    ...v4ThreadHandlers,
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
 
