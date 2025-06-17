@@ -171,6 +171,7 @@ async function* readStream(response: Response) {
     // let firstPart = true;
 
     if (rdr) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while (true) {
             const part = await rdr.read();
             if (part.done) {
@@ -214,6 +215,8 @@ const updateCacheWithMessagePart = async (
         // const messageId = message.id;
         // const { queryKey } = threadOptions(threadId);
 
+        console.log('first message');
+
         const isCreatingNewThread = threadId === undefined; // first message, no thread id
 
         if (isCreatingNewThread) {
@@ -221,16 +224,24 @@ const updateCacheWithMessagePart = async (
             // await router.navigate(links.thread(parsedMessage.id));
 
             currentThreadId = message.id;
+            if (currentThreadId) {
+                const { queryKey } = threadOptions(currentThreadId);
+                queryClient.setQueryData(queryKey, message);
+            }
         } else {
-            // addChildToSelectedThread(parsedMessage);
-            // add
-        }
-
-        console.log('first message');
-
-        if (currentThreadId) {
-            const { queryKey } = threadOptions(currentThreadId);
-            queryClient.setQueryData(queryKey, message);
+            if (currentThreadId) {
+                const { queryKey } = threadOptions(currentThreadId);
+                queryClient.setQueryData(queryKey, (oldData: Thread) => {
+                    return {
+                        ...oldData,
+                        messages: [
+                            //
+                            ...oldData.messages,
+                            ...message.messages,
+                        ],
+                    };
+                });
+            }
         }
     }
     // currentThreadId should be set at this point
@@ -241,6 +252,7 @@ const updateCacheWithMessagePart = async (
         // addContentToMessage(message.message, message.content);
         const { queryKey } = threadOptions(currentThreadId);
         queryClient.setQueryData(queryKey, (oldThread: Thread) => {
+            console.log('updating content', message.content, 'with', content);
             return {
                 ...oldThread,
                 messages: oldThread.messages.map((message) => {
@@ -256,13 +268,16 @@ const updateCacheWithMessagePart = async (
             };
         });
     }
+    /*
     if (isFinalMessage(message) && currentThreadId) {
         // console.log('finalMessage');
         const { queryKey } = threadOptions(currentThreadId);
         queryClient.setQueryData(queryKey, message);
+        // append!
     }
+    */
 
-    // queryClient.setQueryData()
+    // // queryClient.setQueryData()
     // if (currentThreadId) {
     //     const { queryKey } = threadOptions(currentThreadId);
     //     await queryClient.invalidateQueries({
@@ -278,7 +293,7 @@ const useStreamMessage = () => {
     // impartitive
     const queryToThreadOrView = async ({
         request,
-        threadViewIdx, // This is useful
+        threadViewIdx, // This will be useful
         model,
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
