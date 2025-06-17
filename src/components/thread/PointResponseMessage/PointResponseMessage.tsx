@@ -149,7 +149,7 @@ const PointPictureCaption = ({
     );
 };
 
-export const PointResponseMessage = ({ threadId, messageId }: MessageProps): ReactNode => {
+export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
     const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
     const lastImagesInThread = useAppContext((state) => {
         return state.selectedThreadMessages
@@ -168,13 +168,13 @@ export const PointResponseMessage = ({ threadId, messageId }: MessageProps): Rea
     ];
 
     if (lastImagesInThread == null) {
-        return <StandardMessage threadId={threadId} messageId={messageId} />;
+        return <StandardMessage messageId={messageId} />;
     }
 
     const pointInfos = extractPointData(content);
 
     if (pointInfos == null) {
-        return <StandardMessage threadId={threadId} messageId={messageId} />;
+        return <StandardMessage messageId={messageId} />;
     }
 
     const handleClose = () => {
