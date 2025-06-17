@@ -19,12 +19,13 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
+import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { FileUploadButton } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { PromptInput } from './PromptInput';
 import { SubmitPauseAdornment } from './SubmitPauseAdornment';
 
-interface QueryFormValues {
+export interface QueryFormValues {
     content: string;
     private: boolean;
     files?: FileList;
@@ -89,6 +90,7 @@ export const QueryForm = (): JSX.Element => {
     const streamPrompt = useAppContext((state) => state.streamPrompt);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
+    const isTranscribing = useAppContext((state) => state.isTranscribing);
 
     const { executeRecaptcha } = useReCaptcha();
 
@@ -262,7 +264,14 @@ export const QueryForm = (): JSX.Element => {
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
                                 startAdornment={
-                                    <FileUploadButton {...formContext.register('files')} />
+                                    <>
+                                        <AudioInputButton
+                                            onTranscriptionComplete={(content) => {
+                                                formContext.setValue('content', content);
+                                            }}
+                                        />
+                                        <FileUploadButton {...formContext.register('files')} />
+                                    </>
                                 }
                                 endAdornment={
                                     <SubmitPauseAdornment
@@ -271,6 +280,7 @@ export const QueryForm = (): JSX.Element => {
                                         isSubmitDisabled={
                                             isSelectedThreadLoading ||
                                             isLimitReached ||
+                                            isTranscribing ||
                                             !canEditThread
                                         }
                                     />
