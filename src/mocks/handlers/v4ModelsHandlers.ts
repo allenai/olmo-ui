@@ -58,7 +58,7 @@ const fakeModelsResponse = [
     },
 ] satisfies SchemaModelResponse;
 
-const v4ModelsHandler = http.get('/v4/models/', ({ response }) => {
+const v4ModelsHandler = typedHttp.get('/v4/models/', ({ response }) => {
     return response(200).json(fakeModelsResponse);
 });
 
