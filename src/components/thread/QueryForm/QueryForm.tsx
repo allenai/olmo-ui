@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { JSX, UIEvent, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Location } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -205,6 +205,18 @@ export const isMessageChunk = (message: StreamingMessageResponse): message is Me
     return 'content' in message;
 };
 
+// Builds comparison page URL with new threads
+const buildComparisonUrlWithNewThreads = (location: Pick<Location, 'pathname' | 'search'>, newThreadIds: string[]): string => {
+    const searchParams = new URLSearchParams(location.search);
+    const existingThreads = searchParams.get('threads')?.split(',').filter(Boolean) || [];
+    
+    existingThreads.push(...newThreadIds);
+    
+    searchParams.set('threads', existingThreads.join(','));
+    
+    return `${links.comparison}?${searchParams.toString()}`;
+};
+
 // threadId can be undefined
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
@@ -233,7 +245,12 @@ const updateCacheWithMessagePart = async (
                 queryClient.setQueryData(queryKey, message);
 
                 // TODO: Should QueryForm "know" about navigation?
-                navigate(links.thread(currentThreadId));
+                if (location.pathname === links.comparison) {
+                    const comparisonUrl = buildComparisonUrlWithNewThreads(location, [currentThreadId]);
+                    navigate(comparisonUrl);
+                } else {
+                    navigate(links.thread(currentThreadId));
+                }
             }
         } else {
             if (currentThreadId) {
