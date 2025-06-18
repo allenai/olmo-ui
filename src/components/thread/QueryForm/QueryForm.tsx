@@ -7,14 +7,11 @@ import { useShallow } from 'zustand/react/shallow';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 // import { JSONMessage, type MessageStreamPart } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import {
-    playgroundApiClient,
-    playgroundApiQueryClient,
-} from '@/api/playgroundApi/playgroundApiClient';
+import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
-import { appContext, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -73,8 +70,8 @@ export const QueryForm = (): JSX.Element => {
     // react-query
     const remoteState = useAppContext((state) => state.streamPromptState);
 
-    // this should used and passed instead of passing thread
-    const lastMessageId =
+    // TODO: this should used and passed instead of passing thread (added underbar to fix the lint error for now)
+    const _lastMessageId =
         viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
     // this needs to be hoisted, and passed down, so that we can handle multiple threads
@@ -300,7 +297,7 @@ const useStreamMessage = () => {
     // impartitive
     const queryToThreadOrView = async ({
         request,
-        threadViewIdx, // This will be useful
+        // threadViewIdx, // This will be useful
         model,
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
