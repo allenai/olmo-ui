@@ -114,15 +114,20 @@ export const CompareThreadDisplay = () => {
             </StyledTabs>
             <div className={threadContainerClassNames} ref={threadContainerRef}>
                 {selectedCompareModels?.map(({ threadViewId, rootThreadId }) => {
+                    // remove non visible element from being accessible
+                    // react 18 doesn't support this prop, so we have to do this:
+                    const inertProp = {
+                        inert: threadViewId !== selectedViewIdx ? '' : undefined,
+                    };
                     return (
                         <div
                             key={threadViewId}
                             id={viewPanelId(threadViewId)}
                             role="tabpanel"
                             aria-labelledby={viewTabId(threadViewId)}
-                            aria-selected={threadViewId === selectedViewIdx ? true : undefined}
                             data-view-id={threadViewId}
-                            className={singleThreadContainerClassNames}>
+                            className={singleThreadContainerClassNames}
+                            {...inertProp}>
                             <SingleThreadContainer
                                 threadViewIdx={threadViewId}
                                 threadRootId={rootThreadId}
