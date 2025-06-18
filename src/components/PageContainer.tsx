@@ -9,6 +9,7 @@ export const PageContainer = ({ children }: React.PropsWithChildren) => {
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%',
+                overflow: 'hidden',
                 [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                     gridArea: 'content',
                     display: 'grid',
