@@ -66,32 +66,38 @@ export const playgroundLoader =
         await Promise.all(promises);
 
         const { setSelectedCompareModels, selectedModel } = appContext.getState();
-        
+
         const preselectedModelId = new URL(request.url).searchParams.get('model');
         if (preselectedModelId != null) {
             const selectedModel = models.find((model) => model.id === preselectedModelId);
             if (selectedModel != null) {
-                setSelectedCompareModels([{
-                    threadViewId: '0',
-                    rootThreadId: undefined,
-                    model: selectedModel
-                }]);
+                setSelectedCompareModels([
+                    {
+                        threadViewId: '0',
+                        rootThreadId: undefined,
+                        model: selectedModel,
+                    },
+                ]);
             } else {
                 const fallbackModel = models.filter(isModelVisible)[0];
-                setSelectedCompareModels([{
-                    threadViewId: '0',
-                    rootThreadId: undefined,
-                    model: fallbackModel
-                }]);
+                setSelectedCompareModels([
+                    {
+                        threadViewId: '0',
+                        rootThreadId: undefined,
+                        model: fallbackModel,
+                    },
+                ]);
             }
         } else if (params.id == null && selectedModel == null) {
             // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
             const visibleModels = models.filter(isModelVisible);
-            setSelectedCompareModels([{
-                threadViewId: '0',
-                rootThreadId: undefined,
-                model: visibleModels[0]
-            }]);
+            setSelectedCompareModels([
+                {
+                    threadViewId: '0',
+                    rootThreadId: undefined,
+                    model: visibleModels[0],
+                },
+            ]);
         }
 
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(

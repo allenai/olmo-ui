@@ -48,22 +48,27 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
             if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
                 const model = models.find((model) => model.id === lastResponse.modelId) as Model;
-                
-                setSelectedCompareModels([{
-                    threadViewId: '0',
-                    rootThreadId: threadRootId,
-                    model: model
-                }]);
-            } else { // TODO Temp: are "invisible" models actually getting to the UI?
-                console.log("DEBUG: filting our invisible model");
-                
+
+                setSelectedCompareModels([
+                    {
+                        threadViewId: '0',
+                        rootThreadId: threadRootId,
+                        model,
+                    },
+                ]);
+            } else {
+                // TODO Temp: are "invisible" models actually getting to the UI?
+                console.log('DEBUG: filting our invisible model');
+
                 const visibleModels = models.filter(isModelVisible);
-                
-                setSelectedCompareModels([{
-                    threadViewId: '0',
-                    rootThreadId: threadRootId,
-                    model: visibleModels[0]
-                }]);
+
+                setSelectedCompareModels([
+                    {
+                        threadViewId: '0',
+                        rootThreadId: threadRootId,
+                        model: visibleModels[0],
+                    },
+                ]);
             }
             // TODO (bb): this probably shouldn't be stored, and just queried from the last message
             updateInferenceOpts(lastResponse.opts as RequestInferenceOpts);

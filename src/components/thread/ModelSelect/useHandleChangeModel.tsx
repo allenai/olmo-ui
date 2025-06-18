@@ -21,13 +21,15 @@ export const useHandleChangeModel = () => {
     const selectModel = (modelId: string) => {
         analyticsClient.trackModelUpdate({ modelChosen: modelId });
         const model = models.find((model) => model.id === modelId) as Model;
-        
+
         // Set selectedCompareModels for single-thread mode
-        setSelectedCompareModels([{
-            threadViewId: '0',
-            rootThreadId: undefined, // Will be set when creating new thread
-            model: model
-        }]);
+        setSelectedCompareModels([
+            {
+                threadViewId: '0',
+                rootThreadId: undefined, // Will be set when creating new thread
+                model,
+            },
+        ]);
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {

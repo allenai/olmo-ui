@@ -14,7 +14,7 @@ import {
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
-import { useAppContext, appContext } from '@/AppContext';
+import { appContext, useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -129,7 +129,9 @@ export const QueryForm = (): JSX.Element => {
                 }
             }
         } else {
-            console.log('DEBUG: selectedCompareModels should have been set by model selection, but it was not');
+            console.log(
+                'DEBUG: selectedCompareModels should have been set by model selection, but it was not'
+            );
         }
     };
 
@@ -232,7 +234,7 @@ const updateCacheWithMessagePart = async (
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, message);
-                
+
                 // TODO: Should QueryForm "know" about navigation?
                 navigate(links.thread(currentThreadId));
             }
@@ -242,10 +244,7 @@ const updateCacheWithMessagePart = async (
                 queryClient.setQueryData(queryKey, (oldData: Thread) => {
                     const newData = {
                         ...oldData,
-                        messages: [
-                            ...oldData.messages,
-                            ...message.messages,
-                        ],
+                        messages: [...oldData.messages, ...message.messages],
                     };
                     return newData;
                 });
