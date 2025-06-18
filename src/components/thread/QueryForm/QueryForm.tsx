@@ -1,11 +1,7 @@
-import {
-    experimental_streamedQuery as streamedQuery,
-    useMutation,
-    useQuery,
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { JSX, UIEvent, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -18,7 +14,7 @@ import {
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
-import { useAppContext } from '@/AppContext';
+import { useAppContext, appContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -35,6 +31,7 @@ interface QueryFormValues {
 
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
+    const navigate = useNavigate();
     // const streamPrompt = useAppContext((state) => state.streamPrompt);
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
@@ -106,26 +103,33 @@ export const QueryForm = (): JSX.Element => {
                         location.pathname === links.playground
                     );
 
-                    const response = await streamMessage.mutateAsync({
-                        request: data,
-                        threadViewIdx: threadViewId,
-                        model,
-                        thread,
-                        // messageParent: lastMessageId
-                    });
+                    try {
+                        const response = await streamMessage.mutateAsync({
+                            request: data,
+                            threadViewIdx: threadViewId,
+                            model,
+                            thread,
+                            // messageParent: lastMessageId
+                        });
 
-                    let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+                        let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
-                    const chunks = readStream(response.response);
-                    for await (const chunk of chunks) {
-                        // return the root thread id (this shouldn't be undefined anymore)
-                        streamingRootThreadId = await updateCacheWithMessagePart(
-                            chunk,
-                            streamingRootThreadId
-                        );
+                        const chunks = readStream(response.response);
+                        for await (const chunk of chunks) {
+                            // return the root thread id (this shouldn't be undefined anymore)
+                            streamingRootThreadId = await updateCacheWithMessagePart(
+                                chunk,
+                                navigate,
+                                streamingRootThreadId
+                            );
+                        }
+                    } catch (error) {
+                        console.error('DEBUG: Error during streaming:', error);
                     }
                 }
             }
+        } else {
+            console.log('DEBUG: selectedCompareModels should have been set by model selection, but it was not');
         }
     };
 
@@ -205,6 +209,7 @@ export const isMessageChunk = (message: StreamingMessageResponse): message is Me
 // threadId can be undefined
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
+    navigate: (path: string) => void,
     threadId?: string
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
@@ -227,45 +232,48 @@ const updateCacheWithMessagePart = async (
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, message);
+                
+                // TODO: Should QueryForm "know" about navigation?
+                navigate(links.thread(currentThreadId));
             }
         } else {
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, (oldData: Thread) => {
-                    return {
+                    const newData = {
                         ...oldData,
                         messages: [
-                            //
                             ...oldData.messages,
                             ...message.messages,
                         ],
                     };
+                    return newData;
                 });
             }
         }
     }
     // currentThreadId should be set at this point
     if (isMessageChunk(message) && currentThreadId) {
-        console.log('message chunk');
         const { message: messageId, content } = message;
         // += message.content
         // addContentToMessage(message.message, message.content);
         const { queryKey } = threadOptions(currentThreadId);
         queryClient.setQueryData(queryKey, (oldThread: Thread) => {
-            console.log('updating content', message.content, 'with', content);
-            return {
+            const newThread = {
                 ...oldThread,
                 messages: oldThread.messages.map((message) => {
                     if (message.id === messageId) {
-                        return {
+                        const updatedMessage = {
                             ...message,
                             content: message.content + content,
                         };
+                        return updatedMessage;
                     } else {
                         return message;
                     }
                 }),
             };
+            return newThread;
         });
     }
     /*

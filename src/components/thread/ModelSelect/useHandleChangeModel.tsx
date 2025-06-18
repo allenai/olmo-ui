@@ -11,7 +11,7 @@ import { ModelChangeWarningModal } from './ModelChangeWarningModal';
 import { useModels } from './useModels';
 
 export const useHandleChangeModel = () => {
-    const setSelectedModel = useAppContext((state) => state.setSelectedModel);
+    const setSelectedCompareModels = useAppContext((state) => state.setSelectedCompareModels);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const navigate = useNavigate();
 
@@ -21,7 +21,13 @@ export const useHandleChangeModel = () => {
     const selectModel = (modelId: string) => {
         analyticsClient.trackModelUpdate({ modelChosen: modelId });
         const model = models.find((model) => model.id === modelId) as Model;
-        setSelectedModel(model);
+        
+        // Set selectedCompareModels for single-thread mode
+        setSelectedCompareModels([{
+            threadViewId: '0',
+            rootThreadId: undefined, // Will be set when creating new thread
+            model: model
+        }]);
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {
