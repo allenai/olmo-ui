@@ -1,20 +1,13 @@
-import {
-    experimental_streamedQuery as streamedQuery,
-    useMutation,
-    useQuery,
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { JSX, UIEvent, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
-import { useLocation } from 'react-router-dom';
+import { Location, useLocation, useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 // import { JSONMessage, type MessageStreamPart } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import {
-    playgroundApiClient,
-    playgroundApiQueryClient,
-} from '@/api/playgroundApi/playgroundApiClient';
+import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
@@ -35,6 +28,7 @@ export interface QueryFormValues {
 
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
+    const navigate = useNavigate();
     // const streamPrompt = useAppContext((state) => state.streamPrompt);
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
@@ -78,8 +72,8 @@ export const QueryForm = (): JSX.Element => {
     // react-query
     const remoteState = useAppContext((state) => state.streamPromptState);
 
-    // this should used and passed instead of passing thread
-    const lastMessageId =
+    // TODO: this should used and passed instead of passing thread (added underbar to fix the lint error for now)
+    const _lastMessageId =
         viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
     // this needs to be hoisted, and passed down, so that we can handle multiple threads
@@ -108,26 +102,35 @@ export const QueryForm = (): JSX.Element => {
                         location.pathname === links.playground
                     );
 
-                    const response = await streamMessage.mutateAsync({
-                        request: data,
-                        threadViewIdx: threadViewId,
-                        model,
-                        thread,
-                        // messageParent: lastMessageId
-                    });
+                    try {
+                        const response = await streamMessage.mutateAsync({
+                            request: data,
+                            threadViewIdx: threadViewId,
+                            model,
+                            thread,
+                            // messageParent: lastMessageId
+                        });
 
-                    let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+                        let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
-                    const chunks = readStream(response.response);
-                    for await (const chunk of chunks) {
-                        // return the root thread id (this shouldn't be undefined anymore)
-                        streamingRootThreadId = await updateCacheWithMessagePart(
-                            chunk,
-                            streamingRootThreadId
-                        );
+                        const chunks = readStream(response.response);
+                        for await (const chunk of chunks) {
+                            // return the root thread id (this shouldn't be undefined anymore)
+                            streamingRootThreadId = await updateCacheWithMessagePart(
+                                chunk,
+                                navigate,
+                                streamingRootThreadId
+                            );
+                        }
+                    } catch (error) {
+                        console.error('DEBUG: Error during streaming:', error);
                     }
                 }
             }
+        } else {
+            console.log(
+                'DEBUG: selectedCompareModels should have been set by model selection, but it was not'
+            );
         }
     };
 
@@ -204,9 +207,25 @@ export const isMessageChunk = (message: StreamingMessageResponse): message is Me
     return 'content' in message;
 };
 
+// Builds comparison page URL with new threads
+const buildComparisonUrlWithNewThreads = (
+    location: Pick<Location, 'pathname' | 'search'>,
+    newThreadIds: string[]
+): string => {
+    const searchParams = new URLSearchParams(location.search);
+    const existingThreads = searchParams.get('threads')?.split(',').filter(Boolean) || [];
+
+    existingThreads.push(...newThreadIds);
+
+    searchParams.set('threads', existingThreads.join(','));
+
+    return `${links.comparison}?${searchParams.toString()}`;
+};
+
 // threadId can be undefined
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
+    navigate: (path: string) => void,
     threadId?: string
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
@@ -229,45 +248,52 @@ const updateCacheWithMessagePart = async (
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, message);
+
+                // TODO: Should QueryForm "know" about navigation?
+                if (location.pathname === links.comparison) {
+                    const comparisonUrl = buildComparisonUrlWithNewThreads(location, [
+                        currentThreadId,
+                    ]);
+                    navigate(comparisonUrl);
+                } else {
+                    navigate(links.thread(currentThreadId));
+                }
             }
         } else {
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, (oldData: Thread) => {
-                    return {
+                    const newData = {
                         ...oldData,
-                        messages: [
-                            //
-                            ...oldData.messages,
-                            ...message.messages,
-                        ],
+                        messages: [...oldData.messages, ...message.messages],
                     };
+                    return newData;
                 });
             }
         }
     }
     // currentThreadId should be set at this point
     if (isMessageChunk(message) && currentThreadId) {
-        console.log('message chunk');
         const { message: messageId, content } = message;
         // += message.content
         // addContentToMessage(message.message, message.content);
         const { queryKey } = threadOptions(currentThreadId);
         queryClient.setQueryData(queryKey, (oldThread: Thread) => {
-            console.log('updating content', message.content, 'with', content);
-            return {
+            const newThread = {
                 ...oldThread,
                 messages: oldThread.messages.map((message) => {
                     if (message.id === messageId) {
-                        return {
+                        const updatedMessage = {
                             ...message,
                             content: message.content + content,
                         };
+                        return updatedMessage;
                     } else {
                         return message;
                     }
                 }),
             };
+            return newThread;
         });
     }
     /*
@@ -295,7 +321,7 @@ const useStreamMessage = () => {
     // impartitive
     const queryToThreadOrView = async ({
         request,
-        threadViewIdx, // This will be useful
+        // threadViewIdx, // This will be useful
         model,
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
