@@ -13,7 +13,12 @@ import {
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import {
+    CreateMessageRequest,
+    FlatMessage,
+    Thread,
+    threadOptions,
+} from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { useAppContext } from '@/AppContext';
@@ -479,6 +484,14 @@ const useStreamMessage = () => {
                     // topP: undefined,
                     // role: undefined,
                     // template: undefined,
+                },
+                bodySerializer: (body) => {
+                    const formData = new FormData();
+                    for (const property in body) {
+                        const value = body[property as keyof CreateMessageRequest];
+                        mapValueToFormData(formData, property, value);
+                    }
+                    return formData;
                 },
                 signal: abortController.signal, // Add abort signal to the request
             });
