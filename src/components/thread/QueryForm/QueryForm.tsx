@@ -105,7 +105,7 @@ export const QueryForm = (): JSX.Element => {
 
                     let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
-                    const chunks = readStream(response, abortController?.signal);
+                    const chunks = readStream(response, abortController.signal);
                     for await (const chunk of chunks) {
                         // return the root thread id (this shouldn't be undefined anymore)
                         streamingRootThreadId = await updateCacheWithMessagePart(
@@ -114,13 +114,18 @@ export const QueryForm = (): JSX.Element => {
                             streamingRootThreadId
                         );
                     }
-                    
+
                     // Mark stream as completed
                     streamMessage.completeStream(model.id);
                 } catch (error) {
                     // Check if error is due to abort - no need to log user-initiated aborts
                     if (error instanceof Error && error.name !== 'AbortError') {
-                        console.error('DEBUG QueryForm: Error during streaming for model =', model.id, ':', error);
+                        console.error(
+                            'DEBUG QueryForm: Error during streaming for model =',
+                            model.id,
+                            ':',
+                            error
+                        );
                     } else {
                         // Silent - user initiated abort
                     }
@@ -184,7 +189,7 @@ async function* readStream(response: Response, abortSignal?: AbortSignal) {
             if (abortSignal?.aborted) {
                 break;
             }
-            
+
             const part = await rdr.read();
             if (part.done) {
                 break;
@@ -331,7 +336,7 @@ const useStreamMessage = () => {
 
     // Internal state management functions
     const startStream = (modelId: string) => {
-        setActiveStreams(prev => {
+        setActiveStreams((prev) => {
             const next = new Set(prev);
             next.add(modelId);
             return next;
@@ -339,7 +344,7 @@ const useStreamMessage = () => {
     };
 
     const stopStream = (modelId: string) => {
-        setActiveStreams(prev => {
+        setActiveStreams((prev) => {
             const next = new Set(prev);
             next.delete(modelId);
             return next;
@@ -422,7 +427,7 @@ const useStreamMessage = () => {
         onError(error, variables, context) {
             console.log('DEBUG [bb] onError', error, variables, context);
             // Clean up stream state on error
-            if (variables?.model?.id) {
+            if (variables.model.id) {
                 stopStream(variables.model.id);
             }
         },
@@ -445,7 +450,7 @@ const useStreamMessage = () => {
     return {
         // Original mutation interface
         ...mutation,
-        
+
         // Operations
         abortAllStreams,
         completeStream,
@@ -453,7 +458,8 @@ const useStreamMessage = () => {
         // State
         canPause: mutation.isPending || activeStreams.size > 0,
         activeStreamCount: activeStreams.size,
-        remoteState: (() => { // Compatibility with RemoteState
+        remoteState: (() => {
+            // Compatibility with RemoteState
             switch (true) {
                 case mutation.isPending || activeStreams.size > 0:
                     return RemoteState.Loading;
