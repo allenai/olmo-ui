@@ -98,7 +98,7 @@ export const QueryForm = (): JSX.Element => {
                 try {
                     const { response, abortController } = await streamMessage.mutateAsync({
                         request: data,
-                        threadViewIdx: threadViewId,
+                        threadViewId,
                         model,
                         thread,
                     });
@@ -116,13 +116,15 @@ export const QueryForm = (): JSX.Element => {
                     }
 
                     // Mark stream as completed
-                    streamMessage.completeStream(model.id);
+                    streamMessage.completeStream(threadViewId);
                 } catch (error) {
                     // Check if error is due to abort - no need to log user-initiated aborts
                     if (error instanceof Error && error.name !== 'AbortError') {
                         console.error(
                             'DEBUG QueryForm: Error during streaming for model =',
                             model.id,
+                            'threadViewId =',
+                            threadViewId,
                             ':',
                             error
                         );
@@ -335,41 +337,41 @@ const useStreamMessage = () => {
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
 
     // Internal state management functions
-    const startStream = (modelId: string) => {
+    const startStream = (threadViewId: ThreadViewId) => {
         setActiveStreams((prev) => {
             const next = new Set(prev);
-            next.add(modelId);
+            next.add(threadViewId);
             return next;
         });
     };
 
-    const stopStream = (modelId: string) => {
+    const stopStream = (threadViewId: ThreadViewId) => {
         setActiveStreams((prev) => {
             const next = new Set(prev);
-            next.delete(modelId);
+            next.delete(threadViewId);
             return next;
         });
-        abortControllersRef.current.delete(modelId);
+        abortControllersRef.current.delete(threadViewId);
     };
 
     // imperative
     const queryToThreadOrView = async ({
         request,
-        // threadViewIdx, // This will be useful
+        threadViewId,
         model,
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
     }: {
         request: StreamMessageRequest;
-        threadViewIdx: ThreadViewId;
+        threadViewId: ThreadViewId;
         model: Model;
         thread?: Thread;
     }) => {
-        startStream(model.id);
+        startStream(threadViewId);
 
-        // Create and store abort controller for this model
+        // Create and store abort controller for this thread view
         const abortController = new AbortController();
-        abortControllersRef.current.set(model.id, abortController);
+        abortControllersRef.current.set(threadViewId, abortController);
 
         try {
             // do any request setup
@@ -407,7 +409,7 @@ const useStreamMessage = () => {
             return { response: result.response, abortController };
         } catch (error) {
             // Clean up on error
-            stopStream(model.id);
+            stopStream(threadViewId);
             throw error;
         }
     };
@@ -427,15 +429,15 @@ const useStreamMessage = () => {
         onError(error, variables, context) {
             console.log('DEBUG [bb] onError', error, variables, context);
             // Clean up stream state on error
-            if (variables.model.id) {
-                stopStream(variables.model.id);
+            if (variables.threadViewId) {
+                stopStream(variables.threadViewId);
             }
         },
     });
 
     // Abort functionality
     const abortAllStreams = () => {
-        abortControllersRef.current.forEach((controller, _modelId) => {
+        abortControllersRef.current.forEach((controller, _threadViewId) => {
             controller.abort();
         });
         abortControllersRef.current.clear();
@@ -443,8 +445,8 @@ const useStreamMessage = () => {
     };
 
     // Function to clean up a specific stream when it completes
-    const completeStream = (modelId: string) => {
-        stopStream(modelId);
+    const completeStream = (threadViewId: ThreadViewId) => {
+        stopStream(threadViewId);
     };
 
     return {
