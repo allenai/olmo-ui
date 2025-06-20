@@ -9,6 +9,10 @@ import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageR
 import multiplePointerMessageResponse from './responses/v4/multiplePointerMessageResponse';
 import { overlappingSpansResponse } from './responses/v4/overlappingSpansResponse';
 import {
+    compareNewMessageId,
+    fakeCompareNewThreadMessages,
+} from './responses/v4/stream/comparison';
+import {
     fakeNewThreadMessages,
     LOREM_IPSUM_MESSAGE_ID,
     newMessageId,
@@ -198,7 +202,8 @@ const highlightStressTestResponse = {
 
 // this wraps the existing responses into a map that we can use to give responses
 const v4ThreadResponses = {
-    [newMessageId]: fakeSecondThreadResponse,
+    [newMessageId]: fakeNewThreadMessages.at(-1),
+    [compareNewMessageId]: fakeCompareNewThreadMessages.at(-1),
     [firstThreadMessageId]: fakeFirstThreadResponse,
     [secondThreadMessageId]: fakeSecondThreadResponse,
     [highlightStressTestMessageId]: highlightStressTestResponse,
@@ -234,6 +239,13 @@ export const v4ThreadHandlers = [
             response = streamResponseWithSystemMessage;
         } else if (content === 'multimodaltest: Count the boats') {
             response = fakeMultiModalStreamMessages;
+        } else if (content === 'compare') {
+            const modelId = formData.get('model');
+            if (modelId === 'tulu2') {
+                response = fakeCompareNewThreadMessages;
+            } else if (modelId === 'OLMo-peteish-dpo-preview') {
+                response = fakeNewThreadMessages;
+            }
         } else {
             response = fakeNewThreadMessages;
         }
