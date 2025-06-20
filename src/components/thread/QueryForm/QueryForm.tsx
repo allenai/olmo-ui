@@ -435,7 +435,7 @@ const useStreamMessage = () => {
 
     // Abort functionality
     const abortAllStreams = () => {
-        abortControllersRef.current.forEach((controller, modelId) => {
+        abortControllersRef.current.forEach((controller, _modelId) => {
             controller.abort();
         });
         abortControllersRef.current.clear();
