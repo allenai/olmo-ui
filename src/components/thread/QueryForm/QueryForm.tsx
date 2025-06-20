@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { JSX, UIEvent, useCallback } from 'react';
+import { JSX, UIEvent, useCallback, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -29,7 +29,6 @@ export interface QueryFormValues {
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const navigate = useNavigate();
-    // const streamPrompt = useAppContext((state) => state.streamPrompt);
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
@@ -45,20 +44,18 @@ export const QueryForm = (): JSX.Element => {
         );
     });
 
-    const abortPrompt = useAppContext((state) => state.abortPrompt);
-    const canPauseThread = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading && state.abortController != null
-    );
+    const streamMessage = useStreamMessage();
+
+    const canPauseThread = streamMessage.canPause;
+    const remoteState = streamMessage.remoteState;
 
     const onAbort = useCallback(
         (event: UIEvent) => {
             event.preventDefault();
-            abortPrompt();
+            streamMessage.abortAllStreams();
         },
-        [abortPrompt]
+        [streamMessage]
     );
-
-    const streamMessage = useStreamMessage();
 
     const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
 
@@ -68,9 +65,6 @@ export const QueryForm = (): JSX.Element => {
             (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
         );
     });
-
-    // react-query
-    const remoteState = useAppContext((state) => state.streamPromptState);
 
     // TODO: this should used and passed instead of passing thread (added underbar to fix the lint error for now)
     const _lastMessageId =
@@ -85,8 +79,11 @@ export const QueryForm = (): JSX.Element => {
         // }
 
         if (selectedCompareModels) {
-            for (const compare of selectedCompareModels) {
+            // Start all streams concurrently
+            const streamPromises = selectedCompareModels.map(async (compare) => {
                 const { rootThreadId, model, threadViewId } = compare;
+
+                if (!model) return;
 
                 // Do we grab thread here or wait?
                 let thread: Thread | undefined;
@@ -95,38 +92,52 @@ export const QueryForm = (): JSX.Element => {
                     thread = queryClient.getQueryData(queryKey);
                 }
 
-                // this shouldn't be undefined ...
-                if (model) {
-                    analyticsClient.trackQueryFormSubmission(
-                        model.id,
-                        location.pathname === links.playground
-                    );
+                analyticsClient.trackQueryFormSubmission(
+                    model.id,
+                    location.pathname === links.playground
+                );
 
-                    try {
-                        const response = await streamMessage.mutateAsync({
-                            request: data,
-                            threadViewIdx: threadViewId,
-                            model,
-                            thread,
-                            // messageParent: lastMessageId
-                        });
+                try {
+                    const { response, abortController } = await streamMessage.mutateAsync({
+                        request: data,
+                        threadViewId,
+                        model,
+                        thread,
+                    });
 
-                        let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+                    let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
-                        const chunks = readStream(response.response);
-                        for await (const chunk of chunks) {
-                            // return the root thread id (this shouldn't be undefined anymore)
-                            streamingRootThreadId = await updateCacheWithMessagePart(
-                                chunk,
-                                navigate,
-                                streamingRootThreadId
-                            );
-                        }
-                    } catch (error) {
-                        console.error('DEBUG: Error during streaming:', error);
+                    const chunks = readStream(response, abortController.signal);
+                    for await (const chunk of chunks) {
+                        // return the root thread id (this shouldn't be undefined anymore)
+                        streamingRootThreadId = await updateCacheWithMessagePart(
+                            chunk,
+                            navigate,
+                            streamingRootThreadId
+                        );
+                    }
+
+                    // Mark stream as completed
+                    streamMessage.completeStream(threadViewId);
+                } catch (error) {
+                    // Check if error is due to abort - no need to log user-initiated aborts
+                    if (error instanceof Error && error.name !== 'AbortError') {
+                        console.error(
+                            'DEBUG QueryForm: Error during streaming for model =',
+                            model.id,
+                            'threadViewId =',
+                            threadViewId,
+                            ':',
+                            error
+                        );
+                    } else {
+                        // Silent - user initiated abort
                     }
                 }
-            }
+            });
+
+            // Wait for all streams to complete
+            await Promise.allSettled(streamPromises);
         } else {
             console.log(
                 'DEBUG: selectedCompareModels should have been set by model selection, but it was not'
@@ -168,7 +179,7 @@ type MessageChunk = Pick<FlatMessage, 'content'> & {
 
 type StreamingMessageResponse = Thread | MessageChunk;
 
-async function* readStream(response: Response) {
+async function* readStream(response: Response, abortSignal?: AbortSignal) {
     const rdr = response.body
         ?.pipeThrough(new ReadableJSONLStream<StreamingMessageResponse>())
         .getReader();
@@ -178,6 +189,11 @@ async function* readStream(response: Response) {
     if (rdr) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while (true) {
+            // Check if aborted before reading
+            if (abortSignal?.aborted) {
+                break;
+            }
+
             const part = await rdr.read();
             if (part.done) {
                 break;
@@ -318,66 +334,146 @@ const updateCacheWithMessagePart = async (
 };
 
 const useStreamMessage = () => {
-    // impartitive
+    // Track active streams and abort controllers
+    const [activeStreams, setActiveStreams] = useState<Set<string>>(new Set());
+    const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+
+    // Internal state management functions
+    const startStream = (threadViewId: ThreadViewId) => {
+        setActiveStreams((prev) => {
+            const next = new Set(prev);
+            next.add(threadViewId);
+            return next;
+        });
+    };
+
+    const stopStream = (threadViewId: ThreadViewId) => {
+        setActiveStreams((prev) => {
+            const next = new Set(prev);
+            next.delete(threadViewId);
+            return next;
+        });
+        abortControllersRef.current.delete(threadViewId);
+    };
+
+    // imperative
     const queryToThreadOrView = async ({
         request,
-        // threadViewIdx, // This will be useful
+        threadViewId,
         model,
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
     }: {
         request: StreamMessageRequest;
-        threadViewIdx: ThreadViewId;
+        threadViewId: ThreadViewId;
         model: Model;
-        // messageParent?: string;
         thread?: Thread;
     }) => {
-        // do any request setup
-        if (thread) {
-            const lastMessageId = thread.messages.at(-1)?.id;
-            request.parent = lastMessageId;
+        startStream(threadViewId);
+
+        // Create and store abort controller for this thread view
+        const abortController = new AbortController();
+        abortControllersRef.current.set(threadViewId, abortController);
+
+        try {
+            // do any request setup
+            if (thread) {
+                const lastMessageId = thread.messages.at(-1)?.id;
+                request.parent = lastMessageId;
+            }
+
+            const { content, captchaToken, files, parent } = request;
+
+            const result = await playgroundApiClient.POST('/v4/threads/', {
+                parseAs: 'stream',
+                body: {
+                    content,
+                    captchaToken,
+                    files,
+                    parent,
+                    host: model.host,
+                    model: model.id,
+                    // optional
+                    //
+                    // logprobs: undefined,
+                    // maxTokens: undefined,
+                    // n: undefined,
+                    // private: undefined,
+                    // original: undefined,
+                    // temperature: undefined,
+                    // topP: undefined,
+                    // role: undefined,
+                    // template: undefined,
+                },
+                signal: abortController.signal, // Add abort signal to the request
+            });
+
+            return { response: result.response, abortController };
+        } catch (error) {
+            // Clean up on error
+            stopStream(threadViewId);
+            throw error;
         }
-
-        const { content, captchaToken, files, parent } = request;
-
-        return playgroundApiClient.POST('/v4/threads/', {
-            parseAs: 'stream',
-            body: {
-                content,
-                captchaToken,
-                files,
-                parent,
-                host: model.host,
-                model: model.id,
-                // optional
-                //
-                // logprobs: undefined,
-                // maxTokens: undefined,
-                // n: undefined,
-                // private: undefined,
-                // original: undefined,
-                // temperature: undefined,
-                // topP: undefined,
-                // role: undefined,
-                // template: undefined,
-            },
-        });
     };
 
-    return useMutation({
+    const mutation = useMutation({
         mutationFn: queryToThreadOrView,
         onMutate(variables) {
-            console.log('[bb] onMutate', variables);
+            console.log('DEBUG [bb] useStreamMessage: onMutate', variables);
         },
         onSuccess(data, variables) {
             // this gets the stream before its done
-            console.log('[bb] onSuccess', data, variables);
+            console.log('DEBUG [bb] onSuccess', data, variables);
         },
         onSettled(data, error, variables, context) {
-            console.log('[bb] onSettled', data, error, variables, context);
+            console.log('DEBUG [bb] onSettled', data, error, variables, context);
         },
         onError(error, variables, context) {
-            console.log('[bb] onError', error, variables, context);
+            console.log('DEBUG [bb] onError', error, variables, context);
+            // Clean up stream state on error
+            if (variables.threadViewId) {
+                stopStream(variables.threadViewId);
+            }
         },
     });
+
+    // Abort functionality
+    const abortAllStreams = () => {
+        abortControllersRef.current.forEach((controller, _threadViewId) => {
+            controller.abort();
+        });
+        abortControllersRef.current.clear();
+        setActiveStreams(new Set());
+    };
+
+    // Function to clean up a specific stream when it completes
+    const completeStream = (threadViewId: ThreadViewId) => {
+        stopStream(threadViewId);
+    };
+
+    return {
+        // Original mutation interface
+        ...mutation,
+
+        // Operations
+        abortAllStreams,
+        completeStream,
+
+        // State
+        canPause: mutation.isPending || activeStreams.size > 0,
+        activeStreamCount: activeStreams.size,
+        remoteState: (() => {
+            // Compatibility with RemoteState
+            switch (true) {
+                case mutation.isPending || activeStreams.size > 0:
+                    return RemoteState.Loading;
+                case mutation.isError:
+                    return RemoteState.Error;
+                case activeStreams.size === 0:
+                    return RemoteState.Loaded;
+                default:
+                    return RemoteState.Loaded;
+            }
+        })(),
+    };
 };
