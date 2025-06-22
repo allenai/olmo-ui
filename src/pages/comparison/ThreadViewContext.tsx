@@ -38,7 +38,7 @@ export const useSelectedModel = (): Model | undefined => {
     const { threadViewId } = useThreadView();
 
     const selectedModel = useAppContext((state) => {
-        return state.selectedCompareModels?.find((model) => {
+        return state.selectedCompareModels.find((model) => {
             return model.threadViewId === threadViewId;
         })?.model;
     });
