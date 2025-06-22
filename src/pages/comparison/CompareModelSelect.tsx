@@ -13,7 +13,7 @@ export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectP
     const { setSelectedCompareModelAt } = useAppContext();
 
     const selectedModelId = useAppContext((state) => {
-        return state.selectedCompareModels?.find((model) => {
+        return state.selectedCompareModels.find((model) => {
             return model.threadViewId === threadViewId;
         })?.model?.id;
     });
