@@ -11,13 +11,13 @@ export interface CompareModelState {
 }
 
 export interface CompareModelSlice {
-    selectedCompareModels?: CompareModelState[];
+    selectedCompareModels: CompareModelState[];
     setSelectedCompareModels: (model: CompareModelState[]) => void;
     setSelectedCompareModelAt: (threadViewId: string, model: Model) => void;
 }
 
 export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set) => ({
-    selectedCompareModels: undefined,
+    selectedCompareModels: [],
     setSelectedCompareModels: (compareModels: CompareModelState[]) => {
         set(
             (state) => {
@@ -31,7 +31,7 @@ export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set
     },
     setSelectedCompareModelAt: (threadViewId: string, newModel: Model) => {
         set((state) => {
-            const newCompareModels = state.selectedCompareModels?.map((model) => {
+            const newCompareModels = state.selectedCompareModels.map((model) => {
                 if (model.threadViewId === threadViewId) {
                     return {
                         ...model,

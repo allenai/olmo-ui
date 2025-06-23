@@ -36,6 +36,7 @@ export const MessageView = ({
     const { threadId } = useThreadView();
     const { data: message, error: _error } = useThread(threadId, {
         select: selectMessageById(messageId),
+        staleTime: Infinity,
     });
     if (!message) {
         return null; // this shouldn't happen
