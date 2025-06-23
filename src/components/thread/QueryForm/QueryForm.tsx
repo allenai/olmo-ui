@@ -85,95 +85,89 @@ export const QueryForm = (): JSX.Element => {
         // Prepare for new submission by resetting response tracking
         streamMessage.prepareForNewSubmission();
 
-        if (selectedCompareModels) {
-            // Start all streams concurrently
-            const streamPromises = selectedCompareModels.map(async (compare) => {
-                const { rootThreadId, model, threadViewId } = compare;
+        // Start all streams concurrently
+        const streamPromises = selectedCompareModels.map(async (compare) => {
+            const { rootThreadId, model, threadViewId } = compare;
 
-                if (!model) return;
+            if (!model) return;
 
-                // Do we grab thread here or wait?
-                let thread: Thread | undefined;
-                if (rootThreadId) {
-                    const { queryKey } = threadOptions(rootThreadId);
-                    thread = queryClient.getQueryData(queryKey);
+            // Do we grab thread here or wait?
+            let thread: Thread | undefined;
+            if (rootThreadId) {
+                const { queryKey } = threadOptions(rootThreadId);
+                thread = queryClient.getQueryData(queryKey);
+            }
+
+            analyticsClient.trackQueryFormSubmission(
+                model.id,
+                location.pathname === links.playground
+            );
+
+            try {
+                const { response, abortController } = await streamMessage.mutateAsync({
+                    request: data,
+                    threadViewId,
+                    model,
+                    thread,
+                });
+
+                let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+
+                const chunks = readStream(response, abortController.signal);
+                for await (const chunk of chunks) {
+                    // return the root thread id (this shouldn't be undefined anymore)
+                    streamingRootThreadId = await updateCacheWithMessagePart(
+                        chunk,
+                        navigate,
+                        streamMessage.onFirstMessage,
+                        streamingRootThreadId
+                    );
                 }
 
-                analyticsClient.trackQueryFormSubmission(
-                    model.id,
-                    location.pathname === links.playground
+                // Mark stream as completed
+                streamMessage.completeStream(threadViewId);
+            } catch (error) {
+                let snackMessage = errorToAlert(
+                    `create-message-${new Date().getTime()}`.toLowerCase(),
+                    'Unable to Submit Message',
+                    error
                 );
 
-                try {
-                    const { response, abortController } = await streamMessage.mutateAsync({
-                        request: data,
-                        threadViewId,
-                        model,
-                        thread,
-                    });
+                if (error instanceof MessageStreamError) {
+                    if (error.finishReason === MessageStreamErrorReason.LENGTH) {
+                        snackMessage = errorToAlert(
+                            `create-message-${new Date().getTime()}`.toLowerCase(),
+                            'Maximum Thread Length',
+                            error
+                        );
 
-                    let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+                        // this should be queried from state
+                        // setMessageLimitReached(err.messageId, true);
+                    }
 
-                    const chunks = readStream(response, abortController.signal);
-                    for await (const chunk of chunks) {
-                        // return the root thread id (this shouldn't be undefined anymore)
-                        streamingRootThreadId = await updateCacheWithMessagePart(
-                            chunk,
-                            navigate,
-                            streamMessage.onFirstMessage,
-                            streamingRootThreadId
+                    if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
+                        analyticsClient.trackModelOverloadedError(model.id);
+
+                        snackMessage = errorToAlert(
+                            `create-message-${new Date().getTime()}`.toLowerCase(),
+                            'This model is overloaded due to high demand. Please try again later or try another model.',
+                            error
                         );
                     }
-
-                    // Mark stream as completed
-                    streamMessage.completeStream(threadViewId);
-                } catch (error) {
-                    let snackMessage = errorToAlert(
-                        `create-message-${new Date().getTime()}`.toLowerCase(),
-                        'Unable to Submit Message',
-                        error
-                    );
-
-                    if (error instanceof MessageStreamError) {
-                        if (error.finishReason === MessageStreamErrorReason.LENGTH) {
-                            snackMessage = errorToAlert(
-                                `create-message-${new Date().getTime()}`.toLowerCase(),
-                                'Maximum Thread Length',
-                                error
-                            );
-
-                            // this should be queried from state
-                            // setMessageLimitReached(err.messageId, true);
-                        }
-
-                        if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
-                            analyticsClient.trackModelOverloadedError(model.id);
-
-                            snackMessage = errorToAlert(
-                                `create-message-${new Date().getTime()}`.toLowerCase(),
-                                'This model is overloaded due to high demand. Please try again later or try another model.',
-                                error
-                            );
-                        }
-                    } else if (error instanceof StreamBadRequestError) {
-                        throw error;
-                    } else if (error instanceof Error) {
-                        if (error.name === 'AbortError') {
-                            snackMessage = ABORT_ERROR_MESSAGE;
-                        }
+                } else if (error instanceof StreamBadRequestError) {
+                    throw error;
+                } else if (error instanceof Error) {
+                    if (error.name === 'AbortError') {
+                        snackMessage = ABORT_ERROR_MESSAGE;
                     }
-
-                    addSnackMessage(snackMessage);
                 }
-            });
 
-            // Wait for all streams to complete
-            await Promise.allSettled(streamPromises);
-        } else {
-            console.log(
-                'DEBUG: selectedCompareModels should have been set by model selection, but it was not'
-            );
-        }
+                addSnackMessage(snackMessage);
+            }
+        });
+
+        // Wait for all streams to complete
+        await Promise.allSettled(streamPromises);
     };
 
     const placeholderText = useAppContext((state) => {
