@@ -36,7 +36,6 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const navigate = useNavigate();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
-    const selectedModel = useAppContext((state) => state.selectedModel);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const canEditThread = useAppContext((state) => {
@@ -84,12 +83,13 @@ export const QueryForm = (): JSX.Element => {
 
         // Prepare for new submission by resetting response tracking
         streamMessage.prepareForNewSubmission();
-
         // Start all streams concurrently
         const streamPromises = selectedCompareModels.map(async (compare) => {
             const { rootThreadId, model, threadViewId } = compare;
 
-            if (!model) return;
+            if (!model) {
+                return null;
+            }
 
             // Do we grab thread here or wait?
             let thread: Thread | undefined;
@@ -167,7 +167,7 @@ export const QueryForm = (): JSX.Element => {
                 addSnackMessage(snackMessage);
                 return null; // Didn't return a thread id
             }
-        });
+                });
 
         // Wait for all streams to complete
         const results = await Promise.allSettled(streamPromises);
@@ -191,15 +191,40 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
-    const placeholderText = useAppContext((state) => {
-        const selectedModelFamilyName = state.selectedModel?.family_name ?? 'the model';
-        // since selectedThreadRootId's empty state is an empty string we just check for truthiness
-        const isReply = state.selectedThreadRootId;
-
+    const getPlaceholderText = () => {
+        const modelNames = selectedCompareModels
+            ?.map(compare => compare.model?.family_name)
+            .filter(Boolean);
+        
+        if (!modelNames?.length) {
+            return 'Message the model';
+        }
+        
+        // Check if we're in an existing thread (works for both single and multiple models)
+        const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
+        const isReply = selectedThreadRootId !== '';
         const familyNamePrefix = isReply ? 'Reply to' : 'Message';
+        
+        // Multiple models - comparison mode
+        if (modelNames.length > 1) {
+            return `${familyNamePrefix} ${modelNames.join(' and ')}`;
+        }
+        
+        // Single model
+        return `${familyNamePrefix} ${modelNames[0]}`;
+    };
 
-        return `${familyNamePrefix} ${selectedModelFamilyName}`;
-    });
+    const placeholderText = getPlaceholderText();
+
+    const getAreFilesAllowed = () => {
+        // TODO: handle file uploads in comparison mode, disabled for now
+        if (location.pathname === links.comparison) {
+            return false;
+        }
+        
+        // For single model mode, check if the model accepts files
+        return Boolean(selectedCompareModels?.[0]?.model?.accepts_files);
+    };
 
     const autoFocus = location.pathname === links.playground;
 
@@ -207,7 +232,7 @@ export const QueryForm = (): JSX.Element => {
         <QueryFormController
             handleSubmit={handleSubmit}
             placeholderText={placeholderText}
-            areFilesAllowed={Boolean(selectedModel?.accepts_files)}
+            areFilesAllowed={getAreFilesAllowed()}
             autofocus={autoFocus}
             canEditThread={canEditThread}
             onAbort={onAbort}
@@ -305,37 +330,42 @@ const updateCacheWithMessagePart = async (
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
-    console.log('recieved message part', message, currentThreadId);
+    console.log('DEBUG updateCacheWithMessagePart: received message part', message, 'for threadId:', currentThreadId);
 
     if (isFirstMessage(message)) {
         // const messageId = message.id;
         // const { queryKey } = threadOptions(threadId);
 
-        console.log('first message');
+        console.log('DEBUG updateCacheWithMessagePart: Processing first message for threadId:', currentThreadId);
         onFirstMessage?.();
 
         const isCreatingNewThread = threadId === undefined; // first message, no thread id
+        console.log('DEBUG updateCacheWithMessagePart: isCreatingNewThread:', isCreatingNewThread);
 
         if (isCreatingNewThread) {
             // setSelectedThread(parsedMessage);
             // await router.navigate(links.thread(parsedMessage.id));
 
             currentThreadId = message.id;
+            console.log('DEBUG updateCacheWithMessagePart: New thread created with ID:', currentThreadId);
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, message);
 
                 // TODO: Should QueryForm "know" about navigation?
                 if (location.pathname === links.comparison) {
+                    console.log('DEBUG updateCacheWithMessagePart: Building comparison URL with new thread:', currentThreadId);
                     const comparisonUrl = buildComparisonUrlWithNewThreads(location, [
                         currentThreadId,
                     ]);
                     navigate(comparisonUrl);
                 } else {
+                    console.log('DEBUG updateCacheWithMessagePart: Navigating to single thread:', currentThreadId);
                     navigate(links.thread(currentThreadId));
                 }
             }
         } else {
+            console.log('DEBUG updateCacheWithMessagePart: Adding to existing thread:', currentThreadId);
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, (oldData: Thread) => {
@@ -389,7 +419,7 @@ const updateCacheWithMessagePart = async (
     //     });
     // }
 
-    console.log('end message part handler', currentThreadId);
+    console.log('DEBUG updateCacheWithMessagePart: End message part handler, returning threadId:', currentThreadId);
     return currentThreadId;
 };
 
@@ -437,11 +467,13 @@ const useStreamMessage = () => {
         model: Model;
         thread?: Thread;
     }) => {
+        console.log(`DEBUG useStreamMessage: Starting queryToThreadOrView for model ${model.id}, threadViewId: ${threadViewId}`);
         startStream(threadViewId);
 
         // Create and store abort controller for this thread view
         const abortController = new AbortController();
         abortControllersRef.current.set(threadViewId, abortController);
+        console.log(`DEBUG useStreamMessage: Active streams after starting:`, Array.from(abortControllersRef.current.keys()));
 
         try {
             // do any request setup
