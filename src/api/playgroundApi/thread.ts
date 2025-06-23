@@ -12,6 +12,7 @@ export type MessageId = FlatMessage['id'];
 
 type useThreadOptions<R> = {
     select: (thread: Thread) => R;
+    staleTime?: number;
 };
 
 const threadParams = (threadId: ThreadId) => ({

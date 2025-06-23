@@ -24,6 +24,7 @@ export const ThreadDisplayContainer = () => {
 
     const { data, error: _error } = useThread(selectedThreadRootId, {
         select: (thread) => thread.messages,
+        staleTime: Infinity,
     });
     // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
     const messages = data ?? [];
