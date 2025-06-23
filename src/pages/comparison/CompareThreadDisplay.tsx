@@ -27,6 +27,8 @@ export const CompareThreadDisplay = () => {
 
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
 
+    console.log('DEBUG: CompareThreadDisplay render', { selectedCompareModels });
+
     return (
         <div className={containerStyle}>
             {selectedCompareModels.map(({ threadViewId, rootThreadId }, idx) => {

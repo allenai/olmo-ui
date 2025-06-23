@@ -6,7 +6,24 @@ import { threadOptions } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 import { getModelsQueryOptions, modelById } from '@/components/thread/ModelSelect/useModels';
+import { CompareModelState } from '@/slices/CompareModelSlice';
 import { arrayZip } from '@/utils/arrayZip';
+
+// Initialize default comparison models when no URL parameters are provided
+const initializeDefaultComparisonModels = (
+    models: Model[],
+    setSelectedCompareModels: (models: CompareModelState[]) => void,
+    count: number = 2
+) => {
+    console.log('DEBUG: comparisonPageLoader - No URL params, using default models');
+    const defaultModels: CompareModelState[] = Array.from({ length: count }, (_, index) => ({
+        threadViewId: String(index),
+        model: models[0], 
+        rootThreadId: undefined,
+    }));
+
+    setSelectedCompareModels(defaultModels);
+};
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ params: _params, request }) => {
@@ -20,7 +37,8 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         }
 
         // from playgroundLoader.ts
-        const { resetAttribution: _rstAtr, getSchema, schema, abortPrompt } = appContext.getState();
+        const { resetSelectedThreadState, resetAttribution: _rstAtr, getSchema, schema, abortPrompt } =
+            appContext.getState();
 
         const promises = [];
 
@@ -37,6 +55,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         // if (params.id === undefined) {
         //     resetAttribution();
         // }
+        resetSelectedThreadState();
 
         await Promise.all(promises);
 
@@ -46,19 +65,47 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         const modelListString = new URL(request.url).searchParams.get('models');
         const modelListStrArray = modelListString?.split(',').map((m) => m.trim()) ?? [];
 
+        console.log('DEBUG: comparisonPageLoader called', {
+            threadListString,
+            threadListStrArray,
+            modelListString,
+            modelListStrArray
+        });
+
+        // If no URL parameters provided, initialize with default models for comparison
+        if (threadListStrArray.length === 0 && modelListStrArray.length === 0) {
+            initializeDefaultComparisonModels(models, setSelectedCompareModels);
+            return null;
+        }
+
+        console.log('DEBUG: comparisonPageLoader - Loading threads from URL params');
+
         const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
             async ([threadId, modelIdParam], idx) => {
+                console.log(`DEBUG: comparisonPageLoader - Loading thread ${idx + 1}/${threadListStrArray.length}:`, { threadId, modelIdParam });
                 let modelId: Model['id'] | undefined = modelIdParam;
 
                 if (threadId) {
-                    const { messages } = await queryClient.ensureQueryData(threadOptions(threadId));
-                    if (!modelIdParam) {
-                        const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
-                        modelId = lastResponse?.modelId;
+                    try {
+                        const { messages } = await queryClient.fetchQuery(threadOptions(threadId));
+                        console.log(`DEBUG: comparisonPageLoader - Thread ${threadId} loaded successfully`, { messageCount: messages.length });
+                        
+                        if (!modelIdParam) {
+                            const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
+                            modelId = lastResponse?.modelId;
+                            console.log(`DEBUG: comparisonPageLoader - Detected model from thread:`, { modelId });
+                        }
+                    } catch (error) {
+                        console.log(`DEBUG: comparisonPageLoader - Failed to load thread ${threadId}:`, error);
                     }
                 }
 
                 const modelObj = modelId ? models.find(modelById(modelId)) : models[0];
+                console.log(`DEBUG: comparisonPageLoader - Thread ${idx} result:`, { 
+                    threadViewId: String(idx), 
+                    modelName: modelObj?.name, 
+                    rootThreadId: threadId 
+                });
 
                 return {
                     threadViewId: String(idx),
@@ -70,6 +117,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         const threadsAndModels = await Promise.all(threadsAndModelPromises);
 
+        console.log('DEBUG: comparisonPageLoader - Setting selectedCompareModels:', threadsAndModels);
         setSelectedCompareModels(threadsAndModels);
 
         // TODO (bb): attribition on load
