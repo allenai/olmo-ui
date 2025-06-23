@@ -13,7 +13,7 @@ import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContex
 
 import { QueryForm } from './QueryForm';
 
-describe.skip('QueryForm', () => {
+describe('QueryForm', () => {
     it('should render successfully', () => {
         vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
             pathname: '/',
