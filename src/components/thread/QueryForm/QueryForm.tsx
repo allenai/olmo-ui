@@ -5,7 +5,12 @@ import { Location, useLocation, useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-// import { JSONMessage, type MessageStreamPart } from '@/api/Message';
+import {
+    MessageStreamError,
+    MessageStreamErrorReason,
+    MessageStreamErrorType,
+    StreamBadRequestError,
+} from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
@@ -16,7 +21,8 @@ import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMe
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { ThreadViewId } from '@/slices/CompareModelSlice';
-import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { errorToAlert } from '@/slices/SnackMessageSlice';
+import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 import { QueryFormController } from './QueryFormController';
 
@@ -31,6 +37,7 @@ export const QueryForm = (): JSX.Element => {
     const navigate = useNavigate();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const selectedModel = useAppContext((state) => state.selectedModel);
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const canEditThread = useAppContext((state) => {
         // check for new thread & thread creator
@@ -121,19 +128,42 @@ export const QueryForm = (): JSX.Element => {
                     // Mark stream as completed
                     streamMessage.completeStream(threadViewId);
                 } catch (error) {
-                    // Check if error is due to abort - no need to log user-initiated aborts
-                    if (error instanceof Error && error.name !== 'AbortError') {
-                        console.error(
-                            'DEBUG QueryForm: Error during streaming for model =',
-                            model.id,
-                            'threadViewId =',
-                            threadViewId,
-                            ':',
-                            error
-                        );
-                    } else {
-                        // Silent - user initiated abort
+                    let snackMessage = errorToAlert(
+                        `create-message-${new Date().getTime()}`.toLowerCase(),
+                        'Unable to Submit Message',
+                        error
+                    );
+
+                    if (error instanceof MessageStreamError) {
+                        if (error.finishReason === MessageStreamErrorReason.LENGTH) {
+                            snackMessage = errorToAlert(
+                                `create-message-${new Date().getTime()}`.toLowerCase(),
+                                'Maximum Thread Length',
+                                error
+                            );
+
+                            // this should be queried from state
+                            // setMessageLimitReached(err.messageId, true);
+                        }
+
+                        if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
+                            analyticsClient.trackModelOverloadedError(model.id);
+
+                            snackMessage = errorToAlert(
+                                `create-message-${new Date().getTime()}`.toLowerCase(),
+                                'This model is overloaded due to high demand. Please try again later or try another model.',
+                                error
+                            );
+                        }
+                    } else if (error instanceof StreamBadRequestError) {
+                        throw error;
+                    } else if (error instanceof Error) {
+                        if (error.name === 'AbortError') {
+                            snackMessage = ABORT_ERROR_MESSAGE;
+                        }
                     }
+
+                    addSnackMessage(snackMessage);
                 }
             });
 
@@ -178,7 +208,7 @@ type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
 
-type StreamingMessageResponse = Thread | MessageChunk;
+type StreamingMessageResponse = Thread | MessageChunk | MessageStreamErrorType;
 
 async function* readStream(response: Response, abortSignal?: AbortSignal) {
     const rdr = response.body
@@ -200,7 +230,13 @@ async function* readStream(response: Response, abortSignal?: AbortSignal) {
                 break;
             }
 
-            // await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 300));
+            if (isMessageStreamError(part.value)) {
+                throw new MessageStreamError(
+                    part.value.message,
+                    part.value.reason,
+                    `streaming response failed: ${part.value.error}`
+                );
+            }
 
             yield part.value;
             // firstPart = false;
@@ -222,6 +258,12 @@ export const isFinalMessage = (message: StreamingMessageResponse): message is Th
 
 export const isMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
     return 'content' in message;
+};
+
+export const isMessageStreamError = (
+    message: StreamingMessageResponse
+): message is MessageStreamErrorType => {
+    return 'error' in message;
 };
 
 // Builds comparison page URL with new threads
