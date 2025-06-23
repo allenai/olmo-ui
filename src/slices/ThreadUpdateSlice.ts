@@ -44,7 +44,7 @@ export const findChildMessageById = (messageId: string, rootMessage: Message): M
     return null;
 };
 
-const ABORT_ERROR_MESSAGE: SnackMessage = {
+export const ABORT_ERROR_MESSAGE: SnackMessage = {
     type: SnackMessageType.Alert,
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
     title: 'Response was aborted',
