@@ -36,6 +36,7 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const navigate = useNavigate();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
+    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const canEditThread = useAppContext((state) => {
@@ -193,7 +194,7 @@ export const QueryForm = (): JSX.Element => {
 
     const getPlaceholderText = () => {
         const modelNames = selectedCompareModels
-            ?.map(compare => compare.model?.family_name)
+            ?.map(compare => compare.model?.family_name || compare.model?.name) // Sometimes the family_name is null?
             .filter(Boolean);
         
         if (!modelNames?.length) {
@@ -201,7 +202,6 @@ export const QueryForm = (): JSX.Element => {
         }
         
         // Check if we're in an existing thread (works for both single and multiple models)
-        const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
         const isReply = selectedThreadRootId !== '';
         const familyNamePrefix = isReply ? 'Reply to' : 'Message';
         
