@@ -3,8 +3,8 @@ import { ComponentProps } from 'react';
 import * as reactRouter from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
-import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 import { SelectMessageButton } from './SelectMessageButton';
