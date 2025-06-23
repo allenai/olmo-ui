@@ -118,7 +118,6 @@ export const QueryForm = (): JSX.Element => {
                     // return the root thread id (this shouldn't be undefined anymore)
                     streamingRootThreadId = await updateCacheWithMessagePart(
                         chunk,
-                        () => {}, // Empty navigate function - we'll handle navigation after all streams complete
                         streamMessage.onFirstMessage,
                         streamingRootThreadId
                     );
@@ -168,18 +167,17 @@ export const QueryForm = (): JSX.Element => {
                 addSnackMessage(snackMessage);
                 return null; // Didn't return a thread id
             }
-                });
+        });
 
         // Wait for all streams to complete
         const results = await Promise.allSettled(streamPromises);
         
         // Collect all successful thread IDs
         const threadIds = results
-            .filter(
-                (result): result is PromiseFulfilledResult<string> =>
-                    result.status === 'fulfilled' && result.value != null
+            .filter((result): result is PromiseFulfilledResult<string> => 
+                result.status === 'fulfilled' && result.value != null
             )
-            .map((result) => result.value);
+            .map(result => result.value);
         
         // Navigate based on what we created
         if (threadIds.length === 0) {
@@ -312,11 +310,9 @@ const buildComparisonUrlWithNewThreads = (
     newThreadIds: string[]
 ): string => {
     const searchParams = new URLSearchParams(location.search);
-    const existingThreads = searchParams.get('threads')?.split(',').filter(Boolean) || [];
-
-    existingThreads.push(...newThreadIds);
-
-    searchParams.set('threads', existingThreads.join(','));
+    
+    // Replace the threads parameter with the new thread IDs
+    searchParams.set('threads', newThreadIds.join(','));
 
     return `${links.comparison}?${searchParams.toString()}`;
 };
@@ -324,48 +320,29 @@ const buildComparisonUrlWithNewThreads = (
 // threadId can be undefined
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
-    navigate: (path: string) => void,
     onFirstMessage?: () => void,
     threadId?: string
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
-    console.log('DEBUG updateCacheWithMessagePart: received message part', message, 'for threadId:', currentThreadId);
-
     if (isFirstMessage(message)) {
         // const messageId = message.id;
         // const { queryKey } = threadOptions(threadId);
 
-        console.log('DEBUG updateCacheWithMessagePart: Processing first message for threadId:', currentThreadId);
         onFirstMessage?.();
 
         const isCreatingNewThread = threadId === undefined; // first message, no thread id
-        console.log('DEBUG updateCacheWithMessagePart: isCreatingNewThread:', isCreatingNewThread);
 
         if (isCreatingNewThread) {
             // setSelectedThread(parsedMessage);
             // await router.navigate(links.thread(parsedMessage.id));
 
             currentThreadId = message.id;
-            console.log('DEBUG updateCacheWithMessagePart: New thread created with ID:', currentThreadId);
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, message);
-
-                // TODO: Should QueryForm "know" about navigation?
-                if (location.pathname === links.comparison) {
-                    console.log('DEBUG updateCacheWithMessagePart: Building comparison URL with new thread:', currentThreadId);
-                    const comparisonUrl = buildComparisonUrlWithNewThreads(location, [
-                        currentThreadId,
-                    ]);
-                    navigate(comparisonUrl);
-                } else {
-                    console.log('DEBUG updateCacheWithMessagePart: Navigating to single thread:', currentThreadId);
-                    navigate(links.thread(currentThreadId));
-                }
             }
         } else {
-            console.log('DEBUG updateCacheWithMessagePart: Adding to existing thread:', currentThreadId);
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
                 queryClient.setQueryData(queryKey, (oldData: Thread) => {
@@ -419,7 +396,6 @@ const updateCacheWithMessagePart = async (
     //     });
     // }
 
-    console.log('DEBUG updateCacheWithMessagePart: End message part handler, returning threadId:', currentThreadId);
     return currentThreadId;
 };
 
@@ -467,13 +443,11 @@ const useStreamMessage = () => {
         model: Model;
         thread?: Thread;
     }) => {
-        console.log(`DEBUG useStreamMessage: Starting queryToThreadOrView for model ${model.id}, threadViewId: ${threadViewId}`);
         startStream(threadViewId);
 
         // Create and store abort controller for this thread view
         const abortController = new AbortController();
         abortControllersRef.current.set(threadViewId, abortController);
-        console.log(`DEBUG useStreamMessage: Active streams after starting:`, Array.from(abortControllersRef.current.keys()));
 
         try {
             // do any request setup
