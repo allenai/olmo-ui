@@ -31,7 +31,7 @@ interface QueryFormControllerProps {
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;
-    firstResponseId?: string | null;
+    shouldResetForm?: boolean;
 }
 
 export const QueryFormController = ({
@@ -45,7 +45,7 @@ export const QueryFormController = ({
     canPauseThread,
     isLimitReached,
     remoteState,
-    firstResponseId,
+    shouldResetForm,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
 
@@ -77,10 +77,10 @@ export const QueryFormController = ({
 
     // Clear form input after the client receive the first message(s)
     useEffect(() => {
-        if (firstResponseId !== null) {
+        if (shouldResetForm) {
             formContext.reset();
         }
-    }, [firstResponseId, formContext]);
+    }, [shouldResetForm, formContext]);
 
     useEffect(() => {
         if (!areFilesAllowed) {
