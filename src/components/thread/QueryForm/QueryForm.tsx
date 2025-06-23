@@ -30,7 +30,6 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const navigate = useNavigate();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
-    const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
@@ -78,6 +77,9 @@ export const QueryForm = (): JSX.Element => {
         //     request.parent = lastMessageId;
         // }
 
+        // Prepare for new submission by resetting response tracking
+        streamMessage.prepareForNewSubmission();
+
         if (selectedCompareModels) {
             // Start all streams concurrently
             const streamPromises = selectedCompareModels.map(async (compare) => {
@@ -113,6 +115,7 @@ export const QueryForm = (): JSX.Element => {
                         streamingRootThreadId = await updateCacheWithMessagePart(
                             chunk,
                             navigate,
+                            streamMessage.onFirstMessage,
                             streamingRootThreadId
                         );
                     }
@@ -168,7 +171,7 @@ export const QueryForm = (): JSX.Element => {
             canPauseThread={canPauseThread}
             isLimitReached={isLimitReached}
             remoteState={remoteState}
-            firstResponseId={firstResponseId}
+            shouldResetForm={streamMessage.hasReceivedFirstResponse}
         />
     );
 };
@@ -242,6 +245,7 @@ const buildComparisonUrlWithNewThreads = (
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
     navigate: (path: string) => void,
+    onFirstMessage?: () => void,
     threadId?: string
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
@@ -253,6 +257,7 @@ const updateCacheWithMessagePart = async (
         // const { queryKey } = threadOptions(threadId);
 
         console.log('first message');
+        onFirstMessage?.();
 
         const isCreatingNewThread = threadId === undefined; // first message, no thread id
 
@@ -334,9 +339,9 @@ const updateCacheWithMessagePart = async (
 };
 
 const useStreamMessage = () => {
-    // Track active streams and abort controllers
     const [activeStreams, setActiveStreams] = useState<Set<string>>(new Set());
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+    const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
 
     // Internal state management functions
     const startStream = (threadViewId: ThreadViewId) => {
@@ -355,6 +360,14 @@ const useStreamMessage = () => {
         });
         abortControllersRef.current.delete(threadViewId);
     };
+
+    const prepareForNewSubmission = () => {
+        setHasReceivedFirstResponse(false);
+    };
+
+    const handleFirstMessage = useCallback(() => {
+        setHasReceivedFirstResponse(true);
+    }, []);
 
     // imperative
     const queryToThreadOrView = async ({
@@ -458,10 +471,16 @@ const useStreamMessage = () => {
         // Operations
         abortAllStreams,
         completeStream,
+        prepareForNewSubmission,
+
+        // Callback to call on first message
+        // This is currently necessary because stream processing is done externally
+        onFirstMessage: handleFirstMessage,
 
         // State
         canPause: mutation.isPending || activeStreams.size > 0,
         activeStreamCount: activeStreams.size,
+        hasReceivedFirstResponse,
         remoteState: (() => {
             // Compatibility with RemoteState
             switch (true) {
