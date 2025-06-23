@@ -80,72 +80,66 @@ export const QueryForm = (): JSX.Element => {
         // Prepare for new submission by resetting response tracking
         streamMessage.prepareForNewSubmission();
 
-        if (selectedCompareModels) {
-            // Start all streams concurrently
-            const streamPromises = selectedCompareModels.map(async (compare) => {
-                const { rootThreadId, model, threadViewId } = compare;
+        // Start all streams concurrently
+        const streamPromises = selectedCompareModels.map(async (compare) => {
+            const { rootThreadId, model, threadViewId } = compare;
 
-                if (!model) return;
+            if (!model) return;
 
-                // Do we grab thread here or wait?
-                let thread: Thread | undefined;
-                if (rootThreadId) {
-                    const { queryKey } = threadOptions(rootThreadId);
-                    thread = queryClient.getQueryData(queryKey);
-                }
+            // Do we grab thread here or wait?
+            let thread: Thread | undefined;
+            if (rootThreadId) {
+                const { queryKey } = threadOptions(rootThreadId);
+                thread = queryClient.getQueryData(queryKey);
+            }
 
-                analyticsClient.trackQueryFormSubmission(
-                    model.id,
-                    location.pathname === links.playground
-                );
-
-                try {
-                    const { response, abortController } = await streamMessage.mutateAsync({
-                        request: data,
-                        threadViewId,
-                        model,
-                        thread,
-                    });
-
-                    let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
-
-                    const chunks = readStream(response, abortController.signal);
-                    for await (const chunk of chunks) {
-                        // return the root thread id (this shouldn't be undefined anymore)
-                        streamingRootThreadId = await updateCacheWithMessagePart(
-                            chunk,
-                            navigate,
-                            streamMessage.onFirstMessage,
-                            streamingRootThreadId
-                        );
-                    }
-
-                    // Mark stream as completed
-                    streamMessage.completeStream(threadViewId);
-                } catch (error) {
-                    // Check if error is due to abort - no need to log user-initiated aborts
-                    if (error instanceof Error && error.name !== 'AbortError') {
-                        console.error(
-                            'DEBUG QueryForm: Error during streaming for model =',
-                            model.id,
-                            'threadViewId =',
-                            threadViewId,
-                            ':',
-                            error
-                        );
-                    } else {
-                        // Silent - user initiated abort
-                    }
-                }
-            });
-
-            // Wait for all streams to complete
-            await Promise.allSettled(streamPromises);
-        } else {
-            console.log(
-                'DEBUG: selectedCompareModels should have been set by model selection, but it was not'
+            analyticsClient.trackQueryFormSubmission(
+                model.id,
+                location.pathname === links.playground
             );
-        }
+
+            try {
+                const { response, abortController } = await streamMessage.mutateAsync({
+                    request: data,
+                    threadViewId,
+                    model,
+                    thread,
+                });
+
+                let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+
+                const chunks = readStream(response, abortController.signal);
+                for await (const chunk of chunks) {
+                    // return the root thread id (this shouldn't be undefined anymore)
+                    streamingRootThreadId = await updateCacheWithMessagePart(
+                        chunk,
+                        navigate,
+                        streamMessage.onFirstMessage,
+                        streamingRootThreadId
+                    );
+                }
+
+                // Mark stream as completed
+                streamMessage.completeStream(threadViewId);
+            } catch (error) {
+                // Check if error is due to abort - no need to log user-initiated aborts
+                if (error instanceof Error && error.name !== 'AbortError') {
+                    console.error(
+                        'DEBUG QueryForm: Error during streaming for model =',
+                        model.id,
+                        'threadViewId =',
+                        threadViewId,
+                        ':',
+                        error
+                    );
+                } else {
+                    // Silent - user initiated abort
+                }
+            }
+        });
+
+        // Wait for all streams to complete
+        await Promise.allSettled(streamPromises);
     };
 
     const placeholderText = useAppContext((state) => {

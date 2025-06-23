@@ -51,7 +51,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
                 let modelId: Model['id'] | undefined = modelIdParam;
 
                 if (threadId) {
-                    const { messages } = await queryClient.fetchQuery(threadOptions(threadId));
+                    const { messages } = await queryClient.ensureQueryData(threadOptions(threadId));
                     if (!modelIdParam) {
                         const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
                         modelId = lastResponse?.modelId;
