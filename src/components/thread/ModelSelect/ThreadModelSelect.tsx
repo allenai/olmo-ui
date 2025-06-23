@@ -10,8 +10,8 @@ import { isModelVisible, useModels } from './useModels';
 
 export const SingleThreadModelSelect = (): JSX.Element => {
     const selectId = useId();
-    const selectedModelIdFromState = useAppContext((state) => 
-        state.selectedCompareModels[0].model?.id
+    const selectedModelIdFromState = useAppContext(
+        (state) => state.selectedCompareModels[0].model?.id
     );
 
     const models = useModels({

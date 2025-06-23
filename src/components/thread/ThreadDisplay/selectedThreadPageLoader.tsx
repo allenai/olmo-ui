@@ -58,8 +58,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                 ]);
             } else {
                 // TODO Temp: are "invisible" models actually getting to the UI?
-                console.log('DEBUG: filting our invisible model');
-
                 const visibleModels = models.filter(isModelVisible);
 
                 setSelectedCompareModels([
