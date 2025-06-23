@@ -10,6 +10,7 @@ export const useSpanHighlighting = (messageId: string) => {
     const { threadId } = useThreadView();
     const { data, error: _error } = useThread(threadId, {
         select: selectMessageById(messageId),
+        staleTime: Infinity,
     });
 
     // this shouldn't happen
