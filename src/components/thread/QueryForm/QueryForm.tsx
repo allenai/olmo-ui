@@ -74,6 +74,28 @@ export const QueryForm = (): JSX.Element => {
     const _lastMessageId =
         viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
 
+    const getPlaceholderText = () => {
+        const modelNames = selectedCompareModels
+            .map((compare) => compare.model?.family_name || compare.model?.name) // Sometimes the family_name is null?
+            .filter(Boolean);
+
+        if (!modelNames.length) {
+            return 'Message the model';
+        }
+
+        // Check if we're in an existing thread (works for both single and multiple models)
+        const isReply = selectedThreadRootId !== '';
+        const familyNamePrefix = isReply ? 'Reply to' : 'Message';
+
+        // Multiple models - comparison mode
+        if (modelNames.length > 1) {
+            return `${familyNamePrefix} ${modelNames.join(' and ')}`;
+        }
+
+        // Single model
+        return `${familyNamePrefix} ${modelNames[0]}`;
+    };
+
     // this needs to be hoisted, and passed down, so that we can handle multiple threads
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
         // const request: StreamMessageRequest = data;
@@ -189,28 +211,6 @@ export const QueryForm = (): JSX.Element => {
             const comparisonUrl = buildComparisonUrlWithNewThreads(location, threadIds);
             navigate(comparisonUrl);
         }
-    };
-
-    const getPlaceholderText = () => {
-        const modelNames = selectedCompareModels
-            .map((compare) => compare.model?.family_name || compare.model?.name) // Sometimes the family_name is null?
-            .filter(Boolean);
-
-        if (!modelNames.length) {
-            return 'Message the model';
-        }
-
-        // Check if we're in an existing thread (works for both single and multiple models)
-        const isReply = selectedThreadRootId !== '';
-        const familyNamePrefix = isReply ? 'Reply to' : 'Message';
-
-        // Multiple models - comparison mode
-        if (modelNames.length > 1) {
-            return `${familyNamePrefix} ${modelNames.join(' and ')}`;
-        }
-
-        // Single model
-        return `${familyNamePrefix} ${modelNames[0]}`;
     };
 
     const placeholderText = getPlaceholderText();
