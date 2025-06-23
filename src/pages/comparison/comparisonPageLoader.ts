@@ -89,7 +89,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
                         }
                     } catch (error) {
                         console.log(
-                            `CmparisonPageLoader - Failed to load thread ${threadId}:`,
+                            `ComparisonPageLoader - Failed to load thread ${threadId}:`,
                             error
                         );
                     }
