@@ -29,7 +29,7 @@ export const CompareThreadDisplay = () => {
 
     return (
         <div className={containerStyle}>
-            {selectedCompareModels?.map(({ threadViewId, rootThreadId }, idx) => {
+            {selectedCompareModels.map(({ threadViewId, rootThreadId }, idx) => {
                 return (
                     <SingleThreadContainer
                         key={idx}
