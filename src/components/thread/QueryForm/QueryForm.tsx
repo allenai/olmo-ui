@@ -78,7 +78,7 @@ export const QueryForm = (): JSX.Element => {
         // Prepare for new submission by resetting response tracking
         streamMessage.prepareForNewSubmission();
         // Start all streams concurrently
-        const streamPromises = selectedCompareModels.map(async (compare, index) => {
+        const streamPromises = selectedCompareModels.map(async (compare) => {
             const { rootThreadId, model, threadViewId } = compare;
 
             if (!model) {
@@ -119,7 +119,7 @@ export const QueryForm = (): JSX.Element => {
 
                 // Mark stream as completed
                 streamMessage.completeStream(threadViewId);
-                
+
                 // Return the final thread ID
                 return streamingRootThreadId;
             } catch (error) {
@@ -142,14 +142,15 @@ export const QueryForm = (): JSX.Element => {
 
         // Wait for all streams to complete
         const results = await Promise.allSettled(streamPromises);
-        
+
         // Collect all successful thread IDs
         const threadIds = results
-            .filter((result): result is PromiseFulfilledResult<string> => 
-                result.status === 'fulfilled' && result.value != null
+            .filter(
+                (result): result is PromiseFulfilledResult<string> =>
+                    result.status === 'fulfilled' && result.value != null
             )
-            .map(result => result.value);
-        
+            .map((result) => result.value);
+
         // Navigate based on what we created
         if (threadIds.length === 0) {
             // No threads created, should never happen?
@@ -163,22 +164,22 @@ export const QueryForm = (): JSX.Element => {
 
     const getPlaceholderText = () => {
         const modelNames = selectedCompareModels
-            ?.map(compare => compare.model?.family_name || compare.model?.name) // Sometimes the family_name is null?
+            .map((compare) => compare.model?.family_name || compare.model?.name) // Sometimes the family_name is null?
             .filter(Boolean);
-        
-        if (!modelNames?.length) {
+
+        if (!modelNames.length) {
             return 'Message the model';
         }
-        
+
         // Check if we're in an existing thread (works for both single and multiple models)
         const isReply = selectedThreadRootId !== '';
         const familyNamePrefix = isReply ? 'Reply to' : 'Message';
-        
+
         // Multiple models - comparison mode
         if (modelNames.length > 1) {
             return `${familyNamePrefix} ${modelNames.join(' and ')}`;
         }
-        
+
         // Single model
         return `${familyNamePrefix} ${modelNames[0]}`;
     };
@@ -190,9 +191,9 @@ export const QueryForm = (): JSX.Element => {
         if (location.pathname === links.comparison) {
             return false;
         }
-        
+
         // For single model mode, check if the model accepts files
-        return Boolean(selectedCompareModels?.[0]?.model?.accepts_files);
+        return Boolean(selectedCompareModels[0]?.model?.accepts_files);
     };
 
     const autoFocus = location.pathname === links.playground;
@@ -269,7 +270,7 @@ const buildComparisonUrlWithNewThreads = (
     newThreadIds: string[]
 ): string => {
     const searchParams = new URLSearchParams(location.search);
-    
+
     // Replace the threads parameter with the new thread IDs
     searchParams.set('threads', newThreadIds.join(','));
 
