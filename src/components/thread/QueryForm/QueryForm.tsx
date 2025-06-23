@@ -97,7 +97,6 @@ export const QueryForm = (): JSX.Element => {
                 const { queryKey } = threadOptions(rootThreadId);
                 thread = queryClient.getQueryData(queryKey);
             }
-
             analyticsClient.trackQueryFormSubmission(
                 model.id,
                 location.pathname === links.playground
@@ -118,7 +117,7 @@ export const QueryForm = (): JSX.Element => {
                     // return the root thread id (this shouldn't be undefined anymore)
                     streamingRootThreadId = await updateCacheWithMessagePart(
                         chunk,
-                        navigate,
+                        () => {}, // Empty navigate function - we'll handle navigation after all streams complete
                         streamMessage.onFirstMessage,
                         streamingRootThreadId
                     );
@@ -126,6 +125,9 @@ export const QueryForm = (): JSX.Element => {
 
                 // Mark stream as completed
                 streamMessage.completeStream(threadViewId);
+                
+                // Return the final thread ID for parallel streaming navigation
+                return streamingRootThreadId;
             } catch (error) {
                 let snackMessage = errorToAlert(
                     `create-message-${new Date().getTime()}`.toLowerCase(),
@@ -163,11 +165,30 @@ export const QueryForm = (): JSX.Element => {
                 }
 
                 addSnackMessage(snackMessage);
+                return null; // Didn't return a thread id
             }
         });
 
         // Wait for all streams to complete
-        await Promise.allSettled(streamPromises);
+        const results = await Promise.allSettled(streamPromises);
+        
+        // Collect all successful thread IDs
+        const threadIds = results
+            .filter(
+                (result): result is PromiseFulfilledResult<string> =>
+                    result.status === 'fulfilled' && result.value != null
+            )
+            .map((result) => result.value);
+        
+        // Navigate based on what we created
+        if (threadIds.length === 0) {
+            // No threads created, should never happen?
+        } else if (threadIds.length === 1) {
+            navigate(links.thread(threadIds[0]));
+        } else {
+            const comparisonUrl = buildComparisonUrlWithNewThreads(location, threadIds);
+            navigate(comparisonUrl);
+        }
     };
 
     const placeholderText = useAppContext((state) => {
