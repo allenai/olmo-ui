@@ -75,8 +75,8 @@ export const QueryForm = (): JSX.Element => {
         //     request.parent = lastMessageId;
         // }
 
-        // Reset form state when starting new submission
-        streamMessage.resetFormState();
+        // Prepare for new submission by resetting response tracking
+        streamMessage.prepareForNewSubmission();
 
         if (selectedCompareModels) {
             // Start all streams concurrently
@@ -359,7 +359,7 @@ const useStreamMessage = () => {
         abortControllersRef.current.delete(threadViewId);
     };
 
-    const resetFormState = () => {
+    const prepareForNewSubmission = () => {
         setHasReceivedFirstResponse(false);
     };
 
@@ -469,7 +469,7 @@ const useStreamMessage = () => {
         // Operations
         abortAllStreams,
         completeStream,
-        resetFormState,
+        prepareForNewSubmission,
 
         // Callback to call on first message
         // This is currently necessary because stream processing is done externally
