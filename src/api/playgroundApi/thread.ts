@@ -7,7 +7,7 @@ import type {
     SchemaThread as Thread,
 } from './playgroundApiSchema';
 
-export { CreateMessageRequest, FlatMessage, Thread };
+export type { CreateMessageRequest, FlatMessage, Thread };
 export type ThreadId = Thread['id'];
 export type MessageId = FlatMessage['id'];
 export type MessageChunk = Pick<FlatMessage, 'content'> & {
