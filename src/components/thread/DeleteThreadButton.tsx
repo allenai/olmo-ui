@@ -69,7 +69,7 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
     }
 
     const [firstMessage] = thread.messages;
-    const isPastThirtyDays = isOlderThan30Days(firstMessage.created);
+    const isPastThirtyDays = isOlderThan30Days(new Date(firstMessage.created));
 
     const canUseDeleteButton = firstMessage.creator === userInfo.client;
 

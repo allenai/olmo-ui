@@ -62,9 +62,9 @@ export const HistoryDrawer = (): JSX.Element => {
     allThreads.forEach((thread) => {
         const m = thread.messages.at(0);
         if (m) {
-            if (isCurrentDay(m.created)) {
+            if (isCurrentDay(new Date(m.created))) {
                 threadsFromToday.push(thread);
-            } else if (isPastWeek(m.created)) {
+            } else if (isPastWeek(new Date(m.created))) {
                 threadsFromThisWeek.push(thread);
             } else {
                 threadsOlderThanAWeek.push(thread);
