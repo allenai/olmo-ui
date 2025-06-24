@@ -10,6 +10,12 @@ export { FlatMessage, Thread };
 export type ThreadId = Thread['id'];
 export type MessageId = FlatMessage['id'];
 
+export const mapMessage = (message: FlatMessage) => ({
+    ...message,
+    created: new Date(message.created),
+    deleted: message.deleted ? new Date(message.deleted) : undefined,
+});
+
 type useThreadOptions<R> = {
     select: (thread: Thread) => R;
     staleTime?: number;

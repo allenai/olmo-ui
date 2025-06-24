@@ -13,7 +13,13 @@ import {
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import {
+    CreateMessageRequest,
+    FlatMessage,
+    mapMessage,
+    Thread,
+    threadOptions,
+} from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { useAppContext } from '@/AppContext';
@@ -341,7 +347,10 @@ const updateCacheWithMessagePart = async (
             currentThreadId = message.id;
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, message);
+                queryClient.setQueryData(queryKey, {
+                    ...message,
+                    messages: message.messages.map(mapMessage),
+                });
             }
         } else {
             if (currentThreadId) {
@@ -349,7 +358,7 @@ const updateCacheWithMessagePart = async (
                 queryClient.setQueryData(queryKey, (oldData: Thread) => {
                     const newData = {
                         ...oldData,
-                        messages: [...oldData.messages, ...message.messages],
+                        messages: [...oldData.messages, ...message.messages.map(mapMessage)],
                     };
                     return newData;
                 });
