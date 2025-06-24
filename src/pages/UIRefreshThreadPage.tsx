@@ -15,7 +15,9 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 export const UIRefreshThreadPage = () => {
     // somewhere that handles model selection
-    const selectedModelFamilyId = useAppContext((state) => state.selectedModel?.family_id);
+    const selectedModelFamilyId = useAppContext(
+        (state) => state.selectedCompareModels[0].model?.family_id
+    );
     return (
         <>
             <MetaTags />
