@@ -4,13 +4,14 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
+import { mapMessage, Thread } from './playgroundApi/thread';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 export const v4MessageApiUrl = '/v4/message';
-export const ThreadApiUrl = '/v4/threads';
+export const v4ThreadApiUrl = '/v4/threads/';
 
 export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
@@ -61,6 +62,11 @@ export interface Message {
 
 export interface MessageList {
     messages: Message[];
+    meta: PaginationData;
+}
+
+export interface ThreadList {
+    messages: Thread[];
     meta: PaginationData;
 }
 
@@ -183,8 +189,8 @@ export class MessageClient extends ClientBase {
         offset: number = 0,
         creator?: string,
         limit?: number
-    ): Promise<MessageList> => {
-        const url = this.createURL(MessagesApiUrl);
+    ): Promise<ThreadList> => {
+        const url = this.createURL(v4ThreadApiUrl);
         if (limit) {
             url.searchParams.set('limit', limit.toString());
         }
@@ -195,11 +201,14 @@ export class MessageClient extends ClientBase {
             url.searchParams.set('creator', creator);
         }
 
-        const messagesResponse = await this.fetch<MessagesResponse>(url);
+        const { messages, meta } = await this.fetch<ThreadList>(url);
 
-        const parsedMessages = messagesResponse.messages.map(parseMessage);
+        const mappedMessages = messages.map((thread) => ({
+            ...thread,
+            messages: thread.messages.map(mapMessage),
+        }));
 
-        return { messages: parsedMessages, meta: messagesResponse.meta };
+        return { messages: mappedMessages, meta };
     };
 
     sendMessage = async (

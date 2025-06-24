@@ -16,7 +16,7 @@ import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
-import { useAppContext } from '@/AppContext';
+import { appContext, useAppContext } from '@/AppContext';
 import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -326,6 +326,8 @@ const updateCacheWithMessagePart = async (
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
+    const state = appContext.getState();
+
     if (isFirstMessage(message)) {
         // const messageId = message.id;
         // const { queryKey } = threadOptions(threadId);
@@ -378,6 +380,12 @@ const updateCacheWithMessagePart = async (
                 }),
             };
             return newThread;
+        });
+    }
+    if (isFinalMessage(message) && currentThreadId) {
+        state.addThreadToAllThreads({
+            ...message,
+            messages: message.messages.map(mapMessage),
         });
     }
     /*
