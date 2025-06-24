@@ -41,14 +41,18 @@ export const HistoryDrawerSection = ({
                 <NavigationHeading color={theme.palette.secondary.light}>
                     {heading}
                 </NavigationHeading>
-                {threads.map((thread) => (
-                    <ThreadLink
-                        content={getThreadContent(thread)}
-                        created={thread.messages.at(0)?.created || new Date()} // shouldnt happen
-                        id={thread.id}
-                        key={thread.id}
-                    />
-                ))}
+                {threads.map((thread) => {
+                    const created = thread.messages.at(0)?.created;
+                    const createdDate = created ? new Date(created) : new Date(); // shouldnt happen
+                    return (
+                        <ThreadLink
+                            content={getThreadContent(thread)}
+                            created={createdDate}
+                            id={thread.id}
+                            key={thread.id}
+                        />
+                    );
+                })}
             </List>
             {hasDivider && <HistoryDivider />}
         </>

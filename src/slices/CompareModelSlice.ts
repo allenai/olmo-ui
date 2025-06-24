@@ -47,7 +47,7 @@ export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set
     },
     setCompareThreadAt: (threadViewId: ThreadViewId, threadId: ThreadId) => {
         set((state) => {
-            const newCompareModels = state.selectedCompareModels?.map((model) => {
+            const newCompareModels = state.selectedCompareModels.map((model) => {
                 if (model.threadViewId === threadViewId) {
                     return {
                         ...model,

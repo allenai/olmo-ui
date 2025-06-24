@@ -389,10 +389,7 @@ const updateCacheWithMessagePart = async (
         });
     }
     if (isFinalMessage(message) && currentThreadId) {
-        state.addThreadToAllThreads({
-            ...message,
-            messages: message.messages.map(mapMessage),
-        });
+        state.addThreadToAllThreads(message);
     }
     /*
     if (isFinalMessage(message) && currentThreadId) {

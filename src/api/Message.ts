@@ -4,7 +4,7 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
-import { mapMessage, Thread } from './playgroundApi/thread';
+import { Thread } from './playgroundApi/thread';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
 
@@ -201,14 +201,7 @@ export class MessageClient extends ClientBase {
             url.searchParams.set('creator', creator);
         }
 
-        const { messages, meta } = await this.fetch<ThreadList>(url);
-
-        const mappedMessages = messages.map((thread) => ({
-            ...thread,
-            messages: thread.messages.map(mapMessage),
-        }));
-
-        return { messages: mappedMessages, meta };
+        return await this.fetch<ThreadList>(url);
     };
 
     sendMessage = async (
