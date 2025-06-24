@@ -28,6 +28,7 @@ import { links } from '@/Links';
 import { ThreadViewId } from '@/slices/CompareModelSlice';
 import { errorToAlert } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { QueryFormController } from './QueryFormController';
 
