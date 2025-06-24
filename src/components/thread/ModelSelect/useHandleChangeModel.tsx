@@ -8,10 +8,10 @@ import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { ModelChangeWarningModal } from './ModelChangeWarningModal';
-import { useModels } from './useModels';
+import { areModelsCompatibleForThread, useModels } from './useModels';
 
 export const useHandleChangeModel = () => {
-    const setSelectedCompareModels = useAppContext((state) => state.setSelectedCompareModels);
+    const setSelectedCompareModelAt = useAppContext((state) => state.setSelectedCompareModelAt);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const navigate = useNavigate();
 
@@ -22,28 +22,24 @@ export const useHandleChangeModel = () => {
         analyticsClient.trackModelUpdate({ modelChosen: modelId });
         const model = models.find((model) => model.id === modelId) as Model;
 
-        // Set selectedCompareModels for single-thread mode
-        setSelectedCompareModels([
-            {
-                threadViewId: '0',
-                rootThreadId: undefined, // Will be set when creating new thread
-                model,
-            },
-        ]);
+        // Use setSelectedCompareModelAt for single-thread mode (threadViewId '0')
+        setSelectedCompareModelAt('0', model);
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        const selectedModel = appContext.getState().selectedModel;
+        // TODO Temp: still using selectedModel, but getting it from selectedCompareModels
+        const selectedModel = appContext.getState().selectedCompareModels[0]?.model;
         const newModel = models.find((model) => model.id === event.target.value);
-        const hasSelectedThread = Boolean(appContext.getState().selectedThreadRootId);
+        const hasSelectedThread = Boolean(
+            appContext.getState().selectedCompareModels[0]?.rootThreadId
+        );
 
         const bothModelsAreDefined = selectedModel != null && newModel != null;
 
         if (
             hasSelectedThread &&
             bothModelsAreDefined &&
-            // TODO: We may need to have more detailed checks in the future but this is good enough for Molmo launch
-            selectedModel.accepts_files !== newModel.accepts_files
+            !areModelsCompatibleForThread(selectedModel, newModel)
         ) {
             modelIdToSwitchTo.current = event.target.value;
             setShouldShowModelSwitchWarning(true);

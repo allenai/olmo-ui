@@ -67,7 +67,7 @@ export const playgroundLoader =
 
         await Promise.all(promises);
 
-        const { setSelectedCompareModels, selectedModel } = appContext.getState();
+        const { setSelectedCompareModels, selectedCompareModels } = appContext.getState();
 
         const preselectedModelId = new URL(request.url).searchParams.get('model');
         if (preselectedModelId != null) {
@@ -90,7 +90,7 @@ export const playgroundLoader =
                     },
                 ]);
             }
-        } else if (params.id == null && selectedModel == null) {
+        } else if (params.id == null && selectedCompareModels[0]?.model == null) {
             // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
             const visibleModels = models.filter(isModelVisible);
             setSelectedCompareModels([
