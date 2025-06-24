@@ -221,8 +221,6 @@ export interface MessagesResponseV4 {
 
 const fakeGetAllThreadsResponse: MessagesResponseV4 = {
     messages: [
-        // fakeNewThreadMessages.at(-1),
-        // fakeCompareNewThreadMessages.at(-1),
         fakeFirstThreadResponse,
         fakeSecondThreadResponse,
         highlightStressTestResponse,
