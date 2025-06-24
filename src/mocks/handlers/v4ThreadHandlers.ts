@@ -2,6 +2,7 @@ import { delay, http, HttpResponse } from 'msw';
 
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { PaginationData } from '@/api/Schema';
 
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
@@ -213,6 +214,26 @@ const v4ThreadResponses = {
     msg_overlapping_spans: overlappingSpansResponse,
 };
 
+export interface MessagesResponseV4 {
+    messages: Thread[];
+    meta: PaginationData;
+}
+
+const fakeGetAllThreadsResponse: MessagesResponseV4 = {
+    messages: [
+        // fakeNewThreadMessages.at(-1),
+        // fakeCompareNewThreadMessages.at(-1),
+        fakeFirstThreadResponse,
+        fakeSecondThreadResponse,
+        highlightStressTestResponse,
+        duplicateDocumentsResponse,
+        documentWithMultipleSnippetsResponse,
+        multiplePointerMessageResponse,
+        overlappingSpansResponse,
+    ],
+    meta: { limit: 10, offset: 0, total: 5 },
+};
+
 type v4ThreadResponseIds = keyof typeof v4ThreadResponses;
 
 const isValidThreadRequestId = (id: string): id is v4ThreadResponseIds => {
@@ -226,6 +247,9 @@ const formatMessage = (message: unknown) => {
 const encoder = new TextEncoder();
 
 export const v4ThreadHandlers = [
+    http.get(`*/v4/threads/`, () => {
+        return HttpResponse.json(fakeGetAllThreadsResponse);
+    }),
     // cant use typedHttp here, because our typed api response is body: never
     http.post(`*/v4/threads/`, async ({ request }) => {
         const formData = await request.formData();
