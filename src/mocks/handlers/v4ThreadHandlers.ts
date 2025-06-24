@@ -1,11 +1,26 @@
-import { Thread } from '@/api/playgroundApi/thread';
+import { delay, http, HttpResponse } from 'msw';
+
+import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { PaginationData } from '@/api/Schema';
 
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
 import multiplePointerMessageResponse from './responses/v4/multiplePointerMessageResponse';
 import { overlappingSpansResponse } from './responses/v4/overlappingSpansResponse';
+import {
+    compareNewMessageId,
+    fakeCompareNewThreadMessages,
+} from './responses/v4/stream/comparison';
+import {
+    fakeNewThreadMessages,
+    LOREM_IPSUM_MESSAGE_ID,
+    newMessageId,
+} from './responses/v4/stream/default';
+import { fakeFollowupResponse } from './responses/v4/stream/followup';
+import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
+import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
 import { typedHttp } from './typedHttp';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -188,6 +203,8 @@ const highlightStressTestResponse = {
 
 // this wraps the existing responses into a map that we can use to give responses
 const v4ThreadResponses = {
+    [newMessageId]: fakeNewThreadMessages.at(-1),
+    [compareNewMessageId]: fakeCompareNewThreadMessages.at(-1),
     [firstThreadMessageId]: fakeFirstThreadResponse,
     [secondThreadMessageId]: fakeSecondThreadResponse,
     [highlightStressTestMessageId]: highlightStressTestResponse,
@@ -197,13 +214,113 @@ const v4ThreadResponses = {
     msg_overlapping_spans: overlappingSpansResponse,
 };
 
+export interface MessagesResponseV4 {
+    messages: Thread[];
+    meta: PaginationData;
+}
+
+const fakeGetAllThreadsResponse: MessagesResponseV4 = {
+    messages: [
+        // fakeNewThreadMessages.at(-1),
+        // fakeCompareNewThreadMessages.at(-1),
+        fakeFirstThreadResponse,
+        fakeSecondThreadResponse,
+        highlightStressTestResponse,
+        duplicateDocumentsResponse,
+        documentWithMultipleSnippetsResponse,
+        multiplePointerMessageResponse,
+        overlappingSpansResponse,
+    ],
+    meta: { limit: 10, offset: 0, total: 5 },
+};
+
 type v4ThreadResponseIds = keyof typeof v4ThreadResponses;
 
 const isValidThreadRequestId = (id: string): id is v4ThreadResponseIds => {
     return id in v4ThreadResponses;
 };
 
+const formatMessage = (message: unknown) => {
+    return JSON.stringify(message) + '\n';
+};
+
+const encoder = new TextEncoder();
+
 export const v4ThreadHandlers = [
+    http.get(`*/v4/threads/`, () => {
+        return HttpResponse.json(fakeGetAllThreadsResponse);
+    }),
+    // cant use typedHttp here, because our typed api response is body: never
+    http.post(`*/v4/threads/`, async ({ request }) => {
+        const formData = await request.formData();
+
+        const content = formData.get('content');
+
+        let response: Array<Thread | MessageChunk>;
+        if (formData.get('parent') != null) {
+            response = fakeFollowupResponse(formData.get('parent') as string);
+        } else if (content === 'include system message') {
+            response = streamResponseWithSystemMessage;
+        } else if (content === 'multimodaltest: Count the boats') {
+            response = fakeMultiModalStreamMessages;
+        } else if (content === 'compare') {
+            const modelId = formData.get('model');
+            if (modelId === 'tulu2') {
+                response = fakeCompareNewThreadMessages;
+            } else if (modelId === 'OLMo-peteish-dpo-preview') {
+                response = fakeNewThreadMessages;
+            }
+        } else {
+            response = fakeNewThreadMessages;
+        }
+
+        const stream = new ReadableStream({
+            async start(controller) {
+                if (formData.get('content') === 'infinite') {
+                    await delay();
+                    controller.enqueue(encoder.encode(formatMessage(response[0])));
+
+                    let responsePosition = 1;
+                    let maxRepetitions = 0;
+                    while (maxRepetitions < 20) {
+                        if (responsePosition === response.length - 1) {
+                            responsePosition = 1;
+                            maxRepetitions += 1;
+
+                            controller.enqueue(
+                                encoder.encode(
+                                    formatMessage({
+                                        message: LOREM_IPSUM_MESSAGE_ID,
+                                        content: ' ',
+                                    })
+                                )
+                            );
+                        }
+
+                        await delay();
+                        controller.enqueue(
+                            encoder.encode(formatMessage(response[responsePosition]))
+                        );
+
+                        responsePosition++;
+                    }
+
+                    await delay(25);
+                    controller.enqueue(encoder.encode(formatMessage(response.at(-1))));
+                } else {
+                    for (const message of response) {
+                        await delay();
+                        controller.enqueue(encoder.encode(formatMessage(message)));
+                    }
+                }
+
+                controller.close();
+            },
+        });
+
+        return new HttpResponse(stream);
+    }),
+
     typedHttp.get('/v4/threads/{thread_id}', ({ params: { thread_id: threadId }, response }) => {
         if (isValidThreadRequestId(threadId)) {
             const resp = v4ThreadResponses[threadId];
