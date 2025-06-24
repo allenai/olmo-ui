@@ -202,9 +202,9 @@ const highlightStressTestResponse = {
 } satisfies Thread;
 
 // this wraps the existing responses into a map that we can use to give responses
-const v4ThreadResponses = {
-    [newMessageId]: fakeNewThreadMessages.at(-1),
-    [compareNewMessageId]: fakeCompareNewThreadMessages.at(-1),
+const v4ThreadResponses: Record<string, Thread> = {
+    [newMessageId]: fakeNewThreadMessages.at(-1) as Thread,
+    [compareNewMessageId]: fakeCompareNewThreadMessages.at(-1) as Thread,
     [firstThreadMessageId]: fakeFirstThreadResponse,
     [secondThreadMessageId]: fakeSecondThreadResponse,
     [highlightStressTestMessageId]: highlightStressTestResponse,
