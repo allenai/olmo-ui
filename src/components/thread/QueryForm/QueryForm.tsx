@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import { JSX, UIEvent, useCallback, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
-import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
@@ -16,11 +15,11 @@ import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
-import { useAppContext } from '@/AppContext';
-import { selectMessagesToShow } from '@/components/thread/ThreadDisplay/selectMessagesToShow';
+import { User } from '@/api/User';
+import { appContext, useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
-import { ThreadViewId } from '@/slices/CompareModelSlice';
+import { CompareModelState, ThreadViewId } from '@/slices/CompareModelSlice';
 import { errorToAlert } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
@@ -36,17 +35,8 @@ export const QueryForm = (): JSX.Element => {
     const location = useLocation();
     const navigate = useNavigate();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
-    const selectedThreadRootId = useAppContext((state) => state.selectedThreadRootId);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-
-    const canEditThread = useAppContext((state) => {
-        // check for new thread & thread creator
-        return (
-            state.selectedThreadRootId === '' ||
-            state.selectedThreadMessagesById[state.selectedThreadRootId].creator ===
-                state.userInfo?.client
-        );
-    });
+    const userInfo = useAppContext((state) => state.userInfo);
 
     const streamMessage = useStreamMessage();
 
@@ -61,39 +51,22 @@ export const QueryForm = (): JSX.Element => {
         [streamMessage]
     );
 
-    const viewingMessageIds = useAppContext(useShallow(selectMessagesToShow));
+    const allThreadProps = allThreadProperties(selectedCompareModels, userInfo);
 
-    const isLimitReached = useAppContext((state) => {
-        // We check if any of the messages in the current branch that reach the max length limit. Notice that max length limit happens on the branch scope. Users can create a new branch in the current thread and TogetherAI would respond until reaching another limit.
-        return viewingMessageIds.some(
-            (messageId) => state.selectedThreadMessagesById[messageId].isLimitReached
-        );
-    });
-
-    // TODO: this should used and passed instead of passing thread (added underbar to fix the lint error for now)
-    const _lastMessageId =
-        viewingMessageIds.length > 0 ? viewingMessageIds[viewingMessageIds.length - 1] : undefined;
+    const isLimitReached = allThreadProps.some(({ isLimitReached }) => isLimitReached) || false;
+    const canEditThread = allThreadProps.every(({ canEditThread }) => canEditThread) || true;
+    const areFilesAllowed = Boolean(
+        selectedCompareModels.every(({ model }) => model?.accepts_files)
+    );
 
     const getPlaceholderText = () => {
         const modelNames = selectedCompareModels
             .map((compare) => compare.model?.family_name || compare.model?.name) // Sometimes the family_name is null?
             .filter(Boolean);
-
-        if (!modelNames.length) {
-            return 'Message the model';
-        }
-
-        // Check if we're in an existing thread (works for both single and multiple models)
-        const isReply = selectedThreadRootId !== '';
-        const familyNamePrefix = isReply ? 'Reply to' : 'Message';
-
-        // Multiple models - comparison mode
-        if (modelNames.length > 1) {
-            return `${familyNamePrefix} ${modelNames.join(' and ')}`;
-        }
-
-        // Single model
-        return `${familyNamePrefix} ${modelNames[0]}`;
+        const actionText = allThreadProps.every(({ rootThreadId }) => rootThreadId)
+            ? 'Reply to'
+            : 'Message';
+        return `${actionText} ${modelNames.length ? modelNames.join(' and ') : 'the model'}`;
     };
 
     // this needs to be hoisted, and passed down, so that we can handle multiple threads
@@ -120,10 +93,7 @@ export const QueryForm = (): JSX.Element => {
                 const { queryKey } = threadOptions(rootThreadId);
                 thread = queryClient.getQueryData(queryKey);
             }
-            analyticsClient.trackQueryFormSubmission(
-                model.id,
-                location.pathname === links.playground
-            );
+            analyticsClient.trackQueryFormSubmission(model.id, Boolean(rootThreadId));
 
             try {
                 const { response, abortController } = await streamMessage.mutateAsync({
@@ -215,23 +185,14 @@ export const QueryForm = (): JSX.Element => {
 
     const placeholderText = getPlaceholderText();
 
-    const getAreFilesAllowed = () => {
-        // TODO: handle file uploads in comparison mode, disabled for now
-        if (location.pathname === links.comparison) {
-            return false;
-        }
-
-        // For single model mode, check if the model accepts files
-        return Boolean(selectedCompareModels[0]?.model?.accepts_files);
-    };
-
+    // TODO: (bb) pass from Page level
     const autoFocus = location.pathname === links.playground;
 
     return (
         <QueryFormController
             handleSubmit={handleSubmit}
             placeholderText={placeholderText}
-            areFilesAllowed={getAreFilesAllowed()}
+            areFilesAllowed={areFilesAllowed}
             autofocus={autoFocus}
             canEditThread={canEditThread}
             onAbort={onAbort}
@@ -241,6 +202,35 @@ export const QueryForm = (): JSX.Element => {
             shouldResetForm={streamMessage.hasReceivedFirstResponse}
         />
     );
+};
+
+// Sets up some computed properties for each View
+// this is used to be able to determine via `some` or `every` states on them
+const allThreadProperties = (
+    selectedCompareModels: CompareModelState[],
+    userInfo?: User | null
+) => {
+    return selectedCompareModels.map(({ rootThreadId, model }) => {
+        let isLimitReached = false;
+        let canEditThread = true; // or false and set to true
+
+        if (rootThreadId) {
+            const { queryKey } = threadOptions(rootThreadId);
+            const thread: Thread | undefined = queryClient.getQueryData(queryKey);
+            if (thread?.messages.at(-1)?.isLimitReached) {
+                isLimitReached = true;
+            }
+
+            canEditThread = thread?.messages[0]?.creator === userInfo?.client;
+        }
+
+        return {
+            isLimitReached,
+            canEditThread,
+            familyName: model?.family_name,
+            rootThreadId,
+        };
+    });
 };
 
 type MessageChunk = Pick<FlatMessage, 'content'> & {
