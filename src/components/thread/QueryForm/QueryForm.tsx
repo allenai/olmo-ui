@@ -12,16 +12,22 @@ import {
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import {
+    CreateMessageRequest,
+    FlatMessage,
+    Thread,
+    threadOptions,
+} from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { User } from '@/api/User';
-import { appContext, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { CompareModelState, ThreadViewId } from '@/slices/CompareModelSlice';
 import { errorToAlert } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { QueryFormController } from './QueryFormController';
 
@@ -469,6 +475,14 @@ const useStreamMessage = () => {
                     // topP: undefined,
                     // role: undefined,
                     // template: undefined,
+                },
+                bodySerializer: (body) => {
+                    const formData = new FormData();
+                    for (const property in body) {
+                        const value = body[property as keyof CreateMessageRequest];
+                        mapValueToFormData(formData, property, value);
+                    }
+                    return formData;
                 },
                 signal: abortController.signal, // Add abort signal to the request
             });

@@ -14,6 +14,7 @@ export interface CompareModelSlice {
     selectedCompareModels: CompareModelState[];
     setSelectedCompareModels: (model: CompareModelState[]) => void;
     setSelectedCompareModelAt: (threadViewId: string, model: Model) => void;
+    setCompareThreadAt: (threadViewId: ThreadViewId, threadId: ThreadId) => void;
 }
 
 export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set) => ({
@@ -41,6 +42,20 @@ export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = (set
                 return model;
             });
             // @ts-expect-error - Readonly error WritableDraft
+            state.selectedCompareModels = newCompareModels;
+        });
+    },
+    setCompareThreadAt: (threadViewId: ThreadViewId, threadId: ThreadId) => {
+        set((state) => {
+            const newCompareModels = state.selectedCompareModels.map((model) => {
+                if (model.threadViewId === threadViewId) {
+                    return {
+                        ...model,
+                        threadId,
+                    };
+                }
+                return model;
+            });
             state.selectedCompareModels = newCompareModels;
         });
     },
