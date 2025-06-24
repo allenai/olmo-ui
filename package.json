@@ -10,6 +10,7 @@
     "build:dev": "webpack serve --mode development --env development --node-env development",
     "build-storybook": "storybook build",
     "generate-playground-api-client": "openapi-typescript --default-non-nullable=false --empty-objects-unknown=true --immutable=true --root-types=true -t http://localhost:8000/openapi.json -o ./src/api/playgroundApi/playgroundApiSchema.d.ts",
+    "generate-playground-api-client-node": "node ./src/generate-playground-api.mjs",
     "lint": "eslint '**/*.{js,ts,tsx,json}'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json",
     "prepare": "panda",
