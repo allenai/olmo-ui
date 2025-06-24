@@ -2,13 +2,17 @@ import { useQuery } from '@tanstack/react-query';
 
 import { playgroundApiQueryClient } from './playgroundApiClient';
 import type {
+    SchemaCreateMessageRequest as CreateMessageRequest,
     SchemaFlatMessage as FlatMessage,
     SchemaThread as Thread,
 } from './playgroundApiSchema';
 
-export { FlatMessage, Thread };
+export { CreateMessageRequest, FlatMessage, Thread };
 export type ThreadId = Thread['id'];
 export type MessageId = FlatMessage['id'];
+export type MessageChunk = Pick<FlatMessage, 'content'> & {
+    message: FlatMessage['id'];
+};
 
 type useThreadOptions<R> = {
     select: (thread: Thread) => R;
