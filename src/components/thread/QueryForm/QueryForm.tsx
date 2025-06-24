@@ -53,8 +53,8 @@ export const QueryForm = (): JSX.Element => {
 
     const allThreadProps = allThreadProperties(selectedCompareModels, userInfo);
 
-    const isLimitReached = allThreadProps.some(({ isLimitReached }) => isLimitReached) || false;
-    const canEditThread = allThreadProps.every(({ canEditThread }) => canEditThread) || true;
+    const isLimitReached = allThreadProps.some(({ isLimitReached }) => isLimitReached);
+    const canEditThread = allThreadProps.every(({ canEditThread }) => canEditThread);
     const areFilesAllowed = Boolean(
         selectedCompareModels.every(({ model }) => model?.accepts_files)
     );
