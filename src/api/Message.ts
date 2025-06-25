@@ -66,7 +66,7 @@ export interface MessageList {
 }
 
 export interface ThreadList {
-    messages: Thread[];
+    threads: Thread[];
     meta: PaginationData;
 }
 
@@ -201,7 +201,20 @@ export class MessageClient extends ClientBase {
             url.searchParams.set('creator', creator);
         }
 
-        return await this.fetch<ThreadList>(url);
+        const { threads } = await this.fetch<ThreadList>(url);
+
+        return {
+            threads,
+            meta: {
+                total: threads.length,
+                limit: threads.length,
+                offset: 0,
+                sort: {
+                    direction: 'DESC',
+                    field: 'created',
+                },
+            },
+        };
     };
 
     sendMessage = async (

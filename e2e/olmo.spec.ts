@@ -94,6 +94,7 @@ test('should stop thread from streaming', async ({ page }) => {
 
 test('can load threads from history drawer', async ({ page }) => {
     // Check the first existing thread
+    await page.pause();
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Thread history', exact: true }).click();
