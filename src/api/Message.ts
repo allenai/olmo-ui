@@ -185,6 +185,11 @@ export class MessageClient extends ClientBase {
         return this.fetch(url, { method: 'DELETE' });
     };
 
+    // TODO: return metadata from API
+    //   - https://github.com/allenai/playground-issues-repo/issues/463
+    // also:
+    // TODO: replace with react-query:
+    //   - https://github.com/allenai/playground-issues-repo/issues/454
     getAllThreads = async (
         offset: number = 0,
         creator?: string,
@@ -205,6 +210,7 @@ export class MessageClient extends ClientBase {
 
         return {
             threads,
+            // TODO: see above, fix API to return metadata instead of hard coding
             meta: {
                 total: threads.length,
                 limit: threads.length,

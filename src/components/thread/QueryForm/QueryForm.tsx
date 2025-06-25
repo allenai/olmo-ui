@@ -146,8 +146,9 @@ export const QueryForm = (): JSX.Element => {
                     // return the root thread id (this shouldn't be undefined anymore)
                     streamingRootThreadId = await updateCacheWithMessagePart(
                         chunk,
-                        streamMessage.onFirstMessage,
-                        streamingRootThreadId
+                        streamingRootThreadId,
+                        Boolean(rootThreadId), // isCreatingNewThread
+                        streamMessage.onFirstMessage
                     );
                 }
 
@@ -327,8 +328,9 @@ const buildComparisonUrlWithNewThreads = (
 // threadId can be undefined
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
-    onFirstMessage?: () => void,
-    threadId?: string
+    threadId: string | undefined,
+    isCreatingNewThread: boolean,
+    onFirstMessage?: () => void
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
@@ -340,7 +342,7 @@ const updateCacheWithMessagePart = async (
 
         onFirstMessage?.();
 
-        const isCreatingNewThread = threadId === undefined; // first message, no thread id
+        // const isCreatingNewThread = threadId === undefined; // first message, no thread id
 
         if (isCreatingNewThread) {
             // setSelectedThread(parsedMessage);
@@ -388,7 +390,7 @@ const updateCacheWithMessagePart = async (
             return newThread;
         });
     }
-    if (isFinalMessage(message) && currentThreadId) {
+    if (isFinalMessage(message) && isCreatingNewThread) {
         state.addThreadToAllThreads(message);
     }
     /*
