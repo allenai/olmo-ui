@@ -7,7 +7,7 @@ import { useNavigation } from 'react-router-dom';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { RemoteState } from '@/contexts/util';
 
-import { FileUploadButton } from './FileUploadButton';
+import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { handleFormSubmitException } from './handleFormSubmitException';
 import { PromptInput } from './PromptInput';
@@ -32,6 +32,7 @@ interface QueryFormControllerProps {
     isLimitReached: boolean;
     remoteState?: RemoteState;
     shouldResetForm?: boolean;
+    fileUploadProps: FileuploadPropsBase;
 }
 
 export const QueryFormController = ({
@@ -46,6 +47,7 @@ export const QueryFormController = ({
     isLimitReached,
     remoteState,
     shouldResetForm,
+    fileUploadProps,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
 
@@ -163,7 +165,10 @@ export const QueryFormController = ({
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
                                 startAdornment={
-                                    <FileUploadButton {...formContext.register('files')} />
+                                    <FileUploadButton
+                                        {...formContext.register('files')}
+                                        {...fileUploadProps}
+                                    />
                                 }
                                 endAdornment={
                                     <SubmitPauseAdornment
