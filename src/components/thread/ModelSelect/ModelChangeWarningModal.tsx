@@ -12,6 +12,7 @@ interface ModelChangeWarningModalProps extends Pick<ComponentProps<typeof Standa
     onCancel: () => void;
     title: string;
     message: string;
+    confirmButtonText?: string;
 }
 
 export const ModelChangeWarningModal = ({
@@ -20,6 +21,7 @@ export const ModelChangeWarningModal = ({
     onConfirm,
     title,
     message,
+    confirmButtonText = 'Change model',
 }: ModelChangeWarningModalProps) => {
     return (
         <StandardModal open={open} onClose={onCancel}>
@@ -35,7 +37,7 @@ export const ModelChangeWarningModal = ({
                     Cancel
                 </Button>
                 <Button variant="contained" color="primary" onClick={onConfirm}>
-                    Change model
+                    {confirmButtonText}
                 </Button>
             </DialogActions>
         </StandardModal>

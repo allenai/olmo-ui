@@ -74,13 +74,15 @@ export const useHandleChangeCompareModel = (
             threadViewId
         );
 
-        if (!isCompatible) {
+        const hasExistingThreads = selectedCompareModels.some((m) => m.rootThreadId);
+
+        if (!isCompatible && hasExistingThreads) {
             modelIdToSwitchTo.current = event.target.value;
             setShouldShowModelSwitchWarning(true);
             return;
         }
 
-        // Models are compatible, proceed with selection
+        // Models are compatible OR no existing threads
         selectModel(event.target.value);
     };
 
@@ -118,4 +120,23 @@ export const useHandleChangeCompareModel = (
         handleModelChange,
         ModelSwitchWarningModal: WrappedModelSwitchWarningModal,
     };
+};
+
+export const checkComparisonModelsCompatibility = (
+    selectedCompareModels: CompareModelState[]
+): boolean => {
+    const modelsWithData = selectedCompareModels.filter(
+        (m): m is typeof m & { model: Model } => m.model != null
+    );
+
+    // Check if all models are compatible with each other
+    for (let i = 0; i < modelsWithData.length; i++) {
+        for (let j = i + 1; j < modelsWithData.length; j++) {
+            if (!areModelsCompatibleForThread(modelsWithData[i].model, modelsWithData[j].model)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 };
