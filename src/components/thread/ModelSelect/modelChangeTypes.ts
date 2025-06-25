@@ -4,4 +4,4 @@ import { SelectChangeEvent } from '@mui/material';
 export interface ModelChangeHookResult {
     handleModelChange: (event: SelectChangeEvent) => void;
     ModelSwitchWarningModal: () => JSX.Element;
-} 
+}

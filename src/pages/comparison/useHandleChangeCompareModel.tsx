@@ -3,12 +3,12 @@ import { useRef, useState } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
-import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
-import { 
-    trackModelSelection, 
-    findModelById
-} from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeHookResult } from '@/components/thread/ModelSelect/modelChangeTypes';
+import {
+    findModelById,
+    trackModelSelection,
+} from '@/components/thread/ModelSelect/modelChangeUtils';
+import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 
@@ -38,11 +38,18 @@ const isCompatibleWithOtherComparisonModels = (
         )
         .map((m) => m.model);
 
-    return otherSelectedModels.length === 0 || 
-           otherSelectedModels.every(otherModel => areModelsCompatibleForThread(newModel, otherModel));
+    return (
+        otherSelectedModels.length === 0 ||
+        otherSelectedModels.every((otherModel) =>
+            areModelsCompatibleForThread(newModel, otherModel)
+        )
+    );
 };
 
-export const useHandleChangeCompareModel = (threadViewId: string, models: Model[]): ModelChangeHookResult => {
+export const useHandleChangeCompareModel = (
+    threadViewId: string,
+    models: Model[]
+): ModelChangeHookResult => {
     const { setSelectedCompareModelAt, setSelectedCompareModels } = useAppContext();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
@@ -62,8 +69,8 @@ export const useHandleChangeCompareModel = (threadViewId: string, models: Model[
 
         // Check compatibility with other selected models in comparison
         const isCompatible = isCompatibleWithOtherComparisonModels(
-            selectedModel, 
-            selectedCompareModels, 
+            selectedModel,
+            selectedCompareModels,
             threadViewId
         );
 

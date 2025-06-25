@@ -94,17 +94,18 @@ export const playgroundLoader =
             // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
             const currentState = appContext.getState().selectedCompareModels;
             const { setSelectedCompareModelAt } = appContext.getState();
-            
+
             // Check if we need to reset to single-thread configuration
-            const needsReset = currentState.length !== 1 || 
-                              currentState[0]?.rootThreadId || 
-                              currentState[0]?.threadViewId !== '0';
-            
+            const needsReset =
+                currentState.length !== 1 ||
+                currentState[0]?.rootThreadId ||
+                currentState[0]?.threadViewId !== '0';
+
             if (needsReset) {
                 // Get the current model if available, otherwise use the first visible model
                 const currentModel = currentState[0]?.model;
                 const modelToUse = currentModel || models.filter(isModelVisible)[0];
-                
+
                 setSelectedCompareModels([
                     {
                         threadViewId: '0',

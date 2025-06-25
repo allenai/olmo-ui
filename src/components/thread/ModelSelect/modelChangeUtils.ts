@@ -17,7 +17,7 @@ export const getCurrentModelForThreadView = (
     selectedCompareModels: CompareModelState[],
     threadViewId: string
 ): Model | undefined => {
-    return selectedCompareModels.find(m => m.threadViewId === threadViewId)?.model;
+    return selectedCompareModels.find((m) => m.threadViewId === threadViewId)?.model;
 };
 
 // Check if thread view has an active thread
@@ -26,8 +26,6 @@ export const hasActiveThread = (
     threadViewId: string
 ): boolean => {
     return Boolean(
-        selectedCompareModels.find(m => m.threadViewId === threadViewId)?.rootThreadId
+        selectedCompareModels.find((m) => m.threadViewId === threadViewId)?.rootThreadId
     );
 };
-
- 

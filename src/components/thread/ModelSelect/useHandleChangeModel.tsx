@@ -6,14 +6,14 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
-import { ModelChangeWarningModal } from './ModelChangeWarningModal';
-import { 
-    trackModelSelection, 
-    findModelById, 
-    getCurrentModelForThreadView,
-    hasActiveThread
-} from './modelChangeUtils';
 import { ModelChangeHookResult } from './modelChangeTypes';
+import {
+    findModelById,
+    getCurrentModelForThreadView,
+    hasActiveThread,
+    trackModelSelection,
+} from './modelChangeUtils';
+import { ModelChangeWarningModal } from './ModelChangeWarningModal';
 import { areModelsCompatibleForThread, useModels } from './useModels';
 
 // Check if model change requires warning based on compatibility and active threads
@@ -23,9 +23,7 @@ const shouldShowCompatibilityWarning = (
     hasActiveThread: boolean
 ): boolean => {
     return Boolean(
-        hasActiveThread &&
-        currentModel &&
-        !areModelsCompatibleForThread(currentModel, newModel)
+        hasActiveThread && currentModel && !areModelsCompatibleForThread(currentModel, newModel)
     );
 };
 
