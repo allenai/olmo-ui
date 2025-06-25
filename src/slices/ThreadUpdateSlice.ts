@@ -11,6 +11,7 @@ import {
     StreamBadRequestError,
     V4CreateMessageRequest,
 } from '@/api/Message';
+import { Thread } from '@/api/playgroundApi/thread';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
 import { InferenceOpts } from '@/api/Schema';
@@ -67,6 +68,7 @@ export interface ThreadUpdateSlice {
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
     streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
+    addThreadToAllThreads: (thread: Thread) => void;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
     abortPrompt: () => void;
 }
@@ -83,12 +85,22 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         }));
     },
 
+    // used by new react-query code path
+    // TODO: replace this whole slice with react-query
+    addThreadToAllThreads: (thread: Thread) => {
+        set((state) => ({
+            allThreads: [thread, ...state.allThreads],
+        }));
+    },
+
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => {
+        // I think this function can go away
         set(
             (state) => {
                 if (isCreatingNewThread) {
                     state.setSelectedThread(finalMessage);
-                    state.allThreads.unshift(finalMessage);
+                    // I don't think this is called any more
+                    // state.allThreads.unshift(finalMessage);
                 } else {
                     const rootMessage = state.allThreads.find(
                         (thread) => thread.id === finalMessage.root
@@ -100,16 +112,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                         );
                     }
 
-                    const parentToParsedMessage = findChildMessageById(
-                        finalMessage.parent,
-                        rootMessage
-                    );
+                    const parentToParsedMessage = rootMessage.messages.at(0);
 
                     if (parentToParsedMessage != null) {
                         if (parentToParsedMessage.children == null) {
-                            parentToParsedMessage.children = [finalMessage];
+                            parentToParsedMessage.children = [finalMessage.id];
                         } else {
-                            parentToParsedMessage.children.push(finalMessage);
+                            parentToParsedMessage.children.push(finalMessage.id);
+                            // state.allThreads.unshift(finalMessage);
                         }
                     }
                 }
