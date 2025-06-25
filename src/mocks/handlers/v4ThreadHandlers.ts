@@ -215,12 +215,12 @@ const v4ThreadResponses: Record<string, Thread> = {
 };
 
 export interface MessagesResponseV4 {
-    messages: Thread[];
+    threads: Thread[];
     meta: PaginationData;
 }
 
 const fakeGetAllThreadsResponse: MessagesResponseV4 = {
-    messages: [
+    threads: [
         fakeFirstThreadResponse,
         fakeSecondThreadResponse,
         highlightStressTestResponse,

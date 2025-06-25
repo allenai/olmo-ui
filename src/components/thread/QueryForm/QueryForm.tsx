@@ -21,7 +21,7 @@ import {
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { User } from '@/api/User';
-import { useAppContext } from '@/AppContext';
+import { appContext, useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { CompareModelState, ThreadViewId } from '@/slices/CompareModelSlice';
@@ -116,8 +116,9 @@ export const QueryForm = (): JSX.Element => {
                     // return the root thread id (this shouldn't be undefined anymore)
                     streamingRootThreadId = await updateCacheWithMessagePart(
                         chunk,
-                        streamMessage.onFirstMessage,
-                        streamingRootThreadId
+                        streamingRootThreadId,
+                        rootThreadId == null, // = isCreatingNewThread
+                        streamMessage.onFirstMessage
                     );
                 }
 
@@ -317,10 +318,13 @@ const buildComparisonUrlWithNewThreads = (
 // threadId can be undefined
 const updateCacheWithMessagePart = async (
     message: StreamingMessageResponse,
-    onFirstMessage?: () => void,
-    threadId?: string
+    threadId: string | undefined,
+    isCreatingNewThread: boolean,
+    onFirstMessage?: () => void
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
+
+    const state = appContext.getState();
 
     if (isFirstMessage(message)) {
         // const messageId = message.id;
@@ -328,7 +332,7 @@ const updateCacheWithMessagePart = async (
 
         onFirstMessage?.();
 
-        const isCreatingNewThread = threadId === undefined; // first message, no thread id
+        // const isCreatingNewThread = threadId === undefined; // first message, no thread id
 
         if (isCreatingNewThread) {
             // setSelectedThread(parsedMessage);
@@ -375,6 +379,9 @@ const updateCacheWithMessagePart = async (
             };
             return newThread;
         });
+    }
+    if (isFinalMessage(message) && isCreatingNewThread) {
+        state.addThreadToAllThreads(message);
     }
     /*
     if (isFinalMessage(message) && currentThreadId) {
