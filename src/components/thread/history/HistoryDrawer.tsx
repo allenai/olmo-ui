@@ -13,7 +13,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { KeyboardEventHandler, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 
-import { Message } from '@/api/Message';
+import { Thread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { ResponsiveDrawer } from '@/components/ResponsiveDrawer';
 import { RemoteState } from '@/contexts/util';
@@ -55,23 +55,26 @@ export const HistoryDrawer = (): JSX.Element => {
         }
     }, [creator]);
 
-    const threadsFromToday: Message[] = [];
-    const threadsFromThisWeek: Message[] = [];
-    const threadsOlderThanAWeek: Message[] = [];
+    const threadsFromToday: Thread[] = [];
+    const threadsFromThisWeek: Thread[] = [];
+    const threadsOlderThanAWeek: Thread[] = [];
 
-    allThreads.forEach((m) => {
-        if (isCurrentDay(m.created)) {
-            threadsFromToday.push(m);
-        } else if (isPastWeek(m.created)) {
-            threadsFromThisWeek.push(m);
-        } else {
-            threadsOlderThanAWeek.push(m);
+    allThreads.forEach((thread) => {
+        const m = thread.messages.at(0);
+        if (m) {
+            if (isCurrentDay(new Date(m.created))) {
+                threadsFromToday.push(thread);
+            } else if (isPastWeek(new Date(m.created))) {
+                threadsFromThisWeek.push(thread);
+            } else {
+                threadsOlderThanAWeek.push(thread);
+            }
         }
     });
 
-    const handleScroll = () => {
+    const handleScroll = async () => {
         if (messageListState !== RemoteState.Loading) {
-            getMessageList(offset + PAGE_SIZE, creator, LIMIT);
+            await getMessageList(offset + PAGE_SIZE, creator, LIMIT);
             setOffSet(offset + PAGE_SIZE);
         }
     };
