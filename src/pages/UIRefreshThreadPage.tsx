@@ -92,14 +92,18 @@ export const playgroundLoader =
             }
         } else if (params.id == null) {
             // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
-            const visibleModels = models.filter(isModelVisible);
-            setSelectedCompareModels([
-                {
-                    threadViewId: '0',
-                    rootThreadId: undefined,
-                    model: visibleModels[0],
-                },
-            ]);
+            // Only set default model if there's no model already selected
+            const currentSelectedModel = appContext.getState().selectedCompareModels[0]?.model;
+            if (!currentSelectedModel) {
+                const visibleModels = models.filter(isModelVisible);
+                setSelectedCompareModels([
+                    {
+                        threadViewId: '0',
+                        rootThreadId: undefined,
+                        model: visibleModels[0],
+                    },
+                ]);
+            }
         }
 
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
