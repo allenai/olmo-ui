@@ -6,9 +6,23 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
+import { CompareModelState } from '@/slices/CompareModelSlice';
+
+// Clear rootThreadId for all thread views to start fresh threads
+const clearAllThreadIds = (
+    selectedCompareModels: CompareModelState[],
+    threadViewId: string,
+    newModel: Model
+): CompareModelState[] => {
+    return selectedCompareModels.map((compareModel) => ({
+        ...compareModel,
+        model: compareModel.threadViewId === threadViewId ? newModel : compareModel.model,
+        rootThreadId: undefined, // Clear rootThreadId to start new threads
+    }));
+};
 
 export const useHandleCompareModelChange = (threadViewId: string, models: Model[]) => {
-    const { setSelectedCompareModelAt } = useAppContext();
+    const { setSelectedCompareModelAt, setSelectedCompareModels } = useAppContext();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
@@ -25,12 +39,15 @@ export const useHandleCompareModelChange = (threadViewId: string, models: Model[
 
         // Check compatibility with other selected models
         const otherSelectedModels = selectedCompareModels
-            .filter(m => m.threadViewId !== threadViewId && m.model)
-            .map(m => m.model!);
+            .filter(
+                (m): m is typeof m & { model: Model } =>
+                    m.threadViewId !== threadViewId && m.model != null
+            )
+            .map((m) => m.model);
 
         if (otherSelectedModels.length > 0) {
-            const hasIncompatibleModel = otherSelectedModels.some(otherModel => 
-                !areModelsCompatibleForThread(selectedModel, otherModel)
+            const hasIncompatibleModel = otherSelectedModels.some(
+                (otherModel) => !areModelsCompatibleForThread(selectedModel, otherModel)
             );
 
             if (hasIncompatibleModel) {
@@ -47,7 +64,15 @@ export const useHandleCompareModelChange = (threadViewId: string, models: Model[
     const handleModelSwitchWarningConfirm = () => {
         setShouldShowModelSwitchWarning(false);
         if (modelIdToSwitchTo.current) {
-            selectModel(modelIdToSwitchTo.current);
+            const model = models.find((model) => model.id === modelIdToSwitchTo.current) as Model;
+
+            const updatedCompareModels = clearAllThreadIds(
+                selectedCompareModels,
+                threadViewId,
+                model
+            );
+
+            setSelectedCompareModels(updatedCompareModels);
         }
     };
 
@@ -69,4 +94,4 @@ export const useHandleCompareModelChange = (threadViewId: string, models: Model[
         handleModelChange,
         ModelSwitchWarningModal: WrappedModelSwitchWarningModal,
     };
-}; 
+};

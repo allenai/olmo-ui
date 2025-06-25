@@ -25,13 +25,9 @@ export const ModelChangeWarningModal = ({
         <StandardModal open={open} onClose={onCancel}>
             <DialogContent>
                 <StandardDialogCloseButton onClick={onCancel} />
-                <StandardDialogTitle variant="h4">
-                    {title}
-                </StandardDialogTitle>
+                <StandardDialogTitle variant="h4">{title}</StandardDialogTitle>
                 <Stack gap={1}>
-                    <Typography>
-                        {message}
-                    </Typography>
+                    <Typography>{message}</Typography>
                 </Stack>
             </DialogContent>
             <DialogActions>

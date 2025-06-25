@@ -16,7 +16,10 @@ export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectP
         })?.model?.id;
     });
 
-    const { handleModelChange, ModelSwitchWarningModal } = useHandleCompareModelChange(threadViewId, models);
+    const { handleModelChange, ModelSwitchWarningModal } = useHandleCompareModelChange(
+        threadViewId,
+        models
+    );
 
     return (
         <>
