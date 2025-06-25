@@ -147,7 +147,7 @@ export const QueryForm = (): JSX.Element => {
                     streamingRootThreadId = await updateCacheWithMessagePart(
                         chunk,
                         streamingRootThreadId,
-                        Boolean(rootThreadId), // isCreatingNewThread
+                        rootThreadId == null, // = isCreatingNewThread
                         streamMessage.onFirstMessage
                     );
                 }
