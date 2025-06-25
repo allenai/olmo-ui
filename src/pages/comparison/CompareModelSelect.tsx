@@ -2,7 +2,7 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
 
-import { useHandleCompareModelChange } from './useHandleCompareModelChange';
+import { useHandleChangeCompareModel } from './useHandleChangeCompareModel';
 
 interface CompareModelSelectProps {
     threadViewId: string;
@@ -16,7 +16,7 @@ export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectP
         })?.model?.id;
     });
 
-    const { handleModelChange, ModelSwitchWarningModal } = useHandleCompareModelChange(
+    const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeCompareModel(
         threadViewId,
         models
     );

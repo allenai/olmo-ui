@@ -2,45 +2,59 @@ import { SelectChangeEvent } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { appContext, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
 import { ModelChangeWarningModal } from './ModelChangeWarningModal';
+import { 
+    trackModelSelection, 
+    findModelById, 
+    getCurrentModelForThreadView,
+    hasActiveThread
+} from './modelChangeUtils';
+import { ModelChangeHookResult } from './modelChangeTypes';
 import { areModelsCompatibleForThread, useModels } from './useModels';
 
-export const useHandleChangeModel = () => {
+// Check if model change requires warning based on compatibility and active threads
+const shouldShowCompatibilityWarning = (
+    currentModel: Model | undefined,
+    newModel: Model,
+    hasActiveThread: boolean
+): boolean => {
+    return Boolean(
+        hasActiveThread &&
+        currentModel &&
+        !areModelsCompatibleForThread(currentModel, newModel)
+    );
+};
+
+export const useHandleChangeModel = (): ModelChangeHookResult => {
     const setSelectedCompareModelAt = useAppContext((state) => state.setSelectedCompareModelAt);
+    const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const navigate = useNavigate();
 
     const modelIdToSwitchTo = useRef<string>();
     const models = useModels();
+    const threadViewId = '0'; // Single-thread always uses threadViewId '0'
 
     const selectModel = (modelId: string) => {
-        analyticsClient.trackModelUpdate({ modelChosen: modelId });
-        const model = models.find((model) => model.id === modelId) as Model;
-
-        // Use setSelectedCompareModelAt for single-thread mode (threadViewId '0')
-        setSelectedCompareModelAt('0', model);
+        trackModelSelection(modelId);
+        const model = findModelById(models, modelId);
+        if (model) {
+            setSelectedCompareModelAt(threadViewId, model);
+        }
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        // TODO Temp: still using selectedModel, but getting it from selectedCompareModels
-        const selectedModel = appContext.getState().selectedCompareModels[0]?.model;
-        const newModel = models.find((model) => model.id === event.target.value);
-        const hasSelectedThread = Boolean(
-            appContext.getState().selectedCompareModels[0]?.rootThreadId
-        );
+        const newModel = findModelById(models, event.target.value);
+        if (!newModel) return;
 
-        const bothModelsAreDefined = selectedModel != null && newModel != null;
+        const currentModel = getCurrentModelForThreadView(selectedCompareModels, threadViewId);
+        const hasThread = hasActiveThread(selectedCompareModels, threadViewId);
 
-        if (
-            hasSelectedThread &&
-            bothModelsAreDefined &&
-            !areModelsCompatibleForThread(selectedModel, newModel)
-        ) {
+        if (shouldShowCompatibilityWarning(currentModel, newModel, hasThread)) {
             modelIdToSwitchTo.current = event.target.value;
             setShouldShowModelSwitchWarning(true);
         } else {

@@ -1,10 +1,14 @@
 import { SelectChangeEvent } from '@mui/material';
 import { useRef, useState } from 'react';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
+import { 
+    trackModelSelection, 
+    findModelById
+} from '@/components/thread/ModelSelect/modelChangeUtils';
+import { ModelChangeHookResult } from '@/components/thread/ModelSelect/modelChangeTypes';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 
@@ -21,40 +25,52 @@ const clearAllThreadIds = (
     }));
 };
 
-export const useHandleCompareModelChange = (threadViewId: string, models: Model[]) => {
+// Check if new model is compatible with other selected models in comparison
+const isCompatibleWithOtherComparisonModels = (
+    newModel: Model,
+    selectedCompareModels: CompareModelState[],
+    currentThreadViewId: string
+): boolean => {
+    const otherSelectedModels = selectedCompareModels
+        .filter(
+            (m): m is typeof m & { model: Model } =>
+                m.threadViewId !== currentThreadViewId && m.model != null
+        )
+        .map((m) => m.model);
+
+    return otherSelectedModels.length === 0 || 
+           otherSelectedModels.every(otherModel => areModelsCompatibleForThread(newModel, otherModel));
+};
+
+export const useHandleChangeCompareModel = (threadViewId: string, models: Model[]): ModelChangeHookResult => {
     const { setSelectedCompareModelAt, setSelectedCompareModels } = useAppContext();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
     const selectModel = (modelId: string) => {
-        analyticsClient.trackModelUpdate({ modelChosen: modelId });
-        const model = models.find((model) => model.id === modelId) as Model;
-        setSelectedCompareModelAt(threadViewId, model);
+        trackModelSelection(modelId);
+        const model = findModelById(models, modelId);
+        if (model) {
+            setSelectedCompareModelAt(threadViewId, model);
+        }
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        const selectedModel = models.find((model) => model.id === event.target.value);
+        const selectedModel = findModelById(models, event.target.value);
         if (!selectedModel) return;
 
-        // Check compatibility with other selected models
-        const otherSelectedModels = selectedCompareModels
-            .filter(
-                (m): m is typeof m & { model: Model } =>
-                    m.threadViewId !== threadViewId && m.model != null
-            )
-            .map((m) => m.model);
+        // Check compatibility with other selected models in comparison
+        const isCompatible = isCompatibleWithOtherComparisonModels(
+            selectedModel, 
+            selectedCompareModels, 
+            threadViewId
+        );
 
-        if (otherSelectedModels.length > 0) {
-            const hasIncompatibleModel = otherSelectedModels.some(
-                (otherModel) => !areModelsCompatibleForThread(selectedModel, otherModel)
-            );
-
-            if (hasIncompatibleModel) {
-                modelIdToSwitchTo.current = event.target.value;
-                setShouldShowModelSwitchWarning(true);
-                return;
-            }
+        if (!isCompatible) {
+            modelIdToSwitchTo.current = event.target.value;
+            setShouldShowModelSwitchWarning(true);
+            return;
         }
 
         // Models are compatible, proceed with selection
@@ -64,15 +80,16 @@ export const useHandleCompareModelChange = (threadViewId: string, models: Model[
     const handleModelSwitchWarningConfirm = () => {
         setShouldShowModelSwitchWarning(false);
         if (modelIdToSwitchTo.current) {
-            const model = models.find((model) => model.id === modelIdToSwitchTo.current) as Model;
+            const model = findModelById(models, modelIdToSwitchTo.current);
+            if (model) {
+                const updatedCompareModels = clearAllThreadIds(
+                    selectedCompareModels,
+                    threadViewId,
+                    model
+                );
 
-            const updatedCompareModels = clearAllThreadIds(
-                selectedCompareModels,
-                threadViewId,
-                model
-            );
-
-            setSelectedCompareModels(updatedCompareModels);
+                setSelectedCompareModels(updatedCompareModels);
+            }
         }
     };
 
