@@ -1,11 +1,11 @@
-import { Message, MessageApiUrl, MessageStreamErrorReason } from '@/api/Message';
+import { Message, MessageStreamErrorReason } from '@/api/Message';
 import { mapMessages, SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { OlmoStateCreator } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { isOlderThan30Days } from '@/utils/date-utils';
 
-import { errorToAlert } from './SnackMessageSlice';
-import { messageClient } from './ThreadSlice';
+// import { errorToAlert } from './SnackMessageSlice';
+// import { messageClient } from './ThreadSlice';
 
 export interface SelectedThreadSlice {
     selectedThreadState?: RemoteState;
@@ -16,10 +16,10 @@ export interface SelectedThreadSlice {
     addChildToSelectedThread: (message: Message) => void;
     setMessageLimitReached: (messageId: string, isLimitReached: boolean) => void;
     setSelectedThread: (rootMessage: Message) => void;
-    getSelectedThread: (
-        threadId: string,
-        checkExistingThreads?: boolean
-    ) => Promise<SelectedThreadMessage>;
+    // getSelectedThread: (
+    //     threadId: string,
+    //     checkExistingThreads?: boolean
+    // ) => Promise<SelectedThreadMessage>;
     deleteSelectedThread: () => void;
     resetSelectedThreadState: () => void;
 }
@@ -31,7 +31,7 @@ const initialState = {
     selectedThreadMessagesById: {},
 };
 
-export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, get) => ({
+export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = (set, _get) => ({
     ...initialState,
 
     deleteSelectedThread: () => {
@@ -115,61 +115,6 @@ export const createSelectedThreadSlice: OlmoStateCreator<SelectedThreadSlice> = 
             false,
             'selectedThread/setSelectedThread'
         );
-    },
-
-    getSelectedThread: async (threadId: string, checkExistingThreads: boolean = false) => {
-        let originalMessage: Message | undefined;
-
-        if (checkExistingThreads) {
-            originalMessage = get().allThreads.find((message) => message.id === threadId);
-        }
-
-        if (originalMessage == null) {
-            try {
-                set(
-                    { selectedThreadState: RemoteState.Loading },
-                    false,
-                    'selectedThread/getSelectedThreadStart'
-                );
-
-                const remoteMessage = await messageClient.getMessage(threadId);
-                originalMessage = remoteMessage;
-                get().setSelectedThread(remoteMessage);
-                set(
-                    (state) => {
-                        if (checkExistingThreads) {
-                            state.messageList.messages.push(remoteMessage);
-                        }
-                    },
-                    false,
-                    'selectedThread/getSelectedThreadFinish'
-                );
-            } catch (err) {
-                get().addSnackMessage(
-                    errorToAlert(
-                        `fetch-${MessageApiUrl}-${threadId}-${new Date().getTime()}`.toLowerCase(),
-                        `Error getting message ${threadId}.`,
-                        err
-                    )
-                );
-                set(
-                    { selectedThreadState: RemoteState.Error },
-                    false,
-                    'selectedThread/getSelectedThreadError'
-                );
-            }
-        }
-
-        if (originalMessage != null) {
-            get().setSelectedThread(originalMessage);
-            set(
-                { selectedThreadState: RemoteState.Loaded },
-                false,
-                'selectedThread/setSelectedThread'
-            );
-        }
-
-        return get().selectedThreadMessagesById[get().selectedThreadRootId];
     },
 
     resetSelectedThreadState() {
