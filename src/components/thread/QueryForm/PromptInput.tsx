@@ -49,6 +49,7 @@ interface AutoSizedInputProps {
     onChange: ChangeEventHandler<HTMLTextAreaElement>;
     name: string;
     value: string;
+    isDisabled: boolean;
     errorMessage?: string;
     onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
     startAdornment?: ReactNode;
@@ -63,6 +64,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
             onChange,
             'aria-label': ariaLabel,
             value = '',
+            isDisabled,
             onKeyDown,
             name,
             errorMessage,
@@ -110,6 +112,7 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                     )}
                     <Box
                         component="textarea"
+                        disabled={isDisabled}
                         ref={ref}
                         placeholder={placeholder}
                         onKeyDown={onKeyDown}

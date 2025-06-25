@@ -1,6 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { MicRounded, StopCircleOutlined } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -20,7 +21,8 @@ interface AudioInputButtonProps {
 
 export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonProps) => {
     const { isOLMoASREnabled } = useFeatureToggles();
-    const { isTranscribing, addSnackMessage } = useAppContext();
+    const { isTranscribing, addSnackMessage, isProcessingAudio, setIsProcessingAudio } =
+        useAppContext();
     const { startRecording, stopRecording } = useAudioRecording();
 
     if (!isOLMoASREnabled) {
@@ -35,8 +37,10 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                 await startRecording({
                     pollLength: 1000,
                     onStop: async (data) => {
+                        setIsProcessingAudio(true);
                         try {
                             const { text } = await handleTranscribe(data);
+                            setIsProcessingAudio(false);
                             onTranscriptionComplete(text);
                         } catch (error: unknown) {
                             addSnackMessage(
@@ -61,8 +65,6 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
         }
     };
 
-    const Icon = isTranscribing ? StopCircleOutlined : MicRounded;
-
     return (
         <IconButton
             onClick={handleAudioClick}
@@ -79,8 +81,17 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                     outline: '1px solid',
                     borderRadius: 'var(--radii-full, 9999px)',
                 },
+                cursor: isProcessingAudio ? 'default' : 'hand',
             }}>
-            <Icon className={iconClassName} />
+            {isProcessingAudio ? (
+                <Tooltip title="Transcribing Audio. Please wait.">
+                    <CircularProgress size="1.5rem" color="secondary" />
+                </Tooltip>
+            ) : isTranscribing ? (
+                <StopCircleOutlined className={iconClassName} />
+            ) : (
+                <MicRounded className={iconClassName} />
+            )}
         </IconButton>
     );
 };

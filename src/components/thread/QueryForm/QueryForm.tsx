@@ -91,6 +91,7 @@ export const QueryForm = (): JSX.Element => {
     const firstResponseId = useAppContext((state) => state.streamingMessageId);
     const selectedModel = useAppContext((state) => state.selectedModel);
     const isTranscribing = useAppContext((state) => state.isTranscribing);
+    const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
 
     const { executeRecaptcha } = useReCaptcha();
 
@@ -263,6 +264,7 @@ export const QueryForm = (): JSX.Element => {
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
+                                isDisabled={isTranscribing || isProcessingAudio}
                                 startAdornment={
                                     <>
                                         <AudioInputButton
@@ -281,6 +283,7 @@ export const QueryForm = (): JSX.Element => {
                                             isSelectedThreadLoading ||
                                             isLimitReached ||
                                             isTranscribing ||
+                                            isProcessingAudio ||
                                             !canEditThread
                                         }
                                     />
