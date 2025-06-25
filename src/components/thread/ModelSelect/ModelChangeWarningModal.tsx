@@ -10,24 +10,27 @@ import {
 interface ModelChangeWarningModalProps extends Pick<ComponentProps<typeof StandardModal>, 'open'> {
     onConfirm: () => void;
     onCancel: () => void;
+    title: string;
+    message: string;
 }
 
 export const ModelChangeWarningModal = ({
     open,
     onCancel,
     onConfirm,
+    title,
+    message,
 }: ModelChangeWarningModalProps) => {
     return (
         <StandardModal open={open} onClose={onCancel}>
             <DialogContent>
                 <StandardDialogCloseButton onClick={onCancel} />
                 <StandardDialogTitle variant="h4">
-                    Change model and start a new thread?
+                    {title}
                 </StandardDialogTitle>
                 <Stack gap={1}>
                     <Typography>
-                        The model you&apos;re changing to isn&apos;t compatible with this thread. To
-                        change models you&apos;ll need to start a new thread. Continue?
+                        {message}
                     </Typography>
                 </Stack>
             </DialogContent>

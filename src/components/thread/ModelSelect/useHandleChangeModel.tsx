@@ -65,6 +65,8 @@ export const useHandleChangeModel = () => {
             open={shouldShowModelSwitchWarning}
             onCancel={closeModelSwitchWarning}
             onConfirm={handleModelSwitchWarningConfirm}
+            title="Change model and start a new thread?"
+            message="The model you're changing to isn't compatible with this thread. To change models you'll need to start a new thread. Continue?"
         />
     );
 

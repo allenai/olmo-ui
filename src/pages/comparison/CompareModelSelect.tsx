@@ -1,8 +1,8 @@
-import { SelectChangeEvent } from '@mui/material';
-
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
+
+import { useHandleCompareModelChange } from './useHandleCompareModelChange';
 
 interface CompareModelSelectProps {
     threadViewId: string;
@@ -10,28 +10,23 @@ interface CompareModelSelectProps {
 }
 
 export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) => {
-    const { setSelectedCompareModelAt } = useAppContext();
-
     const selectedModelId = useAppContext((state) => {
         return state.selectedCompareModels.find((model) => {
             return model.threadViewId === threadViewId;
         })?.model?.id;
     });
 
-    const handleModelChange = (e: SelectChangeEvent) => {
-        // TODO: ensure model compatibility: https://github.com/allenai/playground-issues-repo/issues/411
-        const selectedModel = models.find((model) => model.id === e.target.value);
-        if (selectedModel) {
-            setSelectedCompareModelAt(threadViewId, selectedModel);
-        }
-    };
+    const { handleModelChange, ModelSwitchWarningModal } = useHandleCompareModelChange(threadViewId, models);
 
     return (
-        <ModelSelect
-            id={threadViewId}
-            models={models}
-            selectedModelId={selectedModelId}
-            onModelChange={handleModelChange}
-        />
+        <>
+            <ModelSelect
+                id={threadViewId}
+                models={models}
+                selectedModelId={selectedModelId}
+                onModelChange={handleModelChange}
+            />
+            <ModelSwitchWarningModal />
+        </>
     );
 };
