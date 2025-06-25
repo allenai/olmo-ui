@@ -95,7 +95,7 @@ export const CompareThreadDisplay = () => {
         return () => {
             observer?.disconnect();
         };
-    });
+    }, [selectedViewIdx]);
 
     return (
         <div className={containerStyle}>
