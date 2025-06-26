@@ -255,8 +255,8 @@ const formatMessage = (message: unknown) => {
 const encoder = new TextEncoder();
 
 export const v4ThreadHandlers = [
-    http.get(`*/v4/threads/`, () => {
-        return HttpResponse.json(fakeGetAllThreadsResponse);
+    typedHttp.get(`/v4/threads/`, ({ response }) => {
+        return response(200).json(fakeGetAllThreadsResponse);
     }),
     // cant use typedHttp here, because our typed api response is body: never
     http.post(`*/v4/threads/`, async ({ request }) => {
