@@ -20,6 +20,7 @@
     "test:base": "vitest --project=base",
     "test:coverage": "test --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:local": "LOCAL_E2E_TEST=true ENABLE_MOCKING=true PLAYWRIGHT_BASE_URL=http://localhost:8080 playwright test",
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
