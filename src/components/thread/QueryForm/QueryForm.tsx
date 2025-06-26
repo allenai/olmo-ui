@@ -22,8 +22,10 @@ import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { User } from '@/api/User';
 import { appContext, useAppContext } from '@/AppContext';
+import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
+import { checkComparisonModelsCompatibility } from '@/pages/comparison/useHandleChangeCompareModel';
 import { CompareModelState, ThreadViewId } from '@/slices/CompareModelSlice';
 import { errorToAlert } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
@@ -43,6 +45,9 @@ export const QueryForm = (): JSX.Element => {
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const userInfo = useAppContext((state) => state.userInfo);
+    const { setSelectedCompareModels } = useAppContext();
+    const [showCompatibilityWarning, setShowCompatibilityWarning] = useState(false);
+    const [pendingSubmission, setPendingSubmission] = useState<QueryFormValues | null>(null);
 
     const streamMessage = useStreamMessage();
 
@@ -83,6 +88,21 @@ export const QueryForm = (): JSX.Element => {
         //     request.parent = lastMessageId;
         // }
 
+        // Check for incompatible models on comparison page before submission
+        if (
+            location.pathname === links.comparison &&
+            !checkComparisonModelsCompatibility(selectedCompareModels)
+        ) {
+            setPendingSubmission(data);
+            setShowCompatibilityWarning(true);
+            return;
+        }
+
+        // Proceed with actual submission
+        await performSubmission(data);
+    };
+
+    const performSubmission = async (data: QueryFormValues) => {
         // Prepare for new submission by resetting response tracking
         streamMessage.prepareForNewSubmission();
         // Start all streams concurrently
@@ -190,24 +210,57 @@ export const QueryForm = (): JSX.Element => {
         }
     };
 
+    const handleCompatibilityConfirm = async () => {
+        setShowCompatibilityWarning(false);
+
+        // Clear all thread IDs to start fresh
+        const updatedCompareModels = selectedCompareModels.map((compareModel) => ({
+            ...compareModel,
+            rootThreadId: undefined,
+        }));
+        setSelectedCompareModels(updatedCompareModels);
+
+        if (pendingSubmission) {
+            await performSubmission(pendingSubmission);
+            setPendingSubmission(null);
+        }
+    };
+
+    const handleCompatibilityCancel = () => {
+        setShowCompatibilityWarning(false);
+        setPendingSubmission(null);
+    };
+
     const placeholderText = getPlaceholderText();
 
     // TODO: (bb) pass from Page level
     const autoFocus = location.pathname === links.playground;
 
     return (
-        <QueryFormController
-            handleSubmit={handleSubmit}
-            placeholderText={placeholderText}
-            areFilesAllowed={areFilesAllowed}
-            autofocus={autoFocus}
-            canEditThread={canEditThread}
-            onAbort={onAbort}
-            canPauseThread={canPauseThread}
-            isLimitReached={isLimitReached}
-            remoteState={remoteState}
-            shouldResetForm={streamMessage.hasReceivedFirstResponse}
-        />
+        <>
+            <QueryFormController
+                handleSubmit={handleSubmit}
+                placeholderText={placeholderText}
+                areFilesAllowed={areFilesAllowed}
+                autofocus={autoFocus}
+                canEditThread={canEditThread}
+                onAbort={onAbort}
+                canPauseThread={canPauseThread}
+                isLimitReached={isLimitReached}
+                remoteState={remoteState}
+                shouldResetForm={streamMessage.hasReceivedFirstResponse}
+            />
+            {location.pathname === links.comparison && (
+                <ModelChangeWarningModal
+                    open={showCompatibilityWarning}
+                    onCancel={handleCompatibilityCancel}
+                    onConfirm={handleCompatibilityConfirm}
+                    title="Start new threads with incompatible models?"
+                    message="Some of the selected models aren't compatible with each other. Continue?"
+                    confirmButtonText="Continue"
+                />
+            )}
+        </>
     );
 };
 
