@@ -201,10 +201,20 @@ const highlightStressTestResponse = {
     ],
 } satisfies Thread;
 
+// Get the last Thread from a mixed-type array
+const getLastThread = (messages: Array<Thread | MessageChunk>): Thread => {
+    const threads = messages.filter((item): item is Thread => 'messages' in item);
+    const lastThread = threads.at(-1);
+    if (!lastThread) {
+        throw new Error('No Thread found in messages array');
+    }
+    return lastThread;
+};
+
 // this wraps the existing responses into a map that we can use to give responses
-const v4ThreadResponses: Record<string, Thread> = {
-    [newMessageId]: fakeNewThreadMessages.at(-1) as Thread,
-    [compareNewMessageId]: fakeCompareNewThreadMessages.at(-1) as Thread,
+const v4ThreadResponses = {
+    [newMessageId]: getLastThread(fakeNewThreadMessages),
+    [compareNewMessageId]: getLastThread(fakeCompareNewThreadMessages),
     [firstThreadMessageId]: fakeFirstThreadResponse,
     [secondThreadMessageId]: fakeSecondThreadResponse,
     [highlightStressTestMessageId]: highlightStressTestResponse,

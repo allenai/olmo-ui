@@ -2,49 +2,57 @@ import { SelectChangeEvent } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { appContext, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
+import { ModelChangeHookResult } from './modelChangeTypes';
+import {
+    findModelById,
+    getCurrentModelForThreadView,
+    hasActiveThread,
+    trackModelSelection,
+} from './modelChangeUtils';
 import { ModelChangeWarningModal } from './ModelChangeWarningModal';
-import { useModels } from './useModels';
+import { areModelsCompatibleForThread, useModels } from './useModels';
 
-export const useHandleChangeModel = () => {
-    const setSelectedCompareModels = useAppContext((state) => state.setSelectedCompareModels);
+// Check if model change requires warning based on compatibility and active threads
+const shouldShowCompatibilityWarning = (
+    currentModel: Model | undefined,
+    newModel: Model,
+    hasActiveThread: boolean
+): boolean => {
+    return Boolean(
+        hasActiveThread && currentModel && !areModelsCompatibleForThread(currentModel, newModel)
+    );
+};
+
+export const useHandleChangeModel = (): ModelChangeHookResult => {
+    const setSelectedCompareModelAt = useAppContext((state) => state.setSelectedCompareModelAt);
+    const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const navigate = useNavigate();
 
     const modelIdToSwitchTo = useRef<string>();
     const models = useModels();
+    const threadViewId = '0'; // Single-thread always uses threadViewId '0'
 
     const selectModel = (modelId: string) => {
-        analyticsClient.trackModelUpdate({ modelChosen: modelId });
-        const model = models.find((model) => model.id === modelId) as Model;
-
-        // Set selectedCompareModels for single-thread mode
-        setSelectedCompareModels([
-            {
-                threadViewId: '0',
-                rootThreadId: undefined, // Will be set when creating new thread
-                model,
-            },
-        ]);
+        trackModelSelection(modelId);
+        const model = findModelById(models, modelId);
+        if (model) {
+            setSelectedCompareModelAt(threadViewId, model);
+        }
     };
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        const selectedModel = appContext.getState().selectedModel;
-        const newModel = models.find((model) => model.id === event.target.value);
-        const hasSelectedThread = Boolean(appContext.getState().selectedThreadRootId);
+        const newModel = findModelById(models, event.target.value);
+        if (!newModel) return;
 
-        const bothModelsAreDefined = selectedModel != null && newModel != null;
+        const currentModel = getCurrentModelForThreadView(selectedCompareModels, threadViewId);
+        const hasThread = hasActiveThread(selectedCompareModels, threadViewId);
 
-        if (
-            hasSelectedThread &&
-            bothModelsAreDefined &&
-            // TODO: We may need to have more detailed checks in the future but this is good enough for Molmo launch
-            selectedModel.accepts_files !== newModel.accepts_files
-        ) {
+        if (shouldShowCompatibilityWarning(currentModel, newModel, hasThread)) {
             modelIdToSwitchTo.current = event.target.value;
             setShouldShowModelSwitchWarning(true);
         } else {
@@ -69,6 +77,8 @@ export const useHandleChangeModel = () => {
             open={shouldShowModelSwitchWarning}
             onCancel={closeModelSwitchWarning}
             onConfirm={handleModelSwitchWarningConfirm}
+            title="Change model and start a new thread?"
+            message="The model you're changing to isn't compatible with this thread. To change models you'll need to start a new thread. Continue?"
         />
     );
 

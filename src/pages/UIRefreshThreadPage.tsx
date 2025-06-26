@@ -67,7 +67,7 @@ export const playgroundLoader =
 
         await Promise.all(promises);
 
-        const { setSelectedCompareModels, selectedModel } = appContext.getState();
+        const { setSelectedCompareModels } = appContext.getState();
 
         const preselectedModelId = new URL(request.url).searchParams.get('model');
         if (preselectedModelId != null) {
@@ -90,16 +90,34 @@ export const playgroundLoader =
                     },
                 ]);
             }
-        } else if (params.id == null && selectedModel == null) {
+        } else if (params.id == null) {
             // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
-            const visibleModels = models.filter(isModelVisible);
-            setSelectedCompareModels([
-                {
-                    threadViewId: '0',
-                    rootThreadId: undefined,
-                    model: visibleModels[0],
-                },
-            ]);
+            const currentState = appContext.getState().selectedCompareModels;
+            const { setSelectedCompareModelAt } = appContext.getState();
+
+            // Check if we need to reset to single-thread configuration
+            const needsReset =
+                currentState.length !== 1 ||
+                currentState[0]?.rootThreadId ||
+                currentState[0]?.threadViewId !== '0';
+
+            if (needsReset) {
+                // Get the current model if available, otherwise use the first visible model
+                const currentModel = currentState[0]?.model;
+                const modelToUse = currentModel || models.filter(isModelVisible)[0];
+
+                setSelectedCompareModels([
+                    {
+                        threadViewId: '0',
+                        rootThreadId: undefined,
+                        model: modelToUse,
+                    },
+                ]);
+            } else if (!currentState[0]?.model) {
+                // Only set default model if there's no model already selected
+                const visibleModels = models.filter(isModelVisible);
+                setSelectedCompareModelAt('0', visibleModels[0]);
+            }
         }
 
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
