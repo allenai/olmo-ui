@@ -2,8 +2,9 @@ import { styled, Typography, useTheme } from '@mui/material';
 import { Box, Stack, SxProps, Theme } from '@mui/system';
 import React, { ReactNode, useState } from 'react';
 
+import { selectMessageById, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { useAppContext } from '@/AppContext';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { extractPointData, Point, PointInfo } from '../points/extractPointData';
@@ -150,17 +151,25 @@ const PointPictureCaption = ({
 };
 
 export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => {
-    const content = useAppContext((state) => state.selectedThreadMessagesById[messageId].content);
-    const lastImagesInThread = useAppContext((state) => {
-        return state.selectedThreadMessages
-            .map((messageId) => state.selectedThreadMessagesById[messageId])
-            .filter((message) => message.role === Role.User && message.fileUrls?.length)
-            .at(-1)?.fileUrls;
-    });
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const theme = useTheme();
+    const { threadId } = useThreadView();
+    const { data: message, error: _error } = useThread(threadId, {
+        select: selectMessageById(messageId),
+        staleTime: Infinity,
+    });
+    const { data: lastImagesInThread } = useThread(threadId, {
+        select: (thread) => {
+            return thread.messages
+                .filter((message) => message.role === Role.User && message.fileUrls?.length)
+                .at(-1)?.fileUrls;
+        },
+        staleTime: Infinity,
+    });
+    if (!message) {
+        return null; // this shouldn't happen
+    }
+    const { content } = message;
     const pointColors = [
         theme.color['pink-100'].hex,
         theme.color['purple-100'].hex,

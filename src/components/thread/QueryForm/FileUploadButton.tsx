@@ -1,57 +1,46 @@
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import { styled } from '@mui/material';
 import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRef } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
-import { useAppContext } from '@/AppContext';
 import { StyledTooltip } from '@/components/StyledTooltip';
-import { RemoteState } from '@/contexts/util';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 
-export const FileUploadButton = forwardRef(function FileUploadButton(
-    props: Omit<
+export interface FileuploadPropsBase {
+    isFileUploadDisabled: boolean;
+    isSendingPrompt: boolean;
+    acceptsFileUpload: boolean;
+    acceptedFileTypes: string | string[] | Set<string>;
+    acceptsMultiple: boolean;
+    allowFilesInFollowups: boolean;
+}
+
+type FileUploadButtonProps = FileuploadPropsBase &
+    Omit<
         DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
         'type' | 'ref'
-    >,
+    >;
+
+export const FileUploadButton = forwardRef(function FileUploadButton(
+    {
+        isFileUploadDisabled,
+        isSendingPrompt,
+        acceptsFileUpload,
+        acceptedFileTypes,
+        acceptsMultiple,
+        allowFilesInFollowups,
+        ...props
+    }: FileUploadButtonProps,
     ref: ForwardedRef<HTMLInputElement>
 ) {
     const labelRef = useRef<HTMLLabelElement>(null);
     const { isMultiModalEnabled } = useFeatureToggles();
-    const { acceptsFileUpload, acceptedFileTypes, acceptsMultiple, allowFilesInFollowups } =
-        useAppContext(
-            useShallow((state) => {
-                const values = {
-                    acceptsFileUpload: false,
-                    acceptedFileTypes: '',
-                    requiredFileOption: undefined as string | undefined,
-                    acceptsMultiple: false,
-                    allowFilesInFollowups: false,
-                };
-
-                if (state.selectedModel?.prompt_type === 'multi_modal') {
-                    const selectedModel = state.selectedModel;
-                    values.acceptsFileUpload = selectedModel.accepts_files ?? false;
-                    values.acceptedFileTypes = selectedModel.accepted_file_types.join('');
-                    values.acceptsMultiple =
-                        selectedModel.max_files_per_message != null &&
-                        selectedModel.max_files_per_message > 1;
-                    values.requiredFileOption = selectedModel.require_file_to_prompt;
-                    values.allowFilesInFollowups = selectedModel.allow_files_in_followups ?? false;
-                }
-
-                return values;
-            })
-        );
-
-    const isSendingPrompt = useAppContext(
-        (state) => state.streamPromptState === RemoteState.Loading
-    );
-
-    const isFileUploadDisabled = useAppContext(
-        (state) => state.selectedThreadMessages.length > 1 && !allowFilesInFollowups
-    );
 
     const supportFileUpload = isMultiModalEnabled && acceptsFileUpload;
+
+    const acceptedFileTypesString =
+        typeof acceptedFileTypes === 'string'
+            ? acceptedFileTypes
+            : [...acceptedFileTypes].join(',');
 
     if (!supportFileUpload) {
         return null;
@@ -68,7 +57,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
                 <Input
                     {...props}
                     disabled={isSendingPrompt || isFileUploadDisabled}
-                    accept={acceptedFileTypes}
+                    accept={acceptedFileTypesString}
                     multiple={acceptsMultiple}
                     type="file"
                     ref={ref}
