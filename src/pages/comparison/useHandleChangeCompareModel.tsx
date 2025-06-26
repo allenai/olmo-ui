@@ -12,8 +12,8 @@ import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelCh
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 
-// Clear rootThreadId for all thread views to start fresh threads
-const clearAllThreadIds = (
+// Create fresh compare models with cleared rootThreadId for all thread views
+const createFreshCompareModels = (
     selectedCompareModels: CompareModelState[],
     threadViewId: string,
     newModel: Model
@@ -91,7 +91,7 @@ export const useHandleChangeCompareModel = (
         if (modelIdToSwitchTo.current) {
             const model = findModelById(models, modelIdToSwitchTo.current);
             if (model) {
-                const updatedCompareModels = clearAllThreadIds(
+                const updatedCompareModels = createFreshCompareModels(
                     selectedCompareModels,
                     threadViewId,
                     model
