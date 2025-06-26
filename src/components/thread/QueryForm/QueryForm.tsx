@@ -31,6 +31,7 @@ import { errorToAlert } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
+import { mapCompareFileUploadProps, reduceCompareFileUploadProps } from './compareFileUploadProps';
 import { QueryFormController } from './QueryFormController';
 
 export interface QueryFormValues {
@@ -236,6 +237,10 @@ export const QueryForm = (): JSX.Element => {
     // TODO: (bb) pass from Page level
     const autoFocus = location.pathname === links.playground;
 
+    const fileUploadPropsComputed = reduceCompareFileUploadProps(
+        mapCompareFileUploadProps(selectedCompareModels)
+    );
+
     return (
         <>
             <QueryFormController
@@ -249,6 +254,14 @@ export const QueryForm = (): JSX.Element => {
                 isLimitReached={isLimitReached}
                 remoteState={remoteState}
                 shouldResetForm={streamMessage.hasReceivedFirstResponse}
+                // Work around for file upload / multi-modal
+                fileUploadProps={{
+                    ...fileUploadPropsComputed,
+                    isSendingPrompt: remoteState === RemoteState.Loading,
+                    isFileUploadDisabled:
+                        allThreadProps.every(({ hasMessages }) => hasMessages) &&
+                        fileUploadPropsComputed.allowFilesInFollowups,
+                }}
             />
             {location.pathname === links.comparison && (
                 <ModelChangeWarningModal
@@ -273,6 +286,7 @@ const allThreadProperties = (
     return selectedCompareModels.map(({ rootThreadId, model }) => {
         let isLimitReached = false;
         let canEditThread = true; // or false and set to true
+        let hasMessages = false;
 
         if (rootThreadId) {
             const { queryKey } = threadOptions(rootThreadId);
@@ -282,6 +296,9 @@ const allThreadProperties = (
             }
 
             canEditThread = thread?.messages[0]?.creator === userInfo?.client;
+
+            const meessagesLength = thread?.messages.length;
+            hasMessages = meessagesLength != null && meessagesLength > 1;
         }
 
         return {
@@ -289,6 +306,7 @@ const allThreadProperties = (
             canEditThread,
             familyName: model?.family_name,
             rootThreadId,
+            hasMessages,
         };
     });
 };
