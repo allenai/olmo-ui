@@ -1,6 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
 
+import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -8,8 +9,6 @@ import { QueryContext, QueryContextValue } from './QueryContext';
 interface SingleThreadState {
     selectedModelId?: string;
     threadId?: string;
-    // Add other state properties as needed
-    // isLoading?: boolean;
 }
 
 interface SingleThreadProviderProps
@@ -22,6 +21,12 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         initialState?.selectedModelId ?? undefined
     );
     const [_threadId] = useState<string | undefined>(initialState?.threadId ?? undefined);
+
+    // Get available models from API, filtering for visible models
+    const models = useModels({
+        select: (data) =>
+            data.filter((model) => isModelVisible(model) || model.id === _selectedModelId),
+    });
 
     const contextValue: QueryContextValue = {
         onSubmit: async (_data: QueryFormValues) => {
@@ -54,11 +59,16 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         },
 
         onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
+            // TODO: Implement model compatibility warnings
+            // - Check if models are compatible using areModelsCompatibleForThread()
+            // - Show ModelChangeWarningModal if incompatible on active thread
+            // - Handle modal confirmation/cancellation
+            // - Navigate to new thread on confirmation
             setSelectedModelId(event.target.value);
         },
 
         getAvailableModels: () => {
-            return [];
+            return models;
         },
     };
 
