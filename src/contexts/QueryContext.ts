@@ -56,6 +56,7 @@ export const useQueryContext = () => {
 };
 
 // Hook to use thread-aware context (automatically includes threadViewId)
+// This is what the components would actually use
 export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
     const context = useQueryContext();
     const threadView = useThreadView();
