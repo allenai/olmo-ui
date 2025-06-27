@@ -5,9 +5,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 
 import { QueryContext, QueryContextValue } from './QueryContext';
 
-interface SingleThreadProviderProps {
-    children: React.ReactNode;
-}
+interface SingleThreadProviderProps extends React.PropsWithChildren<{}> {}
 
 export const SingleThreadProvider = ({ children }: SingleThreadProviderProps) => {
     // State held in provider, not zustand right?
