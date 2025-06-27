@@ -12,6 +12,12 @@ const getAreFilesAllowed = (models: Model[], selectedModelId?: string): boolean 
     return Boolean(selectedModel?.accepts_files);
 };
 
+const getAutofocus = (threadId?: string): boolean => {
+    // Only autofocus for new threads (no threadId)
+    // This was controlled by the path before, using the threadId here
+    return !threadId;
+};
+
 interface SingleThreadState {
     selectedModelId?: string;
     threadId?: string;
@@ -26,7 +32,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     const [_selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
-    const [_threadId] = useState<string | undefined>(initialState?.threadId ?? undefined);
+    const [threadId] = useState<string | undefined>(initialState?.threadId ?? undefined);
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -40,7 +46,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         },
 
         canEditThread: false,
-        autofocus: false,
+        autofocus: getAutofocus(threadId),
         areFilesAllowed: getAreFilesAllowed(models, _selectedModelId),
         onAbort: () => {
             // Abort logic
@@ -59,7 +65,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         },
 
         getPlaceholderText: () => {
-            const actionText = _threadId ? 'Reply to' : 'Message';
+            const actionText = threadId ? 'Reply to' : 'Message';
             const modelText = _selectedModelId || 'the model';
             return `${actionText} ${modelText}`;
         },
