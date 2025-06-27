@@ -60,51 +60,7 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk> = [
     },
     {
         message: LOREM_IPSUM_MESSAGE_ID,
-        content: '',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: '',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'Lorem ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'ipsum ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'odor ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'amet, ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'consectetuer ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'adipiscing ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'elit. ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'Mus ',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: 'ultricies',
-    },
-    {
-        message: LOREM_IPSUM_MESSAGE_ID,
-        content: ' ',
+        content: 'Lorem  ipsum  odor  amet,  consectetuer  adipiscing  elit.  Mus  ultricies  ',
     },
     {
         message: LOREM_IPSUM_MESSAGE_ID,

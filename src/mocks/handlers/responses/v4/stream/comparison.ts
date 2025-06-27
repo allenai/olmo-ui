@@ -57,51 +57,7 @@ export const fakeCompareNewThreadMessages: Array<Thread | MessageChunk> = [
     },
     {
         message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: '',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: '',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'Sed ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'blandit ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'sapien ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'lorem, ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'quis ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'maximus ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'ex ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'tristique ',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: 'vel.',
-    },
-    {
-        message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
-        content: ' ',
+        content: 'Sed blandit sapien lorem, quis maximus ex tristique vel. ',
     },
     {
         message: COMPARE_LOREM_IPSUM_MESSAGE_ID,
