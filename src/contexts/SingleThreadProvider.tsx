@@ -1,10 +1,16 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+
+const getAreFilesAllowed = (models: Model[], selectedModelId?: string): boolean => {
+    const selectedModel = models.find((model) => model.id === selectedModelId);
+    return Boolean(selectedModel?.accepts_files);
+};
 
 interface SingleThreadState {
     selectedModelId?: string;
@@ -35,7 +41,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
         canEditThread: false,
         autofocus: false,
-        areFilesAllowed: false,
+        areFilesAllowed: getAreFilesAllowed(models, _selectedModelId),
         onAbort: () => {
             // Abort logic
         },
