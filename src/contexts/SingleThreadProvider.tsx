@@ -5,11 +5,23 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 
 import { QueryContext, QueryContextValue } from './QueryContext';
 
-interface SingleThreadProviderProps extends React.PropsWithChildren<{}> {}
+interface SingleThreadState {
+    selectedModelId?: string;
+    threadId?: string;
+    // Add other state properties as needed
+    // isLoading?: boolean;
+}
 
-export const SingleThreadProvider = ({ children }: SingleThreadProviderProps) => {
-    // State held in provider, not zustand right?
-    const [_selectedModelId, setSelectedModelId] = useState<string | undefined>(undefined);
+interface SingleThreadProviderProps
+    extends React.PropsWithChildren<{
+        initialState?: Partial<SingleThreadState>;
+    }> {}
+
+export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
+    const [_selectedModelId, setSelectedModelId] = useState<string | undefined>(
+        initialState?.selectedModelId ?? undefined
+    );
+    const [_threadId] = useState<string | undefined>(initialState?.threadId ?? undefined);
 
     const contextValue: QueryContextValue = {
         onSubmit: async (_data: QueryFormValues) => {
@@ -36,7 +48,9 @@ export const SingleThreadProvider = ({ children }: SingleThreadProviderProps) =>
         },
 
         getPlaceholderText: () => {
-            return 'Message the model';
+            const actionText = _threadId ? 'Reply to' : 'Message';
+            const modelText = _selectedModelId || 'the model';
+            return `${actionText} ${modelText}`;
         },
 
         onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {

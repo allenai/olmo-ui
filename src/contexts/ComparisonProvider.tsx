@@ -5,10 +5,6 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 
 import { QueryContext, QueryContextValue } from './QueryContext';
 
-interface ComparisonProviderProps {
-    children: React.ReactNode;
-}
-
 // Internal state for comparison mode, holds all threads
 interface ComparisonState {
     [threadViewId: string]: {
@@ -17,9 +13,13 @@ interface ComparisonState {
     };
 }
 
-export const ComparisonProvider = ({ children }: ComparisonProviderProps) => {
-    // State held in provider, not zustand right?
-    const [_comparisonState, _setComparisonState] = useState<ComparisonState>({});
+interface ComparisonProviderProps {
+    children: React.ReactNode;
+    initialState?: ComparisonState;
+}
+
+export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
+    const [_comparisonState, _setComparisonState] = useState<ComparisonState>(initialState ?? {});
 
     const contextValue: QueryContextValue = {
         onSubmit: async (_data: QueryFormValues) => {
