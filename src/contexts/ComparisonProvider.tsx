@@ -1,6 +1,8 @@
 import { SelectChangeEvent } from '@mui/material';
-import React, { useState } from 'react';
+import React, { UIEvent, useState } from 'react';
 
+import { Thread } from '@/api/playgroundApi/thread';
+import { User } from '@/api/User';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -29,7 +31,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
         canEditThread: false,
         autofocus: false,
         areFilesAllowed: false,
-        onAbort: () => {
+        onAbort: (_e: UIEvent) => {
             // Abort all streams across all threads
         },
         canPauseThread: false,
@@ -55,6 +57,14 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
 
         getAvailableModels: () => {
             return [];
+        },
+
+        getCanEditThread: (_thread: Thread, _userInfo?: User | null): boolean => {
+            return false;
+        },
+
+        getIsLimitReached: (_threadId?: string): boolean => {
+            return false;
         },
     };
 

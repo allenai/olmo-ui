@@ -2,6 +2,8 @@ import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import { Thread, useThread } from '@/api/playgroundApi/thread';
+import { User } from '@/api/User';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
@@ -23,24 +25,24 @@ interface QueryContextValue {
     shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
 
-    // Model operations: context methods handle model logic internally
-    // AFAICT, components do not need to have direct access to selected model(s)
     getPlaceholderText: () => string;
-
-    // Handler for model change: context automatically uses current thread view
-    onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
-
-    // To populate the model selector
     getAvailableModels: () => Model[];
+
+    // These methods require thread information
+    getCanEditThread: (thread: Thread, userInfo?: User | null) => boolean;
+    getIsLimitReached: (threadId?: string) => boolean;
+    onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods
-type ThreadAwareQueryContextValue = Omit<QueryContextValue, 'onModelChange'> & {
-    // Override onModelChange to remove threadViewId parameter
+type ThreadAwareQueryContextValue = Omit<
+    QueryContextValue,
+    'onModelChange' | 'getCanEditThread' | 'getIsLimitReached'
+> & {
+    // Override these methods to automatically provide thread information
     onModelChange: (event: SelectChangeEvent) => void;
-    // Add thread context information
-    threadViewId: string;
-    threadId: string;
+    getCanEditThread: (userInfo?: User | null) => boolean;
+    getIsLimitReached: () => boolean;
 };
 
 // Context definition
@@ -60,6 +62,10 @@ export const useQueryContext = () => {
 export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
     const context = useQueryContext();
     const threadView = useThreadView();
+    const thread = useThread(threadView.threadId, {
+        select: (thread) => thread,
+        staleTime: Infinity,
+    });
     const threadViewId = threadView.threadViewId;
     const threadId = threadView.threadId;
 
@@ -69,9 +75,12 @@ export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
         onModelChange: (event: SelectChangeEvent) => {
             context.onModelChange(event, threadViewId);
         },
-        // Add thread context information
-        threadViewId,
-        threadId,
+        getCanEditThread: (userInfo?: User | null) => {
+            return thread.data ? context.getCanEditThread(thread.data, userInfo) : false;
+        },
+        getIsLimitReached: () => {
+            return context.getIsLimitReached(threadId);
+        },
     };
 };
 

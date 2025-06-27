@@ -1,7 +1,9 @@
 import { SelectChangeEvent } from '@mui/material';
-import React, { useState } from 'react';
+import React, { UIEvent, useState } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import { Thread } from '@/api/playgroundApi/thread';
+import { User } from '@/api/User';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
@@ -48,7 +50,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         canEditThread: false,
         autofocus: getAutofocus(threadId),
         areFilesAllowed: getAreFilesAllowed(models, _selectedModelId),
-        onAbort: () => {
+        onAbort: (_e: UIEvent) => {
             // Abort logic
         },
         canPauseThread: false,
@@ -81,6 +83,14 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
         getAvailableModels: () => {
             return models;
+        },
+
+        getCanEditThread: (_thread: Thread, _userInfo?: User | null): boolean => {
+            return false;
+        },
+
+        getIsLimitReached: (_threadId?: string): boolean => {
+            return false;
         },
     };
 
