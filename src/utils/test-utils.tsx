@@ -13,7 +13,58 @@ import {
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
+import { FlatMessage, Thread } from '@/api/playgroundApi/thread';
+import { User } from '@/api/User';
+
 import { uiRefreshOlmoTheme } from '../olmoTheme';
+
+export const createMockMessage = (overrides: Partial<FlatMessage> = {}): FlatMessage => ({
+    id: 'message-1',
+    creator: 'user-123',
+    content: 'Hello',
+    role: 'user',
+    created: '2023-01-01T00:00:00Z',
+    final: true,
+    isLimitReached: false,
+    children: null,
+    completion: null,
+    deleted: null,
+    expirationTime: null,
+    fileUrls: null,
+    finishReason: null,
+    harmful: null,
+    modelHost: 'modal',
+    modelId: 'test-model',
+    modelType: 'chat',
+    opts: {
+        maxTokens: 2048,
+        temperature: 1,
+        n: 1,
+        topP: 1,
+    },
+    original: null,
+    parent: null,
+    private: false,
+    snippet: 'Hello',
+    template: null,
+    isOlderThan30Days: false,
+    root: 'thread-123',
+    ...overrides,
+});
+
+export const createMockThread = (overrides: Partial<Thread> = {}): Thread => ({
+    id: 'thread-123',
+    messages: [createMockMessage()],
+    ...overrides,
+});
+
+export const createMockUser = (overrides: Partial<User> = {}): User => ({
+    client: 'user-123',
+    hasAcceptedTermsAndConditions: true,
+    id: null,
+    permissions: undefined,
+    ...overrides,
+});
 
 const FakeFeatureToggleProvider = ({
     children,

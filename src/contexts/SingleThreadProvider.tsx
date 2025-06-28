@@ -47,7 +47,6 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             // Single-thread submission logic
         },
 
-        canEditThread: false,
         autofocus: getAutofocus(threadId),
         areFilesAllowed: getAreFilesAllowed(models, _selectedModelId),
         onAbort: (_e: UIEvent) => {
@@ -73,11 +72,6 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         },
 
         onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
-            // TODO: Implement model compatibility warnings
-            // - Check if models are compatible using areModelsCompatibleForThread()
-            // - Show ModelChangeWarningModal if incompatible on active thread
-            // - Handle modal confirmation/cancellation
-            // - Navigate to new thread on confirmation
             setSelectedModelId(event.target.value);
         },
 
@@ -85,8 +79,8 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             return models;
         },
 
-        getCanEditThread: (_thread: Thread, _userInfo?: User | null): boolean => {
-            return false;
+        getCanEditThread: (thread: Thread, userInfo?: User | null): boolean => {
+            return thread.messages[0]?.creator === userInfo?.client;
         },
 
         getIsLimitReached: (_threadId?: string): boolean => {

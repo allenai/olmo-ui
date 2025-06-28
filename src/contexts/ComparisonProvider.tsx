@@ -28,7 +28,6 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             // Submit parallel streams
         },
 
-        canEditThread: false,
         autofocus: false,
         areFilesAllowed: false,
         onAbort: (_e: UIEvent) => {

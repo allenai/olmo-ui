@@ -15,7 +15,6 @@ interface QueryContextValue {
     onSubmit: (data: QueryFormValues) => Promise<void>;
 
     // Form state properties (from QueryFormController props)
-    canEditThread: boolean;
     autofocus: boolean;
     areFilesAllowed: boolean;
     onAbort: (e: UIEvent) => void;
