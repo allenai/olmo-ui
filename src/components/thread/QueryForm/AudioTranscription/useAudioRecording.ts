@@ -3,21 +3,24 @@ import { useRef } from 'react';
 import { useAppContext } from '@/AppContext';
 
 type StreamState = 'idle' | 'init';
+type StopReason = 'user' | 'maxLength' | 'unknown';
 
 interface UseAudioRecordingProps {
     debug?: boolean;
 }
 
 interface StartRecordingProps {
-    pollLength: number;
+    pollLength?: number;
+    maxLength?: number;
     onData?: (data: Blob) => Promise<void>;
-    onStop?: (data: Blob) => Promise<void>;
+    onStop?: (data: Blob, reason?: StopReason) => Promise<void>;
     onError?: (event: Event) => void;
 }
 
 export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
     // UI state -- needed for icon and QueryForm submit
     const setIsTranscribing = useAppContext((state) => state.setIsTranscribing);
+    const stopReason = useRef<StopReason>('unknown');
 
     // Stream aquire state
     const streamState = useRef<StreamState>('idle');
@@ -34,6 +37,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
 
     const startRecording = async ({
         pollLength = 1_000,
+        maxLength = 25_000,
         onData,
         onStop,
         onError,
@@ -51,6 +55,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
                 streamState.current = 'init';
                 mediaStream.current = await navigator.mediaDevices.getUserMedia({ audio: true });
                 debugLog('Audio stream obtained:', mediaStream.current);
+                stopReason.current = 'unknown';
             }
 
             if (mediaStream.current) {
@@ -77,9 +82,15 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
                 mediaRecorder.current.ondataavailable = async (event: BlobEvent) => {
                     if (event.data.size > 0) {
                         audioChunks.current.push(event.data);
+                        const totalLength = audioChunks.current.length * pollLength;
+
                         debugLog('Audio chunk received, size:', event.data.size);
                         if (onData) {
                             await onData(event.data);
+                        }
+
+                        if (totalLength >= maxLength) {
+                            stopRecording('maxLength');
                         }
                     }
                 };
@@ -92,7 +103,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
                         track.stop();
                     });
                     if (onStop) {
-                        await onStop(audioBlob);
+                        await onStop(audioBlob, stopReason.current);
                     }
                 };
 
@@ -115,8 +126,9 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
         }
     };
 
-    const stopRecording = (): void => {
+    const stopRecording = (reason: StopReason = 'user'): void => {
         if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+            stopReason.current = reason;
             debugLog('Stopping MediaRecorder');
             mediaRecorder.current.stop();
             streamState.current = 'idle';
