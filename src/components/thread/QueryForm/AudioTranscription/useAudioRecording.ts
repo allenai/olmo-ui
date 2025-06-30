@@ -37,7 +37,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
 
     const startRecording = async ({
         pollLength = 1_000,
-        maxLength = 30_000,
+        maxLength = 25_000,
         onData,
         onStop,
         onError,
