@@ -40,7 +40,6 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                         setIsProcessingAudio(true);
                         try {
                             const { text } = await handleTranscribe(data);
-                            setIsProcessingAudio(false);
                             onTranscriptionComplete(text);
                         } catch (error: unknown) {
                             addSnackMessage(
@@ -50,6 +49,8 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                                     error
                                 )
                             );
+                        } finally {
+                            setIsProcessingAudio(false);
                         }
                     },
                 });
