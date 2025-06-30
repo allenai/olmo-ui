@@ -87,6 +87,14 @@ export interface SubmissionDependencies {
     buildComparisonUrl: (threadIds: string[]) => string;
 }
 
+// Stream events that can occur during processing
+export type StreamEvent =
+    | { type: 'firstMessage'; threadId: string; threadViewId: ThreadViewId }
+    | { type: 'messageChunk'; content: string; threadViewId: ThreadViewId }
+    | { type: 'streamError'; error: Error; threadViewId: ThreadViewId }
+    | { type: 'streamComplete'; threadId: string; threadViewId: ThreadViewId }
+    | { type: 'modelOverloaded'; threadViewId: ThreadViewId };
+
 export interface StreamDependencies {
     streamManager: SubmissionDependencies['streamManager'];
     updateCacheWithMessagePart: (
@@ -97,8 +105,22 @@ export interface StreamDependencies {
         response: Response,
         signal?: AbortSignal
     ) => AsyncIterable<StreamingMessageResponse>;
-    onFirstMessage?: (threadId: string) => void;
+    emitEvent?: (event: StreamEvent) => void;
 }
+
+// Event handler functions for different stream events
+export interface StreamEventHandlers {
+    onFirstMessage?: (event: { threadId: string; threadViewId: ThreadViewId }) => void;
+    onMessageChunk?: (event: { content: string; threadViewId: ThreadViewId }) => void;
+    onStreamError?: (event: { error: Error; threadViewId: ThreadViewId }) => void;
+    onStreamComplete?: (event: { threadId: string; threadViewId: ThreadViewId }) => void;
+    onModelOverloaded?: (event: { threadViewId: ThreadViewId }) => void;
+}
+
+// Enhanced step type that can accept event handler creation strategy
+export type EventDrivenStep<TDeps, TData> = (
+    createEventHandlers: (deps: TDeps, data: TData) => StreamEventHandlers
+) => Step<TDeps, TData>;
 
 // Pipeline type aliases for clarity
 export type SubmissionPipeline = Pipeline<SubmissionDependencies, SubmissionData>;
