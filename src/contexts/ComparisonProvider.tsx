@@ -1,6 +1,8 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent, useState } from 'react';
 
+import { threadOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
@@ -19,8 +21,20 @@ interface ComparisonProviderProps {
     initialState?: ComparisonState;
 }
 
+function getThread(threadId: string) {
+    const { queryKey } = threadOptions(threadId);
+    const thread = queryClient.getQueryData(queryKey);
+    return thread;
+}
+
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
-    const [_comparisonState, _setComparisonState] = useState<ComparisonState>(initialState ?? {});
+    const [comparisonState, _setComparisonState] = useState<ComparisonState>(initialState ?? {});
+
+    function getAllThreadIds() {
+        return Object.values(comparisonState)
+            .map((state) => state.threadId)
+            .filter(Boolean) as string[];
+    }
 
     const contextValue: QueryContextValue = {
         onSubmit: async (_data: QueryFormValues) => {
@@ -57,8 +71,17 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             return [];
         },
 
-        canSubmit: (_userInfo?: User | null): boolean => {
-            return false;
+        canSubmit: (userInfo?: User | null): boolean => {
+            if (!userInfo?.client) return false;
+
+            const threadIds = getAllThreadIds();
+
+            if (threadIds.length === 0) return false;
+
+            // Check if user created the first message in ALL threads
+            return threadIds.every((threadId) => {
+                return getThread(threadId)?.messages[0]?.creator === userInfo.client;
+            });
         },
 
         getIsLimitReached: (_threadId?: string): boolean => {
