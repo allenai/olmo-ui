@@ -64,6 +64,14 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         return Boolean(selectedModel?.accepts_files);
     }, [models, selectedModelId]);
 
+    const isLimitReached = useMemo(() => {
+        if (!threadId) {
+            return false;
+        }
+
+        return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
+    }, [threadId]);
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
@@ -72,7 +80,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             areFilesAllowed,
             availableModels: models,
             canPauseThread: false,
-            isLimitReached: false,
+            isLimitReached,
             remoteState: undefined,
             shouldResetForm: false,
             fileUploadProps: {
@@ -99,7 +107,15 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
                 setThreadIdValue(threadId);
             },
         };
-    }, [canSubmit, autofocus, placeholderText, areFilesAllowed, models, selectedModelId]);
+    }, [
+        canSubmit,
+        autofocus,
+        placeholderText,
+        areFilesAllowed,
+        models,
+        selectedModelId,
+        isLimitReached,
+    ]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };

@@ -103,6 +103,15 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
         return `${actionText} ${modelNames.length ? modelNames.join(' and ') : 'the model'}`;
     }, [comparisonState, models]);
 
+    const isLimitReached = useMemo(() => {
+        return Object.values(comparisonState)
+            .map((state) => state.threadId)
+            .filter(Boolean)
+            .some((threadId) => {
+                return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
+            });
+    }, [comparisonState]);
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
@@ -111,7 +120,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             availableModels: models,
             areFilesAllowed: false,
             canPauseThread: false,
-            isLimitReached: false,
+            isLimitReached,
             remoteState: undefined,
             shouldResetForm: false,
             fileUploadProps: {
@@ -142,7 +151,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 dispatch({ type: 'setThreadId', threadViewId, threadId });
             },
         };
-    }, [canSubmit, autofocus, placeholderText]);
+    }, [canSubmit, autofocus, placeholderText, isLimitReached]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };

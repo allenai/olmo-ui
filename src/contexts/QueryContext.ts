@@ -14,7 +14,7 @@ interface QueryContextValue {
     autofocus: boolean;
     placeholderText: string;
     areFilesAllowed: boolean;
-    canPauseThread: boolean;
+    canPauseThread: boolean; // requires streaming info
     isLimitReached: boolean;
     remoteState?: RemoteState;
     shouldResetForm?: boolean;

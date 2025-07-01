@@ -70,7 +70,13 @@ export const createMockUser = (overrides: Partial<User> = {}): User => ({
 export const setupThreadInCache = (
     threadId: string,
     options: {
-        messages?: Array<{ creator?: string; id?: string; content?: string; role?: string }>;
+        messages?: Array<{
+            creator?: string;
+            id?: string;
+            content?: string;
+            role?: string;
+            isLimitReached?: boolean;
+        }>;
     } = {}
 ) => {
     const { messages = [] } = options;
@@ -82,6 +88,7 @@ export const setupThreadInCache = (
                 creator: msg.creator,
                 content: msg.content || 'Test message',
                 role: msg.role as 'user' | 'assistant' | 'system' | undefined,
+                isLimitReached: msg.isLimitReached ?? false,
             })
         ),
     });

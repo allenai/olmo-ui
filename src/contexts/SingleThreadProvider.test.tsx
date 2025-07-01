@@ -364,4 +364,64 @@ describe('SingleThreadProvider', () => {
             });
         });
     });
+
+    describe('isLimitReached', () => {
+        const IsLimitReachedTestComponent = () => {
+            const context = useQueryContext();
+            return <div data-testid="is-limit-reached">{String(context.isLimitReached)}</div>;
+        };
+
+        it('should return true when the last message in the thread has isLimitReached set to true', async () => {
+            const threadId = 'test-thread-limit-reached';
+
+            // Create a thread where the last message has isLimitReached: true
+            setupThreadInCache(threadId, {
+                messages: [
+                    { creator: 'user-123', content: 'First message' },
+                    { creator: 'assistant', content: 'Second message' },
+                    { creator: 'user-123', content: 'Third message', isLimitReached: true },
+                ],
+            });
+
+            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, {
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(getByTestId('is-limit-reached')).toHaveTextContent('true');
+            });
+        });
+
+        it('should return false when the last message in the thread has isLimitReached set to false', async () => {
+            const threadId = 'test-thread-limit-not-reached';
+
+            // Create a thread where the last message has isLimitReached: false (default)
+            setupThreadInCache(threadId, {
+                messages: [
+                    { creator: 'user-123', content: 'First message' },
+                    { creator: 'assistant', content: 'Second message' },
+                    { creator: 'user-123', content: 'Third message' },
+                ],
+            });
+
+            // No need to manually update - setupThreadInCache creates messages with isLimitReached: false by default
+
+            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, {
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+            });
+        });
+
+        it('should return false when no threadId is provided (new thread)', async () => {
+            // No threadId provided - this represents a new thread scenario
+            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent);
+
+            await waitFor(() => {
+                expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+            });
+        });
+    });
 });

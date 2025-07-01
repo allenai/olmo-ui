@@ -223,4 +223,86 @@ describe('ComparisonProvider', () => {
             });
         });
     });
+
+    describe('isLimitReached', () => {
+        const IsLimitReachedTestComponent = () => {
+            const context = useQueryContext();
+            return <div data-testid="is-limit-reached">{String(context.isLimitReached)}</div>;
+        };
+
+        it('should return true when any thread has its last message with isLimitReached set to true', async () => {
+            const threadId1 = 'thread-1';
+            const threadId2 = 'thread-2';
+
+            // Set up threads where thread-1 has NOT reached limit, but thread-2 HAS reached limit
+            setupThreadInCache(threadId1, {
+                messages: [
+                    { creator: 'user-123', content: 'First message' },
+                    { creator: 'assistant', content: 'Response', isLimitReached: false },
+                ],
+            });
+            setupThreadInCache(threadId2, {
+                messages: [
+                    { creator: 'user-123', content: 'Another message' },
+                    {
+                        creator: 'assistant',
+                        content: 'Response that hits limit',
+                        isLimitReached: true,
+                    },
+                ],
+            });
+
+            const initialState = {
+                'view-1': { threadId: threadId1 },
+                'view-2': { threadId: threadId2 },
+            };
+
+            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('is-limit-reached')).toHaveTextContent('true');
+            });
+        });
+
+        it('should return false when all threads have isLimitReached set to false', async () => {
+            const threadId1 = 'thread-1';
+            const threadId2 = 'thread-2';
+
+            // Set up threads where BOTH threads have NOT reached their limit
+            setupThreadInCache(threadId1, {
+                messages: [
+                    { creator: 'user-123', content: 'First message' },
+                    { creator: 'assistant', content: 'Response', isLimitReached: false },
+                ],
+            });
+            setupThreadInCache(threadId2, {
+                messages: [
+                    { creator: 'user-123', content: 'Another message' },
+                    { creator: 'assistant', content: 'Another response', isLimitReached: false },
+                ],
+            });
+
+            const initialState = {
+                'view-1': { threadId: threadId1 },
+                'view-2': { threadId: threadId2 },
+            };
+
+            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+            });
+        });
+
+        it('should return false when no threads are provided (new comparison)', async () => {
+            // Empty initial state - no threads in comparison
+            const initialState = {};
+
+            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+            });
+        });
+    });
 });
