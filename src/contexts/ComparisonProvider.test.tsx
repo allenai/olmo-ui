@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
@@ -22,8 +23,38 @@ describe('ComparisonProvider', () => {
     describe('canSubmit', () => {
         const CanSubmitTestComponent = ({ userInfo }: { userInfo: User | null | undefined }) => {
             const context = useQueryContext();
-            const canSubmit = context.canSubmit(userInfo);
-            return <div data-testid="can-submit">{String(canSubmit)}</div>;
+            const [canSubmit, setCanSubmit] = React.useState<boolean | null>(null);
+            const [stateSetupComplete, setStateSetupComplete] = React.useState(false);
+
+            // This is complicated, but these tests are also testing the setters
+            React.useEffect(() => {
+                if (!stateSetupComplete) {
+                    // Set up the comparison state using the setters
+                    context.setThreadId('view-1', 'thread-1');
+                    context.setThreadId('view-2', 'thread-2');
+                    setStateSetupComplete(true);
+                }
+            }, [stateSetupComplete]);
+
+            React.useEffect(() => {
+                if (stateSetupComplete) {
+                    // Wait a bit more for state to propagate, then test canSubmit
+                    const timer = setTimeout(() => {
+                        const result = context.canSubmit(userInfo);
+                        setCanSubmit(result);
+                    }, 10); // Slightly longer delay
+
+                    return () => {
+                        clearTimeout(timer);
+                    };
+                }
+            }, [stateSetupComplete, userInfo]);
+
+            return (
+                <div data-testid="can-submit">
+                    {canSubmit !== null ? String(canSubmit) : 'loading'}
+                </div>
+            );
         };
 
         it('should return true when user is the creator of first message in all threads', async () => {
@@ -39,16 +70,10 @@ describe('ComparisonProvider', () => {
                 messages: [{ creator: userInfo.client }],
             });
 
-            // Set up comparison state with two threads
-            const initialState = {
-                'view-1': { threadId: threadId1 },
-                'view-2': { threadId: threadId2 },
-            };
-
-            const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                initialState
-            );
+            // Start with empty state - the component will use setters to populate it
+            const { getByTestId } = renderWithProvider(() => (
+                <CanSubmitTestComponent userInfo={userInfo} />
+            ));
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('true');
@@ -68,31 +93,28 @@ describe('ComparisonProvider', () => {
                 messages: [{ creator: 'other-user' }],
             });
 
-            const initialState = {
-                'view-1': { threadId: threadId1 },
-                'view-2': { threadId: threadId2 },
-            };
-
-            const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                initialState
-            );
+            const { getByTestId } = renderWithProvider(() => (
+                <CanSubmitTestComponent userInfo={userInfo} />
+            ));
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
-        it('should return false when no threads are in comparison state', async () => {
+        it('should return false when no threads are set via setters', async () => {
             const userInfo = createMockUser();
 
-            // Empty comparison state (no threads)
-            const initialState = {};
+            const NoThreadsComponent = ({ userInfo }: { userInfo: User | null | undefined }) => {
+                const context = useQueryContext();
+                const canSubmit = context.canSubmit(userInfo);
+                return <div data-testid="can-submit">{String(canSubmit)}</div>;
+            };
 
-            const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                initialState
-            );
+            // Don't call any setters - state should remain empty
+            const { getByTestId } = renderWithProvider(() => (
+                <NoThreadsComponent userInfo={userInfo} />
+            ));
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -106,14 +128,9 @@ describe('ComparisonProvider', () => {
                 messages: [{ creator: 'some-user' }],
             });
 
-            const initialState = {
-                'view-1': { threadId: threadId1 },
-            };
-
-            const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={null} />,
-                initialState
-            );
+            const { getByTestId } = renderWithProvider(() => (
+                <CanSubmitTestComponent userInfo={null} />
+            ));
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -128,14 +145,9 @@ describe('ComparisonProvider', () => {
                 messages: [],
             });
 
-            const initialState = {
-                'view-1': { threadId: threadId1 },
-            };
-
-            const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                initialState
-            );
+            const { getByTestId } = renderWithProvider(() => (
+                <CanSubmitTestComponent userInfo={userInfo} />
+            ));
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
