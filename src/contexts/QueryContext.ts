@@ -19,10 +19,9 @@ interface QueryContextValue {
     remoteState?: RemoteState;
     shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
+    availableModels: Model[];
 
-    // These methods should be pre-computed and just fields on the context
-    getAvailableModels: () => Model[];
-    getIsLimitReached: (threadId?: string) => boolean;
+    // Maybe this is the only one that really needs threadViewId from the component?
     onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
 
     // Form submission: each context implements its own logic
@@ -35,13 +34,9 @@ interface QueryContextValue {
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods
-type ThreadAwareQueryContextValue = Omit<
-    QueryContextValue,
-    'onModelChange' | 'getIsLimitReached'
-> & {
+type ThreadAwareQueryContextValue = Omit<QueryContextValue, 'onModelChange'> & {
     // Override these methods to automatically provide thread information
     onModelChange: (event: SelectChangeEvent) => void;
-    getIsLimitReached: () => boolean;
 };
 
 // Context definition
@@ -62,17 +57,12 @@ export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
     const context = useQueryContext();
     const threadView = useThreadView();
     const threadViewId = threadView.threadViewId;
-    const threadId = threadView.threadId;
 
     return {
         ...context,
         // Override onModelChange to automatically include threadViewId
         onModelChange: (event: SelectChangeEvent) => {
             context.onModelChange(event, threadViewId);
-        },
-
-        getIsLimitReached: () => {
-            return context.getIsLimitReached(threadId);
         },
     };
 };

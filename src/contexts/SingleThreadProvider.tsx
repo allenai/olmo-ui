@@ -70,6 +70,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             autofocus,
             placeholderText,
             areFilesAllowed,
+            availableModels: models,
             canPauseThread: false,
             isLimitReached: false,
             remoteState: undefined,
@@ -84,12 +85,6 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             },
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);
-            },
-            getAvailableModels: () => {
-                return models;
-            },
-            getIsLimitReached: (_threadId?: string): boolean => {
-                return false;
             },
             onSubmit: async (_data: QueryFormValues) => {
                 // Single-thread submission logic

@@ -108,6 +108,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             canSubmit,
             autofocus,
             placeholderText,
+            availableModels: models,
             areFilesAllowed: false,
             canPauseThread: false,
             isLimitReached: false,
@@ -124,14 +125,6 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
 
             onModelChange: (_event: SelectChangeEvent, _threadViewId: string) => {
                 // model change for comparison page
-            },
-
-            getAvailableModels: () => {
-                return [];
-            },
-
-            getIsLimitReached: (_threadId?: string): boolean => {
-                return false;
             },
 
             onSubmit: async (_data: QueryFormValues) => {

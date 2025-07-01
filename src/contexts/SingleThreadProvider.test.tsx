@@ -114,10 +114,10 @@ describe('SingleThreadProvider', () => {
         });
     });
 
-    describe('getAvailableModels', () => {
+    describe('availableModels', () => {
         const ModelsCountTestComponent = () => {
             const context = useQueryContext();
-            const availableModels = context.getAvailableModels();
+            const availableModels = context.availableModels;
             return <div data-testid="available-models-count">{availableModels.length}</div>;
         };
 
