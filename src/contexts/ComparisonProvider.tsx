@@ -1,7 +1,6 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent, useState } from 'react';
 
-import { Thread } from '@/api/playgroundApi/thread';
 import { User } from '@/api/User';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
@@ -58,7 +57,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             return [];
         },
 
-        getCanEditThread: (_thread: Thread, _userInfo?: User | null): boolean => {
+        canSubmit: (_userInfo?: User | null): boolean => {
             return false;
         },
 

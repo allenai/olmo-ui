@@ -1,16 +1,8 @@
 import { SelectChangeEvent } from '@mui/material';
 import { describe, expect, it } from 'vitest';
 
-import { Thread } from '@/api/playgroundApi/thread';
 import { User } from '@/api/User';
-import {
-    act,
-    createMockMessage,
-    createMockThread,
-    createMockUser,
-    render,
-    waitFor,
-} from '@/utils/test-utils';
+import { act, createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
 
 import { useQueryContext } from './QueryContext';
 import { SingleThreadProvider } from './SingleThreadProvider';
@@ -194,132 +186,172 @@ describe('SingleThreadProvider', () => {
         });
     });
 
-    describe('getCanEditThread', () => {
-        const CanEditThreadTestComponent = ({
-            thread,
-            userInfo,
-        }: {
-            thread: Thread;
-            userInfo: User | null | undefined;
-        }) => {
+    describe('canSubmit', () => {
+        const CanSubmitTestComponent = ({ userInfo }: { userInfo: User | null | undefined }) => {
             const context = useQueryContext();
-            const canEdit = context.getCanEditThread(thread, userInfo);
-            return <div data-testid="can-edit-thread">{String(canEdit)}</div>;
+            const canSubmit = context.canSubmit(userInfo);
+            return <div data-testid="can-submit">{String(canSubmit)}</div>;
         };
 
         it('should return true when user is the creator of the first message', async () => {
-            const thread = createMockThread();
+            const threadId = 'test-thread-123';
             const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={userInfo} />
-            ));
+            setupThreadInCache(threadId, {
+                messages: [{ creator: userInfo.client }],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={userInfo} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('true');
+                expect(getByTestId('can-submit')).toHaveTextContent('true');
             });
         });
 
         it('should return false when user is not the creator of the first message', async () => {
-            const thread = createMockThread({
-                messages: [createMockMessage({ creator: 'other-user-456' })],
-            });
+            const threadId = 'test-thread-456';
             const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={userInfo} />
-            ));
+            setupThreadInCache(threadId, {
+                messages: [{ creator: 'other-user-456' }],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={userInfo} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
         it('should return false when thread has no messages', async () => {
-            const thread = createMockThread({ messages: [] });
+            const threadId = 'test-thread-789';
+            const userInfo = createMockUser();
+
+            setupThreadInCache(threadId, {
+                messages: [],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={userInfo} />,
+                { threadId }
+            );
+
+            await waitFor(() => {
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
+            });
+        });
+
+        it('should return false when no threadId is provided', async () => {
             const userInfo = createMockUser();
 
             const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={userInfo} />
+                <CanSubmitTestComponent userInfo={userInfo} />
             ));
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
         it('should return false when userInfo is null', async () => {
-            const thread = createMockThread();
+            const threadId = 'test-thread-null';
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={null} />
-            ));
+            setupThreadInCache(threadId, {
+                messages: [{ creator: 'user-123' }],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={null} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
         it('should return false when userInfo is undefined', async () => {
-            const thread = createMockThread();
+            const threadId = 'test-thread-undefined';
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={undefined} />
-            ));
+            setupThreadInCache(threadId, {
+                messages: [{ creator: 'user-123' }],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={undefined} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
         it('should return false when first message has no creator', async () => {
-            const thread = createMockThread({
-                messages: [createMockMessage({ creator: undefined })],
-            });
+            const threadId = 'test-thread-no-creator';
             const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={userInfo} />
-            ));
+            setupThreadInCache(threadId, {
+                messages: [{ creator: undefined }],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={userInfo} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
         it('should return false when userInfo has no client property', async () => {
-            const thread = createMockThread();
+            const threadId = 'test-thread-no-client';
             const userInfo = createMockUser({ client: undefined as unknown as string });
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={userInfo} />
-            ));
+            setupThreadInCache(threadId, {
+                messages: [{ creator: 'user-123' }],
+            });
+
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={userInfo} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
         it('should handle multiple messages and only check the first one', async () => {
-            const thread = createMockThread({
+            const threadId = 'test-thread-multiple';
+            const userInfo = createMockUser();
+
+            setupThreadInCache(threadId, {
                 messages: [
-                    createMockMessage({ creator: 'user-123' }), // First message by current user
-                    createMockMessage({
+                    { creator: userInfo.client }, // First message by current user
+                    {
                         id: 'message-2',
                         creator: 'other-user-456', // Second message by different user
                         content: 'Response',
                         role: 'assistant',
-                    }),
+                    },
                 ],
             });
-            const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanEditThreadTestComponent thread={thread} userInfo={userInfo} />
-            ));
+            const { getByTestId } = renderWithProvider(
+                () => <CanSubmitTestComponent userInfo={userInfo} />,
+                { threadId }
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-edit-thread')).toHaveTextContent('true'); // Should return true since first message creator matches
+                expect(getByTestId('can-submit')).toHaveTextContent('true'); // Should return true since first message creator matches
             });
         });
     });

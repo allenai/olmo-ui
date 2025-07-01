@@ -13,7 +13,8 @@ import {
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
-import { FlatMessage, Thread } from '@/api/playgroundApi/thread';
+import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 
 import { uiRefreshOlmoTheme } from '../olmoTheme';
@@ -65,6 +66,28 @@ export const createMockUser = (overrides: Partial<User> = {}): User => ({
     permissions: undefined,
     ...overrides,
 });
+
+export const setupThreadInCache = (
+    threadId: string,
+    options: {
+        messages?: Array<{ creator?: string; id?: string; content?: string; role?: string }>;
+    } = {}
+) => {
+    const { messages = [] } = options;
+    const thread = createMockThread({
+        id: threadId,
+        messages: messages.map((msg, index) =>
+            createMockMessage({
+                id: msg.id || `message-${index + 1}`,
+                creator: msg.creator,
+                content: msg.content || 'Test message',
+                role: msg.role as 'user' | 'assistant' | 'system' | undefined,
+            })
+        ),
+    });
+    const { queryKey } = threadOptions(threadId);
+    queryClient.setQueryData(queryKey, thread);
+};
 
 const FakeFeatureToggleProvider = ({
     children,

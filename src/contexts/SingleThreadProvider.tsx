@@ -2,7 +2,8 @@ import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent, useState } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { Thread } from '@/api/playgroundApi/thread';
+import { Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -29,6 +30,12 @@ interface SingleThreadProviderProps
     extends React.PropsWithChildren<{
         initialState?: Partial<SingleThreadState>;
     }> {}
+
+function getThread(threadId: string) {
+    const { queryKey } = threadOptions(threadId);
+    const thread: Thread | undefined = queryClient.getQueryData(queryKey);
+    return thread;
+}
 
 export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
     const [_selectedModelId, setSelectedModelId] = useState<string | undefined>(
@@ -81,8 +88,13 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             return models;
         },
 
-        getCanEditThread: (thread: Thread, userInfo?: User | null): boolean => {
-            return thread.messages[0]?.creator === userInfo?.client;
+        canSubmit: (userInfo?: User | null): boolean => {
+            if (!threadId || !userInfo?.client) {
+                return false;
+            }
+
+            // Check if user created the first message
+            return getThread(threadId)?.messages[0]?.creator === userInfo.client;
         },
 
         getIsLimitReached: (_threadId?: string): boolean => {

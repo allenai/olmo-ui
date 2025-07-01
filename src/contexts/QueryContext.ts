@@ -2,7 +2,6 @@ import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { Thread, useThread } from '@/api/playgroundApi/thread';
 import { User } from '@/api/User';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -26,9 +25,9 @@ interface QueryContextValue {
 
     getPlaceholderText: () => string;
     getAvailableModels: () => Model[];
+    canSubmit: (userInfo?: User | null) => boolean;
 
     // These methods require thread information
-    getCanEditThread: (thread: Thread, userInfo?: User | null) => boolean;
     getIsLimitReached: (threadId?: string) => boolean;
     onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
 
@@ -40,11 +39,10 @@ interface QueryContextValue {
 // Thread-aware wrapper that removes threadViewId parameter from methods
 type ThreadAwareQueryContextValue = Omit<
     QueryContextValue,
-    'onModelChange' | 'getCanEditThread' | 'getIsLimitReached'
+    'onModelChange' | 'getIsLimitReached'
 > & {
     // Override these methods to automatically provide thread information
     onModelChange: (event: SelectChangeEvent) => void;
-    getCanEditThread: (userInfo?: User | null) => boolean;
     getIsLimitReached: () => boolean;
 };
 
@@ -65,10 +63,6 @@ export const useQueryContext = () => {
 export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
     const context = useQueryContext();
     const threadView = useThreadView();
-    const thread = useThread(threadView.threadId, {
-        select: (thread) => thread,
-        staleTime: Infinity,
-    });
     const threadViewId = threadView.threadViewId;
     const threadId = threadView.threadId;
 
@@ -78,9 +72,7 @@ export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
         onModelChange: (event: SelectChangeEvent) => {
             context.onModelChange(event, threadViewId);
         },
-        getCanEditThread: (userInfo?: User | null) => {
-            return thread.data ? context.getCanEditThread(thread.data, userInfo) : false;
-        },
+
         getIsLimitReached: () => {
             return context.getIsLimitReached(threadId);
         },
