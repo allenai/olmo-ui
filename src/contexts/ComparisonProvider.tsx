@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
+import { User } from '@/api/User';
 import { useAppContext } from '@/AppContext';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
@@ -31,6 +32,22 @@ interface ComparisonProviderProps {
 function getThread(threadId: string): Thread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
+}
+
+function getCanSubmit(comparisonState: ComparisonState, userInfo: User | null): boolean {
+    if (!userInfo?.client) return false;
+
+    const threadIds = Object.values(comparisonState)
+        .map((state) => state.threadId)
+        .filter(Boolean) as string[];
+
+    if (threadIds.length === 0) return false;
+
+    // Check if user created the first message in ALL threads
+    return threadIds.every((threadId) => {
+        const thread = getThread(threadId);
+        return thread?.messages[0]?.creator === userInfo.client;
+    });
 }
 
 // Reducer function using immer draft: https://hswolff.com/blog/level-up-usereducer-with-immer/
@@ -65,30 +82,15 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 .filter(Boolean) as string[];
         }
 
-        const canSubmit = (() => {
-            if (!userInfo?.client) return false;
+        const canSubmit = getCanSubmit(comparisonState, userInfo);
 
-            const threadIds = getAllThreadIds();
-
-            if (threadIds.length === 0) return false;
-
-            // Check if user created the first message in ALL threads
-            return threadIds.every((threadId) => {
-                const thread = getThread(threadId);
-                return thread?.messages[0]?.creator === userInfo.client;
-            });
-        })();
+        // Only autofocus when no threads exist (new comparison)
+        const autofocus = getAllThreadIds().length === 0;
 
         return {
-            onSubmit: async (_data: QueryFormValues) => {
-                // Submit parallel streams
-            },
-
-            autofocus: false,
+            canSubmit,
+            autofocus,
             areFilesAllowed: false,
-            onAbort: (_e: UIEvent) => {
-                // Abort all streams across all threads
-            },
             canPauseThread: false,
             isLimitReached: false,
             remoteState: undefined,
@@ -114,10 +116,15 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 return [];
             },
 
-            canSubmit,
-
             getIsLimitReached: (_threadId?: string): boolean => {
                 return false;
+            },
+
+            onSubmit: async (_data: QueryFormValues) => {
+                // Submit parallel streams
+            },
+            onAbort: (_e: UIEvent) => {
+                // Abort all streams across all threads
             },
 
             setModelId: (threadViewId: string, modelId: string) => {

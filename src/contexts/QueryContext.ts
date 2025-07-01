@@ -9,13 +9,10 @@ import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 // Single interface that adapts based on context type
 interface QueryContextValue {
-    // Form submission: each context implements its own logic
-    onSubmit: (data: QueryFormValues) => Promise<void>;
-
     // Form state properties (from QueryFormController props)
+    canSubmit: boolean; // formerly canEditThread
     autofocus: boolean;
     areFilesAllowed: boolean;
-    onAbort: (e: UIEvent) => void;
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;
@@ -24,11 +21,14 @@ interface QueryContextValue {
 
     getPlaceholderText: () => string;
     getAvailableModels: () => Model[];
-    canSubmit: boolean; // formerly canEditThread
 
     // These methods require thread information
     getIsLimitReached: (threadId?: string) => boolean;
     onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
+
+    // Form submission: each context implements its own logic
+    onSubmit: (data: QueryFormValues) => Promise<void>;
+    onAbort: (e: UIEvent) => void;
 
     // Replaces global state setters
     setModelId: (threadViewId: string, modelId: string) => void;

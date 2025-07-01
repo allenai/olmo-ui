@@ -26,6 +26,34 @@ const renderWithProvider = (
 };
 
 describe('ComparisonProvider', () => {
+    describe('autofocus', () => {
+        const AutofocusTestComponent = () => {
+            const context = useQueryContext();
+            return <div data-testid="autofocus">{String(context.autofocus)}</div>;
+        };
+
+        it('should return true when no threads exist (new comparison)', async () => {
+            const { getByTestId } = renderWithProvider(AutofocusTestComponent, {});
+
+            await waitFor(() => {
+                expect(getByTestId('autofocus')).toHaveTextContent('true');
+            });
+        });
+
+        it('should return false when threads exist in comparison state', async () => {
+            const initialState = {
+                'view-1': { threadId: 'thread-1' },
+                'view-2': { threadId: 'thread-2' },
+            };
+
+            const { getByTestId } = renderWithProvider(AutofocusTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('autofocus')).toHaveTextContent('false');
+            });
+        });
+    });
+
     describe('canSubmit', () => {
         const CanSubmitTestComponent = () => {
             const context = useQueryContext();

@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
+import { User } from '@/api/User';
 import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -16,11 +17,15 @@ const getAreFilesAllowed = (models: Model[], selectedModelId?: string): boolean 
     return Boolean(selectedModel?.accepts_files);
 };
 
-const getAutofocus = (threadId?: string): boolean => {
-    // Only autofocus for new threads (no threadId)
-    // This was controlled by the path before, using the threadId here
-    return !threadId;
-};
+function getCanSubmit(threadId: string | undefined, userInfo: User | null): boolean {
+    if (!threadId || !userInfo?.client) {
+        return false;
+    }
+
+    // Check if user created the first message
+    const thread = getThread(threadId);
+    return thread?.messages[0]?.creator === userInfo.client;
+}
 
 interface SingleThreadState {
     selectedModelId?: string;
@@ -54,26 +59,15 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     });
 
     const contextValue: QueryContextValue = useMemo(() => {
-        const canSubmit = (() => {
-            if (!threadId || !userInfo?.client) {
-                return false;
-            }
+        const canSubmit = getCanSubmit(threadId, userInfo);
 
-            // Check if user created the first message
-            const thread = getThread(threadId);
-            return thread?.messages[0]?.creator === userInfo.client;
-        })();
+        // Only autofocus for new threads (no threadId)
+        const autofocus = !threadId;
 
         return {
-            onSubmit: async (_data: QueryFormValues) => {
-                // Single-thread submission logic
-            },
-
-            autofocus: getAutofocus(threadId),
+            canSubmit,
+            autofocus,
             areFilesAllowed: getAreFilesAllowed(models, selectedModelId),
-            onAbort: (_e: UIEvent) => {
-                // Abort logic
-            },
             canPauseThread: false,
             isLimitReached: false,
             remoteState: undefined,
@@ -86,31 +80,29 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
                 acceptsMultiple: false,
                 allowFilesInFollowups: false,
             },
-
             getPlaceholderText: () => {
                 const actionText = threadId ? 'Reply to' : 'Message';
                 const modelText = selectedModelId || 'the model';
                 return `${actionText} ${modelText}`;
             },
-
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);
             },
-
             getAvailableModels: () => {
                 return models;
             },
-
-            canSubmit,
-
             getIsLimitReached: (_threadId?: string): boolean => {
                 return false;
             },
-
+            onSubmit: async (_data: QueryFormValues) => {
+                // Single-thread submission logic
+            },
+            onAbort: (_e: UIEvent) => {
+                // Abort logic
+            },
             setModelId: (_threadViewId: string, modelId: string) => {
                 setSelectedModelId(modelId);
             },
-
             setThreadId: (_threadViewId: string, threadId: string) => {
                 setThreadIdValue(threadId);
             },
