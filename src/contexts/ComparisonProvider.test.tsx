@@ -26,6 +26,65 @@ const renderWithProvider = (
 };
 
 describe('ComparisonProvider', () => {
+    describe('getPlaceholderText', () => {
+        const PlaceholderTestComponent = () => {
+            const context = useQueryContext();
+            return <div data-testid="placeholder">{context.placeholderText}</div>;
+        };
+
+        it('should return "Message the model" when no models are selected', async () => {
+            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {});
+
+            await waitFor(() => {
+                expect(getByTestId('placeholder')).toHaveTextContent('Message the model');
+            });
+        });
+
+        it('should return both family names when two models are selected', async () => {
+            const initialState = {
+                'view-1': { modelId: 'tulu2' },
+                'view-2': { modelId: 'molmo' },
+            };
+
+            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu and Molmo');
+            });
+        });
+
+        it('should use family_name when available and fall back to name when family_name is not available', async () => {
+            const initialState = {
+                'view-1': { modelId: 'tulu2' }, // Has family_name: 'Tülu'
+                'view-2': { modelId: 'OLMo-peteish-dpo-preview' }, // No family_name, uses name: 'OLMo-peteish-dpo-preview'
+            };
+
+            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('placeholder')).toHaveTextContent(
+                    'Message Tülu and OLMo-peteish-dpo-preview'
+                );
+            });
+        });
+
+        it('should join three model names with " and "', async () => {
+            const initialState = {
+                'view-1': { modelId: 'tulu2' }, // family_name: 'Tülu'
+                'view-2': { modelId: 'molmo' }, // family_name: 'Molmo'
+                'view-3': { modelId: 'OLMo-peteish-dpo-preview' }, // name: 'OLMo-peteish-dpo-preview'
+            };
+
+            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('placeholder')).toHaveTextContent(
+                    'Message Tülu and Molmo and OLMo-peteish-dpo-preview'
+                );
+            });
+        });
+    });
+
     describe('autofocus', () => {
         const AutofocusTestComponent = () => {
             const context = useQueryContext();

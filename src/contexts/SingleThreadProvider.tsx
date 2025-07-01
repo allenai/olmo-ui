@@ -42,6 +42,13 @@ function getThread(threadId: string): Thread | undefined {
     return queryClient.getQueryData(queryKey);
 }
 
+function getPlaceholderText(threadId: string | undefined, selectedModelId: string | undefined) {
+    const actionText = threadId ? 'Reply to' : 'Message';
+    const modelText = selectedModelId || 'the model';
+    const placeholderText = `${actionText} ${modelText}`;
+    return placeholderText;
+}
+
 export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
@@ -64,9 +71,12 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         // Only autofocus for new threads (no threadId)
         const autofocus = !threadId;
 
+        const placeholderText = getPlaceholderText(threadId, selectedModelId);
+
         return {
             canSubmit,
             autofocus,
+            placeholderText,
             areFilesAllowed: getAreFilesAllowed(models, selectedModelId),
             canPauseThread: false,
             isLimitReached: false,
@@ -79,11 +89,6 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
                 acceptedFileTypes: [],
                 acceptsMultiple: false,
                 allowFilesInFollowups: false,
-            },
-            getPlaceholderText: () => {
-                const actionText = threadId ? 'Reply to' : 'Message';
-                const modelText = selectedModelId || 'the model';
-                return `${actionText} ${modelText}`;
             },
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);

@@ -3,10 +3,12 @@ import { produce } from 'immer';
 import React, { UIEvent, useMemo, useReducer } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import { useAppContext } from '@/AppContext';
+import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -32,6 +34,22 @@ interface ComparisonProviderProps {
 function getThread(threadId: string): Thread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
+}
+
+function getPlaceholderText(comparisonState: ComparisonState, models: Model[]) {
+    const modelNames = Object.values(comparisonState)
+        .map((state) => state.modelId)
+        .filter(Boolean)
+        .map((modelId) => {
+            const model = models.find((m) => m.id === modelId);
+            return model?.family_name || model?.name;
+        })
+        .filter(Boolean);
+
+    const actionText = Object.values(comparisonState).some((state) => state.threadId)
+        ? 'Reply to'
+        : 'Message';
+    return `${actionText} ${modelNames.length ? modelNames.join(' and ') : 'the model'}`;
 }
 
 function getCanSubmit(comparisonState: ComparisonState, userInfo: User | null): boolean {
@@ -75,6 +93,11 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
+    // Get available models from API, filtering for visible models
+    const models = useModels({
+        select: (data) => data.filter((model) => isModelVisible(model)),
+    });
+
     const contextValue: QueryContextValue = useMemo(() => {
         function getAllThreadIds() {
             return Object.values(comparisonState)
@@ -104,9 +127,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 allowFilesInFollowups: false,
             },
 
-            getPlaceholderText: () => {
-                return 'Message the model';
-            },
+            placeholderText: getPlaceholderText(comparisonState, models),
 
             onModelChange: (_event: SelectChangeEvent, _threadViewId: string) => {
                 // model change for comparison page
@@ -135,7 +156,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 dispatch({ type: 'setThreadId', threadViewId, threadId });
             },
         };
-    }, [comparisonState, userInfo]);
+    }, [comparisonState, userInfo, models]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };

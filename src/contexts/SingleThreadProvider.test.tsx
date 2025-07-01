@@ -30,7 +30,7 @@ describe('SingleThreadProvider', () => {
     describe('getPlaceholderText', () => {
         const PlaceholderTestComponent = () => {
             const context = useQueryContext();
-            return <div data-testid="placeholder">{context.getPlaceholderText()}</div>;
+            return <div data-testid="placeholder">{context.placeholderText}</div>;
         };
 
         it('should return "Message the model" when no model is selected', async () => {
@@ -86,7 +86,7 @@ describe('SingleThreadProvider', () => {
 
             return (
                 <>
-                    <div data-testid="placeholder">{context.getPlaceholderText()}</div>
+                    <div data-testid="placeholder">{context.placeholderText}</div>
                     <button data-testid="change-model" onClick={handleModelChange}>
                         Change Model
                     </button>

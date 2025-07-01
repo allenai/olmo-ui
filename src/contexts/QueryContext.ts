@@ -12,6 +12,7 @@ interface QueryContextValue {
     // Form state properties (from QueryFormController props)
     canSubmit: boolean; // formerly canEditThread
     autofocus: boolean;
+    placeholderText: string;
     areFilesAllowed: boolean;
     canPauseThread: boolean;
     isLimitReached: boolean;
@@ -19,10 +20,8 @@ interface QueryContextValue {
     shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
 
-    getPlaceholderText: () => string;
+    // These methods should be pre-computed and just fields on the context
     getAvailableModels: () => Model[];
-
-    // These methods require thread information
     getIsLimitReached: (threadId?: string) => boolean;
     onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
 
