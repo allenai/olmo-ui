@@ -1,5 +1,6 @@
 import { SelectChangeEvent } from '@mui/material';
-import React, { UIEvent, useMemo, useState } from 'react';
+import { produce } from 'immer';
+import React, { UIEvent, useMemo, useReducer } from 'react';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
@@ -16,6 +17,11 @@ interface ComparisonState {
     };
 }
 
+// Action types for the reducer
+type ComparisonAction =
+    | { type: 'setModelId'; threadViewId: string; modelId: string }
+    | { type: 'setThreadId'; threadViewId: string; threadId: string };
+
 interface ComparisonProviderProps {
     children: React.ReactNode;
     initialState?: ComparisonState;
@@ -23,12 +29,32 @@ interface ComparisonProviderProps {
 
 function getThread(threadId: string) {
     const { queryKey } = threadOptions(threadId);
-    const thread = queryClient.getQueryData(queryKey);
-    return thread;
+    return queryClient.getQueryData(queryKey);
 }
 
+// Reducer function using immer draft: https://hswolff.com/blog/level-up-usereducer-with-immer/
+function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
+    switch (action.type) {
+        case 'setModelId':
+            if (!draft[action.threadViewId]) {
+                draft[action.threadViewId] = {};
+            }
+            draft[action.threadViewId].modelId = action.modelId;
+            break;
+        case 'setThreadId':
+            if (!draft[action.threadViewId]) {
+                draft[action.threadViewId] = {};
+            }
+            draft[action.threadViewId].threadId = action.threadId;
+            break;
+    }
+}
+
+// Create curried reducer using immer
+const curriedComparisonReducer = produce(comparisonReducer);
+
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
-    const [comparisonState, setComparisonState] = useState<ComparisonState>(initialState ?? {});
+    const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
 
     const contextValue: QueryContextValue = useMemo(() => {
         function getAllThreadIds() {
@@ -90,23 +116,11 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             },
 
             setModelId: (threadViewId: string, modelId: string) => {
-                setComparisonState((prevState) => ({
-                    ...prevState,
-                    [threadViewId]: {
-                        ...prevState[threadViewId],
-                        modelId,
-                    },
-                }));
+                dispatch({ type: 'setModelId', threadViewId, modelId });
             },
 
             setThreadId: (threadViewId: string, threadId: string) => {
-                setComparisonState((prevState) => ({
-                    ...prevState,
-                    [threadViewId]: {
-                        ...prevState[threadViewId],
-                        threadId,
-                    },
-                }));
+                dispatch({ type: 'setThreadId', threadViewId, threadId });
             },
         };
     }, [comparisonState]);
