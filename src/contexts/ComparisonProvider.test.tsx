@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
+import * as AppContext from '@/AppContext';
 import { createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
 
 import { ComparisonProvider } from './ComparisonProvider';
@@ -10,8 +11,13 @@ import { useQueryContext } from './QueryContext';
 // Test helper to render ComparisonProvider with initial state
 const renderWithProvider = (
     TestComponent: React.ComponentType,
-    initialState?: { [threadViewId: string]: { modelId?: string; threadId?: string } }
+    initialState?: { [threadViewId: string]: { modelId?: string; threadId?: string } },
+    mockUserInfo?: User | null
 ) => {
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(() => {
+        return mockUserInfo;
+    });
+
     return render(
         <ComparisonProvider initialState={initialState}>
             <TestComponent />
@@ -21,9 +27,9 @@ const renderWithProvider = (
 
 describe('ComparisonProvider', () => {
     describe('canSubmit', () => {
-        const CanSubmitTestComponent = ({ userInfo }: { userInfo: User | null | undefined }) => {
+        const CanSubmitTestComponent = () => {
             const context = useQueryContext();
-            const [canSubmit, setCanSubmit] = React.useState<boolean | null>(null);
+            const canSubmit = context.canSubmit;
             const [stateSetupComplete, setStateSetupComplete] = React.useState(false);
 
             // This is complicated, but these tests are also testing the setters
@@ -36,23 +42,9 @@ describe('ComparisonProvider', () => {
                 }
             }, [stateSetupComplete]);
 
-            React.useEffect(() => {
-                if (stateSetupComplete) {
-                    // Wait a bit more for state to propagate, then test canSubmit
-                    const timer = setTimeout(() => {
-                        const result = context.canSubmit(userInfo);
-                        setCanSubmit(result);
-                    }, 10); // Slightly longer delay
-
-                    return () => {
-                        clearTimeout(timer);
-                    };
-                }
-            }, [stateSetupComplete, userInfo]);
-
             return (
                 <div data-testid="can-submit">
-                    {canSubmit !== null ? String(canSubmit) : 'loading'}
+                    {stateSetupComplete ? String(canSubmit) : 'loading'}
                 </div>
             );
         };
@@ -71,9 +63,7 @@ describe('ComparisonProvider', () => {
             });
 
             // Start with empty state - the component will use setters to populate it
-            const { getByTestId } = renderWithProvider(() => (
-                <CanSubmitTestComponent userInfo={userInfo} />
-            ));
+            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('true');
@@ -93,9 +83,7 @@ describe('ComparisonProvider', () => {
                 messages: [{ creator: 'other-user' }],
             });
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanSubmitTestComponent userInfo={userInfo} />
-            ));
+            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -105,16 +93,14 @@ describe('ComparisonProvider', () => {
         it('should return false when no threads are set via setters', async () => {
             const userInfo = createMockUser();
 
-            const NoThreadsComponent = ({ userInfo }: { userInfo: User | null | undefined }) => {
+            const NoThreadsComponent = () => {
                 const context = useQueryContext();
-                const canSubmit = context.canSubmit(userInfo);
+                const canSubmit = context.canSubmit;
                 return <div data-testid="can-submit">{String(canSubmit)}</div>;
             };
 
             // Don't call any setters - state should remain empty
-            const { getByTestId } = renderWithProvider(() => (
-                <NoThreadsComponent userInfo={userInfo} />
-            ));
+            const { getByTestId } = renderWithProvider(NoThreadsComponent, {}, userInfo);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -128,9 +114,7 @@ describe('ComparisonProvider', () => {
                 messages: [{ creator: 'some-user' }],
             });
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanSubmitTestComponent userInfo={null} />
-            ));
+            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, null);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -145,9 +129,7 @@ describe('ComparisonProvider', () => {
                 messages: [],
             });
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanSubmitTestComponent userInfo={userInfo} />
-            ));
+            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');

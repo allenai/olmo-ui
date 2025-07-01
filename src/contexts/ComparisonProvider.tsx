@@ -1,10 +1,11 @@
 import { SelectChangeEvent } from '@mui/material';
 import { produce } from 'immer';
 import React, { UIEvent, useMemo, useReducer } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
-import { threadOptions } from '@/api/playgroundApi/thread';
+import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
-import { User } from '@/api/User';
+import { useAppContext } from '@/AppContext';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -27,7 +28,7 @@ interface ComparisonProviderProps {
     initialState?: ComparisonState;
 }
 
-function getThread(threadId: string) {
+function getThread(threadId: string): Thread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
 }
@@ -55,6 +56,7 @@ const curriedComparisonReducer = produce(comparisonReducer);
 
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
+    const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
     const contextValue: QueryContextValue = useMemo(() => {
         function getAllThreadIds() {
@@ -62,6 +64,20 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 .map((state) => state.threadId)
                 .filter(Boolean) as string[];
         }
+
+        const canSubmit = (() => {
+            if (!userInfo?.client) return false;
+
+            const threadIds = getAllThreadIds();
+
+            if (threadIds.length === 0) return false;
+
+            // Check if user created the first message in ALL threads
+            return threadIds.every((threadId) => {
+                const thread = getThread(threadId);
+                return thread?.messages[0]?.creator === userInfo.client;
+            });
+        })();
 
         return {
             onSubmit: async (_data: QueryFormValues) => {
@@ -98,18 +114,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 return [];
             },
 
-            canSubmit: (userInfo?: User | null): boolean => {
-                if (!userInfo?.client) return false;
-
-                const threadIds = getAllThreadIds();
-
-                if (threadIds.length === 0) return false;
-
-                // Check if user created the first message in ALL threads
-                return threadIds.every((threadId) => {
-                    return getThread(threadId)?.messages[0]?.creator === userInfo.client;
-                });
-            },
+            canSubmit,
 
             getIsLimitReached: (_threadId?: string): boolean => {
                 return false;
@@ -123,7 +128,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 dispatch({ type: 'setThreadId', threadViewId, threadId });
             },
         };
-    }, [comparisonState]);
+    }, [comparisonState, userInfo]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };

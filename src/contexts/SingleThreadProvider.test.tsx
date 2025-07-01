@@ -2,6 +2,7 @@ import { SelectChangeEvent } from '@mui/material';
 import { describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
+import * as AppContext from '@/AppContext';
 import { act, createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
 
 import { useQueryContext } from './QueryContext';
@@ -10,8 +11,14 @@ import { SingleThreadProvider } from './SingleThreadProvider';
 // Test helper to render SingleThreadProvider with optional initial state
 const renderWithProvider = (
     TestComponent: React.ComponentType,
-    initialState?: Partial<{ selectedModelId?: string; threadId?: string }>
+    initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
+    mockUserInfo?: User | null
 ) => {
+    // Mock the AppContext to provide the userInfo
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(() => {
+        return mockUserInfo; // Return userInfo directly, not wrapped
+    });
+
     return render(
         <SingleThreadProvider initialState={initialState}>
             <TestComponent />
@@ -187,9 +194,9 @@ describe('SingleThreadProvider', () => {
     });
 
     describe('canSubmit', () => {
-        const CanSubmitTestComponent = ({ userInfo }: { userInfo: User | null | undefined }) => {
+        const CanSubmitTestComponent = () => {
             const context = useQueryContext();
-            const canSubmit = context.canSubmit(userInfo);
+            const canSubmit = context.canSubmit;
             return <div data-testid="can-submit">{String(canSubmit)}</div>;
         };
 
@@ -202,8 +209,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                userInfo
             );
 
             await waitFor(() => {
@@ -220,8 +228,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                userInfo
             );
 
             await waitFor(() => {
@@ -238,8 +247,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                userInfo
             );
 
             await waitFor(() => {
@@ -250,9 +260,7 @@ describe('SingleThreadProvider', () => {
         it('should return false when no threadId is provided', async () => {
             const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(() => (
-                <CanSubmitTestComponent userInfo={userInfo} />
-            ));
+            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -266,10 +274,7 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: 'user-123' }],
             });
 
-            const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={null} />,
-                { threadId }
-            );
+            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, { threadId }, null);
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -284,8 +289,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={undefined} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                undefined
             );
 
             await waitFor(() => {
@@ -302,8 +308,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                userInfo
             );
 
             await waitFor(() => {
@@ -320,8 +327,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                userInfo
             );
 
             await waitFor(() => {
@@ -346,8 +354,9 @@ describe('SingleThreadProvider', () => {
             });
 
             const { getByTestId } = renderWithProvider(
-                () => <CanSubmitTestComponent userInfo={userInfo} />,
-                { threadId }
+                CanSubmitTestComponent,
+                { threadId },
+                userInfo
             );
 
             await waitFor(() => {

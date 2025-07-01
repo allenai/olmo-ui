@@ -2,7 +2,6 @@ import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { User } from '@/api/User';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
@@ -25,7 +24,7 @@ interface QueryContextValue {
 
     getPlaceholderText: () => string;
     getAvailableModels: () => Model[];
-    canSubmit: (userInfo?: User | null) => boolean;
+    canSubmit: boolean; // formerly canEditThread
 
     // These methods require thread information
     getIsLimitReached: (threadId?: string) => boolean;
