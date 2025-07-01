@@ -65,6 +65,14 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
         getIsLimitReached: (_threadId?: string): boolean => {
             return false;
         },
+
+        setModelId: (_threadViewId: string, _modelId: string) => {
+            // model change for comparison page
+        },
+
+        setThreadId: (_threadViewId: string, _threadId: string) => {
+            // thread change for comparison page
+        },
     };
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;

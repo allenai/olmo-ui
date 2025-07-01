@@ -31,6 +31,10 @@ interface QueryContextValue {
     getCanEditThread: (thread: Thread, userInfo?: User | null) => boolean;
     getIsLimitReached: (threadId?: string) => boolean;
     onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
+
+    // Replaces global state setters
+    setModelId: (threadViewId: string, modelId: string) => void;
+    setThreadId: (threadViewId: string, threadId: string) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

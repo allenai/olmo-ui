@@ -34,7 +34,9 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     const [_selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
-    const [threadId] = useState<string | undefined>(initialState?.threadId ?? undefined);
+    const [threadId, setThreadIdValue] = useState<string | undefined>(
+        initialState?.threadId ?? undefined
+    );
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -85,6 +87,14 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
         getIsLimitReached: (_threadId?: string): boolean => {
             return false;
+        },
+
+        setModelId: (_threadViewId: string, modelId: string) => {
+            setSelectedModelId(modelId);
+        },
+
+        setThreadId: (_threadViewId: string, threadId: string) => {
+            setThreadIdValue(threadId);
         },
     };
 
