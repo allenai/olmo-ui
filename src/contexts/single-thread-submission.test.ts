@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import { validateSubmission } from './single-thread-submission';
+import { setupRecaptcha, validateSubmission } from './single-thread-submission';
+
+// Mock recaptcha hook
+const mockExecuteRecaptcha = vi.fn();
+vi.mock('@wojtekmaj/react-recaptcha-v3', () => ({
+    useReCaptcha: () => ({
+        executeRecaptcha: mockExecuteRecaptcha,
+    }),
+}));
 
 describe('SingleThreadSubmission', () => {
     describe('validateSubmission', () => {
@@ -26,7 +34,45 @@ describe('SingleThreadSubmission', () => {
     });
 
     describe('setupRecaptcha', () => {
-        // TODO: Add tests when function is implemented
+        beforeEach(() => {
+            vi.clearAllMocks();
+            delete process.env.IS_RECAPTCHA_ENABLED;
+        });
+
+        it('executes recaptcha when enabled', async () => {
+            process.env.IS_RECAPTCHA_ENABLED = 'true';
+            mockExecuteRecaptcha.mockResolvedValue('token');
+
+            const result = await setupRecaptcha(mockExecuteRecaptcha);
+
+            expect(mockExecuteRecaptcha).toHaveBeenCalledWith('prompt_submission');
+            expect(result).toBe('token');
+        });
+
+        it('returns undefined when disabled', async () => {
+            process.env.IS_RECAPTCHA_ENABLED = 'false';
+
+            expect(await setupRecaptcha(mockExecuteRecaptcha)).toBeUndefined();
+            expect(mockExecuteRecaptcha).not.toHaveBeenCalled();
+        });
+
+        it('returns undefined when not configured', async () => {
+            expect(await setupRecaptcha(mockExecuteRecaptcha)).toBeUndefined();
+            expect(mockExecuteRecaptcha).not.toHaveBeenCalled();
+        });
+
+        it('returns undefined when executeRecaptcha is null', async () => {
+            process.env.IS_RECAPTCHA_ENABLED = 'true';
+
+            expect(await setupRecaptcha(null)).toBeUndefined();
+        });
+
+        it('propagates execution errors', async () => {
+            process.env.IS_RECAPTCHA_ENABLED = 'true';
+            mockExecuteRecaptcha.mockRejectedValue(new Error('Failed'));
+
+            await expect(setupRecaptcha(mockExecuteRecaptcha)).rejects.toThrow('Failed');
+        });
     });
 
     describe('prepareRequest', () => {

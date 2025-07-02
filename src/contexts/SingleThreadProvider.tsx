@@ -1,4 +1,5 @@
 import { SelectChangeEvent } from '@mui/material';
+import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { UIEvent, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -42,6 +43,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     );
 
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
+    const { executeRecaptcha } = useReCaptcha();
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -110,7 +112,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
                 }
 
                 // Step 2: Setup ReCAPTCHA and get token
-                const captchaToken = await setupRecaptcha();
+                const captchaToken = await setupRecaptcha(executeRecaptcha);
 
                 // Step 3: Prepare the request with form data and context
                 const lastMessageId = undefined; // TODO: Get last message ID from thread

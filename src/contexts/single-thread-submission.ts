@@ -1,7 +1,7 @@
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
-// Step 1: Validate submission preconditions
 export const validateSubmission = (canSubmit: boolean, isLoading: boolean): boolean => {
     if (!canSubmit || isLoading) {
         return false;
@@ -9,13 +9,19 @@ export const validateSubmission = (canSubmit: boolean, isLoading: boolean): bool
     return true;
 };
 
-// Step 2: Handle ReCAPTCHA setup and token generation
-export const setupRecaptcha = (): Promise<string | undefined> => {
-    // TODO: Implement ReCAPTCHA logic
-    return Promise.resolve(undefined);
+export const setupRecaptcha = async (
+    executeRecaptcha?: ((action: string) => Promise<string>) | null
+): Promise<string | undefined> => {
+    if (process.env.IS_RECAPTCHA_ENABLED !== 'true') return undefined;
+
+    if (!executeRecaptcha) {
+        analyticsClient.trackCaptchaNotLoaded();
+        return undefined;
+    }
+
+    return executeRecaptcha('prompt_submission');
 };
 
-// Step 3: Prepare the stream message request
 export const prepareRequest = (
     data: QueryFormValues,
     captchaToken: string | undefined,
@@ -25,19 +31,15 @@ export const prepareRequest = (
     return { ...data, captchaToken };
 };
 
-// Step 4: Execute the streaming prompt
 export const executeStreamPrompt = async (_request: StreamMessageRequest): Promise<void> => {
     // TODO: Implement streaming logic
     return Promise.resolve();
 };
 
-// Step 5: Track analytics for successful submission
 export const trackSubmissionAnalytics = (_modelId: string, _isPlayground: boolean): void => {
     // TODO: Implement analytics tracking
 };
 
-// Step 6: Handle submission errors
 export const handleSubmissionError = (_error: unknown): void => {
     // TODO: Implement error handling
-    // Error is intentionally unused in stub implementation
 };
