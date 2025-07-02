@@ -41,10 +41,6 @@ export const executeStreamPrompt = async (_request: StreamMessageRequest): Promi
     return Promise.resolve();
 };
 
-export const trackSubmissionAnalytics = (_modelId: string, _isPlayground: boolean): void => {
-    // TODO: Implement analytics tracking
-};
-
 export const handleSubmissionError = (_error: unknown): void => {
     // TODO: Implement error handling
 };

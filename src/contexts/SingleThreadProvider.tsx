@@ -3,6 +3,7 @@ import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { UIEvent, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
@@ -15,7 +16,6 @@ import {
     handleSubmissionError,
     prepareRequest,
     setupRecaptcha,
-    trackSubmissionAnalytics,
     validateSubmission,
 } from './single-thread-submission';
 
@@ -124,8 +124,8 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
                     // Step 5: Track successful submission
                     if (selectedModelId) {
-                        const isPlayground = false; // TODO: Determine if this is playground context
-                        trackSubmissionAnalytics(selectedModelId, isPlayground);
+                        const isNewThread = !threadId; // New thread if no threadId exists
+                        analyticsClient.trackQueryFormSubmission(selectedModelId, isNewThread);
                     }
                 } catch (error) {
                     // Step 6: Handle any submission errors

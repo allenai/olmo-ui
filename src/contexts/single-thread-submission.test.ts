@@ -103,10 +103,6 @@ describe('SingleThreadSubmission', () => {
         // TODO: Add tests when function is implemented
     });
 
-    describe('trackSubmissionAnalytics', () => {
-        // TODO: Add tests when function is implemented
-    });
-
     describe('handleSubmissionError', () => {
         // TODO: Add tests when function is implemented
     });
