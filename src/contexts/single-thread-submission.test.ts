@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { setupRecaptcha, validateSubmission } from './single-thread-submission';
+import { prepareRequest, setupRecaptcha, validateSubmission } from './single-thread-submission';
 
 // Mock recaptcha hook
 const mockExecuteRecaptcha = vi.fn();
@@ -76,7 +76,27 @@ describe('SingleThreadSubmission', () => {
     });
 
     describe('prepareRequest', () => {
-        // TODO: Add tests when function is implemented
+        const formData = { content: 'Test', private: false, files: undefined };
+
+        it('should combine form data with captcha token', () => {
+            const result = prepareRequest(formData, 'token');
+            expect(result).toEqual({ ...formData, captchaToken: 'token' });
+        });
+
+        it('should add parent when lastMessageId provided', () => {
+            const result = prepareRequest(formData, 'token', 'msg-123');
+            expect(result).toEqual({ ...formData, captchaToken: 'token', parent: 'msg-123' });
+        });
+
+        it('should handle undefined captcha token', () => {
+            const result = prepareRequest(formData, undefined);
+            expect(result).toEqual({ ...formData, captchaToken: undefined });
+        });
+
+        it('should not add parent for empty lastMessageId', () => {
+            const result = prepareRequest(formData, 'token', '');
+            expect(result).not.toHaveProperty('parent');
+        });
     });
 
     describe('executeStreamPrompt', () => {

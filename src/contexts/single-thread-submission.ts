@@ -10,7 +10,7 @@ export const validateSubmission = (canSubmit: boolean, isLoading: boolean): bool
 };
 
 export const setupRecaptcha = async (
-    executeRecaptcha?: ((action: string) => Promise<string>) | null
+    executeRecaptcha?: ((action?: string) => Promise<string> | null) | null
 ): Promise<string | undefined> => {
     if (process.env.IS_RECAPTCHA_ENABLED !== 'true') return undefined;
 
@@ -19,16 +19,21 @@ export const setupRecaptcha = async (
         return undefined;
     }
 
-    return executeRecaptcha('prompt_submission');
+    const result = executeRecaptcha('prompt_submission');
+    return result instanceof Promise ? await result : undefined;
 };
 
 export const prepareRequest = (
     data: QueryFormValues,
     captchaToken: string | undefined,
-    _lastMessageId?: string
+    lastMessageId?: string
 ): StreamMessageRequest => {
-    // TODO: Implement request preparation
-    return { ...data, captchaToken };
+    const request: StreamMessageRequest = { ...data, captchaToken };
+
+    // Add parent message ID if continuing an existing thread
+    if (lastMessageId) request.parent = lastMessageId;
+
+    return request;
 };
 
 export const executeStreamPrompt = async (_request: StreamMessageRequest): Promise<void> => {
