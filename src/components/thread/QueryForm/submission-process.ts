@@ -5,13 +5,20 @@ import {
     MessageStreamErrorType,
     StreamBadRequestError,
 } from '@/api/Message';
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
 import { ThreadViewId } from '@/slices/CompareModelSlice';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
-import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
+import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+
+export interface QueryFormValues {
+    content: string;
+    private: boolean;
+    files?: FileList;
+}
 
 export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
@@ -205,6 +212,60 @@ export const handleSubmissionError = (
 
     addSnackMessage(snackMessage);
     return null; // Didn't return a thread id
+};
+
+export const processSingleModelSubmission = async (
+    data: QueryFormValues,
+    model: Model,
+    rootThreadId: string | undefined,
+    threadViewId: ThreadViewId,
+    streamMutateAsync: (params: {
+        request: StreamMessageRequest;
+        threadViewId: ThreadViewId;
+        model: Model;
+        thread?: Thread;
+    }) => Promise<{ response: Response; abortController: AbortController }>,
+    onFirstMessage?: () => void,
+    onCompleteStream?: (threadViewId: ThreadViewId) => void,
+    addSnackMessage?: (message: SnackMessage) => void
+): Promise<string | null> => {
+    if (!model) {
+        return null;
+    }
+
+    // Do we grab thread here or wait?
+    let thread: Thread | undefined;
+    if (rootThreadId) {
+        const { queryKey } = threadOptions(rootThreadId);
+        thread = queryClient.getQueryData(queryKey);
+    }
+    analyticsClient.trackQueryFormSubmission(model.id, Boolean(rootThreadId));
+
+    try {
+        const { response, abortController } = await streamMutateAsync({
+            request: data,
+            threadViewId,
+            model,
+            thread,
+        });
+
+        // Return the final thread ID for parallel streaming navigation
+        const result = await processStreamResponse(
+            response,
+            abortController,
+            rootThreadId,
+            threadViewId,
+            onFirstMessage,
+            onCompleteStream
+        );
+        return result;
+    } catch (error) {
+        if (addSnackMessage) {
+            return handleSubmissionError(error, model.id, addSnackMessage);
+        } else {
+            throw error;
+        }
+    }
 };
 
 export const processStreamResponse = async (

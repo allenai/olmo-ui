@@ -3,7 +3,6 @@ import { JSX, UIEvent, useCallback, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread, threadOptions } from '@/api/playgroundApi/thread';
@@ -20,13 +19,7 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { mapCompareFileUploadProps, reduceCompareFileUploadProps } from './compareFileUploadProps';
 import { QueryFormController } from './QueryFormController';
-import { handleSubmissionError, processStreamResponse } from './submission-process';
-
-interface QueryFormValues {
-    content: string;
-    private: boolean;
-    files?: FileList;
-}
+import { processSingleModelSubmission, QueryFormValues } from './submission-process';
 
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
@@ -98,38 +91,16 @@ export const QueryForm = (): JSX.Element => {
         const streamPromises = selectedCompareModels.map(async (compare) => {
             const { rootThreadId, model, threadViewId } = compare;
 
-            if (!model) {
-                return null;
-            }
-
-            // Do we grab thread here or wait?
-            let thread: Thread | undefined;
-            if (rootThreadId) {
-                const { queryKey } = threadOptions(rootThreadId);
-                thread = queryClient.getQueryData(queryKey);
-            }
-            analyticsClient.trackQueryFormSubmission(model.id, Boolean(rootThreadId));
-
-            try {
-                const { response, abortController } = await streamMessage.mutateAsync({
-                    request: data,
-                    threadViewId,
-                    model,
-                    thread,
-                });
-
-                // Return the final thread ID for parallel streaming navigation
-                return await processStreamResponse(
-                    response,
-                    abortController,
-                    rootThreadId,
-                    threadViewId,
-                    streamMessage.onFirstMessage,
-                    streamMessage.completeStream
-                );
-            } catch (error) {
-                return handleSubmissionError(error, model.id, addSnackMessage);
-            }
+            return processSingleModelSubmission(
+                data,
+                model,
+                rootThreadId,
+                threadViewId,
+                streamMessage.mutateAsync,
+                streamMessage.onFirstMessage,
+                streamMessage.completeStream,
+                addSnackMessage
+            );
         });
 
         // Wait for all streams to complete
