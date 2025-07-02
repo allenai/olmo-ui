@@ -16,8 +16,8 @@ interface QueryContextValue {
     areFilesAllowed: boolean;
     canPauseThread: boolean; // requires streaming info
     isLimitReached: boolean;
-    remoteState?: RemoteState;
-    shouldResetForm?: boolean;
+    remoteState?: RemoteState; // requires streaming info
+    shouldResetForm?: boolean; // requires streaming info
     fileUploadProps: FileuploadPropsBase;
     availableModels: Model[];
 

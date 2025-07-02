@@ -9,6 +9,14 @@ import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useMo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+import {
+    executeStreamPrompt,
+    handleSubmissionError,
+    prepareRequest,
+    setupRecaptcha,
+    trackSubmissionAnalytics,
+    validateSubmission,
+} from './single-thread-submission';
 
 interface SingleThreadState {
     selectedModelId?: string;
@@ -94,8 +102,33 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);
             },
-            onSubmit: async (_data: QueryFormValues) => {
-                // Single-thread submission logic
+            onSubmit: async (data: QueryFormValues) => {
+                // Step 1: Validate submission preconditions
+                const isLoading = false; // TODO: Get actual loading state
+                if (!validateSubmission(canSubmit, isLoading)) {
+                    return;
+                }
+
+                // Step 2: Setup ReCAPTCHA and get token
+                const captchaToken = await setupRecaptcha();
+
+                // Step 3: Prepare the request with form data and context
+                const lastMessageId = undefined; // TODO: Get last message ID from thread
+                const request = prepareRequest(data, captchaToken, lastMessageId);
+
+                try {
+                    // Step 4: Execute the streaming prompt
+                    await executeStreamPrompt(request);
+
+                    // Step 5: Track successful submission
+                    if (selectedModelId) {
+                        const isPlayground = false; // TODO: Determine if this is playground context
+                        trackSubmissionAnalytics(selectedModelId, isPlayground);
+                    }
+                } catch (error) {
+                    // Step 6: Handle any submission errors
+                    handleSubmissionError(error);
+                }
             },
             onAbort: (_e: UIEvent) => {
                 // Abort logic
@@ -113,8 +146,8 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         placeholderText,
         areFilesAllowed,
         models,
-        selectedModelId,
         isLimitReached,
+        selectedModelId,
     ]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;

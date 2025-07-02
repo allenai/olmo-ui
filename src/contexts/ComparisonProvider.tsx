@@ -55,6 +55,7 @@ function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
 // Create curried reducer using immer
 const curriedComparisonReducer = produce(comparisonReducer);
 
+// TODO: create more nuanced state to avoid unnecessary re-renders
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
