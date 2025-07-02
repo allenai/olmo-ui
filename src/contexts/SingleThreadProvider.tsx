@@ -84,7 +84,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             remoteState: undefined,
             shouldResetForm: false,
             fileUploadProps: {
-                isFileUploadDisabled: false,
+                isFileUploadDisabled: true,
                 isSendingPrompt: false,
                 acceptsFileUpload: false,
                 acceptedFileTypes: [],

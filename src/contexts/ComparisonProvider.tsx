@@ -124,7 +124,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             remoteState: undefined,
             shouldResetForm: false,
             fileUploadProps: {
-                isFileUploadDisabled: false,
+                isFileUploadDisabled: true,
                 isSendingPrompt: false,
                 acceptsFileUpload: false,
                 acceptedFileTypes: [],
