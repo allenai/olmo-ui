@@ -1,9 +1,17 @@
-import { MessageStreamError, MessageStreamErrorType } from '@/api/Message';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
+import {
+    MessageStreamError,
+    MessageStreamErrorReason,
+    MessageStreamErrorType,
+    StreamBadRequestError,
+} from '@/api/Message';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
 import { ThreadViewId } from '@/slices/CompareModelSlice';
+import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
+import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
 
 export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
@@ -153,6 +161,50 @@ export const updateCacheWithMessagePart = async (
     // }
 
     return currentThreadId;
+};
+
+export const handleSubmissionError = (
+    error: unknown,
+    modelId: string,
+    addSnackMessage: (message: SnackMessage) => void
+): null => {
+    let snackMessage = errorToAlert(
+        `create-message-${new Date().getTime()}`.toLowerCase(),
+        'Unable to Submit Message',
+        error
+    );
+
+    if (error instanceof MessageStreamError) {
+        if (error.finishReason === MessageStreamErrorReason.LENGTH) {
+            snackMessage = errorToAlert(
+                `create-message-${new Date().getTime()}`.toLowerCase(),
+                'Maximum Thread Length',
+                error
+            );
+
+            // this should be queried from state
+            // setMessageLimitReached(err.messageId, true);
+        }
+
+        if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
+            analyticsClient.trackModelOverloadedError(modelId);
+
+            snackMessage = errorToAlert(
+                `create-message-${new Date().getTime()}`.toLowerCase(),
+                'This model is overloaded due to high demand. Please try again later or try another model.',
+                error
+            );
+        }
+    } else if (error instanceof StreamBadRequestError) {
+        throw error;
+    } else if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+            snackMessage = ABORT_ERROR_MESSAGE;
+        }
+    }
+
+    addSnackMessage(snackMessage);
+    return null; // Didn't return a thread id
 };
 
 export const processStreamResponse = async (

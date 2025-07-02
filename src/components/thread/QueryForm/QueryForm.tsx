@@ -4,7 +4,6 @@ import { SubmitHandler } from 'react-hook-form-mui';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread, threadOptions } from '@/api/playgroundApi/thread';
@@ -16,13 +15,12 @@ import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { checkComparisonModelsCompatibility } from '@/pages/comparison/useHandleChangeCompareModel';
 import { CompareModelState, ThreadViewId } from '@/slices/CompareModelSlice';
-import { errorToAlert } from '@/slices/SnackMessageSlice';
-import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { mapCompareFileUploadProps, reduceCompareFileUploadProps } from './compareFileUploadProps';
 import { QueryFormController } from './QueryFormController';
-import { processStreamResponse } from './submission-process';
+import { handleSubmissionError, processStreamResponse } from './submission-process';
 
 interface QueryFormValues {
     content: string;
@@ -130,43 +128,7 @@ export const QueryForm = (): JSX.Element => {
                     streamMessage.completeStream
                 );
             } catch (error) {
-                let snackMessage = errorToAlert(
-                    `create-message-${new Date().getTime()}`.toLowerCase(),
-                    'Unable to Submit Message',
-                    error
-                );
-
-                if (error instanceof MessageStreamError) {
-                    if (error.finishReason === MessageStreamErrorReason.LENGTH) {
-                        snackMessage = errorToAlert(
-                            `create-message-${new Date().getTime()}`.toLowerCase(),
-                            'Maximum Thread Length',
-                            error
-                        );
-
-                        // this should be queried from state
-                        // setMessageLimitReached(err.messageId, true);
-                    }
-
-                    if (error.finishReason === MessageStreamErrorReason.MODEL_OVERLOADED) {
-                        analyticsClient.trackModelOverloadedError(model.id);
-
-                        snackMessage = errorToAlert(
-                            `create-message-${new Date().getTime()}`.toLowerCase(),
-                            'This model is overloaded due to high demand. Please try again later or try another model.',
-                            error
-                        );
-                    }
-                } else if (error instanceof StreamBadRequestError) {
-                    throw error;
-                } else if (error instanceof Error) {
-                    if (error.name === 'AbortError') {
-                        snackMessage = ABORT_ERROR_MESSAGE;
-                    }
-                }
-
-                addSnackMessage(snackMessage);
-                return null; // Didn't return a thread id
+                return handleSubmissionError(error, model.id, addSnackMessage);
             }
         });
 
