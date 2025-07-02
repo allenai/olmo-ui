@@ -4,24 +4,13 @@ import { SubmitHandler } from 'react-hook-form-mui';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import {
-    MessageStreamError,
-    MessageStreamErrorReason,
-    MessageStreamErrorType,
-    StreamBadRequestError,
-} from '@/api/Message';
+import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import {
-    CreateMessageRequest,
-    FlatMessage,
-    Thread,
-    threadOptions,
-} from '@/api/playgroundApi/thread';
+import { CreateMessageRequest, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
-import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { User } from '@/api/User';
-import { appContext, useAppContext } from '@/AppContext';
+import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
@@ -33,6 +22,7 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { mapCompareFileUploadProps, reduceCompareFileUploadProps } from './compareFileUploadProps';
 import { QueryFormController } from './QueryFormController';
+import { processStreamResponse } from './submission-process';
 
 interface QueryFormValues {
     content: string;
@@ -130,24 +120,15 @@ export const QueryForm = (): JSX.Element => {
                     thread,
                 });
 
-                let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
-
-                const chunks = readStream(response, abortController.signal);
-                for await (const chunk of chunks) {
-                    // return the root thread id (this shouldn't be undefined anymore)
-                    streamingRootThreadId = await updateCacheWithMessagePart(
-                        chunk,
-                        streamingRootThreadId,
-                        rootThreadId == null, // = isCreatingNewThread
-                        streamMessage.onFirstMessage
-                    );
-                }
-
-                // Mark stream as completed
-                streamMessage.completeStream(threadViewId);
-
                 // Return the final thread ID for parallel streaming navigation
-                return streamingRootThreadId;
+                return await processStreamResponse(
+                    response,
+                    abortController,
+                    rootThreadId,
+                    threadViewId,
+                    streamMessage.onFirstMessage,
+                    streamMessage.completeStream
+                );
             } catch (error) {
                 let snackMessage = errorToAlert(
                     `create-message-${new Date().getTime()}`.toLowerCase(),
@@ -311,68 +292,6 @@ const allThreadProperties = (
     });
 };
 
-type MessageChunk = Pick<FlatMessage, 'content'> & {
-    message: FlatMessage['id'];
-};
-
-type StreamingMessageResponse = Thread | MessageChunk | MessageStreamErrorType;
-
-async function* readStream(response: Response, abortSignal?: AbortSignal) {
-    const rdr = response.body
-        ?.pipeThrough(new ReadableJSONLStream<StreamingMessageResponse>())
-        .getReader();
-
-    // let firstPart = true;
-
-    if (rdr) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        while (true) {
-            // Check if aborted before reading
-            if (abortSignal?.aborted) {
-                break;
-            }
-
-            const part = await rdr.read();
-            if (part.done) {
-                break;
-            }
-
-            if (isMessageStreamError(part.value)) {
-                throw new MessageStreamError(
-                    part.value.message,
-                    part.value.reason,
-                    `streaming response failed: ${part.value.error}`
-                );
-            }
-
-            yield part.value;
-            // firstPart = false;
-        }
-    }
-}
-
-export const containsMessages = (message: StreamingMessageResponse): message is Thread => {
-    return 'messages' in message;
-};
-
-export const isFirstMessage = (message: StreamingMessageResponse): message is Thread => {
-    return containsMessages(message) && !message.messages.some((msg) => msg.final);
-};
-
-export const isFinalMessage = (message: StreamingMessageResponse): message is Thread => {
-    return containsMessages(message) && !message.messages.some((msg) => !msg.final);
-};
-
-export const isMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
-    return 'content' in message;
-};
-
-export const isMessageStreamError = (
-    message: StreamingMessageResponse
-): message is MessageStreamErrorType => {
-    return 'error' in message;
-};
-
 // Builds comparison page URL with new threads
 const buildComparisonUrlWithNewThreads = (
     location: Pick<Location, 'pathname' | 'search'>,
@@ -384,94 +303,6 @@ const buildComparisonUrlWithNewThreads = (
     searchParams.set('threads', newThreadIds.join(','));
 
     return `${links.comparison}?${searchParams.toString()}`;
-};
-
-// threadId can be undefined
-const updateCacheWithMessagePart = async (
-    message: StreamingMessageResponse,
-    threadId: string | undefined,
-    isCreatingNewThread: boolean,
-    onFirstMessage?: () => void
-): Promise<string | undefined> => {
-    let currentThreadId = threadId;
-
-    const state = appContext.getState();
-
-    if (isFirstMessage(message)) {
-        // const messageId = message.id;
-        // const { queryKey } = threadOptions(threadId);
-
-        onFirstMessage?.();
-
-        // const isCreatingNewThread = threadId === undefined; // first message, no thread id
-
-        if (isCreatingNewThread) {
-            // setSelectedThread(parsedMessage);
-            // await router.navigate(links.thread(parsedMessage.id));
-
-            currentThreadId = message.id;
-            if (currentThreadId) {
-                const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, message);
-            }
-        } else {
-            if (currentThreadId) {
-                const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, (oldData: Thread) => {
-                    const newData = {
-                        ...oldData,
-                        messages: [...oldData.messages, ...message.messages],
-                    };
-                    return newData;
-                });
-            }
-        }
-    }
-    // currentThreadId should be set at this point
-    if (isMessageChunk(message) && currentThreadId) {
-        const { message: messageId, content } = message;
-        // += message.content
-        // addContentToMessage(message.message, message.content);
-        const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, (oldThread: Thread) => {
-            const newThread = {
-                ...oldThread,
-                messages: oldThread.messages.map((message) => {
-                    if (message.id === messageId) {
-                        const updatedMessage = {
-                            ...message,
-                            content: message.content + content,
-                        };
-                        return updatedMessage;
-                    } else {
-                        return message;
-                    }
-                }),
-            };
-            return newThread;
-        });
-    }
-    if (isFinalMessage(message) && isCreatingNewThread) {
-        state.addThreadToAllThreads(message);
-    }
-    /*
-    if (isFinalMessage(message) && currentThreadId) {
-        // console.log('finalMessage');
-        const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, message);
-        // append!
-    }
-    */
-
-    // // queryClient.setQueryData()
-    // if (currentThreadId) {
-    //     const { queryKey } = threadOptions(currentThreadId);
-    //     await queryClient.invalidateQueries({
-    //         queryKey,
-    //     });
-    // }
-
-    return currentThreadId;
 };
 
 const useStreamMessage = () => {

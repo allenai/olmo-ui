@@ -1,0 +1,184 @@
+import { MessageStreamError, MessageStreamErrorType } from '@/api/Message';
+import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
+import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
+import { appContext } from '@/AppContext';
+import { ThreadViewId } from '@/slices/CompareModelSlice';
+
+export type MessageChunk = Pick<FlatMessage, 'content'> & {
+    message: FlatMessage['id'];
+};
+
+export type StreamingMessageResponse = Thread | MessageChunk | MessageStreamErrorType;
+
+export const isMessageStreamError = (
+    message: StreamingMessageResponse
+): message is MessageStreamErrorType => {
+    return 'error' in message;
+};
+
+export const containsMessages = (message: StreamingMessageResponse): message is Thread => {
+    return 'messages' in message;
+};
+
+export const isFirstMessage = (message: StreamingMessageResponse): message is Thread => {
+    return containsMessages(message) && !message.messages.some((msg) => msg.final);
+};
+
+export const isFinalMessage = (message: StreamingMessageResponse): message is Thread => {
+    return containsMessages(message) && !message.messages.some((msg) => !msg.final);
+};
+
+export const isMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
+    return 'content' in message;
+};
+
+export async function* readStream(response: Response, abortSignal?: AbortSignal) {
+    const rdr = response.body
+        ?.pipeThrough(new ReadableJSONLStream<StreamingMessageResponse>())
+        .getReader();
+
+    // let firstPart = true;
+
+    if (rdr) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        while (true) {
+            // Check if aborted before reading
+            if (abortSignal?.aborted) {
+                break;
+            }
+
+            const part = await rdr.read();
+            if (part.done) {
+                break;
+            }
+
+            if (isMessageStreamError(part.value)) {
+                throw new MessageStreamError(
+                    part.value.message,
+                    part.value.reason,
+                    `streaming response failed: ${part.value.error}`
+                );
+            }
+
+            yield part.value;
+            // firstPart = false;
+        }
+    }
+}
+
+// threadId can be undefined
+export const updateCacheWithMessagePart = async (
+    message: StreamingMessageResponse,
+    threadId: string | undefined,
+    isCreatingNewThread: boolean,
+    onFirstMessage?: () => void
+): Promise<string | undefined> => {
+    let currentThreadId = threadId;
+
+    const state = appContext.getState();
+
+    if (isFirstMessage(message)) {
+        // const messageId = message.id;
+        // const { queryKey } = threadOptions(threadId);
+
+        onFirstMessage?.();
+
+        // const isCreatingNewThread = threadId === undefined; // first message, no thread id
+
+        if (isCreatingNewThread) {
+            // setSelectedThread(parsedMessage);
+            // await router.navigate(links.thread(parsedMessage.id));
+
+            currentThreadId = message.id;
+            if (currentThreadId) {
+                const { queryKey } = threadOptions(currentThreadId);
+                queryClient.setQueryData(queryKey, message);
+            }
+        } else {
+            if (currentThreadId) {
+                const { queryKey } = threadOptions(currentThreadId);
+                queryClient.setQueryData(queryKey, (oldData: Thread) => {
+                    const newData = {
+                        ...oldData,
+                        messages: [...oldData.messages, ...message.messages],
+                    };
+                    return newData;
+                });
+            }
+        }
+    }
+    // currentThreadId should be set at this point
+    if (isMessageChunk(message) && currentThreadId) {
+        const { message: messageId, content } = message;
+        // += message.content
+        // addContentToMessage(message.message, message.content);
+        const { queryKey } = threadOptions(currentThreadId);
+        queryClient.setQueryData(queryKey, (oldThread: Thread) => {
+            const newThread = {
+                ...oldThread,
+                messages: oldThread.messages.map((message) => {
+                    if (message.id === messageId) {
+                        const updatedMessage = {
+                            ...message,
+                            content: message.content + content,
+                        };
+                        return updatedMessage;
+                    } else {
+                        return message;
+                    }
+                }),
+            };
+            return newThread;
+        });
+    }
+    if (isFinalMessage(message) && isCreatingNewThread) {
+        state.addThreadToAllThreads(message);
+    }
+    /*
+    if (isFinalMessage(message) && currentThreadId) {
+        // console.log('finalMessage');
+        const { queryKey } = threadOptions(currentThreadId);
+        queryClient.setQueryData(queryKey, message);
+        // append!
+    }
+    */
+
+    // // queryClient.setQueryData()
+    // if (currentThreadId) {
+    //     const { queryKey } = threadOptions(currentThreadId);
+    //     await queryClient.invalidateQueries({
+    //         queryKey,
+    //     });
+    // }
+
+    return currentThreadId;
+};
+
+export const processStreamResponse = async (
+    response: Response,
+    abortController: AbortController,
+    rootThreadId: string | undefined,
+    threadViewId: ThreadViewId,
+    onFirstMessage?: () => void,
+    onCompleteStream?: (threadViewId: ThreadViewId) => void
+): Promise<string | undefined> => {
+    let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
+
+    const chunks = readStream(response, abortController.signal);
+    for await (const chunk of chunks) {
+        // return the root thread id (this shouldn't be undefined anymore)
+        streamingRootThreadId = await updateCacheWithMessagePart(
+            chunk,
+            streamingRootThreadId,
+            rootThreadId == null, // = isCreatingNewThread
+            onFirstMessage
+        );
+    }
+
+    // Mark stream as completed
+    onCompleteStream?.(threadViewId);
+
+    // Return the final thread ID for parallel streaming navigation
+    return streamingRootThreadId;
+};
