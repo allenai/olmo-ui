@@ -305,4 +305,56 @@ describe('ComparisonProvider', () => {
             });
         });
     });
+
+    describe('getThreadViewModel', () => {
+        const GetThreadViewModelTestComponent = ({ threadViewId }: { threadViewId: string }) => {
+            const context = useQueryContext();
+            const model = context.getThreadViewModel(threadViewId);
+            return <div data-testid="thread-view-model">{model?.name || 'no-model'}</div>;
+        };
+
+        it('should return correct model for specific threadViewId', async () => {
+            const initialState = {
+                'view-1': { modelId: 'tulu2' },
+                'view-2': { modelId: 'molmo' },
+            };
+
+            const TestComponent = () => <GetThreadViewModelTestComponent threadViewId="view-1" />;
+            const { getByTestId } = renderWithProvider(TestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('thread-view-model')).toHaveTextContent('Tulu2.5');
+            });
+        });
+
+        it.each([
+            {
+                case: 'threadViewId is not provided',
+                initialState: { 'view-1': { modelId: 'tulu2' } },
+                threadViewId: undefined,
+            },
+            {
+                case: 'threadViewId does not exist in state',
+                initialState: { 'view-1': { modelId: 'tulu2' } },
+                threadViewId: 'nonexistent-view',
+            },
+            {
+                case: 'threadViewId exists but has no modelId',
+                initialState: { 'view-1': { threadId: 'thread-1' } },
+                threadViewId: 'view-1',
+            },
+        ])('should return undefined when $case', async ({ initialState, threadViewId }) => {
+            const TestComponent = () => {
+                const context = useQueryContext();
+                const model = context.getThreadViewModel(threadViewId);
+                return <div data-testid="thread-view-model">{model?.name || 'no-model'}</div>;
+            };
+
+            const { getByTestId } = renderWithProvider(TestComponent, initialState);
+
+            await waitFor(() => {
+                expect(getByTestId('thread-view-model')).toHaveTextContent('no-model');
+            });
+        });
+    });
 });

@@ -21,8 +21,8 @@ interface QueryContextValue {
     fileUploadProps: FileuploadPropsBase;
     availableModels: Model[];
 
-    // Maybe this is the only one that really needs threadViewId from the component?
     onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
+    getThreadViewModel: (threadViewId?: string) => Model | undefined;
 
     // Form submission: each context implements its own logic
     onSubmit: (data: QueryFormValues) => Promise<void>;

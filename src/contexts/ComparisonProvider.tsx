@@ -137,6 +137,12 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 // model change for comparison page
             },
 
+            getThreadViewModel: (threadViewId?: string) => {
+                if (!threadViewId) return undefined;
+                const modelId = comparisonState[threadViewId]?.modelId;
+                return models.find((model) => model.id === modelId);
+            },
+
             onSubmit: async (_data: QueryFormValues) => {
                 // Submit parallel streams
             },
@@ -152,7 +158,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 dispatch({ type: 'setThreadId', threadViewId, threadId });
             },
         };
-    }, [canSubmit, autofocus, placeholderText, isLimitReached]);
+    }, [canSubmit, autofocus, placeholderText, isLimitReached, comparisonState, models]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };

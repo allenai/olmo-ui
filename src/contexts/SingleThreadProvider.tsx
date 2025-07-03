@@ -139,6 +139,9 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);
             },
+            getThreadViewModel: (_threadViewId?: string) => {
+                return selectedModel;
+            },
             onSubmit,
             onAbort: handleAbort,
             setModelId: (_threadViewId: string, modelId: string) => {
