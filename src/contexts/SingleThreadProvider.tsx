@@ -1,12 +1,22 @@
 import { SelectChangeEvent } from '@mui/material';
-import React, { UIEvent, useCallback, useMemo, useState } from 'react';
+import React, { UIEvent, useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
-import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
+import {
+    findModelById,
+    trackModelSelection,
+} from '@/components/thread/ModelSelect/modelChangeUtils';
+import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
+import {
+    areModelsCompatibleForThread,
+    isModelVisible,
+    useModels,
+} from '@/components/thread/ModelSelect/useModels';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { links } from '@/Links';
 
@@ -30,6 +40,16 @@ function getThread(threadId: string): Thread | undefined {
     return queryClient.getQueryData(queryKey);
 }
 
+const shouldShowCompatibilityWarning = (
+    currentModel: Model | undefined,
+    newModel: Model,
+    hasActiveThread: boolean
+): boolean => {
+    return Boolean(
+        hasActiveThread && currentModel && !areModelsCompatibleForThread(currentModel, newModel)
+    );
+};
+
 export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
     console.log('[DEBUG] SingleThreadProvider initializing with initialState:', initialState);
 
@@ -39,6 +59,8 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     const [threadId, setThreadIdValue] = useState<string | undefined>(
         initialState?.threadId ?? undefined
     );
+    const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
+    const modelIdToSwitchTo = useRef<string>();
 
     console.log(
         '[DEBUG] SingleThreadProvider state - selectedModelId:',
@@ -102,6 +124,42 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
         return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
     }, [threadId]);
+
+    const selectModel = useCallback((modelId: string) => {
+        trackModelSelection(modelId);
+        setSelectedModelId(modelId);
+    }, []);
+
+    const onModelChange = useCallback(
+        (event: SelectChangeEvent, _threadViewId?: string) => {
+            const newModel = findModelById(availableModels, event.target.value);
+            if (!newModel) return;
+
+            const hasActiveThread = Boolean(threadId);
+
+            if (shouldShowCompatibilityWarning(selectedModel, newModel, hasActiveThread)) {
+                modelIdToSwitchTo.current = event.target.value;
+                setShouldShowModelSwitchWarning(true);
+            } else {
+                selectModel(event.target.value);
+            }
+        },
+        [availableModels, selectedModel, threadId, selectModel]
+    );
+
+    const handleModelSwitchWarningConfirm = useCallback(() => {
+        setShouldShowModelSwitchWarning(false);
+        if (modelIdToSwitchTo.current) {
+            selectModel(modelIdToSwitchTo.current);
+            // Clear current thread to start fresh
+            setThreadIdValue(undefined);
+            navigate(links.playground);
+        }
+    }, [selectModel, navigate]);
+
+    const closeModelSwitchWarning = useCallback(() => {
+        setShouldShowModelSwitchWarning(false);
+    }, []);
 
     const onSubmit = useCallback(
         async (data: QueryFormValues) => {
@@ -188,10 +246,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
                 isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
                 isFileUploadDisabled: false,
             },
-            onModelChange: (event: SelectChangeEvent, _threadViewId: string = '0') => {
-                // TODO: handle the onChange behaviors
-                setSelectedModelId(event.target.value);
-            },
+            onModelChange,
             getThreadViewModel: (_threadViewId: string = '0') => {
                 return selectedModel;
             },
@@ -215,9 +270,21 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         streamMessage.remoteState,
         streamMessage.hasReceivedFirstResponse,
         isLimitReached,
+        onModelChange,
         onSubmit,
         handleAbort,
     ]);
 
-    return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
+    return (
+        <QueryContext.Provider value={contextValue}>
+            {children}
+            <ModelChangeWarningModal
+                open={shouldShowModelSwitchWarning}
+                onCancel={closeModelSwitchWarning}
+                onConfirm={handleModelSwitchWarningConfirm}
+                title="Change model and start a new thread?"
+                message="The model you're changing to isn't compatible with this thread. To change models you'll need to start a new thread. Continue?"
+            />
+        </QueryContext.Provider>
+    );
 };

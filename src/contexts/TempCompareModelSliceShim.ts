@@ -23,13 +23,15 @@ export interface CompareModelSlice {
 // Delegates to QueryContext
 export const useCompareModelSliceShim = () => {
     const queryContext = useQueryContext();
-    
+
     return {
         // Getter fails with informative error
         get selectedCompareModels(): CompareModelState[] {
-            throw new Error('[DEBUG] selectedCompareModels getter blocked - use QueryContext.getThreadViewModel() instead');
+            throw new Error(
+                '[DEBUG] selectedCompareModels getter blocked - use QueryContext.getThreadViewModel() instead'
+            );
         },
-        
+
         // Setter delegates to QueryContext
         setSelectedCompareModels: (compareModels: CompareModelState[]) => {
             compareModels.forEach(({ threadViewId, model, rootThreadId }) => {
@@ -41,11 +43,11 @@ export const useCompareModelSliceShim = () => {
                 }
             });
         },
-        
+
         setSelectedCompareModelAt: (threadViewId: string, model: Model) => {
             queryContext.setModelId(threadViewId, model.id);
         },
-        
+
         setCompareThreadAt: (threadViewId: ThreadViewId, threadId: ThreadId) => {
             queryContext.setThreadId(threadViewId, threadId);
         },
@@ -55,18 +57,26 @@ export const useCompareModelSliceShim = () => {
 // Legacy zustand slice creator. Throws errors for getters
 export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = () => ({
     get selectedCompareModels(): CompareModelState[] {
-        throw new Error('[DEBUG] selectedCompareModels getter blocked - use QueryContext.getThreadViewModel() instead');
+        throw new Error(
+            '[DEBUG] selectedCompareModels getter blocked - use QueryContext.getThreadViewModel() instead'
+        );
     },
-    
-    setSelectedCompareModels: (compareModels: CompareModelState[]) => {
-        throw new Error('[DEBUG] setSelectedCompareModels blocked - use QueryContext.setModelId/setThreadId() instead');
+
+    setSelectedCompareModels: (_compareModels: CompareModelState[]) => {
+        throw new Error(
+            '[DEBUG] setSelectedCompareModels blocked - use QueryContext.setModelId/setThreadId() instead'
+        );
     },
-    
-    setSelectedCompareModelAt: (threadViewId: string, model: Model) => {
-        throw new Error('[DEBUG] setSelectedCompareModelAt blocked - use QueryContext.setModelId() instead');
+
+    setSelectedCompareModelAt: (_threadViewId: string, _model: Model) => {
+        throw new Error(
+            '[DEBUG] setSelectedCompareModelAt blocked - use QueryContext.setModelId() instead'
+        );
     },
-    
-    setCompareThreadAt: (threadViewId: ThreadViewId, threadId: ThreadId) => {
-        throw new Error('[DEBUG] setCompareThreadAt blocked - use QueryContext.setThreadId() instead');
+
+    setCompareThreadAt: (_threadViewId: ThreadViewId, _threadId: ThreadId) => {
+        throw new Error(
+            '[DEBUG] setCompareThreadAt blocked - use QueryContext.setThreadId() instead'
+        );
     },
-}); 
+});

@@ -12,13 +12,15 @@ export interface ModelSlice {
 // Delegates to QueryContext
 export const useModelSliceShim = () => {
     const queryContext = useQueryContext();
-    
+
     return {
         // Getter fails noticeably on purpose
         get selectedModel(): Model | undefined {
-            throw new Error('[DEBUG] selectedModel getter blocked - use QueryContext.getThreadViewModel() instead');
+            throw new Error(
+                '[DEBUG] selectedModel getter blocked - use QueryContext.getThreadViewModel() instead'
+            );
         },
-        
+
         // Setter delegates to QueryContext
         setSelectedModel: (model: Model) => {
             queryContext.setModelId('0', model.id);
@@ -29,10 +31,12 @@ export const useModelSliceShim = () => {
 // Legacy zustand slice creator. Throws errors for getter
 export const createModelSlice: OlmoStateCreator<ModelSlice> = () => ({
     get selectedModel(): Model | undefined {
-        throw new Error('[DEBUG] selectedModel getter blocked - use QueryContext.getThreadViewModel() instead');
+        throw new Error(
+            '[DEBUG] selectedModel getter blocked - use QueryContext.getThreadViewModel() instead'
+        );
     },
-    
-    setSelectedModel: (model: Model) => {
+
+    setSelectedModel: (_model: Model) => {
         throw new Error('[DEBUG] setSelectedModel blocked - use QueryContext.setModelId() instead');
     },
-}); 
+});
