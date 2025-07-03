@@ -16,6 +16,8 @@ import {
 import { ModelChangeWarningModal } from './ModelChangeWarningModal';
 import { areModelsCompatibleForThread, useModels } from './useModels';
 
+// TODO: Delete this file after migration to QueryContext
+
 // Check if model change requires warning based on compatibility and active threads
 const shouldShowCompatibilityWarning = (
     currentModel: Model | undefined,

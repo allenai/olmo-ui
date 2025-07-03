@@ -1,8 +1,9 @@
 import { SelectChangeEvent } from '@mui/material';
 import { produce } from 'immer';
-import React, { UIEvent, useMemo, useReducer } from 'react';
+import React, { UIEvent, useEffect, useMemo, useReducer } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
@@ -59,6 +60,7 @@ const curriedComparisonReducer = produce(comparisonReducer);
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
+    const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -113,6 +115,18 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             });
     }, [comparisonState]);
 
+    const isShareReady = useMemo(() => {
+        return Object.values(comparisonState)
+            .map((state) => state.threadId)
+            .filter(Boolean)
+            .every((threadId) => threadId != null);
+    }, [comparisonState]);
+
+    // Sync local state with any necessary global UI state
+    useEffect(() => {
+        setIsShareReady(isShareReady);
+    }, [isShareReady, setIsShareReady]);
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
@@ -141,6 +155,13 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 if (!threadViewId) return undefined;
                 const modelId = comparisonState[threadViewId].modelId;
                 return models.find((model) => model.id === modelId);
+            },
+
+            transform: <T,>(
+                _fn: (_threadViewId: string, _model?: Model, _threadId?: string) => T
+            ) => {
+                // TODO: Implement
+                return [] as T[];
             },
 
             onSubmit: async (data: QueryFormValues) => {

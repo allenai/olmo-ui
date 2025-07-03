@@ -1,5 +1,5 @@
 import { SelectChangeEvent } from '@mui/material';
-import React, { UIEvent, useCallback, useMemo, useRef, useState } from 'react';
+import React, { UIEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -72,6 +72,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
+    const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
     const streamMessage = useStreamMessage();
 
     // Get available models from API, filtering for visible models
@@ -124,6 +125,15 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
         return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
     }, [threadId]);
+
+    const isShareReady = useMemo(() => {
+        return Boolean(threadId);
+    }, [threadId]);
+
+    // Sync local state with any necessary global UI state
+    useEffect(() => {
+        setIsShareReady(isShareReady);
+    }, [isShareReady, setIsShareReady]);
 
     const selectModel = useCallback((modelId: string) => {
         trackModelSelection(modelId);
@@ -250,6 +260,9 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             getThreadViewModel: (_threadViewId: string = '0') => {
                 return selectedModel;
             },
+            transform: <T,>(fn: (threadViewId: string, model?: Model, threadId?: string) => T) => {
+                return [fn('0', selectedModel, threadId)];
+            },
             onSubmit,
             onAbort: handleAbort,
             setModelId: (_threadViewId: string, modelId: string) => {
@@ -273,6 +286,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         onModelChange,
         onSubmit,
         handleAbort,
+        threadId,
     ]);
 
     return (

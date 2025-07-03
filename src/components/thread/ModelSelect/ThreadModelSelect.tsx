@@ -2,8 +2,8 @@ import { SelectChangeEvent } from '@mui/material';
 import { useId } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
+import { useCompareModelSliceShim } from '@/contexts/TempCompareModelSliceShim';
 
 import { ModelSelect } from './ModelSelect';
 
@@ -36,13 +36,11 @@ interface ThreadModelSelectProps {
 }
 
 export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectProps) => {
-    const { setSelectedCompareModelAt } = useAppContext();
+    const { setSelectedCompareModelAt } = useCompareModelSliceShim();
+    const queryContext = useQueryContext();
 
-    const selectedModelId = useAppContext((state) => {
-        return state.selectedCompareModels.find((model) => {
-            return model.threadViewId === threadViewId;
-        })?.model?.id;
-    });
+    const selectedModel = queryContext.getThreadViewModel(threadViewId);
+    const selectedModelId = selectedModel?.id;
 
     const handleModelChange = (e: SelectChangeEvent) => {
         // TODO: are all models compatible https://github.com/allenai/playground-issues-repo/issues/411

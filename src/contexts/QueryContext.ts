@@ -23,11 +23,15 @@ interface QueryContextValue {
     onModelChange: (event: SelectChangeEvent, threadViewId?: string) => void;
     getThreadViewModel: (threadViewId?: string) => Model | undefined;
 
+    // Transform function that applies to each thread view context
+    // Required by CompareThreadDisplay, but might be useful elsewhere
+    transform: <T>(fn: (threadViewId: string, model?: Model, threadId?: string) => T) => T[];
+
     // Form submission: each context implements its own logic
     onSubmit: (data: QueryFormValues) => Promise<void>;
     onAbort: (e: UIEvent) => void;
 
-    // Replaces global state setters
+    // Replaces global state setters, doesn't execute business logic like model compatibility checks
     setModelId: (threadViewId: string, modelId: string) => void;
     setThreadId: (threadViewId: string, threadId: string) => void;
 }

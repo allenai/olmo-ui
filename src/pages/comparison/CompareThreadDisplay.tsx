@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
+import { useQueryContext } from '@/contexts/QueryContext';
 
 import { SingleThreadContainer } from './SingleThreadContainer';
 
@@ -25,20 +25,16 @@ export const CompareThreadDisplay = () => {
         select: (data) => data.filter((model) => isModelVisible(model)),
     });
 
-    const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
+    const queryContext = useQueryContext();
 
-    return (
-        <div className={containerStyle}>
-            {selectedCompareModels.map(({ threadViewId, rootThreadId }, idx) => {
-                return (
-                    <SingleThreadContainer
-                        key={idx}
-                        threadViewIdx={threadViewId}
-                        threadRootId={rootThreadId}
-                        models={models}
-                    />
-                );
-            })}
-        </div>
-    );
+    const containers = queryContext.transform((threadViewId, _model, threadId) => (
+        <SingleThreadContainer
+            key={threadViewId}
+            threadViewIdx={threadViewId}
+            threadRootId={threadId}
+            models={models}
+        />
+    ));
+
+    return <div className={containerStyle}>{containers}</div>;
 };
