@@ -1,22 +1,18 @@
-import { useMutation } from '@tanstack/react-query';
-import { JSX, UIEvent, useCallback, useRef, useState } from 'react';
+import { JSX, UIEvent, useCallback, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
-import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
-import { CreateMessageRequest, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { processSingleModelSubmission, QueryFormValues } from '@/contexts/submission-process';
+import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { checkComparisonModelsCompatibility } from '@/pages/comparison/useHandleChangeCompareModel';
-import { CompareModelState, ThreadViewId } from '@/slices/CompareModelSlice';
-import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
-import { mapValueToFormData } from '@/utils/mapValueToFormData';
+import { CompareModelState } from '@/slices/CompareModelSlice';
 
 import { mapCompareFileUploadProps, reduceCompareFileUploadProps } from './compareFileUploadProps';
 import { QueryFormController } from './QueryFormController';
@@ -236,171 +232,4 @@ const buildComparisonUrlWithNewThreads = (
     searchParams.set('threads', newThreadIds.join(','));
 
     return `${links.comparison}?${searchParams.toString()}`;
-};
-
-const useStreamMessage = () => {
-    const [activeStreams, setActiveStreams] = useState<Set<string>>(new Set());
-    const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
-    const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
-
-    // Internal state management functions
-    const startStream = (threadViewId: ThreadViewId) => {
-        setActiveStreams((prev) => {
-            const next = new Set(prev);
-            next.add(threadViewId);
-            return next;
-        });
-    };
-
-    const stopStream = (threadViewId: ThreadViewId) => {
-        setActiveStreams((prev) => {
-            const next = new Set(prev);
-            next.delete(threadViewId);
-            return next;
-        });
-        abortControllersRef.current.delete(threadViewId);
-    };
-
-    const prepareForNewSubmission = () => {
-        setHasReceivedFirstResponse(false);
-    };
-
-    const handleFirstMessage = useCallback(() => {
-        setHasReceivedFirstResponse(true);
-    }, []);
-
-    // imperative
-    const queryToThreadOrView = async ({
-        request,
-        threadViewId,
-        model,
-        // messageParent,
-        thread, // maybe this is just parentId? we don't need the whole thread
-    }: {
-        request: StreamMessageRequest;
-        threadViewId: ThreadViewId;
-        model: Model;
-        thread?: Thread;
-    }) => {
-        startStream(threadViewId);
-
-        // Create and store abort controller for this thread view
-        const abortController = new AbortController();
-        abortControllersRef.current.set(threadViewId, abortController);
-
-        try {
-            // do any request setup
-            if (thread) {
-                const lastMessageId = thread.messages.at(-1)?.id;
-                request.parent = lastMessageId;
-            }
-
-            const { content, captchaToken, files, parent } = request;
-
-            const result = await playgroundApiClient.POST('/v4/threads/', {
-                parseAs: 'stream',
-                body: {
-                    content,
-                    captchaToken,
-                    files,
-                    parent,
-                    host: model.host,
-                    model: model.id,
-                    // optional
-                    //
-                    // logprobs: undefined,
-                    // maxTokens: undefined,
-                    // n: undefined,
-                    // private: undefined,
-                    // original: undefined,
-                    // temperature: undefined,
-                    // topP: undefined,
-                    // role: undefined,
-                    // template: undefined,
-                },
-                bodySerializer: (body) => {
-                    const formData = new FormData();
-                    for (const property in body) {
-                        const value = body[property as keyof CreateMessageRequest];
-                        mapValueToFormData(formData, property, value);
-                    }
-                    return formData;
-                },
-                signal: abortController.signal, // Add abort signal to the request
-            });
-
-            return { response: result.response, abortController };
-        } catch (error) {
-            // Clean up on error
-            stopStream(threadViewId);
-            throw error;
-        }
-    };
-
-    const mutation = useMutation({
-        mutationFn: queryToThreadOrView,
-        onMutate(variables) {
-            console.log('DEBUG [bb] useStreamMessage: onMutate', variables);
-        },
-        onSuccess(data, variables) {
-            // this gets the stream before its done
-            console.log('DEBUG [bb] onSuccess', data, variables);
-        },
-        onSettled(data, error, variables, context) {
-            console.log('DEBUG [bb] onSettled', data, error, variables, context);
-        },
-        onError(error, variables, context) {
-            console.log('DEBUG [bb] onError', error, variables, context);
-            // Clean up stream state on error
-            if (variables.threadViewId) {
-                stopStream(variables.threadViewId);
-            }
-        },
-    });
-
-    // Abort functionality
-    const abortAllStreams = () => {
-        abortControllersRef.current.forEach((controller, _threadViewId) => {
-            controller.abort();
-        });
-        abortControllersRef.current.clear();
-        setActiveStreams(new Set());
-    };
-
-    // Function to clean up a specific stream when it completes
-    const completeStream = (threadViewId: ThreadViewId) => {
-        stopStream(threadViewId);
-    };
-
-    return {
-        // Original mutation interface
-        ...mutation,
-
-        // Operations
-        abortAllStreams,
-        completeStream,
-        prepareForNewSubmission,
-
-        // Callback to call on first message
-        // This is currently necessary because stream processing is done externally
-        onFirstMessage: handleFirstMessage,
-
-        // State
-        canPause: mutation.isPending || activeStreams.size > 0,
-        activeStreamCount: activeStreams.size,
-        hasReceivedFirstResponse,
-        remoteState: (() => {
-            // Compatibility with RemoteState
-            switch (true) {
-                case mutation.isPending || activeStreams.size > 0:
-                    return RemoteState.Loading;
-                case mutation.isError:
-                    return RemoteState.Error;
-                case activeStreams.size === 0:
-                    return RemoteState.Loaded;
-                default:
-                    return RemoteState.Loaded;
-            }
-        })(),
-    };
 };

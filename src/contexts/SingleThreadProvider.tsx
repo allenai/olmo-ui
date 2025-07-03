@@ -9,6 +9,7 @@ import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+import { QueryFormValues } from './submission-process';
 
 interface SingleThreadState {
     selectedModelId?: string;
