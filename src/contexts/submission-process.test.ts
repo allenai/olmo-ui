@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { prepareRequest, setupRecaptcha, validateSubmission } from './single-thread-submission';
+import { prepareRequest, setupRecaptcha, validateSubmission } from './submission-process';
 
 // Mock recaptcha hook
 const mockExecuteRecaptcha = vi.fn();

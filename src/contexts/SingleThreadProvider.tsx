@@ -3,21 +3,12 @@ import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { UIEvent, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
-import {
-    executeStreamPrompt,
-    handleSubmissionError,
-    prepareRequest,
-    setupRecaptcha,
-    validateSubmission,
-} from './single-thread-submission';
 
 interface SingleThreadState {
     selectedModelId?: string;
@@ -43,6 +34,7 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     );
 
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
+    const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const { executeRecaptcha } = useReCaptcha();
 
     // Get available models from API, filtering for visible models
@@ -104,33 +96,8 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);
             },
-            onSubmit: async (data: QueryFormValues) => {
-                // Step 1: Validate submission preconditions
-                const isLoading = false; // TODO: Get actual loading state
-                if (!validateSubmission(canSubmit, isLoading)) {
-                    return;
-                }
-
-                // Step 2: Setup ReCAPTCHA and get token
-                const captchaToken = await setupRecaptcha(executeRecaptcha);
-
-                // Step 3: Prepare the request with form data and context
-                const lastMessageId = undefined; // TODO: Get last message ID from thread
-                const request = prepareRequest(data, captchaToken, lastMessageId);
-
-                try {
-                    // Step 4: Execute the streaming prompt
-                    await executeStreamPrompt(request);
-
-                    // Step 5: Track successful submission
-                    if (selectedModelId) {
-                        const isNewThread = !threadId; // New thread if no threadId exists
-                        analyticsClient.trackQueryFormSubmission(selectedModelId, isNewThread);
-                    }
-                } catch (error) {
-                    // Step 6: Handle any submission errors
-                    handleSubmissionError(error);
-                }
+            onSubmit: async (_data: QueryFormValues) => {
+                // TODO: Implement submission logic
             },
             onAbort: (_e: UIEvent) => {
                 // Abort logic
@@ -150,6 +117,9 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         models,
         isLimitReached,
         selectedModelId,
+        threadId,
+        executeRecaptcha,
+        addSnackMessage,
     ]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;

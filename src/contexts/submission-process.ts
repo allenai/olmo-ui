@@ -20,6 +20,40 @@ export interface QueryFormValues {
     files?: FileList;
 }
 
+export const validateSubmission = (canSubmit: boolean, isLoading: boolean): boolean => {
+    if (!canSubmit || isLoading) {
+        return false;
+    }
+    return true;
+};
+
+export const setupRecaptcha = async (
+    executeRecaptcha?: ((action?: string) => Promise<string> | null) | null
+): Promise<string | undefined> => {
+    if (process.env.IS_RECAPTCHA_ENABLED !== 'true') return undefined;
+
+    if (!executeRecaptcha) {
+        analyticsClient.trackCaptchaNotLoaded();
+        return undefined;
+    }
+
+    const result = executeRecaptcha('prompt_submission');
+    return result instanceof Promise ? await result : undefined;
+};
+
+export const prepareRequest = (
+    data: QueryFormValues,
+    captchaToken: string | undefined,
+    lastMessageId?: string
+): StreamMessageRequest => {
+    const request: StreamMessageRequest = { ...data, captchaToken };
+
+    // Add parent message ID if continuing an existing thread
+    if (lastMessageId) request.parent = lastMessageId;
+
+    return request;
+};
+
 export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
@@ -258,7 +292,7 @@ export const processSingleModelSubmission = async (
             onFirstMessage,
             onCompleteStream
         );
-        return result;
+        return result ?? null;
     } catch (error) {
         if (addSnackMessage) {
             return handleSubmissionError(error, model.id, addSnackMessage);

@@ -10,6 +10,7 @@ import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
+import { processSingleModelSubmission, QueryFormValues } from '@/contexts/submission-process';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { checkComparisonModelsCompatibility } from '@/pages/comparison/useHandleChangeCompareModel';
@@ -19,7 +20,6 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { mapCompareFileUploadProps, reduceCompareFileUploadProps } from './compareFileUploadProps';
 import { QueryFormController } from './QueryFormController';
-import { processSingleModelSubmission, QueryFormValues } from './submission-process';
 
 export const QueryForm = (): JSX.Element => {
     const location = useLocation();
