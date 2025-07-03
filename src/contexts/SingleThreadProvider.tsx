@@ -1,15 +1,19 @@
 import { SelectChangeEvent } from '@mui/material';
-import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
-import React, { UIEvent, useMemo, useState } from 'react';
+import React, { UIEvent, useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
+import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
+import { links } from '@/Links';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
-import { QueryFormValues } from './submission-process';
+import { processSingleModelSubmission, QueryFormValues } from './submission-process';
+import { useStreamMessage } from './useStreamMessage';
+import { RemoteState } from './util';
 
 interface SingleThreadState {
     selectedModelId?: string;
@@ -34,38 +38,44 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         initialState?.threadId ?? undefined
     );
 
+    const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
-    const { executeRecaptcha } = useReCaptcha();
+    const streamMessage = useStreamMessage();
 
     // Get available models from API, filtering for visible models
-    const models = useModels({
+    const availableModels = useModels({
         select: (data) =>
             data.filter((model) => isModelVisible(model) || model.id === selectedModelId),
     });
 
+    const selectedModel = useMemo(() => {
+        return availableModels.find((model) => model.id === selectedModelId);
+    }, [availableModels, selectedModelId]);
+
     const canSubmit = useMemo(() => {
-        if (!threadId || !userInfo?.client) {
+        if (!userInfo?.client) return false;
+        if (!threadId) return true;
+
+        const thread = getThread(threadId);
+        if (!thread?.messages.length) {
             return false;
         }
 
-        // Check if user created the first message
-        const thread = getThread(threadId);
-        return thread?.messages[0]?.creator === userInfo.client;
+        return thread.messages[0]?.creator === userInfo.client;
     }, [threadId, userInfo]);
 
     const autofocus = useMemo(() => !threadId, [threadId]);
 
     const placeholderText = useMemo(() => {
         const actionText = threadId ? 'Reply to' : 'Message';
-        const modelText = selectedModelId || 'the model';
+        const modelText = selectedModel?.family_name || selectedModel?.name || 'the model';
         return `${actionText} ${modelText}`;
-    }, [threadId, selectedModelId]);
+    }, [threadId, selectedModel]);
 
     const areFilesAllowed = useMemo(() => {
-        const selectedModel = models.find((model) => model.id === selectedModelId);
         return Boolean(selectedModel?.accepts_files);
-    }, [models, selectedModelId]);
+    }, [selectedModel]);
 
     const isLimitReached = useMemo(() => {
         if (!threadId) {
@@ -75,34 +85,62 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
     }, [threadId]);
 
+    const onSubmit = useCallback(
+        async (data: QueryFormValues) => {
+            if (!selectedModel) return;
+
+            streamMessage.prepareForNewSubmission();
+
+            const resultThreadId = await processSingleModelSubmission(
+                data,
+                selectedModel,
+                threadId,
+                '0', // single-thread view id is always '0'
+                streamMessage.mutateAsync,
+                streamMessage.onFirstMessage,
+                streamMessage.completeStream,
+                addSnackMessage
+            );
+
+            if (resultThreadId) {
+                if (!threadId) {
+                    setThreadIdValue(resultThreadId);
+                }
+                navigate(links.thread(resultThreadId));
+            }
+        },
+        [selectedModel, streamMessage, threadId, addSnackMessage, navigate]
+    );
+
+    const handleAbort = useCallback(
+        (e: UIEvent) => {
+            e.preventDefault();
+            streamMessage.abortAllStreams();
+        },
+        [streamMessage]
+    );
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
             autofocus,
             placeholderText,
             areFilesAllowed,
-            availableModels: models,
-            canPauseThread: false,
+            availableModels,
+            canPauseThread: streamMessage.canPause,
             isLimitReached,
-            remoteState: undefined,
-            shouldResetForm: false,
+            remoteState: streamMessage.remoteState,
+            shouldResetForm: streamMessage.hasReceivedFirstResponse,
             fileUploadProps: {
-                isFileUploadDisabled: true,
-                isSendingPrompt: false,
-                acceptsFileUpload: false,
-                acceptedFileTypes: [],
-                acceptsMultiple: false,
-                allowFilesInFollowups: false,
+                ...convertToFileUploadProps(selectedModel),
+                isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
+                isFileUploadDisabled: false,
             },
             onModelChange: (event: SelectChangeEvent, _threadViewId: string) => {
                 setSelectedModelId(event.target.value);
             },
-            onSubmit: async (_data: QueryFormValues) => {
-                // TODO: Implement submission logic
-            },
-            onAbort: (_e: UIEvent) => {
-                // Abort logic
-            },
+            onSubmit,
+            onAbort: handleAbort,
             setModelId: (_threadViewId: string, modelId: string) => {
                 setSelectedModelId(modelId);
             },
@@ -115,12 +153,14 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         autofocus,
         placeholderText,
         areFilesAllowed,
-        models,
+        availableModels,
+        selectedModel,
+        streamMessage.canPause,
+        streamMessage.remoteState,
+        streamMessage.hasReceivedFirstResponse,
         isLimitReached,
-        selectedModelId,
-        threadId,
-        executeRecaptcha,
-        addSnackMessage,
+        onSubmit,
+        handleAbort,
     ]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;

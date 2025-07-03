@@ -3,10 +3,15 @@ import { describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { act, createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
 
 import { useQueryContext } from './QueryContext';
 import { SingleThreadProvider } from './SingleThreadProvider';
+
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+}));
 
 // Test helper to render SingleThreadProvider with optional initial state
 const renderWithProvider = (
@@ -14,15 +19,18 @@ const renderWithProvider = (
     initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
     mockUserInfo?: User | null
 ) => {
-    // Mock the AppContext to provide the userInfo
-    vi.spyOn(AppContext, 'useAppContext').mockImplementation(() => {
-        return mockUserInfo; // Return userInfo directly, not wrapped
-    });
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
     return render(
-        <SingleThreadProvider initialState={initialState}>
-            <TestComponent />
-        </SingleThreadProvider>
+        <FakeAppContextProvider
+            initialState={{
+                userInfo: mockUserInfo,
+                addSnackMessage: vi.fn(), // Mock the addSnackMessage function
+            }}>
+            <SingleThreadProvider initialState={initialState}>
+                <TestComponent />
+            </SingleThreadProvider>
+        </FakeAppContextProvider>
     );
 };
 
@@ -41,24 +49,24 @@ describe('SingleThreadProvider', () => {
             });
         });
 
-        it('should return "Message llama-test-id" when Llama model is selected', async () => {
+        it('should return "Message Tülu" when Tulu model is selected', async () => {
             const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
-                selectedModelId: 'llama-test-id',
+                selectedModelId: 'tulu2',
             });
 
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Message llama-test-id');
+                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu');
             });
         });
 
-        it('should return "Reply to llama-test-id" when model is selected and thread exists', async () => {
+        it('should return "Reply to Tülu" when model is selected and thread exists', async () => {
             const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
-                selectedModelId: 'llama-test-id',
+                selectedModelId: 'tulu2',
                 threadId: 'existing-thread-123',
             });
 
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Reply to llama-test-id');
+                expect(getByTestId('placeholder')).toHaveTextContent('Reply to Tülu');
             });
         });
 
@@ -79,7 +87,7 @@ describe('SingleThreadProvider', () => {
 
             const handleModelChange = () => {
                 const mockEvent: SelectChangeEvent = {
-                    target: { value: 'new-model-id' },
+                    target: { value: 'OLMo-peteish-dpo-preview' },
                 } as SelectChangeEvent;
                 context.onModelChange(mockEvent, 'test-thread-view-id');
             };
@@ -109,7 +117,9 @@ describe('SingleThreadProvider', () => {
 
             // Should now show the new model
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Message new-model-id');
+                expect(getByTestId('placeholder')).toHaveTextContent(
+                    'Message OLMo-peteish-dpo-preview'
+                );
             });
         });
     });
@@ -257,13 +267,19 @@ describe('SingleThreadProvider', () => {
             });
         });
 
-        it('should return false when no threadId is provided', async () => {
+        it('should return true when no threadId is provided (new thread)', async () => {
             const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
+            const { getByTestId } = renderWithProvider(
+                CanSubmitTestComponent,
+                {
+                    // No threadId provided, simulating a new thread
+                },
+                userInfo
+            );
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('true');
             });
         });
 

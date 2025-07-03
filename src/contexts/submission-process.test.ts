@@ -98,12 +98,4 @@ describe('SingleThreadSubmission', () => {
             expect(result).not.toHaveProperty('parent');
         });
     });
-
-    describe('executeStreamPrompt', () => {
-        // TODO: Add tests when function is implemented
-    });
-
-    describe('handleSubmissionError', () => {
-        // TODO: Add tests when function is implemented
-    });
 });
