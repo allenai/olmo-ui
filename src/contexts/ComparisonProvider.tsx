@@ -133,7 +133,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 allowFilesInFollowups: false,
             },
 
-            onModelChange: (_event: SelectChangeEvent, _threadViewId: string) => {
+            onModelChange: (_event: SelectChangeEvent, _threadViewId?: string) => {
                 // model change for comparison page
             },
 
@@ -143,8 +143,9 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 return models.find((model) => model.id === modelId);
             },
 
-            onSubmit: async (_data: QueryFormValues) => {
-                // Submit parallel streams
+            onSubmit: async (data: QueryFormValues) => {
+                console.log('[DEBUG] ComparisonProvider onSubmit called with data:', data);
+                // TODO: Implement parallel stream submission
             },
             onAbort: (_e: UIEvent) => {
                 // Abort all streams across all threads

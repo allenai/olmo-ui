@@ -11,7 +11,14 @@ export const QueryForm = (): JSX.Element => {
 
     // Use context's onSubmit instead of custom handleSubmit logic
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
-        await queryContext.onSubmit(data);
+        console.log('[DEBUG] QueryForm handleSubmit called with data:', data);
+        try {
+            await queryContext.onSubmit(data);
+            console.log('[DEBUG] QueryForm onSubmit completed successfully');
+        } catch (error) {
+            console.error('[DEBUG] QueryForm onSubmit failed:', error);
+            throw error;
+        }
     };
 
     return (

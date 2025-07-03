@@ -3,34 +3,30 @@ import { useId } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
+import { useQueryContext } from '@/contexts/QueryContext';
 
 import { ModelSelect } from './ModelSelect';
-import { useHandleChangeModel } from './useHandleChangeModel';
-import { isModelVisible, useModels } from './useModels';
 
 export const SingleThreadModelSelect = (): JSX.Element => {
     const selectId = useId();
-    const selectedModelIdFromState = useAppContext(
-        (state) => state.selectedCompareModels[0].model?.id
-    );
+    const queryContext = useQueryContext();
 
-    const models = useModels({
-        select: (data) =>
-            data.filter((model) => isModelVisible(model) || model.id === selectedModelIdFromState),
-    });
+    const selectedModel = queryContext.getThreadViewModel();
+    const selectedModelId = selectedModel?.id;
+    const models = queryContext.availableModels;
 
-    const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeModel();
+    const handleModelChange = (event: SelectChangeEvent) => {
+        console.log('[DEBUG] SingleThreadModelSelect: Model change to:', event.target.value);
+        queryContext.onModelChange(event);
+    };
 
     return (
-        <>
-            <ModelSelect
-                id={selectId}
-                models={models}
-                selectedModelId={selectedModelIdFromState}
-                onModelChange={handleModelChange}
-            />
-            <ModelSwitchWarningModal />
-        </>
+        <ModelSelect
+            id={selectId}
+            models={models}
+            selectedModelId={selectedModelId}
+            onModelChange={handleModelChange}
+        />
     );
 };
 

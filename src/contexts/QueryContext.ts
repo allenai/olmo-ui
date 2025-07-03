@@ -5,7 +5,6 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
-import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 // Single interface that adapts based on context type
 interface QueryContextValue {
@@ -21,7 +20,7 @@ interface QueryContextValue {
     fileUploadProps: FileuploadPropsBase;
     availableModels: Model[];
 
-    onModelChange: (event: SelectChangeEvent, threadViewId: string) => void;
+    onModelChange: (event: SelectChangeEvent, threadViewId?: string) => void;
     getThreadViewModel: (threadViewId?: string) => Model | undefined;
 
     // Form submission: each context implements its own logic
@@ -45,26 +44,11 @@ export const QueryContext = React.createContext<QueryContextValue | null>(null);
 // Hook to use the context
 export const useQueryContext = () => {
     const context = React.useContext(QueryContext);
+    console.log('[DEBUG] useQueryContext called, context:', context ? 'found' : 'null');
     if (!context) {
         throw new Error('useQueryContext must be used within a QueryContext provider');
     }
     return context;
-};
-
-// Hook to use thread-aware context (automatically includes threadViewId)
-// This is what the components would actually use
-export const useThreadAwareQueryContext = (): ThreadAwareQueryContextValue => {
-    const context = useQueryContext();
-    const threadView = useThreadView();
-    const threadViewId = threadView.threadViewId;
-
-    return {
-        ...context,
-        // Override onModelChange to automatically include threadViewId
-        onModelChange: (event: SelectChangeEvent) => {
-            context.onModelChange(event, threadViewId);
-        },
-    };
 };
 
 export type { QueryContextValue, ThreadAwareQueryContextValue };
