@@ -109,7 +109,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             .map((state) => state.threadId)
             .filter(Boolean)
             .some((threadId) => {
-                return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
+                return Boolean(getThread(threadId as string)?.messages.at(-1)?.isLimitReached);
             });
     }, [comparisonState]);
 

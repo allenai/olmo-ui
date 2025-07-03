@@ -10,6 +10,7 @@ import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer'
 import { SingleThreadModelSelect } from '@/components/thread/ModelSelect/ThreadModelSelect';
 import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
+import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
@@ -19,7 +20,7 @@ export const UIRefreshThreadPage = () => {
         (state) => state.selectedCompareModels[0].model?.family_id
     );
     return (
-        <>
+        <SingleThreadProvider>
             <MetaTags />
             <PageContainer>
                 <ContentContainer>
@@ -30,7 +31,7 @@ export const UIRefreshThreadPage = () => {
 
                 <ResponsiveControlsDrawer />
             </PageContainer>
-        </>
+        </SingleThreadProvider>
     );
 };
 
