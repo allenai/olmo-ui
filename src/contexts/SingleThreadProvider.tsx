@@ -30,6 +30,8 @@ interface SingleThreadState {
     threadId?: string;
 }
 
+// TODO: Implement the logic for valid initial states (currently in the page loaders)
+
 interface SingleThreadProviderProps
     extends React.PropsWithChildren<{
         initialState?: Partial<SingleThreadState>;

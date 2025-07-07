@@ -1,14 +1,16 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
+import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
+import { PARAM_SELECTED_MESSAGE, SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
-export const ThreadDisplayContainer = () => {
+// Inner component that has access to QueryContext
+const ThreadDisplayContent = () => {
     const { id: selectedThreadRootId = '' } = useParams();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
@@ -42,5 +44,20 @@ export const ThreadDisplayContainer = () => {
                 selectedMessageId={selectedMessageId}
             />
         </ThreadViewProvider>
+    );
+};
+
+export const ThreadDisplayContainer = () => {
+    const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
+    const { id: selectedThreadRootId = '' } = useParams();
+
+    return (
+        <SingleThreadProvider
+            initialState={{
+                threadId: selectedThreadRootId,
+                selectedModelId: loaderData?.selectedModelId,
+            }}>
+            <ThreadDisplayContent />
+        </SingleThreadProvider>
     );
 };
