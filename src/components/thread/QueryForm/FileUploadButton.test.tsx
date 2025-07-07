@@ -5,73 +5,73 @@ import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
-import { FileUploadButton } from './FileUploadButton';
+import { FileUploadButton, type FileuploadPropsBase } from './FileUploadButton';
+
+const defaultFileUploadProps: FileuploadPropsBase = {
+    isFileUploadDisabled: false,
+    isSendingPrompt: false,
+    acceptsFileUpload: true,
+    acceptedFileTypes: ['image/png'],
+    acceptsMultiple: false,
+    allowFilesInFollowups: true,
+};
+
+const defaultModel: Model = {
+    id: 'Molmo',
+    accepts_files: true,
+    accepted_file_types: ['image/png'],
+    prompt_type: 'multi_modal',
+    description: '',
+    host: 'modal',
+    internal: false,
+    is_deprecated: false,
+    is_visible: true,
+    model_type: 'chat',
+    name: 'Molmo',
+};
+
+const renderFileUploadButton = (
+    propsOverrides: Partial<FileuploadPropsBase> = {},
+    contextOverrides: Partial<any> = {}
+) => {
+    const initialStates = {
+        selectedModel: defaultModel,
+        selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
+        ...contextOverrides,
+    };
+
+    const props = { ...defaultFileUploadProps, ...propsOverrides };
+
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+    return render(
+        <FakeAppContextProvider initialState={initialStates}>
+            <FileUploadButton {...props} />
+        </FakeAppContextProvider>,
+        {
+            wrapperProps: {
+                featureToggles: {
+                    isMultiModalEnabled: true,
+                },
+            },
+        }
+    );
+};
 
 describe('FileUploadButton', () => {
     it('should render successfully when isMultiModalEnabled flag is enabled and the selected model accepts file upload', () => {
-        const initialStates = {
-            selectedModel: {
-                id: 'Molmo',
-                accepts_files: true,
-                accepted_file_types: ['image/png'],
-                prompt_type: 'multi_modal',
-                description: '',
-                host: 'modal',
-                internal: false,
-                is_deprecated: false,
-                is_visible: true,
-                model_type: 'chat',
-                name: 'Molmo',
-            } satisfies Model,
-            selectedThreadMessages: ['systemMessage', 'userMessage', 'llmMessage'],
-        };
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
-        render(
-            <FakeAppContextProvider initialState={initialStates}>
-                <FileUploadButton />
-            </FakeAppContextProvider>,
-            {
-                wrapperProps: {
-                    featureToggles: {
-                        isMultiModalEnabled: true,
-                    },
-                },
-            }
-        );
-
+        renderFileUploadButton();
         expect(screen.getByLabelText('Upload file')).toBeVisible();
     });
 
     it("should be disabled if the model doesn't accept file uploads for followup messages", () => {
-        const initialStates = {
-            selectedModel: {
-                id: 'Molmo',
-                accepts_files: true,
-                accepted_file_types: ['image/png'],
-                prompt_type: 'multi_modal',
-                description: '',
-                host: 'modal',
-                internal: false,
-                is_deprecated: false,
-                is_visible: true,
-                model_type: 'chat',
-                name: 'Molmo',
-            } satisfies Model,
-            selectedThreadMessages: ['userMessage', 'llmMessage'],
-        };
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
-        render(
-            <FakeAppContextProvider initialState={initialStates}>
-                <FileUploadButton />
-            </FakeAppContextProvider>,
+        renderFileUploadButton(
             {
-                wrapperProps: {
-                    featureToggles: {
-                        isMultiModalEnabled: true,
-                    },
-                },
+                isFileUploadDisabled: true,
+                allowFilesInFollowups: false,
+            },
+            {
+                selectedThreadMessages: ['userMessage', 'llmMessage'],
             }
         );
 
@@ -79,35 +79,14 @@ describe('FileUploadButton', () => {
     });
 
     it('should be disabled when prompt is being sent', () => {
-        const initialStates = {
-            selectedModel: {
-                id: 'Molmo',
-                accepts_files: true,
-                accepted_file_types: ['image/png'],
-                prompt_type: 'multi_modal',
-                description: '',
-                host: 'modal',
-                internal: false,
-                is_deprecated: false,
-                is_visible: true,
-                model_type: 'chat',
-                name: 'Molmo',
-            } satisfies Model,
-            selectedThreadMessages: ['userMessage', 'llmMessage'],
-            streamPromptState: RemoteState.Loading,
-        };
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
-        render(
-            <FakeAppContextProvider initialState={initialStates}>
-                <FileUploadButton />
-            </FakeAppContextProvider>,
+        renderFileUploadButton(
             {
-                wrapperProps: {
-                    featureToggles: {
-                        isMultiModalEnabled: true,
-                    },
-                },
+                isSendingPrompt: true,
+                allowFilesInFollowups: false,
+            },
+            {
+                selectedThreadMessages: ['userMessage', 'llmMessage'],
+                streamPromptState: RemoteState.Loading,
             }
         );
 
