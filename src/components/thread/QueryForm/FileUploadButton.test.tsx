@@ -1,6 +1,8 @@
 import { render, screen } from '@test-utils';
+import type { DeepPartial } from 'react-hook-form';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { AppContextState } from '@/AppContext';
 import * as AppContext from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -32,7 +34,7 @@ const defaultModel: Model = {
 
 const renderFileUploadButton = (
     propsOverrides: Partial<FileuploadPropsBase> = {},
-    contextOverrides: Partial<any> = {}
+    contextOverrides: DeepPartial<AppContextState> = {}
 ) => {
     const initialStates = {
         selectedModel: defaultModel,

@@ -25,11 +25,14 @@ export const useCompareModelSliceShim = () => {
     const queryContext = useQueryContext();
 
     return {
-        // Getter fails with informative error
+        // Getter delegates to QueryContext without needing to direct expose "selectedCompareModels" on the QueryContext interface
         get selectedCompareModels(): CompareModelState[] {
-            throw new Error(
-                '[DEBUG] selectedCompareModels getter blocked - use QueryContext.getThreadViewModel() instead'
-            );
+            // Use the transform method to build the compare models array
+            return queryContext.transform((threadViewId, model, threadId) => ({
+                threadViewId,
+                model,
+                rootThreadId: threadId,
+            }));
         },
 
         // Setter delegates to QueryContext
@@ -54,13 +57,10 @@ export const useCompareModelSliceShim = () => {
     };
 };
 
-// Legacy zustand slice creator. Throws errors for getters
+// Legacy zustand slice creator that provides adapter functionality
 export const createCompareModelSlice: OlmoStateCreator<CompareModelSlice> = () => ({
-    get selectedCompareModels(): CompareModelState[] {
-        throw new Error(
-            '[DEBUG] selectedCompareModels getter blocked - use QueryContext.getThreadViewModel() instead'
-        );
-    },
+    // Return empty array initially - will be overridden by components using QueryContext
+    selectedCompareModels: [],
 
     setSelectedCompareModels: (_compareModels: CompareModelState[]) => {
         throw new Error(

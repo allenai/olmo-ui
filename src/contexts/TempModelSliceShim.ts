@@ -14,11 +14,9 @@ export const useModelSliceShim = () => {
     const queryContext = useQueryContext();
 
     return {
-        // Getter fails noticeably on purpose
+        // Getter delegates to QueryContext without needing to direct expose "selectedModel" on the QueryContext interface
         get selectedModel(): Model | undefined {
-            throw new Error(
-                '[DEBUG] selectedModel getter blocked - use QueryContext.getThreadViewModel() instead'
-            );
+            return queryContext.getThreadViewModel('0');
         },
 
         // Setter delegates to QueryContext
@@ -28,13 +26,9 @@ export const useModelSliceShim = () => {
     };
 };
 
-// Legacy zustand slice creator. Throws errors for getter
+// Legacy zustand slice creator that provides adapter functionality
 export const createModelSlice: OlmoStateCreator<ModelSlice> = () => ({
-    get selectedModel(): Model | undefined {
-        throw new Error(
-            '[DEBUG] selectedModel getter blocked - use QueryContext.getThreadViewModel() instead'
-        );
-    },
+    selectedModel: undefined,
 
     setSelectedModel: (_model: Model) => {
         throw new Error('[DEBUG] setSelectedModel blocked - use QueryContext.setModelId() instead');
