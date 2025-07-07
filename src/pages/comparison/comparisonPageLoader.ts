@@ -9,25 +9,25 @@ import { getModelsQueryOptions, modelById } from '@/components/thread/ModelSelec
 import { CompareModelState } from '@/slices/CompareModelSlice';
 import { arrayZip } from '@/utils/arrayZip';
 
+export interface ComparisonLoaderData {
+    comparisonModels?: CompareModelState[];
+}
+
 // Initialize default comparison models when no URL parameters are provided
 const initializeDefaultComparisonModels = (
     models: Model[],
-    setSelectedCompareModels: (models: CompareModelState[]) => void,
     count: number = 2
-) => {
-    const defaultModels: CompareModelState[] = Array.from({ length: count }, (_, index) => ({
+): CompareModelState[] => {
+    return Array.from({ length: count }, (_, index) => ({
         threadViewId: String(index),
         model: models[0],
         rootThreadId: undefined,
     }));
-
-    setSelectedCompareModels(defaultModels);
 };
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ params: _params, request }) => {
         const isComparisonPageEnabled = process.env.IS_COMPARISON_PAGE_ENABLED === 'true';
-        const { setSelectedCompareModels } = appContext.getState();
 
         if (!isComparisonPageEnabled) {
             // React-router recommends throwing a response
@@ -71,8 +71,8 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         // If no URL parameters provided, initialize with default models for comparison
         if (threadListStrArray.length === 0 && modelListStrArray.length === 0) {
-            initializeDefaultComparisonModels(models, setSelectedCompareModels);
-            return null;
+            const comparisonModels = initializeDefaultComparisonModels(models);
+            return { comparisonModels } as ComparisonLoaderData;
         }
 
         const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
@@ -107,12 +107,10 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             }
         );
 
-        const threadsAndModels = await Promise.all(threadsAndModelPromises);
-
-        setSelectedCompareModels(threadsAndModels);
+        const comparisonModels = await Promise.all(threadsAndModelPromises);
 
         // TODO (bb): attribition on load
 
-        return null;
+        return { comparisonModels } as ComparisonLoaderData;
     };
 };

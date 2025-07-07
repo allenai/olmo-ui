@@ -153,15 +153,17 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
 
             getThreadViewModel: (threadViewId?: string) => {
                 if (!threadViewId) return undefined;
-                const modelId = comparisonState[threadViewId].modelId;
+                const modelId = comparisonState[threadViewId]?.modelId;
                 return models.find((model) => model.id === modelId);
             },
 
             transform: <T,>(
-                _fn: (_threadViewId: string, _model?: Model, _threadId?: string) => T
+                fn: (threadViewId: string, model?: Model, threadId?: string) => T
             ) => {
-                // TODO: Implement
-                return [] as T[];
+                return Object.entries(comparisonState).map(([threadViewId, state]) => {
+                    const model = models.find((m) => m.id === state.modelId);
+                    return fn(threadViewId, model, state.threadId);
+                });
             },
 
             onSubmit: async (data: QueryFormValues) => {
