@@ -5,7 +5,7 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
 import { RemoteState } from '@/contexts/util';
-import { ThreadViewId } from '@/slices/CompareModelSlice';
+import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
