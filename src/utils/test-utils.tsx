@@ -19,6 +19,8 @@ import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import { QueryContext, QueryContextValue } from '@/contexts/QueryContext';
+import { useStreamMessage } from '@/contexts/useStreamMessage';
+import { RemoteState } from '@/contexts/util';
 import { server } from '@/mocks/node';
 
 import { uiRefreshOlmoTheme } from '../olmoTheme';
@@ -70,6 +72,45 @@ export const createMockUser = (overrides: Partial<User> = {}): User => ({
     permissions: undefined,
     ...overrides,
 });
+
+type UseStreamMessageReturn = ReturnType<typeof useStreamMessage>;
+
+export const createStreamMessageMock = (
+    overrides: Partial<UseStreamMessageReturn> = {}
+): UseStreamMessageReturn => {
+    const baseMock = {
+        // UseMutation properties
+        mutateAsync: vi.fn().mockResolvedValue(undefined),
+        mutate: vi.fn(),
+        reset: vi.fn(),
+        isPending: false,
+        isPaused: false,
+        isError: false,
+        isSuccess: false,
+        isIdle: true,
+        data: undefined,
+        error: null,
+        variables: undefined,
+        failureCount: 0,
+        failureReason: null,
+        status: 'idle' as const,
+        submittedAt: 0,
+        context: undefined,
+
+        // useStreamMessage-specific properties
+        onFirstMessage: vi.fn(),
+        completeStream: vi.fn(),
+        prepareForNewSubmission: vi.fn(),
+        abortAllStreams: vi.fn(),
+        canPause: false, // Default to not streaming
+        activeStreamCount: 0,
+        remoteState: RemoteState.Loaded,
+        hasReceivedFirstResponse: false,
+        ...overrides,
+    };
+
+    return baseMock as UseStreamMessageReturn;
+};
 
 export const setupThreadInCache = (
     threadId: string,

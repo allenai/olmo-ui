@@ -10,8 +10,9 @@ import * as AppContext from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
+import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
-import { createMockUser, setupThreadInCache } from '@/utils/test-utils';
+import { createMockUser, createStreamMessageMock, setupThreadInCache } from '@/utils/test-utils';
 
 import { QueryForm } from './QueryForm';
 
@@ -35,16 +36,7 @@ const mockUseStreamMessage = vi.mocked(useStreamMessage);
 
 // Set up default mock for useStreamMessage
 beforeEach(() => {
-    mockUseStreamMessage.mockReturnValue({
-        mutateAsync: vi.fn().mockResolvedValue(undefined),
-        onFirstMessage: vi.fn(),
-        completeStream: vi.fn(),
-        prepareForNewSubmission: vi.fn(),
-        abortAllStreams: vi.fn(),
-        canPause: false, // Default to not streaming
-        remoteState: 'idle' as const,
-        hasReceivedFirstResponse: false,
-    });
+    mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
 });
 
 const renderWithProvider = (
@@ -113,16 +105,13 @@ describe('QueryForm', () => {
 
     it('should show the stop button when streaming', async () => {
         // Override the mock to simulate streaming state
-        mockUseStreamMessage.mockReturnValue({
-            mutateAsync: vi.fn().mockResolvedValue(undefined),
-            onFirstMessage: vi.fn(),
-            completeStream: vi.fn(),
-            prepareForNewSubmission: vi.fn(),
-            abortAllStreams: vi.fn(),
-            canPause: true, // This makes the stop button appear
-            remoteState: 'loading' as const,
-            hasReceivedFirstResponse: false,
-        });
+        mockUseStreamMessage.mockReturnValue(
+            createStreamMessageMock({
+                canPause: true, // This makes the stop button appear
+                remoteState: RemoteState.Loading,
+                isPending: true,
+            })
+        );
 
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
@@ -156,16 +145,11 @@ describe('QueryForm', () => {
 
     it('should clear out prompt after receiving the first message from the response', async () => {
         // Override the mock to simulate form reset behavior
-        mockUseStreamMessage.mockReturnValue({
-            mutateAsync: vi.fn().mockResolvedValue(undefined),
-            onFirstMessage: vi.fn(),
-            completeStream: vi.fn(),
-            prepareForNewSubmission: vi.fn(),
-            abortAllStreams: vi.fn(),
-            canPause: false,
-            remoteState: 'idle' as const,
-            hasReceivedFirstResponse: true, // This triggers form reset
-        });
+        mockUseStreamMessage.mockReturnValue(
+            createStreamMessageMock({
+                hasReceivedFirstResponse: true, // This triggers form reset
+            })
+        );
 
         const TestComponent = () => {
             const context = useQueryContext();
@@ -209,16 +193,11 @@ describe('QueryForm', () => {
 
     it('should not clear out prompt after the stream finishes', async () => {
         // Override the mock to simulate stream finished but no reset
-        mockUseStreamMessage.mockReturnValue({
-            mutateAsync: vi.fn().mockResolvedValue(undefined),
-            onFirstMessage: vi.fn(),
-            completeStream: vi.fn(),
-            prepareForNewSubmission: vi.fn(),
-            abortAllStreams: vi.fn(),
-            canPause: false,
-            remoteState: 'idle' as const,
-            hasReceivedFirstResponse: false, // Stream finished but no reset
-        });
+        mockUseStreamMessage.mockReturnValue(
+            createStreamMessageMock({
+                hasReceivedFirstResponse: false, // Stream finished but no reset
+            })
+        );
 
         const TestComponent = () => {
             const context = useQueryContext();

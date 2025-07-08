@@ -3,11 +3,24 @@ import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { SingleThreadModelSelect } from './ThreadModelSelect';
+
+const createTestModel = (id: string, name: string): Model => ({
+    id,
+    name,
+    description: `Test ${name}`,
+    host: 'inferd' as const,
+    internal: false,
+    model_type: 'chat' as const,
+    prompt_type: 'text_only' as const,
+    is_deprecated: false,
+    is_visible: true,
+});
 
 const getInitialState = () =>
     ({
@@ -54,9 +67,9 @@ describe('Model Select', () => {
                     <FakeQueryContextProvider
                         selectedModel={{ id: 'tulu2.5', name: 'Tulu2.5' }}
                         availableModels={[
-                            { id: 'tulu2.5', name: 'Tulu2.5', is_deprecated: false },
-                            { id: 'model2', name: 'Model 2', is_deprecated: false },
-                            { id: 'model3', name: 'Model 3', is_deprecated: false },
+                            createTestModel('tulu2.5', 'Tulu2.5'),
+                            createTestModel('model2', 'Model 2'),
+                            createTestModel('model3', 'Model 3'),
                         ]}>
                         <SingleThreadModelSelect />
                     </FakeQueryContextProvider>
