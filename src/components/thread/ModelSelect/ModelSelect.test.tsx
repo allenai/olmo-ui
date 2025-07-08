@@ -70,7 +70,7 @@ describe('Model Select', () => {
         await act(async () => {
             await user.click(modelSelectLocator);
         });
-        
+
         // ModelSelect is a "dumb" component. It renders whatever models are passed to it
         expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(3);
     });

@@ -1,40 +1,38 @@
 import { QueryClient } from '@tanstack/react-query';
 
-import { appContext } from '@/AppContext';
-
 import { playgroundLoader } from './UIRefreshThreadPage';
 
 describe('root playground loader', () => {
     it('should set the model from a model query param', async () => {
-        expect(appContext.getState().selectedModel?.id).not.toEqual('OLMo-peteish-dpo-preview');
-
-        await playgroundLoader(new QueryClient({ defaultOptions: { queries: { retry: false } } }))({
+        const result = await playgroundLoader(
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+        )({
             params: { id: undefined },
             request: new Request(new URL('http://localhost:8080/?model=OLMo-peteish-dpo-preview')),
         });
 
-        expect(appContext.getState().selectedModel?.id).toEqual('OLMo-peteish-dpo-preview');
+        expect(result.preselectedModelId).toEqual('OLMo-peteish-dpo-preview');
     });
 
     it("should set to the first non-deprecated model if the model query param doesn't match a real model", async () => {
-        expect(appContext.getState().selectedModel?.id).toBeUndefined();
-
-        await playgroundLoader(new QueryClient({ defaultOptions: { queries: { retry: false } } }))({
+        const result = await playgroundLoader(
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+        )({
             params: { id: undefined },
             request: new Request(new URL('http://localhost:8080/?model=fake-model')),
         });
 
-        expect(appContext.getState().selectedModel?.id).toEqual('tulu2');
+        expect(result.preselectedModelId).toEqual('tulu2');
     });
 
     it("should only set a model if the id param isn't set", async () => {
-        expect(appContext.getState().selectedModel?.id).not.toEqual('OLMo-peteish-dpo-preview');
-
-        await playgroundLoader(new QueryClient({ defaultOptions: { queries: { retry: false } } }))({
+        const result = await playgroundLoader(
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+        )({
             params: { id: 'foo' },
             request: new Request(new URL('http://localhost:8080/thread/foo')),
         });
 
-        expect(appContext.getState().selectedModel?.id).toBeUndefined();
+        expect(result.preselectedModelId).toBeUndefined();
     });
 });
