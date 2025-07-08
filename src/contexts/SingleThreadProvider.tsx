@@ -53,8 +53,6 @@ const shouldShowCompatibilityWarning = (
 };
 
 export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
-    console.log('[DEBUG] SingleThreadProvider initializing with initialState:', initialState);
-
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -64,23 +62,19 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
-    console.log(
-        '[DEBUG] SingleThreadProvider state - selectedModelId:',
-        selectedModelId,
-        'threadId:',
-        threadId
-    );
-
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
     const streamMessage = useStreamMessage();
 
-    // Get available models from API, filtering for visible models
+    // Get available models from API, filtering for visible and non-deprecated models
     const availableModels = useModels({
         select: (data) =>
-            data.filter((model) => isModelVisible(model) || model.id === selectedModelId),
+            data.filter(
+                (model) =>
+                    (isModelVisible(model) && !model.is_deprecated) || model.id === selectedModelId
+            ),
     });
 
     const selectedModel = useMemo(() => {
@@ -89,10 +83,6 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
         }
 
         const firstVisibleModel = availableModels.find((model) => isModelVisible(model));
-        console.log(
-            '[DEBUG] SingleThreadProvider: Using default first visible model:',
-            firstVisibleModel?.id
-        );
         return firstVisibleModel;
     }, [availableModels, selectedModelId]);
 
@@ -175,60 +165,28 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
     const onSubmit = useCallback(
         async (data: QueryFormValues) => {
-            console.log('[DEBUG] SingleThreadProvider onSubmit called with data:', data);
-            console.log('[DEBUG] SingleThreadProvider selectedModel:', selectedModel);
-            console.log('[DEBUG] SingleThreadProvider threadId:', threadId);
-
             if (!selectedModel) {
-                console.error(
-                    '[DEBUG] SingleThreadProvider: No selected model, aborting submission'
-                );
                 return;
             }
 
-            console.log('[DEBUG] SingleThreadProvider: Preparing for new submission');
             streamMessage.prepareForNewSubmission();
 
-            try {
-                console.log('[DEBUG] SingleThreadProvider: Starting processSingleModelSubmission');
-                const resultThreadId = await processSingleModelSubmission(
-                    data,
-                    selectedModel,
-                    threadId,
-                    '0', // single-thread view id is always '0'
-                    streamMessage.mutateAsync,
-                    streamMessage.onFirstMessage,
-                    streamMessage.completeStream,
-                    addSnackMessage
-                );
+            const resultThreadId = await processSingleModelSubmission(
+                data,
+                selectedModel,
+                threadId,
+                '0', // single-thread view id is always '0'
+                streamMessage.mutateAsync,
+                streamMessage.onFirstMessage,
+                streamMessage.completeStream,
+                addSnackMessage
+            );
 
-                console.log(
-                    '[DEBUG] SingleThreadProvider: processSingleModelSubmission result:',
-                    resultThreadId
-                );
-
-                if (resultThreadId) {
-                    if (!threadId) {
-                        console.log(
-                            '[DEBUG] SingleThreadProvider: Setting new thread ID:',
-                            resultThreadId
-                        );
-                        setThreadIdValue(resultThreadId);
-                    }
-                    console.log(
-                        '[DEBUG] SingleThreadProvider: Navigating to thread:',
-                        resultThreadId
-                    );
-                    navigate(links.thread(resultThreadId));
-                } else {
-                    console.warn('[DEBUG] SingleThreadProvider: No result thread ID returned');
+            if (resultThreadId) {
+                if (!threadId) {
+                    setThreadIdValue(resultThreadId);
                 }
-            } catch (error) {
-                console.error(
-                    '[DEBUG] SingleThreadProvider: processSingleModelSubmission failed:',
-                    error
-                );
-                throw error;
+                navigate(links.thread(resultThreadId));
             }
         },
         [selectedModel, streamMessage, threadId, addSnackMessage, navigate]

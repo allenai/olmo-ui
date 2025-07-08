@@ -41,11 +41,12 @@ describe('SingleThreadProvider', () => {
             return <div data-testid="placeholder">{context.placeholderText}</div>;
         };
 
-        it('should return "Message the model" when no model is selected', async () => {
+        it('should return "Message Tülu" when no model is explicitly selected (auto-selects first)', async () => {
             const { getByTestId } = renderWithProvider(PlaceholderTestComponent);
 
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Message the model');
+                // When no model is explicitly selected, SingleThreadProvider auto-selects the first available model (tulu2)
+                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu');
             });
         });
 
@@ -70,13 +71,14 @@ describe('SingleThreadProvider', () => {
             });
         });
 
-        it('should return "Reply to the model" when no model is selected but thread exists', async () => {
+        it('should return "Reply to Tülu" when no model is explicitly selected but thread exists', async () => {
             const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
                 threadId: 'existing-thread-123',
             });
 
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Reply to the model');
+                // Auto-selects first available model (tulu2) even when thread exists
+                expect(getByTestId('placeholder')).toHaveTextContent('Reply to Tülu');
             });
         });
     });
@@ -105,9 +107,9 @@ describe('SingleThreadProvider', () => {
         it('should update selected model and reflect in placeholder text', async () => {
             const { getByTestId } = renderWithProvider(ModelChangeTestComponent);
 
-            // Wait for component to load and initially no model selected
+            // Wait for component to load and initially auto-selects first model
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Message the model');
+                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu');
             });
 
             // Click to change model
@@ -131,6 +133,18 @@ describe('SingleThreadProvider', () => {
             return <div data-testid="available-models-count">{availableModels.length}</div>;
         };
 
+        const ModelsFilterTestComponent = () => {
+            const context = useQueryContext();
+            const availableModels = context.availableModels;
+            const deprecatedModel = availableModels.find((model) => model.is_deprecated);
+            return (
+                <>
+                    <div data-testid="has-deprecated">{String(!!deprecatedModel)}</div>
+                    <div data-testid="deprecated-model-id">{deprecatedModel?.id || ''}</div>
+                </>
+            );
+        };
+
         it('should return available models from API with proper visibility filtering', async () => {
             const { getByTestId } = renderWithProvider(ModelsCountTestComponent);
 
@@ -139,6 +153,28 @@ describe('SingleThreadProvider', () => {
                 // olmo-7b-chat (is_visible: false) - filtered out
                 // Result: 3 visible models returned
                 expect(getByTestId('available-models-count')).toHaveTextContent('3');
+            });
+        });
+
+        it('should exclude deprecated models', async () => {
+            const { getByTestId } = renderWithProvider(ModelsFilterTestComponent);
+
+            await waitFor(() => {
+                // Should not include any deprecated models in the available options
+                // olmo-7b-chat is deprecated but should be filtered out
+                expect(getByTestId('has-deprecated')).toHaveTextContent('false');
+            });
+        });
+
+        it('should include deprecated models if they are selected', async () => {
+            const { getByTestId } = renderWithProvider(ModelsFilterTestComponent, {
+                selectedModelId: 'olmo-7b-chat', // This is deprecated and not visible
+            });
+
+            await waitFor(() => {
+                // Should include the deprecated model since it's selected
+                expect(getByTestId('has-deprecated')).toHaveTextContent('true');
+                expect(getByTestId('deprecated-model-id')).toHaveTextContent('olmo-7b-chat');
             });
         });
     });
