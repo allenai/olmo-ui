@@ -13,9 +13,11 @@ import {
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
+import { QueryContext, QueryContextValue } from '@/contexts/QueryContext';
 
 import { uiRefreshOlmoTheme } from '../olmoTheme';
 
@@ -96,6 +98,56 @@ export const setupThreadInCache = (
     queryClient.setQueryData(queryKey, thread);
 };
 
+interface FakeQueryContextProviderProps extends PropsWithChildren {
+    selectedModel?: Partial<Model>;
+    availableModels?: Model[];
+    canSubmit?: boolean;
+    autofocus?: boolean;
+    placeholderText?: string;
+    areFilesAllowed?: boolean;
+    isLimitReached?: boolean;
+}
+
+export const FakeQueryContextProvider = ({
+    children,
+    selectedModel,
+    availableModels = [],
+    canSubmit = true,
+    autofocus = false,
+    placeholderText = 'Test placeholder',
+    areFilesAllowed = false,
+    isLimitReached = false,
+}: FakeQueryContextProviderProps) => {
+    const mockContextValue: QueryContextValue = {
+        canSubmit,
+        autofocus,
+        placeholderText,
+        areFilesAllowed,
+        availableModels,
+        canPauseThread: false,
+        isLimitReached,
+        remoteState: undefined,
+        shouldResetForm: false,
+        fileUploadProps: {
+            isFileUploadDisabled: true,
+            isSendingPrompt: false,
+            acceptsFileUpload: false,
+            acceptedFileTypes: [],
+            acceptsMultiple: false,
+            allowFilesInFollowups: false,
+        },
+        onModelChange: () => {},
+        getThreadViewModel: () => selectedModel as Model | undefined,
+        transform: () => [],
+        onSubmit: async () => {},
+        onAbort: () => {},
+        setModelId: () => {},
+        setThreadId: () => {},
+    };
+
+    return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;
+};
+
 const FakeFeatureToggleProvider = ({
     children,
     featureToggles = { logToggles: false },
@@ -121,7 +173,9 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
     // If we need to test with react router Link functionality we can add it back but we'd need to do some router setup in here
     const theme = getTheme(uiRefreshOlmoTheme);
 
-    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false } },
+    });
 
     return (
         <QueryClientProvider client={queryClient}>

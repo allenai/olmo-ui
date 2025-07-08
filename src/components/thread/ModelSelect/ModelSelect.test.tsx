@@ -1,4 +1,4 @@
-import { render, screen } from '@test-utils';
+import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -41,34 +41,7 @@ const getInitialState = () =>
     }) satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
 
 describe('Model Select', () => {
-    it("should show the selected model even if it's deprecated", async () => {
-        const user = userEvent.setup();
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
-        render(
-            <MemoryRouter>
-                <FakeAppContextProvider
-                    initialState={{
-                        ...getInitialState(),
-                        // If this is failing after you changed the mocked models you'll need to update this!
-                        selectedModel: { id: 'olmo-7b-chat' },
-                    }}>
-                    <SingleThreadModelSelect />
-                </FakeAppContextProvider>
-            </MemoryRouter>
-        );
-
-        const modelSelectLocator = await screen.findByRole('combobox', { name: 'Model:' });
-        expect(modelSelectLocator).toHaveTextContent('OLMo 7B - Chat');
-
-        await act(async () => {
-            await user.click(modelSelectLocator);
-        });
-        // If this is failing after you changed the mocked models you'll need to update this!
-        expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(4);
-    });
-
-    it('should only show non-deprecated models as options', async () => {
+    it('should render all provided models in dropdown options', async () => {
         const user = userEvent.setup();
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
@@ -78,18 +51,27 @@ describe('Model Select', () => {
                     initialState={{
                         ...getInitialState(),
                     }}>
-                    <SingleThreadModelSelect />
+                    <FakeQueryContextProvider
+                        selectedModel={{ id: 'tulu2.5', name: 'Tulu2.5' }}
+                        availableModels={[
+                            { id: 'tulu2.5', name: 'Tulu2.5', is_deprecated: false },
+                            { id: 'model2', name: 'Model 2', is_deprecated: false },
+                            { id: 'model3', name: 'Model 3', is_deprecated: false },
+                        ]}>
+                        <SingleThreadModelSelect />
+                    </FakeQueryContextProvider>
                 </FakeAppContextProvider>
             </MemoryRouter>
         );
 
         const modelSelectLocator = await screen.findByRole('combobox', { name: 'Model:' });
-        expect(modelSelectLocator).toBeInTheDocument();
         expect(modelSelectLocator).toHaveTextContent('Tulu2.5');
 
         await act(async () => {
             await user.click(modelSelectLocator);
         });
+        
+        // ModelSelect is a "dumb" component. It renders whatever models are passed to it
         expect(screen.getByRole('listbox', { name: 'Model:' }).children).toHaveLength(3);
     });
 });
