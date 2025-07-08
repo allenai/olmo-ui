@@ -14,7 +14,6 @@ import { User as ApiUser } from '@/api/User';
 import { appContext, useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 
-import { getUserModel } from '../getWhoAmIModel';
 import { UserClient } from '../User';
 import { UserInfoLoaderResponse } from '../user-info-loader';
 import { createLoginRedirectURL } from './auth-utils';
@@ -85,9 +84,6 @@ export const loginResultLoader = (queryClient: QueryClient): LoaderFunction => {
 
             // Re-fetch user info after login
             await getUserInfo(queryClient);
-
-            // Optionally, prefetch user model data
-            await queryClient.ensureQueryData(getUserModel);
 
             return redirect(redirectTo);
         } else {
