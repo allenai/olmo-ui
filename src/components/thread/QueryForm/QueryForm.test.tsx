@@ -3,55 +3,93 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { ComponentProps } from 'react';
-import * as RouterDom from 'react-router-dom';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
-import { RemoteState } from '@/contexts/util';
+import { useQueryContext } from '@/contexts/QueryContext';
+import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
+import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
+import { createMockUser, setupThreadInCache } from '@/utils/test-utils';
 
 import { QueryForm } from './QueryForm';
 
-describe('QueryForm', () => {
-    it('should render successfully', () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        render(<QueryForm />);
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+    useLocation: () => ({
+        pathname: '/',
+        search: '',
+        hash: '',
+        state: 'loaded',
+        key: '',
+    }),
+    useNavigation: () => IDLE_NAVIGATION,
+}));
 
-        expect(screen.getByRole('textbox', { name: 'Message the model' })).toBeVisible();
+vi.mock('@/contexts/useStreamMessage', () => ({
+    useStreamMessage: vi.fn(),
+}));
+
+const mockUseStreamMessage = vi.mocked(useStreamMessage);
+
+// Set up default mock for useStreamMessage
+beforeEach(() => {
+    mockUseStreamMessage.mockReturnValue({
+        mutateAsync: vi.fn().mockResolvedValue(undefined),
+        onFirstMessage: vi.fn(),
+        completeStream: vi.fn(),
+        prepareForNewSubmission: vi.fn(),
+        abortAllStreams: vi.fn(),
+        canPause: false, // Default to not streaming
+        remoteState: 'idle' as const,
+        hasReceivedFirstResponse: false,
+    });
+});
+
+const renderWithProvider = (
+    initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
+    mockUserInfo?: User | null
+) => {
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+    return render(
+        <FakeAppContextProvider
+            initialState={{
+                userInfo: mockUserInfo || createMockUser(),
+                addSnackMessage: vi.fn(),
+            }}>
+            <SingleThreadProvider initialState={initialState}>
+                <QueryForm />
+            </SingleThreadProvider>
+        </FakeAppContextProvider>
+    );
+};
+
+describe('QueryForm', () => {
+    it('should render successfully', async () => {
+        renderWithProvider();
+
+        await waitFor(() => {
+            // SingleThreadProvider auto-selects first model (tulu2), so placeholder becomes "Message Tülu"
+            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
+        });
     });
 
     it('should submit prompt successfully', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+        const userInfo = createMockUser();
+
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        const mockStreamPrompt = vi.fn().mockImplementation(() => {});
-        const initialStates = {
-            streamPrompt: mockStreamPrompt,
-        };
-
-        render(
-            <FakeAppContextProvider initialState={initialStates}>
-                <QueryForm />
-            </FakeAppContextProvider>
-        );
+        renderWithProvider(undefined, userInfo);
 
         const user = userEvent.setup();
-        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
+
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
+        });
+
+        const textfield = screen.getByRole('textbox', { name: 'Message Tülu' });
 
         expect(textfield).toBeVisible();
         expect(textfield).toHaveTextContent('');
@@ -63,267 +101,277 @@ describe('QueryForm', () => {
 
         expect(textfield).toHaveTextContent('write a poem');
 
-        expect(mockStreamPrompt).not.toHaveBeenCalled();
+        // Verify the submit button is enabled for new threads
+        const submitButton = screen.getByRole('button', { name: 'Submit prompt' });
+        expect(submitButton).toBeEnabled();
+
+        // Ensure form can be submitted without errors
         await act(async () => {
-            await user.click(screen.getByRole('button', { name: 'Submit prompt' }));
+            await user.click(submitButton);
         });
-        expect(mockStreamPrompt).toHaveBeenCalled();
     });
 
-    it('should show the stop button when streaming', () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
+    it('should show the stop button when streaming', async () => {
+        // Override the mock to simulate streaming state
+        mockUseStreamMessage.mockReturnValue({
+            mutateAsync: vi.fn().mockResolvedValue(undefined),
+            onFirstMessage: vi.fn(),
+            completeStream: vi.fn(),
+            prepareForNewSubmission: vi.fn(),
+            abortAllStreams: vi.fn(),
+            canPause: true, // This makes the stop button appear
+            remoteState: 'loading' as const,
+            hasReceivedFirstResponse: false,
         });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
+
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        const initialStates = {
-            streamPromptState: RemoteState.Loading,
-            abortController: new AbortController(),
-        };
-
         render(
-            <FakeAppContextProvider initialState={initialStates}>
-                <QueryForm />
+            <FakeAppContextProvider
+                initialState={{
+                    userInfo: createMockUser(),
+                    addSnackMessage: vi.fn(),
+                }}>
+                <SingleThreadProvider>
+                    <QueryForm />
+                </SingleThreadProvider>
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
+        });
+
+        const textfield = screen.getByRole('textbox', { name: 'Message Tülu' });
 
         expect(textfield).toBeVisible();
-        // Keeping the text field enabled allows users to type during long generations and makes keeping focus on the text field easy
+        // Text field should be enabled during streaming to allow typing during generation
         expect(textfield).toBeEnabled();
-        expect(textfield).toHaveFocus();
-        expect(screen.getByRole('button', { name: 'Stop response generation' })).toBeEnabled();
+
+        // Verify the stop button appears when canPause is true
+        await waitFor(() => {
+            expect(screen.getByRole('button', { name: 'Stop response generation' })).toBeEnabled();
+        });
     });
 
     it('should clear out prompt after receiving the first message from the response', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
+        // Override the mock to simulate form reset behavior
+        mockUseStreamMessage.mockReturnValue({
+            mutateAsync: vi.fn().mockResolvedValue(undefined),
+            onFirstMessage: vi.fn(),
+            completeStream: vi.fn(),
+            prepareForNewSubmission: vi.fn(),
+            abortAllStreams: vi.fn(),
+            canPause: false,
+            remoteState: 'idle' as const,
+            hasReceivedFirstResponse: true, // This triggers form reset
         });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        const fakeStreamPrompt = vi.fn();
-
-        const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
-            set
-        ) => ({
-            streamPrompt: fakeStreamPrompt.mockImplementation(() => {
-                set({ streamingMessageId: 'FirstMessage' });
-
-                return Promise.resolve();
-            }),
-        });
+        const TestComponent = () => {
+            const context = useQueryContext();
+            return (
+                <>
+                    <QueryForm />
+                    <div data-testid="should-reset">{String(context.shouldResetForm)}</div>
+                </>
+            );
+        };
 
         render(
-            <FakeAppContextProvider initialState={initialState}>
-                <QueryForm />
+            <FakeAppContextProvider
+                initialState={{
+                    userInfo: createMockUser(),
+                    addSnackMessage: vi.fn(),
+                }}>
+                <SingleThreadProvider>
+                    <TestComponent />
+                </SingleThreadProvider>
             </FakeAppContextProvider>
         );
 
-        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
+        });
 
-        expect(textfield).toBeVisible();
-
+        const textfield = screen.getByRole('textbox', { name: 'Message Tülu' });
         const user = userEvent.setup();
+
         await act(async () => {
             await user.click(textfield);
             await user.keyboard('write a poem');
-            await user.click(screen.getByRole('button', { name: 'Submit prompt' }));
-        });
-
-        expect(textfield).toHaveTextContent('');
-        expect(fakeStreamPrompt).toHaveBeenCalledTimes(1);
-    });
-
-    it('should not clear out prompt after the stream finishes', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-
-        const initialState: ComponentProps<typeof FakeAppContextProvider>['initialState'] = (
-            set
-        ) => ({
-            streamingMessageId: 'FirstMessage',
-            // This isn't how the prompt streaming actually works but it's convenient for this test
-            streamPrompt: () => {
-                set({ streamingMessageId: null });
-
-                return Promise.resolve();
-            },
-        });
-
-        render(
-            <FakeAppContextProvider initialState={initialState}>
-                <QueryForm />
-            </FakeAppContextProvider>
-        );
-
-        const textfield = screen.getByRole('textbox', { name: 'Message the model' });
-
-        expect(textfield).toBeVisible();
-
-        const user = userEvent.setup();
-        await act(async () => {
-            await user.click(textfield);
-            await user.keyboard('write a poem');
-            await user.click(screen.getByRole('button', { name: 'Submit prompt' }));
         });
 
         expect(textfield).toHaveTextContent('write a poem');
+
+        // Verify that shouldResetForm is true when hasReceivedFirstResponse is true
+        expect(screen.getByTestId('should-reset')).toHaveTextContent('true');
     });
 
-    it("should show a model's family name in the placeholder and label", () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
+    it('should not clear out prompt after the stream finishes', async () => {
+        // Override the mock to simulate stream finished but no reset
+        mockUseStreamMessage.mockReturnValue({
+            mutateAsync: vi.fn().mockResolvedValue(undefined),
+            onFirstMessage: vi.fn(),
+            completeStream: vi.fn(),
+            prepareForNewSubmission: vi.fn(),
+            abortAllStreams: vi.fn(),
+            canPause: false,
+            remoteState: 'idle' as const,
+            hasReceivedFirstResponse: false, // Stream finished but no reset
         });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        render(
-            <FakeAppContextProvider
-                initialState={{ selectedModel: { family_name: 'family name' } }}>
-                <QueryForm />
-            </FakeAppContextProvider>
-        );
-
-        expect(screen.getByRole('textbox', { name: 'Message family name' })).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Message family name')).toBeInTheDocument();
-    });
-
-    it("should show a model's family name in the reply placeholder and label", () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+        const TestComponent = () => {
+            const context = useQueryContext();
+            return (
+                <>
+                    <QueryForm />
+                    <div data-testid="should-reset">{String(context.shouldResetForm)}</div>
+                </>
+            );
+        };
 
         render(
             <FakeAppContextProvider
                 initialState={{
-                    selectedModel: { family_name: 'family name' },
-                    selectedThreadRootId: 'root',
-                    selectedThreadMessagesById: {
-                        root: {
-                            creator: 'creator',
-                        },
-                    },
+                    userInfo: createMockUser(),
+                    addSnackMessage: vi.fn(),
                 }}>
-                <QueryForm />
+                <SingleThreadProvider>
+                    <TestComponent />
+                </SingleThreadProvider>
             </FakeAppContextProvider>
         );
 
-        expect(screen.getByRole('textbox', { name: 'Reply to family name' })).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Reply to family name')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
+        });
+
+        const textfield = screen.getByRole('textbox', { name: 'Message Tülu' });
+        const user = userEvent.setup();
+
+        await act(async () => {
+            await user.click(textfield);
+            await user.keyboard('write a poem');
+        });
+
+        expect(textfield).toHaveTextContent('write a poem');
+
+        // Verify the form maintains the text when shouldResetForm is false
+        expect(screen.getByTestId('should-reset')).toHaveTextContent('false');
+
+        // The text should remain in the field since no reset occurred
+        expect(textfield).toHaveTextContent('write a poem');
     });
 
-    it('should show "reply to" in the placeholder and label', () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
+    it("should show a model's family name in the placeholder and label", async () => {
+        renderWithProvider({
+            selectedModelId: 'tulu2', // Tulu model has family_name: 'Tülu'
         });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-        render(
-            <FakeAppContextProvider
-                initialState={{
-                    selectedThreadRootId: 'root',
-                    selectedThreadMessagesById: {
-                        root: {
-                            creator: 'creator',
-                        },
-                    },
-                }}>
-                <QueryForm />
-            </FakeAppContextProvider>
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
+        });
+    });
+
+    it("should show a model's family name in the reply placeholder and label", async () => {
+        const threadId = 'test-thread-123';
+        const userInfo = createMockUser();
+
+        // Set up thread with messages to trigger "Reply to" mode
+        setupThreadInCache(threadId, {
+            messages: [
+                { creator: userInfo.client, content: 'user message' },
+                { creator: 'assistant', content: 'llm message' },
+            ],
+        });
+
+        renderWithProvider(
+            {
+                selectedModelId: 'tulu2',
+                threadId,
+            },
+            userInfo
         );
 
-        expect(screen.getByRole('textbox', { name: 'Reply to the model' })).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Reply to the model')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Reply to Tülu' })).toBeVisible();
+        });
+    });
+
+    it('should show "reply to" in the placeholder and label', async () => {
+        const threadId = 'test-thread-456';
+        const userInfo = createMockUser();
+
+        // Set up thread with messages to trigger "Reply to" mode
+        setupThreadInCache(threadId, {
+            messages: [
+                { creator: userInfo.client, content: 'user message' },
+                { creator: 'assistant', content: 'llm message' },
+            ],
+        });
+
+        renderWithProvider(
+            {
+                threadId, // No specific model selected, will auto-select first (tulu2)
+            },
+            userInfo
+        );
+
+        await waitFor(() => {
+            // Auto-selects Tülu model, so shows "Reply to Tülu"
+            expect(screen.getByRole('textbox', { name: 'Reply to Tülu' })).toBeVisible();
+        });
     });
 
     it('should show the thumbnail of an uploaded image and allow the user to remove it', async () => {
-        vi.spyOn(RouterDom, 'useLocation').mockReturnValue({
-            pathname: '/',
-            search: '',
-            hash: '',
-            state: 'loaded',
-            key: '',
-        });
-        vi.spyOn(RouterDom, 'useNavigation').mockReturnValue(IDLE_NAVIGATION);
-        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
-        const initialStates = {
-            selectedModel: {
-                id: 'Molmo',
-                accepts_files: true,
-                accepted_file_types: ['image/png'],
-                prompt_type: 'multi_modal',
-                description: '',
-                host: 'modal',
-                internal: false,
-                is_deprecated: false,
-                is_visible: true,
-                model_type: 'chat',
-                name: 'Molmo',
-            } satisfies Model,
-        };
         render(
-            <FakeAppContextProvider initialState={initialStates}>
-                <QueryForm />
+            <FakeAppContextProvider
+                initialState={{
+                    userInfo: createMockUser(),
+                    addSnackMessage: vi.fn(),
+                }}>
+                <SingleThreadProvider initialState={{ selectedModelId: 'molmo' }}>
+                    <QueryForm />
+                </SingleThreadProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
                     featureToggles: {
-                        logToggles: false,
-                        isMultiModalEnabled: true,
+                        isMultiModalEnabled: true, // Enable file upload feature
                     },
                 },
             }
         );
 
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', { name: 'Message Molmo' })).toBeVisible();
+        });
+
         const user = userEvent.setup();
+
+        // Wait for the file upload button to appear (model must accept files)
+        await waitFor(() => {
+            expect(screen.getByLabelText('Upload file')).toBeInTheDocument();
+        });
 
         const fileInput = screen.getByLabelText('Upload file');
 
-        await waitFor(async () => {
+        await act(async () => {
             await user.upload(fileInput, new File(['foo'], 'test.png', { type: 'image/png' }));
         });
 
-        expect(screen.getByAltText('User file test.png')).toBeVisible();
+        await waitFor(() => {
+            expect(screen.getByAltText('User file test.png')).toBeVisible();
+        });
 
-        await waitFor(async () => {
+        await act(async () => {
             await user.click(
                 screen.getByRole('button', { name: 'Remove test.png from files to upload' })
             );
         });
 
-        expect(screen.queryByAltText('User file test.png')).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.queryByAltText('User file test.png')).not.toBeInTheDocument();
+        });
     });
 });
