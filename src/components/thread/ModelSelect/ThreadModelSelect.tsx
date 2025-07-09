@@ -16,7 +16,6 @@ export const SingleThreadModelSelect = (): JSX.Element => {
     const models = queryContext.availableModels;
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        console.log('[DEBUG] SingleThreadModelSelect: Model change to:', event.target.value);
         queryContext.onModelChange(event);
     };
 

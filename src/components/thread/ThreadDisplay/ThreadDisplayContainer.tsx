@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
 import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
-import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
+import { useQueryContext } from '@/contexts/QueryContext';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -50,14 +51,17 @@ const ThreadDisplayContent = () => {
 export const ThreadDisplayContainer = () => {
     const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
     const { id: selectedThreadRootId = '' } = useParams();
+    const queryContext = useQueryContext();
 
-    return (
-        <SingleThreadProvider
-            initialState={{
-                threadId: selectedThreadRootId,
-                selectedModelId: loaderData?.selectedModelId,
-            }}>
-            <ThreadDisplayContent />
-        </SingleThreadProvider>
-    );
+    useEffect(() => {
+        if (selectedThreadRootId) {
+            queryContext.setThreadId('0', selectedThreadRootId);
+        }
+
+        if (loaderData?.selectedModelId) {
+            queryContext.setModelId('0', loaderData.selectedModelId);
+        }
+    }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
+
+    return <ThreadDisplayContent />;
 };
