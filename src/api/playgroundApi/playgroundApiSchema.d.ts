@@ -454,6 +454,8 @@ export type components = {
         readonly AuthenticatedClient: {
             /** Client */
             readonly client: string;
+            /** Hasaccepteddatacollection */
+            readonly hasAcceptedDataCollection: boolean;
             /** Hasacceptedtermsandconditions */
             readonly hasAcceptedTermsAndConditions: boolean;
             /**
@@ -925,7 +927,7 @@ export type components = {
          * ModelHost
          * @enum {string}
          */
-        readonly ModelHost: 'inferd' | 'modal' | 'beaker_queues';
+        readonly ModelHost: 'inferd' | 'modal' | 'beaker_queues' | 'cirrascale_backend';
         /** ModelOrder */
         readonly ModelOrder: {
             /** Id */

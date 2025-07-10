@@ -161,7 +161,7 @@ export const NavigationDrawer = ({
                             </NavigationLink>
                         )}
 
-                        <LoginLink />
+                        {isDesktop && <LoginLink />}
                         <AvatarMenuLink />
                         {isDesktop && (
                             <ListItem
@@ -209,7 +209,7 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
                     src="/playground-logo.svg"
                     width={214}
                     alt="Return to the Playground home page"
-                    fetchPriority="high"
+                    {...{ fetchpriority: 'high' }}
                 />
             </Link>
             <IconButton
@@ -230,7 +230,7 @@ const DesktopHeading = (): JSX.Element => {
                 width={214}
                 height={65}
                 alt="Return to the Playground home page"
-                fetchPriority="high"
+                {...{ fetchpriority: 'high' }}
             />
         </Link>
     );

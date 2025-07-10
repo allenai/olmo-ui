@@ -67,6 +67,7 @@ To update e2e test screenshots for CI:
 
 To start running unit tests use the command belows:
 
+- install playwrite
 - Run the command `yarn test` will perform a single run without watch node
 - Run the command `yarn test:watch` will enter the watch mode in development environment and run mode in CI automatically
 - More commands: https://vitest.dev/guide/cli

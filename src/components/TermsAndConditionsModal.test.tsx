@@ -1,7 +1,12 @@
 import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
-import { sections, TermsAndConditionsModal } from './TermsAndConditionsModal';
+import {
+    AllSections,
+    OptionValues,
+    SectionTitle,
+    TermsAndConditionsModal,
+} from './TermsAndConditionsModal';
 
 describe('Terms and Conditions', () => {
     it('should complete the process without crashing', async () => {
@@ -10,16 +15,172 @@ describe('Terms and Conditions', () => {
 
         expect(screen.getByText('Getting Started')).toBeVisible();
 
-        for (let i = 0; i < sections.length; i++) {
-            expect(await screen.findByText(sections[i].title)).toBeVisible();
+        for (let i = 0; i < AllSections.length; i++) {
+            expect(await screen.findByText(AllSections[i].title)).toBeVisible();
 
-            await user.click(screen.getByRole('checkbox'));
+            const checkboxes = screen.queryAllByRole('checkbox');
+            for (const checkbox of checkboxes) {
+                await user.click(checkbox);
+            }
+
+            const radios = screen.queryAllByRole('radio');
+            if (radios.length) {
+                await user.click(radios[0]);
+            }
 
             await user.click(
-                screen.getByRole('button', { name: i < sections.length - 1 ? 'Next' : "Let's Go!" })
+                screen.getByRole('button', {
+                    name: i < AllSections.length - 1 ? 'Next' : "Let's Go!",
+                })
             );
         }
 
         expect(screen.getByText('Getting Started')).not.toBeVisible();
+    });
+
+    it('should render the first section by default', () => {
+        render(<TermsAndConditionsModal />);
+        expect(screen.getByText(SectionTitle.LIMITATIONS)).toBeVisible();
+        expect(screen.getByText('Things to remember before getting started')).toBeVisible();
+    });
+
+    it('should disable the submit button if required acknowledgements are not checked', () => {
+        render(<TermsAndConditionsModal />);
+        const nextButton = screen.getByRole('button', { name: 'Next' });
+        expect(nextButton).toBeDisabled();
+    });
+
+    it('should navigate back to the previous section when "Prev" is clicked', async () => {
+        const user = userEvent.setup();
+        render(<TermsAndConditionsModal />);
+
+        await user.click(screen.getByRole('checkbox'));
+        await user.click(screen.getByRole('button', { name: 'Next' }));
+
+        expect(await screen.findByText(SectionTitle.TERMS)).toBeVisible();
+
+        const prevButton = screen.getByRole('button', { name: 'Prev' });
+        await user.click(prevButton);
+
+        expect(await screen.findByText(SectionTitle.LIMITATIONS)).toBeVisible();
+    });
+
+    it('should reset acknowledgements when navigating between sections', async () => {
+        const user = userEvent.setup();
+        render(<TermsAndConditionsModal />);
+
+        const checkbox = screen.getByRole('checkbox');
+        await user.click(checkbox);
+        expect(checkbox).toBeChecked();
+
+        await user.click(screen.getByRole('button', { name: 'Next' }));
+        await user.click(screen.getByRole('button', { name: 'Prev' }));
+
+        expect(await screen.findByRole('checkbox')).not.toBeChecked();
+    });
+
+    it('should call onClose and update state on final submission', async () => {
+        const user = userEvent.setup();
+        const onClose = vi.fn();
+        const updateTerms = vi.fn();
+        const updateData = vi.fn();
+
+        vi.mock('@/AppContext', async () => {
+            const actual = await vi.importActual('@/AppContext');
+            return {
+                ...actual,
+                useAppContext: () => ({
+                    updateTermsAndConditions: updateTerms,
+                    updateDataCollection: updateData,
+                }),
+            };
+        });
+
+        render(<TermsAndConditionsModal onClose={onClose} />);
+
+        // Section 1
+        await user.click(screen.getByRole('checkbox'));
+        await user.click(screen.getByRole('button', { name: 'Next' }));
+
+        // Section 2
+        const checkboxes = await screen.findAllByRole('checkbox');
+        for (const checkbox of checkboxes) {
+            await user.click(checkbox);
+        }
+        await user.click(screen.getByRole('button', { name: 'Next' }));
+
+        // Section 3
+        await user.click(screen.getByLabelText(/OPT-IN/i));
+        await user.click(screen.getByRole('button', { name: "Let's Go!" }));
+
+        expect(updateTerms).toHaveBeenCalledWith(true);
+        expect(updateData).toHaveBeenCalledWith(true);
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    it('should only show the data collection screen if terms are already accepted', async () => {
+        render(<TermsAndConditionsModal initialTermsAndConditionsValue={true} />);
+
+        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+        expect(screen.queryByText(SectionTitle.TERMS)).not.toBeInTheDocument();
+        expect(screen.queryByText(SectionTitle.LIMITATIONS)).not.toBeInTheDocument();
+    });
+
+    it('should show all screens if terms are not yet accepted', async () => {
+        render(<TermsAndConditionsModal initialTermsAndConditionsValue={false} />);
+
+        expect(await screen.findByText(SectionTitle.LIMITATIONS)).toBeVisible();
+        expect(screen.queryByText(SectionTitle.DATA_CONSENT)).not.toBeVisible();
+    });
+
+    it('should preselect opt-in if initialDataCollectionValue is OPT_IN', async () => {
+        render(
+            <TermsAndConditionsModal
+                initialTermsAndConditionsValue={true}
+                initialDataCollectionValue={OptionValues.OPT_IN}
+            />
+        );
+
+        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+
+        const optIn = screen.getByLabelText(/I OPT-IN/i);
+        const optOut = screen.getByLabelText(/I OPT-OUT/i);
+
+        expect(optIn as HTMLInputElement).toBeChecked();
+        expect(optOut as HTMLInputElement).not.toBeChecked();
+    });
+
+    it('should preselect opt-out if initialDataCollectionValue is OPT_OUT', async () => {
+        render(
+            <TermsAndConditionsModal
+                initialTermsAndConditionsValue={true}
+                initialDataCollectionValue={OptionValues.OPT_OUT}
+            />
+        );
+
+        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+
+        const optIn = screen.getByLabelText(/I OPT-IN/i);
+        const optOut = screen.getByLabelText(/I OPT-OUT/i);
+
+        expect(optIn as HTMLInputElement).not.toBeChecked();
+        expect(optOut as HTMLInputElement).toBeChecked();
+    });
+
+    it('should preselect none if initialDataCollectionValue is UNSET', async () => {
+        render(
+            <TermsAndConditionsModal
+                initialTermsAndConditionsValue={true}
+                initialDataCollectionValue={OptionValues.UNSET}
+            />
+        );
+
+        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+
+        const optIn = screen.getByLabelText(/I OPT-IN/i);
+        const optOut = screen.getByLabelText(/I OPT-OUT/i);
+
+        expect(optIn as HTMLInputElement).not.toBeChecked();
+        expect(optOut as HTMLInputElement).not.toBeChecked();
     });
 });

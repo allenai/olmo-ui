@@ -9,7 +9,7 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import { AppLayout } from './AppLayout';
-import { TermsAndConditionsModal } from './TermsAndConditionsModal';
+import { OptionValues, TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -17,13 +17,17 @@ export const NewApp = () => {
     const userAuthInfo = useUserAuthInfo();
 
     const shouldShowTermsAndConditionsModal =
-        userAuthInfo.userInfo?.hasAcceptedTermsAndConditions === false &&
-        userAuthInfo.isAuthenticated;
+        userAuthInfo.userInfo?.hasAcceptedTermsAndConditions === false;
 
     return (
         <AppLayout>
             {process.env.IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
-            {shouldShowTermsAndConditionsModal && <TermsAndConditionsModal />}
+            {shouldShowTermsAndConditionsModal && (
+                <TermsAndConditionsModal
+                    initialTermsAndConditionsValue={false}
+                    initialDataCollectionValue={OptionValues.UNSET}
+                />
+            )}
             <Outlet />
         </AppLayout>
     );

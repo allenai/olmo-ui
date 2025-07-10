@@ -10,12 +10,14 @@ import {
     DialogTitle,
     FormControlLabel,
     Link,
+    Radio,
+    RadioGroup,
     Stack,
     Typography,
     useMediaQuery,
     useTheme as useMuiTheme,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -26,44 +28,132 @@ import { links } from '@/Links';
 import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
-interface TermsAndConditionsSection {
-    title: string;
+export enum SectionTitle {
+    LIMITATIONS = 'Limitations',
+    OLD_TERMS = 'Notice & Consent',
+    TERMS = 'Terms of Use',
+    DATA_CONSENT = 'Data Consent',
+}
+
+export interface TermsAndConditionsSection {
+    eyebrow?: string;
+    title: SectionTitle;
     image: string;
-    notice: string;
-    contents: React.ReactNode;
-    acknowledgement: React.ReactNode;
+    notice?: string;
+    contents: string | React.ReactNode;
+    acknowledgements: (string | React.ReactNode)[];
+    optionGroups: {
+        label?: string | React.ReactNode;
+        options: { label: React.ReactNode; value: string }[];
+    }[];
+    endNote?: string | React.ReactNode;
     submitButtonText: string;
 }
 
-export const TermsAndConditionsModal = () => {
+export enum OptionValues {
+    UNSET = '',
+    OPT_IN = 'opt-in',
+    OPT_OUT = 'opt-out',
+}
+
+interface FormValues {
+    acknowledgements: boolean[];
+    optionGroups: {
+        selectedOption: OptionValues;
+    }[];
+}
+
+interface TermsAndConditionsProps {
+    onClose?: () => void;
+    initialTermsAndConditionsValue?: boolean;
+    initialDataCollectionValue?: OptionValues;
+}
+
+export const TermsAndConditionsModal = ({
+    onClose,
+    initialTermsAndConditionsValue = false,
+    initialDataCollectionValue = OptionValues.UNSET,
+}: TermsAndConditionsProps) => {
     const theme = useMuiTheme();
     const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
     const [open, setOpen] = useState<boolean>(true);
     const [activeStep, setActiveStep] = useState<number>(0);
-    const formContext = useForm({
-        defaultValues: {
-            checked: false,
-        },
-    });
-    const { isValid } = useFormState({ control: formContext.control });
-    const acceptTermsAndConditions = useAppContext((state) => state.acceptTermsAndConditions);
+    const [formResponses, setFormResponses] = useState<Record<number, FormValues>>({});
 
-    const handleSubmit = useCallback(async () => {
-        if (activeStep + 1 === sections.length) {
-            await acceptTermsAndConditions();
-            setOpen(false);
-        } else {
-            setActiveStep(activeStep + 1);
-            formContext.reset();
-        }
-    }, [activeStep, formContext, acceptTermsAndConditions]);
+    const sections = !initialTermsAndConditionsValue ? AllSections : [DataConsentSection];
+    const section = sections[activeStep];
+
+    const updateTermsAndConditions = useAppContext((state) => state.updateTermsAndConditions);
+    const updateDataCollection = useAppContext((state) => state.updateDataCollection);
+
+    // clear out defaults based on the actual options in this section
+    const defaultValues: FormValues = useMemo(() => {
+        return {
+            acknowledgements:
+                section.acknowledgements.map(() => initialTermsAndConditionsValue) || [],
+            optionGroups: section.optionGroups.map(() => ({
+                selectedOption: initialDataCollectionValue,
+            })),
+        };
+    }, [activeStep]);
+
+    const formContext = useForm({
+        defaultValues,
+    });
+
+    useEffect(() => {
+        formContext.reset(defaultValues);
+    }, [activeStep]);
+
+    const { isValid } = useFormState({
+        control: formContext.control,
+        name: ['acknowledgements', 'optionGroups'],
+    });
+
+    const handleSubmit = useCallback(
+        async (formValues: FormValues) => {
+            const updatedResponses = {
+                ...formResponses,
+                [activeStep]: formValues,
+            };
+            setFormResponses(updatedResponses);
+
+            if (activeStep + 1 === sections.length) {
+                // preserve selected options for final submit
+                const dataCollectionOpt =
+                    updatedResponses[
+                        sections.findIndex((s) => s.title === SectionTitle.DATA_CONSENT)
+                    ].optionGroups[0]?.selectedOption;
+                const termsAccepted = sections.some(
+                    (s, i) =>
+                        s.title === SectionTitle.TERMS &&
+                        updatedResponses[i].acknowledgements.every(Boolean)
+                );
+
+                console.log(initialTermsAndConditionsValue); // todo:remove
+                console.log(dataCollectionOpt); // todo:remove
+
+                if (termsAccepted !== initialTermsAndConditionsValue) {
+                    await updateTermsAndConditions(termsAccepted);
+                }
+                if (dataCollectionOpt !== initialDataCollectionValue) {
+                    await updateDataCollection(dataCollectionOpt === OptionValues.OPT_IN);
+                }
+                if (onClose) {
+                    onClose();
+                }
+                setOpen(false);
+            } else {
+                setActiveStep(activeStep + 1);
+            }
+        },
+        [activeStep, formContext]
+    );
 
     const handlePrevious = useCallback(() => {
         setActiveStep(Math.max(activeStep - 1, 0));
-        formContext.reset();
     }, [activeStep, formContext]);
 
-    const section = sections[activeStep];
     return (
         <StandardModal open={open}>
             <Stack
@@ -90,11 +180,13 @@ export const TermsAndConditionsModal = () => {
                     }}
                     gap={1}>
                     <DialogTitle component="div" id="modal-title" sx={{ p: 0, m: 0 }}>
-                        <Typography
-                            variant="overline"
-                            color={(theme) => theme.palette.text.primary}>
-                            Getting Started
-                        </Typography>
+                        {section.eyebrow ? (
+                            <Typography
+                                variant="overline"
+                                color={(theme) => theme.palette.text.primary}>
+                                {section.eyebrow}
+                            </Typography>
+                        ) : null}
                         <Typography
                             id="modal-description"
                             variant="h1"
@@ -102,12 +194,14 @@ export const TermsAndConditionsModal = () => {
                             mt={1}>
                             {section.title}
                         </Typography>
-                        <Typography
-                            variant="body1"
-                            color={(theme) => theme.palette.text.drawer.secondary}
-                            sx={{ mt: 1.5, alignItems: 'center', display: 'inline-flex' }}>
-                            {section.notice}
-                        </Typography>
+                        {section.notice ? (
+                            <Typography
+                                variant="body1"
+                                color={(theme) => theme.palette.text.drawer.secondary}
+                                sx={{ mt: 1.5, alignItems: 'center', display: 'inline-flex' }}>
+                                {section.notice}
+                            </Typography>
+                        ) : null}
                     </DialogTitle>
                     <DialogContent sx={{ p: 0, m: 0 }}>
                         <Typography component="div" variant="body1">
@@ -122,30 +216,103 @@ export const TermsAndConditionsModal = () => {
                                 flex: 1,
                             },
                         }}>
-                        <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-                            <FormControlLabel
-                                sx={{ alignItems: 'center' }}
-                                control={
-                                    <Controller
-                                        rules={{ required: true }}
-                                        control={formContext.control}
-                                        render={({ field: { onChange, value } }) => (
-                                            <Checkbox
-                                                checked={value}
-                                                onChange={onChange}
-                                                sx={{
-                                                    '&.Mui-checked': {
-                                                        color: (theme) =>
-                                                            theme.palette.primary.contrastText,
-                                                    },
+                        <FormContainer
+                            formContext={formContext}
+                            onSuccess={(data) => handleSubmit(data)}>
+                            <Stack direction="column">
+                                {section.acknowledgements.map((acknowledgement, index) => (
+                                    <FormControlLabel
+                                        key={index}
+                                        sx={{ alignItems: 'center' }}
+                                        control={
+                                            <Controller
+                                                rules={{ required: true }}
+                                                control={formContext.control}
+                                                render={({ field: { onChange, value } }) => (
+                                                    <Checkbox
+                                                        checked={!!value}
+                                                        onChange={onChange}
+                                                        sx={{
+                                                            '&.Mui-checked': {
+                                                                color: (theme) =>
+                                                                    theme.palette.primary
+                                                                        .contrastText,
+                                                            },
+                                                        }}
+                                                    />
+                                                )}
+                                                name={`acknowledgements.${index}`}
+                                            />
+                                        }
+                                        label={acknowledgement}
+                                    />
+                                ))}
+                                {section.optionGroups.map((optionGroup, index) => (
+                                    <FormControlLabel
+                                        key={index}
+                                        sx={{
+                                            flexDirection: 'column-reverse',
+                                            alignItems: 'start',
+                                            ml: '2px',
+                                        }}
+                                        control={
+                                            <Controller
+                                                name={`optionGroups.${index}.selectedOption`}
+                                                control={formContext.control}
+                                                rules={{ required: true }}
+                                                render={({ field }) => {
+                                                    return (
+                                                        <RadioGroup
+                                                            value={field.value || ''}
+                                                            onChange={field.onChange}>
+                                                            {optionGroup.options.map(
+                                                                (option, innerIndex) => (
+                                                                    <FormControlLabel
+                                                                        key={innerIndex}
+                                                                        value={option.value}
+                                                                        control={
+                                                                            <Radio
+                                                                                sx={{
+                                                                                    '&.Mui-checked':
+                                                                                        {
+                                                                                            color: (
+                                                                                                theme
+                                                                                            ) =>
+                                                                                                theme
+                                                                                                    .palette
+                                                                                                    .primary
+                                                                                                    .contrastText,
+                                                                                        },
+                                                                                }}
+                                                                            />
+                                                                        }
+                                                                        label={option.label}
+                                                                        sx={{
+                                                                            alignItems: 'center',
+                                                                        }}
+                                                                    />
+                                                                )
+                                                            )}
+                                                        </RadioGroup>
+                                                    );
                                                 }}
                                             />
-                                        )}
-                                        name="checked"
+                                        }
+                                        label={optionGroup.label}
                                     />
-                                }
-                                label={section.acknowledgement}
-                            />
+                                ))}
+                                {section.endNote ? (
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
+                                            mt: 1.5,
+                                            alignItems: 'center',
+                                            display: 'inline-flex',
+                                        }}>
+                                        {section.endNote}
+                                    </Typography>
+                                ) : null}
+                            </Stack>
                             <Stack gap={2} direction="row" mt={2} justifyContent="space-between">
                                 <Stack direction="row" gap={2}>
                                     <Button
@@ -217,7 +384,9 @@ export const TermsAndConditionsModal = () => {
                                       alignItems: 'center',
                                   }
                         }>
-                        <ProgressIndicator steps={sections.length} activeStep={activeStep} />
+                        {sections.length > 1 ? (
+                            <ProgressIndicator steps={sections.length} activeStep={activeStep} />
+                        ) : null}
                     </Stack>
                 </Stack>
             </Stack>
@@ -248,8 +417,9 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
     );
 };
 
-const Section1: TermsAndConditionsSection = {
-    title: 'Limitations',
+const LimitationsSection: TermsAndConditionsSection = {
+    eyebrow: 'Getting Started',
+    title: SectionTitle.LIMITATIONS,
     image: '/getting-started-section-1.png',
     notice: 'Things to remember before getting started',
     contents: (
@@ -271,40 +441,82 @@ const Section1: TermsAndConditionsSection = {
             </p>
         </>
     ),
-    acknowledgement: 'Acknowledge',
+    acknowledgements: ['Acknowledge'],
+    optionGroups: [],
     submitButtonText: 'Next',
 };
 
-const Section2: TermsAndConditionsSection = {
-    title: 'Notice & Consent',
+const TermsSection: TermsAndConditionsSection = {
+    eyebrow: 'Getting Started',
+    title: SectionTitle.TERMS,
     image: '/getting-started-section-2.png',
     notice: 'Please read our terms carefully',
     contents: (
         <>
+            <p>To use the Ai2 Playground, you agree to the following:</p>
+        </>
+    ),
+    acknowledgements: [
+        <span key={1}>
+            You have read the{' '}
+            <TermAndConditionsLink link="https://allenai.org/privacy-policy">
+                Privacy Policy
+            </TermAndConditionsLink>{' '}
+            and agree that Ai2 may use your interactions for future AI research and development
+        </span>,
+        <span key={2}>
+            You accept{' '}
+            <TermAndConditionsLink link="https://allenai.org/terms">
+                Ai2&apos;s Terms of Use
+            </TermAndConditionsLink>
+        </span>,
+        <span key={3}>
+            You accept{' '}
+            <TermAndConditionsLink link="https://allenai.org/responsible-use">
+                Responsible Use Guidelines
+            </TermAndConditionsLink>
+        </span>,
+        <span key={4}>
+            You will not to submit any personal information, intellectual property or trade secrets,
+            or sensitive and confidential information to the Ai2 Playground [Note: important because
+            we plan to publish]
+        </span>,
+    ],
+    optionGroups: [],
+    endNote: 'If you do not wish to agree to these terms, feel free to exit this page.',
+    submitButtonText: 'Next',
+};
+
+const DataConsentSection: TermsAndConditionsSection = {
+    title: SectionTitle.DATA_CONSENT,
+    image: '/getting-started-section-1.png',
+    contents: (
+        <>
             <p>
-                By selecting “Accept” below, you agree to our{' '}
-                <TermAndConditionsLink link="https://allenai.org/terms">
-                    Terms of Use
-                </TermAndConditionsLink>{' '}
-                and{' '}
-                <TermAndConditionsLink link="https://allenai.org/responsible-use">
-                    Responsible Use Guidelines
-                </TermAndConditionsLink>
-                . To the extent permitted by applicable laws, your interactions with Playground and
-                logs of your activity may be collected by Ai2 and shared in accordance with our{' '}
-                <TermAndConditionsLink link="https://allenai.org/privacy-policy">
-                    Privacy Policy
-                </TermAndConditionsLink>
-                . Always exercise discretion and never submit personal, sensitive, or confidential
-                information on the Playground.
-                <br />
-                <br />
-                If you do not wish to agree to these terms, feel free to exit this page.
+                Unless you opt-out, Ai2 may curate and publish your inputs to the Ai2 Playground.
+                You can change your options at any time in the settings menu.
             </p>
         </>
     ),
-    acknowledgement: 'Accept',
+    acknowledgements: [],
+    optionGroups: [
+        {
+            options: [
+                { label: 'I OPT-OUT OF Interactions PUBLICATION.', value: OptionValues.OPT_OUT },
+                { label: 'I OPT-IN PUBLISH MY Interactions', value: OptionValues.OPT_IN },
+            ],
+        },
+    ],
+    endNote: (
+        <span key={3}>
+            Note, you may request{' '}
+            <TermAndConditionsLink link="https://docs.google.com/forms/d/e/1FAIpQLSfJtodWsoT_3wo3UBSXNZIaq4ItQGD-0CxyNJpERG84N1PsgA/viewform">
+                Personal Data Removal
+            </TermAndConditionsLink>{' '}
+            at any time.
+        </span>
+    ),
     submitButtonText: "Let's Go!",
 };
 
-export const sections = [Section1, Section2];
+export const AllSections = [LimitationsSection, TermsSection, DataConsentSection];
