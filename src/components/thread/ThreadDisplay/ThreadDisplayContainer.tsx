@@ -61,7 +61,7 @@ export const ThreadDisplayContainer = () => {
         if (loaderData?.selectedModelId) {
             queryContext.setModelId('0', loaderData.selectedModelId);
         }
-    }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
+    }, []); // This empty dependency array is important. Only run on mount. Otherwise this will overwrite state with stale data.
 
     return <ThreadDisplayContent />;
 };
