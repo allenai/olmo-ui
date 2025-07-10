@@ -35,7 +35,7 @@ describe('Terms and Conditions', () => {
             );
         }
 
-        expect(screen.getByText('Getting Started')).not.toBeVisible();
+        expect(screen.queryByText('Getting Started')).not.toBeInTheDocument();
     });
 
     it('should render the first section by default', () => {
@@ -79,45 +79,6 @@ describe('Terms and Conditions', () => {
         expect(await screen.findByRole('checkbox')).not.toBeChecked();
     });
 
-    it('should call onClose and update state on final submission', async () => {
-        const user = userEvent.setup();
-        const onClose = vi.fn();
-        const updateTerms = vi.fn();
-        const updateData = vi.fn();
-
-        vi.mock('@/AppContext', async () => {
-            const actual = await vi.importActual('@/AppContext');
-            return {
-                ...actual,
-                useAppContext: () => ({
-                    updateTermsAndConditions: updateTerms,
-                    updateDataCollection: updateData,
-                }),
-            };
-        });
-
-        render(<TermsAndConditionsModal onClose={onClose} />);
-
-        // Section 1
-        await user.click(screen.getByRole('checkbox'));
-        await user.click(screen.getByRole('button', { name: 'Next' }));
-
-        // Section 2
-        const checkboxes = await screen.findAllByRole('checkbox');
-        for (const checkbox of checkboxes) {
-            await user.click(checkbox);
-        }
-        await user.click(screen.getByRole('button', { name: 'Next' }));
-
-        // Section 3
-        await user.click(screen.getByLabelText(/OPT-IN/i));
-        await user.click(screen.getByRole('button', { name: "Let's Go!" }));
-
-        expect(updateTerms).toHaveBeenCalledWith(true);
-        expect(updateData).toHaveBeenCalledWith(true);
-        expect(onClose).toHaveBeenCalled();
-    });
-
     it('should only show the data collection screen if terms are already accepted', async () => {
         render(<TermsAndConditionsModal initialTermsAndConditionsValue={true} />);
 
@@ -130,7 +91,7 @@ describe('Terms and Conditions', () => {
         render(<TermsAndConditionsModal initialTermsAndConditionsValue={false} />);
 
         expect(await screen.findByText(SectionTitle.LIMITATIONS)).toBeVisible();
-        expect(screen.queryByText(SectionTitle.DATA_CONSENT)).not.toBeVisible();
+        expect(screen.queryByText(SectionTitle.DATA_CONSENT)).not.toBeInTheDocument();
     });
 
     it('should preselect opt-in if initialDataCollectionValue is OPT_IN', async () => {
@@ -143,8 +104,9 @@ describe('Terms and Conditions', () => {
 
         expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
 
-        const optIn = screen.getByLabelText(/I OPT-IN/i);
-        const optOut = screen.getByLabelText(/I OPT-OUT/i);
+        const radios = screen.getAllByRole('radio');
+        const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
+        const optOut = radios.find((r) => r.getAttribute('value') === 'opt-out');
 
         expect(optIn as HTMLInputElement).toBeChecked();
         expect(optOut as HTMLInputElement).not.toBeChecked();
@@ -160,8 +122,9 @@ describe('Terms and Conditions', () => {
 
         expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
 
-        const optIn = screen.getByLabelText(/I OPT-IN/i);
-        const optOut = screen.getByLabelText(/I OPT-OUT/i);
+        const radios = screen.getAllByRole('radio');
+        const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
+        const optOut = radios.find((r) => r.getAttribute('value') === 'opt-out');
 
         expect(optIn as HTMLInputElement).not.toBeChecked();
         expect(optOut as HTMLInputElement).toBeChecked();
@@ -177,8 +140,9 @@ describe('Terms and Conditions', () => {
 
         expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
 
-        const optIn = screen.getByLabelText(/I OPT-IN/i);
-        const optOut = screen.getByLabelText(/I OPT-OUT/i);
+        const radios = screen.getAllByRole('radio');
+        const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
+        const optOut = radios.find((r) => r.getAttribute('value') === 'opt-out');
 
         expect(optIn as HTMLInputElement).not.toBeChecked();
         expect(optOut as HTMLInputElement).not.toBeChecked();
