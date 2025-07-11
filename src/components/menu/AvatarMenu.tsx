@@ -1,4 +1,4 @@
-// Extend AvatarMenuBase for Desktop
+// Desktop-specific avatar menu using Popper, built on top of AvatarMenuBase.
 
 import { PopperOwnProps } from '@mui/base';
 import { Popper, SxProps, Theme } from '@mui/material';

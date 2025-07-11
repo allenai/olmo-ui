@@ -130,9 +130,6 @@ export const TermsAndConditionsModal = ({
                         updatedResponses[i].acknowledgements.every(Boolean)
                 );
 
-                console.log(initialTermsAndConditionsValue); // todo:remove
-                console.log(dataCollectionOpt); // todo:remove
-
                 if (termsAccepted !== initialTermsAndConditionsValue) {
                     await updateTermsAndConditions(termsAccepted);
                 }

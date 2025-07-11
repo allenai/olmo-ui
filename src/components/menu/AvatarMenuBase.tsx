@@ -1,4 +1,4 @@
-// Base Menu content for both Desktop and Mobile
+// Shared base component logic and layout for both desktop and mobile avatar menus.
 
 import { Close, ShieldOutlined, StorageOutlined } from '@mui/icons-material';
 import { Box, IconButton, ListItemText, Stack, Typography } from '@mui/material';
