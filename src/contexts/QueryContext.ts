@@ -48,7 +48,6 @@ export const QueryContext = React.createContext<QueryContextValue | null>(null);
 // Hook to use the context
 export const useQueryContext = () => {
     const context = React.useContext(QueryContext);
-    console.log('[DEBUG] useQueryContext called, context:', context ? 'found' : 'null');
     if (!context) {
         throw new Error('useQueryContext must be used within a QueryContext provider');
     }

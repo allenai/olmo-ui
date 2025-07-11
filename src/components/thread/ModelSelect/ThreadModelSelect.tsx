@@ -3,7 +3,6 @@ import { useId } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useQueryContext } from '@/contexts/QueryContext';
-import { useCompareModelSliceShim } from '@/contexts/TempCompareModelSliceShim';
 
 import { ModelSelect } from './ModelSelect';
 
@@ -35,7 +34,6 @@ interface ThreadModelSelectProps {
 }
 
 export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectProps) => {
-    const { setSelectedCompareModelAt } = useCompareModelSliceShim();
     const queryContext = useQueryContext();
 
     const selectedModel = queryContext.getThreadViewModel(threadViewId);
@@ -45,7 +43,7 @@ export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectPro
         // TODO: are all models compatible https://github.com/allenai/playground-issues-repo/issues/411
         const selectedModel = models.find((model) => model.id === e.target.value);
         if (selectedModel) {
-            setSelectedCompareModelAt(threadViewId, selectedModel);
+            queryContext.setModelId(threadViewId, selectedModel.id);
         }
     };
 
