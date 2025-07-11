@@ -8,7 +8,7 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { ThemeModeSelect } from '@/components/OlmoAppBar/ThemeModeSelect';
 
-import { OptionValues, TermsAndConditionsModal } from '../TermsAndConditionsModal';
+import { TermsAndConditionsModal } from '../TermsAndConditionsModal';
 import { Auth0LoginLink } from './Auth0LoginLink';
 import { AvatarMenuItem } from './AvatarMenuItem';
 
@@ -118,9 +118,7 @@ export const AvatarMenuBase = ({
                         setShowModal(false);
                     }}
                     initialTermsAndConditionsValue={hasAcceptedTermsAndConditions}
-                    initialDataCollectionValue={
-                        hasAcceptedDataCollection ? OptionValues.OPT_IN : OptionValues.OPT_OUT
-                    }
+                    initialDataCollectionValue={hasAcceptedDataCollection ? 'opt-in' : 'opt-out'}
                 />
             )}
         </>

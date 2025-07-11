@@ -1,12 +1,7 @@
 import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
-import {
-    AllSections,
-    OptionValues,
-    SectionTitle,
-    TermsAndConditionsModal,
-} from './TermsAndConditionsModal';
+import { AllSections, TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 describe('Terms and Conditions', () => {
     it('should complete the process without crashing', async () => {
@@ -40,7 +35,7 @@ describe('Terms and Conditions', () => {
 
     it('should render the first section by default', () => {
         render(<TermsAndConditionsModal />);
-        expect(screen.getByText(SectionTitle.LIMITATIONS)).toBeVisible();
+        expect(screen.getByText('Limitations')).toBeVisible();
         expect(screen.getByText('Things to remember before getting started')).toBeVisible();
     });
 
@@ -57,12 +52,12 @@ describe('Terms and Conditions', () => {
         await user.click(screen.getByRole('checkbox'));
         await user.click(screen.getByRole('button', { name: 'Next' }));
 
-        expect(await screen.findByText(SectionTitle.TERMS)).toBeVisible();
+        expect(await screen.findByText('Terms of Use')).toBeVisible();
 
         const prevButton = screen.getByRole('button', { name: 'Prev' });
         await user.click(prevButton);
 
-        expect(await screen.findByText(SectionTitle.LIMITATIONS)).toBeVisible();
+        expect(await screen.findByText('Limitations')).toBeVisible();
     });
 
     it('should reset acknowledgements when navigating between sections', async () => {
@@ -82,27 +77,27 @@ describe('Terms and Conditions', () => {
     it('should only show the data collection screen if terms are already accepted', async () => {
         render(<TermsAndConditionsModal initialTermsAndConditionsValue={true} />);
 
-        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
-        expect(screen.queryByText(SectionTitle.TERMS)).not.toBeInTheDocument();
-        expect(screen.queryByText(SectionTitle.LIMITATIONS)).not.toBeInTheDocument();
+        expect(await screen.findByText('Data Consent')).toBeVisible();
+        expect(screen.queryByText('Terms of Use')).not.toBeInTheDocument();
+        expect(screen.queryByText('Limitations')).not.toBeInTheDocument();
     });
 
     it('should show all screens if terms are not yet accepted', async () => {
         render(<TermsAndConditionsModal initialTermsAndConditionsValue={false} />);
 
-        expect(await screen.findByText(SectionTitle.LIMITATIONS)).toBeVisible();
-        expect(screen.queryByText(SectionTitle.DATA_CONSENT)).not.toBeInTheDocument();
+        expect(await screen.findByText('Limitations')).toBeVisible();
+        expect(screen.queryByText('Data Consent')).not.toBeInTheDocument();
     });
 
     it('should preselect opt-in if initialDataCollectionValue is OPT_IN', async () => {
         render(
             <TermsAndConditionsModal
                 initialTermsAndConditionsValue={true}
-                initialDataCollectionValue={OptionValues.OPT_IN}
+                initialDataCollectionValue={'opt-in'}
             />
         );
 
-        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+        expect(await screen.findByText('Data Consent')).toBeVisible();
 
         const radios = screen.getAllByRole('radio');
         const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
@@ -116,11 +111,11 @@ describe('Terms and Conditions', () => {
         render(
             <TermsAndConditionsModal
                 initialTermsAndConditionsValue={true}
-                initialDataCollectionValue={OptionValues.OPT_OUT}
+                initialDataCollectionValue={'opt-out'}
             />
         );
 
-        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+        expect(await screen.findByText('Data Consent')).toBeVisible();
 
         const radios = screen.getAllByRole('radio');
         const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
@@ -134,11 +129,11 @@ describe('Terms and Conditions', () => {
         render(
             <TermsAndConditionsModal
                 initialTermsAndConditionsValue={true}
-                initialDataCollectionValue={OptionValues.UNSET}
+                initialDataCollectionValue={''}
             />
         );
 
-        expect(await screen.findByText(SectionTitle.DATA_CONSENT)).toBeVisible();
+        expect(await screen.findByText('Data Consent')).toBeVisible();
 
         const radios = screen.getAllByRole('radio');
         const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');

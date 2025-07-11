@@ -28,12 +28,7 @@ import { links } from '@/Links';
 import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 
-export enum SectionTitle {
-    LIMITATIONS = 'Limitations',
-    OLD_TERMS = 'Notice & Consent',
-    TERMS = 'Terms of Use',
-    DATA_CONSENT = 'Data Consent',
-}
+type SectionTitle = 'Limitations' | 'Notice & Consent' | 'Terms of Use' | 'Data Consent';
 
 export interface TermsAndConditionsSection {
     eyebrow?: string;
@@ -50,11 +45,7 @@ export interface TermsAndConditionsSection {
     submitButtonText: string;
 }
 
-export enum OptionValues {
-    UNSET = '',
-    OPT_IN = 'opt-in',
-    OPT_OUT = 'opt-out',
-}
+type OptionValues = '' | 'opt-in' | 'opt-out';
 
 interface FormValues {
     acknowledgements: boolean[];
@@ -72,7 +63,7 @@ interface TermsAndConditionsProps {
 export const TermsAndConditionsModal = ({
     onClose,
     initialTermsAndConditionsValue = false,
-    initialDataCollectionValue = OptionValues.UNSET,
+    initialDataCollectionValue = '',
 }: TermsAndConditionsProps) => {
     const theme = useMuiTheme();
     const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -121,12 +112,11 @@ export const TermsAndConditionsModal = ({
             if (activeStep + 1 === sections.length) {
                 // preserve selected options for final submit
                 const dataCollectionOpt =
-                    updatedResponses[
-                        sections.findIndex((s) => s.title === SectionTitle.DATA_CONSENT)
-                    ].optionGroups[0]?.selectedOption;
+                    updatedResponses[sections.findIndex((s) => s.title === 'Data Consent')]
+                        .optionGroups[0]?.selectedOption;
                 const termsAccepted = sections.some(
                     (s, i) =>
-                        s.title === SectionTitle.TERMS &&
+                        s.title === 'Terms of Use' &&
                         updatedResponses[i].acknowledgements.every(Boolean)
                 );
 
@@ -134,7 +124,7 @@ export const TermsAndConditionsModal = ({
                     await updateTermsAndConditions(termsAccepted);
                 }
                 if (dataCollectionOpt !== initialDataCollectionValue) {
-                    await updateDataCollection(dataCollectionOpt === OptionValues.OPT_IN);
+                    await updateDataCollection(dataCollectionOpt === 'opt-in');
                 }
                 if (onClose) {
                     onClose();
@@ -416,7 +406,7 @@ const ProgressIndicator = ({ steps, activeStep }: { steps: number; activeStep: n
 
 const LimitationsSection: TermsAndConditionsSection = {
     eyebrow: 'Getting Started',
-    title: SectionTitle.LIMITATIONS,
+    title: 'Limitations',
     image: '/getting-started-section-1.png',
     notice: 'Things to remember before getting started',
     contents: (
@@ -445,7 +435,7 @@ const LimitationsSection: TermsAndConditionsSection = {
 
 const TermsSection: TermsAndConditionsSection = {
     eyebrow: 'Getting Started',
-    title: SectionTitle.TERMS,
+    title: 'Terms of Use',
     image: '/getting-started-section-2.png',
     notice: 'Please read our terms carefully',
     contents: (
@@ -484,7 +474,7 @@ const TermsSection: TermsAndConditionsSection = {
 };
 
 const DataConsentSection: TermsAndConditionsSection = {
-    title: SectionTitle.DATA_CONSENT,
+    title: 'Data Consent',
     image: '/getting-started-section-1.png',
     contents: (
         <>
@@ -498,8 +488,8 @@ const DataConsentSection: TermsAndConditionsSection = {
     optionGroups: [
         {
             options: [
-                { label: 'I OPT-OUT OF Interactions PUBLICATION.', value: OptionValues.OPT_OUT },
-                { label: 'I OPT-IN PUBLISH MY Interactions', value: OptionValues.OPT_IN },
+                { label: 'I OPT-OUT OF Interactions PUBLICATION.', value: 'opt-out' },
+                { label: 'I OPT-IN PUBLISH MY Interactions', value: 'opt-in' },
             ],
         },
     ],

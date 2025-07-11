@@ -9,7 +9,7 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import { AppLayout } from './AppLayout';
-import { OptionValues, TermsAndConditionsModal } from './TermsAndConditionsModal';
+import { TermsAndConditionsModal } from './TermsAndConditionsModal';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -25,7 +25,7 @@ export const NewApp = () => {
             {shouldShowTermsAndConditionsModal && (
                 <TermsAndConditionsModal
                     initialTermsAndConditionsValue={false}
-                    initialDataCollectionValue={OptionValues.UNSET}
+                    initialDataCollectionValue={''}
                 />
             )}
             <Outlet />
