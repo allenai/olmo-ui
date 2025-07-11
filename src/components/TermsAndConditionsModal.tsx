@@ -475,8 +475,7 @@ const TermsSection: TermsAndConditionsSection = {
         </span>,
         <span key={4}>
             You will not to submit any personal information, intellectual property or trade secrets,
-            or sensitive and confidential information to the Ai2 Playground [Note: important because
-            we plan to publish]
+            or sensitive and confidential information to the Ai2 Playground
         </span>,
     ],
     optionGroups: [],
