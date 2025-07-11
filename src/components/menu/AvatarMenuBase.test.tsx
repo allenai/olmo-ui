@@ -2,20 +2,27 @@ import { render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
+import * as authLoaders from '@/api/auth/auth-loaders';
+import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
+
 import { AvatarMenuBase } from './AvatarMenuBase';
 
-// Mock the auth hook
-vi.mock('@/api/auth/auth-loaders', () => ({
-    useUserAuthInfo: () => ({
-        userAuthInfo: { email: 'test@example.com' },
-        userInfo: {
-            hasAcceptedTermsAndConditions: true,
-            hasAcceptedDataCollection: true,
-        },
-    }),
-}));
-
 describe('AvatarMenuBase', () => {
+    beforeEach(() => {
+        vi.spyOn(authLoaders, 'useUserAuthInfo').mockImplementation(
+            getFakeUseUserAuthInfo({
+                userInfo: {
+                    client: 'test-client-id',
+                    hasAcceptedTermsAndConditions: true,
+                    hasAcceptedDataCollection: true,
+                },
+                userAuthInfo: {
+                    email: 'test@example.com',
+                },
+            })
+        );
+    });
+
     it('renders with default props and shows user email and ThemeModeSelect', () => {
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 
