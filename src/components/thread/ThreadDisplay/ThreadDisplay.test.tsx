@@ -7,6 +7,7 @@ import { MemoryRouter } from 'react-router-dom';
 import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';
 import * as appContext from '@/AppContext';
+import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { RemoteState } from '@/contexts/util';
 import { links } from '@/Links';
 import { firstThreadMessageId } from '@/mocks/handlers/v4ThreadHandlers';
@@ -198,9 +199,11 @@ describe('ThreadDisplay', () => {
                     addSnackMessage: vi.fn(),
                     setIsShareReady: vi.fn(),
                 }}>
-                <MemoryRouter initialEntries={[links.thread(regexTestThreadId)]}>
-                    <ThreadDisplayContainer />
-                </MemoryRouter>
+                <SingleThreadProvider initialState={{ threadId: regexTestThreadId }}>
+                    <MemoryRouter initialEntries={[links.thread(regexTestThreadId)]}>
+                        <ThreadDisplayContainer />
+                    </MemoryRouter>
+                </SingleThreadProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
@@ -283,9 +286,11 @@ describe('ThreadDisplay', () => {
                     addSnackMessage: vi.fn(),
                     setIsShareReady: vi.fn(),
                 }}>
-                <MemoryRouter initialEntries={[links.thread(firstThreadMessageId)]}>
-                    <ThreadDisplayContainer />
-                </MemoryRouter>
+                <SingleThreadProvider initialState={{ threadId: firstThreadMessageId }}>
+                    <MemoryRouter initialEntries={[links.thread(firstThreadMessageId)]}>
+                        <ThreadDisplayContainer />
+                    </MemoryRouter>
+                </SingleThreadProvider>
             </FakeAppContextProvider>
         );
 
