@@ -181,6 +181,10 @@ const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: Rea
         label: 'Queue ID',
         description: undefined,
     },
+    cirrascale_backend: {
+        label: 'Backend API Port',
+        description: undefined,
+    },
 };
 
 export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
@@ -250,6 +254,10 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                             <SelectListBoxItem text="Modal" id="modal" />
                             <SelectListBoxItem text="InferD" id="inferd" />
                             <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
+                            <SelectListBoxItem
+                                text="Cirrascale (Backend)"
+                                id="cirrascale_backend"
+                            />
                         </SelectListBoxSection>
                     </ControlledSelect>
 
