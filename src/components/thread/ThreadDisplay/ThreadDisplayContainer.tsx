@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
@@ -52,16 +52,24 @@ export const ThreadDisplayContainer = () => {
     const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
     const { id: selectedThreadRootId = '' } = useParams();
     const queryContext = useQueryContext();
+    const processedThreadRef = useRef<string>('');
 
     useEffect(() => {
         if (selectedThreadRootId) {
             queryContext.setThreadId('0', selectedThreadRootId);
         }
 
-        if (loaderData?.selectedModelId) {
+        // Only set model from loaderData if we're navigating to a new thread
+        if (loaderData?.selectedModelId && selectedThreadRootId !== processedThreadRef.current) {
             queryContext.setModelId('0', loaderData.selectedModelId);
+            processedThreadRef.current = selectedThreadRootId;
         }
-    }, []); // This empty dependency array is important. Only run on mount. Otherwise this will overwrite state with stale data.
+    }, [
+        selectedThreadRootId,
+        loaderData?.selectedModelId,
+        queryContext.setThreadId,
+        queryContext.setModelId,
+    ]);
 
     return <ThreadDisplayContent />;
 };

@@ -79,7 +79,8 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
 
     const selectedModel = useMemo(() => {
         if (selectedModelId) {
-            return availableModels.find((model) => model.id === selectedModelId);
+            const found = availableModels.find((model) => model.id === selectedModelId);
+            if (found) return found; // Otherwise, fall back to the first visible model
         }
 
         const firstVisibleModel = availableModels.find((model) => isModelVisible(model));
