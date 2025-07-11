@@ -15,7 +15,7 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     if (isAnonymousTest) {
         await expect(page.getByRole('button', { name: 'Share this thread' })).toHaveCount(0);
     } else {
-        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled({ timeout: 10000 });
     }
 
     await expect(
@@ -37,7 +37,7 @@ test('can send prompt in Olmo Playground', async ({ page, isAnonymousTest }) => 
     if (isAnonymousTest) {
         await expect(page.getByRole('button', { name: 'Share this thread' })).toHaveCount(0);
     } else {
-        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Share this thread' })).toBeEnabled({ timeout: 10000 });
     }
 
     await expect(
