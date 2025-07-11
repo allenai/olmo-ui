@@ -3,9 +3,9 @@ import { useLoaderData, useNavigate, useParams, useSearchParams } from 'react-ro
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
-import { containsMessages } from '@/contexts/submission-process';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { containsMessages } from '@/contexts/submission-process';
 import { links } from '@/Links';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
@@ -88,11 +88,7 @@ export const ThreadDisplayContainer = () => {
             queryContext.setModelId('0', loaderData.selectedModelId);
             processedThreadRef.current = selectedThreadRootId;
         }
-    }, [
-        selectedThreadRootId,
-        loaderData?.selectedModelId,
-        queryContext,
-    ]);
+    }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
 
     return <ThreadDisplayContent />;
 };

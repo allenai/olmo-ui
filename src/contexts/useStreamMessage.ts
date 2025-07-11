@@ -47,7 +47,6 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
 
     const handleFirstMessage = useCallback(
         (threadViewId: ThreadViewId, message: StreamingMessageResponse) => {
-            setHasReceivedFirstResponse(true);
             callbacks?.onNewUserMessage?.(threadViewId);
             callbacks?.onFirstMessage?.(threadViewId, message);
         },

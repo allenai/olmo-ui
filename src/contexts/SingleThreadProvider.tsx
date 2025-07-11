@@ -226,7 +226,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             canPauseThread: streamMessage.canPause,
             isLimitReached,
             remoteState: streamMessage.remoteState,
-            shouldResetForm: streamMessage.hasReceivedFirstResponse,
             fileUploadProps: {
                 ...convertToFileUploadProps(selectedModel),
                 isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
@@ -257,7 +256,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         selectedModel,
         streamMessage.canPause,
         streamMessage.remoteState,
-        streamMessage.hasReceivedFirstResponse,
         isLimitReached,
         onModelChange,
         onSubmit,

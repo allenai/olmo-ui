@@ -137,9 +137,6 @@ export const updateCacheWithMessagePart = async (
         // const isCreatingNewThread = threadId === undefined; // first message, no thread id
 
         if (isCreatingNewThread) {
-            // setSelectedThread(parsedMessage);
-            // await router.navigate(links.thread(parsedMessage.id));
-
             currentThreadId = message.id;
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
