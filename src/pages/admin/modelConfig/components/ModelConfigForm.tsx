@@ -183,7 +183,12 @@ const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: Rea
     },
     cirrascale_backend: {
         label: 'Backend API Port',
-        description: undefined,
+        description: (
+            <span>
+                The port this model runs on. E.g.{' '}
+                <code>https://ai2models.cirrascalecloud.services:{'<PORT>'}/v1/models</code>
+            </span>
+        ),
     },
 };
 
