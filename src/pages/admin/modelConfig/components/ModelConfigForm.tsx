@@ -206,13 +206,17 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     };
 
     const modelHostSelection = formContext.watch('host');
+    const hostMeta = modelHostSelection ? hostIdFieldMeta[modelHostSelection] : null;
+
     const modelHostIdLabel =
-        modelHostSelection && hostIdFieldMeta[modelHostSelection].label
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        modelHostSelection && hostMeta?.label
             ? hostIdFieldMeta[modelHostSelection].label
             : 'Model Host Id';
 
     const modelHostIdDescription =
-        modelHostSelection && hostIdFieldMeta[modelHostSelection].description
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        modelHostSelection && hostMeta?.description
             ? hostIdFieldMeta[modelHostSelection].description
             : 'The ID of this model on the host';
 
