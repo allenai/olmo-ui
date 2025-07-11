@@ -479,7 +479,7 @@ const TermsSection: TermsAndConditionsSection = {
         </span>,
     ],
     optionGroups: [],
-    endNote: 'If you do not wish to agree to these terms, feel free to exit this page.',
+    endNote: 'If you do not wish to agree to these terms, exit this page.',
     submitButtonText: 'Next',
 };
 
