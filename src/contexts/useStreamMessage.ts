@@ -9,8 +9,11 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
+import { StreamingMessageResponse } from './submission-process';
+
 interface StreamCallbacks {
     onNewUserMessage?: (threadViewId: string) => void;
+    onFirstMessage?: (threadViewId: string, message: StreamingMessageResponse) => void;
     onCompleteStream?: (threadViewId: string) => void;
     onError?: (threadViewId: string, error: unknown) => void;
 }
@@ -43,9 +46,10 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
     };
 
     const handleFirstMessage = useCallback(
-        (threadViewId: ThreadViewId) => {
+        (threadViewId: ThreadViewId, message: StreamingMessageResponse) => {
             setHasReceivedFirstResponse(true);
             callbacks?.onNewUserMessage?.(threadViewId);
+            callbacks?.onFirstMessage?.(threadViewId, message);
         },
         [callbacks]
     );

@@ -1,13 +1,17 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 
+import { StreamingMessageResponse } from './submission-process';
+
 // Callback types for each event
 type OnNewUserMessageCallback = (threadViewId: string) => void;
-type OnCompleteStreamCallback = (threadViewId: string) => void;
+type OnFirstMessageCallback = (threadViewId: string, message: StreamingMessageResponse) => void;
+type OnCompleteStreamCallback = (threadViewId: string, message?: StreamingMessageResponse) => void;
 type OnErrorCallback = (threadViewId: string, error: unknown) => void;
 
 // Event name to callback type mapping
 interface StreamEventMap {
     onNewUserMessage: OnNewUserMessageCallback;
+    onFirstMessage: OnFirstMessageCallback;
     onCompleteStream: OnCompleteStreamCallback;
     onError: OnErrorCallback;
 }
@@ -89,9 +93,14 @@ export const createStreamCallbacks = (
                 cb(threadViewId);
             });
         },
-        onCompleteStream: (threadViewId: string) => {
+        onFirstMessage: (threadViewId: string, message: StreamingMessageResponse) => {
+            registryRef.current.onFirstMessage?.forEach((cb) => {
+                cb(threadViewId, message);
+            });
+        },
+        onCompleteStream: (threadViewId: string, message?: StreamingMessageResponse) => {
             registryRef.current.onCompleteStream?.forEach((cb) => {
-                cb(threadViewId);
+                cb(threadViewId, message);
             });
         },
         onError: (threadViewId: string, error: unknown) => {

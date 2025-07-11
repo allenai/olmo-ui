@@ -122,7 +122,7 @@ export const updateCacheWithMessagePart = async (
     threadId: string | undefined,
     isCreatingNewThread: boolean,
     threadViewId: ThreadViewId,
-    onFirstMessage?: (threadViewId: ThreadViewId) => void
+    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void
 ): Promise<string | undefined> => {
     let currentThreadId = threadId;
 
@@ -132,7 +132,7 @@ export const updateCacheWithMessagePart = async (
         // const messageId = message.id;
         // const { queryKey } = threadOptions(threadId);
 
-        onFirstMessage?.(threadViewId);
+        onFirstMessage?.(threadViewId, message);
 
         // const isCreatingNewThread = threadId === undefined; // first message, no thread id
 
@@ -260,7 +260,7 @@ export const processSingleModelSubmission = async (
         model: Model;
         thread?: Thread;
     }) => Promise<{ response: Response; abortController: AbortController }>,
-    onFirstMessage?: (threadViewId: ThreadViewId) => void,
+    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
     addSnackMessage?: (message: SnackMessage) => void
 ): Promise<string | null> => {
@@ -308,7 +308,7 @@ export const processStreamResponse = async (
     abortController: AbortController,
     rootThreadId: string | undefined,
     threadViewId: ThreadViewId,
-    onFirstMessage?: (threadViewId: ThreadViewId) => void,
+    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void
 ): Promise<string | undefined> => {
     let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
