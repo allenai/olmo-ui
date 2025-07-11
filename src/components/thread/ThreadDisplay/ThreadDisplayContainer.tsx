@@ -4,6 +4,7 @@ import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
+import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -20,6 +21,16 @@ const ThreadDisplayContent = () => {
     });
     const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
+
+    // Handle scroll to new user message
+    useStreamEvent('onNewUserMessage', (_threadViewId: string) => {
+        const element = document.querySelector('[data-testid="thread-display"]');
+        if (element) {
+            element.scrollTo({
+                top: element.scrollHeight,
+            });
+        }
+    });
 
     // get selectedID
     const [searchParams, _] = useSearchParams();

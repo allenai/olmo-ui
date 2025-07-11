@@ -9,7 +9,13 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
-export const useStreamMessage = () => {
+interface StreamCallbacks {
+    onNewUserMessage?: (threadViewId: string) => void;
+    onCompleteStream?: (threadViewId: string) => void;
+    onError?: (threadViewId: string, error: unknown) => void;
+}
+
+export const useStreamMessage = (callbacks?: StreamCallbacks) => {
     const [activeStreams, setActiveStreams] = useState<Set<string>>(new Set());
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
     const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
@@ -36,9 +42,13 @@ export const useStreamMessage = () => {
         setHasReceivedFirstResponse(false);
     };
 
-    const handleFirstMessage = useCallback(() => {
-        setHasReceivedFirstResponse(true);
-    }, []);
+    const handleFirstMessage = useCallback(
+        (threadViewId: ThreadViewId) => {
+            setHasReceivedFirstResponse(true);
+            callbacks?.onNewUserMessage?.(threadViewId);
+        },
+        [callbacks]
+    );
 
     // imperative
     const queryToThreadOrView = async ({
@@ -141,6 +151,7 @@ export const useStreamMessage = () => {
     // Function to clean up a specific stream when it completes
     const completeStream = (threadViewId: ThreadViewId) => {
         stopStream(threadViewId);
+        callbacks?.onCompleteStream?.(threadViewId);
     };
 
     return {

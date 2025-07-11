@@ -21,6 +21,11 @@ import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareF
 import { links } from '@/Links';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+import {
+    createStreamCallbacks,
+    StreamEventRegistryProvider,
+    useStreamCallbackRegistry,
+} from './StreamEventRegistry';
 import { processSingleModelSubmission, QueryFormValues } from './submission-process';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
@@ -52,7 +57,7 @@ const shouldShowCompatibilityWarning = (
     );
 };
 
-export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
+const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -66,7 +71,17 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
-    const streamMessage = useStreamMessage();
+
+    // Get the stream event registry
+    const callbackRegistryRef = useStreamCallbackRegistry();
+
+    // Create callbacks that call all registered handlers
+    const streamCallbacks = useMemo(
+        () => createStreamCallbacks(callbackRegistryRef),
+        [callbackRegistryRef]
+    );
+
+    const streamMessage = useStreamMessage(streamCallbacks);
 
     // Get available models from API, filtering for visible and non-deprecated models
     const availableModels = useModels({
@@ -261,5 +276,15 @@ export const SingleThreadProvider = ({ children, initialState }: SingleThreadPro
                 message="The model you're changing to isn't compatible with this thread. To change models you'll need to start a new thread. Continue?"
             />
         </QueryContext.Provider>
+    );
+};
+
+export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
+    return (
+        <StreamEventRegistryProvider>
+            <SingleThreadProviderContent initialState={initialState}>
+                {children}
+            </SingleThreadProviderContent>
+        </StreamEventRegistryProvider>
     );
 };
