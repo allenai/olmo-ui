@@ -181,6 +181,15 @@ const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: Rea
         label: 'Queue ID',
         description: undefined,
     },
+    cirrascale_backend: {
+        label: 'Backend API Port',
+        description: (
+            <span>
+                The port this model runs on. E.g.{' '}
+                <code>https://ai2models.cirrascalecloud.services:{'<PORT>'}/v1/models</code>
+            </span>
+        ),
+    },
 };
 
 export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
@@ -202,13 +211,17 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     };
 
     const modelHostSelection = formContext.watch('host');
+    const hostMeta = modelHostSelection ? hostIdFieldMeta[modelHostSelection] : null;
+
     const modelHostIdLabel =
-        modelHostSelection && hostIdFieldMeta[modelHostSelection].label
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        modelHostSelection && hostMeta?.label
             ? hostIdFieldMeta[modelHostSelection].label
             : 'Model Host Id';
 
     const modelHostIdDescription =
-        modelHostSelection && hostIdFieldMeta[modelHostSelection].description
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        modelHostSelection && hostMeta?.description
             ? hostIdFieldMeta[modelHostSelection].description
             : 'The ID of this model on the host';
 
@@ -250,6 +263,10 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                             <SelectListBoxItem text="Modal" id="modal" />
                             <SelectListBoxItem text="InferD" id="inferd" />
                             <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
+                            <SelectListBoxItem
+                                text="Cirrascale (Backend)"
+                                id="cirrascale_backend"
+                            />
                         </SelectListBoxSection>
                     </ControlledSelect>
 
