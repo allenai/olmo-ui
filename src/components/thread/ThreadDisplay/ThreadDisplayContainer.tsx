@@ -1,12 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useLoaderData, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
-import { containsMessages } from '@/contexts/submission-process';
-import { links } from '@/Links';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -16,7 +14,6 @@ import { ThreadDisplay } from './ThreadDisplay';
 // Inner component that has access to QueryContext
 const ThreadDisplayContent = () => {
     const { id: selectedThreadRootId = '' } = useParams();
-    const navigate = useNavigate();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
         const attributions = messageAttributionsSelector(state);
@@ -24,16 +21,6 @@ const ThreadDisplayContent = () => {
     });
     const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
-
-    // Handle navigation for new threads
-    useStreamEvent('onFirstMessage', (_threadViewId: string, message) => {
-        // Check if this is a new thread being created
-        const isNewThread = !selectedThreadRootId && containsMessages(message);
-
-        if (isNewThread) {
-            navigate(links.thread(message.id));
-        }
-    });
 
     // Handle scroll to new user message
     useStreamEvent('onNewUserMessage', (_threadViewId: string) => {
