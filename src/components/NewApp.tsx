@@ -10,6 +10,7 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import { AppLayout } from './AppLayout';
 import { TermsAndConditionsModal } from './TermsAndConditionsModal';
+import { TermsAndConditionsProvider } from './TermsAndConditionsModalContext';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -23,10 +24,14 @@ export const NewApp = () => {
         <AppLayout>
             {process.env.IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
             {shouldShowTermsAndConditionsModal && (
-                <TermsAndConditionsModal
-                    initialTermsAndConditionsValue={false}
-                    initialDataCollectionValue={''}
-                />
+                <TermsAndConditionsProvider>
+                    <TermsAndConditionsModal
+                        initialTermsAndConditionsValue={
+                            userAuthInfo.userInfo?.hasAcceptedTermsAndConditions
+                        }
+                        initialDataCollectionValue={''}
+                    />
+                </TermsAndConditionsProvider>
             )}
             <Outlet />
         </AppLayout>

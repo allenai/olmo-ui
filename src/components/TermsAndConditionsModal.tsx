@@ -27,8 +27,11 @@ import { links } from '@/Links';
 
 import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
+import { useTermsAndConditionsContext } from './TermsAndConditionsModalContext';
 
-type SectionTitle = 'Limitations' | 'Notice & Consent' | 'Terms of Use' | 'Data Consent';
+export type SectionTitle = 'Limitations' | 'Notice & Consent' | 'Terms of Use' | 'Data Consent';
+
+export type OptionValues = '' | 'opt-in' | 'opt-out';
 
 export interface TermsAndConditionsSection {
     eyebrow?: string;
@@ -44,9 +47,6 @@ export interface TermsAndConditionsSection {
     endNote?: string | React.ReactNode;
     submitButtonText: string;
 }
-
-type OptionValues = '' | 'opt-in' | 'opt-out';
-
 interface FormValues {
     acknowledgements: boolean[];
     optionGroups: {
@@ -68,29 +68,36 @@ export const TermsAndConditionsModal = ({
     const theme = useMuiTheme();
     const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
     const [open, setOpen] = useState<boolean>(true);
-    const [activeStep, setActiveStep] = useState<number>(0);
-    const [formResponses, setFormResponses] = useState<Record<number, FormValues>>({});
 
     const sections = !initialTermsAndConditionsValue ? AllSections : [DataConsentSection];
-    const section = sections[activeStep];
 
     const updateTermsAndConditions = useAppContext((state) => state.updateTermsAndConditions);
     const updateDataCollection = useAppContext((state) => state.updateDataCollection);
 
-    // clear out defaults based on the actual options in this section
-    const defaultValues: FormValues = useMemo(() => {
-        return {
-            acknowledgements:
-                section.acknowledgements.map(() => initialTermsAndConditionsValue) || [],
-            optionGroups: section.optionGroups.map(() => ({
-                selectedOption: initialDataCollectionValue,
-            })),
-        };
-    }, [activeStep]);
+    const {
+        step: activeStep,
+        setStep,
+        responses: formResponses,
+        updateStepData,
+        reset,
+    } = useTermsAndConditionsContext();
 
-    const formContext = useForm({
-        defaultValues,
-    });
+    const section = sections[activeStep];
+
+    const defaultValues: FormValues = useMemo(() => {
+        return (
+            formResponses[section.title] ?? {
+                acknowledgements: section.acknowledgements.map(
+                    () => initialTermsAndConditionsValue
+                ),
+                optionGroups: section.optionGroups.map(() => ({
+                    selectedOption: initialDataCollectionValue,
+                })),
+            }
+        );
+    }, [activeStep, formResponses]);
+
+    const formContext = useForm({ defaultValues });
 
     useEffect(() => {
         formContext.reset(defaultValues);
@@ -103,43 +110,46 @@ export const TermsAndConditionsModal = ({
 
     const handleSubmit = useCallback(
         async (formValues: FormValues) => {
-            const updatedResponses = {
-                ...formResponses,
-                [activeStep]: formValues,
-            };
-            setFormResponses(updatedResponses);
+            updateStepData(section.title, formValues);
 
-            if (activeStep + 1 === sections.length) {
-                // preserve selected options for final submit
+            const isFinalStep = activeStep + 1 === sections.length;
+            if (isFinalStep) {
+                // stage the updated responses since context update is async
+                const stagedResponses = {
+                    ...formResponses,
+                    [section.title]: formValues,
+                };
                 const dataCollectionOpt =
-                    updatedResponses[sections.findIndex((s) => s.title === 'Data Consent')]
-                        .optionGroups[0]?.selectedOption;
-                const termsAccepted = sections.some(
-                    (s, i) =>
-                        s.title === 'Terms of Use' &&
-                        updatedResponses[i].acknowledgements.every(Boolean)
-                );
+                    stagedResponses['Data Consent'].optionGroups[0]?.selectedOption ?? '';
 
-                if (termsAccepted !== initialTermsAndConditionsValue) {
-                    await updateTermsAndConditions(termsAccepted);
+                const hasTermsSection = sections.some((s) => s.title === 'Terms of Use');
+
+                if (hasTermsSection) {
+                    const termsAccepted =
+                        stagedResponses['Terms of Use'].acknowledgements.every(Boolean) ?? false;
+
+                    if (termsAccepted !== initialTermsAndConditionsValue) {
+                        await updateTermsAndConditions(termsAccepted);
+                    }
                 }
+
                 if (dataCollectionOpt !== initialDataCollectionValue) {
                     await updateDataCollection(dataCollectionOpt === 'opt-in');
                 }
-                if (onClose) {
-                    onClose();
-                }
+
+                onClose?.();
                 setOpen(false);
+                reset();
             } else {
-                setActiveStep(activeStep + 1);
+                setStep(activeStep + 1);
             }
         },
-        [activeStep, formContext]
+        [activeStep, formResponses]
     );
 
     const handlePrevious = useCallback(() => {
-        setActiveStep(Math.max(activeStep - 1, 0));
-    }, [activeStep, formContext]);
+        setStep(Math.max(activeStep - 1, 0));
+    }, [activeStep]);
 
     return (
         <StandardModal open={open}>
