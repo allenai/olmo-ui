@@ -31,7 +31,7 @@ import { useTermsAndConditionsContext } from './TermsAndConditionsModalContext';
 
 export type SectionTitle = 'Limitations' | 'Notice & Consent' | 'Terms of Use' | 'Data Consent';
 
-export type OptionValues = '' | 'opt-in' | 'opt-out';
+export type OptionValues = 'opt-in' | 'opt-out';
 
 export interface TermsAndConditionsSection {
     eyebrow?: string;
@@ -50,11 +50,11 @@ export interface TermsAndConditionsSection {
 interface FormValues {
     acknowledgements: boolean[];
     optionGroups: {
-        selectedOption: OptionValues;
+        selectedOption?: OptionValues;
     }[];
 }
 
-interface TermsAndConditionsProps {
+export interface TermsAndConditionsModalProps {
     onClose?: () => void;
     initialTermsAndConditionsValue?: boolean;
     initialDataCollectionValue?: OptionValues;
@@ -63,8 +63,8 @@ interface TermsAndConditionsProps {
 export const TermsAndConditionsModal = ({
     onClose,
     initialTermsAndConditionsValue = false,
-    initialDataCollectionValue = '',
-}: TermsAndConditionsProps) => {
+    initialDataCollectionValue = undefined,
+}: TermsAndConditionsModalProps) => {
     const theme = useMuiTheme();
     const greaterThanLg = useMediaQuery(theme.breakpoints.up('lg'));
     const [open, setOpen] = useState<boolean>(true);

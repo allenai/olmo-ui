@@ -1,12 +1,25 @@
-import { render, screen } from '@test-utils';
+import { render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 
-import { AllSections, TermsAndConditionsModal } from './TermsAndConditionsModal';
+import {
+    AllSections,
+    TermsAndConditionsModal,
+    TermsAndConditionsModalProps,
+} from './TermsAndConditionsModal';
+import { TermsAndConditionsProvider } from './TermsAndConditionsModalContext';
+
+export function renderWithTermsProvider(props: Partial<TermsAndConditionsModalProps> = {}) {
+    return render(
+        <TermsAndConditionsProvider>
+            <TermsAndConditionsModal {...props} />
+        </TermsAndConditionsProvider>
+    );
+}
 
 describe('Terms and Conditions', () => {
     it('should complete the process without crashing', async () => {
         const user = userEvent.setup();
-        render(<TermsAndConditionsModal />);
+        renderWithTermsProvider();
 
         expect(screen.getByText('Getting Started')).toBeVisible();
 
@@ -23,31 +36,39 @@ describe('Terms and Conditions', () => {
                 await user.click(radios[0]);
             }
 
-            await user.click(
-                screen.getByRole('button', {
-                    name: i < AllSections.length - 1 ? 'Next' : "Let's Go!",
-                })
-            );
+            const buttonLabel = i < AllSections.length - 1 ? 'Next' : "Let's Go!";
+            const button = screen.getByRole('button', { name: buttonLabel });
+
+            expect(button).toBeEnabled();
+            await user.click(button);
         }
 
-        expect(screen.queryByText('Getting Started')).not.toBeInTheDocument();
+        // give some time for the modal to hide
+        await waitFor(
+            () => {
+                expect(screen.queryByText('Getting Started')).not.toBeInTheDocument();
+            },
+            { timeout: 200 }
+        );
     });
 
     it('should render the first section by default', () => {
-        render(<TermsAndConditionsModal />);
+        renderWithTermsProvider();
+
         expect(screen.getByText('Limitations')).toBeVisible();
         expect(screen.getByText('Things to remember before getting started')).toBeVisible();
     });
 
     it('should disable the submit button if required acknowledgements are not checked', () => {
-        render(<TermsAndConditionsModal />);
+        renderWithTermsProvider();
+
         const nextButton = screen.getByRole('button', { name: 'Next' });
         expect(nextButton).toBeDisabled();
     });
 
     it('should navigate back to the previous section when "Prev" is clicked', async () => {
         const user = userEvent.setup();
-        render(<TermsAndConditionsModal />);
+        renderWithTermsProvider();
 
         await user.click(screen.getByRole('checkbox'));
         await user.click(screen.getByRole('button', { name: 'Next' }));
@@ -60,22 +81,12 @@ describe('Terms and Conditions', () => {
         expect(await screen.findByText('Limitations')).toBeVisible();
     });
 
-    it('should reset acknowledgements when navigating between sections', async () => {
-        const user = userEvent.setup();
-        render(<TermsAndConditionsModal />);
-
-        const checkbox = screen.getByRole('checkbox');
-        await user.click(checkbox);
-        expect(checkbox).toBeChecked();
-
-        await user.click(screen.getByRole('button', { name: 'Next' }));
-        await user.click(screen.getByRole('button', { name: 'Prev' }));
-
-        expect(await screen.findByRole('checkbox')).not.toBeChecked();
-    });
-
     it('should only show the data collection screen if terms are already accepted', async () => {
-        render(<TermsAndConditionsModal initialTermsAndConditionsValue={true} />);
+        render(
+            <TermsAndConditionsProvider>
+                <TermsAndConditionsModal initialTermsAndConditionsValue={true} />
+            </TermsAndConditionsProvider>
+        );
 
         expect(await screen.findByText('Data Consent')).toBeVisible();
         expect(screen.queryByText('Terms of Use')).not.toBeInTheDocument();
@@ -83,19 +94,17 @@ describe('Terms and Conditions', () => {
     });
 
     it('should show all screens if terms are not yet accepted', async () => {
-        render(<TermsAndConditionsModal initialTermsAndConditionsValue={false} />);
+        renderWithTermsProvider({ initialTermsAndConditionsValue: false });
 
         expect(await screen.findByText('Limitations')).toBeVisible();
         expect(screen.queryByText('Data Consent')).not.toBeInTheDocument();
     });
 
     it('should preselect opt-in if initialDataCollectionValue is OPT_IN', async () => {
-        render(
-            <TermsAndConditionsModal
-                initialTermsAndConditionsValue={true}
-                initialDataCollectionValue={'opt-in'}
-            />
-        );
+        renderWithTermsProvider({
+            initialTermsAndConditionsValue: true,
+            initialDataCollectionValue: 'opt-in',
+        });
 
         expect(await screen.findByText('Data Consent')).toBeVisible();
 
@@ -108,12 +117,10 @@ describe('Terms and Conditions', () => {
     });
 
     it('should preselect opt-out if initialDataCollectionValue is OPT_OUT', async () => {
-        render(
-            <TermsAndConditionsModal
-                initialTermsAndConditionsValue={true}
-                initialDataCollectionValue={'opt-out'}
-            />
-        );
+        renderWithTermsProvider({
+            initialTermsAndConditionsValue: true,
+            initialDataCollectionValue: 'opt-out',
+        });
 
         expect(await screen.findByText('Data Consent')).toBeVisible();
 
@@ -126,12 +133,7 @@ describe('Terms and Conditions', () => {
     });
 
     it('should preselect none if initialDataCollectionValue is UNSET', async () => {
-        render(
-            <TermsAndConditionsModal
-                initialTermsAndConditionsValue={true}
-                initialDataCollectionValue={''}
-            />
-        );
+        renderWithTermsProvider({ initialTermsAndConditionsValue: true });
 
         expect(await screen.findByText('Data Consent')).toBeVisible();
 

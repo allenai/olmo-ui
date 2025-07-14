@@ -5,7 +5,7 @@ import { OptionValues, SectionTitle } from './TermsAndConditionsModal';
 export interface FormValues {
     acknowledgements: boolean[];
     optionGroups: {
-        selectedOption: OptionValues;
+        selectedOption?: OptionValues;
     }[];
 }
 

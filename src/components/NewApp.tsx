@@ -29,7 +29,6 @@ export const NewApp = () => {
                         initialTermsAndConditionsValue={
                             userAuthInfo.userInfo?.hasAcceptedTermsAndConditions
                         }
-                        initialDataCollectionValue={''}
                     />
                 </TermsAndConditionsProvider>
             )}
