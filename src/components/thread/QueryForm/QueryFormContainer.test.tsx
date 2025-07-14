@@ -11,9 +11,13 @@ import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { StreamingMessageResponse } from '@/contexts/submission-process';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
-import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
-import { createMockUser, createStreamMessageMock, createMockThread, createMockMessage } from '@/utils/test-utils';
+import {
+    createMockMessage,
+    createMockThread,
+    createMockUser,
+    createStreamMessageMock,
+} from '@/utils/test-utils';
 
 import { QueryFormContainer } from './QueryFormContainer';
 
@@ -68,7 +72,9 @@ const renderWithProvider = (
 
 describe('QueryFormContainer', () => {
     it('should clear out prompt after receiving the first message from the response', async () => {
-        let onFirstMessageCallback: ((threadViewId: string, message: StreamingMessageResponse) => void) | undefined;
+        let onFirstMessageCallback:
+            | ((threadViewId: string, message: StreamingMessageResponse) => void)
+            | undefined;
 
         mockUseStreamEvent.mockImplementation((eventName, callback) => {
             if (eventName === 'onFirstMessage') {
@@ -95,11 +101,11 @@ describe('QueryFormContainer', () => {
 
         const mockMessage = createMockThread({
             id: 'thread-123',
-            messages: [createMockMessage({ id: 'msg-1', content: 'response', final: false })]
+            messages: [createMockMessage({ id: 'msg-1', content: 'response', final: false })],
         });
 
         await act(async () => {
-            onFirstMessageCallback!('0', mockMessage);
+            onFirstMessageCallback('0', mockMessage);
         });
 
         await waitFor(() => {
@@ -108,7 +114,10 @@ describe('QueryFormContainer', () => {
     });
 
     it('should not clear out prompt after the stream finishes', async () => {
-        let onFirstMessageCallback: ((threadViewId: string, message: StreamingMessageResponse) => void) | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let onFirstMessageCallback:
+            | ((threadViewId: string, message: StreamingMessageResponse) => void)
+            | undefined;
 
         // Mock useStreamEvent to capture callbacks but don't trigger onFirstMessage
         mockUseStreamEvent.mockImplementation((eventName, callback) => {
@@ -134,7 +143,7 @@ describe('QueryFormContainer', () => {
         expect(textfield).toHaveValue('write a poem');
 
         // Form should maintain text.
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         expect(textfield).toHaveValue('write a poem');
     });

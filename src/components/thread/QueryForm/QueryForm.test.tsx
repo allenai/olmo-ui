@@ -7,7 +7,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
-import { useQueryContext } from '@/contexts/QueryContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
@@ -142,8 +141,6 @@ describe('QueryForm', () => {
             expect(screen.getByRole('button', { name: 'Stop response generation' })).toBeEnabled();
         });
     });
-
-
 
     it("should show a model's family name in the placeholder and label", async () => {
         renderWithProvider({
