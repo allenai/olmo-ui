@@ -1,4 +1,4 @@
-import { render, screen } from '@test-utils';
+import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import { ComponentProps } from 'react';
 import * as reactRouter from 'react-router-dom';
 
@@ -40,9 +40,11 @@ describe('SelectMessageButton', () => {
 
         render(
             <FakeAppContextProvider initialState={initialState}>
-                <FakeThreadViewProvider>
-                    <SelectMessageButton messageId="message-1" />
-                </FakeThreadViewProvider>
+                <FakeQueryContextProvider>
+                    <FakeThreadViewProvider>
+                        <SelectMessageButton messageId="message-1" />
+                    </FakeThreadViewProvider>
+                </FakeQueryContextProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
@@ -77,9 +79,11 @@ describe('SelectMessageButton', () => {
 
         render(
             <FakeAppContextProvider>
-                <FakeThreadViewProvider>
-                    <SelectMessageButton messageId="message-1" />
-                </FakeThreadViewProvider>
+                <FakeQueryContextProvider>
+                    <FakeThreadViewProvider>
+                        <SelectMessageButton messageId="message-1" />
+                    </FakeThreadViewProvider>
+                </FakeQueryContextProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {

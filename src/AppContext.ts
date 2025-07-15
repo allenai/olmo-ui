@@ -9,6 +9,7 @@ import { AttributionSlice, createAttributionSlice } from './slices/attribution/A
 import { CompareModelSlice, createCompareModelSlice } from './slices/CompareModelSlice';
 import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
+import { createGlobalThreadsUISlice, GlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
 import { createMetaSlice, MetaSlice } from './slices/MetaSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
@@ -34,6 +35,7 @@ export type AppContextState = LabelSlice &
     DrawerSlice &
     ThreadUpdateSlice &
     SelectedThreadSlice &
+    GlobalThreadsUISlice &
     DatasetExplorerSliceStates &
     AttributionSlice;
 
@@ -67,6 +69,7 @@ export const createAppContext = (
                         ...createDocumentSlice(...store),
                         ...createThreadUpdateSlice(...store),
                         ...createSelectedThreadSlice(...store),
+                        ...createGlobalThreadsUISlice(...store),
                         ...createAttributionSlice(...store),
                     } satisfies AppContextState,
                     (typeof initialState === 'function' ? initialState(...store) : initialState) ??

@@ -9,15 +9,11 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 export const ShareThreadIconButton = (): ReactNode => {
-    const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-    const allThreadsCreated = selectedCompareModels.every(
-        ({ rootThreadId }) => rootThreadId != null
-    );
-
+    const isShareReady = useAppContext((state) => state.isShareReady);
     const { isAuthenticated } = useUserAuthInfo();
 
-    const shouldDisableShareButton = !allThreadsCreated || !isAuthenticated;
+    const shouldDisableShareButton = !isShareReady || !isAuthenticated;
 
     const handleShareThread = async () => {
         await navigator.clipboard.writeText(location.href);
