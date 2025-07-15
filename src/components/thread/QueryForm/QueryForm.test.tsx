@@ -15,8 +15,11 @@ import { createMockUser, createStreamMessageMock, setupThreadInCache } from '@/u
 
 import { QueryForm } from './QueryForm';
 
+// Mock react-router-dom with configurable useParams
+let mockUseParams: ReturnType<typeof vi.fn>;
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
     useLocation: () => ({
         pathname: '/',
         search: '',
@@ -33,9 +36,12 @@ vi.mock('@/contexts/useStreamMessage', () => ({
 
 const mockUseStreamMessage = vi.mocked(useStreamMessage);
 
-// Set up default mock for useStreamMessage
-beforeEach(() => {
+beforeEach(async () => {
+    vi.clearAllMocks();
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
+
+    const { useParams } = await import('react-router-dom');
+    mockUseParams = vi.mocked(useParams);
 });
 
 const renderWithProvider = (
@@ -43,6 +49,8 @@ const renderWithProvider = (
     mockUserInfo?: User | null
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+    mockUseParams.mockReturnValue({ id: initialState?.threadId });
 
     return render(
         <FakeAppContextProvider

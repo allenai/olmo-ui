@@ -23,6 +23,7 @@ import { QueryFormContainer } from './QueryFormContainer';
 
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
+    useParams: () => ({ id: undefined }),
     useLocation: () => ({
         pathname: '/',
         search: '',
@@ -105,7 +106,8 @@ describe('QueryFormContainer', () => {
         });
 
         await act(async () => {
-            onFirstMessageCallback('0', mockMessage);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            onFirstMessageCallback!('0', mockMessage);
         });
 
         await waitFor(() => {
