@@ -5,6 +5,7 @@ import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
 import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
 import {
     defaultFeatureToggles,
@@ -13,7 +14,233 @@ import {
 } from 'src/FeatureToggleContext';
 import { ThemeProvider } from 'styled-components';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
+import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
+import { User } from '@/api/User';
+import { QueryContext, QueryContextValue } from '@/contexts/QueryContext';
+import { useStreamMessage } from '@/contexts/useStreamMessage';
+import { RemoteState } from '@/contexts/util';
+import { server } from '@/mocks/node';
+
 import { uiRefreshOlmoTheme } from '../olmoTheme';
+
+export const createMockMessage = (overrides: Partial<FlatMessage> = {}): FlatMessage => ({
+    id: 'message-1',
+    creator: 'user-123',
+    content: 'Hello',
+    role: 'user',
+    created: '2023-01-01T00:00:00Z',
+    final: true,
+    isLimitReached: false,
+    children: null,
+    completion: null,
+    deleted: null,
+    expirationTime: null,
+    fileUrls: null,
+    finishReason: null,
+    harmful: null,
+    modelHost: 'modal',
+    modelId: 'test-model',
+    modelType: 'chat',
+    opts: {
+        maxTokens: 2048,
+        temperature: 1,
+        n: 1,
+        topP: 1,
+    },
+    original: null,
+    parent: null,
+    private: false,
+    snippet: 'Hello',
+    template: null,
+    isOlderThan30Days: false,
+    root: 'thread-123',
+    ...overrides,
+});
+
+export const createMockThread = (overrides: Partial<Thread> = {}): Thread => ({
+    id: 'thread-123',
+    messages: [createMockMessage()],
+    ...overrides,
+});
+
+export const createMockUser = (overrides: Partial<User> = {}): User => ({
+    client: 'user-123',
+    hasAcceptedTermsAndConditions: true,
+    id: null,
+    permissions: undefined,
+    ...overrides,
+});
+
+type UseStreamMessageReturn = ReturnType<typeof useStreamMessage>;
+
+export const createStreamMessageMock = (
+    overrides: Partial<UseStreamMessageReturn> = {}
+): UseStreamMessageReturn => {
+    const baseMock = {
+        // UseMutation properties
+        mutateAsync: vi.fn().mockResolvedValue(undefined),
+        mutate: vi.fn(),
+        reset: vi.fn(),
+        isPending: false,
+        isPaused: false,
+        isError: false,
+        isSuccess: false,
+        isIdle: true,
+        data: undefined,
+        error: null,
+        variables: undefined,
+        failureCount: 0,
+        failureReason: null,
+        status: 'idle' as const,
+        submittedAt: 0,
+        context: undefined,
+
+        // useStreamMessage-specific properties
+        onFirstMessage: vi.fn(),
+        completeStream: vi.fn(),
+        prepareForNewSubmission: vi.fn(),
+        abortAllStreams: vi.fn(),
+        canPause: false, // Default to not streaming
+        activeStreamCount: 0,
+        remoteState: RemoteState.Loaded,
+        hasReceivedFirstResponse: false,
+        ...overrides,
+    };
+
+    return baseMock as UseStreamMessageReturn;
+};
+
+export const setupThreadInCache = (
+    threadId: string,
+    options: {
+        messages?: Array<{
+            creator?: string;
+            id?: string;
+            content?: string;
+            role?: string;
+            isLimitReached?: boolean;
+        }>;
+    } = {}
+) => {
+    const { messages = [] } = options;
+    const thread = createMockThread({
+        id: threadId,
+        messages: messages.map((msg, index) =>
+            createMockMessage({
+                id: msg.id || `message-${index + 1}`,
+                creator: msg.creator,
+                content: msg.content || 'Test message',
+                role: msg.role as 'user' | 'assistant' | 'system' | undefined,
+                isLimitReached: msg.isLimitReached ?? false,
+            })
+        ),
+    });
+    const { queryKey } = threadOptions(threadId);
+    queryClient.setQueryData(queryKey, thread);
+};
+
+export const setupMswThreadHandler = (
+    threadId: string,
+    messages: Array<{
+        id?: string;
+        creator?: string;
+        content?: string;
+        role?: 'user' | 'assistant' | 'system';
+        parent?: string | null;
+        children?: string[] | null;
+        isLimitReached?: boolean;
+        modelId?: string;
+        modelHost?: string;
+    }> = []
+) => {
+    const fullMessages = messages.map((msg, index) => ({
+        id: msg.id || `message-${index + 1}`,
+        creator: msg.creator || 'test-user',
+        content: msg.content || 'Test message',
+        role: msg.role || 'user',
+        created: '2023-01-01T00:00:00Z',
+        final: true,
+        isLimitReached: msg.isLimitReached ?? false,
+        children: msg.children ?? null,
+        completion: null,
+        deleted: null,
+        expirationTime: null,
+        fileUrls: null,
+        finishReason: null,
+        harmful: null,
+        modelHost: msg.modelHost || 'modal',
+        modelId: msg.modelId || 'test-model',
+        modelType: 'chat' as const,
+        opts: { maxTokens: 2048, temperature: 1, n: 1, topP: 1 },
+        original: null,
+        parent: msg.parent ?? null,
+        private: false,
+        snippet: msg.content || 'Test message',
+        template: null,
+        isOlderThan30Days: false,
+    }));
+
+    server.use(
+        http.get(`*/v4/threads/${threadId}`, () => {
+            return HttpResponse.json({
+                id: threadId,
+                messages: fullMessages,
+            });
+        })
+    );
+};
+
+interface FakeQueryContextProviderProps extends PropsWithChildren {
+    selectedModel?: Partial<Model>;
+    availableModels?: Model[];
+    canSubmit?: boolean;
+    autofocus?: boolean;
+    placeholderText?: string;
+    areFilesAllowed?: boolean;
+    isLimitReached?: boolean;
+}
+
+export const FakeQueryContextProvider = ({
+    children,
+    selectedModel,
+    availableModels = [],
+    canSubmit = true,
+    autofocus = false,
+    placeholderText = 'Test placeholder',
+    areFilesAllowed = false,
+    isLimitReached = false,
+}: FakeQueryContextProviderProps) => {
+    const mockContextValue: QueryContextValue = {
+        canSubmit,
+        autofocus,
+        placeholderText,
+        areFilesAllowed,
+        availableModels,
+        canPauseThread: false,
+        isLimitReached,
+        remoteState: undefined,
+        shouldResetForm: false,
+        fileUploadProps: {
+            isFileUploadDisabled: true,
+            isSendingPrompt: false,
+            acceptsFileUpload: false,
+            acceptedFileTypes: [],
+            acceptsMultiple: false,
+            allowFilesInFollowups: false,
+        },
+        onModelChange: () => {},
+        getThreadViewModel: () => selectedModel as Model | undefined,
+        transform: () => [],
+        onSubmit: async () => {},
+        onAbort: () => {},
+        setModelId: () => {},
+        setThreadId: () => {},
+    };
+
+    return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;
+};
 
 const FakeFeatureToggleProvider = ({
     children,
@@ -40,7 +267,9 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
     // If we need to test with react router Link functionality we can add it back but we'd need to do some router setup in here
     const theme = getTheme(uiRefreshOlmoTheme);
 
-    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false } },
+    });
 
     return (
         <QueryClientProvider client={queryClient}>

@@ -1,14 +1,18 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
+import { useQueryContext } from '@/contexts/QueryContext';
+import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
+import { PARAM_SELECTED_MESSAGE, SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
-export const ThreadDisplayContainer = () => {
+// Inner component that has access to QueryContext
+const ThreadDisplayContent = () => {
     const { id: selectedThreadRootId = '' } = useParams();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
@@ -17,6 +21,16 @@ export const ThreadDisplayContainer = () => {
     });
     const streamingMessageId = useAppContext((state) => state.streamingMessageId);
     const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
+
+    // Handle scroll to new user message
+    useStreamEvent('onNewUserMessage', (_threadViewId: string) => {
+        const element = document.querySelector('[data-testid="thread-display"]');
+        if (element) {
+            element.scrollTo({
+                top: element.scrollHeight,
+            });
+        }
+    });
 
     // get selectedID
     const [searchParams, _] = useSearchParams();
@@ -43,4 +57,25 @@ export const ThreadDisplayContainer = () => {
             />
         </ThreadViewProvider>
     );
+};
+
+export const ThreadDisplayContainer = () => {
+    const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
+    const { id: selectedThreadRootId = '' } = useParams();
+    const queryContext = useQueryContext();
+    const processedThreadRef = useRef<string>('');
+
+    useEffect(() => {
+        if (selectedThreadRootId) {
+            queryContext.setThreadId('0', selectedThreadRootId);
+        }
+
+        // Only set model from loaderData if we're navigating to a new thread
+        if (loaderData?.selectedModelId && selectedThreadRootId !== processedThreadRef.current) {
+            queryContext.setModelId('0', loaderData.selectedModelId);
+            processedThreadRef.current = selectedThreadRootId;
+        }
+    }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
+
+    return <ThreadDisplayContent />;
 };
