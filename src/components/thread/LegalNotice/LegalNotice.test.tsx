@@ -1,4 +1,4 @@
-import { render, screen } from '@test-utils';
+import { FakeQueryContextProvider, render, screen } from '@test-utils';
 
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -11,7 +11,9 @@ describe('LegalNotice', () => {
 
         render(
             <FakeAppContextProvider initialState={{}}>
-                <LegalNotice />
+                <FakeQueryContextProvider>
+                    <LegalNotice />
+                </FakeQueryContextProvider>
             </FakeAppContextProvider>
         );
 
@@ -39,8 +41,10 @@ describe('LegalNotice', () => {
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
         render(
-            <FakeAppContextProvider initialState={{ selectedModel: { family_id: 'tulu' } }}>
-                <LegalNotice />
+            <FakeAppContextProvider initialState={{}}>
+                <FakeQueryContextProvider selectedModel={{ family_id: 'tulu' }}>
+                    <LegalNotice />
+                </FakeQueryContextProvider>
             </FakeAppContextProvider>
         );
 

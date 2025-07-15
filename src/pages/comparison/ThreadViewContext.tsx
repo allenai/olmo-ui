@@ -2,8 +2,9 @@ import { createContext, useContext } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ThreadId } from '@/api/playgroundApi/thread';
-import { useAppContext } from '@/AppContext';
-import type { ThreadViewId } from '@/slices/CompareModelSlice';
+import { useQueryContext } from '@/contexts/QueryContext';
+
+export type ThreadViewId = string;
 
 interface ThreadViewContextProps {
     threadId: ThreadId;
@@ -36,12 +37,7 @@ export const useThreadView = (): ThreadViewContextProps => {
 
 export const useSelectedModel = (): Model | undefined => {
     const { threadViewId } = useThreadView();
+    const queryContext = useQueryContext();
 
-    const selectedModel = useAppContext((state) => {
-        return state.selectedCompareModels.find((model) => {
-            return model.threadViewId === threadViewId;
-        })?.model;
-    });
-
-    return selectedModel;
+    return queryContext.getThreadViewModel(threadViewId);
 };

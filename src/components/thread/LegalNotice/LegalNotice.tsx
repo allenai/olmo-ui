@@ -1,8 +1,8 @@
 import { alpha, Theme, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
-import { useAppContext } from '@/AppContext';
 import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
+import { useQueryContext } from '@/contexts/QueryContext';
 
 import {
     familySpecificLegalNoticesMap,
@@ -41,8 +41,11 @@ export const SmallLegalNotice = () => {
 };
 
 export const LegalNotice = () => {
-    const selectedModelFamilyId = useAppContext((state) => state.selectedModel?.family_id);
-    const selectedModelId = useAppContext((state) => state.selectedModel?.id);
+    const queryContext = useQueryContext();
+
+    const selectedModel = queryContext.getThreadViewModel();
+    const selectedModelFamilyId = selectedModel?.family_id;
+    const selectedModelId = selectedModel?.id;
 
     const FamilySpecificLegalNotice =
         selectedModelFamilyId != null

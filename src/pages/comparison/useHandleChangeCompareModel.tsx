@@ -12,6 +12,8 @@ import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelCh
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 
+// TODO: Delete this file after migration to QueryContext
+
 // Create fresh compare models with cleared rootThreadId for all thread views
 const createFreshCompareModels = (
     selectedCompareModels: CompareModelState[],

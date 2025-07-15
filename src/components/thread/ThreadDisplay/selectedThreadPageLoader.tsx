@@ -1,8 +1,7 @@
 import { defer, LoaderFunction } from 'react-router-dom';
 
 import { RequestInferenceOpts } from '@/api/Message';
-import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { threadOptions } from '@/api/playgroundApi/thread';
+import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
@@ -12,12 +11,17 @@ import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels'
 
 export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
+export interface SelectedThreadLoaderData {
+    selectedThread: Thread;
+    attributions?: Promise<unknown>;
+    selectedModelId?: string;
+}
+
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
         selectedThreadRootId, // not used
         getAttributionsForMessage,
         handleAttributionForChangingThread,
-        setSelectedCompareModels,
         updateInferenceOpts,
         abortPrompt,
         selectMessage,
@@ -43,30 +47,18 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
         const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
 
+        let selectedModelId: string | undefined;
+
         if (lastResponse != null) {
             const models = await modelsPromise;
 
             if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
-                const model = models.find((model) => model.id === lastResponse.modelId) as Model;
-
-                setSelectedCompareModels([
-                    {
-                        threadViewId: '0',
-                        rootThreadId: threadRootId,
-                        model,
-                    },
-                ]);
+                // Use the model from the thread's last response
+                selectedModelId = lastResponse.modelId;
             } else {
-                // TODO Temp: are "invisible" models actually getting to the UI?
+                // TODO: SingleThreadProvider has this filter logic. Seems like we shouldn't have it here too.
                 const visibleModels = models.filter(isModelVisible);
-
-                setSelectedCompareModels([
-                    {
-                        threadViewId: '0',
-                        rootThreadId: threadRootId,
-                        model: visibleModels[0],
-                    },
-                ]);
+                selectedModelId = visibleModels[0]?.id;
             }
             // TODO (bb): this probably shouldn't be stored, and just queried from the last message
             updateInferenceOpts(lastResponse.opts as RequestInferenceOpts);
@@ -96,9 +88,13 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
             return defer({
                 selectedThread,
                 attributions: attributionsPromise,
+                selectedModelId,
             });
         } else {
-            return defer({ selectedThread });
+            return defer({
+                selectedThread,
+                selectedModelId,
+            });
         }
     }
 
