@@ -203,13 +203,27 @@ describe('QueryForm', () => {
     });
 
     it('should show the thumbnail of an uploaded image and allow the user to remove it', async () => {
+        vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
         render(
             <FakeAppContextProvider
                 initialState={{
                     userInfo: createMockUser(),
                     addSnackMessage: vi.fn(),
+                    selectedModel: {
+                        id: 'molmo',
+                        name: 'Molmo',
+                        family_name: undefined,
+                        accepts_files: true,
+                        is_visible: true,
+                        is_deprecated: false,
+                        prompt_type: 'multi_modal',
+                        model_type: 'chat',
+                        host: 'inferd',
+                        internal: false,
+                    },
                 }}>
-                <SingleThreadProvider initialState={{ selectedModelId: 'molmo' }}>
+                <SingleThreadProvider initialState={{}}>
                     <QueryForm />
                 </SingleThreadProvider>
             </FakeAppContextProvider>,

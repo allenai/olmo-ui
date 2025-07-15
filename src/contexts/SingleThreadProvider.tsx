@@ -31,7 +31,6 @@ import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
 interface SingleThreadState {
-    selectedModelId?: string;
     threadId?: string;
 }
 
@@ -58,12 +57,17 @@ const shouldShowCompatibilityWarning = (
 };
 
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
-    const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
-        initialState?.selectedModelId ?? undefined
-    );
+    const globalSelectedModel = useAppContext((state) => state.selectedModel);
+    const setGlobalSelectedModel = useAppContext((state) => state.setSelectedModel);
+
     const [threadId, setThreadIdValue] = useState<string | undefined>(
         initialState?.threadId ?? undefined
     );
+
+    // Sync state when initialState changes (route changes)
+    useEffect(() => {
+        setThreadIdValue(initialState?.threadId ?? undefined);
+    }, [initialState?.threadId]);
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
@@ -88,19 +92,20 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         select: (data) =>
             data.filter(
                 (model) =>
-                    (isModelVisible(model) && !model.is_deprecated) || model.id === selectedModelId
+                    (isModelVisible(model) && !model.is_deprecated) ||
+                    model.id === globalSelectedModel?.id
             ),
     });
 
     const selectedModel = useMemo(() => {
-        if (selectedModelId) {
-            const found = availableModels.find((model) => model.id === selectedModelId);
+        if (globalSelectedModel) {
+            const found = availableModels.find((model) => model.id === globalSelectedModel.id);
             if (found) return found; // Otherwise, fall back to the first visible model
         }
 
         const firstVisibleModel = availableModels.find((model) => isModelVisible(model));
         return firstVisibleModel;
-    }, [availableModels, selectedModelId]);
+    }, [availableModels, globalSelectedModel]);
 
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
@@ -143,10 +148,16 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setIsShareReady(isShareReady);
     }, [isShareReady, setIsShareReady]);
 
-    const selectModel = useCallback((modelId: string) => {
-        trackModelSelection(modelId);
-        setSelectedModelId(modelId);
-    }, []);
+    const selectModel = useCallback(
+        (modelId: string) => {
+            trackModelSelection(modelId);
+            const model = availableModels.find((m) => m.id === modelId);
+            if (model) {
+                setGlobalSelectedModel(model);
+            }
+        },
+        [availableModels, setGlobalSelectedModel]
+    );
 
     const onModelChange = useCallback(
         (event: SelectChangeEvent, _threadViewId?: string) => {
@@ -241,7 +252,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             onSubmit,
             onAbort: handleAbort,
             setModelId: (_threadViewId: string, modelId: string) => {
-                setSelectedModelId(modelId);
+                const model = availableModels.find((m) => m.id === modelId);
+                if (model) {
+                    setGlobalSelectedModel(model);
+                }
             },
             setThreadId: (_threadViewId: string, threadId: string) => {
                 setThreadIdValue(threadId);

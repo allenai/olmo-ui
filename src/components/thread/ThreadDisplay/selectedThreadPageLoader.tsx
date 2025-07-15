@@ -15,11 +15,12 @@ export interface SelectedThreadLoaderData {
     selectedThread: Thread;
     attributions?: Promise<unknown>;
     selectedModelId?: string;
+    threadId: string;
 }
 
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
-        selectedThreadRootId, // not used
+        selectedThreadRootId,
         getAttributionsForMessage,
         handleAttributionForChangingThread,
         updateInferenceOpts,
@@ -29,74 +30,88 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
     const { isCorpusLinkEnabled } = getFeatureToggles();
 
-    // get the latest state of the selectedThread if we're changing to a different thread
-    if (params.id != null && params.id !== selectedThreadRootId) {
+    if (params.id == null) {
+        throw new Error('Thread ID is required');
+    }
+
+    const threadRootId = params.id;
+
+    // Handle thread change logic if needed
+    if (threadRootId !== selectedThreadRootId) {
         handleAttributionForChangingThread();
         // abort the current streaming prompt if there is any
         abortPrompt();
-
-        const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
-
-        const threadRootId = params.id;
-        const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
-
-        const url = new URL(request.url);
-        const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
-
-        const { messages: selectedThreadMessages } = selectedThread;
-
-        const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
-
-        let selectedModelId: string | undefined;
-
-        if (lastResponse != null) {
-            const models = await modelsPromise;
-
-            if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
-                // Use the model from the thread's last response
-                selectedModelId = lastResponse.modelId;
-            } else {
-                // TODO: SingleThreadProvider has this filter logic. Seems like we shouldn't have it here too.
-                const visibleModels = models.filter(isModelVisible);
-                selectedModelId = visibleModels[0]?.id;
-            }
-            // TODO (bb): this probably shouldn't be stored, and just queried from the last message
-            updateInferenceOpts(lastResponse.opts as RequestInferenceOpts);
-        }
-
-        if (isCorpusLinkEnabled) {
-            let attributionsPromise;
-
-            const selectedMessage = selectedThreadMessages.find(
-                (message) => message.id === selectedMessageId
-            );
-
-            if (selectedMessage != null) {
-                const parentPrompt = selectedThreadMessages.find((message) =>
-                    message.children?.includes(selectedMessage.id)
-                );
-
-                attributionsPromise = getAttributionsForMessage(
-                    parentPrompt?.content || '',
-                    threadRootId,
-                    selectedMessage.id
-                );
-
-                selectMessage(threadRootId, selectedMessage.id);
-            }
-
-            return defer({
-                selectedThread,
-                attributions: attributionsPromise,
-                selectedModelId,
-            });
-        } else {
-            return defer({
-                selectedThread,
-                selectedModelId,
-            });
-        }
     }
 
-    return null;
+    const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
+
+    const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
+
+    const url = new URL(request.url);
+    const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
+
+    const { messages: selectedThreadMessages } = selectedThread;
+
+    const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
+
+    let selectedModelId: string | undefined;
+
+    if (lastResponse != null) {
+        const models = await modelsPromise;
+
+        if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
+            // Use the model from the thread's last response
+            selectedModelId = lastResponse.modelId;
+        } else {
+            const visibleModels = models.filter(isModelVisible);
+            selectedModelId = visibleModels[0]?.id;
+        }
+
+        // Update global model selection state
+        const { setSelectedModel } = appContext.getState();
+        const modelObj = models.find((m) => m.id === selectedModelId);
+        if (modelObj) {
+            setSelectedModel(modelObj);
+        }
+
+        // TODO (bb): this probably shouldn't be stored, and just queried from the last message
+        updateInferenceOpts(lastResponse.opts as RequestInferenceOpts);
+    }
+
+    if (isCorpusLinkEnabled) {
+        let attributionsPromise;
+
+        const selectedMessage = selectedThreadMessages.find(
+            (message) => message.id === selectedMessageId
+        );
+
+        if (selectedMessage != null) {
+            const parentPrompt = selectedThreadMessages.find((message) =>
+                message.children?.includes(selectedMessage.id)
+            );
+
+            attributionsPromise = getAttributionsForMessage(
+                parentPrompt?.content || '',
+                threadRootId,
+                selectedMessage.id
+            );
+
+            selectMessage(threadRootId, selectedMessage.id);
+        }
+
+        const result = defer({
+            selectedThread,
+            attributions: attributionsPromise,
+            selectedModelId,
+            threadId: threadRootId,
+        });
+        return result;
+    } else {
+        const result = defer({
+            selectedThread,
+            selectedModelId,
+            threadId: threadRootId,
+        });
+        return result;
+    }
 };

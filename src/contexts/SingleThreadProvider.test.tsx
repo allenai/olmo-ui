@@ -1,6 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import { describe, expect, it } from 'vitest';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -16,8 +17,9 @@ vi.mock('react-router-dom', () => ({
 // Test helper to render SingleThreadProvider with optional initial state
 const renderWithProvider = (
     TestComponent: React.ComponentType,
-    initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
-    mockUserInfo?: User | null
+    initialState?: Partial<{ threadId?: string }>,
+    mockUserInfo?: User | null,
+    selectedModel?: Partial<Model>
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
@@ -26,6 +28,7 @@ const renderWithProvider = (
             initialState={{
                 userInfo: mockUserInfo,
                 addSnackMessage: vi.fn(), // Mock the addSnackMessage function
+                selectedModel: selectedModel || undefined,
             }}>
             <SingleThreadProvider initialState={initialState}>
                 <TestComponent />
@@ -51,8 +54,9 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should return "Message Tülu" when Tulu model is selected', async () => {
-            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
-                selectedModelId: 'tulu2',
+            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {}, null, {
+                id: 'tulu2',
+                family_name: 'Tülu',
             });
 
             await waitFor(() => {
@@ -61,10 +65,12 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should return "Reply to Tülu" when model is selected and thread exists', async () => {
-            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
-                selectedModelId: 'tulu2',
-                threadId: 'existing-thread-123',
-            });
+            const { getByTestId } = renderWithProvider(
+                PlaceholderTestComponent,
+                { threadId: 'existing-thread-123' },
+                null,
+                { id: 'tulu2', family_name: 'Tülu' }
+            );
 
             await waitFor(() => {
                 expect(getByTestId('placeholder')).toHaveTextContent('Reply to Tülu');
@@ -167,9 +173,12 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should include deprecated models if they are selected', async () => {
-            const { getByTestId } = renderWithProvider(ModelsFilterTestComponent, {
-                selectedModelId: 'olmo-7b-chat', // This is deprecated and not visible
-            });
+            const { getByTestId } = renderWithProvider(
+                ModelsFilterTestComponent,
+                {},
+                null,
+                { id: 'olmo-7b-chat', is_deprecated: true } // This is deprecated and not visible
+            );
 
             await waitFor(() => {
                 // Should include the deprecated model since it's selected
@@ -186,9 +195,12 @@ describe('SingleThreadProvider', () => {
         };
 
         it('should return true when selected model accepts files', async () => {
-            const { getByTestId } = renderWithProvider(FilesAllowedTestComponent, {
-                selectedModelId: 'molmo', // molmo model has accepts_files: true
-            });
+            const { getByTestId } = renderWithProvider(
+                FilesAllowedTestComponent,
+                {},
+                null,
+                { id: 'molmo', accepts_files: true } // molmo model has accepts_files: true
+            );
 
             await waitFor(() => {
                 expect(getByTestId('files-allowed')).toHaveTextContent('true');
@@ -196,9 +208,12 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should return false when selected model does not accept files', async () => {
-            const { getByTestId } = renderWithProvider(FilesAllowedTestComponent, {
-                selectedModelId: 'tulu2', // tulu2 model has accepts_files: false
-            });
+            const { getByTestId } = renderWithProvider(
+                FilesAllowedTestComponent,
+                {},
+                null,
+                { id: 'tulu2', accepts_files: false }
+            );
 
             await waitFor(() => {
                 expect(getByTestId('files-allowed')).toHaveTextContent('false');
@@ -206,7 +221,12 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should return false when no model is selected', async () => {
-            const { getByTestId } = renderWithProvider(FilesAllowedTestComponent);
+            const { getByTestId } = renderWithProvider(
+                FilesAllowedTestComponent,
+                {},
+                null, // use default user
+                undefined // no model selected
+            );
 
             await waitFor(() => {
                 expect(getByTestId('files-allowed')).toHaveTextContent('false');

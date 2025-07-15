@@ -164,8 +164,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 });
             },
 
-            onSubmit: async (data: QueryFormValues) => {
-                console.log('[DEBUG] ComparisonProvider onSubmit called with data:', data);
+            onSubmit: async (_data: QueryFormValues) => {
                 // TODO: Implement parallel stream submission
             },
             onAbort: (_e: UIEvent) => {

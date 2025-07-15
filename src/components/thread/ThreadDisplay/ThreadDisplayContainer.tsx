@@ -1,14 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
-import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { PARAM_SELECTED_MESSAGE, SelectedThreadLoaderData } from './selectedThreadPageLoader';
+import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
 // Inner component that has access to QueryContext
@@ -60,22 +58,5 @@ const ThreadDisplayContent = () => {
 };
 
 export const ThreadDisplayContainer = () => {
-    const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
-    const { id: selectedThreadRootId = '' } = useParams();
-    const queryContext = useQueryContext();
-    const processedThreadRef = useRef<string>('');
-
-    useEffect(() => {
-        if (selectedThreadRootId) {
-            queryContext.setThreadId('0', selectedThreadRootId);
-        }
-
-        // Only set model from loaderData if we're navigating to a new thread
-        if (loaderData?.selectedModelId && selectedThreadRootId !== processedThreadRef.current) {
-            queryContext.setModelId('0', loaderData.selectedModelId);
-            processedThreadRef.current = selectedThreadRootId;
-        }
-    }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
-
     return <ThreadDisplayContent />;
 };

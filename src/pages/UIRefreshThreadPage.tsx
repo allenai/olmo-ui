@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { LoaderFunction, Outlet, ShouldRevalidateFunction, useLoaderData } from 'react-router-dom';
+import { useMemo } from 'react';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction, useParams } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext } from '@/AppContext';
@@ -43,13 +44,19 @@ const UIRefreshThreadPageContent = () => {
 };
 
 export const UIRefreshThreadPage = () => {
-    const loaderData = useLoaderData() as PlaygroundLoaderData | null;
+    const { id: threadIdFromRoute } = useParams();
+
+    // Determine initial state based on route and loader data
+    const initialState = useMemo(() => {
+        const state = {
+            threadId: threadIdFromRoute || undefined,
+        };
+
+        return state;
+    }, [threadIdFromRoute]);
 
     return (
-        <SingleThreadProvider
-            initialState={{
-                selectedModelId: loaderData?.preselectedModelId,
-            }}>
+        <SingleThreadProvider initialState={initialState}>
             <UIRefreshThreadPageContent />
         </SingleThreadProvider>
     );
@@ -113,6 +120,9 @@ export const playgroundLoader =
             const selectedModel = models.find((model) => model.id === preselectedModelId);
             if (selectedModel != null) {
                 finalPreselectedModelId = selectedModel.id;
+                // Set global model selection from URL parameter
+                const { setSelectedModel } = appContext.getState();
+                setSelectedModel(selectedModel);
             } else {
                 // Fallback to first visible model if specified model not found
                 const fallbackModel = models.filter(isModelVisible)[0];

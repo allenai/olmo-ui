@@ -105,7 +105,7 @@ describe('QueryFormContainer', () => {
         });
 
         await act(async () => {
-            onFirstMessageCallback('0', mockMessage);
+            onFirstMessageCallback?.('0', mockMessage);
         });
 
         await waitFor(() => {
