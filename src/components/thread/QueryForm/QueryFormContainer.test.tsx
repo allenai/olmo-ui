@@ -3,6 +3,8 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+// Get the mocked useParams function
+import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { User } from '@/api/User';
@@ -23,7 +25,7 @@ import { QueryFormContainer } from './QueryFormContainer';
 
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
-    useParams: () => ({ id: undefined }),
+    useParams: vi.fn(() => ({ id: undefined })),
     useLocation: () => ({
         pathname: '/',
         search: '',
@@ -33,6 +35,7 @@ vi.mock('react-router-dom', () => ({
     }),
     useNavigation: () => IDLE_NAVIGATION,
 }));
+const mockUseParams = vi.mocked(useParams);
 
 vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
@@ -58,6 +61,8 @@ const renderWithProvider = (
     initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
     mockUserInfo?: User | null
 ) => {
+    mockUseParams.mockReturnValue({ id: initialState?.threadId });
+
     return render(
         <FakeAppContextProvider
             initialState={{

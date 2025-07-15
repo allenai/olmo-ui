@@ -3,6 +3,8 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+// Get the mocked useParams function
+import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
@@ -16,7 +18,6 @@ import { createMockUser, createStreamMessageMock, setupThreadInCache } from '@/u
 import { QueryForm } from './QueryForm';
 
 // Mock react-router-dom with configurable useParams
-let mockUseParams: ReturnType<typeof vi.fn>;
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
     useParams: vi.fn(() => ({ id: undefined })),
@@ -29,6 +30,7 @@ vi.mock('react-router-dom', () => ({
     }),
     useNavigation: () => IDLE_NAVIGATION,
 }));
+const mockUseParams = vi.mocked(useParams);
 
 vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
@@ -36,12 +38,9 @@ vi.mock('@/contexts/useStreamMessage', () => ({
 
 const mockUseStreamMessage = vi.mocked(useStreamMessage);
 
-beforeEach(async () => {
+beforeEach(() => {
     vi.clearAllMocks();
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
-
-    const { useParams } = await import('react-router-dom');
-    mockUseParams = vi.mocked(useParams);
 });
 
 const renderWithProvider = (
