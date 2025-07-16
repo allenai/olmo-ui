@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
+import { Role } from '@/api/Role';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -617,6 +618,92 @@ describe('SingleThreadProvider', () => {
 
             await waitFor(() => {
                 expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+            });
+        });
+    });
+
+    describe('isFileUploadDisabled', () => {
+        const FileUploadTestComponent = () => {
+            const context = useQueryContext();
+            return (
+                <div data-testid="file-upload-disabled">
+                    {String(context.fileUploadProps.isFileUploadDisabled)}
+                </div>
+            );
+        };
+
+        it('should return false for new threads (no threadId)', async () => {
+            const mockUser = createMockUser('test-user-id');
+
+            renderWithProvider(FileUploadTestComponent, undefined, mockUser);
+
+            await waitFor(() => {
+                const element = document.querySelector('[data-testid="file-upload-disabled"]');
+                expect(element?.textContent).toBe('false');
+            });
+        });
+
+        it('should return false when thread has exactly 1 message (boundary case)', async () => {
+            const mockUser = createMockUser('test-user-id');
+            const threadId = 'test-thread-id';
+            const mockMessage = createMockMessage({
+                id: 'msg-1',
+                content: 'First message',
+                role: Role.USER,
+                creator: 'test-user-id',
+            });
+            const mockThread = createMockThread({
+                id: threadId,
+                messages: [mockMessage],
+            });
+
+            setupThreadInCache(threadId, mockThread);
+
+            renderWithProvider(
+                FileUploadTestComponent,
+                { threadId, selectedModelId: 'molmo' },
+                mockUser
+            );
+
+            await waitFor(() => {
+                const element = document.querySelector('[data-testid="file-upload-disabled"]');
+                expect(element?.textContent).toBe('false');
+            });
+        });
+
+        it('should return true when thread has >1 messages and model does not allow files in followups', async () => {
+            const mockUser = createMockUser('test-user-id');
+            const threadId = 'test-thread-id';
+            const mockThread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        content: 'First message',
+                        role: Role.USER,
+                        creator: 'test-user-id',
+                    }),
+                    createMockMessage({
+                        id: 'msg-2',
+                        content: 'Second message',
+                        role: Role.LLM,
+                        creator: 'test-user-id',
+                    }),
+                ],
+            });
+
+            setupThreadInCache(threadId, mockThread);
+
+            // This model does not allow files in followups
+            renderWithProvider(
+                FileUploadTestComponent,
+                { threadId, selectedModelId: 'test-multi-modal-model-16' },
+                mockUser
+            );
+
+            await waitFor(() => {
+                const element = document.querySelector('[data-testid="file-upload-disabled"]');
+                expect(element?.textContent).toBe('true');
             });
         });
     });
