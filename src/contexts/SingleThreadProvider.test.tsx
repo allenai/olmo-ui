@@ -1,4 +1,6 @@
 import { SelectChangeEvent } from '@mui/material';
+// Get the mocked useParams function
+import { useParams } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
@@ -11,7 +13,9 @@ import { SingleThreadProvider } from './SingleThreadProvider';
 
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
 }));
+const mockUseParams = vi.mocked(useParams);
 
 // Test helper to render SingleThreadProvider with optional initial state
 const renderWithProvider = (
@@ -20,6 +24,8 @@ const renderWithProvider = (
     mockUserInfo?: User | null
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+    mockUseParams.mockReturnValue({ id: initialState?.threadId });
 
     return render(
         <FakeAppContextProvider

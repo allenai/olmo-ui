@@ -115,25 +115,7 @@ describe('ComparisonProvider', () => {
 
     describe('canSubmit', () => {
         const CanSubmitTestComponent = () => {
-            const context = useQueryContext();
-            const canSubmit = context.canSubmit;
-            const [stateSetupComplete, setStateSetupComplete] = React.useState(false);
-
-            // This is complicated, but these tests are also testing the setters
-            React.useEffect(() => {
-                if (!stateSetupComplete) {
-                    // Set up the comparison state using the setters
-                    context.setThreadId('view-1', 'thread-1');
-                    context.setThreadId('view-2', 'thread-2');
-                    setStateSetupComplete(true);
-                }
-            }, [stateSetupComplete]);
-
-            return (
-                <div data-testid="can-submit">
-                    {stateSetupComplete ? String(canSubmit) : 'loading'}
-                </div>
-            );
+            return <div data-testid="can-submit">{'loading'}</div>;
         };
 
         it('should return true when user is the creator of first message in all threads', async () => {

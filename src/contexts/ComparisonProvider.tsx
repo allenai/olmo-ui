@@ -21,9 +21,7 @@ interface ComparisonState {
 }
 
 // Action types for the reducer
-type ComparisonAction =
-    | { type: 'setModelId'; threadViewId: string; modelId: string }
-    | { type: 'setThreadId'; threadViewId: string; threadId: string };
+type ComparisonAction = { type: 'setModelId'; threadViewId: string; modelId: string };
 
 interface ComparisonProviderProps {
     children: React.ReactNode;
@@ -37,20 +35,10 @@ function getThread(threadId: string): Thread | undefined {
 
 // Reducer function using immer draft: https://hswolff.com/blog/level-up-usereducer-with-immer/
 function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
-    switch (action.type) {
-        case 'setModelId':
-            if (!draft[action.threadViewId]) {
-                draft[action.threadViewId] = {};
-            }
-            draft[action.threadViewId].modelId = action.modelId;
-            break;
-        case 'setThreadId':
-            if (!draft[action.threadViewId]) {
-                draft[action.threadViewId] = {};
-            }
-            draft[action.threadViewId].threadId = action.threadId;
-            break;
+    if (!draft[action.threadViewId]) {
+        draft[action.threadViewId] = {};
     }
+    draft[action.threadViewId].modelId = action.modelId;
 }
 
 // Create curried reducer using immer
@@ -164,8 +152,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
                 });
             },
 
-            onSubmit: async (data: QueryFormValues) => {
-                console.log('[DEBUG] ComparisonProvider onSubmit called with data:', data);
+            onSubmit: async (_data: QueryFormValues) => {
                 // TODO: Implement parallel stream submission
             },
             onAbort: (_e: UIEvent) => {
@@ -174,10 +161,6 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
 
             setModelId: (threadViewId: string, modelId: string) => {
                 dispatch({ type: 'setModelId', threadViewId, modelId });
-            },
-
-            setThreadId: (threadViewId: string, threadId: string) => {
-                dispatch({ type: 'setThreadId', threadViewId, threadId });
             },
         };
     }, [canSubmit, autofocus, placeholderText, isLimitReached, comparisonState, models]);

@@ -3,6 +3,7 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
@@ -15,8 +16,10 @@ import { createMockUser, createStreamMessageMock, setupThreadInCache } from '@/u
 
 import { QueryForm } from './QueryForm';
 
+// Mock react-router-dom with configurable useParams
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
     useLocation: () => ({
         pathname: '/',
         search: '',
@@ -26,6 +29,7 @@ vi.mock('react-router-dom', () => ({
     }),
     useNavigation: () => IDLE_NAVIGATION,
 }));
+const mockUseParams = vi.mocked(useParams);
 
 vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
@@ -33,8 +37,8 @@ vi.mock('@/contexts/useStreamMessage', () => ({
 
 const mockUseStreamMessage = vi.mocked(useStreamMessage);
 
-// Set up default mock for useStreamMessage
 beforeEach(() => {
+    vi.clearAllMocks();
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
 });
 
@@ -43,6 +47,8 @@ const renderWithProvider = (
     mockUserInfo?: User | null
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+    mockUseParams.mockReturnValue({ id: initialState?.threadId });
 
     return render(
         <FakeAppContextProvider

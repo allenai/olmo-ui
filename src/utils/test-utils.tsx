@@ -236,7 +236,6 @@ export const FakeQueryContextProvider = ({
         onSubmit: async () => {},
         onAbort: () => {},
         setModelId: () => {},
-        setThreadId: () => {},
     };
 
     return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;
