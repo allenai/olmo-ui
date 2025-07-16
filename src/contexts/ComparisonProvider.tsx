@@ -165,10 +165,7 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             },
 
             inferenceOpts: {},
-            updateInferenceOpts: (
-                _threadViewId: string,
-                _newOptions: Partial<RequestInferenceOpts>
-            ) => {
+            updateInferenceOpts: (_newOptions: Partial<RequestInferenceOpts>) => {
                 // TODO: Implement parameter management for comparison mode
             },
         };

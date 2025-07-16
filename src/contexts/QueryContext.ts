@@ -36,7 +36,7 @@ interface QueryContextValue {
     setModelId: (threadViewId: string, modelId: string) => void;
 
     inferenceOpts: RequestInferenceOpts;
-    updateInferenceOpts: (threadViewId: string, newOptions: Partial<RequestInferenceOpts>) => void;
+    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

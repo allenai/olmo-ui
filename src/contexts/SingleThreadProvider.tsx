@@ -199,7 +199,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     }, []);
 
     const updateInferenceOpts = useCallback(
-        (_threadViewId: string, newOptions: Partial<RequestInferenceOpts>) => {
+        (newOptions: Partial<RequestInferenceOpts>) => {
             setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
         },
         []
