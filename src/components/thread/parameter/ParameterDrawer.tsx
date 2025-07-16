@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
@@ -8,6 +8,7 @@ import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
+import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -41,7 +42,7 @@ export const DesktopParameterDrawer = (): ReactNode => {
     );
 };
 
-export const MobileParameterDrawer = (): JSX.Element => {
+export const MobileParameterDrawer = (): React.JSX.Element => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
@@ -87,10 +88,7 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 );
 
 export const ParameterContent = () => {
-    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-
-    const optsFromTheRealMessage = useAppContext((state) => state.inferenceOpts);
-
+    const { updateInferenceOpts, inferenceOpts, transform } = useQueryContext();
     const schemaData = useAppContext((state) => state.schema);
 
     if (schemaData == null) {
@@ -99,51 +97,65 @@ export const ParameterContent = () => {
 
     const opts = schemaData.Message.InferenceOpts;
 
-    const initialTemperature =
-        optsFromTheRealMessage.temperature ?? opts.temperature.default ?? undefined;
-
-    const initialTopP = optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined;
-
     return (
         <Stack>
             <ParametersList>
-                <ParametersListItem>
-                    <ParameterSlider
-                        label="Temperature"
-                        min={opts.temperature.min}
-                        max={opts.temperature.max}
-                        step={opts.temperature.step}
-                        initialValue={initialTemperature}
-                        onChange={(v) => {
-                            analyticsClient.trackParametersUpdate({
-                                parameterUpdated: 'temperature',
-                            });
+                {transform((threadViewId, model) => {
+                    const initialTemperature =
+                        inferenceOpts.temperature ?? opts.temperature.default ?? undefined;
+                    const initialTopP = inferenceOpts.top_p ?? opts.top_p.default ?? undefined;
 
-                            updateInferenceOpts({ temperature: v });
-                        }}
-                        dialogContent={TEMPERATURE_INFO}
-                        dialogTitle="Temperature"
-                        id="temperature"
-                    />
-                </ParametersListItem>
-                <ParametersListItem>
-                    <ParameterSlider
-                        label="Top P"
-                        min={opts.top_p.min}
-                        max={opts.top_p.max}
-                        step={opts.top_p.step}
-                        initialValue={initialTopP}
-                        onChange={(v) => {
-                            analyticsClient.trackParametersUpdate({
-                                parameterUpdated: 'top_p',
-                            });
-                            updateInferenceOpts({ top_p: v });
-                        }}
-                        dialogContent={TOP_P_INFO}
-                        dialogTitle="Top P"
-                        id="top-p"
-                    />
-                </ParametersListItem>
+                    return (
+                        <React.Fragment key={threadViewId}>
+                            {model && (
+                                <ParametersListItem>
+                                    <Typography
+                                        variant="subtitle2"
+                                        sx={{ marginBottom: 1, fontWeight: 'bold' }}>
+                                        {model.family_name || model.name}
+                                    </Typography>
+                                </ParametersListItem>
+                            )}
+                            <ParametersListItem>
+                                <ParameterSlider
+                                    label="Temperature"
+                                    min={opts.temperature.min}
+                                    max={opts.temperature.max}
+                                    step={opts.temperature.step}
+                                    initialValue={initialTemperature}
+                                    onChange={(v) => {
+                                        analyticsClient.trackParametersUpdate({
+                                            parameterUpdated: 'temperature',
+                                        });
+
+                                        updateInferenceOpts(threadViewId, { temperature: v });
+                                    }}
+                                    dialogContent={TEMPERATURE_INFO}
+                                    dialogTitle="Temperature"
+                                    id="temperature"
+                                />
+                            </ParametersListItem>
+                            <ParametersListItem>
+                                <ParameterSlider
+                                    label="Top P"
+                                    min={opts.top_p.min}
+                                    max={opts.top_p.max}
+                                    step={opts.top_p.step}
+                                    initialValue={initialTopP}
+                                    onChange={(v) => {
+                                        analyticsClient.trackParametersUpdate({
+                                            parameterUpdated: 'top_p',
+                                        });
+                                        updateInferenceOpts(threadViewId, { top_p: v });
+                                    }}
+                                    dialogContent={TOP_P_INFO}
+                                    dialogTitle="Top P"
+                                    id="top-p"
+                                />
+                            </ParametersListItem>
+                        </React.Fragment>
+                    );
+                })}
             </ParametersList>
         </Stack>
     );

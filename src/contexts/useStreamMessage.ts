@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 
+import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
@@ -60,11 +61,13 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         model,
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
+        inferenceOpts,
     }: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
         thread?: Thread;
+        inferenceOpts: RequestInferenceOpts;
     }) => {
         startStream(threadViewId);
 
@@ -79,28 +82,22 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 request.parent = lastMessageId;
             }
 
-            const { content, captchaToken, files, parent } = request;
+            const { content, captchaToken, parent } = request;
+
+            // Filter out null values to match API schema requirements
+            const filteredInferenceOpts = Object.fromEntries(
+                Object.entries(inferenceOpts).filter(([_, value]) => value !== null)
+            );
 
             const result = await playgroundApiClient.POST('/v4/threads/', {
                 parseAs: 'stream',
                 body: {
                     content,
                     captchaToken,
-                    files,
                     parent,
                     host: model.host,
                     model: model.id,
-                    // optional
-                    //
-                    // logprobs: undefined,
-                    // maxTokens: undefined,
-                    // n: undefined,
-                    // private: undefined,
-                    // original: undefined,
-                    // temperature: undefined,
-                    // topP: undefined,
-                    // role: undefined,
-                    // template: undefined,
+                    ...filteredInferenceOpts,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();
@@ -108,6 +105,10 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                         const value = body[property as keyof CreateMessageRequest];
                         mapValueToFormData(formData, property, value);
                     }
+                    // TODO: Handle files. Something like this.
+                    // if (request.files) {
+                    //     mapValueToFormData(formData, 'files', request.files);
+                    // }
                     return formData;
                 },
                 signal: abortController.signal, // Add abort signal to the request
