@@ -82,22 +82,20 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 request.parent = lastMessageId;
             }
 
-            const { content, captchaToken, parent } = request;
-
-            // Filter out null values to match API schema requirements
-            const filteredInferenceOpts = Object.fromEntries(
-                Object.entries(inferenceOpts).filter(([_, value]) => value !== null)
-            );
+            const { content, captchaToken, parent, files } = request;
 
             const result = await playgroundApiClient.POST('/v4/threads/', {
                 parseAs: 'stream',
                 body: {
                     content,
                     captchaToken,
+                    files,
                     parent,
                     host: model.host,
                     model: model.id,
-                    ...filteredInferenceOpts,
+                    // Currently only providing these inference options
+                    temperature: inferenceOpts.temperature ?? undefined,
+                    topP: inferenceOpts.top_p ?? undefined,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();
@@ -106,11 +104,6 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                         mapValueToFormData(formData, property, value);
                     }
 
-                    // TODO: Check that file upload is working correctly
-                    // `files` was just a field on body before, but that didn't match the schema
-                    if (request.files) {
-                        mapValueToFormData(formData, 'files', request.files);
-                    }
                     return formData;
                 },
                 signal: abortController.signal, // Add abort signal to the request
