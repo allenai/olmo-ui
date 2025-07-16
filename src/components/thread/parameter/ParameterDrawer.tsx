@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import React, { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
@@ -42,7 +42,7 @@ export const DesktopParameterDrawer = (): ReactNode => {
     );
 };
 
-export const MobileParameterDrawer = (): React.JSX.Element => {
+export const MobileParameterDrawer = (): ReactElement => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
