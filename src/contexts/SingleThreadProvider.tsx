@@ -1,6 +1,6 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -58,12 +58,12 @@ const shouldShowCompatibilityWarning = (
 };
 
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
+    const { id: threadId } = useParams<{ id: string }>();
+
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
-    const [threadId, setThreadIdValue] = useState<string | undefined>(
-        initialState?.threadId ?? undefined
-    );
+
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
@@ -170,7 +170,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         if (modelIdToSwitchTo.current) {
             selectModel(modelIdToSwitchTo.current);
             // Clear current thread to start fresh
-            setThreadIdValue(undefined);
             navigate(links.playground);
         }
     }, [selectModel, navigate]);
@@ -199,9 +198,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             );
 
             if (resultThreadId) {
-                if (!threadId) {
-                    setThreadIdValue(resultThreadId);
-                }
                 navigate(links.thread(resultThreadId));
             }
         },
@@ -242,9 +238,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             onAbort: handleAbort,
             setModelId: (_threadViewId: string, modelId: string) => {
                 setSelectedModelId(modelId);
-            },
-            setThreadId: (_threadViewId: string, threadId: string) => {
-                setThreadIdValue(threadId);
             },
         };
     }, [

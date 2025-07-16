@@ -3,6 +3,7 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
+import { useParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { User } from '@/api/User';
@@ -23,6 +24,7 @@ import { QueryFormContainer } from './QueryFormContainer';
 
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
     useLocation: () => ({
         pathname: '/',
         search: '',
@@ -32,6 +34,7 @@ vi.mock('react-router-dom', () => ({
     }),
     useNavigation: () => IDLE_NAVIGATION,
 }));
+const mockUseParams = vi.mocked(useParams);
 
 vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
@@ -57,6 +60,8 @@ const renderWithProvider = (
     initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
     mockUserInfo?: User | null
 ) => {
+    mockUseParams.mockReturnValue({ id: initialState?.threadId });
+
     return render(
         <FakeAppContextProvider
             initialState={{
@@ -105,7 +110,8 @@ describe('QueryFormContainer', () => {
         });
 
         await act(async () => {
-            onFirstMessageCallback('0', mockMessage);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            onFirstMessageCallback!('0', mockMessage);
         });
 
         await waitFor(() => {
