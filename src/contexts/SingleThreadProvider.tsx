@@ -198,12 +198,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setSelectedModelId(modelId);
     }, []);
 
-    const updateInferenceOpts = useCallback(
-        (newOptions: Partial<RequestInferenceOpts>) => {
-            setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
-        },
-        []
-    );
+    const updateInferenceOpts = useCallback((newOptions: Partial<RequestInferenceOpts>) => {
+        setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
+    }, []);
 
     const onModelChange = useCallback(
         (event: SelectChangeEvent, _threadViewId?: string) => {
