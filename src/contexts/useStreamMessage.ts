@@ -105,10 +105,12 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                         const value = body[property as keyof CreateMessageRequest];
                         mapValueToFormData(formData, property, value);
                     }
-                    // TODO: Handle files. Something like this.
-                    // if (request.files) {
-                    //     mapValueToFormData(formData, 'files', request.files);
-                    // }
+
+                    // TODO: Check that file upload is working correctly
+                    // `files` was just a field on body before, but that didn't match the schema
+                    if (request.files) {
+                        mapValueToFormData(formData, 'files', request.files);
+                    }
                     return formData;
                 },
                 signal: abortController.signal, // Add abort signal to the request
