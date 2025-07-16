@@ -3,9 +3,11 @@ import React, { UIEvent, useCallback, useEffect, useMemo, useRef, useState } fro
 import { useNavigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
+import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
+import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import {
     findModelById,
@@ -63,6 +65,29 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
+
+    const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
+        // Initialize with values from the last LLM message if available
+        if (threadId) {
+            const thread = getThread(threadId);
+            const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
+            if (lastLLMMessage?.opts) {
+                // Convert from v4 camelCase to v3 snake_case format
+                return {
+                    temperature: lastLLMMessage.opts.temperature,
+                    top_p: lastLLMMessage.opts.topP,
+                    max_tokens: lastLLMMessage.opts.maxTokens,
+                    n: lastLLMMessage.opts.n,
+                    logprobs: lastLLMMessage.opts.logprobs,
+                    // `stop` is readonly, so it needs to be cloned
+                    stop: lastLLMMessage.opts.stop
+                        ? [...lastLLMMessage.opts.stop]
+                        : lastLLMMessage.opts.stop,
+                };
+            }
+        }
+        return {};
+    });
 
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
@@ -138,6 +163,31 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return Boolean(threadId);
     }, [threadId]);
 
+    // Initialize inference options from cached thread data when navigating to a different thread
+    useEffect(() => {
+        if (threadId) {
+            const thread = getThread(threadId);
+            if (thread) {
+                const lastLLMMessage = thread.messages
+                    .filter((msg) => msg.role === Role.LLM)
+                    .at(-1);
+                if (lastLLMMessage?.opts && Object.keys(inferenceOpts).length === 0) {
+                    // Convert from v4 camelCase to v3 snake_case format
+                    setInferenceOpts({
+                        temperature: lastLLMMessage.opts.temperature,
+                        top_p: lastLLMMessage.opts.topP,
+                        max_tokens: lastLLMMessage.opts.maxTokens,
+                        n: lastLLMMessage.opts.n,
+                        logprobs: lastLLMMessage.opts.logprobs,
+                        stop: lastLLMMessage.opts.stop
+                            ? [...lastLLMMessage.opts.stop]
+                            : lastLLMMessage.opts.stop,
+                    });
+                }
+            }
+        }
+    }, [threadId]);
+
     // Sync local state with any necessary global UI state
     useEffect(() => {
         setIsShareReady(isShareReady);
@@ -146,6 +196,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const selectModel = useCallback((modelId: string) => {
         trackModelSelection(modelId);
         setSelectedModelId(modelId);
+    }, []);
+
+    const updateInferenceOpts = useCallback((newOptions: Partial<RequestInferenceOpts>) => {
+        setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
     }, []);
 
     const onModelChange = useCallback(
@@ -179,7 +233,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     }, []);
 
     const onSubmit = useCallback(
-        async (data: QueryFormValues) => {
+        async (data: QueryFormValues): Promise<void> => {
             if (!selectedModel) {
                 return;
             }
@@ -191,6 +245,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 selectedModel,
                 threadId,
                 '0', // single-thread view id is always '0'
+                inferenceOpts,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -201,7 +256,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 navigate(links.thread(resultThreadId));
             }
         },
-        [selectedModel, streamMessage, threadId, addSnackMessage, navigate]
+        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage, navigate]
     );
 
     const handleAbort = useCallback(
@@ -239,6 +294,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             setModelId: (_threadViewId: string, modelId: string) => {
                 setSelectedModelId(modelId);
             },
+            inferenceOpts,
+            updateInferenceOpts,
         };
     }, [
         canSubmit,
@@ -254,6 +311,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         onSubmit,
         handleAbort,
         threadId,
+        inferenceOpts,
+        updateInferenceOpts,
     ]);
 
     return (

@@ -1,6 +1,5 @@
 import { defer, LoaderFunction } from 'react-router-dom';
 
-import { RequestInferenceOpts } from '@/api/Message';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
@@ -22,7 +21,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         selectedThreadRootId, // not used
         getAttributionsForMessage,
         handleAttributionForChangingThread,
-        updateInferenceOpts,
         abortPrompt,
         selectMessage,
     } = appContext.getState();
@@ -60,8 +58,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
                 const visibleModels = models.filter(isModelVisible);
                 selectedModelId = visibleModels[0]?.id;
             }
-            // TODO (bb): this probably shouldn't be stored, and just queried from the last message
-            updateInferenceOpts(lastResponse.opts as RequestInferenceOpts);
         }
 
         if (isCorpusLinkEnabled) {

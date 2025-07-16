@@ -3,10 +3,20 @@ import { SelectChangeEvent } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 
+import { threadOptions } from '@/api/playgroundApi/thread';
+import { queryClient } from '@/api/query-client';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
-import { act, createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
+import {
+    act,
+    createMockMessage,
+    createMockThread,
+    createMockUser,
+    render,
+    setupThreadInCache,
+    waitFor,
+} from '@/utils/test-utils';
 
 import { useQueryContext } from './QueryContext';
 import { SingleThreadProvider } from './SingleThreadProvider';
@@ -41,6 +51,134 @@ const renderWithProvider = (
 };
 
 describe('SingleThreadProvider', () => {
+    describe('inferenceOpts initialization', () => {
+        const InferenceOptsTestComponent = () => {
+            const context = useQueryContext();
+            return <div data-testid="inference-opts">{JSON.stringify(context.inferenceOpts)}</div>;
+        };
+
+        it('should initialize with empty object when no threadId is provided', async () => {
+            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent);
+
+            await waitFor(() => {
+                expect(getByTestId('inference-opts')).toHaveTextContent('{}');
+            });
+        });
+
+        it('should initialize with empty object when thread has no LLM messages', async () => {
+            const threadId = 'thread-123';
+            const thread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        role: 'user',
+                        content: 'Hello',
+                        opts: { temperature: 0.5 },
+                    }),
+                ],
+            });
+
+            const { queryKey } = threadOptions(threadId);
+            queryClient.setQueryData(queryKey, thread);
+
+            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent, {
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(getByTestId('inference-opts')).toHaveTextContent('{}');
+            });
+        });
+
+        it('should initialize with opts from last LLM message when thread exists', async () => {
+            const threadId = 'thread-123';
+            const expectedOpts = {
+                temperature: 0.7,
+                top_p: 0.9,
+                max_tokens: 2048,
+            };
+
+            const thread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        role: 'user',
+                        content: 'Hello',
+                        opts: {},
+                    }),
+                    createMockMessage({
+                        id: 'msg-2',
+                        role: 'assistant',
+                        content: 'Hi there!',
+                        opts: { temperature: 0.5, topP: 0.8 },
+                    }),
+                    createMockMessage({
+                        id: 'msg-3',
+                        role: 'user',
+                        content: 'Follow up',
+                        opts: {},
+                    }),
+                    createMockMessage({
+                        id: 'msg-4',
+                        role: 'assistant',
+                        content: 'Latest response',
+                        opts: {
+                            temperature: 0.7,
+                            topP: 0.9,
+                            maxTokens: 2048,
+                        },
+                    }),
+                ],
+            });
+
+            const { queryKey } = threadOptions(threadId);
+            queryClient.setQueryData(queryKey, thread);
+
+            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent, {
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(getByTestId('inference-opts')).toHaveTextContent(
+                    JSON.stringify(expectedOpts)
+                );
+            });
+        });
+
+        it('should handle thread with missing opts gracefully', async () => {
+            const threadId = 'thread-123';
+            const thread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        role: 'user',
+                        content: 'Hello',
+                        opts: {},
+                    }),
+                    createMockMessage({
+                        id: 'msg-2',
+                        role: 'assistant',
+                        content: 'Response',
+                        opts: undefined,
+                    }),
+                ],
+            });
+
+            const { queryKey } = threadOptions(threadId);
+            queryClient.setQueryData(queryKey, thread);
+
+            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent, {
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(getByTestId('inference-opts')).toHaveTextContent('{}');
+            });
+        });
+    });
     describe('getPlaceholderText', () => {
         const PlaceholderTestComponent = () => {
             const context = useQueryContext();

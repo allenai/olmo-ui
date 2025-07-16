@@ -3,6 +3,7 @@ import {
     MessageStreamError,
     MessageStreamErrorReason,
     MessageStreamErrorType,
+    RequestInferenceOpts,
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -251,11 +252,13 @@ export const processSingleModelSubmission = async (
     model: Model,
     rootThreadId: string | undefined,
     threadViewId: ThreadViewId,
+    inferenceOpts: RequestInferenceOpts,
     streamMutateAsync: (params: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
         thread?: Thread;
+        inferenceOpts: RequestInferenceOpts;
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
@@ -279,6 +282,7 @@ export const processSingleModelSubmission = async (
             threadViewId,
             model,
             thread,
+            inferenceOpts,
         });
 
         // Return the final thread ID for parallel streaming navigation
