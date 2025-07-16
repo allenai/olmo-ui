@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
@@ -8,6 +8,7 @@ import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
+import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -41,7 +42,7 @@ export const DesktopParameterDrawer = (): ReactNode => {
     );
 };
 
-export const MobileParameterDrawer = (): JSX.Element => {
+export const MobileParameterDrawer = (): ReactElement => {
     return (
         <FullScreenDrawer
             drawerId="parameters"
@@ -87,10 +88,7 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 );
 
 export const ParameterContent = () => {
-    const updateInferenceOpts = useAppContext((state) => state.updateInferenceOpts);
-
-    const optsFromTheRealMessage = useAppContext((state) => state.inferenceOpts);
-
+    const { updateInferenceOpts, inferenceOpts } = useQueryContext();
     const schemaData = useAppContext((state) => state.schema);
 
     if (schemaData == null) {
@@ -98,11 +96,8 @@ export const ParameterContent = () => {
     }
 
     const opts = schemaData.Message.InferenceOpts;
-
-    const initialTemperature =
-        optsFromTheRealMessage.temperature ?? opts.temperature.default ?? undefined;
-
-    const initialTopP = optsFromTheRealMessage.top_p ?? opts.top_p.default ?? undefined;
+    const initialTemperature = inferenceOpts.temperature ?? opts.temperature.default ?? undefined;
+    const initialTopP = inferenceOpts.top_p ?? opts.top_p.default ?? undefined;
 
     return (
         <Stack>
@@ -118,7 +113,6 @@ export const ParameterContent = () => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'temperature',
                             });
-
                             updateInferenceOpts({ temperature: v });
                         }}
                         dialogContent={TEMPERATURE_INFO}

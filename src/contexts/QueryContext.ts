@@ -1,6 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
+import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -8,15 +9,15 @@ import { RemoteState } from '@/contexts/util';
 
 // Single interface that adapts based on context type
 interface QueryContextValue {
-    // Form state properties (from QueryFormController props)
-    canSubmit: boolean; // formerly canEditThread
+    // Form state properties
+    canSubmit: boolean;
     autofocus: boolean;
     placeholderText: string;
     areFilesAllowed: boolean;
-    canPauseThread: boolean; // requires streaming info
+    canPauseThread: boolean;
     isLimitReached: boolean;
-    remoteState?: RemoteState; // requires streaming info
-    shouldResetForm?: boolean; // requires streaming info
+    remoteState?: RemoteState;
+    shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
     availableModels: Model[];
 
@@ -33,6 +34,9 @@ interface QueryContextValue {
 
     // Replaces global state setters, doesn't execute business logic like model compatibility checks
     setModelId: (threadViewId: string, modelId: string) => void;
+
+    inferenceOpts: RequestInferenceOpts;
+    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

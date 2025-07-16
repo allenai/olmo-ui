@@ -3,6 +3,7 @@ import { produce } from 'immer';
 import React, { UIEvent, useEffect, useMemo, useReducer } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
@@ -161,6 +162,11 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
 
             setModelId: (threadViewId: string, modelId: string) => {
                 dispatch({ type: 'setModelId', threadViewId, modelId });
+            },
+
+            inferenceOpts: {},
+            updateInferenceOpts: (_newOptions: Partial<RequestInferenceOpts>) => {
+                // TODO: Implement parameter management for comparison mode
             },
         };
     }, [canSubmit, autofocus, placeholderText, isLimitReached, comparisonState, models]);
