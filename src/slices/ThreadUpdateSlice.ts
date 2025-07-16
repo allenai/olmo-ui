@@ -7,7 +7,6 @@ import {
     MessageStreamError,
     MessageStreamErrorReason,
     parseMessage,
-    RequestInferenceOpts,
     StreamBadRequestError,
     V4CreateMessageRequest,
 } from '@/api/Message';
@@ -63,8 +62,6 @@ export interface StreamMessageRequest {
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string | null;
-    inferenceOpts: RequestInferenceOpts;
-    updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
     streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
@@ -75,15 +72,8 @@ export interface ThreadUpdateSlice {
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
     streamingMessageId: null,
-    inferenceOpts: {},
     streamPromptState: undefined,
     isUpdatingMessageContent: false,
-
-    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
-        set((state) => ({
-            inferenceOpts: { ...state.inferenceOpts, ...newOptions },
-        }));
-    },
 
     // used by new react-query code path
     // TODO: replace this whole slice with react-query
@@ -136,7 +126,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
     streamPrompt: async (newMessage: StreamMessageRequest) => {
         const {
-            inferenceOpts,
             selectedModel,
             addContentToMessage,
             addChildToSelectedThread,
@@ -184,9 +173,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             // 'some-other-model-id': { top_p: 0.9, temperature: 0.7 },
         };
 
+        // TODO: Is this something that the new stream processing needs?
         const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
             ...(MODEL_DEFAULT_OVERRIDES[selectedModel.id] || {}),
-            ...inferenceOpts,
         };
 
         const request: V4CreateMessageRequest = {
