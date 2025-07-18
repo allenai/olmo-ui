@@ -42,8 +42,12 @@ export namespace error {
         }
     }
 
+    export function isErrorDetailsPayload(error: unknown): error is Details {
+        return typeof error === 'object' && error != null && 'code' in error && 'message' in error;
+    }
+
     export function isValidationErrorPayload(error: object): error is ValidationErrorDetails {
-        return 'validation_errors' in (error as ValidationErrorDetails);
+        return isErrorDetailsPayload(error) && 'validation_errors' in error;
     }
 
     export interface Payload {

@@ -1,7 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 
-import { RequestInferenceOpts } from '@/api/Message';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { error } from '@/api/error';
+import { RequestInferenceOpts, StreamBadRequestError, StreamValidationError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
@@ -131,7 +133,54 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 signal: abortController.signal, // Add abort signal to the request
             });
 
-            return { response: result.response, abortController };
+            // Our API endpoints aren't properly typed with error responses
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (result.error != null) {
+                // @ts-expect-error Our API endpoints aren't properly typed with error responses
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                const resultError = result.error?.error as unknown;
+                if (error.isErrorDetailsPayload(resultError) && resultError.code === 400) {
+                    // It's a validation error from our API
+
+                    if (
+                        error.isValidationErrorPayload(resultError) &&
+                        resultError.validation_errors.length > 0
+                    ) {
+                        const captchaTokenValidationErrors = resultError.validation_errors.filter(
+                            (error) => error.loc.some((location) => location === 'captchaToken')
+                        );
+
+                        if (captchaTokenValidationErrors.length > 0) {
+                            const captchaErrorTypes = captchaTokenValidationErrors.reduce(
+                                (acc, curr) => {
+                                    acc.add(curr.type);
+                                    return acc;
+                                },
+                                new Set<string>()
+                            );
+
+                            analyticsClient.trackCaptchaError(
+                                Array.from(captchaErrorTypes.values())
+                            );
+                        }
+
+                        throw new StreamValidationError(
+                            resultError.code,
+                            resultError.validation_errors.map((err) => {
+                                if (err.loc.length > 0) {
+                                    return `${err.loc.join(', ')}: ${err.msg}`;
+                                }
+
+                                return err.msg;
+                            })
+                        );
+                    }
+
+                    throw new StreamBadRequestError(resultError.code, resultError.message);
+                }
+            }
+
+            return { response: result.response, error: result.error, abortController };
         } catch (error) {
             // Clean up on error
             stopStream(threadViewId);
