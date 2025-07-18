@@ -272,7 +272,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
         const thread = getThread(threadId);
         const uploadProps = convertToFileUploadProps(selectedModel);
-        return thread?.messages.length > 1 && !uploadProps.allowFilesInFollowups;
+        const areThereMultipleMessages = thread?.messages != null && thread.messages.length > 1;
+        return areThereMultipleMessages && !uploadProps.allowFilesInFollowups;
     }, [threadId, selectedModel]);
 
     const contextValue: QueryContextValue = useMemo(() => {
