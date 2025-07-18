@@ -88,8 +88,6 @@ export async function* readStream(response: Response, abortSignal?: AbortSignal)
         ?.pipeThrough(new ReadableJSONLStream<StreamingMessageResponse>())
         .getReader();
 
-    // let firstPart = true;
-
     if (rdr) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while (true) {
@@ -112,7 +110,6 @@ export async function* readStream(response: Response, abortSignal?: AbortSignal)
             }
 
             yield part.value;
-            // firstPart = false;
         }
     }
 }
@@ -130,13 +127,6 @@ export const updateCacheWithMessagePart = async (
     const state = appContext.getState();
 
     if (isFirstMessage(message)) {
-        // const messageId = message.id;
-        // const { queryKey } = threadOptions(threadId);
-
-        onFirstMessage?.(threadViewId, message);
-
-        // const isCreatingNewThread = threadId === undefined; // first message, no thread id
-
         if (isCreatingNewThread) {
             currentThreadId = message.id;
             if (currentThreadId) {
@@ -155,6 +145,10 @@ export const updateCacheWithMessagePart = async (
                 });
             }
         }
+
+        // Our first message callbacks need to run after we set the message in the cache
+        // Make sure this stays below any cache setting
+        onFirstMessage?.(threadViewId, message);
     }
     // currentThreadId should be set at this point
     if (isMessageChunk(message) && currentThreadId) {
@@ -183,22 +177,6 @@ export const updateCacheWithMessagePart = async (
     if (isFinalMessage(message) && isCreatingNewThread) {
         state.addThreadToAllThreads(message);
     }
-    /*
-    if (isFinalMessage(message) && currentThreadId) {
-        // console.log('finalMessage');
-        const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, message);
-        // append!
-    }
-    */
-
-    // // queryClient.setQueryData()
-    // if (currentThreadId) {
-    //     const { queryKey } = threadOptions(currentThreadId);
-    //     await queryClient.invalidateQueries({
-    //         queryKey,
-    //     });
-    // }
 
     return currentThreadId;
 };
