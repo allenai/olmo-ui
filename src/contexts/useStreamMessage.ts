@@ -1,7 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 
-import { RequestInferenceOpts } from '@/api/Message';
+import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { error } from '@/api/error';
+import { RequestInferenceOpts, StreamBadRequestError, StreamValidationError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
@@ -70,6 +72,49 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         [callbacks]
     );
 
+    const handleErrors = (messageError: unknown, response: Response): void => {
+        // @ts-expect-error Our API endpoints aren't properly typed with error responses
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const resultError = messageError?.error as unknown;
+        if (error.isErrorDetailsPayload(resultError) && resultError.code === 400) {
+            // It's a validation error from our API
+
+            if (
+                error.isValidationErrorPayload(resultError) &&
+                resultError.validation_errors.length > 0
+            ) {
+                const captchaTokenValidationErrors = resultError.validation_errors.filter((error) =>
+                    error.loc.some((location) => location === 'captchaToken')
+                );
+
+                if (captchaTokenValidationErrors.length > 0) {
+                    const captchaErrorTypes = captchaTokenValidationErrors.reduce((acc, curr) => {
+                        acc.add(curr.type);
+                        return acc;
+                    }, new Set<string>());
+
+                    analyticsClient.trackCaptchaError(Array.from(captchaErrorTypes.values()));
+                }
+
+                throw new StreamValidationError(
+                    resultError.code,
+                    resultError.validation_errors.map((err) => {
+                        if (err.loc.length > 0) {
+                            return `${err.loc.join(', ')}: ${err.msg}`;
+                        }
+
+                        return err.msg;
+                    })
+                );
+            }
+
+            throw new StreamBadRequestError(resultError.code, resultError.message);
+        }
+
+        // This isn't a known error, throw something
+        throw new Error(`Error creating a message: ${response.status} ${response.statusText}`);
+    };
+
     // imperative
     const queryToThreadOrView = async ({
         request,
@@ -130,6 +175,14 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 },
                 signal: abortController.signal, // Add abort signal to the request
             });
+
+            // Our API endpoints aren't properly typed with error responses
+            const resultError = result.error as unknown;
+            if (resultError != null) {
+                // Since we're using react-query with this we need to throw errors instead of returning them
+                // Even though we told openapi-fetch to give us the raw response it parses the response if !response.ok
+                handleErrors(resultError, result.response);
+            }
 
             return { response: result.response, abortController };
         } catch (error) {
