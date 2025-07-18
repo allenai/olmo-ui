@@ -240,7 +240,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
             streamMessage.prepareForNewSubmission();
 
-            const resultThreadId = await processSingleModelSubmission(
+
+            await processSingleModelSubmission(
                 data,
                 selectedModel,
                 threadId,
@@ -252,11 +253,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 addSnackMessage
             );
 
-            if (resultThreadId) {
-                navigate(links.thread(resultThreadId));
-            }
+
         },
-        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage, navigate]
+        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage]
     );
 
     const handleAbort = useCallback(
