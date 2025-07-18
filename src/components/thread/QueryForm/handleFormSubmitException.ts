@@ -15,6 +15,7 @@ export const handleFormSubmitException = (
                 type: 'validation',
                 message: e.description,
             });
+            return;
         }
 
         switch (e.description) {
