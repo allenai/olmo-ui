@@ -72,7 +72,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         [callbacks]
     );
 
-    const handleMessageError = (messageError: unknown): void => {
+    const handleErrors = (messageError: unknown, response: Response): void => {
         // @ts-expect-error Our API endpoints aren't properly typed with error responses
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const resultError = messageError?.error as unknown;
@@ -110,6 +110,9 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
 
             throw new StreamBadRequestError(resultError.code, resultError.message);
         }
+
+        // This isn't a known error, throw something
+        throw new Error(`Error creating a message: ${response.status} ${response.statusText}`);
     };
 
     // imperative
@@ -176,10 +179,12 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
             // Our API endpoints aren't properly typed with error responses
             const resultError = result.error as unknown;
             if (resultError != null) {
-                handleMessageError(resultError);
+                // Since we're using react-query with this we need to throw errors instead of returning them
+                // Even though we told openapi-fetch to give us the raw response it parses the response if !response.ok
+                handleErrors(resultError, result.response);
             }
 
-            return { response: result.response, error: result.error, abortController };
+            return { response: result.response, abortController };
         } catch (error) {
             // Clean up on error
             stopStream(threadViewId);
