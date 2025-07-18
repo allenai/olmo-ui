@@ -267,6 +267,14 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         [streamMessage]
     );
 
+    const isFileUploadDisabled = useMemo(() => {
+        if (!threadId || !selectedModel) return false;
+
+        const thread = getThread(threadId);
+        const uploadProps = convertToFileUploadProps(selectedModel);
+        return thread?.messages.length > 1 && !uploadProps.allowFilesInFollowups;
+    }, [threadId, selectedModel]);
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
@@ -280,7 +288,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             fileUploadProps: {
                 ...convertToFileUploadProps(selectedModel),
                 isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
-                isFileUploadDisabled: false,
+                isFileUploadDisabled,
             },
             onModelChange,
             getThreadViewModel: (_threadViewId: string = '0') => {
@@ -307,6 +315,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         streamMessage.canPause,
         streamMessage.remoteState,
         isLimitReached,
+        isFileUploadDisabled,
         onModelChange,
         onSubmit,
         handleAbort,
