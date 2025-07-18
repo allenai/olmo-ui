@@ -1,10 +1,12 @@
 import { SelectChangeEvent } from '@mui/material';
+import { QueryClientProvider } from '@tanstack/react-query';
 // Get the mocked useParams function
 import { useParams } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
+import { Role } from '@/api/Role';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -13,7 +15,7 @@ import {
     createMockMessage,
     createMockThread,
     createMockUser,
-    render,
+    renderHook,
     setupThreadInCache,
     waitFor,
 } from '@/utils/test-utils';
@@ -27,9 +29,8 @@ vi.mock('react-router-dom', () => ({
 }));
 const mockUseParams = vi.mocked(useParams);
 
-// Test helper to render SingleThreadProvider with optional initial state
-const renderWithProvider = (
-    TestComponent: React.ComponentType,
+// Test helper to render hook with SingleThreadProvider context
+const renderProvider = (
     initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
     mockUserInfo?: User | null
 ) => {
@@ -37,31 +38,30 @@ const renderWithProvider = (
 
     mockUseParams.mockReturnValue({ id: initialState?.threadId });
 
-    return render(
-        <FakeAppContextProvider
-            initialState={{
-                userInfo: mockUserInfo,
-                addSnackMessage: vi.fn(), // Mock the addSnackMessage function
-            }}>
-            <SingleThreadProvider initialState={initialState}>
-                <TestComponent />
-            </SingleThreadProvider>
-        </FakeAppContextProvider>
-    );
+    return renderHook(() => useQueryContext(), {
+        wrapper: ({ children }) => (
+            <QueryClientProvider client={queryClient}>
+                <FakeAppContextProvider
+                    initialState={{
+                        userInfo: mockUserInfo,
+                        addSnackMessage: vi.fn(),
+                    }}>
+                    <SingleThreadProvider initialState={initialState}>
+                        {children}
+                    </SingleThreadProvider>
+                </FakeAppContextProvider>
+            </QueryClientProvider>
+        ),
+    });
 };
 
 describe('SingleThreadProvider', () => {
     describe('inferenceOpts initialization', () => {
-        const InferenceOptsTestComponent = () => {
-            const context = useQueryContext();
-            return <div data-testid="inference-opts">{JSON.stringify(context.inferenceOpts)}</div>;
-        };
-
         it('should initialize with empty object when no threadId is provided', async () => {
-            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
-                expect(getByTestId('inference-opts')).toHaveTextContent('{}');
+                expect(result.current.inferenceOpts).toEqual({});
             });
         });
 
@@ -72,9 +72,8 @@ describe('SingleThreadProvider', () => {
                 messages: [
                     createMockMessage({
                         id: 'msg-1',
-                        role: 'user',
+                        role: Role.User,
                         content: 'Hello',
-                        opts: { temperature: 0.5 },
                     }),
                 ],
             });
@@ -82,12 +81,12 @@ describe('SingleThreadProvider', () => {
             const { queryKey } = threadOptions(threadId);
             queryClient.setQueryData(queryKey, thread);
 
-            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent, {
+            const { result } = renderProvider({
                 threadId,
             });
 
             await waitFor(() => {
-                expect(getByTestId('inference-opts')).toHaveTextContent('{}');
+                expect(result.current.inferenceOpts).toEqual({});
             });
         });
 
@@ -136,27 +135,24 @@ describe('SingleThreadProvider', () => {
             const { queryKey } = threadOptions(threadId);
             queryClient.setQueryData(queryKey, thread);
 
-            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent, {
+            const { result } = renderProvider({
                 threadId,
             });
 
             await waitFor(() => {
-                expect(getByTestId('inference-opts')).toHaveTextContent(
-                    JSON.stringify(expectedOpts)
-                );
+                expect(result.current.inferenceOpts).toEqual(expectedOpts);
             });
         });
 
         it('should handle thread with missing opts gracefully', async () => {
-            const threadId = 'thread-123';
+            const threadId = 'thread-789';
             const thread = createMockThread({
                 id: threadId,
                 messages: [
                     createMockMessage({
                         id: 'msg-1',
-                        role: 'user',
+                        role: Role.User,
                         content: 'Hello',
-                        opts: {},
                     }),
                     createMockMessage({
                         id: 'msg-2',
@@ -170,226 +166,173 @@ describe('SingleThreadProvider', () => {
             const { queryKey } = threadOptions(threadId);
             queryClient.setQueryData(queryKey, thread);
 
-            const { getByTestId } = renderWithProvider(InferenceOptsTestComponent, {
+            const { result } = renderProvider({
                 threadId,
             });
 
             await waitFor(() => {
-                expect(getByTestId('inference-opts')).toHaveTextContent('{}');
+                expect(result.current.inferenceOpts).toEqual({});
             });
         });
     });
     describe('getPlaceholderText', () => {
-        const PlaceholderTestComponent = () => {
-            const context = useQueryContext();
-            return <div data-testid="placeholder">{context.placeholderText}</div>;
-        };
-
         it('should return "Message Tülu" when no model is explicitly selected (auto-selects first)', async () => {
-            const { getByTestId } = renderWithProvider(PlaceholderTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
                 // When no model is explicitly selected, SingleThreadProvider auto-selects the first available model (tulu2)
-                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu');
+                expect(result.current.placeholderText).toBe('Message Tülu');
             });
         });
 
         it('should return "Message Tülu" when Tulu model is selected', async () => {
-            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
+            const { result } = renderProvider({
                 selectedModelId: 'tulu2',
             });
 
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu');
+                expect(result.current.placeholderText).toBe('Message Tülu');
             });
         });
 
         it('should return "Reply to Tülu" when model is selected and thread exists', async () => {
-            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
+            const { result } = renderProvider({
                 selectedModelId: 'tulu2',
                 threadId: 'existing-thread-123',
             });
 
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Reply to Tülu');
+                expect(result.current.placeholderText).toBe('Reply to Tülu');
             });
         });
 
         it('should return "Reply to Tülu" when no model is explicitly selected but thread exists', async () => {
-            const { getByTestId } = renderWithProvider(PlaceholderTestComponent, {
+            const { result } = renderProvider({
                 threadId: 'existing-thread-123',
             });
 
             await waitFor(() => {
-                // Auto-selects first available model (tulu2) even when thread exists
-                expect(getByTestId('placeholder')).toHaveTextContent('Reply to Tülu');
+                expect(result.current.placeholderText).toBe('Reply to Tülu');
             });
         });
     });
 
     describe('onModelChange', () => {
-        const ModelChangeTestComponent = () => {
-            const context = useQueryContext();
-
-            const handleModelChange = () => {
-                const mockEvent: SelectChangeEvent = {
-                    target: { value: 'OLMo-peteish-dpo-preview' },
-                } as SelectChangeEvent;
-                context.onModelChange(mockEvent, 'test-thread-view-id');
-            };
-
-            return (
-                <>
-                    <div data-testid="placeholder">{context.placeholderText}</div>
-                    <button data-testid="change-model" onClick={handleModelChange}>
-                        Change Model
-                    </button>
-                </>
-            );
-        };
-
         it('should update selected model and reflect in placeholder text', async () => {
-            const { getByTestId } = renderWithProvider(ModelChangeTestComponent);
+            const { result } = renderProvider();
 
             // Wait for component to load and initially auto-selects first model
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent('Message Tülu');
+                expect(result.current.placeholderText).toBe('Message Tülu');
             });
 
-            // Click to change model
+            // Change model
             act(() => {
-                getByTestId('change-model').click();
+                const mockEvent: SelectChangeEvent = {
+                    target: { value: 'OLMo-peteish-dpo-preview' },
+                } as SelectChangeEvent;
+                result.current.onModelChange(mockEvent);
             });
 
             // Should now show the new model
             await waitFor(() => {
-                expect(getByTestId('placeholder')).toHaveTextContent(
-                    'Message OLMo-peteish-dpo-preview'
-                );
+                expect(result.current.placeholderText).toBe('Message OLMo-peteish-dpo-preview');
             });
         });
     });
 
     describe('availableModels', () => {
-        const ModelsCountTestComponent = () => {
-            const context = useQueryContext();
-            const availableModels = context.availableModels;
-            return <div data-testid="available-models-count">{availableModels.length}</div>;
-        };
-
-        const ModelsFilterTestComponent = () => {
-            const context = useQueryContext();
-            const availableModels = context.availableModels;
-            const deprecatedModel = availableModels.find((model) => model.is_deprecated);
-            return (
-                <>
-                    <div data-testid="has-deprecated">{String(!!deprecatedModel)}</div>
-                    <div data-testid="deprecated-model-id">{deprecatedModel?.id || ''}</div>
-                </>
-            );
-        };
-
         it('should return available models from API with proper visibility filtering', async () => {
-            const { getByTestId } = renderWithProvider(ModelsCountTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
                 // MSW mock provides 4 models total:
                 // olmo-7b-chat (is_visible: false) - filtered out
                 // Result: 3 visible models returned
-                expect(getByTestId('available-models-count')).toHaveTextContent('3');
+                expect(result.current.availableModels).toHaveLength(3);
             });
         });
 
         it('should exclude deprecated models', async () => {
-            const { getByTestId } = renderWithProvider(ModelsFilterTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
                 // Should not include any deprecated models in the available options
                 // olmo-7b-chat is deprecated but should be filtered out
-                expect(getByTestId('has-deprecated')).toHaveTextContent('false');
+                const deprecatedModel = result.current.availableModels.find(
+                    (model) => model.is_deprecated
+                );
+                expect(deprecatedModel).toBeUndefined();
             });
         });
 
         it('should include deprecated models if they are selected', async () => {
-            const { getByTestId } = renderWithProvider(ModelsFilterTestComponent, {
+            const { result } = renderProvider({
                 selectedModelId: 'olmo-7b-chat', // This is deprecated and not visible
             });
 
             await waitFor(() => {
                 // Should include the deprecated model since it's selected
-                expect(getByTestId('has-deprecated')).toHaveTextContent('true');
-                expect(getByTestId('deprecated-model-id')).toHaveTextContent('olmo-7b-chat');
+                const deprecatedModel = result.current.availableModels.find(
+                    (model) => model.is_deprecated
+                );
+                expect(deprecatedModel).toBeDefined();
+                expect(deprecatedModel?.id).toBe('olmo-7b-chat');
             });
         });
     });
 
     describe('areFilesAllowed', () => {
-        const FilesAllowedTestComponent = () => {
-            const context = useQueryContext();
-            return <div data-testid="files-allowed">{String(context.areFilesAllowed)}</div>;
-        };
-
         it('should return true when selected model accepts files', async () => {
-            const { getByTestId } = renderWithProvider(FilesAllowedTestComponent, {
+            const { result } = renderProvider({
                 selectedModelId: 'molmo', // molmo model has accepts_files: true
             });
 
             await waitFor(() => {
-                expect(getByTestId('files-allowed')).toHaveTextContent('true');
+                expect(result.current.areFilesAllowed).toBe(true);
             });
         });
 
         it('should return false when selected model does not accept files', async () => {
-            const { getByTestId } = renderWithProvider(FilesAllowedTestComponent, {
+            const { result } = renderProvider({
                 selectedModelId: 'tulu2', // tulu2 model has accepts_files: false
             });
 
             await waitFor(() => {
-                expect(getByTestId('files-allowed')).toHaveTextContent('false');
+                expect(result.current.areFilesAllowed).toBe(false);
             });
         });
 
         it('should return false when no model is selected', async () => {
-            const { getByTestId } = renderWithProvider(FilesAllowedTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
-                expect(getByTestId('files-allowed')).toHaveTextContent('false');
+                expect(result.current.areFilesAllowed).toBe(false);
             });
         });
     });
 
     describe('autofocus', () => {
-        const AutofocusTestComponent = () => {
-            const context = useQueryContext();
-            return <div data-testid="autofocus">{String(context.autofocus)}</div>;
-        };
-
         it('should return true for new threads (no threadId)', async () => {
-            const { getByTestId } = renderWithProvider(AutofocusTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
-                expect(getByTestId('autofocus')).toHaveTextContent('true');
+                expect(result.current.autofocus).toBe(true);
             });
         });
 
         it('should return false for existing threads (has threadId)', async () => {
-            const { getByTestId } = renderWithProvider(AutofocusTestComponent, {
+            const { result } = renderProvider({
                 threadId: 'existing-thread-123',
             });
 
             await waitFor(() => {
-                expect(getByTestId('autofocus')).toHaveTextContent('false');
+                expect(result.current.autofocus).toBe(false);
             });
         });
     });
 
     describe('canSubmit', () => {
-        const CanSubmitTestComponent = () => {
-            const context = useQueryContext();
-            const canSubmit = context.canSubmit;
-            return <div data-testid="can-submit">{String(canSubmit)}</div>;
-        };
-
         it('should return true when user is the creator of the first message', async () => {
             const threadId = 'test-thread-123';
             const userInfo = createMockUser();
@@ -398,14 +341,10 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: userInfo.client }],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                userInfo
-            );
+            const { result } = renderProvider({ threadId }, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('true');
+                expect(result.current.canSubmit).toBe(true);
             });
         });
 
@@ -417,14 +356,10 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: 'other-user-456' }],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                userInfo
-            );
+            const { result } = renderProvider({ threadId }, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(result.current.canSubmit).toBe(false);
             });
         });
 
@@ -436,30 +371,20 @@ describe('SingleThreadProvider', () => {
                 messages: [],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                userInfo
-            );
+            const { result } = renderProvider({ threadId }, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(result.current.canSubmit).toBe(false);
             });
         });
 
         it('should return true when no threadId is provided (new thread)', async () => {
             const userInfo = createMockUser();
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                {
-                    // No threadId provided, simulating a new thread
-                },
-                userInfo
-            );
+            const { result } = renderProvider({}, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('true');
+                expect(result.current.canSubmit).toBe(true);
             });
         });
 
@@ -470,10 +395,10 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: 'user-123' }],
             });
 
-            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, { threadId }, null);
+            const { result } = renderProvider({ threadId }, null);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(result.current.canSubmit).toBe(false);
             });
         });
 
@@ -484,14 +409,10 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: 'user-123' }],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                undefined
-            );
+            const { result } = renderProvider({ threadId }, undefined);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(result.current.canSubmit).toBe(false);
             });
         });
 
@@ -503,14 +424,10 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: undefined }],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                userInfo
-            );
+            const { result } = renderProvider({ threadId }, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(result.current.canSubmit).toBe(false);
             });
         });
 
@@ -522,14 +439,10 @@ describe('SingleThreadProvider', () => {
                 messages: [{ creator: 'user-123' }],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                userInfo
-            );
+            const { result } = renderProvider({ threadId }, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(result.current.canSubmit).toBe(false);
             });
         });
 
@@ -549,24 +462,15 @@ describe('SingleThreadProvider', () => {
                 ],
             });
 
-            const { getByTestId } = renderWithProvider(
-                CanSubmitTestComponent,
-                { threadId },
-                userInfo
-            );
+            const { result } = renderProvider({ threadId }, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('true'); // Should return true since first message creator matches
+                expect(result.current.canSubmit).toBe(true); // Should return true since first message creator matches
             });
         });
     });
 
     describe('isLimitReached', () => {
-        const IsLimitReachedTestComponent = () => {
-            const context = useQueryContext();
-            return <div data-testid="is-limit-reached">{String(context.isLimitReached)}</div>;
-        };
-
         it('should return true when the last message in the thread has isLimitReached set to true', async () => {
             const threadId = 'test-thread-limit-reached';
 
@@ -579,12 +483,10 @@ describe('SingleThreadProvider', () => {
                 ],
             });
 
-            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, {
-                threadId,
-            });
+            const { result } = renderProvider({ threadId });
 
             await waitFor(() => {
-                expect(getByTestId('is-limit-reached')).toHaveTextContent('true');
+                expect(result.current.isLimitReached).toBe(true);
             });
         });
 
@@ -600,23 +502,85 @@ describe('SingleThreadProvider', () => {
                 ],
             });
 
-            // No need to manually update - setupThreadInCache creates messages with isLimitReached: false by default
-
-            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, {
-                threadId,
-            });
+            const { result } = renderProvider({ threadId });
 
             await waitFor(() => {
-                expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+                expect(result.current.isLimitReached).toBe(false);
             });
         });
 
         it('should return false when no threadId is provided (new thread)', async () => {
-            // No threadId provided - this represents a new thread scenario
-            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent);
+            const { result } = renderProvider();
 
             await waitFor(() => {
-                expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
+                expect(result.current.isLimitReached).toBe(false);
+            });
+        });
+    });
+
+    describe('isFileUploadDisabled', () => {
+        it('should return false for new threads (no threadId)', async () => {
+            const mockUser = createMockUser('test-user-id');
+            const { result } = renderProvider(undefined, mockUser);
+
+            await waitFor(() => {
+                expect(result.current.fileUploadProps.isFileUploadDisabled).toBe(false);
+            });
+        });
+
+        it('should return false when thread has exactly 1 message (boundary case)', async () => {
+            const mockUser = createMockUser('test-user-id');
+            const threadId = 'test-thread-id';
+            const mockMessage = createMockMessage({
+                id: 'msg-1',
+                content: 'First message',
+                role: Role.User,
+                creator: 'test-user-id',
+            });
+            const mockThread = createMockThread({
+                id: threadId,
+                messages: [mockMessage],
+            });
+
+            setupThreadInCache(threadId, mockThread);
+
+            const { result } = renderProvider({ threadId, selectedModelId: 'molmo' }, mockUser);
+
+            await waitFor(() => {
+                expect(result.current.fileUploadProps.isFileUploadDisabled).toBe(false);
+            });
+        });
+
+        it('should return true when thread has >1 messages and model does not allow files in followups', async () => {
+            const mockUser = createMockUser('test-user-id');
+            const threadId = 'test-thread-id';
+            const mockThread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        content: 'First message',
+                        role: Role.User,
+                        creator: 'test-user-id',
+                    }),
+                    createMockMessage({
+                        id: 'msg-2',
+                        content: 'Second message',
+                        role: Role.LLM,
+                        creator: 'test-user-id',
+                    }),
+                ],
+            });
+
+            setupThreadInCache(threadId, mockThread);
+
+            const { result } = renderProvider(
+                { threadId, selectedModelId: 'test-multi-modal-model-16' },
+                mockUser
+            );
+
+            await waitFor(() => {
+                expect(result.current.fileUploadProps.isFileUploadDisabled).toBe(true);
             });
         });
     });
