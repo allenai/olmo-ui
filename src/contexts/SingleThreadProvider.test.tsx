@@ -12,6 +12,7 @@ import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
     act,
+    convertMessagesForSetup,
     createMockMessage,
     createMockThread,
     createMockUser,
@@ -520,7 +521,7 @@ describe('SingleThreadProvider', () => {
 
     describe('isFileUploadDisabled', () => {
         it('should return false for new threads (no threadId)', async () => {
-            const mockUser = createMockUser('test-user-id');
+            const mockUser = createMockUser({ id: 'test-user-id' });
             const { result } = renderProvider(undefined, mockUser);
 
             await waitFor(() => {
@@ -529,7 +530,7 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should return false when thread has exactly 1 message (boundary case)', async () => {
-            const mockUser = createMockUser('test-user-id');
+            const mockUser = createMockUser({ id: 'test-user-id' });
             const threadId = 'test-thread-id';
             const mockMessage = createMockMessage({
                 id: 'msg-1',
@@ -542,7 +543,9 @@ describe('SingleThreadProvider', () => {
                 messages: [mockMessage],
             });
 
-            setupThreadInCache(threadId, mockThread);
+            setupThreadInCache(threadId, {
+                messages: convertMessagesForSetup(mockThread.messages),
+            });
 
             const { result } = renderProvider({ threadId, selectedModelId: 'molmo' }, mockUser);
 
@@ -552,7 +555,7 @@ describe('SingleThreadProvider', () => {
         });
 
         it('should return true when thread has >1 messages and model does not allow files in followups', async () => {
-            const mockUser = createMockUser('test-user-id');
+            const mockUser = createMockUser({ id: 'test-user-id' });
             const threadId = 'test-thread-id';
             const mockThread = createMockThread({
                 id: threadId,
@@ -572,7 +575,9 @@ describe('SingleThreadProvider', () => {
                 ],
             });
 
-            setupThreadInCache(threadId, mockThread);
+            setupThreadInCache(threadId, {
+                messages: convertMessagesForSetup(mockThread.messages),
+            });
 
             const { result } = renderProvider(
                 { threadId, selectedModelId: 'test-multi-modal-model-16' },
