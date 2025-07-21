@@ -18,81 +18,84 @@ export interface SelectedThreadLoaderData {
 
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
-        selectedThreadRootId, // not used
         getAttributionsForMessage,
         handleAttributionForChangingThread,
         abortPrompt,
         selectMessage,
     } = appContext.getState();
 
-    const { isCorpusLinkEnabled } = getFeatureToggles();
+    if (params.id == null) {
+        return null;
+    }
+
+    const loadedMessage = queryClient.getQueryData(threadOptions(params.id).queryKey);
+    if (loadedMessage != null) {
+        return null;
+    }
 
     // get the latest state of the selectedThread if we're changing to a different thread
-    if (params.id != null && params.id !== selectedThreadRootId) {
-        handleAttributionForChangingThread();
-        // abort the current streaming prompt if there is any
-        abortPrompt();
+    handleAttributionForChangingThread();
+    // abort the current streaming prompt if there is any
+    abortPrompt();
 
-        const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
+    const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
-        const threadRootId = params.id;
-        const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
+    const threadRootId = params.id;
+    const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
 
-        const url = new URL(request.url);
-        const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
+    const url = new URL(request.url);
+    const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
 
-        const { messages: selectedThreadMessages } = selectedThread;
+    const { messages: selectedThreadMessages } = selectedThread;
 
-        const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
+    const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
 
-        let selectedModelId: string | undefined;
+    let selectedModelId: string | undefined;
 
-        if (lastResponse != null) {
-            const models = await modelsPromise;
+    if (lastResponse != null) {
+        const models = await modelsPromise;
 
-            if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
-                // Use the model from the thread's last response
-                selectedModelId = lastResponse.modelId;
-            } else {
-                // TODO: SingleThreadProvider has this filter logic. Seems like we shouldn't have it here too.
-                const visibleModels = models.filter(isModelVisible);
-                selectedModelId = visibleModels[0]?.id;
-            }
-        }
-
-        if (isCorpusLinkEnabled) {
-            let attributionsPromise;
-
-            const selectedMessage = selectedThreadMessages.find(
-                (message) => message.id === selectedMessageId
-            );
-
-            if (selectedMessage != null) {
-                const parentPrompt = selectedThreadMessages.find((message) =>
-                    message.children?.includes(selectedMessage.id)
-                );
-
-                attributionsPromise = getAttributionsForMessage(
-                    parentPrompt?.content || '',
-                    threadRootId,
-                    selectedMessage.id
-                );
-
-                selectMessage(threadRootId, selectedMessage.id);
-            }
-
-            return defer({
-                selectedThread,
-                attributions: attributionsPromise,
-                selectedModelId,
-            });
+        if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
+            // Use the model from the thread's last response
+            selectedModelId = lastResponse.modelId;
         } else {
-            return defer({
-                selectedThread,
-                selectedModelId,
-            });
+            // TODO: SingleThreadProvider has this filter logic. Seems like we shouldn't have it here too.
+            const visibleModels = models.filter(isModelVisible);
+            selectedModelId = visibleModels[0]?.id;
         }
     }
 
-    return null;
+    const { isCorpusLinkEnabled } = getFeatureToggles();
+    if (isCorpusLinkEnabled) {
+        let attributionsPromise;
+
+        const selectedMessage = selectedThreadMessages.find(
+            (message) => message.id === selectedMessageId
+        );
+
+        if (selectedMessage != null) {
+            const parentPrompt = selectedThreadMessages.find((message) =>
+                message.children?.includes(selectedMessage.id)
+            );
+
+            attributionsPromise = getAttributionsForMessage(
+                parentPrompt?.content || '',
+                threadRootId,
+                selectedMessage.id
+            );
+
+            selectMessage(threadRootId, selectedMessage.id);
+        }
+
+        return defer({
+            selectedThread,
+            attributions: attributionsPromise,
+            selectedModelId,
+        });
+    } else {
+        return defer({
+            selectedThread,
+            selectedModelId,
+        });
+    }
 };

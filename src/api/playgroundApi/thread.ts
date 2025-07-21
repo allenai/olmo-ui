@@ -40,11 +40,6 @@ export const selectMessageById = (messageId: MessageId) => (thread: Thread) =>
     thread.messages.find(({ id }) => messageId === id);
 
 export const useThread = <R = Thread>(threadId: ThreadId, options?: useThreadOptions<R>) => {
-    const queryOptions = playgroundApiQueryClient.queryOptions(
-        'get',
-        '/v4/threads/{thread_id}',
-        threadParams(threadId),
-        options
-    );
+    const queryOptions = threadOptions<R>(threadId, options);
     return useQuery(queryOptions);
 };
