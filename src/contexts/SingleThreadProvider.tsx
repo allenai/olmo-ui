@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
@@ -20,6 +20,7 @@ import {
     useModels,
 } from '@/components/thread/ModelSelect/useModels';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
+import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -28,7 +29,7 @@ import {
     StreamEventRegistryProvider,
     useStreamCallbackRegistry,
 } from './StreamEventRegistry';
-import { processSingleModelSubmission, QueryFormValues } from './submission-process';
+import { processSingleModelSubmission, Thread as ExtendedThread } from './submission-process';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -44,7 +45,7 @@ interface SingleThreadProviderProps
         initialState?: Partial<SingleThreadState>;
     }> {}
 
-function getThread(threadId: string): Thread | undefined {
+function getThread(threadId: string): ExtendedThread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
 }
