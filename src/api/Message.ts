@@ -206,20 +206,11 @@ export class MessageClient extends ClientBase {
             url.searchParams.set('creator', creator);
         }
 
-        const { threads } = await this.fetch<ThreadList>(url);
+        const { threads, meta } = await this.fetch<ThreadList>(url);
 
         return {
             threads,
-            // TODO: see above, fix API to return metadata instead of hard coding
-            meta: {
-                total: threads.length,
-                limit: threads.length,
-                offset: 0,
-                sort: {
-                    direction: 'DESC',
-                    field: 'created',
-                },
-            },
+            meta,
         };
     };
 
