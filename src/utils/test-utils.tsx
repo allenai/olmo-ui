@@ -73,6 +73,15 @@ export const createMockUser = (overrides: Partial<User> = {}): User => ({
     ...overrides,
 });
 
+// Converts FlatMessage array to simple message objects
+export const convertMessagesForSetup = (messages: readonly FlatMessage[]) =>
+    messages.map((msg) => ({
+        id: msg.id,
+        creator: msg.creator,
+        content: msg.content,
+        role: msg.role,
+    }));
+
 type UseStreamMessageReturn = ReturnType<typeof useStreamMessage>;
 
 export const createStreamMessageMock = (

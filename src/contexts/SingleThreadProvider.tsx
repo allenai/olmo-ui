@@ -240,7 +240,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
             streamMessage.prepareForNewSubmission();
 
-            const resultThreadId = await processSingleModelSubmission(
+            await processSingleModelSubmission(
                 data,
                 selectedModel,
                 threadId,
@@ -251,12 +251,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 streamMessage.completeStream,
                 addSnackMessage
             );
-
-            if (resultThreadId) {
-                navigate(links.thread(resultThreadId));
-            }
         },
-        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage, navigate]
+        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage]
     );
 
     const handleAbort = useCallback(
@@ -272,7 +268,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
         const thread = getThread(threadId);
         const uploadProps = convertToFileUploadProps(selectedModel);
-        return thread?.messages.length > 1 && !uploadProps.allowFilesInFollowups;
+        return (thread?.messages?.length ?? 0) > 1 && !uploadProps.allowFilesInFollowups;
     }, [threadId, selectedModel]);
 
     const contextValue: QueryContextValue = useMemo(() => {
