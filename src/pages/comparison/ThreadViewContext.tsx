@@ -4,7 +4,7 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useThread } from '@/api/playgroundApi/thread';
 import { useQueryContext } from '@/contexts/QueryContext';
-import { Thread } from '@/contexts/submission-process';
+import { StreamingThread } from '@/contexts/submission-process';
 
 export type ThreadViewId = string;
 
@@ -22,7 +22,7 @@ export const ThreadViewProvider = ({
     children,
 }: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
     const { data: thread } = useThread(threadId);
-    const streamingMessageId = (thread as Thread)?.streamingMessageId;
+    const streamingMessageId = (thread as StreamingThread)?.streamingMessageId;
 
     const value = { threadId, threadViewId, streamingMessageId };
 

@@ -29,7 +29,7 @@ import {
     StreamEventRegistryProvider,
     useStreamCallbackRegistry,
 } from './StreamEventRegistry';
-import { processSingleModelSubmission, Thread as ExtendedThread } from './submission-process';
+import { processSingleModelSubmission, StreamingThread } from './submission-process';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -45,7 +45,7 @@ interface SingleThreadProviderProps
         initialState?: Partial<SingleThreadState>;
     }> {}
 
-function getThread(threadId: string): ExtendedThread | undefined {
+function getThread(threadId: string): StreamingThread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
 }

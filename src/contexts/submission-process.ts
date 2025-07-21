@@ -17,7 +17,7 @@ import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
 // Thread plus streaming state
-export interface Thread extends BaseThread {
+export interface StreamingThread extends BaseThread {
     streamingMessageId?: string;
 }
 
@@ -28,7 +28,7 @@ const clearStreamingState = (threadId: string | undefined) => {
     }
 
     const { queryKey } = threadOptions(threadId);
-    queryClient.setQueryData(queryKey, (oldThread: Thread) => ({
+    queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => ({
         ...oldThread,
         streamingMessageId: undefined,
     }));
@@ -72,7 +72,7 @@ export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
 
-export type StreamingMessageResponse = Thread | MessageChunk | MessageStreamErrorType;
+export type StreamingMessageResponse = StreamingThread | MessageChunk | MessageStreamErrorType;
 
 export const isMessageStreamError = (
     message: StreamingMessageResponse
@@ -80,15 +80,15 @@ export const isMessageStreamError = (
     return 'error' in message;
 };
 
-export const containsMessages = (message: StreamingMessageResponse): message is Thread => {
+export const containsMessages = (message: StreamingMessageResponse): message is StreamingThread => {
     return 'messages' in message;
 };
 
-export const isFirstMessage = (message: StreamingMessageResponse): message is Thread => {
+export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
     return containsMessages(message) && !message.messages.some((msg) => msg.final);
 };
 
-export const isFinalMessage = (message: StreamingMessageResponse): message is Thread => {
+export const isFinalMessage = (message: StreamingMessageResponse): message is StreamingThread => {
     return containsMessages(message) && !message.messages.some((msg) => !msg.final);
 };
 
@@ -149,7 +149,7 @@ export const updateCacheWithMessagePart = async (
         } else {
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, (oldData: Thread) => {
+                queryClient.setQueryData(queryKey, (oldData: StreamingThread) => {
                     const newData = {
                         ...oldData,
                         messages: [...oldData.messages, ...message.messages],
@@ -169,7 +169,7 @@ export const updateCacheWithMessagePart = async (
         // += message.content
         // addContentToMessage(message.message, message.content);
         const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, (oldThread: Thread) => {
+        queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
             const newThread = {
                 ...oldThread,
                 streamingMessageId: messageId,
@@ -253,7 +253,7 @@ export const processSingleModelSubmission = async (
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
-        thread?: Thread;
+        thread?: StreamingThread;
         inferenceOpts: RequestInferenceOpts;
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
@@ -265,7 +265,7 @@ export const processSingleModelSubmission = async (
     }
 
     // Do we grab thread here or wait?
-    let thread: Thread | undefined;
+    let thread: StreamingThread | undefined;
     if (rootThreadId) {
         const { queryKey } = threadOptions(rootThreadId);
         thread = queryClient.getQueryData(queryKey);

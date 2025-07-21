@@ -12,7 +12,7 @@ import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useMo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
-import { Thread } from './submission-process';
+import { StreamingThread } from './submission-process';
 
 // Internal state for comparison mode, holds all threads
 interface ComparisonState {
@@ -30,7 +30,7 @@ interface ComparisonProviderProps {
     initialState?: ComparisonState;
 }
 
-function getThread(threadId: string): Thread | undefined {
+function getThread(threadId: string): StreamingThread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
 }
