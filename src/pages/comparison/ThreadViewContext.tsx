@@ -21,7 +21,10 @@ export const ThreadViewProvider = ({
     threadViewId,
     children,
 }: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
-    const { data: thread } = useThread(threadId);
+    const { data: thread } = useThread(threadId, {
+        select: (thread) => thread,
+        staleTime: Infinity,
+    });
     const streamingMessageId = (thread as StreamingThread)?.streamingMessageId;
 
     const value = { threadId, threadViewId, streamingMessageId };
