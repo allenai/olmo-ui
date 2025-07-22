@@ -30,6 +30,7 @@ export const ThreadDisplayView = ({
     const previousStreamingMessageId = useRef<string | null>(null);
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
     const shouldStickToBottom = useRef(false);
@@ -114,7 +115,7 @@ export const ThreadDisplayView = ({
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
     const { ref: scrollAnchorRef } = useInView({
-        root: scrollContainerRef.current,
+        root: scrollContainer,
         initialInView: true,
         onChange: (inView) => {
             setIsScrollToBottomButtonVisible(!inView);
@@ -150,7 +151,10 @@ export const ThreadDisplayView = ({
             onScroll={() => {
                 hasUserScrolledSinceSendingMessage.current = true;
             }}
-            ref={scrollContainerRef}
+            ref={(el) => {
+                scrollContainerRef.current = el;
+                setScrollContainer(el);
+            }}
             overflow="scroll"
             sx={{
                 '@media (prefers-reduced-motion: no-preference)': {
