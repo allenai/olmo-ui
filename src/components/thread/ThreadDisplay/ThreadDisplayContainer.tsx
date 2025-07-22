@@ -5,22 +5,23 @@ import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
-import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
+import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
 import { PARAM_SELECTED_MESSAGE, SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
-// Inner component that has access to QueryContext
 const ThreadDisplayContent = () => {
-    const { id: selectedThreadRootId = '' } = useParams();
+    const {
+        threadId: selectedThreadRootId,
+        streamingMessageId,
+        isUpdatingMessageContent,
+    } = useThreadView();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
         const attributions = messageAttributionsSelector(state);
         return attributions != null && Object.keys(attributions.spans).length > 0;
     });
-    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
-    const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
 
     // Handle scroll to new user message
     useStreamEvent('onNewUserMessage', (_threadViewId: string) => {
@@ -45,17 +46,13 @@ const ThreadDisplayContent = () => {
     const childIds = messages.map((message) => message.id);
 
     return (
-        <ThreadViewProvider threadId={selectedThreadRootId} threadViewId="0">
-            <ThreadDisplay
-                childMessageIds={childIds}
-                shouldShowAttributionHighlightDescription={
-                    shouldShowAttributionHighlightDescription
-                }
-                streamingMessageId={streamingMessageId}
-                isUpdatingMessageContent={isUpdatingMessageContent}
-                selectedMessageId={selectedMessageId}
-            />
-        </ThreadViewProvider>
+        <ThreadDisplay
+            childMessageIds={childIds}
+            shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
+            streamingMessageId={streamingMessageId ?? null}
+            isUpdatingMessageContent={isUpdatingMessageContent ?? false}
+            selectedMessageId={selectedMessageId}
+        />
     );
 };
 
@@ -73,5 +70,9 @@ export const ThreadDisplayContainer = () => {
         }
     }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
 
-    return <ThreadDisplayContent />;
+    return (
+        <ThreadViewProvider threadId={selectedThreadRootId} threadViewId="0">
+            <ThreadDisplayContent />
+        </ThreadViewProvider>
+    );
 };

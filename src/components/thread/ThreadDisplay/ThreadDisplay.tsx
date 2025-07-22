@@ -74,7 +74,8 @@ export const ThreadDisplayView = ({
 
             scrollToBottom();
 
-            setShouldStickToBottom(false);
+            setShouldStickToBottom(true);
+            hasUserScrolledSinceSendingMessage.current = false;
         }
 
         previousStreamingMessageId.current = streamingMessageId;
@@ -120,16 +121,16 @@ export const ThreadDisplayView = ({
 
             if (inView) {
                 if (
-                    !skipNextStickyScrollSetFromAnchor.current &&
-                    hasUserScrolledSinceSendingMessage.current
+                    hasUserScrolledSinceSendingMessage.current &&
+                    !skipNextStickyScrollSetFromAnchor.current
                 ) {
-                    setShouldStickToBottom(inView);
-                } else {
-                    // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
-                    // to prevent sticking right after that scroll, we ignore this event
-                    // we can't set that up in the effect because the browser is still sending scroll events even after the function returns
-                    skipNextStickyScrollSetFromAnchor.current = false;
+                    setShouldStickToBottom(true);
                 }
+
+                skipNextStickyScrollSetFromAnchor.current = false;
+            } else {
+                // User scrolled away from bottom, disable sticky scroll
+                setShouldStickToBottom(false);
             }
         },
     });

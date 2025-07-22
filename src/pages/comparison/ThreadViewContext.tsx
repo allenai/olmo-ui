@@ -12,6 +12,7 @@ interface ThreadViewContextProps {
     threadId: ThreadId;
     threadViewId: ThreadViewId;
     streamingMessageId?: string;
+    isUpdatingMessageContent?: boolean;
 }
 
 const ThreadViewContext = createContext<ThreadViewContextProps | null>(null);
@@ -25,9 +26,11 @@ export const ThreadViewProvider = ({
         select: (thread) => thread,
         staleTime: Infinity,
     });
-    const streamingMessageId = (thread as StreamingThread)?.streamingMessageId;
+    const streamingThread = thread as StreamingThread;
+    const streamingMessageId = streamingThread?.streamingMessageId;
+    const isUpdatingMessageContent = streamingThread?.isUpdatingMessageContent || false;
 
-    const value = { threadId, threadViewId, streamingMessageId };
+    const value = { threadId, threadViewId, streamingMessageId, isUpdatingMessageContent };
 
     return <ThreadViewContext.Provider value={value}>{children}</ThreadViewContext.Provider>;
 };
