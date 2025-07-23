@@ -5,13 +5,14 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+import { StreamingThread } from './submission-process';
 
 // Internal state for comparison mode, holds all threads
 interface ComparisonState {
@@ -29,7 +30,7 @@ interface ComparisonProviderProps {
     initialState?: ComparisonState;
 }
 
-function getThread(threadId: string): Thread | undefined {
+function getThread(threadId: string): StreamingThread | undefined {
     const { queryKey } = threadOptions(threadId);
     return queryClient.getQueryData(queryKey);
 }

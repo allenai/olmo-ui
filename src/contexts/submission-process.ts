@@ -7,19 +7,32 @@ import {
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { FlatMessage, Thread, threadOptions } from '@/api/playgroundApi/thread';
+import { FlatMessage, Thread as BaseThread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
+import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
-export interface QueryFormValues {
-    content: string;
-    private: boolean;
-    files?: FileList;
+// Thread plus streaming state
+export interface StreamingThread extends BaseThread {
+    streamingMessageId?: string;
 }
+
+const clearStreamingState = (threadId: string | undefined) => {
+    if (!threadId) {
+        console.warn('clearStreamingState called with undefined threadId');
+        return;
+    }
+
+    const { queryKey } = threadOptions(threadId);
+    queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => ({
+        ...oldThread,
+        streamingMessageId: undefined,
+    }));
+};
 
 export const validateSubmission = (canSubmit: boolean, isLoading: boolean): boolean => {
     if (!canSubmit || isLoading) {
@@ -59,7 +72,7 @@ export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
 
-export type StreamingMessageResponse = Thread | MessageChunk | MessageStreamErrorType;
+export type StreamingMessageResponse = StreamingThread | MessageChunk | MessageStreamErrorType;
 
 export const isMessageStreamError = (
     message: StreamingMessageResponse
@@ -67,15 +80,15 @@ export const isMessageStreamError = (
     return 'error' in message;
 };
 
-export const containsMessages = (message: StreamingMessageResponse): message is Thread => {
+export const containsMessages = (message: StreamingMessageResponse): message is StreamingThread => {
     return 'messages' in message;
 };
 
-export const isFirstMessage = (message: StreamingMessageResponse): message is Thread => {
+export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
     return containsMessages(message) && !message.messages.some((msg) => msg.final);
 };
 
-export const isFinalMessage = (message: StreamingMessageResponse): message is Thread => {
+export const isFinalMessage = (message: StreamingMessageResponse): message is StreamingThread => {
     return containsMessages(message) && !message.messages.some((msg) => !msg.final);
 };
 
@@ -136,7 +149,7 @@ export const updateCacheWithMessagePart = async (
         } else {
             if (currentThreadId) {
                 const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, (oldData: Thread) => {
+                queryClient.setQueryData(queryKey, (oldData: StreamingThread) => {
                     const newData = {
                         ...oldData,
                         messages: [...oldData.messages, ...message.messages],
@@ -156,9 +169,10 @@ export const updateCacheWithMessagePart = async (
         // += message.content
         // addContentToMessage(message.message, message.content);
         const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, (oldThread: Thread) => {
+        queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
             const newThread = {
                 ...oldThread,
+                streamingMessageId: messageId,
                 messages: oldThread.messages.map((message) => {
                     if (message.id === messageId) {
                         const updatedMessage = {
@@ -174,8 +188,12 @@ export const updateCacheWithMessagePart = async (
             return newThread;
         });
     }
-    if (isFinalMessage(message) && isCreatingNewThread) {
-        state.addThreadToAllThreads(message);
+    if (isFinalMessage(message)) {
+        clearStreamingState(currentThreadId);
+
+        if (isCreatingNewThread) {
+            state.addThreadToAllThreads(message);
+        }
     }
 
     return currentThreadId;
@@ -235,7 +253,7 @@ export const processSingleModelSubmission = async (
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
-        thread?: Thread;
+        thread?: StreamingThread;
         inferenceOpts: RequestInferenceOpts;
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
@@ -247,7 +265,7 @@ export const processSingleModelSubmission = async (
     }
 
     // Do we grab thread here or wait?
-    let thread: Thread | undefined;
+    let thread: StreamingThread | undefined;
     if (rootThreadId) {
         const { queryKey } = threadOptions(rootThreadId);
         thread = queryClient.getQueryData(queryKey);
@@ -306,6 +324,7 @@ export const processStreamResponse = async (
 
     // Mark stream as completed
     onCompleteStream?.(threadViewId);
+    clearStreamingState(streamingRootThreadId);
 
     // Return the final thread ID for parallel streaming navigation
     return streamingRootThreadId;

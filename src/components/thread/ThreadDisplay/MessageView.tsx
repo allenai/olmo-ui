@@ -4,6 +4,8 @@ import { ReactNode } from 'react';
 import { Label } from '@/api/Label';
 import { MessageId, selectMessageById, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { useQueryContext } from '@/contexts/QueryContext';
+import { RemoteState } from '@/contexts/util';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
@@ -33,7 +35,8 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const { threadId } = useThreadView();
+    const { threadId, streamingMessageId } = useThreadView();
+    const { remoteState } = useQueryContext();
     const { data: message, error: _error } = useThread(threadId, {
         select: selectMessageById(messageId),
         staleTime: Infinity,
@@ -52,6 +55,7 @@ export const MessageView = ({
         : [];
 
     const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
+    const isStreaming = streamingMessageId === messageId && remoteState === RemoteState.Loading;
 
     return (
         <ChatMessage role={role as Role} messageId={messageId}>
@@ -70,6 +74,7 @@ export const MessageView = ({
                 messageLabels={messageLabels}
                 messageId={messageId}
                 isLastMessage={isLastMessageInThread}
+                isStreaming={isStreaming}
             />
         </ChatMessage>
     );
