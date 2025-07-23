@@ -20,6 +20,8 @@ interface ThreadDisplayProps {
 // same as ThreadDisplay, but children instead of props
 type ThreadDisplayViewProps = React.PropsWithChildren<Omit<ThreadDisplayProps, 'childMessageIds'>>;
 
+const DISTANCE_TO_DISABLE_STICKY_SCROLL = 50;
+
 export const ThreadDisplayView = ({
     shouldShowAttributionHighlightDescription,
     streamingMessageId,
@@ -34,13 +36,14 @@ export const ThreadDisplayView = ({
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
     const shouldStickToBottom = useRef(false);
+    const previousScrollTop = useRef(0);
 
     const setShouldStickToBottom = (newShouldStickToBottom: boolean) => {
         shouldStickToBottom.current = newShouldStickToBottom;
     };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
-    const hasUserScrolledSinceSendingMessage = useRef(false);
+    const hasScrolledSinceSendingMessage = useRef(false);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
@@ -48,6 +51,26 @@ export const ThreadDisplayView = ({
                 top: scrollContainerRef.current.scrollHeight,
             });
         }
+    }, []);
+
+    const isUserScrollUp = useCallback(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return false;
+
+        const currentScrollTop = container.scrollTop;
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        const distanceFromBottom = scrollHeight - currentScrollTop - clientHeight;
+
+        // Check if scroll direction is UP
+        const scrolledUp = currentScrollTop < previousScrollTop.current;
+
+        // Check if scroll was significantly away from bottom
+        const significantlyAwayFromBottom = distanceFromBottom > DISTANCE_TO_DISABLE_STICKY_SCROLL;
+
+        previousScrollTop.current = currentScrollTop;
+
+        return scrolledUp && significantlyAwayFromBottom;
     }, []);
 
     const location = useLocation();
@@ -75,8 +98,8 @@ export const ThreadDisplayView = ({
 
             scrollToBottom();
 
-            setShouldStickToBottom(true);
-            hasUserScrolledSinceSendingMessage.current = false;
+            setShouldStickToBottom(false);
+            hasScrolledSinceSendingMessage.current = false;
         }
 
         previousStreamingMessageId.current = streamingMessageId;
@@ -122,16 +145,13 @@ export const ThreadDisplayView = ({
 
             if (inView) {
                 if (
-                    hasUserScrolledSinceSendingMessage.current &&
+                    hasScrolledSinceSendingMessage.current &&
                     !skipNextStickyScrollSetFromAnchor.current
                 ) {
                     setShouldStickToBottom(true);
                 }
 
                 skipNextStickyScrollSetFromAnchor.current = false;
-            } else {
-                // User scrolled away from bottom, disable sticky scroll
-                setShouldStickToBottom(false);
             }
         },
     });
@@ -149,9 +169,14 @@ export const ThreadDisplayView = ({
             height={1}
             data-testid="thread-display"
             onScroll={() => {
-                hasUserScrolledSinceSendingMessage.current = true;
+                hasScrolledSinceSendingMessage.current = true;
+
+                // Check on every scroll if we should disable sticky scroll
+                if (shouldStickToBottom.current && isUserScrollUp()) {
+                    setShouldStickToBottom(false);
+                }
             }}
-            ref={(el) => {
+            ref={(el: HTMLDivElement | null) => {
                 scrollContainerRef.current = el;
                 setScrollContainer(el);
             }}
