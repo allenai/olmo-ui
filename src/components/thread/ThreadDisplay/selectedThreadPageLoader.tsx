@@ -40,9 +40,11 @@ const handleThreadLoadError = (error: unknown, threadId: string): never => {
             id: `thread-not-found-${new Date().getTime()}`.toLowerCase(),
             type: SnackMessageType.Alert,
             title: `Error getting message ${threadId}.`,
-            message: 'The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. (HTTPError)',
+            message:
+                'The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. (HTTPError)',
             severity: AlertMessageSeverity.Error,
         });
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw redirect(links.playground);
     }
 
