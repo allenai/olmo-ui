@@ -26,7 +26,11 @@ import { StandardModal } from './StandardModal';
 import { TermAndConditionsLink } from './TermsAndConditionsLink';
 import { useTermsAndConditionsContext } from './TermsAndConditionsModalContext';
 
-export type SectionTitle = 'Limitations' | 'Notice & Consent' | 'Terms of Use' | 'Data Consent';
+export type SectionTitle =
+    | 'Limitations'
+    | 'Notice & Consent'
+    | 'Terms of Use'
+    | 'Contribute to Public Datasets';
 
 export type OptionValues = 'opt-in' | 'opt-out';
 
@@ -125,7 +129,8 @@ export const TermsAndConditionsModal = ({
                     [section.title]: formValues,
                 };
                 const dataCollectionOpt =
-                    stagedResponses['Data Consent'].optionGroups[0]?.selectedOption ?? '';
+                    stagedResponses['Contribute to Public Datasets'].optionGroups[0]
+                        ?.selectedOption ?? '';
 
                 const hasTermsSection = sections.some((s) => s.title === 'Terms of Use');
 
@@ -164,7 +169,7 @@ export const TermsAndConditionsModal = ({
                 sx={(theme) => ({
                     display: 'flex',
                     [theme.breakpoints.up(SMALL_LAYOUT_BREAKPOINT)]: {
-                        maxHeight: '520px',
+                        maxHeight: '40rem',
                     },
                 })}>
                 {greaterThanLg && (
@@ -476,10 +481,10 @@ const TermsSection: TermsAndConditionsSection = {
 };
 
 const DataConsentSection: TermsAndConditionsSection = {
-    title: 'Data Consent',
+    title: 'Contribute to Public Datasets',
     image: '/getting-started-section-1.png',
     contents: (
-        <>
+        <Stack gap={2}>
             <Typography variant="body1">
                 Help us with the future of scientific research by contributing to public datasets
                 based on user interactions with the Playground.
@@ -493,7 +498,7 @@ const DataConsentSection: TermsAndConditionsSection = {
                 You are not required to contribute to public datasets and you can still use the
                 Playground if you opt-out.
             </Typography>
-        </>
+        </Stack>
     ),
     acknowledgements: [],
     optionGroups: [
