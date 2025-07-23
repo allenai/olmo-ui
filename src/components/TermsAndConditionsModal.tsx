@@ -1,5 +1,4 @@
 import CircleIcon from '@mui/icons-material/Circle';
-import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import TripOriginSharp from '@mui/icons-material/TripOriginSharp';
 import {
     Box,
@@ -9,7 +8,6 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
-    Link,
     Radio,
     RadioGroup,
     Stack,
@@ -20,7 +18,6 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, FormContainer, useForm, useFormState } from 'react-hook-form-mui';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { SMALL_LAYOUT_BREAKPOINT } from '@/constants';
 import { links } from '@/Links';
@@ -95,12 +92,20 @@ export const TermsAndConditionsModal = ({
                 })),
             }
         );
-    }, [activeStep, formResponses]);
+    }, [
+        formResponses,
+        initialDataCollectionValue,
+        initialTermsAndConditionsValue,
+        section.acknowledgements,
+        section.optionGroups,
+        section.title,
+    ]);
 
     const formContext = useForm({ defaultValues });
 
     useEffect(() => {
         formContext.reset(defaultValues);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeStep]);
 
     const { isValid } = useFormState({
@@ -149,7 +154,7 @@ export const TermsAndConditionsModal = ({
 
     const handlePrevious = useCallback(() => {
         setStep(Math.max(activeStep - 1, 0));
-    }, [activeStep]);
+    }, [activeStep, setStep]);
 
     return (
         <StandardModal open={open}>
@@ -354,20 +359,6 @@ export const TermsAndConditionsModal = ({
                                         {section.submitButtonText}
                                     </Button>
                                 </Stack>
-                                <Button
-                                    component={Link}
-                                    href={links.logout}
-                                    onClick={() => {
-                                        analyticsClient.trackTermsLogOut();
-                                    }}
-                                    variant="text"
-                                    startIcon={<LogoutIcon />}
-                                    underline="none"
-                                    sx={{
-                                        color: (theme) => theme.palette.text.primary,
-                                    }}>
-                                    Log out
-                                </Button>
                             </Stack>
                         </FormContainer>
                     </DialogActions>
@@ -450,32 +441,32 @@ const TermsSection: TermsAndConditionsSection = {
     notice: 'Please read our terms carefully',
     contents: (
         <>
-            <p>To use the Ai2 Playground, you agree to the following:</p>
+            <p>To use the Playground, you agree to the following:</p>
         </>
     ),
     acknowledgements: [
-        <span key={1}>
-            You have read the{' '}
-            <TermAndConditionsLink link="https://allenai.org/privacy-policy">
-                Privacy Policy
+        <span key="privacy-policy">
+            You have read{' '}
+            <TermAndConditionsLink link={links.privacyPolicy}>
+                Ai2&apos;s Privacy Policy
             </TermAndConditionsLink>{' '}
-            and agree that Ai2 may use your interactions for future AI research and development
+            and agree that Ai2 may use your inputs for model training
         </span>,
-        <span key={2}>
+        <span key="terms-of-use">
             You accept{' '}
-            <TermAndConditionsLink link="https://allenai.org/terms">
+            <TermAndConditionsLink link={links.terms}>
                 Ai2&apos;s Terms of Use
             </TermAndConditionsLink>
         </span>,
-        <span key={3}>
+        <span key="responsible-use-guidelines">
             You accept{' '}
-            <TermAndConditionsLink link="https://allenai.org/responsible-use">
-                Responsible Use Guidelines
+            <TermAndConditionsLink link={links.responsibleUseGuidelines}>
+                Ai2&apos;s Responsible Use Guidelines
             </TermAndConditionsLink>
         </span>,
-        <span key={4}>
-            You will not to submit any personal information, intellectual property or trade secrets,
-            or sensitive and confidential information to the Ai2 Playground
+        <span key="personal-information">
+            You agree not to submit any personal information, intellectual property or trade
+            secrets, or sensitive and confidential information to the Playground
         </span>,
     ],
     optionGroups: [],
@@ -489,8 +480,17 @@ const DataConsentSection: TermsAndConditionsSection = {
     contents: (
         <>
             <p>
-                Unless you opt-out, Ai2 may curate and publish your inputs to the Ai2 Playground.
-                You can change your options at any time in the settings menu.
+                Help us with the future of scientific research by contributing to public datasets
+                based on user interactions with the Playground.
+            </p>
+            <p>
+                If you opt-in, Ai2 may curate and publish de-identified data about your interactions
+                with Playground to help researchers understand how AI models are used by the general
+                public.
+            </p>
+            <p>
+                You are not required to contribute to public datasets and you can still use the
+                Playground if you opt-out.
             </p>
         </>
     ),
@@ -498,18 +498,24 @@ const DataConsentSection: TermsAndConditionsSection = {
     optionGroups: [
         {
             options: [
-                { label: 'I OPT-OUT OF Interactions PUBLICATION.', value: 'opt-out' },
-                { label: 'I OPT-IN PUBLISH MY Interactions', value: 'opt-in' },
+                {
+                    label: "Yes, I'll help! I OPT-IN to publication of de-identified data about my interactions with Playground.",
+                    value: 'opt-in',
+                },
+                { label: 'No thanks — I OPT-OUT of dataset publication.', value: 'opt-out' },
             ],
         },
     ],
     endNote: (
-        <span key={3}>
-            Note, you may request{' '}
-            <TermAndConditionsLink link="https://docs.google.com/forms/d/e/1FAIpQLSfJtodWsoT_3wo3UBSXNZIaq4ItQGD-0CxyNJpERG84N1PsgA/viewform">
-                Personal Data Removal
-            </TermAndConditionsLink>{' '}
-            at any time.
+        <span>
+            <p>
+                You can change your publication election at any time in the Playground&apos;s
+                Privacy Settings menu. You may request{' '}
+                <TermAndConditionsLink link="https://docs.google.com/forms/d/e/1FAIpQLSfJtodWsoT_3wo3UBSXNZIaq4ItQGD-0CxyNJpERG84N1PsgA/viewform">
+                    Personal Data Removal
+                </TermAndConditionsLink>{' '}
+                at any time.
+            </p>
         </span>
     ),
     submitButtonText: "Let's Go!",

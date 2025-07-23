@@ -11,7 +11,6 @@ export enum EventType {
     ParametersUpdate = 'prompt.parameters.update',
     ModelUpdate = 'prompt.model.update',
     ExternalNavigationLinkClick = 'navigation.external',
-    TermsLogOut = 'terms.logout',
     ColorModeChange = 'color.mode.change',
     ModelOverloadedError = 'model.overloaded.error',
     // ----- HEAP -----
@@ -127,10 +126,6 @@ export class AnalyticsClient {
 
     trackExternalNavigationLinkClick(details: { url: string }): boolean {
         return this.track(EventType.ExternalNavigationLinkClick, details);
-    }
-
-    trackTermsLogOut(): boolean {
-        return this.track(EventType.TermsLogOut);
     }
 
     trackColorModeChange(details: { colorMode: string }): boolean {
