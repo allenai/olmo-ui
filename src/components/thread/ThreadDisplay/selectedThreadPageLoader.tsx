@@ -1,10 +1,12 @@
-import { defer, LoaderFunction } from 'react-router-dom';
+import { defer, LoaderFunction, redirect } from 'react-router-dom';
 
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
+import { links } from '@/Links';
+import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels';
 
@@ -15,6 +17,37 @@ export interface SelectedThreadLoaderData {
     attributions?: Promise<unknown>;
     selectedModelId?: string;
 }
+
+const isOpenApiQueryError = (
+    error: unknown
+): error is { error: { code: number; message: string } } => {
+    return (
+        error &&
+        typeof error === 'object' &&
+        'error' in error &&
+        error.error &&
+        typeof error.error === 'object' &&
+        'code' in error.error &&
+        typeof error.error.code === 'number'
+    );
+};
+
+const handleThreadLoadError = (error: unknown, threadId: string): never => {
+    const { addSnackMessage } = appContext.getState();
+
+    if (isOpenApiQueryError(error) && error.error.code === 404) {
+        addSnackMessage({
+            id: `thread-not-found-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Alert,
+            title: `Error getting message ${threadId}.`,
+            message: 'The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. (HTTPError)',
+            severity: AlertMessageSeverity.Error,
+        });
+        throw redirect(links.playground);
+    }
+
+    throw error; // Only re-throws unhandled errors
+};
 
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
@@ -41,7 +74,13 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
     const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
     const threadRootId = params.id;
-    const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
+
+    let selectedThread: Thread;
+    try {
+        selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
+    } catch (error) {
+        handleThreadLoadError(error, threadRootId);
+    }
 
     const url = new URL(request.url);
     const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
