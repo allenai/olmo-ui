@@ -43,7 +43,6 @@ export const ThreadDisplayView = ({
     };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
-    const hasScrolledSinceSendingMessage = useRef(false);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
@@ -99,7 +98,6 @@ export const ThreadDisplayView = ({
             scrollToBottom();
 
             setShouldStickToBottom(false);
-            hasScrolledSinceSendingMessage.current = false;
         }
 
         previousStreamingMessageId.current = streamingMessageId;
@@ -144,10 +142,7 @@ export const ThreadDisplayView = ({
             setIsScrollToBottomButtonVisible(!inView);
 
             if (inView) {
-                if (
-                    hasScrolledSinceSendingMessage.current &&
-                    !skipNextStickyScrollSetFromAnchor.current
-                ) {
+                if (!skipNextStickyScrollSetFromAnchor.current) {
                     setShouldStickToBottom(true);
                 }
 
@@ -169,8 +164,6 @@ export const ThreadDisplayView = ({
             height={1}
             data-testid="thread-display"
             onScroll={() => {
-                hasScrolledSinceSendingMessage.current = true;
-
                 // Check on every scroll if we should disable sticky scroll
                 if (shouldStickToBottom.current && isUserScrollUp()) {
                     setShouldStickToBottom(false);
