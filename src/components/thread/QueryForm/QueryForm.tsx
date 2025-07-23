@@ -2,9 +2,8 @@ import { JSX } from 'react';
 import { SubmitHandler } from 'react-hook-form-mui';
 
 import { useQueryContext } from '@/contexts/QueryContext';
-import { QueryFormValues } from '@/contexts/submission-process';
 
-import { QueryFormController } from './QueryFormController';
+import { QueryFormController, QueryFormValues } from './QueryFormController';
 
 interface QueryFormProps {
     shouldResetForm?: boolean;
