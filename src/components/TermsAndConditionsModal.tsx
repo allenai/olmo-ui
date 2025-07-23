@@ -205,7 +205,7 @@ export const TermsAndConditionsModal = ({
                             </Typography>
                         ) : null}
                     </DialogTitle>
-                    <DialogContent sx={{ p: 0, m: 0 }}>
+                    <DialogContent sx={{ p: 0, m: 0, flex: '0 1 auto' }}>
                         <Typography component="div" variant="body1">
                             {section.contents}
                         </Typography>
@@ -409,25 +409,25 @@ const LimitationsSection: TermsAndConditionsSection = {
     eyebrow: 'Getting Started',
     title: 'Limitations',
     image: '/getting-started-section-1.png',
-    notice: 'Things to remember before getting started',
     contents: (
-        <>
-            <p
-                style={{
+        <Stack gap={2}>
+            <Typography
+                variant="body1"
+                sx={{
                     fontVariantLigatures: 'none', // This avoids font-family to replace '(c)' with a copyright mark
                 }}>
-                As a 501(c)(3) nonprofit organization, Ai2 offers the Ai2 Playground at no cost to
-                educate the general public and advance scientific research in AI. Models served in
-                the Ai2 Playground generate inaccurate or misleading information, or produce
-                offensive or unwelcome outputs.
-                <br />
-                <br />
-                Neither the Playground nor any models provided by Ai2 are intended to give advice.
-                Never use Playground as a provider of critical information or for legal, medical,
-                financial, or other professional advice. Always validate model outputs with your own
-                independent research.
-            </p>
-        </>
+                As a nonprofit 501(c)(3) organization, Ai2 offers the Ai2 Playground at no cost to
+                educate the general public and advance scientific research in AI.
+            </Typography>
+            <Typography variant="body1">
+                Models served in the Playground may generate inaccurate or misleading information,
+                or produce offensive or unwelcome outputs.
+            </Typography>
+            <Typography variant="body1">
+                Never use the Playground as a provider of critical information or for legal,
+                medical, financial, or other professional advice. Always fact-check model results.
+            </Typography>
+        </Stack>
     ),
     acknowledgements: ['Acknowledge'],
     optionGroups: [],
@@ -438,36 +438,37 @@ const TermsSection: TermsAndConditionsSection = {
     eyebrow: 'Getting Started',
     title: 'Terms of Use',
     image: '/getting-started-section-2.png',
-    notice: 'Please read our terms carefully',
     contents: (
         <>
-            <p>To use the Playground, you agree to the following:</p>
+            <Typography variant="body1">
+                To use the Playground, you agree to the following:
+            </Typography>
         </>
     ),
     acknowledgements: [
-        <span key="privacy-policy">
+        <Typography variant="body1" key="privacy-policy">
             You have read{' '}
             <TermAndConditionsLink link={links.privacyPolicy}>
                 Ai2&apos;s Privacy Policy
             </TermAndConditionsLink>{' '}
             and agree that Ai2 may use your inputs for model training
-        </span>,
-        <span key="terms-of-use">
+        </Typography>,
+        <Typography variant="body1" key="terms-of-use">
             You accept{' '}
             <TermAndConditionsLink link={links.terms}>
                 Ai2&apos;s Terms of Use
             </TermAndConditionsLink>
-        </span>,
-        <span key="responsible-use-guidelines">
+        </Typography>,
+        <Typography variant="body1" key="responsible-use-guidelines">
             You accept{' '}
             <TermAndConditionsLink link={links.responsibleUseGuidelines}>
                 Ai2&apos;s Responsible Use Guidelines
             </TermAndConditionsLink>
-        </span>,
-        <span key="personal-information">
+        </Typography>,
+        <Typography variant="body1" key="personal-information">
             You agree not to submit any personal information, intellectual property or trade
-            secrets, or sensitive and confidential information to the Playground
-        </span>,
+            secrets, or sensitive and confidential information to the Playground.
+        </Typography>,
     ],
     optionGroups: [],
     endNote: 'If you do not wish to agree to these terms, exit this page.',
@@ -479,19 +480,19 @@ const DataConsentSection: TermsAndConditionsSection = {
     image: '/getting-started-section-1.png',
     contents: (
         <>
-            <p>
+            <Typography variant="body1">
                 Help us with the future of scientific research by contributing to public datasets
                 based on user interactions with the Playground.
-            </p>
-            <p>
+            </Typography>
+            <Typography variant="body1">
                 If you opt-in, Ai2 may curate and publish de-identified data about your interactions
-                with Playground to help researchers understand how AI models are used by the general
-                public.
-            </p>
-            <p>
+                with the Playground to help researchers understand how AI models are used by the
+                general public.
+            </Typography>
+            <Typography variant="body1">
                 You are not required to contribute to public datasets and you can still use the
                 Playground if you opt-out.
-            </p>
+            </Typography>
         </>
     ),
     acknowledgements: [],
@@ -499,7 +500,7 @@ const DataConsentSection: TermsAndConditionsSection = {
         {
             options: [
                 {
-                    label: "Yes, I'll help! I OPT-IN to publication of de-identified data about my interactions with Playground.",
+                    label: "Yes, I'll help! I OPT-IN to publication of de-identified data about my interactions with the Playground.",
                     value: 'opt-in',
                 },
                 { label: 'No thanks — I OPT-OUT of dataset publication.', value: 'opt-out' },
@@ -508,14 +509,14 @@ const DataConsentSection: TermsAndConditionsSection = {
     ],
     endNote: (
         <span>
-            <p>
+            <Typography variant="body1">
                 You can change your publication election at any time in the Playground&apos;s
                 Privacy Settings menu. You may request{' '}
                 <TermAndConditionsLink link="https://docs.google.com/forms/d/e/1FAIpQLSfJtodWsoT_3wo3UBSXNZIaq4ItQGD-0CxyNJpERG84N1PsgA/viewform">
                     Personal Data Removal
                 </TermAndConditionsLink>{' '}
                 at any time.
-            </p>
+            </Typography>
         </span>
     ),
     submitButtonText: "Let's Go!",
