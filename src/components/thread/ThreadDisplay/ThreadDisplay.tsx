@@ -20,6 +20,8 @@ interface ThreadDisplayProps {
 // same as ThreadDisplay, but children instead of props
 type ThreadDisplayViewProps = React.PropsWithChildren<Omit<ThreadDisplayProps, 'childMessageIds'>>;
 
+const DISTANCE_TO_DISABLE_STICKY_SCROLL = 50;
+
 export const ThreadDisplayView = ({
     shouldShowAttributionHighlightDescription,
     streamingMessageId,
@@ -30,16 +32,17 @@ export const ThreadDisplayView = ({
     const previousStreamingMessageId = useRef<string | null>(null);
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
     const shouldStickToBottom = useRef(false);
+    const previousScrollTop = useRef(0);
 
     const setShouldStickToBottom = (newShouldStickToBottom: boolean) => {
         shouldStickToBottom.current = newShouldStickToBottom;
     };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
-    const hasUserScrolledSinceSendingMessage = useRef(false);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
@@ -47,6 +50,26 @@ export const ThreadDisplayView = ({
                 top: scrollContainerRef.current.scrollHeight,
             });
         }
+    }, []);
+
+    const isUserScrollUp = useCallback(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return false;
+
+        const currentScrollTop = container.scrollTop;
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        const distanceFromBottom = scrollHeight - currentScrollTop - clientHeight;
+
+        // Check if scroll direction is UP
+        const scrolledUp = currentScrollTop < previousScrollTop.current;
+
+        // Check if scroll was significantly away from bottom
+        const significantlyAwayFromBottom = distanceFromBottom > DISTANCE_TO_DISABLE_STICKY_SCROLL;
+
+        previousScrollTop.current = currentScrollTop;
+
+        return scrolledUp && significantlyAwayFromBottom;
     }, []);
 
     const location = useLocation();
@@ -113,23 +136,17 @@ export const ThreadDisplayView = ({
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
     const { ref: scrollAnchorRef } = useInView({
-        root: scrollContainerRef.current,
+        root: scrollContainer,
         initialInView: true,
         onChange: (inView) => {
             setIsScrollToBottomButtonVisible(!inView);
 
             if (inView) {
-                if (
-                    !skipNextStickyScrollSetFromAnchor.current &&
-                    hasUserScrolledSinceSendingMessage.current
-                ) {
-                    setShouldStickToBottom(inView);
-                } else {
-                    // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
-                    // to prevent sticking right after that scroll, we ignore this event
-                    // we can't set that up in the effect because the browser is still sending scroll events even after the function returns
-                    skipNextStickyScrollSetFromAnchor.current = false;
+                if (!skipNextStickyScrollSetFromAnchor.current) {
+                    setShouldStickToBottom(true);
                 }
+
+                skipNextStickyScrollSetFromAnchor.current = false;
             }
         },
     });
@@ -147,9 +164,15 @@ export const ThreadDisplayView = ({
             height={1}
             data-testid="thread-display"
             onScroll={() => {
-                hasUserScrolledSinceSendingMessage.current = true;
+                // Check on every scroll if we should disable sticky scroll
+                if (shouldStickToBottom.current && isUserScrollUp()) {
+                    setShouldStickToBottom(false);
+                }
             }}
-            ref={scrollContainerRef}
+            ref={(el: HTMLDivElement | null) => {
+                scrollContainerRef.current = el;
+                setScrollContainer(el);
+            }}
             overflow="scroll"
             sx={{
                 '@media (prefers-reduced-motion: no-preference)': {
