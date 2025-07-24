@@ -19,6 +19,7 @@ import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdate
 // Thread plus streaming state
 export interface StreamingThread extends BaseThread {
     streamingMessageId?: string;
+    isUpdatingMessageContent?: boolean;
 }
 
 const clearStreamingState = (threadId: string | undefined) => {
@@ -31,6 +32,7 @@ const clearStreamingState = (threadId: string | undefined) => {
     queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => ({
         ...oldThread,
         streamingMessageId: undefined,
+        isUpdatingMessageContent: false,
     }));
 };
 
@@ -173,6 +175,7 @@ export const updateCacheWithMessagePart = async (
             const newThread = {
                 ...oldThread,
                 streamingMessageId: messageId,
+                isUpdatingMessageContent: true,
                 messages: oldThread.messages.map((message) => {
                     if (message.id === messageId) {
                         const updatedMessage = {
