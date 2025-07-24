@@ -26,8 +26,7 @@ export const ThreadViewProvider = ({
         select: (thread) => thread,
         staleTime: Infinity,
     });
-    const streamingThread = thread as StreamingThread;
-    const streamingMessageId = streamingThread?.streamingMessageId;
+    const streamingMessageId = (thread as StreamingThread).streamingMessageId;
     const isUpdatingMessageContent = streamingThread?.isUpdatingMessageContent || false;
 
     const value = { threadId, threadViewId, streamingMessageId, isUpdatingMessageContent };

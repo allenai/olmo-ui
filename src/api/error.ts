@@ -71,4 +71,15 @@ export namespace error {
                 return new HTTPError(`HTTP ${r.status}: ${r.statusText}`, r);
         }
     }
+
+    export function isOpenApiQueryErrorPayload(
+        err: unknown
+    ): err is { error: { code: number; message: string } } {
+        return (
+            err !== null &&
+            typeof err === 'object' &&
+            'error' in err &&
+            isErrorDetailsPayload((err as { error: unknown }).error)
+        );
+    }
 }
