@@ -1,13 +1,11 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Link, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Stack, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
-
-import { links } from '@/Links';
 
 import { DESKTOP_LAYOUT_BREAKPOINT } from '../../constants';
 import { IconButtonWithTooltip } from '../IconButtonWithTooltip';
-import { Ai2MarkLogoSVG } from '../svg/Ai2MarkLogoSVG';
 import { HistoryDrawer } from '../thread/history/HistoryDrawer';
+import { HomeLink } from './HomeLink';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useRouteControls } from './useRouteControls';
 import { useRouteTitle } from './useRouteTitle';
@@ -56,8 +54,9 @@ export const OlmoAppBar = (): JSX.Element => {
                         },
                     })}>
                     <MenuIconButton onClick={handleDrawerToggle} />
-                    <Link
-                        href={links.home}
+                    <HomeLink
+                        width={30}
+                        iconOnly
                         sx={(theme) => ({
                             height: '100%',
                             display: 'flex',
@@ -65,9 +64,8 @@ export const OlmoAppBar = (): JSX.Element => {
                             [theme.breakpoints.up(DESKTOP_LAYOUT_BREAKPOINT)]: {
                                 display: 'none',
                             },
-                        })}>
-                        <Ai2MarkLogoSVG title="Return to the Playground home page" width={30} />
-                    </Link>
+                        })}
+                    />
                     {controls != null && (
                         <Stack
                             direction="row"

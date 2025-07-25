@@ -6,7 +6,7 @@ import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Link, ListItem, Stack } from '@mui/material';
-import { ComponentProps } from 'react';
+import { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ import { useDesktopOrUp } from '../dolma/shared';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
 import { AvatarMenuLink } from './AvatarMenuLink';
+import { HomeLink } from './HomeLink';
 import { LoginLink } from './LoginLink';
 import { NavigationLink } from './NavigationLink';
 import { NewChatButton } from './NewChatButton';
@@ -50,7 +51,7 @@ export const NavigationDrawer = ({
     onDrawerToggle,
     open,
     ...props
-}: NavigationDrawerProps): JSX.Element => {
+}: NavigationDrawerProps): ReactNode => {
     const isDesktop = useDesktopOrUp();
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
@@ -197,21 +198,10 @@ interface MobileHeadingProps {
     onClose?: () => void;
 }
 
-const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
+const MobileHeading = ({ onClose }: MobileHeadingProps): ReactNode => {
     return (
         <Stack direction="row" justifyContent="space-between" padding={3} alignItems="center">
-            <Link
-                href={links.home}
-                sx={{
-                    transform: 'translateY(5px)',
-                }}>
-                <img
-                    src="/playground-logo.svg"
-                    width={214}
-                    alt="Return to the Playground home page"
-                    {...{ fetchpriority: 'high' }}
-                />
-            </Link>
+            <HomeLink sx={{ transform: 'translateY(5px) ' }} />
             <IconButton
                 onClick={onClose}
                 sx={{ color: (theme) => theme.palette.text.drawer.primary, opacity: 0.5 }}
@@ -222,16 +212,6 @@ const MobileHeading = ({ onClose }: MobileHeadingProps): JSX.Element => {
     );
 };
 
-const DesktopHeading = (): JSX.Element => {
-    return (
-        <Link paddingInline={3.5} paddingBlock={4} href={links.home}>
-            <img
-                src="/playground-logo.svg"
-                width={214}
-                height={65}
-                alt="Return to the Playground home page"
-                {...{ fetchpriority: 'high' }}
-            />
-        </Link>
-    );
+const DesktopHeading = (): ReactNode => {
+    return <HomeLink height={65} sx={{ paddingInline: 3.5, paddingBlock: 4 }} />;
 };
