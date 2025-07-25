@@ -274,7 +274,11 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         threadIds,
     ]);
 
-    return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
+    return (
+        <StreamEventRegistryProvider>
+            <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>
+        </StreamEventRegistryProvider>
+    );
 };
 
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
