@@ -20,7 +20,7 @@ interface ThreadDisplayProps {
 // same as ThreadDisplay, but children instead of props
 type ThreadDisplayViewProps = React.PropsWithChildren<Omit<ThreadDisplayProps, 'childMessageIds'>>;
 
-const DISTANCE_TO_DISABLE_STICKY_SCROLL = 50;
+const DISTANCE_TO_DISABLE_STICKY_SCROLL = 25;
 
 export const ThreadDisplayView = ({
     shouldShowAttributionHighlightDescription,
