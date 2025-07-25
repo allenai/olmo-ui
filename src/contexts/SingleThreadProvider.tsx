@@ -22,6 +22,7 @@ import {
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
+import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
 import {
@@ -108,6 +109,12 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     );
 
     const streamMessage = useStreamMessage(streamCallbacks);
+
+    // This is just a temp fix for feature parity with production
+    // When multiple streams from playground are possible, remove this
+    useAbortStreamOnNavigation({
+        abortStreams: streamMessage.abortAllStreams,
+    });
 
     // Get available models from API, filtering for visible and non-deprecated models
     const availableModels = useModels({
