@@ -1,14 +1,15 @@
 import { Box, Typography } from '@mui/material';
 
-import { useAppContext } from '@/AppContext';
 import { ImageSpinner } from '@/components/ImageSpinner';
+import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 
 import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
 
 export const ThreadPlaceholder = () => {
-    const isLoading = useAppContext((state) => state.streamPromptState === RemoteState.Loading);
+    const { remoteState } = useQueryContext();
+    const isLoading = remoteState === RemoteState.Loading;
 
     return (
         <Box
