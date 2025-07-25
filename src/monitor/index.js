@@ -25,7 +25,7 @@ const axios = require('axios');
 
 const puppeteer = require('puppeteer');
 
-const assert = require('node:assert');
+const assert = require('node:assert').strict;
 
 functions.http(
     'SyntheticFunction',
@@ -41,22 +41,20 @@ functions.http(
         const page = await browser.newPage();
 
         // Navigate to the target URL
-        const result = await page.goto('https://playground.allenai.org', { waitUntil: 'load' });
+        const result = await page.goto('http://localhost:8080', { waitUntil: 'networkidle0' });
 
         // Confirm successful navigation
-        await assert.equal(result.status(), 200);
+        assert.equal(result.status(), 200);
 
         // Print the page title to the console
         const title = await page.title();
-        logger.info(`My Page title: ${title} ` + executionId);
-        
+        logger.info(`Page title: ${title} ${executionId}`);
+        assert.ok(title, 'Page has a title')
+
         // This will throw if it can't find the link
-        await page.waitForSelector(
-            '::-p-aria([name="Return to the Playground home page"][role="link"])',
-            {
-                timeout: 10000,
-            }
-        );
+        await page.waitForSelector('[data-testid="home-link"]', {
+            timeout: 10000,
+        });
 
         // Close the browser
         await browser.close();
