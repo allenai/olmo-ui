@@ -1,10 +1,13 @@
-import { defer, LoaderFunction } from 'react-router-dom';
+import { defer, LoaderFunction, redirect } from 'react-router-dom';
 
+import { error } from '@/api/error';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
+import { links } from '@/Links';
+import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels';
 
@@ -15,6 +18,26 @@ export interface SelectedThreadLoaderData {
     attributions?: Promise<unknown>;
     selectedModelId?: string;
 }
+
+const handleThreadLoadError = (caughtError: unknown, threadId: string): never => {
+    const { addSnackMessage } = appContext.getState();
+
+    if (error.isOpenApiQueryErrorPayload(caughtError) && caughtError.error.code === 404) {
+        addSnackMessage({
+            id: `thread-not-found-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Alert,
+            title: `Error getting message ${threadId}.`,
+            message:
+                'The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. (HTTPError)',
+            severity: AlertMessageSeverity.Error,
+        });
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw redirect(links.playground);
+    }
+
+    // Only re-throws unhandled errors
+    throw caughtError;
+};
 
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
@@ -41,7 +64,12 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
     const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
     const threadRootId = params.id;
-    const selectedThread = await queryClient.ensureQueryData(threadOptions(threadRootId));
+
+    const selectedThread: Thread = await queryClient
+        .ensureQueryData(threadOptions(threadRootId))
+        .catch((err: unknown) => {
+            return handleThreadLoadError(err, threadRootId);
+        });
 
     const url = new URL(request.url);
     const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);

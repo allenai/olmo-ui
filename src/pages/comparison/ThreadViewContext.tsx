@@ -23,12 +23,12 @@ export const ThreadViewProvider = ({
     children,
 }: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
     const { data: thread } = useThread(threadId, {
-        select: (thread) => thread,
+        select: (thread): StreamingThread => thread as StreamingThread,
         staleTime: Infinity,
     });
-    const streamingThread = thread as StreamingThread;
-    const streamingMessageId = streamingThread?.streamingMessageId;
-    const isUpdatingMessageContent = streamingThread?.isUpdatingMessageContent || false;
+
+    const streamingMessageId = thread?.streamingMessageId;
+    const isUpdatingMessageContent = thread?.isUpdatingMessageContent || false;
 
     const value = { threadId, threadViewId, streamingMessageId, isUpdatingMessageContent };
 
