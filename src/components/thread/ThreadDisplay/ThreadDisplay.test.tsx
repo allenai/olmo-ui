@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 // jsdom doesn't support IntersectionObserver
 
+import { IDLE_NAVIGATION } from '@remix-run/router';
 import { render, screen, setupMswThreadHandler, waitFor } from '@test-utils';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -29,6 +30,7 @@ vi.mock('react-router-dom', async () => {
         useParams: vi.fn(),
         useLoaderData: () => ({ selectedModelId: 'tulu2' }),
         useSearchParams: () => [new URLSearchParams(), vi.fn()],
+        useNavigation: () => IDLE_NAVIGATION,
     };
 });
 
