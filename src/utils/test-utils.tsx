@@ -67,6 +67,7 @@ export const createMockThread = (overrides: Partial<Thread> = {}): Thread => ({
 
 export const createMockUser = (overrides: Partial<User> = {}): User => ({
     client: 'user-123',
+    hasAcceptedDataCollection: true,
     hasAcceptedTermsAndConditions: true,
     id: null,
     permissions: undefined,
