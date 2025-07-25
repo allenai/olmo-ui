@@ -235,7 +235,11 @@ export const handleSubmissionError = (
             );
         }
     } else if (error instanceof StreamBadRequestError) {
-        throw error;
+        snackMessage = errorToAlert(
+            `create-message-${new Date().getTime()}`.toLowerCase(),
+            'Unable to Submit Message',
+            error
+        );
     } else if (error instanceof Error) {
         if (error.name === 'AbortError') {
             snackMessage = ABORT_ERROR_MESSAGE;
@@ -295,6 +299,10 @@ export const processSingleModelSubmission = async (
         );
         return result ?? null;
     } catch (error) {
+        // We need to clean up streaming state for all submission errors
+        // The actual request succeeded, so react-query doesn't know about the error
+        onCompleteStream?.(threadViewId);
+
         if (addSnackMessage) {
             return handleSubmissionError(error, model.id, addSnackMessage);
         } else {
