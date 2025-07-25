@@ -69,7 +69,7 @@ export const MessageView = ({
             </ImageList>
 
             <MessageInteraction
-                role={role}
+                role={role as Role}
                 content={content}
                 messageLabels={messageLabels}
                 messageId={messageId}

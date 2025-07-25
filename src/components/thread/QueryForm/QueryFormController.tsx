@@ -5,8 +5,10 @@ import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-fo
 import { useNavigation } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
+import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { handleFormSubmitException } from './handleFormSubmitException';
@@ -50,6 +52,9 @@ export const QueryFormController = ({
     fileUploadProps,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
+
+    const isTranscribing = useAppContext((state) => state.isTranscribing);
+    const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
 
     const { executeRecaptcha } = useReCaptcha();
 
@@ -164,11 +169,19 @@ export const QueryFormController = ({
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
                                 placeholder={placeholderText}
+                                isDisabled={isTranscribing || isProcessingAudio}
                                 startAdornment={
-                                    <FileUploadButton
-                                        {...formContext.register('files')}
-                                        {...fileUploadProps}
-                                    />
+                                    <>
+                                        <AudioInputButton
+                                            onTranscriptionComplete={(content) => {
+                                                formContext.setValue('content', content);
+                                            }}
+                                        />
+                                        <FileUploadButton
+                                            {...formContext.register('files')}
+                                            {...fileUploadProps}
+                                        />
+                                    </>
                                 }
                                 endAdornment={
                                     <SubmitPauseAdornment
@@ -177,6 +190,8 @@ export const QueryFormController = ({
                                         isSubmitDisabled={
                                             isSelectedThreadLoading ||
                                             isLimitReached ||
+                                            isTranscribing ||
+                                            isProcessingAudio ||
                                             !canEditThread
                                         }
                                     />

@@ -199,7 +199,6 @@ describe('ThreadDisplay', () => {
                         },
                     },
                     addSnackMessage: vi.fn(),
-                    setIsShareReady: vi.fn(),
                 }}>
                 <SingleThreadProvider initialState={{ threadId: regexTestThreadId }}>
                     <MemoryRouter initialEntries={[links.thread(regexTestThreadId)]}>
@@ -286,7 +285,6 @@ describe('ThreadDisplay', () => {
                         },
                     },
                     addSnackMessage: vi.fn(),
-                    setIsShareReady: vi.fn(),
                 }}>
                 <SingleThreadProvider initialState={{ threadId: firstThreadMessageId }}>
                     <MemoryRouter initialEntries={[links.thread(firstThreadMessageId)]}>
