@@ -66,7 +66,7 @@ describe('AvatarMenuBase', () => {
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 
         await user.click(screen.getByText('Data Collection'));
-        expect(await screen.findByText('Data Consent')).toBeVisible();
+        expect(await screen.findByText('Contribute to Public Datasets')).toBeVisible();
 
         const radios = screen.queryAllByRole('radio');
         if (radios.length) {

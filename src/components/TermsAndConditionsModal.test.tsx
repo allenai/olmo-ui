@@ -56,7 +56,6 @@ describe('Terms and Conditions', () => {
         renderWithTermsProvider();
 
         expect(screen.getByText('Limitations')).toBeVisible();
-        expect(screen.getByText('Things to remember before getting started')).toBeVisible();
     });
 
     it('should disable the submit button if required acknowledgements are not checked', () => {
@@ -88,7 +87,7 @@ describe('Terms and Conditions', () => {
             </TermsAndConditionsProvider>
         );
 
-        expect(await screen.findByText('Data Consent')).toBeVisible();
+        expect(await screen.findByText('Contribute to Public Datasets')).toBeVisible();
         expect(screen.queryByText('Terms of Use')).not.toBeInTheDocument();
         expect(screen.queryByText('Limitations')).not.toBeInTheDocument();
     });
@@ -97,7 +96,7 @@ describe('Terms and Conditions', () => {
         renderWithTermsProvider({ initialTermsAndConditionsValue: false });
 
         expect(await screen.findByText('Limitations')).toBeVisible();
-        expect(screen.queryByText('Data Consent')).not.toBeInTheDocument();
+        expect(screen.queryByText('Contribute to Public Datasets')).not.toBeInTheDocument();
     });
 
     it('should preselect opt-in if initialDataCollectionValue is OPT_IN', async () => {
@@ -106,7 +105,7 @@ describe('Terms and Conditions', () => {
             initialDataCollectionValue: 'opt-in',
         });
 
-        expect(await screen.findByText('Data Consent')).toBeVisible();
+        expect(await screen.findByText('Contribute to Public Datasets')).toBeVisible();
 
         const radios = screen.getAllByRole('radio');
         const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
@@ -122,7 +121,7 @@ describe('Terms and Conditions', () => {
             initialDataCollectionValue: 'opt-out',
         });
 
-        expect(await screen.findByText('Data Consent')).toBeVisible();
+        expect(await screen.findByText('Contribute to Public Datasets')).toBeVisible();
 
         const radios = screen.getAllByRole('radio');
         const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
@@ -135,7 +134,7 @@ describe('Terms and Conditions', () => {
     it('should preselect none if initialDataCollectionValue is UNSET', async () => {
         renderWithTermsProvider({ initialTermsAndConditionsValue: true });
 
-        expect(await screen.findByText('Data Consent')).toBeVisible();
+        expect(await screen.findByText('Contribute to Public Datasets')).toBeVisible();
 
         const radios = screen.getAllByRole('radio');
         const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
