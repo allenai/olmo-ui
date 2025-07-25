@@ -1,4 +1,5 @@
 import { SelectChangeEvent } from '@mui/material';
+import { IDLE_NAVIGATION } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 // Get the mocked useParams function
 import { useParams } from 'react-router-dom';
@@ -27,6 +28,7 @@ import { SingleThreadProvider } from './SingleThreadProvider';
 vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
     useParams: vi.fn(() => ({ id: undefined })),
+    useNavigation: () => IDLE_NAVIGATION,
 }));
 const mockUseParams = vi.mocked(useParams);
 
