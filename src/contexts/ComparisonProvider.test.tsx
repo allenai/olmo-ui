@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
 
 import { ComparisonProvider } from './ComparisonProvider';
@@ -14,14 +15,18 @@ const renderWithProvider = (
     initialState?: { [threadViewId: string]: { modelId?: string; threadId?: string } },
     mockUserInfo?: User | null
 ) => {
-    vi.spyOn(AppContext, 'useAppContext').mockImplementation(() => {
-        return mockUserInfo;
-    });
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
     return render(
-        <ComparisonProvider initialState={initialState}>
-            <TestComponent />
-        </ComparisonProvider>
+        <FakeAppContextProvider
+            initialState={{
+                userInfo: mockUserInfo,
+                setIsShareReady: vi.fn(),
+            }}>
+            <ComparisonProvider initialState={initialState}>
+                <TestComponent />
+            </ComparisonProvider>
+        </FakeAppContextProvider>
     );
 };
 
@@ -159,7 +164,7 @@ describe.skip('ComparisonProvider', () => {
             });
         });
 
-        it('should return false when no threads are set via setters', async () => {
+        it('should return true when no threads exist (fresh comparison page)', async () => {
             const userInfo = createMockUser();
 
             const NoThreadsComponent = () => {
@@ -168,11 +173,11 @@ describe.skip('ComparisonProvider', () => {
                 return <div data-testid="can-submit">{String(canSubmit)}</div>;
             };
 
-            // Don't call any setters - state should remain empty
+            // Empty initial state. No threads in comparison
             const { getByTestId } = renderWithProvider(NoThreadsComponent, {}, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('true');
             });
         });
 

@@ -12,6 +12,7 @@ import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useMo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+import { StreamEventRegistryProvider } from './StreamEventRegistry';
 import { StreamingThread } from './submission-process';
 
 // Internal state for comparison mode, holds all threads
@@ -64,12 +65,16 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             .map((state) => state.threadId)
             .filter(Boolean) as string[];
 
-        if (threadIds.length === 0) return false;
 
-        // Check if user created the first message in ALL threads
+        if (threadIds.length === 0) return true;
+
+        // If threads exist, check if user created the first message in ALL threads
         return threadIds.every((threadId) => {
             const thread = getThread(threadId);
-            return thread?.messages[0]?.creator === userInfo.client;
+            if (!thread?.messages.length) {
+                return false;
+            }
+            return thread.messages[0]?.creator === userInfo.client;
         });
     }, [comparisonState, userInfo]);
 
@@ -172,5 +177,9 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
         };
     }, [canSubmit, autofocus, placeholderText, isLimitReached, comparisonState, models]);
 
-    return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
+    return (
+        <StreamEventRegistryProvider>
+            <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>
+        </StreamEventRegistryProvider>
+    );
 };
