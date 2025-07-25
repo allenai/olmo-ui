@@ -43,4 +43,7 @@ export const links = {
     googleTerms: 'https://policies.google.com/terms',
     discord: 'https://discord.gg/NE5xPufNwu',
     contactUs: 'https://allenai.org/contact',
+    privacyPolicy: 'https://allenai.org/privacy-policy',
+    terms: 'https://allenai.org/terms',
+    responsibleUseGuidelines: 'https://allenai.org/responsible-use',
 } as const;

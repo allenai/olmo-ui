@@ -100,5 +100,5 @@ export function useAppContext<TSelectorReturnValue>(selector?: SelectorType<TSel
 
 // @ts-expect-error - Making a new function to be able to show T&Cs whenever we want
 window.showTermsAndConditions = () => {
-    appContext.getState().resetTermsAndConditionsAcceptance();
+    appContext.getState().updateTermsAndConditions(false);
 };

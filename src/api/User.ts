@@ -2,7 +2,7 @@ import { ClientBase } from './ClientBase';
 import type { SchemaAuthenticatedClient } from './playgroundApi/playgroundApiSchema';
 
 export const WhoamiApiUrl = `/v3/whoami`;
-export const AcceptTermsAndConditionsUrl = `/v3/user`;
+export const UpdateUserUrl = `/v3/user`;
 export const MigrateFromAnonymousUserUrl = '/v3/migrate-user';
 
 export type User = SchemaAuthenticatedClient;
@@ -19,12 +19,23 @@ export class UserClient extends ClientBase {
         return this.fetch<User>(url);
     };
 
-    acceptTermsAndConditions = async () => {
+    updateUserTermsAndDataCollection = async ({
+        termsAccepted,
+        dataCollectionAccepted,
+    }: {
+        termsAccepted?: boolean;
+        dataCollectionAccepted?: boolean;
+    }) => {
         try {
-            const url = this.createURL(AcceptTermsAndConditionsUrl);
+            const url = this.createURL(UpdateUserUrl);
             const dateTime = new Date().toISOString();
             const request = {
-                termsAcceptedDate: dateTime,
+                ...(dataCollectionAccepted === true && { dataCollectionAcceptedDate: dateTime }),
+                ...(dataCollectionAccepted === false && {
+                    dataCollectionAcceptanceRevokedDate: dateTime,
+                }),
+                ...(termsAccepted === true && { termsAcceptedDate: dateTime }),
+                ...(termsAccepted === false && { termsAcceptanceRevokedDate: dateTime }),
             };
 
             const response = await this.fetch(url, {

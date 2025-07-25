@@ -11,7 +11,7 @@ import { AvatarMenuMobile } from '../menu/AvatarMenuMobile';
 
 export const AvatarMenuLink = () => {
     const isDesktop = useDesktopOrUp();
-    const { userAuthInfo, isAuthenticated } = useUserAuthInfo();
+    const { userAuthInfo } = useUserAuthInfo();
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
     const toggleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -26,7 +26,7 @@ export const AvatarMenuLink = () => {
         setIsMenuOpen(false);
     };
 
-    if (!isAuthenticated || isDesktop) {
+    if (isDesktop) {
         return null;
     }
 
@@ -80,7 +80,7 @@ export const AvatarMenuLink = () => {
                         fontWeight: 500,
                         component: 'span',
                     }}>
-                    {userAuthInfo?.email}
+                    {userAuthInfo?.email || 'Preferences'}
                 </ListItemText>
                 <ArrowForwardIosOutlined
                     sx={{

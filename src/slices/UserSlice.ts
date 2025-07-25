@@ -13,8 +13,8 @@ export interface UserSlice {
     userRemoteState?: RemoteState;
     userInfo: User | null;
     getUserInfo: (queryClient: QueryClient, retryCount?: number) => Promise<User>;
-    resetTermsAndConditionsAcceptance: () => void;
-    acceptTermsAndConditions: () => Promise<void>;
+    updateTermsAndConditions: (value: boolean) => Promise<void>;
+    updateDataCollection: (value: boolean) => Promise<void>;
 }
 
 const userClient = new UserClient();
@@ -69,18 +69,23 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
             throw new Error(`Error getting user.`);
         }
     },
-    acceptTermsAndConditions: async () => {
-        await userClient.acceptTermsAndConditions();
+    updateTermsAndConditions: async (hasAcceptedTermsAndConditions: boolean) => {
+        await userClient.updateUserTermsAndDataCollection({
+            termsAccepted: hasAcceptedTermsAndConditions,
+        });
         set((state) => {
             if (state.userInfo) {
-                state.userInfo.hasAcceptedTermsAndConditions = true;
+                state.userInfo.hasAcceptedTermsAndConditions = hasAcceptedTermsAndConditions;
             }
         });
     },
-    resetTermsAndConditionsAcceptance: () => {
+    updateDataCollection: async (hasAcceptedDataCollection: boolean) => {
+        await userClient.updateUserTermsAndDataCollection({
+            dataCollectionAccepted: hasAcceptedDataCollection,
+        });
         set((state) => {
             if (state.userInfo) {
-                state.userInfo.hasAcceptedTermsAndConditions = false;
+                state.userInfo.hasAcceptedDataCollection = hasAcceptedDataCollection;
             }
         });
     },
