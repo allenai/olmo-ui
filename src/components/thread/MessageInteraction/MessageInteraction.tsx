@@ -10,23 +10,23 @@ import {
 import { ButtonGroup, Snackbar, Stack } from '@mui/material';
 import { useCallback, useState } from 'react';
 
-import { Label, LabelRating } from '@/api/Label';
-import { Message } from '@/api/Message';
+import { type Label, LabelRating } from '@/api/Label';
+import { FlatMessage, MessageId } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { RemoteState } from '@/contexts/util';
 
 import { CHAT_MESSAGE_CLASS_NAME } from '../ChatMessage/ChatMessage';
 import { MessageInteractionIcon } from './MessageInteractionIcon';
 import { SelectMessageButton } from './SelectMessageButton';
 
 interface MessageInteractionProps {
-    role: Message['role'];
-    messageLabels: Message['labels'];
-    content: Message['content'];
-    messageId: Message['id'];
+    role: FlatMessage['role'];
+    messageLabels: Label[];
+    content: FlatMessage['content'];
+    messageId: MessageId;
     isLastMessage: boolean;
+    isStreaming: boolean;
 }
 
 export const MessageInteraction = ({
@@ -35,14 +35,10 @@ export const MessageInteraction = ({
     content,
     messageId,
     isLastMessage,
-}: MessageInteractionProps): JSX.Element | null => {
+    isStreaming,
+}: MessageInteractionProps): React.JSX.Element | null => {
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
-    const isUpdatingLLMMessage = useAppContext(
-        (state) =>
-            state.streamingMessageId === messageId &&
-            state.streamPromptState === RemoteState.Loading
-    );
     // Filter out the label that was rated by the current login user then pop the first one
     // A response should have at most 1 label from the current login user
     const [currentLabel, setCurrentLabel] = useState<Label | undefined>(
@@ -67,7 +63,7 @@ export const MessageInteraction = ({
         setCopySnackbarOpen(true);
     }, [content]);
 
-    if (role === Role.User || isUpdatingLLMMessage) {
+    if (role === Role.User || isStreaming) {
         return null;
     }
 

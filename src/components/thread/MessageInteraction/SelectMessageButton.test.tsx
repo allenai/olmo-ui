@@ -1,12 +1,19 @@
-import { render, screen } from '@test-utils';
+import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import { ComponentProps } from 'react';
 import * as reactRouter from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
+import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 import { SelectMessageButton } from './SelectMessageButton';
+
+const FakeThreadViewProvider = ({ children }: { children: React.ReactNode }) => (
+    <ThreadViewProvider threadId="test-thread-id" threadViewId="test-thread-view-id">
+        {children}
+    </ThreadViewProvider>
+);
 
 describe('SelectMessageButton', () => {
     it('should show "Hide OLMoTrace" when the message is selected', () => {
@@ -33,7 +40,11 @@ describe('SelectMessageButton', () => {
 
         render(
             <FakeAppContextProvider initialState={initialState}>
-                <SelectMessageButton messageId="message-1" />
+                <FakeQueryContextProvider>
+                    <FakeThreadViewProvider>
+                        <SelectMessageButton messageId="message-1" />
+                    </FakeThreadViewProvider>
+                </FakeQueryContextProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
@@ -68,7 +79,11 @@ describe('SelectMessageButton', () => {
 
         render(
             <FakeAppContextProvider>
-                <SelectMessageButton messageId="message-1" />
+                <FakeQueryContextProvider>
+                    <FakeThreadViewProvider>
+                        <SelectMessageButton messageId="message-1" />
+                    </FakeThreadViewProvider>
+                </FakeQueryContextProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {

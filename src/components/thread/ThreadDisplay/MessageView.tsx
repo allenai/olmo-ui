@@ -1,9 +1,12 @@
 import { ImageList, ImageListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { Message } from '@/api/Message';
+import { Label } from '@/api/Label';
+import { MessageId, selectMessageById, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { useAppContext } from '@/AppContext';
+import { useQueryContext } from '@/contexts/QueryContext';
+import { RemoteState } from '@/contexts/util';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
@@ -14,7 +17,7 @@ import { hasPoints } from '../points/isPointResponse';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 
 export interface MessageProps {
-    messageId: Message['id'];
+    messageId: MessageId;
 }
 
 export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
@@ -23,7 +26,8 @@ export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
-interface MessageViewProps extends MessageProps {
+interface MessageViewProps {
+    messageId: MessageId;
     isLastMessageInThread?: boolean;
 }
 
@@ -31,21 +35,30 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const {
-        role,
-        content,
-        labels: messageLabels,
-        fileUrls,
-    } = useAppContext((state) => state.selectedThreadMessagesById[messageId]);
+    const { threadId, streamingMessageId } = useThreadView();
+    const { remoteState } = useQueryContext();
+    const { data: message, error: _error } = useThread(threadId, {
+        select: selectMessageById(messageId),
+        staleTime: Infinity,
+    });
+    if (!message) {
+        return null; // this shouldn't happen
+    }
+    const { role, content, fileUrls, labels } = message;
 
     if (role === Role.System) {
         return null;
     }
 
+    const messageLabels = labels
+        ? labels.map((label) => ({ ...label, created: new Date(label.created) }) as Label)
+        : [];
+
     const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
+    const isStreaming = streamingMessageId === messageId && remoteState === RemoteState.Loading;
 
     return (
-        <ChatMessage role={role} messageId={messageId}>
+        <ChatMessage role={role as Role} messageId={messageId}>
             <MessageComponent messageId={messageId} />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
@@ -56,11 +69,12 @@ export const MessageView = ({
             </ImageList>
 
             <MessageInteraction
-                role={role}
+                role={role as Role}
                 content={content}
                 messageLabels={messageLabels}
                 messageId={messageId}
                 isLastMessage={isLastMessageInThread}
+                isStreaming={isStreaming}
             />
         </ChatMessage>
     );

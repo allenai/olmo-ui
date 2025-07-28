@@ -1,36 +1,78 @@
-import { useSearchParams } from 'react-router-dom';
-import { useShallow } from 'zustand/react/shallow';
+import { useEffect, useRef } from 'react';
+import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
+import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
+import { useQueryContext } from '@/contexts/QueryContext';
+import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
-import { PARAM_SELECTED_MESSAGE } from './selectedThreadPageLoader';
-import { selectMessagesToShow } from './selectMessagesToShow';
+import { PARAM_SELECTED_MESSAGE, SelectedThreadLoaderData } from './selectedThreadPageLoader';
 import { ThreadDisplay } from './ThreadDisplay';
 
-export const ThreadDisplayContainer = () => {
-    // useShallow is used here to prevent triggering re-render. However, it
-    // doesn't save the job to traverse the whole message tree. If it
-    // becomes a performance bottleneck, it's better to change back to
-    // maintain a message list in store.
-    const childMessageIds = useAppContext(useShallow(selectMessagesToShow));
+const ThreadDisplayContent = () => {
+    const {
+        threadId: selectedThreadRootId,
+        streamingMessageId,
+        isUpdatingMessageContent,
+    } = useThreadView();
+
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
         const attributions = messageAttributionsSelector(state);
         return attributions != null && Object.keys(attributions.spans).length > 0;
     });
-    const streamingMessageId = useAppContext((state) => state.streamingMessageId);
-    const isUpdatingMessageContent = useAppContext((state) => state.isUpdatingMessageContent);
 
+    // Handle scroll to new user message
+    useStreamEvent('onNewUserMessage', (_threadViewId: string) => {
+        const element = document.querySelector('[data-testid="thread-display"]');
+        if (element) {
+            element.scrollTo({
+                top: element.scrollHeight,
+            });
+        }
+    });
+
+    // get selectedID
     const [searchParams, _] = useSearchParams();
     const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
 
+    const { data, error: _error } = useThread(selectedThreadRootId, {
+        select: (thread) => thread.messages,
+        staleTime: Infinity,
+    });
+    // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
+    const messages = data ?? [];
+    const childIds = messages.map((message) => message.id);
+
     return (
         <ThreadDisplay
-            childMessageIds={childMessageIds}
+            childMessageIds={childIds}
             shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
-            streamingMessageId={streamingMessageId}
-            isUpdatingMessageContent={isUpdatingMessageContent}
+            streamingMessageId={streamingMessageId ?? null}
+            isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
         />
+    );
+};
+
+export const ThreadDisplayContainer = () => {
+    const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
+    const { id: selectedThreadRootId = '' } = useParams();
+    const queryContext = useQueryContext();
+    const processedThreadRef = useRef<string>('');
+
+    useEffect(() => {
+        // Only set model from loaderData if we're navigating to a new thread
+        if (loaderData?.selectedModelId && selectedThreadRootId !== processedThreadRef.current) {
+            queryContext.setModelId('0', loaderData.selectedModelId);
+            processedThreadRef.current = selectedThreadRootId;
+        }
+    }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);
+
+    return (
+        <ThreadViewProvider threadId={selectedThreadRootId} threadViewId="0">
+            <ThreadDisplayContent />
+        </ThreadViewProvider>
     );
 };

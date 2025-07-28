@@ -1,92 +1,129 @@
-import { defer, LoaderFunction } from 'react-router-dom';
+import { defer, LoaderFunction, redirect } from 'react-router-dom';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { error } from '@/api/error';
+import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
-import type { SelectedThreadMessage } from '@/api/SelectedThreadMessage';
 import { appContext } from '@/AppContext';
 import { getFeatureToggles } from '@/FeatureToggleContext';
+import { links } from '@/Links';
+import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels';
 
 export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
+export interface SelectedThreadLoaderData {
+    selectedThread: Thread;
+    attributions?: Promise<unknown>;
+    selectedModelId?: string;
+}
+
+const handleThreadLoadError = (caughtError: unknown, threadId: string): never => {
+    const { addSnackMessage } = appContext.getState();
+
+    if (error.isOpenApiQueryErrorPayload(caughtError) && caughtError.error.code === 404) {
+        addSnackMessage({
+            id: `thread-not-found-${new Date().getTime()}`.toLowerCase(),
+            type: SnackMessageType.Alert,
+            title: `Error getting message ${threadId}.`,
+            message:
+                'The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. (HTTPError)',
+            severity: AlertMessageSeverity.Error,
+        });
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw redirect(links.playground);
+    }
+
+    // Only re-throws unhandled errors
+    throw caughtError;
+};
+
 export const selectedThreadPageLoader: LoaderFunction = async ({ request, params }) => {
     const {
-        getSelectedThread,
-        selectedThreadRootId,
         getAttributionsForMessage,
         handleAttributionForChangingThread,
-        setSelectedModel,
-        updateInferenceOpts,
         abortPrompt,
         selectMessage,
     } = appContext.getState();
 
-    const { isCorpusLinkEnabled } = getFeatureToggles();
+    if (params.id == null) {
+        return null;
+    }
+
+    const loadedMessage = queryClient.getQueryData(threadOptions(params.id).queryKey);
+    if (loadedMessage != null) {
+        return null;
+    }
 
     // get the latest state of the selectedThread if we're changing to a different thread
-    if (params.id != null && params.id !== selectedThreadRootId) {
-        handleAttributionForChangingThread();
-        // abort the current streaming prompt if there is any
-        abortPrompt();
+    handleAttributionForChangingThread();
+    // abort the current streaming prompt if there is any
+    abortPrompt();
 
-        const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
+    const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
-        const selectedThread = await getSelectedThread(params.id);
-        const url = new URL(request.url);
-        const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
+    const threadRootId = params.id;
 
-        const { selectedThreadMessages, selectedThreadMessagesById } = appContext.getState();
-        const lastResponseId = selectedThreadMessages
-            .filter((messageId) => selectedThreadMessagesById[messageId].role === Role.LLM)
-            .at(-1);
+    const selectedThread: Thread = await queryClient
+        .ensureQueryData(threadOptions(threadRootId))
+        .catch((err: unknown) => {
+            return handleThreadLoadError(err, threadRootId);
+        });
 
-        if (lastResponseId != null) {
-            const lastThreadContent = selectedThreadMessagesById[lastResponseId] as
-                | SelectedThreadMessage
-                | undefined;
+    const url = new URL(request.url);
+    const selectedMessageId = url.searchParams.get(PARAM_SELECTED_MESSAGE);
 
-            if (lastThreadContent) {
-                const models = await modelsPromise;
+    const { messages: selectedThreadMessages } = selectedThread;
 
-                if (
-                    lastThreadContent.model_id &&
-                    models.some((model) => model.id === lastThreadContent.model_id)
-                ) {
-                    setSelectedModel(
-                        models.find((model) => model.id === lastThreadContent.model_id) as Model
-                    );
-                } else {
-                    const visibleModels = models.filter(isModelVisible);
-                    setSelectedModel(visibleModels[0]);
-                }
-                if (lastThreadContent.opts) {
-                    updateInferenceOpts(lastThreadContent.opts);
-                }
-            }
-        }
+    const lastResponse = selectedThreadMessages.filter(({ role }) => role === Role.LLM).at(-1);
 
-        if (isCorpusLinkEnabled) {
-            let attributionsPromise;
+    let selectedModelId: string | undefined;
 
-            if (selectedMessageId != null) {
-                const parentId = selectedThreadMessagesById[selectedMessageId].parent;
-                const parentPrompt =
-                    parentId != null ? selectedThreadMessagesById[parentId].content : '';
+    if (lastResponse != null) {
+        const models = await modelsPromise;
 
-                attributionsPromise = getAttributionsForMessage(parentPrompt, selectedMessageId);
-                selectMessage(selectedMessageId);
-            }
-
-            return defer({
-                selectedThread,
-                attributions: attributionsPromise,
-            });
+        if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
+            // Use the model from the thread's last response
+            selectedModelId = lastResponse.modelId;
         } else {
-            return defer({ selectedThread });
+            // TODO: SingleThreadProvider has this filter logic. Seems like we shouldn't have it here too.
+            const visibleModels = models.filter(isModelVisible);
+            selectedModelId = visibleModels[0]?.id;
         }
     }
 
-    return null;
+    const { isCorpusLinkEnabled } = getFeatureToggles();
+    if (isCorpusLinkEnabled) {
+        let attributionsPromise;
+
+        const selectedMessage = selectedThreadMessages.find(
+            (message) => message.id === selectedMessageId
+        );
+
+        if (selectedMessage != null) {
+            const parentPrompt = selectedThreadMessages.find((message) =>
+                message.children?.includes(selectedMessage.id)
+            );
+
+            attributionsPromise = getAttributionsForMessage(
+                parentPrompt?.content || '',
+                threadRootId,
+                selectedMessage.id
+            );
+
+            selectMessage(threadRootId, selectedMessage.id);
+        }
+
+        return defer({
+            selectedThread,
+            attributions: attributionsPromise,
+            selectedModelId,
+        });
+    } else {
+        return defer({
+            selectedThread,
+            selectedModelId,
+        });
+    }
 };

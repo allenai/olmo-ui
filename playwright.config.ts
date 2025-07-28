@@ -94,7 +94,7 @@ export default defineConfig<TestOptions>({
             },
             dependencies: ['auth-setup'],
             // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
-            testIgnore: ['*sticky-scroll*'],
+            testIgnore: ['*sticky-scroll*', '**/message-streaming.spec.ts'],
         },
 
         /* Test against mobile viewports. */

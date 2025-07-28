@@ -4,12 +4,14 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { ClientBase } from './ClientBase';
 import { Label } from './Label';
+import { Thread } from './playgroundApi/thread';
 import { Role } from './Role';
 import { InferenceOpts, PaginationData } from './Schema';
 
 export const MessageApiUrl = `/v3/message`;
 export const MessagesApiUrl = `/v3/messages`;
 export const v4MessageApiUrl = '/v4/message';
+export const v4ThreadApiUrl = '/v4/threads/';
 
 export type RequestInferenceOpts = NullishPartial<InferenceOpts>;
 
@@ -60,6 +62,11 @@ export interface Message {
 
 export interface MessageList {
     messages: Message[];
+    meta: PaginationData;
+}
+
+export interface ThreadList {
+    threads: Thread[];
     meta: PaginationData;
 }
 
@@ -178,12 +185,17 @@ export class MessageClient extends ClientBase {
         return this.fetch(url, { method: 'DELETE' });
     };
 
+    // TODO: return metadata from API
+    //   - https://github.com/allenai/playground-issues-repo/issues/463
+    // also:
+    // TODO: replace with react-query:
+    //   - https://github.com/allenai/playground-issues-repo/issues/454
     getAllThreads = async (
         offset: number = 0,
         creator?: string,
         limit?: number
-    ): Promise<MessageList> => {
-        const url = this.createURL(MessagesApiUrl);
+    ): Promise<ThreadList> => {
+        const url = this.createURL(v4ThreadApiUrl);
         if (limit) {
             url.searchParams.set('limit', limit.toString());
         }
@@ -194,11 +206,12 @@ export class MessageClient extends ClientBase {
             url.searchParams.set('creator', creator);
         }
 
-        const messagesResponse = await this.fetch<MessagesResponse>(url);
+        const { threads, meta } = await this.fetch<ThreadList>(url);
 
-        const parsedMessages = messagesResponse.messages.map(parseMessage);
-
-        return { messages: parsedMessages, meta: messagesResponse.meta };
+        return {
+            threads,
+            meta,
+        };
     };
 
     sendMessage = async (

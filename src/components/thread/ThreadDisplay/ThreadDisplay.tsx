@@ -17,26 +17,32 @@ interface ThreadDisplayProps {
     selectedMessageId?: string | null;
 }
 
-export const ThreadDisplay = ({
-    childMessageIds,
+// same as ThreadDisplay, but children instead of props
+type ThreadDisplayViewProps = React.PropsWithChildren<Omit<ThreadDisplayProps, 'childMessageIds'>>;
+
+const DISTANCE_TO_DISABLE_STICKY_SCROLL = 50;
+
+export const ThreadDisplayView = ({
     shouldShowAttributionHighlightDescription,
     streamingMessageId,
     isUpdatingMessageContent,
     selectedMessageId,
-}: ThreadDisplayProps): ReactNode => {
+    children,
+}: ThreadDisplayViewProps): ReactNode => {
     const previousStreamingMessageId = useRef<string | null>(null);
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
     const [isScrollToBottomButtonVisible, setIsScrollToBottomButtonVisible] = useState(false);
 
     const shouldStickToBottom = useRef(false);
+    const previousScrollTop = useRef(0);
 
     const setShouldStickToBottom = (newShouldStickToBottom: boolean) => {
         shouldStickToBottom.current = newShouldStickToBottom;
     };
 
     const skipNextStickyScrollSetFromAnchor = useRef(false);
-    const hasUserScrolledSinceSendingMessage = useRef(false);
 
     const scrollToBottom = useCallback(() => {
         if (scrollContainerRef.current != null) {
@@ -44,6 +50,26 @@ export const ThreadDisplay = ({
                 top: scrollContainerRef.current.scrollHeight,
             });
         }
+    }, []);
+
+    const isUserScrollUp = useCallback(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return false;
+
+        const currentScrollTop = container.scrollTop;
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        const distanceFromBottom = scrollHeight - currentScrollTop - clientHeight;
+
+        // Check if scroll direction is UP
+        const scrolledUp = currentScrollTop < previousScrollTop.current;
+
+        // Check if scroll was significantly away from bottom
+        const significantlyAwayFromBottom = distanceFromBottom > DISTANCE_TO_DISABLE_STICKY_SCROLL;
+
+        previousScrollTop.current = currentScrollTop;
+
+        return scrolledUp && significantlyAwayFromBottom;
     }, []);
 
     const location = useLocation();
@@ -110,23 +136,17 @@ export const ThreadDisplay = ({
     // This useInView is tied to the bottom-scroll-anchor
     // We use it to see if we've scrolled to the bottom of this element
     const { ref: scrollAnchorRef } = useInView({
-        root: scrollContainerRef.current,
+        root: scrollContainer,
         initialInView: true,
         onChange: (inView) => {
             setIsScrollToBottomButtonVisible(!inView);
 
             if (inView) {
-                if (
-                    !skipNextStickyScrollSetFromAnchor.current &&
-                    hasUserScrolledSinceSendingMessage.current
-                ) {
-                    setShouldStickToBottom(inView);
-                } else {
-                    // onChange will trigger when we scroll to the new user message since the scroll anchor starts intersecting
-                    // to prevent sticking right after that scroll, we ignore this event
-                    // we can't set that up in the effect because the browser is still sending scroll events even after the function returns
-                    skipNextStickyScrollSetFromAnchor.current = false;
+                if (!skipNextStickyScrollSetFromAnchor.current) {
+                    setShouldStickToBottom(true);
                 }
+
+                skipNextStickyScrollSetFromAnchor.current = false;
             }
         },
     });
@@ -139,17 +159,20 @@ export const ThreadDisplay = ({
         }
     };
 
-    const lastMessageId =
-        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
-
     return (
         <Box
             height={1}
             data-testid="thread-display"
             onScroll={() => {
-                hasUserScrolledSinceSendingMessage.current = true;
+                // Check on every scroll if we should disable sticky scroll
+                if (shouldStickToBottom.current && isUserScrollUp()) {
+                    setShouldStickToBottom(false);
+                }
             }}
-            ref={scrollContainerRef}
+            ref={(el: HTMLDivElement | null) => {
+                scrollContainerRef.current = el;
+                setScrollContainer(el);
+            }}
             overflow="scroll"
             sx={{
                 '@media (prefers-reduced-motion: no-preference)': {
@@ -174,22 +197,7 @@ export const ThreadDisplay = ({
                 <Box gridColumn="2 / -1">
                     <LegalNotice />
                 </Box>
-                {childMessageIds.length > 0 && (
-                    <Divider
-                        sx={{
-                            gridColumn: '2 / -1',
-                            borderColor: getLegalNoticeTextColor(0.25),
-                            marginY: '1em',
-                        }}
-                    />
-                )}
-                {childMessageIds.map((messageId) => (
-                    <MessageView
-                        messageId={messageId}
-                        key={messageId}
-                        isLastMessageInThread={lastMessageId === messageId}
-                    />
-                ))}
+                {children}
                 <Box
                     ref={scrollAnchorRef}
                     data-testid="bottom-scroll-anchor"
@@ -215,5 +223,41 @@ export const ThreadDisplay = ({
             />
             {shouldShowAttributionHighlightDescription && <AttributionHighlightDescription />}
         </Box>
+    );
+};
+
+export const ThreadDisplay = ({
+    childMessageIds,
+    shouldShowAttributionHighlightDescription,
+    streamingMessageId,
+    isUpdatingMessageContent,
+    selectedMessageId,
+}: ThreadDisplayProps) => {
+    const lastMessageId =
+        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
+
+    return (
+        <ThreadDisplayView
+            shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
+            streamingMessageId={streamingMessageId}
+            isUpdatingMessageContent={isUpdatingMessageContent}
+            selectedMessageId={selectedMessageId}>
+            {childMessageIds.length > 0 && (
+                <Divider
+                    sx={{
+                        gridColumn: '2 / -1',
+                        borderColor: getLegalNoticeTextColor(0.25),
+                        marginY: '1em',
+                    }}
+                />
+            )}
+            {childMessageIds.map((messageId) => (
+                <MessageView
+                    messageId={messageId}
+                    key={messageId}
+                    isLastMessageInThread={lastMessageId === messageId}
+                />
+            ))}
+        </ThreadDisplayView>
     );
 };

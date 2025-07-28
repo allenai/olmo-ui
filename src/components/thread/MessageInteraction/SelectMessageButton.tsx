@@ -6,16 +6,17 @@ import { ReactNode, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { Message } from '@/api/Message';
+import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
+import { useSelectedModel, useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
 
 interface SelectMessageButtonProps {
-    messageId: Message['id'];
+    messageId: FlatMessage['id'];
     isLastButton?: boolean;
 }
 
@@ -49,6 +50,7 @@ export const SelectMessageButton = ({
     messageId,
     isLastButton = false,
 }: SelectMessageButtonProps): ReactNode => {
+    const { threadId } = useThreadView();
     const [searchParams, setSearchParams] = useSearchParams();
     const isMessageSelected = useAppContext(
         (state) => state.attribution.selectedMessageId === messageId
@@ -56,7 +58,10 @@ export const SelectMessageButton = ({
     const selectMessage = useAppContext((state) => state.selectMessage);
     const unselectMessage = useAppContext((state) => state.unselectMessage);
     const openDrawer = useAppContext((state) => state.openDrawer);
-    const selectedModelId = useAppContext((state) => state.selectedModel?.id);
+
+    const model = useSelectedModel();
+    const selectedModelId = model?.id;
+
     const isDesktop = useDesktopOrUp();
     const { isCorpusLinkEnabled } = useFeatureToggles();
     const [isHintVisible, setIsHintVisible] = useState(
@@ -82,7 +87,7 @@ export const SelectMessageButton = ({
             unselectMessage(messageId);
             searchParams.delete(PARAM_SELECTED_MESSAGE);
         } else {
-            selectMessage(messageId);
+            selectMessage(threadId, messageId);
             searchParams.set(PARAM_SELECTED_MESSAGE, messageId);
 
             if (isDesktop) {

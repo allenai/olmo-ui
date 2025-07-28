@@ -1,27 +1,37 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { LoaderFunction, Outlet, ShouldRevalidateFunction } from 'react-router-dom';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction, useLoaderData } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { appContext, useAppContext } from '@/AppContext';
+import { appContext } from '@/AppContext';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
 import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
-import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
+import { SingleThreadModelSelect } from '@/components/thread/ModelSelect/ThreadModelSelect';
 import { getModelsQueryOptions, isModelVisible } from '@/components/thread/ModelSelect/useModels';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
+import { useQueryContext } from '@/contexts/QueryContext';
+import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
-export const UIRefreshThreadPage = () => {
-    // somewhere that handles model selection
-    const selectedModelFamilyId = useAppContext((state) => state.selectedModel?.family_id);
+interface PlaygroundLoaderData {
+    preselectedModelId?: string;
+}
+
+// Inner component that has access to QueryContext
+const UIRefreshThreadPageContent = () => {
+    const queryContext = useQueryContext();
+
+    const selectedModel = queryContext.getThreadViewModel();
+    const selectedModelFamilyId = selectedModel?.family_id;
+
     return (
         <>
             <MetaTags />
             <PageContainer>
                 <ContentContainer>
-                    <ModelSelect />
+                    <SingleThreadModelSelect />
                     <Outlet />
                     <QueryFormContainer selectedModelFamilyId={selectedModelFamilyId} />
                 </ContentContainer>
@@ -29,6 +39,19 @@ export const UIRefreshThreadPage = () => {
                 <ResponsiveControlsDrawer />
             </PageContainer>
         </>
+    );
+};
+
+export const UIRefreshThreadPage = () => {
+    const loaderData = useLoaderData() as PlaygroundLoaderData | null;
+
+    return (
+        <SingleThreadProvider
+            initialState={{
+                selectedModelId: loaderData?.preselectedModelId,
+            }}>
+            <UIRefreshThreadPageContent />
+        </SingleThreadProvider>
     );
 };
 
@@ -65,21 +88,6 @@ export const playgroundLoader =
 
         await Promise.all(promises);
 
-        const { setSelectedModel, selectedModel } = appContext.getState();
-        const preselectedModelId = new URL(request.url).searchParams.get('model');
-        if (preselectedModelId != null) {
-            const selectedModel = models.find((model) => model.id === preselectedModelId);
-            if (selectedModel != null) {
-                setSelectedModel(selectedModel);
-            } else {
-                setSelectedModel(models.filter(isModelVisible)[0]);
-            }
-        } else if (params.id == null && selectedModel == null) {
-            // params.id will be set if we're in a selected thread. The selected thread loader has its own handling, so we only do this if we're at the root!
-            const visibleModels = models.filter(isModelVisible);
-            setSelectedModel(visibleModels[0]);
-        }
-
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
             MODEL_DEPRECATION_NOTICE_GIVEN_KEY
         );
@@ -94,7 +102,30 @@ export const playgroundLoader =
             localStorage.setItem(MODEL_DEPRECATION_NOTICE_GIVEN_KEY, Date.now().toString());
         }
 
-        return null;
+        // TODO: Move this model validation and fallback logic to SingleThreadProvider?
+        // Similar logic already exists there.
+
+        // Determine preselected model from URL
+        const preselectedModelId = new URL(request.url).searchParams.get('model');
+        let finalPreselectedModelId: string | undefined;
+
+        if (preselectedModelId != null) {
+            const selectedModel = models.find((model) => model.id === preselectedModelId);
+            if (selectedModel != null) {
+                finalPreselectedModelId = selectedModel.id;
+            } else {
+                // Fallback to first visible model if specified model not found
+                const fallbackModel = models.filter(isModelVisible)[0];
+                finalPreselectedModelId = fallbackModel.id;
+            }
+        }
+
+        // Return initialization data for SingleThreadProvider
+        const loaderData: PlaygroundLoaderData = {
+            preselectedModelId: finalPreselectedModelId,
+        };
+
+        return loaderData;
     };
 
 export const handleRevalidation: ShouldRevalidateFunction = ({ nextUrl }) => {

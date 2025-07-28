@@ -7,10 +7,10 @@ import {
     MessageStreamError,
     MessageStreamErrorReason,
     parseMessage,
-    RequestInferenceOpts,
     StreamBadRequestError,
     V4CreateMessageRequest,
 } from '@/api/Message';
+import { Thread } from '@/api/playgroundApi/thread';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
 import { InferenceOpts } from '@/api/Schema';
@@ -44,7 +44,7 @@ export const findChildMessageById = (messageId: string, rootMessage: Message): M
     return null;
 };
 
-const ABORT_ERROR_MESSAGE: SnackMessage = {
+export const ABORT_ERROR_MESSAGE: SnackMessage = {
     type: SnackMessageType.Alert,
     id: `abort-message-${new Date().getTime()}`.toLowerCase(),
     title: 'Response was aborted',
@@ -62,33 +62,35 @@ export interface StreamMessageRequest {
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string | null;
-    inferenceOpts: RequestInferenceOpts;
-    updateInferenceOpts: (newOptions: RequestInferenceOpts) => void;
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
     streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
+    addThreadToAllThreads: (thread: Thread) => void;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
     abortPrompt: () => void;
 }
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
     abortController: null,
     streamingMessageId: null,
-    inferenceOpts: {},
     streamPromptState: undefined,
     isUpdatingMessageContent: false,
 
-    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
+    // used by new react-query code path
+    // TODO: replace this whole slice with react-query
+    addThreadToAllThreads: (thread: Thread) => {
         set((state) => ({
-            inferenceOpts: { ...state.inferenceOpts, ...newOptions },
+            allThreads: [thread, ...state.allThreads],
         }));
     },
 
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => {
+        // I think this function can go away
         set(
             (state) => {
                 if (isCreatingNewThread) {
                     state.setSelectedThread(finalMessage);
-                    state.allThreads.unshift(finalMessage);
+                    // I don't think this is called any more
+                    // state.allThreads.unshift(finalMessage);
                 } else {
                     const rootMessage = state.allThreads.find(
                         (thread) => thread.id === finalMessage.root
@@ -100,16 +102,14 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                         );
                     }
 
-                    const parentToParsedMessage = findChildMessageById(
-                        finalMessage.parent,
-                        rootMessage
-                    );
+                    const parentToParsedMessage = rootMessage.messages.at(0);
 
                     if (parentToParsedMessage != null) {
                         if (parentToParsedMessage.children == null) {
-                            parentToParsedMessage.children = [finalMessage];
+                            parentToParsedMessage.children = [finalMessage.id];
                         } else {
-                            parentToParsedMessage.children.push(finalMessage);
+                            parentToParsedMessage.children.push(finalMessage.id);
+                            // state.allThreads.unshift(finalMessage);
                         }
                     }
                 }
@@ -126,7 +126,6 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
     streamPrompt: async (newMessage: StreamMessageRequest) => {
         const {
-            inferenceOpts,
             selectedModel,
             addContentToMessage,
             addChildToSelectedThread,
@@ -174,9 +173,9 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             // 'some-other-model-id': { top_p: 0.9, temperature: 0.7 },
         };
 
+        // TODO: Is this something that the new stream processing needs?
         const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
             ...(MODEL_DEFAULT_OVERRIDES[selectedModel.id] || {}),
-            ...inferenceOpts,
         };
 
         const request: V4CreateMessageRequest = {
@@ -230,6 +229,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
 
                 if (isFinalMessage(message)) {
                     const streamedResponseId = get().streamingMessageId;
+                    const { root: threadId } = message;
 
                     if (streamedResponseId == null) {
                         throw new Error(
@@ -240,7 +240,11 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
                     handleFinalMessage(parseMessage(message), isCreatingNewThread);
 
                     if (isCorpusLinkEnabled) {
-                        await getAttributionsForMessage(request.content, streamedResponseId);
+                        await getAttributionsForMessage(
+                            request.content,
+                            threadId,
+                            streamedResponseId
+                        );
                     }
                 }
             }

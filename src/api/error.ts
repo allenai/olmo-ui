@@ -42,8 +42,12 @@ export namespace error {
         }
     }
 
+    export function isErrorDetailsPayload(error: unknown): error is Details {
+        return typeof error === 'object' && error != null && 'code' in error && 'message' in error;
+    }
+
     export function isValidationErrorPayload(error: object): error is ValidationErrorDetails {
-        return 'validation_errors' in (error as ValidationErrorDetails);
+        return isErrorDetailsPayload(error) && 'validation_errors' in error;
     }
 
     export interface Payload {
@@ -66,5 +70,16 @@ export namespace error {
             default:
                 return new HTTPError(`HTTP ${r.status}: ${r.statusText}`, r);
         }
+    }
+
+    export function isOpenApiQueryErrorPayload(
+        err: unknown
+    ): err is { error: { code: number; message: string } } {
+        return (
+            err !== null &&
+            typeof err === 'object' &&
+            'error' in err &&
+            isErrorDetailsPayload((err as { error: unknown }).error)
+        );
     }
 }

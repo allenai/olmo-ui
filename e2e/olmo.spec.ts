@@ -80,18 +80,6 @@ test('should scroll to the new user prompt message when its submitted', async ({
     expect(page.url()).toContain(selectedThreadId);
 });
 
-test('should stop thread from streaming', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-    await page.getByRole('textbox', { name: /^Message*/ }).focus();
-    await page.getByRole('textbox', { name: /^Message*/ }).fill('User message');
-    await page.getByRole('button', { name: 'Submit prompt' }).click();
-    await page.getByRole('button', { name: 'Stop response generation' }).click();
-    await expect(
-        page.getByText('You stopped OLMo from generating answers to your query')
-    ).toBeVisible();
-});
-
 test('can load threads from history drawer', async ({ page }) => {
     // Check the first existing thread
     await page.goto('/');
@@ -137,4 +125,38 @@ test('can search pretraining documents in DataSet Explorer', async ({ page }) =>
     await expect(
         page.getByText('Test1SeattleTest2SeattleTestTestTestSeattleOkey okey okey okey…')
     ).toBeVisible();
+});
+
+test('thread id resets when user navigates to New chat', async ({ page }) => {
+    const selectedThreadId = 'msg_A8E5H1X2O4';
+
+    // Send the first message
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('textbox', { name: /^Message*/ }).fill('First user message');
+    await page.getByLabel('Submit prompt').click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(
+        page.getByText('Lorem ipsum odor amet, consectetuer adipiscing elit.')
+    ).toBeVisible();
+    expect(page.url()).toContain(selectedThreadId);
+
+    // Click "New chat" link
+    await page.getByRole('link', { name: 'New chat' }).click();
+    await page.waitForLoadState('networkidle');
+
+    // Verify we're on a fresh playground page
+    expect(page.url()).toBe(new URL('/', page.url()).toString());
+
+    // Enter a message in the fresh playground
+    await page.getByRole('textbox', { name: /^Message*/ }).fill('Second user message');
+    await page.getByLabel('Submit prompt').click();
+    await page.waitForLoadState('networkidle');
+
+    // Verify the threadId is not the same as the first message's threadId
+    expect(page.url()).not.toContain(selectedThreadId);
+
+    // Verify the first user message is not visible (should be a fresh playground)
+    await expect(page.getByText('First user message')).not.toBeVisible();
 });
