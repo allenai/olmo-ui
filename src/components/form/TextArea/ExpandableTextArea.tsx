@@ -3,33 +3,33 @@ import { Button, DialogCloseButton, Modal, ModalTrigger } from '@allenai/varnish
 
 import { ControlledTextArea, ControlledTextAreaProps } from './ControlledTextArea';
 
+const modalTriggerButton = css({
+    marginTop: '1',
+});
+
+const modal = css({ width: 'screen', maxW: 'screen' });
+
+const expandableTextAreaWrapper = css({ width: '[100%]' });
+
+const closeButtonWrapper = css({
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingY: '2',
+});
+
 type ExpandableTextAreaProps = ControlledTextAreaProps;
 
 export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
     return (
-        <div className={css({ width: '[100%]' })}>
+        <div className={expandableTextAreaWrapper}>
             <ControlledTextArea {...props} minRows={3} maxRows={3} />
             <ModalTrigger>
-                <Button
-                    variant="text"
-                    className={css({
-                        marginTop: '1',
-                    })}>
+                <Button variant="text" className={modalTriggerButton}>
                     Expand
                 </Button>
-                <Modal
-                    isDismissable
-                    heading="Modal Heading"
-                    closeButton={true}
-                    className={css({ width: 'screen', maxW: 'screen' })}
-                    size="large">
+                <Modal isDismissable closeButton={true} className={modal} size="large">
                     <ControlledTextArea {...props} minRows={20} maxRows={20} />
-                    <div
-                        className={css({
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            paddingY: '2',
-                        })}>
+                    <div className={closeButtonWrapper}>
                         <DialogCloseButton variant="text">Close</DialogCloseButton>
                     </div>
                 </Modal>

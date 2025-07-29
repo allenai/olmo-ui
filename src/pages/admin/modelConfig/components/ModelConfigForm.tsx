@@ -29,6 +29,8 @@ import { links } from '@/Links';
 
 import { FileSizeInput } from './FileSizeInput/FileSizeInput';
 
+const inputSizing = css({ maxWidth: '[20rem]' });
+
 type MultiModalFormValues = Partial<
     Pick<
         SchemaCreateMultiModalModelConfigRequest,
@@ -235,14 +237,14 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     name="name"
                     label="Name"
                     fullWidth
-                    className={css({ maxWidth: '[20rem]' })}
+                    className={inputSizing}
                     controllerProps={{ rules: { required: true, minLength: 1 } }}
                 />
                 <ControlledInput
                     name="id"
                     label="ID"
                     description="The ID you see when linking to this model"
-                    className={css({ maxWidth: '[20rem]' })}
+                    className={inputSizing}
                     fullWidth
                     controllerProps={{ rules: { required: true, minLength: 1 } }}
                     isDisabled={disableIdField}
@@ -276,7 +278,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     fullWidth
                     // @ts-expect-error: description can be a ReactNode, not just string
                     description={modelHostIdDescription}
-                    className={css({ maxWidth: '[20rem]' })}
+                    className={inputSizing}
                     controllerProps={{ rules: { required: true } }}
                 />
                 <ExpandableTextArea
