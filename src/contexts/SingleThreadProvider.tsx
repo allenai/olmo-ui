@@ -29,8 +29,14 @@ import {
     createStreamCallbacks,
     StreamEventRegistryProvider,
     useStreamCallbackRegistry,
+    useStreamEvent,
 } from './StreamEventRegistry';
-import { processSingleModelSubmission, StreamingThread } from './submission-process';
+import {
+    isFirstMessage,
+    processSingleModelSubmission,
+    StreamingMessageResponse,
+    StreamingThread,
+} from './submission-process';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -106,6 +112,19 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const streamCallbacks = useMemo(
         () => createStreamCallbacks(callbackRegistryRef),
         [callbackRegistryRef]
+    );
+
+    // Handle nav on first message
+    useStreamEvent(
+        'onFirstMessage',
+        useCallback(
+            (_threadViewId: string, message: StreamingMessageResponse) => {
+                if (isFirstMessage(message) && !threadId) {
+                    navigate(links.thread(message.id));
+                }
+            },
+            [threadId, navigate]
+        )
     );
 
     const streamMessage = useStreamMessage(streamCallbacks);
