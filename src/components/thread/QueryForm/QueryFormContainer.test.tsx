@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
-import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { useStreamEvent, useStreamCallbackRegistry } from '@/contexts/StreamEventRegistry';
 import { StreamingMessageResponse } from '@/contexts/submission-process';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -44,15 +44,23 @@ vi.mock('@/contexts/StreamEventRegistry', () => ({
     useStreamEvent: vi.fn(),
     StreamEventRegistryProvider: ({ children }: { children: React.ReactNode }) => children,
     useStreamCallbackRegistry: vi.fn(),
+    useRemoteState: vi.fn(),
     createStreamCallbacks: vi.fn(),
 }));
 
 const mockUseStreamMessage = vi.mocked(useStreamMessage);
 const mockUseStreamEvent = vi.mocked(useStreamEvent);
+const mockUseStreamCallbackRegistry = vi.mocked(useStreamCallbackRegistry);
 
 beforeEach(() => {
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
     mockUseStreamEvent.mockImplementation(() => {});
+    mockUseStreamCallbackRegistry.mockReturnValue({
+        callbackRegistryRef: { current: {} },
+        remoteStateRegistryRef: { current: new Map() },
+        stateVersion: 0,
+        setStateVersion: vi.fn(),
+    });
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 });
 
