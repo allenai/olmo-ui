@@ -41,7 +41,7 @@ functions.http(
         const page = await browser.newPage();
 
         // Navigate to the target URL
-        const result = await page.goto('http://localhost:8080', { waitUntil: 'networkidle0' });
+        const result = await page.goto('https://playground.allenai.org', { waitUntil: 'networkidle0' });
 
         // Confirm successful navigation
         assert.equal(result.status(), 200);
