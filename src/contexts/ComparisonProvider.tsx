@@ -233,8 +233,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 allowFilesInFollowups: false,
             },
 
-            onModelChange: (_event: SelectChangeEvent, _threadViewId?: string) => {
-                // model change for comparison page
+            onModelChange: (event: SelectChangeEvent, threadViewId?: string) => {
+                if (!threadViewId) return;
+                dispatch({ type: 'setModelId', threadViewId, modelId: event.target.value });
             },
 
             getThreadViewModel: (threadViewId?: string) => {

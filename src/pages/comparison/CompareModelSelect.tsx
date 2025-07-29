@@ -1,8 +1,8 @@
+import { SelectChangeEvent } from '@mui/material';
+
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelect';
 import { useQueryContext } from '@/contexts/QueryContext';
-
-import { useHandleChangeCompareModel } from './useHandleChangeCompareModel';
 
 interface CompareModelSelectProps {
     threadViewId: string;
@@ -14,20 +14,16 @@ export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectP
     const selectedModel = queryContext.getThreadViewModel(threadViewId);
     const selectedModelId = selectedModel?.id;
 
-    const { handleModelChange, ModelSwitchWarningModal } = useHandleChangeCompareModel(
-        threadViewId,
-        models
-    );
+    const handleModelChange = (event: SelectChangeEvent) => {
+        queryContext.onModelChange(event, threadViewId);
+    };
 
     return (
-        <>
-            <ModelSelect
-                id={threadViewId}
-                models={models}
-                selectedModelId={selectedModelId}
-                onModelChange={handleModelChange}
-            />
-            <ModelSwitchWarningModal />
-        </>
+        <ModelSelect
+            id={threadViewId}
+            models={models}
+            selectedModelId={selectedModelId}
+            onModelChange={handleModelChange}
+        />
     );
 };
