@@ -2,10 +2,16 @@ import type { QueryClient } from '@tanstack/react-query';
 import type { LoaderFunction } from 'react-router-dom';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { threadOptions } from '@/api/playgroundApi/thread';
+import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
-import { getModelsQueryOptions, modelById } from '@/components/thread/ModelSelect/useModels';
+import {
+    areModelsCompatibleForThread,
+    getModelsQueryOptions,
+    isModelVisible,
+    modelById,
+} from '@/components/thread/ModelSelect/useModels';
+import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 import { arrayZip } from '@/utils/arrayZip';
 
@@ -18,11 +24,52 @@ const initializeDefaultComparisonModels = (
     models: Model[],
     count: number = 2
 ): CompareModelState[] => {
-    return Array.from({ length: count }, (_, index) => ({
-        threadViewId: String(index),
-        model: models[0],
-        rootThreadId: undefined,
-    }));
+    const results: CompareModelState[] = [];
+
+    for (let index = 0; index < count; index++) {
+        if (index === 0) {
+            // First model: use regular selection logic
+            const selectedModelId = selectModelIdForThread(models);
+            const selectedModel = selectedModelId
+                ? models.find(modelById(selectedModelId))
+                : models[0];
+
+            results.push({
+                threadViewId: String(index),
+                model: selectedModel,
+                rootThreadId: undefined,
+            });
+        } else {
+            // Subsequent models: only consider ones compatible with the first model
+            const firstModel = results[0].model;
+            if (!firstModel) {
+                // Fallback if first model selection failed
+                results.push({
+                    threadViewId: String(index),
+                    model: models[0],
+                    rootThreadId: undefined,
+                });
+                continue;
+            }
+
+            // Filter for compatible models
+            const compatibleModels = models.filter((model) =>
+                areModelsCompatibleForThread(firstModel, model)
+            );
+
+            // Cycle through compatible models
+            const compatibleIndex = (index - 1) % compatibleModels.length;
+            const selectedModel = compatibleModels[compatibleIndex] || firstModel;
+
+            results.push({
+                threadViewId: String(index),
+                model: selectedModel,
+                rootThreadId: undefined,
+            });
+        }
+    }
+
+    return results;
 };
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
@@ -49,7 +96,9 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         // abort the current streaming prompt if there is any
         abortPrompt();
 
-        const models = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
+        const allModels = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
+        // Filter models to match ComparisonProvider behavior
+        const models = allModels.filter(isModelVisible);
 
         if (schema == null) {
             promises.push(getSchema());
@@ -77,18 +126,14 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
             async ([threadId, modelIdParam], idx) => {
-                let modelId: Model['id'] | undefined = modelIdParam;
+                let lastResponse: FlatMessage | undefined;
 
                 if (threadId) {
                     try {
                         const { messages } = await queryClient.ensureQueryData(
                             threadOptions(threadId)
                         );
-
-                        if (!modelIdParam) {
-                            const lastResponse = messages.findLast(({ role }) => role === Role.LLM);
-                            modelId = lastResponse?.modelId;
-                        }
+                        lastResponse = messages.findLast(({ role }) => role === Role.LLM);
                     } catch (error) {
                         console.log(
                             `ComparisonPageLoader - Failed to load thread ${threadId}:`,
@@ -97,13 +142,19 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
                     }
                 }
 
-                const modelObj = modelId ? models.find(modelById(modelId)) : models[0];
+                const selectedModelId = selectModelIdForThread(models, lastResponse, modelIdParam);
 
-                return {
+                const modelObj = selectedModelId
+                    ? models.find(modelById(selectedModelId))
+                    : models[0];
+
+                const result = {
                     threadViewId: String(idx),
                     model: modelObj,
                     rootThreadId: threadId,
                 };
+
+                return result;
             }
         );
 

@@ -65,7 +65,6 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
             .map((state) => state.threadId)
             .filter(Boolean) as string[];
 
-
         if (threadIds.length === 0) return true;
 
         // If threads exist, check if user created the first message in ALL threads

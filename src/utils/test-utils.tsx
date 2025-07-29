@@ -25,6 +25,24 @@ import { server } from '@/mocks/node';
 
 import { uiRefreshOlmoTheme } from '../olmoTheme';
 
+export const createMockModel = (id: string, overrides: Partial<Model> = {}): Model =>
+    ({
+        id,
+        name: `${id} Model`,
+        description: `Test model ${id}`,
+        accepts_files: false,
+        is_visible: true,
+        is_deprecated: false,
+        family_id: 'test',
+        family_name: 'Test Family',
+        host: 'beaker_queues',
+        internal: false,
+        model_type: 'chat',
+        prompt_type: 'text_only',
+        system_prompt: null,
+        ...overrides,
+    }) as Model;
+
 export const createMockMessage = (overrides: Partial<FlatMessage> = {}): FlatMessage => ({
     id: 'message-1',
     creator: 'user-123',
