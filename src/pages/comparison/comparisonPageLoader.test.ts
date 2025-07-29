@@ -118,7 +118,7 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
 
         it('should allow duplicate models when only one compatible model exists', async () => {
             const testId = createTestId();
-            // Create only one model - both comparison slots should use it
+            // Create only one model, Both comparison slots should use it
             const singleModel = createMockModel(`${testId}-model`, { accepts_files: false });
             setupModelsApi([singleModel]);
 
