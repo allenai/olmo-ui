@@ -44,7 +44,7 @@ const renderWithProvider = (
     );
 };
 
-describe.skip('ComparisonProvider', () => {
+describe('ComparisonProvider', () => {
     describe('getPlaceholderText', () => {
         const PlaceholderTestComponent = () => {
             const context = useQueryContext();
