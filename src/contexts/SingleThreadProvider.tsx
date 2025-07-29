@@ -105,14 +105,13 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
 
-    // Get the stream event registry and remote state refs
-    const { callbackRegistryRef, remoteStateRegistryRef, setStateVersion } =
-        useStreamCallbackRegistry();
+    // Get the stream event registry and query client
+    const { callbackRegistryRef, queryClient } = useStreamCallbackRegistry();
 
     // Create callbacks that call all registered handlers
     const streamCallbacks = useMemo(
-        () => createStreamCallbacks(callbackRegistryRef, remoteStateRegistryRef, setStateVersion),
-        [callbackRegistryRef, remoteStateRegistryRef, setStateVersion]
+        () => createStreamCallbacks(callbackRegistryRef, queryClient),
+        [callbackRegistryRef, queryClient]
     );
 
     // Handle nav on first message
