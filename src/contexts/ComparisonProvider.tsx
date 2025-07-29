@@ -23,10 +23,10 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { QueryContext, QueryContextValue } from './QueryContext';
 import {
     createStreamCallbacks,
-    StreamEventRegistryProvider,
+    StreamContextProvider,
     useStreamCallbackRegistry,
     useStreamEvent,
-} from './StreamEventRegistry';
+} from './StreamContext';
 import {
     isFirstMessage,
     processSingleModelSubmission,
@@ -279,10 +279,10 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
     return (
-        <StreamEventRegistryProvider>
+        <StreamContextProvider>
             <ComparisonProviderContent initialState={initialState}>
                 {children}
             </ComparisonProviderContent>
-        </StreamEventRegistryProvider>
+        </StreamContextProvider>
     );
 };

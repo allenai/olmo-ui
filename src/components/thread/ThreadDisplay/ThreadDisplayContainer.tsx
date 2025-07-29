@@ -4,7 +4,7 @@ import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
-import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { useStreamEvent } from '@/contexts/StreamContext';
 import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 

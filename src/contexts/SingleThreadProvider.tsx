@@ -27,10 +27,10 @@ import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-u
 import { QueryContext, QueryContextValue } from './QueryContext';
 import {
     createStreamCallbacks,
-    StreamEventRegistryProvider,
+    StreamContextProvider,
     useStreamCallbackRegistry,
     useStreamEvent,
-} from './StreamEventRegistry';
+} from './StreamContext';
 import {
     isFirstMessage,
     processSingleModelSubmission,
@@ -363,10 +363,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
 export const SingleThreadProvider = ({ children, initialState }: SingleThreadProviderProps) => {
     return (
-        <StreamEventRegistryProvider>
+        <StreamContextProvider>
             <SingleThreadProviderContent initialState={initialState}>
                 {children}
             </SingleThreadProviderContent>
-        </StreamEventRegistryProvider>
+        </StreamContextProvider>
     );
 };

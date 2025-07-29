@@ -30,22 +30,21 @@ type StreamEventRegistry = {
 // Query key factory for thread remote state
 const threadRemoteStateKey = (threadViewId: string) => ['threadRemoteState', threadViewId];
 
-
-interface StreamRegistryContextValue {
+interface StreamContextValue {
     callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>;
 }
 
-// Context for the registries
-const StreamRegistryContext = createContext<StreamRegistryContextValue | undefined>(undefined);
+// Context for stream state and events
+const StreamContext = createContext<StreamContextValue | undefined>(undefined);
 
 // Hook to register stream event callbacks
-// This will facilitate modular feature directories
+// This will facilitate modular, co-located features
 export const useStreamEvent = <T extends keyof StreamEventMap>(
     event: T,
     callback: StreamEventMap[T],
     threadViewId?: string // Optional: only receive events for this threadViewId
 ) => {
-    const { callbackRegistryRef } = ensureContext(StreamRegistryContext, 'StreamEventRegistry');
+    const { callbackRegistryRef } = ensureContext(StreamContext, 'StreamContext');
 
     useEffect(() => {
         const registry = callbackRegistryRef.current;
@@ -77,24 +76,20 @@ export const useRemoteState = (threadViewId: string) => {
     return remoteState || RemoteState.Loaded;
 };
 
-// Provider for stream event registry
-export const StreamEventRegistryProvider = ({ children }: { children: React.ReactNode }) => {
+// Provider for stream state and event callbacks
+export const StreamContextProvider = ({ children }: { children: React.ReactNode }) => {
     const callbackRegistryRef = useRef<Partial<StreamEventRegistry>>({});
 
-    const contextValue: StreamRegistryContextValue = {
+    const contextValue: StreamContextValue = {
         callbackRegistryRef,
     };
 
-    return (
-        <StreamRegistryContext.Provider value={contextValue}>
-            {children}
-        </StreamRegistryContext.Provider>
-    );
+    return <StreamContext.Provider value={contextValue}>{children}</StreamContext.Provider>;
 };
 
 // Hook to get the registry refs (for providers to use)
 export const useStreamCallbackRegistry = () => {
-    const context = ensureContext(StreamRegistryContext, 'StreamEventRegistry');
+    const context = ensureContext(StreamContext, 'StreamContext');
     const queryClient = useQueryClient();
     return {
         callbackRegistryRef: context.callbackRegistryRef,
@@ -103,7 +98,6 @@ export const useStreamCallbackRegistry = () => {
 };
 
 // Create callbacks that each call all registered handlers for that event
-// Now also updates remote state automatically
 export const createStreamCallbacks = (
     callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>,
     queryClient: QueryClient

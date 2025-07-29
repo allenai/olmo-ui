@@ -10,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
-import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamContext';
 import { StreamingMessageResponse } from '@/contexts/submission-process';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -41,9 +41,10 @@ vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
 }));
 
-vi.mock('@/contexts/StreamEventRegistry', () => ({
+vi.mock('@/contexts/StreamContext', () => ({
     useStreamEvent: vi.fn(),
     StreamEventRegistryProvider: ({ children }: { children: React.ReactNode }) => children,
+    StreamContextProvider: ({ children }: { children: React.ReactNode }) => children,
     useStreamCallbackRegistry: vi.fn(),
     useRemoteState: vi.fn(),
     createStreamCallbacks: vi.fn(),

@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { useState } from 'react';
 
-import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { useStreamEvent } from '@/contexts/StreamContext';
 
 import { QueryForm } from './QueryForm';
 import { QueryFormNotice, type QueryFormNoticeProps } from './QueryFormNotices';
