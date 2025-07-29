@@ -4,7 +4,7 @@ import { useController, type UseControllerProps } from 'react-hook-form';
 
 import { FullWidthTextArea } from './FullWidthTextArea';
 
-export interface ControlledInputProps
+export interface ControlledTextAreaProps
     extends Omit<TextAreaProps, 'onChange' | 'name' | 'errorMessage' | 'onBlur'> {
     name: string;
     controllerProps?: Omit<UseControllerProps, 'name'>;
@@ -14,7 +14,7 @@ export const ControlledTextArea = ({
     name,
     controllerProps,
     ...rest
-}: ControlledInputProps): ReactNode => {
+}: ControlledTextAreaProps): ReactNode => {
     const {
         field,
         fieldState: { error, invalid },

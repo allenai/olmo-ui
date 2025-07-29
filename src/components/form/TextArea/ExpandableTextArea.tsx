@@ -1,18 +1,15 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, DialogCloseButton, Modal, ModalTrigger } from '@allenai/varnish-ui';
 
-import { ControlledInputProps, ControlledTextArea } from './ControlledTextArea';
+import { ControlledTextArea, ControlledTextAreaProps } from './ControlledTextArea';
 
-type ExpandableTextAreaProps = ControlledInputProps;
+type ExpandableTextAreaProps = ControlledTextAreaProps;
 
 export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
     return (
         <div className={css({ width: '[100%]' })}>
             <ControlledTextArea {...props} minRows={3} maxRows={3} />
             <ModalTrigger>
-                {/* <IconButton size="small" color="secondary">
-                <OpenWithIcon />
-            </IconButton> */}
                 <Button
                     variant="text"
                     className={css({
