@@ -113,6 +113,10 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
 
+        const threadIds = Object.values(comparisonState)
+            .map((state) => state.threadId)
+            .filter(Boolean) as string[];
+
         if (threadIds.length === 0) return true;
 
         // If threads exist, check if user created the first message in ALL threads
