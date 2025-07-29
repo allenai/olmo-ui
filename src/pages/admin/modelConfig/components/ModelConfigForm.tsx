@@ -284,15 +284,10 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 <ExpandableTextArea
                     name="description"
                     label="Description"
-                    fullWidth
                     controllerProps={{ rules: { required: true, minLength: 1 } }}
                 />
 
-                <ExpandableTextArea
-                    name="defaultSystemPrompt"
-                    label="Default System Prompt"
-                    fullWidth
-                />
+                <ExpandableTextArea name="defaultSystemPrompt" label="Default System Prompt" />
                 <ControlledSelect name="modelType" label="Model type">
                     <SelectListBoxItem text="Chat" id="chat" />
                     <SelectListBoxItem text="Base" id="base" />

@@ -19,19 +19,19 @@ const closeButtonWrapper = css({
     gap: '2',
 });
 
-type ExpandableTextAreaProps = ControlledTextAreaProps;
+type ExpandableTextAreaProps = Omit<ControlledTextAreaProps, 'fullWidth'>;
 
 export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
     return (
         <div className={expandableTextAreaWrapper}>
-            <ControlledTextArea {...props} minRows={3} maxRows={3} />
+            <ControlledTextArea fullWidth {...props} minRows={3} maxRows={3} />
             <ModalTrigger>
                 <Button variant="text" className={modalTriggerButton}>
                     Expand
                 </Button>
                 <Modal isDismissable closeButton={true} className={modal} size="large">
                     <div className={closeButtonWrapper}>
-                        <ControlledTextArea {...props} minRows={20} maxRows={20} />
+                        <ControlledTextArea fullWidth {...props} minRows={20} maxRows={20} />
                         <DialogCloseButton variant="text">Close</DialogCloseButton>
                     </div>
                 </Modal>
