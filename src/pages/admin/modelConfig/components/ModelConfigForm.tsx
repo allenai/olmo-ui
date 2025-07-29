@@ -31,6 +31,8 @@ import { FileSizeInput } from './FileSizeInput/FileSizeInput';
 
 const inputSizing = css({ maxWidth: '[20rem]' });
 
+const formSizing = css({ maxWidth: '[min(100%, 500px)]' });
+
 type MultiModalFormValues = Partial<
     Pick<
         SchemaCreateMultiModalModelConfigRequest,
@@ -230,7 +232,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
             : 'The ID of this model on the host';
 
     return (
-        <form onSubmit={formContext.handleSubmit(handleSubmit)}>
+        <form className={formSizing} onSubmit={formContext.handleSubmit(handleSubmit)}>
             <Stack fullWidth spacing={12} direction="column">
                 <DevTool control={formContext.control} />
                 <ControlledInput
