@@ -13,8 +13,10 @@ const expandableTextAreaWrapper = css({ width: '[100%]' });
 
 const closeButtonWrapper = css({
     display: 'flex',
-    justifyContent: 'flex-end',
+    flexDir: 'column',
+    alignItems: 'end',
     paddingY: '2',
+    gap: '2',
 });
 
 type ExpandableTextAreaProps = ControlledTextAreaProps;
@@ -28,8 +30,8 @@ export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
                     Expand
                 </Button>
                 <Modal isDismissable closeButton={true} className={modal} size="large">
-                    <ControlledTextArea {...props} minRows={20} maxRows={20} />
                     <div className={closeButtonWrapper}>
+                        <ControlledTextArea {...props} minRows={20} maxRows={20} />
                         <DialogCloseButton variant="text">Close</DialogCloseButton>
                     </div>
                 </Modal>
