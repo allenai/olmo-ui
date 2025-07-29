@@ -160,7 +160,10 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                     const expectedThreadViews = Object.keys(comparisonState);
                     const receivedThreadViews = Object.keys(updated);
 
-                    if (expectedThreadViews.every((tvId) => receivedThreadViews.includes(tvId))) {
+                    if (
+                        threadIds.length === 0 &&
+                        expectedThreadViews.every((tvId) => receivedThreadViews.includes(tvId))
+                    ) {
                         // Navigate to comparison URL with all thread IDs
                         const threadIds = Object.values(updated);
                         const compareUrl = `/comparison?threads=${threadIds.join(',')}`;
