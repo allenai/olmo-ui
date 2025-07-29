@@ -5,7 +5,7 @@ import { ThreadId, useThread } from '@/api/playgroundApi/thread';
 import { ThreadDisplay, ThreadDisplayView } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 
 import { CompareModelSelect } from './CompareModelSelect';
-import { ThreadViewProvider } from './ThreadViewContext';
+import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
 
 const singleThreadClasses = css({
     display: 'flex',
@@ -42,9 +42,8 @@ interface SingleThreadProps {
 }
 
 const SingleThread = ({ threadRootId }: SingleThreadProps) => {
+    const { streamingMessageId, isUpdatingMessageContent } = useThreadView();
     const shouldShowAttributionHighlightDescription = false;
-    const streamingMessageId = null;
-    const isUpdatingMessageContent = false;
     const selectedMessageId = undefined;
 
     const { data, error: _ } = useThread(threadRootId);
@@ -59,8 +58,8 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
         <ThreadDisplay
             childMessageIds={childMessageIds}
             shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
-            streamingMessageId={streamingMessageId}
-            isUpdatingMessageContent={isUpdatingMessageContent}
+            streamingMessageId={streamingMessageId ?? null}
+            isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
         />
     );

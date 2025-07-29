@@ -12,12 +12,11 @@ import { ComparisonLoaderData } from './comparisonPageLoader';
 
 // Convert CompareModelState[] to ComparisonProvider's initial state format
 function convertLoaderDataToState(comparisonModels: CompareModelState[]) {
-    const state: Record<string, { modelId?: string; threadId?: string }> = {};
+    const state: Record<string, { modelId?: string }> = {};
 
     comparisonModels.forEach((compareModel) => {
         state[compareModel.threadViewId] = {
             modelId: compareModel.model?.id,
-            threadId: compareModel.rootThreadId,
         };
     });
 

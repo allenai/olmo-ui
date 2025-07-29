@@ -9,7 +9,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { RequestInferenceOpts } from '@/api/Message';
@@ -40,7 +40,6 @@ import { RemoteState } from './util';
 interface ComparisonState {
     [threadViewId: string]: {
         modelId?: string;
-        threadId?: string;
     };
 }
 
@@ -72,6 +71,12 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>({});
     const firstMessageThreadIdsRef = useRef<Record<string, string>>({});
 
+    const [searchParams] = useSearchParams();
+    const threadIds = useMemo(() => {
+        const threadsParam = searchParams.get('threads');
+        return threadsParam ? threadsParam.split(',') : [];
+    }, [searchParams]);
+
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
@@ -85,10 +90,6 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
 
-        const threadIds = Object.values(comparisonState)
-            .map((state) => state.threadId)
-            .filter(Boolean) as string[];
-
         if (threadIds.length === 0) return true;
 
         // If threads exist, check if user created the first message in ALL threads
@@ -99,14 +100,11 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             }
             return thread.messages[0]?.creator === userInfo.client;
         });
-    }, [comparisonState, userInfo]);
+    }, [threadIds, userInfo]);
 
     const autofocus = useMemo(() => {
-        const threadIds = Object.values(comparisonState)
-            .map((state) => state.threadId)
-            .filter(Boolean);
         return threadIds.length === 0;
-    }, [comparisonState]);
+    }, [threadIds]);
 
     const placeholderText = useMemo(() => {
         const modelNames = Object.values(comparisonState)
@@ -118,27 +116,19 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             })
             .filter(Boolean);
 
-        const actionText = Object.values(comparisonState).some((state) => state.threadId)
-            ? 'Reply to'
-            : 'Message';
+        const actionText = threadIds.length > 0 ? 'Reply to' : 'Message';
         return `${actionText} ${modelNames.length ? modelNames.join(' and ') : 'the model'}`;
-    }, [comparisonState, models]);
+    }, [comparisonState, models, threadIds]);
 
     const isLimitReached = useMemo(() => {
-        return Object.values(comparisonState)
-            .map((state) => state.threadId)
-            .filter(Boolean)
-            .some((threadId) => {
-                return Boolean(getThread(threadId as string)?.messages.at(-1)?.isLimitReached);
-            });
-    }, [comparisonState]);
+        return threadIds.some((threadId) => {
+            return Boolean(getThread(threadId)?.messages.at(-1)?.isLimitReached);
+        });
+    }, [threadIds]);
 
     const isShareReady = useMemo(() => {
-        return Object.values(comparisonState)
-            .map((state) => state.threadId)
-            .filter(Boolean)
-            .every((threadId) => threadId != null);
-    }, [comparisonState]);
+        return threadIds.length > 0 && threadIds.every((threadId) => threadId != null);
+    }, [threadIds]);
 
     // Sync local state with any necessary global UI state
     useEffect(() => {
@@ -178,7 +168,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                     }
                 }
             },
-            [comparisonState, navigate]
+            [comparisonState, navigate, threadIds]
         )
     );
 
@@ -193,11 +183,12 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             const submissions = Object.entries(comparisonState).map(([threadViewId, state]) => {
                 const model = models.find((m) => m.id === state.modelId);
+                const threadId = threadIds[parseInt(threadViewId)] || undefined;
 
                 return processSingleModelSubmission(
                     data,
                     model as Model,
-                    state.threadId,
+                    threadId,
                     threadViewId,
                     inferenceOpts,
                     streamMessage.mutateAsync,
@@ -210,7 +201,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             // Wait for all submissions to complete (success or failure)
             await Promise.allSettled(submissions);
         },
-        [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models]
+        [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models, threadIds]
     );
 
     const contextValue: QueryContextValue = useMemo(() => {
@@ -247,7 +238,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             transform: <T,>(fn: (threadViewId: string, model?: Model, threadId?: string) => T) => {
                 return Object.entries(comparisonState).map(([threadViewId, state]) => {
                     const model = models.find((m) => m.id === state.modelId);
-                    return fn(threadViewId, model, state.threadId);
+                    const threadId = threadIds[parseInt(threadViewId)] || undefined;
+                    return fn(threadViewId, model, threadId);
                 });
             },
 
@@ -276,6 +268,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         streamMessage,
         onSubmit,
         inferenceOpts,
+        threadIds,
     ]);
 
     return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
