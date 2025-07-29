@@ -158,13 +158,14 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         setIsShareReady(isShareReady);
     }, [isShareReady, setIsShareReady]);
 
-    // Get the stream event registry
-    const callbackRegistryRef = useStreamCallbackRegistry();
+    // Get the stream event registry and remote state refs
+    const { callbackRegistryRef, remoteStateRegistryRef, setStateVersion } =
+        useStreamCallbackRegistry();
 
     // Create callbacks that call all registered handlers
     const streamCallbacks = useMemo(
-        () => createStreamCallbacks(callbackRegistryRef),
-        [callbackRegistryRef]
+        () => createStreamCallbacks(callbackRegistryRef, remoteStateRegistryRef, setStateVersion),
+        [callbackRegistryRef, remoteStateRegistryRef, setStateVersion]
     );
 
     // Handle nav when first messages of *all* streams arrive
