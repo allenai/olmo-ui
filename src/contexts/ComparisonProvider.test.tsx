@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
@@ -8,6 +8,11 @@ import { createMockUser, render, setupThreadInCache, waitFor } from '@/utils/tes
 
 import { ComparisonProvider } from './ComparisonProvider';
 import { useQueryContext } from './QueryContext';
+
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
+}));
 
 // Test helper to render ComparisonProvider with initial state
 const renderWithProvider = (

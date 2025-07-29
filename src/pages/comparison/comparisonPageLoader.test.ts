@@ -96,7 +96,7 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
             expect(firstModel.accepts_files).toBe(secondModel.accepts_files);
         });
 
-        it('should cycle through multiple compatible models', async () => {
+        it('should select different models when multiple compatible models are available', async () => {
             const testId = createTestId();
             // Create multiple models that are all compatible (same accepts_files value)
             const models = [

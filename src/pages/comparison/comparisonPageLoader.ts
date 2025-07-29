@@ -52,14 +52,16 @@ const initializeDefaultComparisonModels = (
                 continue;
             }
 
-            // Filter for compatible models
-            const compatibleModels = models.filter((model) =>
-                areModelsCompatibleForThread(firstModel, model)
+            // Filter for compatible models, excluding the first model to avoid duplicates
+            const compatibleModels = models.filter(
+                (model) =>
+                    areModelsCompatibleForThread(firstModel, model) && model.id !== firstModel.id
             );
 
-            // Cycle through compatible models
-            const compatibleIndex = (index - 1) % compatibleModels.length;
-            const selectedModel = compatibleModels[compatibleIndex] || firstModel;
+            // Cycle through compatible models, or use first model if no other compatible models
+            const compatibleIndex = (index - 1) % Math.max(compatibleModels.length, 1);
+            const selectedModel =
+                compatibleModels.length > 0 ? compatibleModels[compatibleIndex] : firstModel;
 
             results.push({
                 threadViewId: String(index),

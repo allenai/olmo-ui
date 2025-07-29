@@ -239,8 +239,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             getThreadViewModel: (threadViewId?: string) => {
                 if (!threadViewId) return undefined;
-                const modelId = comparisonState[threadViewId].modelId;
-                return models.find((model) => model.id === modelId);
+                const modelId = comparisonState[threadViewId]?.modelId;
+                return modelId ? models.find((model) => model.id === modelId) : undefined;
             },
 
             transform: <T,>(fn: (threadViewId: string, model?: Model, threadId?: string) => T) => {
@@ -277,9 +277,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         inferenceOpts,
     ]);
 
-    return (
-        <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>
-    );
+    return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };
 
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
