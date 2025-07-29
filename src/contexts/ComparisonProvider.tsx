@@ -278,9 +278,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         threadIds,
     ]);
 
-    return (
-        <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>
-    );
+    return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };
 
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
