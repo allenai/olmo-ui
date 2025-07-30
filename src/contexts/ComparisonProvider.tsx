@@ -351,13 +351,3 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         </QueryContext.Provider>
     );
 };
-
-export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
-    return (
-        <StreamEventRegistryProvider>
-            <ComparisonProviderContent initialState={initialState}>
-                {children}
-            </ComparisonProviderContent>
-        </StreamEventRegistryProvider>
-    );
-};
