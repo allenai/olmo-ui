@@ -286,13 +286,3 @@ export const ComparisonProvider = ({ children, initialState }: ComparisonProvide
         </StreamEventRegistryProvider>
     );
 };
-
-export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
-    return (
-        <StreamEventRegistryProvider>
-            <ComparisonProviderContent initialState={initialState}>
-                {children}
-            </ComparisonProviderContent>
-        </StreamEventRegistryProvider>
-    );
-};
