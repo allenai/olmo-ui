@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -15,6 +15,14 @@ import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { StreamingMessageResponse } from './submission-process';
+
+export interface ThreadStreamMutationVariables {
+    request: StreamMessageRequest;
+    threadViewId: string;
+    model: Model;
+    thread?: Thread;
+    inferenceOpts: RequestInferenceOpts;
+}
 
 interface StreamCallbacks {
     onNewUserMessage?: (threadViewId: string) => void;
@@ -38,24 +46,31 @@ const MODEL_DEFAULT_OVERRIDES: Record<string, NullishPartial<InferenceOpts>> = {
 };
 
 export const useStreamMessage = (callbacks?: StreamCallbacks) => {
-    const [activeStreams, setActiveStreams] = useState<Set<string>>(new Set());
+    const queryClient = useQueryClient();
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
     const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
 
-    // Internal state management functions
+    // Track active streams
+    const { data: activeStreams = new Set<string>() } = useQuery({
+        queryKey: ['thread-stream', 'active'],
+        queryFn: () => new Set<string>(),
+        staleTime: Infinity,
+        gcTime: Infinity,
+    });
+
     const startStream = (threadViewId: ThreadViewId) => {
-        setActiveStreams((prev) => {
-            const next = new Set(prev);
-            next.add(threadViewId);
-            return next;
+        queryClient.setQueryData(['thread-stream', 'active'], (old: Set<string> = new Set()) => {
+            const newSet = new Set(old);
+            newSet.add(threadViewId);
+            return newSet;
         });
     };
 
     const stopStream = (threadViewId: ThreadViewId) => {
-        setActiveStreams((prev) => {
-            const next = new Set(prev);
-            next.delete(threadViewId);
-            return next;
+        queryClient.setQueryData(['thread-stream', 'active'], (old: Set<string> = new Set()) => {
+            const newSet = new Set(old);
+            newSet.delete(threadViewId);
+            return newSet;
         });
         abortControllersRef.current.delete(threadViewId);
     };
@@ -192,24 +207,24 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         }
     };
 
-    const mutation = useMutation({
+    const mutation = useMutation<
+        { response: Response; abortController: AbortController },
+        Error,
+        ThreadStreamMutationVariables
+    >({
+        mutationKey: ['thread-stream'],
         mutationFn: queryToThreadOrView,
         onMutate(variables) {
-            console.log('DEBUG [bb] useStreamMessage: onMutate', variables);
+            startStream(variables.threadViewId);
         },
-        onSuccess(data, variables) {
-            // this gets the stream before its done
-            console.log('DEBUG [bb] onSuccess', data, variables);
+        onSuccess(_data, _variables) {
+            // Stream is now active (not completed)
         },
-        onSettled(data, error, variables, context) {
-            console.log('DEBUG [bb] onSettled', data, error, variables, context);
+        onSettled(_data, _error, _variables, _context) {
+            // We might not need onComplete to be called in submission-process
         },
-        onError(error, variables, context) {
-            console.log('DEBUG [bb] onError', error, variables, context);
-            // Clean up stream state on error
-            if (variables.threadViewId) {
-                stopStream(variables.threadViewId);
-            }
+        onError(_error, variables, _context) {
+            stopStream(variables.threadViewId);
         },
     });
 
@@ -219,7 +234,8 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
             controller.abort();
         });
         abortControllersRef.current.clear();
-        setActiveStreams(new Set());
+        // Clear all active streams
+        queryClient.setQueryData(['thread-stream', 'active'], new Set<string>());
     };
 
     // Function to clean up a specific stream when it completes

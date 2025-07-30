@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { Label } from '@/api/Label';
 import { MessageId, selectMessageById, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
@@ -35,8 +34,7 @@ export const MessageView = ({
     messageId,
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
-    const { threadId, streamingMessageId } = useThreadView();
-    const { remoteState } = useQueryContext();
+    const { threadId, streamingMessageId, remoteState } = useThreadView();
     const { data: message, error: _error } = useThread(threadId, {
         select: selectMessageById(messageId),
         staleTime: Infinity,

@@ -45,7 +45,6 @@ vi.mock('@/contexts/StreamEventRegistry', () => ({
     useStreamEvent: vi.fn(),
     StreamEventRegistryProvider: ({ children }: { children: React.ReactNode }) => children,
     useStreamCallbackRegistry: vi.fn(),
-    useRemoteState: vi.fn(),
     createStreamCallbacks: vi.fn(),
 }));
 
@@ -58,10 +57,6 @@ beforeEach(() => {
     mockUseStreamEvent.mockImplementation(() => {});
     mockUseStreamCallbackRegistry.mockReturnValue({
         callbackRegistryRef: { current: {} },
-        queryClient: {
-            setQueryData: vi.fn(),
-            getQueryData: vi.fn(),
-        } as any,
     });
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 });
