@@ -7,16 +7,10 @@ const modalTriggerButton = css({
     marginTop: '1',
 });
 
-const modal = css({ width: 'screen', maxW: 'screen' });
-
 const expandableTextAreaWrapper = css({ width: '[100%]' });
 
-const closeButtonWrapper = css({
-    display: 'flex',
-    flexDir: 'column',
-    alignItems: 'end',
+const modalWrapper = css({
     paddingY: '2',
-    gap: '2',
 });
 
 type ExpandableTextAreaProps = Omit<ControlledTextAreaProps, 'fullWidth'>;
@@ -29,11 +23,14 @@ export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
                 <Button variant="text" className={modalTriggerButton}>
                     Expand
                 </Button>
-                <Modal isDismissable closeButton={true} className={modal} size="large">
-                    <div className={closeButtonWrapper}>
-                        <ControlledTextArea fullWidth {...props} minRows={20} maxRows={20} />
-                        <DialogCloseButton variant="text">Close</DialogCloseButton>
-                    </div>
+                <Modal
+                    isDismissable
+                    closeButton={true}
+                    fullWidth
+                    size="large"
+                    className={modalWrapper}
+                    buttons={<DialogCloseButton variant="text">Close</DialogCloseButton>}>
+                    <ControlledTextArea fullWidth {...props} minRows={20} maxRows={20} />
                 </Modal>
             </ModalTrigger>
         </div>
