@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import {
     Button,
     Link,
@@ -22,10 +23,15 @@ import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';
+import { ExpandableTextArea } from '@/components/form/TextArea/ExpandableTextArea';
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 
 import { FileSizeInput } from './FileSizeInput/FileSizeInput';
+
+const inputSizing = css({ maxWidth: '[20rem]' });
+
+const formSizing = css({ maxWidth: '[min(100%, 32rem)]' });
 
 type MultiModalFormValues = Partial<
     Pick<
@@ -226,100 +232,94 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
             : 'The ID of this model on the host';
 
     return (
-        <Stack spacing={8} direction="row" wrap="wrap">
-            <form onSubmit={formContext.handleSubmit(handleSubmit)}>
-                <Stack spacing={8} direction="column">
-                    <DevTool control={formContext.control} />
-                    <ControlledInput
-                        name="name"
-                        label="Name"
-                        fullWidth
-                        controllerProps={{ rules: { required: true, minLength: 1 } }}
-                    />
-                    <ControlledInput
-                        name="id"
-                        label="ID"
-                        description="The ID you see when linking to this model"
-                        fullWidth
-                        controllerProps={{ rules: { required: true, minLength: 1 } }}
-                        isDisabled={disableIdField}
-                    />
+        <form className={formSizing} onSubmit={formContext.handleSubmit(handleSubmit)}>
+            <Stack fullWidth spacing={12} direction="column">
+                <DevTool control={formContext.control} />
+                <ControlledInput
+                    name="name"
+                    label="Name"
+                    fullWidth
+                    className={inputSizing}
+                    controllerProps={{ rules: { required: true, minLength: 1 } }}
+                />
+                <ControlledInput
+                    name="id"
+                    label="ID"
+                    description="The ID you see when linking to this model"
+                    className={inputSizing}
+                    fullWidth
+                    controllerProps={{ rules: { required: true, minLength: 1 } }}
+                    isDisabled={disableIdField}
+                />
 
-                    <ControlledSelect
-                        name="familyId"
-                        label="Model family"
-                        controllerProps={{ rules: { required: true } }}>
-                        <SelectListBoxSection>
-                            <SelectListBoxItem text="No family" id="no_family" />
-                            <SelectListBoxItem text="OLMo" id="olmo" />
-                            <SelectListBoxItem text="Tülu" id="tulu" />
-                        </SelectListBoxSection>
-                    </ControlledSelect>
-                    <ControlledSelect
-                        name="host"
-                        label="Model host"
-                        controllerProps={{ rules: { required: true } }}>
-                        <SelectListBoxSection>
-                            <SelectListBoxItem text="Modal" id="modal" />
-                            <SelectListBoxItem text="InferD" id="inferd" />
-                            <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
-                            <SelectListBoxItem
-                                text="Cirrascale (Backend)"
-                                id="cirrascale_backend"
-                            />
-                        </SelectListBoxSection>
-                    </ControlledSelect>
+                <ControlledSelect
+                    name="familyId"
+                    label="Model family"
+                    controllerProps={{ rules: { required: true } }}>
+                    <SelectListBoxSection>
+                        <SelectListBoxItem text="No family" id="no_family" />
+                        <SelectListBoxItem text="OLMo" id="olmo" />
+                        <SelectListBoxItem text="Tülu" id="tulu" />
+                    </SelectListBoxSection>
+                </ControlledSelect>
+                <ControlledSelect
+                    name="host"
+                    label="Model host"
+                    controllerProps={{ rules: { required: true } }}>
+                    <SelectListBoxSection>
+                        <SelectListBoxItem text="Modal" id="modal" />
+                        <SelectListBoxItem text="InferD" id="inferd" />
+                        <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
+                        <SelectListBoxItem text="Cirrascale (Backend)" id="cirrascale_backend" />
+                    </SelectListBoxSection>
+                </ControlledSelect>
 
-                    <ControlledInput
-                        name="modelIdOnHost"
-                        label={modelHostIdLabel}
-                        // @ts-expect-error: description can be a ReactNode, not just string
-                        description={modelHostIdDescription}
-                        controllerProps={{ rules: { required: true } }}
-                    />
-                    <ControlledInput
-                        name="description"
-                        label="Description"
-                        fullWidth
-                        controllerProps={{ rules: { required: true, minLength: 1 } }}
-                    />
+                <ControlledInput
+                    name="modelIdOnHost"
+                    label={modelHostIdLabel}
+                    fullWidth
+                    // @ts-expect-error: description can be a ReactNode, not just string
+                    description={modelHostIdDescription}
+                    className={inputSizing}
+                    controllerProps={{ rules: { required: true } }}
+                />
+                <ExpandableTextArea
+                    name="description"
+                    label="Description"
+                    controllerProps={{ rules: { required: true, minLength: 1 } }}
+                />
 
-                    <ControlledInput
-                        name="defaultSystemPrompt"
-                        label="Default System Prompt"
-                        fullWidth
-                    />
-                    <ControlledSelect name="modelType" label="Model type" fullWidth>
-                        <SelectListBoxItem text="Chat" id="chat" />
-                        <SelectListBoxItem text="Base" id="base" />
-                    </ControlledSelect>
-                    <ControlledRadioGroup name="promptType" label="Prompt type">
-                        <Radio value="text_only">Text only</Radio>
-                        <Radio value="multi_modal">Multimodal</Radio>
-                    </ControlledRadioGroup>
-                    {promptTypeState === 'multi_modal' && <MultiModalFields />}
-                    <ControlledSelect name="availability" label="Availability">
-                        <SelectListBoxSection>
-                            <SelectListBoxItem text="Public" id="public" />
-                            <SelectListBoxItem text="Internal" id="internal" />
-                            <SelectListBoxItem text="Pre-release" id="prerelease" />
-                        </SelectListBoxSection>
-                    </ControlledSelect>
-                    {showTimeSection && <TimeFields />}
-                    <ControlledDatePicker
-                        name="deprecationTime"
-                        label="Model expiration time"
-                        granularity="minute"
-                        placeholderValue={now(userTimeZone)}
-                    />
-                    <Stack direction="row" align="center" justify="center" spacing={3}>
-                        <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
-                        <Button variant="contained" type="submit">
-                            Save
-                        </Button>
-                    </Stack>
+                <ExpandableTextArea name="defaultSystemPrompt" label="Default System Prompt" />
+                <ControlledSelect name="modelType" label="Model type">
+                    <SelectListBoxItem text="Chat" id="chat" />
+                    <SelectListBoxItem text="Base" id="base" />
+                </ControlledSelect>
+                <ControlledRadioGroup name="promptType" label="Prompt type">
+                    <Radio value="text_only">Text only</Radio>
+                    <Radio value="multi_modal">Multimodal</Radio>
+                </ControlledRadioGroup>
+                {promptTypeState === 'multi_modal' && <MultiModalFields />}
+                <ControlledSelect name="availability" label="Availability">
+                    <SelectListBoxSection>
+                        <SelectListBoxItem text="Public" id="public" />
+                        <SelectListBoxItem text="Internal" id="internal" />
+                        <SelectListBoxItem text="Pre-release" id="prerelease" />
+                    </SelectListBoxSection>
+                </ControlledSelect>
+                {showTimeSection && <TimeFields />}
+                <ControlledDatePicker
+                    name="deprecationTime"
+                    label="Model expiration time"
+                    granularity="minute"
+                    placeholderValue={now(userTimeZone)}
+                />
+                <Stack direction="row" align="center" justify="center" spacing={3}>
+                    <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
+                    <Button variant="contained" type="submit">
+                        Save
+                    </Button>
                 </Stack>
-            </form>
-        </Stack>
+            </Stack>
+        </form>
     );
 };
