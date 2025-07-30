@@ -1,8 +1,7 @@
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useEffect, useRef } from 'react';
 
 import { StreamingMessageResponse } from './submission-process';
-import { ensureContext, RemoteState } from './util';
+import { ensureContext } from './util';
 
 // Callback types for each event
 type OnNewUserMessageCallback = (threadViewId: string) => void;
@@ -26,10 +25,6 @@ type CallbackWithFilter<T> = {
 type StreamEventRegistry = {
     [K in keyof StreamEventMap]: Set<CallbackWithFilter<StreamEventMap[K]>>;
 };
-
-// Query key factory for thread remote state
-const threadRemoteStateKey = (threadViewId: string) => ['threadRemoteState', threadViewId];
-
 
 interface StreamRegistryContextValue {
     callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>;
@@ -65,18 +60,6 @@ export const useStreamEvent = <T extends keyof StreamEventMap>(
     }, [event, callback, threadViewId, callbackRegistryRef]);
 };
 
-// Hook to get remote state for a specific thread
-export const useRemoteState = (threadViewId: string) => {
-    const { data: remoteState } = useQuery({
-        queryKey: threadRemoteStateKey(threadViewId),
-        queryFn: () => RemoteState.Loaded, // Used like "Idle"
-        staleTime: Infinity,
-        gcTime: Infinity,
-    });
-
-    return remoteState || RemoteState.Loaded;
-};
-
 // Provider for stream event registry
 export const StreamEventRegistryProvider = ({ children }: { children: React.ReactNode }) => {
     const callbackRegistryRef = useRef<Partial<StreamEventRegistry>>({});
@@ -95,23 +78,15 @@ export const StreamEventRegistryProvider = ({ children }: { children: React.Reac
 // Hook to get the registry refs (for providers to use)
 export const useStreamCallbackRegistry = () => {
     const context = ensureContext(StreamRegistryContext, 'StreamEventRegistry');
-    const queryClient = useQueryClient();
     return {
         callbackRegistryRef: context.callbackRegistryRef,
-        queryClient,
     };
 };
 
 // Create callbacks that each call all registered handlers for that event
-// Now also updates remote state automatically
 export const createStreamCallbacks = (
-    callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>,
-    queryClient: QueryClient
+    callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>
 ) => {
-    const updateRemoteState = (threadViewId: string, remoteState: RemoteState) => {
-        queryClient.setQueryData(threadRemoteStateKey(threadViewId), remoteState);
-    };
-
     // Call callbacks, optionally filter by threadViewId
     const callFilteredCallbacks = <T extends keyof StreamEventMap>(
         eventName: T,
@@ -129,25 +104,21 @@ export const createStreamCallbacks = (
 
     return {
         onNewUserMessage: (threadViewId: string) => {
-            updateRemoteState(threadViewId, RemoteState.Loading);
             callFilteredCallbacks('onNewUserMessage', threadViewId, (callback) => {
                 callback(threadViewId);
             });
         },
         onFirstMessage: (threadViewId: string, message: StreamingMessageResponse) => {
-            updateRemoteState(threadViewId, RemoteState.Loading);
             callFilteredCallbacks('onFirstMessage', threadViewId, (callback) => {
                 callback(threadViewId, message);
             });
         },
         onCompleteStream: (threadViewId: string, message?: StreamingMessageResponse) => {
-            updateRemoteState(threadViewId, RemoteState.Loaded);
             callFilteredCallbacks('onCompleteStream', threadViewId, (callback) => {
                 callback(threadViewId, message);
             });
         },
         onError: (threadViewId: string, error: unknown) => {
-            updateRemoteState(threadViewId, RemoteState.Error);
             callFilteredCallbacks('onError', threadViewId, (callback) => {
                 callback(threadViewId, error);
             });
