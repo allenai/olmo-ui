@@ -158,7 +158,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         setIsShareReady(isShareReady);
     }, [isShareReady, setIsShareReady]);
 
-    // Get the stream event registry and query client
+    // Get the stream event registry
     const { callbackRegistryRef } = useStreamCallbackRegistry();
 
     // Create callbacks that call all registered handlers

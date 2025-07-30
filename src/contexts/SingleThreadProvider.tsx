@@ -105,7 +105,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
 
-    // Get the stream event registry and query client
+    // Get the stream event registry
     const { callbackRegistryRef } = useStreamCallbackRegistry();
 
     // Create callbacks that call all registered handlers
