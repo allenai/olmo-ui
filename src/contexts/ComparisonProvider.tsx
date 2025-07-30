@@ -17,7 +17,12 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
-import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
+import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
+import {
+    areModelsCompatibleForThread,
+    isModelVisible,
+    useModels,
+} from '@/components/thread/ModelSelect/useModels';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -65,11 +70,29 @@ function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
 // Create curried reducer using immer
 const curriedComparisonReducer = produce(comparisonReducer);
 
+// Check if all selected models are compatible with each other
+const areAllModelsCompatible = (models: Model[]): boolean => {
+    if (models.length < 2) return true;
+
+    for (let i = 0; i < models.length; i++) {
+        for (let j = i + 1; j < models.length; j++) {
+            if (!areModelsCompatibleForThread(models[i], models[j])) {
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
 // TODO: create more nuanced state to avoid unnecessary re-renders
 const ComparisonProviderContent = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
     const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>({});
     const firstMessageThreadIdsRef = useRef<Record<string, string>>({});
+
+    // Modal state for compatibility warning
+    const [shouldShowCompatibilityWarning, setShouldShowCompatibilityWarning] = useState(false);
+    const pendingSubmissionRef = useRef<QueryFormValues | null>(null);
 
     const [searchParams] = useSearchParams();
     const threadIds = useMemo(() => {
@@ -177,7 +200,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const streamMessage = useStreamMessage(streamCallbacks);
 
-    const onSubmit = useCallback(
+    const processSubmission = useCallback(
         async (data: QueryFormValues): Promise<void> => {
             // Reset first message tracking for new submission
             firstMessageThreadIdsRef.current = {};
@@ -206,6 +229,46 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         },
         [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models, threadIds]
     );
+
+    // Checks model compatibility before submission
+    const checkCompatibilityAndSubmit = useCallback(
+        async (data: QueryFormValues): Promise<void> => {
+            const selectedModels = Object.values(comparisonState)
+                .map((state) => state.modelId)
+                .filter(Boolean)
+                .map((modelId) => models.find((m) => m.id === modelId))
+                .filter(Boolean) as Model[];
+
+            const allCompatible = areAllModelsCompatible(selectedModels);
+
+            if (!allCompatible) {
+                // Store the pending submission and show warning
+                pendingSubmissionRef.current = data;
+                setShouldShowCompatibilityWarning(true);
+            } else {
+                await processSubmission(data);
+            }
+        },
+        [comparisonState, models, processSubmission]
+    );
+
+    // Handle confirmation of compatibility warning
+    const handleCompatibilityWarningConfirm = useCallback(async () => {
+        setShouldShowCompatibilityWarning(false);
+
+        // Proceed with the pending submission to incompatible models
+        if (pendingSubmissionRef.current) {
+            await processSubmission(pendingSubmissionRef.current);
+        }
+
+        // Clear pending submission
+        pendingSubmissionRef.current = null;
+    }, [processSubmission]);
+
+    const closeCompatibilityWarning = useCallback(() => {
+        setShouldShowCompatibilityWarning(false);
+        pendingSubmissionRef.current = null;
+    }, []);
 
     const contextValue: QueryContextValue = useMemo(() => {
         return {
@@ -246,7 +309,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 });
             },
 
-            onSubmit,
+            onSubmit: checkCompatibilityAndSubmit,
             onAbort: (e: UIEvent) => {
                 e.preventDefault();
                 streamMessage.abortAllStreams();
@@ -269,12 +332,24 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         comparisonState,
         models,
         streamMessage,
-        onSubmit,
+        checkCompatibilityAndSubmit,
         inferenceOpts,
         threadIds,
     ]);
 
-    return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
+    return (
+        <QueryContext.Provider value={contextValue}>
+            {children}
+            <ModelChangeWarningModal
+                open={shouldShowCompatibilityWarning}
+                onCancel={closeCompatibilityWarning}
+                onConfirm={handleCompatibilityWarningConfirm}
+                title="Incompatible models selected"
+                message="The selected models aren't compatible with each other. Continue anyway?"
+                confirmButtonText="Continue"
+            />
+        </QueryContext.Provider>
+    );
 };
 
 export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
