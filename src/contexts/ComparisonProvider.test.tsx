@@ -1,31 +1,50 @@
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import * as ReactRouterDom from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
 
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
+import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
 
 import { ComparisonProvider } from './ComparisonProvider';
 import { useQueryContext } from './QueryContext';
 
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ id: undefined })),
+    useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
+}));
+
 // Test helper to render ComparisonProvider with initial state
 const renderWithProvider = (
     TestComponent: React.ComponentType,
-    initialState?: { [threadViewId: string]: { modelId?: string; threadId?: string } },
-    mockUserInfo?: User | null
+    initialState?: { [threadViewId: string]: { modelId?: string } },
+    mockUserInfo?: User | null,
+    threadsParam?: string
 ) => {
-    vi.spyOn(AppContext, 'useAppContext').mockImplementation(() => {
-        return mockUserInfo;
-    });
+    vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
+
+    const mockSearchParams = new URLSearchParams();
+    if (threadsParam) {
+        mockSearchParams.set('threads', threadsParam);
+    }
+    vi.mocked(ReactRouterDom.useSearchParams).mockReturnValue([mockSearchParams, vi.fn()]);
 
     return render(
-        <ComparisonProvider initialState={initialState}>
-            <TestComponent />
-        </ComparisonProvider>
+        <FakeAppContextProvider
+            initialState={{
+                userInfo: mockUserInfo,
+                setIsShareReady: vi.fn(),
+            }}>
+            <ComparisonProvider initialState={initialState}>
+                <TestComponent />
+            </ComparisonProvider>
+        </FakeAppContextProvider>
     );
 };
 
-describe.skip('ComparisonProvider', () => {
+describe('ComparisonProvider', () => {
     describe('getPlaceholderText', () => {
         const PlaceholderTestComponent = () => {
             const context = useQueryContext();
@@ -99,13 +118,18 @@ describe.skip('ComparisonProvider', () => {
             });
         });
 
-        it('should return false when threads exist in comparison state', async () => {
+        it('should return false when threads exist in URL params', async () => {
             const initialState = {
-                'view-1': { threadId: 'thread-1' },
-                'view-2': { threadId: 'thread-2' },
+                'view-1': { modelId: 'tulu2' },
+                'view-2': { modelId: 'molmo' },
             };
 
-            const { getByTestId } = renderWithProvider(AutofocusTestComponent, initialState);
+            const { getByTestId } = renderWithProvider(
+                AutofocusTestComponent,
+                initialState,
+                undefined,
+                'thread-1,thread-2'
+            );
 
             await waitFor(() => {
                 expect(getByTestId('autofocus')).toHaveTextContent('false');
@@ -114,10 +138,6 @@ describe.skip('ComparisonProvider', () => {
     });
 
     describe('canSubmit', () => {
-        const CanSubmitTestComponent = () => {
-            return <div data-testid="can-submit">{'loading'}</div>;
-        };
-
         it('should return true when user is the creator of first message in all threads', async () => {
             const userInfo = createMockUser();
             const threadId1 = 'thread-1';
@@ -131,8 +151,17 @@ describe.skip('ComparisonProvider', () => {
                 messages: [{ creator: userInfo.client }],
             });
 
-            // Start with empty state - the component will use setters to populate it
-            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
+            const CanSubmitComponent = () => {
+                const context = useQueryContext();
+                return <div data-testid="can-submit">{String(context.canSubmit)}</div>;
+            };
+
+            const { getByTestId } = renderWithProvider(
+                CanSubmitComponent,
+                {},
+                userInfo,
+                'thread-1,thread-2'
+            );
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('true');
@@ -152,14 +181,24 @@ describe.skip('ComparisonProvider', () => {
                 messages: [{ creator: 'other-user' }],
             });
 
-            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
+            const CanSubmitComponent = () => {
+                const context = useQueryContext();
+                return <div data-testid="can-submit">{String(context.canSubmit)}</div>;
+            };
+
+            const { getByTestId } = renderWithProvider(
+                CanSubmitComponent,
+                {},
+                userInfo,
+                'thread-1,thread-2'
+            );
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
             });
         });
 
-        it('should return false when no threads are set via setters', async () => {
+        it('should return true when no threads exist (fresh comparison page)', async () => {
             const userInfo = createMockUser();
 
             const NoThreadsComponent = () => {
@@ -168,11 +207,11 @@ describe.skip('ComparisonProvider', () => {
                 return <div data-testid="can-submit">{String(canSubmit)}</div>;
             };
 
-            // Don't call any setters - state should remain empty
+            // Empty initial state. No threads in comparison
             const { getByTestId } = renderWithProvider(NoThreadsComponent, {}, userInfo);
 
             await waitFor(() => {
-                expect(getByTestId('can-submit')).toHaveTextContent('false');
+                expect(getByTestId('can-submit')).toHaveTextContent('true');
             });
         });
 
@@ -183,7 +222,12 @@ describe.skip('ComparisonProvider', () => {
                 messages: [{ creator: 'some-user' }],
             });
 
-            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, null);
+            const CanSubmitComponent = () => {
+                const context = useQueryContext();
+                return <div data-testid="can-submit">{String(context.canSubmit)}</div>;
+            };
+
+            const { getByTestId } = renderWithProvider(CanSubmitComponent, {}, null, 'thread-1');
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -198,7 +242,17 @@ describe.skip('ComparisonProvider', () => {
                 messages: [],
             });
 
-            const { getByTestId } = renderWithProvider(CanSubmitTestComponent, {}, userInfo);
+            const CanSubmitComponent = () => {
+                const context = useQueryContext();
+                return <div data-testid="can-submit">{String(context.canSubmit)}</div>;
+            };
+
+            const { getByTestId } = renderWithProvider(
+                CanSubmitComponent,
+                {},
+                userInfo,
+                'thread-1'
+            );
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -235,11 +289,16 @@ describe.skip('ComparisonProvider', () => {
             });
 
             const initialState = {
-                'view-1': { threadId: threadId1 },
-                'view-2': { threadId: threadId2 },
+                'view-1': { modelId: 'tulu2' },
+                'view-2': { modelId: 'molmo' },
             };
 
-            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, initialState);
+            const { getByTestId } = renderWithProvider(
+                IsLimitReachedTestComponent,
+                initialState,
+                undefined,
+                'thread-1,thread-2'
+            );
 
             await waitFor(() => {
                 expect(getByTestId('is-limit-reached')).toHaveTextContent('true');
@@ -265,11 +324,16 @@ describe.skip('ComparisonProvider', () => {
             });
 
             const initialState = {
-                'view-1': { threadId: threadId1 },
-                'view-2': { threadId: threadId2 },
+                'view-1': { modelId: 'tulu2' },
+                'view-2': { modelId: 'molmo' },
             };
 
-            const { getByTestId } = renderWithProvider(IsLimitReachedTestComponent, initialState);
+            const { getByTestId } = renderWithProvider(
+                IsLimitReachedTestComponent,
+                initialState,
+                undefined,
+                'thread-1,thread-2'
+            );
 
             await waitFor(() => {
                 expect(getByTestId('is-limit-reached')).toHaveTextContent('false');
@@ -322,7 +386,7 @@ describe.skip('ComparisonProvider', () => {
             },
             {
                 case: 'threadViewId exists but has no modelId',
-                initialState: { 'view-1': { threadId: 'thread-1' } },
+                initialState: { 'view-1': {} },
                 threadViewId: 'view-1',
             },
         ])('should return undefined when $case', async ({ initialState, threadViewId }) => {

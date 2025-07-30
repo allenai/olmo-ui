@@ -5,11 +5,12 @@ import { Thread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
+import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { AlertMessageSeverity, SnackMessageType } from '@/slices/SnackMessageSlice';
 
-import { getModelsQueryOptions, isModelVisible } from '../ModelSelect/useModels';
+import { getModelsQueryOptions } from '../ModelSelect/useModels';
 
 export const PARAM_SELECTED_MESSAGE = 'selectedMessage';
 
@@ -82,15 +83,7 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
 
     if (lastResponse != null) {
         const models = await modelsPromise;
-
-        if (lastResponse.modelId && models.some((model) => model.id === lastResponse.modelId)) {
-            // Use the model from the thread's last response
-            selectedModelId = lastResponse.modelId;
-        } else {
-            // TODO: SingleThreadProvider has this filter logic. Seems like we shouldn't have it here too.
-            const visibleModels = models.filter(isModelVisible);
-            selectedModelId = visibleModels[0]?.id;
-        }
+        selectedModelId = selectModelIdForThread(models, lastResponse);
     }
 
     const { isCorpusLinkEnabled } = getFeatureToggles();

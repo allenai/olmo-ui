@@ -1,11 +1,13 @@
 import { Box } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
+import { selectMessageById, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { useAppContext } from '@/AppContext';
 import { Ai2Avatar } from '@/components/avatars/Ai2Avatar';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
+import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { ScreenReaderAnnouncer } from '@/utils/a11y-utils';
 
 import { LLMMessage } from './LLMMessage';
@@ -24,16 +26,16 @@ export const ChatMessage = ({
     messageId,
     children,
 }: ChatMessageProps): JSX.Element => {
-    const streamPromptState = useAppContext((state) => state.streamPromptState);
-    const finalMessageContent = useAppContext((state) => {
-        if (
-            state.streamingMessageId !== messageId ||
-            state.streamPromptState !== RemoteState.Loaded
-        ) {
-            return null;
-        }
-        return state.selectedThreadMessagesById[messageId].content || null;
+    const { threadId } = useThreadView();
+    const { remoteState } = useQueryContext();
+
+    const { data: message } = useThread(threadId, {
+        select: selectMessageById(messageId),
+        staleTime: Infinity,
     });
+
+    // When streaming completes, announce the final content for this message
+    const finalMessageContent = remoteState === RemoteState.Loaded ? message?.content : null;
 
     const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
     const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
@@ -52,7 +54,7 @@ export const ChatMessage = ({
             </Box>
             <Box>
                 <MessageComponent messageId={messageId}>{children}</MessageComponent>
-                {streamPromptState === RemoteState.Loading && (
+                {remoteState === RemoteState.Loading && (
                     <ScreenReaderAnnouncer level="assertive" content="Generating LLM response" />
                 )}
                 {/* This gets the latest LLM response to alert screen readers */}

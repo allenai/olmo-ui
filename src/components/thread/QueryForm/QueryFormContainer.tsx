@@ -1,9 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
-import { links } from '@/Links';
 
 import { QueryForm } from './QueryForm';
 import { QueryFormNotice, type QueryFormNoticeProps } from './QueryFormNotices';
@@ -22,17 +20,10 @@ export const QueryFormContainer = ({
     selectedModelFamilyId,
 }: QueryFormContainerProps): JSX.Element => {
     const [shouldResetForm, setShouldResetForm] = useState(false);
-    const navigate = useNavigate();
-    const { id: currentThreadId } = useParams<{ id: string }>();
 
-    // Handle form reset and navigation on first message
-    useStreamEvent('onFirstMessage', (_threadViewId: string, message) => {
+    // Handle form reset on first message
+    useStreamEvent('onFirstMessage', (_threadViewId: string, _message) => {
         setShouldResetForm(true);
-
-        // Navigate to thread page when creating a new thread
-        if ('id' in message && 'messages' in message && !currentThreadId) {
-            navigate(links.thread(message.id));
-        }
 
         // Reset the flag after triggering the reset
         setTimeout(() => {
