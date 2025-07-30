@@ -31,7 +31,7 @@ import { FileSizeInput } from './FileSizeInput/FileSizeInput';
 
 const inputSizing = css({ maxWidth: '[20rem]' });
 
-const formSizing = css({ maxWidth: '[min(100%, 500px)]' });
+const formSizing = css({ maxWidth: '[min(100%, 32rem)]' });
 
 type MultiModalFormValues = Partial<
     Pick<
