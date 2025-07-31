@@ -19,7 +19,7 @@ export const NavigationFooter = () => {
             marginBlockStart="auto"
             id="nav-footer"
             gap={isDesktop ? 1 : 2}
-            component={isDesktop ? 'ul' : 'div'}
+            component={isDesktop ? 'div' : 'ul'}
             padding="0"
             marginBottom="0">
             <FooterLink
