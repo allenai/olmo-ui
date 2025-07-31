@@ -106,7 +106,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
 
     // Get the stream event registry
-    const { callbackRegistryRef } = useStreamCallbackRegistry();
+    const callbackRegistryRef = useStreamCallbackRegistry();
 
     // Create callbacks that call all registered handlers
     const streamCallbacks = useMemo(

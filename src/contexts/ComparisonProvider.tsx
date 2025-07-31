@@ -159,7 +159,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     }, [isShareReady, setIsShareReady]);
 
     // Get the stream event registry
-    const { callbackRegistryRef } = useStreamCallbackRegistry();
+    const callbackRegistryRef = useStreamCallbackRegistry();
 
     // Create callbacks that call all registered handlers
     const streamCallbacks = useMemo(

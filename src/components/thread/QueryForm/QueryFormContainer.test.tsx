@@ -55,9 +55,7 @@ const mockUseStreamCallbackRegistry = vi.mocked(useStreamCallbackRegistry);
 beforeEach(() => {
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
     mockUseStreamEvent.mockImplementation(() => {});
-    mockUseStreamCallbackRegistry.mockReturnValue({
-        callbackRegistryRef: { current: {} },
-    });
+    mockUseStreamCallbackRegistry.mockReturnValue({ current: {} });
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 });
 
