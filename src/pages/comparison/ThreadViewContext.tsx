@@ -1,9 +1,10 @@
-import { useMutationState, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutationState } from '@tanstack/react-query';
 import { createContext, useContext, useMemo } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useThread } from '@/api/playgroundApi/thread';
+import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { StreamingThread } from '@/contexts/submission-process';
 import { ThreadStreamMutationVariables } from '@/contexts/useStreamMessage';
@@ -26,8 +27,6 @@ export const ThreadViewProvider = ({
     threadViewId,
     children,
 }: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
-    const queryClient = useQueryClient();
-
     const { data: thread } = useThread(threadId, {
         select: (thread): StreamingThread => thread as StreamingThread,
         staleTime: Infinity,
@@ -36,36 +35,18 @@ export const ThreadViewProvider = ({
     const streamingMessageId = thread?.streamingMessageId;
     const isUpdatingMessageContent = thread?.isUpdatingMessageContent || false;
 
-    // Get active streams from react-query
-    const { data: activeThreadViewIds = new Set<string>() } = useQuery({
-        queryKey: ['thread-stream', 'active'],
-        queryFn: () => new Set<string>(),
-        staleTime: Infinity,
-        gcTime: Infinity,
-    });
+    // Get active streams and errors from zustand
+    const isActivelyStreaming = useAppContext((state) =>
+        state.activeThreadViewIds.includes(threadViewId)
+    );
 
-    // Check if this specific thread is actively streaming
-    const isActivelyStreaming = activeThreadViewIds.has(threadViewId);
+    const streamingError = useAppContext((state) => state.streamErrors[threadViewId]);
 
-    // Get streaming error for this threadViewId
-    const { data: streamingError } = useQuery({
-        queryKey: ['thread-stream', 'errors'],
-        queryFn: () => new Map<string, unknown>(),
-        select: (streamErrors) => streamErrors.get(threadViewId),
-        staleTime: Infinity,
-        gcTime: Infinity,
-    });
+    const clearStreamError = useAppContext((state) => state.clearStreamError);
 
     // Clear error when this thread starts streaming
     if (isActivelyStreaming && streamingError) {
-        queryClient.setQueryData(
-            ['thread-stream', 'errors'],
-            (old: Map<string, unknown> = new Map()) => {
-                const newMap = new Map(old);
-                newMap.delete(threadViewId);
-                return newMap;
-            }
-        );
+        clearStreamError(threadViewId);
     }
 
     //  Currently only used to track errors, but could be used for more

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
@@ -8,6 +8,7 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
 import { InferenceOpts } from '@/api/Schema';
+import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
@@ -46,32 +47,21 @@ const MODEL_DEFAULT_OVERRIDES: Record<string, NullishPartial<InferenceOpts>> = {
 };
 
 export const useStreamMessage = (callbacks?: StreamCallbacks) => {
-    const queryClient = useQueryClient();
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
     const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
 
-    // Track active streams
-    const { data: activeStreams = new Set<string>() } = useQuery({
-        queryKey: ['thread-stream', 'active'],
-        queryFn: () => new Set<string>(),
-        staleTime: Infinity,
-        gcTime: Infinity,
-    });
+    // Track active streams with zustand
+    const activeStreams = useAppContext((state) => state.activeThreadViewIds);
+    const addActiveStream = useAppContext((state) => state.addActiveStream);
+    const removeActiveStream = useAppContext((state) => state.removeActiveStream);
+    const clearAllActiveStreams = useAppContext((state) => state.clearAllActiveStreams);
 
     const startStream = (threadViewId: ThreadViewId) => {
-        queryClient.setQueryData(['thread-stream', 'active'], (old: Set<string> = new Set()) => {
-            const newSet = new Set(old);
-            newSet.add(threadViewId);
-            return newSet;
-        });
+        addActiveStream(threadViewId);
     };
 
     const stopStream = (threadViewId: ThreadViewId) => {
-        queryClient.setQueryData(['thread-stream', 'active'], (old: Set<string> = new Set()) => {
-            const newSet = new Set(old);
-            newSet.delete(threadViewId);
-            return newSet;
-        });
+        removeActiveStream(threadViewId);
         abortControllersRef.current.delete(threadViewId);
     };
 
@@ -234,8 +224,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
             controller.abort();
         });
         abortControllersRef.current.clear();
-        // Clear all active streams
-        queryClient.setQueryData(['thread-stream', 'active'], new Set<string>());
+        clearAllActiveStreams();
     };
 
     // Function to clean up a specific stream when it completes
@@ -258,17 +247,17 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         onFirstMessage: handleFirstMessage,
 
         // State
-        canPause: mutation.isPending || activeStreams.size > 0,
-        activeStreamCount: activeStreams.size,
+        canPause: mutation.isPending || activeStreams.length > 0,
+        activeStreamCount: activeStreams.length,
         hasReceivedFirstResponse,
         remoteState: (() => {
             // Compatibility with RemoteState
             switch (true) {
-                case mutation.isPending || activeStreams.size > 0:
+                case mutation.isPending || activeStreams.length > 0:
                     return RemoteState.Loading;
                 case mutation.isError:
                     return RemoteState.Error;
-                case activeStreams.size === 0:
+                case activeStreams.length === 0:
                     return RemoteState.Loaded;
                 default:
                     return RemoteState.Loaded;

@@ -19,6 +19,7 @@ import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
+import { createThreadStreamSlice, ThreadStreamSlice } from './slices/ThreadStreamSlice';
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { createTranscriptionSlice, TranscriptionSlice } from './slices/TranscriptionSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
@@ -28,6 +29,7 @@ type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
 export type AppContextState = LabelSlice &
     PromptTemplateSlice &
     ThreadSlice &
+    ThreadStreamSlice &
     SnackMessageSlice &
     UserSlice &
     ModelSlice &
@@ -60,6 +62,7 @@ export const createAppContext = (
                         ...createPromptTemplateSlice(...store),
                         ...createSnackMessageSlice(...store),
                         ...createThreadSlice(...store),
+                        ...createThreadStreamSlice(...store),
                         ...createLabelSlice(...store),
                         ...createUserSlice(...store),
                         ...createModelSlice(...store),
