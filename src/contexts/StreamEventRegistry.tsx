@@ -40,7 +40,10 @@ export const useStreamEvent = <T extends keyof StreamEventMap>(
     callback: StreamEventMap[T],
     threadViewId?: string // Optional: only receive events for this threadViewId
 ) => {
-    const callbackRegistryRef = ensureContext(StreamRegistryContext, 'StreamEventRegistry').callbackRegistryRef;
+    const callbackRegistryRef = ensureContext(
+        StreamRegistryContext,
+        'StreamEventRegistry'
+    ).callbackRegistryRef;
 
     useEffect(() => {
         const registry = callbackRegistryRef.current;
@@ -75,7 +78,7 @@ export const StreamEventRegistryProvider = ({ children }: { children: React.Reac
     );
 };
 
-// Hook to get the registry refs (for providers to use)
+// Hook to get the registry ref (for providers to use)
 export const useStreamCallbackRegistry = () => {
     const context = ensureContext(StreamRegistryContext, 'StreamEventRegistry');
     return context.callbackRegistryRef;
