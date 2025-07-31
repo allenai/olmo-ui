@@ -297,7 +297,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             getThreadViewModel: (threadViewId?: string) => {
                 if (!threadViewId) return undefined;
-                const modelId = comparisonState[threadViewId].modelId;
+                const modelId = comparisonState[threadViewId]?.modelId;
                 return modelId ? models.find((model) => model.id === modelId) : undefined;
             },
 
