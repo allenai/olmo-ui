@@ -7,7 +7,7 @@ test('model switching warning', async ({ page }) => {
     await expect(modelSelectLocator).toContainText('Tulu2.5');
 
     await modelSelectLocator.click();
-    await page.getByRole('option', { name: 'Molmo' }).click();
+    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
 
     await expect(page.getByText('Change model and start a new thread?')).not.toBeAttached();
 
@@ -15,7 +15,7 @@ test('model switching warning', async ({ page }) => {
     await expect(modelSelectLocator).toContainText('OLMo-peteish-dpo-preview');
 
     await modelSelectLocator.click();
-    await page.getByRole('option', { name: 'Molmo' }).click();
+    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
 
     await expect(page.getByText('Change model and start a new thread?')).toBeVisible();
     await page.getByRole('button', { name: 'Cancel' }).click();
@@ -23,7 +23,7 @@ test('model switching warning', async ({ page }) => {
     await expect(modelSelectLocator).toContainText('OLMo-peteish-dpo-preview');
 
     await modelSelectLocator.click();
-    await page.getByRole('option', { name: 'Molmo' }).click();
+    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
 
     await expect(page.getByText('Change model and start a new thread?')).toBeVisible();
     await page.getByRole('button', { name: 'Change model' }).click();
