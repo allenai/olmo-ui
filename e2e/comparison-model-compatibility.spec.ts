@@ -23,7 +23,7 @@ test('comparison model switching warning after responses', async ({ page }) => {
 
     // Now switch first model to an incompatible one (Molmo accepts files)
     await model1Select.click();
-    await page.getByRole('option', { name: 'Molmo' }).click();
+    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
 
     // Try to submit another message
     await page.getByRole('textbox', { name: /^Reply to*/ }).fill('Follow up question');
@@ -60,10 +60,10 @@ test('comparison incompatible models warning on fresh page', async ({ page }) =>
     const model2Select = page.getByRole('combobox', { name: 'Model' }).nth(1);
 
     await model1Select.click();
-    await page.getByRole('option', { name: 'Tulu2.5' }).click();
+    await page.getByRole('option', { name: 'Tulu2.5' }).dispatchEvent('click');
 
     await model2Select.click();
-    await page.getByRole('option', { name: 'Molmo' }).click();
+    await page.getByRole('option', { name: 'Molmo' }).dispatchEvent('click');
 
     // Try to submit a query
     await page.getByRole('textbox', { name: /^Message*/ }).fill('What is AI?');
