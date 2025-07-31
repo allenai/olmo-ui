@@ -303,6 +303,16 @@ export const processSingleModelSubmission = async (
         // The actual request succeeded, so react-query doesn't know about the error
         onCompleteStream?.(threadViewId);
 
+        // Store streaming error in react-query cache
+        queryClient.setQueryData(
+            ['thread-stream', 'errors'],
+            (old: Map<string, unknown> = new Map()) => {
+                const newMap = new Map(old);
+                newMap.set(threadViewId, error);
+                return newMap;
+            }
+        );
+
         if (addSnackMessage) {
             return handleSubmissionError(error, model.id, addSnackMessage);
         } else {

@@ -1,4 +1,4 @@
-import { useMutationState, useQuery } from '@tanstack/react-query';
+import { useMutationState, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createContext, useContext, useMemo } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
@@ -26,6 +26,8 @@ export const ThreadViewProvider = ({
     threadViewId,
     children,
 }: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
+    const queryClient = useQueryClient();
+
     const { data: thread } = useThread(threadId, {
         select: (thread): StreamingThread => thread as StreamingThread,
         staleTime: Infinity,
@@ -45,6 +47,27 @@ export const ThreadViewProvider = ({
     // Check if this specific thread is actively streaming
     const isActivelyStreaming = activeThreadViewIds.has(threadViewId);
 
+    // Get streaming error for this threadViewId
+    const { data: streamingError } = useQuery({
+        queryKey: ['thread-stream', 'errors'],
+        queryFn: () => new Map<string, unknown>(),
+        select: (streamErrors) => streamErrors.get(threadViewId),
+        staleTime: Infinity,
+        gcTime: Infinity,
+    });
+
+    // Clear error when this thread starts streaming
+    if (isActivelyStreaming && streamingError) {
+        queryClient.setQueryData(
+            ['thread-stream', 'errors'],
+            (old: Map<string, unknown> = new Map()) => {
+                const newMap = new Map(old);
+                newMap.delete(threadViewId);
+                return newMap;
+            }
+        );
+    }
+
     //  Currently only used to track errors, but could be used for more
     const mutationStates = useMutationState({
         filters: {
@@ -58,19 +81,20 @@ export const ThreadViewProvider = ({
         },
     });
 
-    // Derive RemoteState from active streaming and mutation errors
+    // Derive RemoteState
     const remoteState = useMemo(() => {
         if (isActivelyStreaming) {
             return RemoteState.Loading;
         }
 
+        // Check for streaming errors or mutation errors
         const latestThreadMutation = mutationStates[mutationStates.length - 1];
-        if (latestThreadMutation && latestThreadMutation.status === 'error') {
+        if (streamingError || (latestThreadMutation && latestThreadMutation.status === 'error')) {
             return RemoteState.Error;
         }
 
         return RemoteState.Loaded; // Default to "loaded"
-    }, [isActivelyStreaming, mutationStates]);
+    }, [isActivelyStreaming, streamingError, mutationStates]);
 
     const value = {
         threadId,
