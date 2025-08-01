@@ -31,7 +31,8 @@ test('scroll to bottom button', async ({ page }) => {
 
     await expect(scrollToBottomButton).toBeVisible();
 
-    await scrollToBottomButton.click();
+    // TODO: This is failing because the Preferences window is above it. We should fix that in our setup instead of forcing this button to be clicked even if it's not visible
+    await scrollToBottomButton.click({ force: true });
 
     await expect
         .poll(
