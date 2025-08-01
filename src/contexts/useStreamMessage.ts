@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { error } from '@/api/error';
@@ -51,7 +52,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
     const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
 
     // Track active streams with zustand
-    const activeStreams = useAppContext((state) => state.activeThreadViewIds);
+    const activeStreams = useAppContext(useShallow((state) => state.activeThreadViewIds));
     const addActiveStream = useAppContext((state) => state.addActiveStream);
     const removeActiveStream = useAppContext((state) => state.removeActiveStream);
     const clearAllActiveStreams = useAppContext((state) => state.clearAllActiveStreams);
@@ -219,19 +220,22 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
     });
 
     // Abort functionality
-    const abortAllStreams = () => {
+    const abortAllStreams = useCallback(() => {
         abortControllersRef.current.forEach((controller, _threadViewId) => {
             controller.abort();
         });
         abortControllersRef.current.clear();
         clearAllActiveStreams();
-    };
+    }, [clearAllActiveStreams]);
 
     // Function to clean up a specific stream when it completes
-    const completeStream = (threadViewId: ThreadViewId) => {
-        stopStream(threadViewId);
-        callbacks?.onCompleteStream?.(threadViewId);
-    };
+    const completeStream = useCallback(
+        (threadViewId: ThreadViewId) => {
+            stopStream(threadViewId);
+            callbacks?.onCompleteStream?.(threadViewId);
+        },
+        [callbacks, stopStream]
+    );
 
     return {
         // Original mutation interface

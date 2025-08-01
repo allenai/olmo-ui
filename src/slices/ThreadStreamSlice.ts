@@ -46,7 +46,12 @@ export const createThreadStreamSlice: OlmoStateCreator<ThreadStreamSlice> = (set
 
     clearAllActiveStreams: () => {
         set((state: ThreadStreamSlice) => {
-            state.activeThreadViewIds = [];
+            // This check is here because this could get called in a loop and cause infinite re-renders
+            // We're setting memoization on other parts of the app but this is the real fix
+            // Do not change this unless you're very certain of what you're doing!
+            if (state.activeThreadViewIds.length > 0) {
+                state.activeThreadViewIds = [];
+            }
         });
     },
 });
