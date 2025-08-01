@@ -34,6 +34,7 @@ type NavigationLinkProps = PropsWithChildren & {
     isExternalLink?: boolean;
     variant?: 'default' | 'footer';
     DisclosureIcon?: SvgIconComponent;
+    experimental?: boolean;
     inset?: boolean;
     dense?: boolean;
     linkProps?: Partial<ListItemButtonProps>;
@@ -55,6 +56,7 @@ export const NavigationLink = ({
     selected,
     variant = 'default',
     DisclosureIcon,
+    experimental = false,
     inset,
     linkProps = {},
     sx,
@@ -148,6 +150,10 @@ export const NavigationLink = ({
                             sx={{
                                 fontSize: '1rem',
                                 opacity: 0.5,
+                                ...(experimental && {
+                                    color: (theme) => theme.palette.warning.main,
+                                    opacity: 1,
+                                }),
                             }}
                         />
                     ) : null}
