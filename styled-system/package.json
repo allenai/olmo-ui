@@ -1,0 +1,65 @@
+{
+  "name": "@allenai/varnish-panda-runtime",
+  "version": "0.0.0",
+  "description": "Run time for AI2's Varnish UI",
+  "repository": "git@github.com:allenai/varnish.git",
+  "author": "reviz@allenai.org",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    "./css": {
+      "types": "./css/index.d.ts",
+      "require": "./css/index.js",
+      "import": "./css/index.js"
+    },
+    "./jsx": {
+      "types": "./jsx/index.d.ts",
+      "require": "./jsx/index.js",
+      "import": "./jsx/index.js"
+    },
+    "./patterns": {
+      "types": "./patterns/index.d.ts",
+      "require": "./patterns/index.js",
+      "import": "./patterns/index.js"
+    },
+    "./recipes": {
+      "types": "./recipes/index.d.ts",
+      "require": "./recipes/index.js",
+      "import": "./recipes/index.js"
+    },
+    "./tokens": {
+      "types": "./tokens/index.d.ts",
+      "require": "./tokens/index.js",
+      "import": "./tokens/index.js"
+    },
+    "./types": {
+      "types": "./types/index.d.ts"
+    },
+    "./styles.css": "./styles.css"
+  },
+  "typesVersions": {
+    "*": {
+      "css": [
+        "./css/index.d.ts"
+      ],
+      "jsx": [
+        "./jsx/index.d.ts"
+      ],
+      "patterns": [
+        "./patterns/index.d.ts"
+      ],
+      "recipes": [
+        "./recipes/index.d.ts"
+      ],
+      "tokens": [
+        "./tokens/index.d.ts"
+      ],
+      "types": [
+        "./types/index.d.ts"
+      ]
+    }
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}
