@@ -25,8 +25,9 @@ const threadContainerClassNames = css({
     display: 'flex',
     height: '[100%]',
 
-    overflow: {
-        base: 'auto hidden',
+    overflowY: 'hidden',
+    overflowX: {
+        base: 'auto',
         lg: 'hidden',
     },
 
@@ -74,7 +75,7 @@ export const CompareThreadDisplay = () => {
                 {
                     root: threadContainerRef.current,
                     rootMargin: '0px',
-                    threshold: 1.0,
+                    threshold: 0.51,
                 }
             );
             threadContainerRef.current.querySelectorAll('[role="tabpanel"]').forEach((element) => {
