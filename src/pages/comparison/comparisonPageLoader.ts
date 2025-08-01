@@ -12,6 +12,7 @@ import {
     modelById,
 } from '@/components/thread/ModelSelect/useModels';
 import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
+import { getFeatureToggles } from '@/FeatureToggleContext';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 import { arrayZip } from '@/utils/arrayZip';
 
@@ -76,7 +77,7 @@ const initializeDefaultComparisonModels = (
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ params: _params, request }) => {
-        const isComparisonPageEnabled = process.env.IS_COMPARISON_PAGE_ENABLED === 'true';
+        const { isComparisonPageEnabled } = getFeatureToggles();
 
         if (!isComparisonPageEnabled) {
             // React-router recommends throwing a response
