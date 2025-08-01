@@ -3,9 +3,10 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
+import ScienceIcon from '@mui/icons-material/Science';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
-import { IconButton, Link, ListItem, Stack } from '@mui/material';
+import { IconButton, Link, ListItem, Stack, Tooltip } from '@mui/material';
 import { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
@@ -110,7 +111,17 @@ export const NavigationDrawer = ({
                             <NavigationLink
                                 icon={<ViewColumnIcon />}
                                 selected={curriedDoesMatchPath(links.comparison)}
-                                href={links.comparison}>
+                                href={links.comparison}
+                                DisclosureIcon={() => (
+                                    <Tooltip title="Experimental feature" arrow>
+                                        <ScienceIcon
+                                            sx={{
+                                                color: (theme) => theme.palette.warning.main,
+                                                fontSize: '1.2rem',
+                                            }}
+                                        />
+                                    </Tooltip>
+                                )}>
                                 Compare models
                             </NavigationLink>
                         )}
