@@ -1,6 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { PropsWithChildren } from 'react';
 
+import { useDesktopOrUp } from '@/components/dolma/shared';
+
 import { viewPanelId, viewTabId } from './tabAttributes';
 
 const singleThreadContainerClassNames = css({
@@ -24,8 +26,10 @@ export const ComparisonTabPanel = ({
     isSelected,
     children,
 }: ComparsonTabPanelProps) => {
+    const isDesktop = useDesktopOrUp();
+    const mobileAndNotSelected = !isDesktop && !isSelected;
     // react 18 doesn't define the inert prop on HTML elements
-    const inertProp = { inert: !isSelected ? '' : undefined };
+    const inertProp = { inert: mobileAndNotSelected ? '' : undefined };
     return (
         <div
             key={threadViewId}
