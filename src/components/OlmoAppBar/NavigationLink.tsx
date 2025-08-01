@@ -37,6 +37,7 @@ type NavigationLinkProps = PropsWithChildren & {
     inset?: boolean;
     dense?: boolean;
     linkProps?: Partial<ListItemButtonProps>;
+    sx?: SxProps<Theme>;
     textSx?: SxProps<Theme>;
 } & (
         | {
@@ -56,6 +57,7 @@ export const NavigationLink = ({
     DisclosureIcon,
     inset,
     linkProps = {},
+    sx,
     textSx,
 }: NavigationLinkProps) => {
     const isInternalLink = href != null && href.startsWith('/');
@@ -79,7 +81,7 @@ export const NavigationLink = ({
     };
 
     return (
-        <ListItem disablePadding dense>
+        <ListItem disablePadding dense sx={sx}>
             <ListItemButton
                 alignItems="center"
                 selected={selected}

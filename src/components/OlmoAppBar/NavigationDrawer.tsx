@@ -2,28 +2,23 @@ import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-materia
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
-import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
-import { IconButton, Link, ListItem, Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
-import Ai2Icon from '@/components/assets/ai2.svg?react';
-import DiscordIcon from '@/components/assets/discord.svg?react';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
-import { useDesktopOrUp } from '../dolma/shared';
 import { ResponsiveDrawer } from '../ResponsiveDrawer';
 import { HISTORY_DRAWER_ID } from '../thread/history/HistoryDrawer';
-import { AvatarMenuLink } from './AvatarMenuLink';
+import { NavigationFooter } from './Footer/NavigationFooter';
 import { HomeLink } from './HomeLink';
-import { LoginLink } from './LoginLink';
 import { NavigationLink } from './NavigationLink';
 import { NewChatButton } from './NewChatButton';
 
@@ -52,7 +47,6 @@ export const NavigationDrawer = ({
     open,
     ...props
 }: NavigationDrawerProps): ReactNode => {
-    const isDesktop = useDesktopOrUp();
     const matches = useMatches();
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
@@ -132,62 +126,7 @@ export const NavigationDrawer = ({
                             </NavigationLink>
                         )}
                     </Stack>
-                    <Stack
-                        marginBlockStart="auto"
-                        id="nav-footer"
-                        gap={1}
-                        component="ul"
-                        padding="0"
-                        marginBottom="0">
-                        {!isDesktop && (
-                            <NavigationLink
-                                icon={<Ai2Icon height={20} width={20} viewBox="0 0 72 72" />}
-                                href={links.ai2}
-                                DisclosureIcon={LaunchOutlinedIcon}
-                                textSx={(theme) => ({
-                                    color: theme.palette.primary.main,
-                                })}>
-                                allenai.org
-                            </NavigationLink>
-                        )}
-                        {!isDesktop && (
-                            <NavigationLink
-                                icon={<DiscordIcon />}
-                                href={links.discord}
-                                DisclosureIcon={LaunchOutlinedIcon}
-                                textSx={(theme) => ({
-                                    color: theme.palette.primary.main,
-                                })}>
-                                Discord
-                            </NavigationLink>
-                        )}
-
-                        {isDesktop && <LoginLink />}
-                        <AvatarMenuLink />
-                        {isDesktop && (
-                            <ListItem
-                                sx={{
-                                    paddingInline: 4,
-                                    paddingBlock: 2,
-                                    gap: 3,
-                                }}>
-                                <Link
-                                    href={links.ai2}
-                                    target="_blank"
-                                    rel="noreferer"
-                                    fontWeight={600}>
-                                    allenai.org
-                                </Link>
-                                <Link
-                                    href={links.discord}
-                                    target="_blank"
-                                    rel="noreferer"
-                                    fontWeight={600}>
-                                    Discord
-                                </Link>
-                            </ListItem>
-                        )}
-                    </Stack>
+                    <NavigationFooter />
                 </Stack>
             </ResponsiveDrawer>
         </>

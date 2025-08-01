@@ -38,7 +38,7 @@ export const links = {
     olmoeMixDownload: 'https://huggingface.co/datasets/allenai/OLMoE-mix-0924',
     olmoeAppStoreDownload: 'https://apps.apple.com/app/id6738533815',
     odc: 'https://blog.allenai.org/making-a-switch-dolma-moves-to-odc-by-8f0e73852f44',
-    documentation: 'http://allenai.org/documentation',
+    documentation: 'https://docs.allenai.org',
     googlePrivacy: 'https://policies.google.com/privacy',
     googleTerms: 'https://policies.google.com/terms',
     discord: 'https://discord.gg/NE5xPufNwu',
