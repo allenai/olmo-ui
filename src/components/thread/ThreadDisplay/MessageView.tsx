@@ -36,10 +36,7 @@ export const MessageView = ({
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
     const { threadId, streamingMessageId, remoteState } = useThreadView();
-    const { data: message, error: _error } = useThread(threadId, {
-        select: selectMessageById(messageId),
-        staleTime: Infinity,
-    });
+    const { data: message, error: _error } = useThread(threadId, selectMessageById(messageId));
     if (!message) {
         return null; // this shouldn't happen
     }

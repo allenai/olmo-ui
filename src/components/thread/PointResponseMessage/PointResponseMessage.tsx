@@ -154,17 +154,11 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const theme = useTheme();
     const { threadId } = useThreadView();
-    const { data: message, error: _error } = useThread(threadId, {
-        select: selectMessageById(messageId),
-        staleTime: Infinity,
-    });
-    const { data: lastImagesInThread } = useThread(threadId, {
-        select: (thread) => {
-            return thread.messages
-                .filter((message) => message.role === Role.User && message.fileUrls?.length)
-                .at(-1)?.fileUrls;
-        },
-        staleTime: Infinity,
+    const { data: message, error: _error } = useThread(threadId, selectMessageById(messageId));
+    const { data: lastImagesInThread } = useThread(threadId, (thread) => {
+        return thread.messages
+            .filter((message) => message.role === Role.User && message.fileUrls?.length)
+            .at(-1)?.fileUrls;
     });
     if (!message) {
         return null; // this shouldn't happen

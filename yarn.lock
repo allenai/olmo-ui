@@ -11760,10 +11760,10 @@ open@^8.0.4, open@^8.0.9, open@^8.4.0:
     is-docker "^2.1.1"
     is-wsl "^2.2.0"
 
-openapi-fetch@^0.13.5:
-  version "0.13.5"
-  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.13.5.tgz#805606860d85b8ba8c2e7cb36ea30b473d8065d9"
-  integrity sha512-AQK8T9GSKFREFlN1DBXTYsLjs7YV2tZcJ7zUWxbjMoQmj8dDSFRrzhLCbHPZWA1TMV3vACqfCxLEZcwf2wxV6Q==
+openapi-fetch@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.14.0.tgz#4f87d867cb91edf0b63acb7e5eaf366517dcb545"
+  integrity sha512-PshIdm1NgdLvb05zp8LqRQMNSKzIlPkyMxYFxwyHR+UlKD4t2nUjkDhNxeRbhRSEd3x5EUNh2w5sJYwkhOH4fg==
   dependencies:
     openapi-typescript-helpers "^0.0.15"
 
@@ -11772,10 +11772,10 @@ openapi-msw@^1.2.0:
   resolved "https://registry.yarnpkg.com/openapi-msw/-/openapi-msw-1.2.0.tgz#4c270d538d5c2604699875d6a25ab66c2ab86032"
   integrity sha512-Ksm8xG8Lm8O9IU0rC7d1rQ0kcqYf5+qW+iz94G5fuZ/tfinjzSPnhBEwRj7dStvlqCMFQEriVWt7rplbvg0zqA==
 
-openapi-react-query@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/openapi-react-query/-/openapi-react-query-0.3.1.tgz#d284f8d7e4bbc26f825c5837d74528dad930dd67"
-  integrity sha512-1R3NunDpf6koap0pF4AiUO5Asw4o3GmKrer6r8+2kvfLTxgHNm9vm7F0grZUcKG1tfc9qKrGa5NSvoMqa79DMg==
+openapi-react-query@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/openapi-react-query/-/openapi-react-query-0.5.0.tgz#85f42f6f7ea175df44897fe760d8dda1903f83ce"
+  integrity sha512-VtyqiamsbWsdSWtXmj/fAR+m9nNxztsof6h8ZIsjRj8c8UR/x9AIwHwd60IqwgymmFwo7qfSJQ1ZzMJrtqjQVg==
   dependencies:
     openapi-typescript-helpers "^0.0.15"
 

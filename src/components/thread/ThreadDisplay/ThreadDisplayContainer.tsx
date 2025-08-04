@@ -37,12 +37,9 @@ const ThreadDisplayContent = () => {
     const [searchParams, _] = useSearchParams();
     const selectedMessageId = searchParams.get(PARAM_SELECTED_MESSAGE);
 
-    const { data, error: _error } = useThread(selectedThreadRootId, {
-        select: (thread) => thread.messages,
-        staleTime: Infinity,
-    });
+    const { data, error: _error } = useThread(selectedThreadRootId);
     // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
-    const messages = data ?? [];
+    const messages = data?.messages ?? [];
     const childIds = messages.map((message) => message.id);
 
     return (

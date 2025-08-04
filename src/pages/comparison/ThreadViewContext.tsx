@@ -27,10 +27,7 @@ export const ThreadViewProvider = ({
     threadViewId,
     children,
 }: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
-    const { data: thread } = useThread(threadId, {
-        select: (thread): StreamingThread => thread as StreamingThread,
-        staleTime: Infinity,
-    });
+    const { data: thread } = useThread(threadId, (thread) => thread as StreamingThread);
 
     const streamingMessageId = thread?.streamingMessageId;
     const isUpdatingMessageContent = thread?.isUpdatingMessageContent || false;

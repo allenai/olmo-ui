@@ -8,10 +8,7 @@ import { addHighlightsToText } from './add-highlights-to-text';
 export const useSpanHighlighting = (messageId: string) => {
     const { isCorpusLinkEnabled } = useFeatureToggles();
     const { threadId } = useThreadView();
-    const { data, error: _error } = useThread(threadId, {
-        select: selectMessageById(messageId),
-        staleTime: Infinity,
-    });
+    const { data, error: _error } = useThread(threadId, selectMessageById(messageId));
 
     // this shouldn't happen
     const content = data?.content || '';
