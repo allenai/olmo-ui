@@ -1,10 +1,14 @@
-import { createContext, useContext } from 'react';
+import { useMutationState } from '@tanstack/react-query';
+import { createContext, useContext, useMemo } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useThread } from '@/api/playgroundApi/thread';
+import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { StreamingThread } from '@/contexts/submission-process';
+import { ThreadStreamMutationVariables } from '@/contexts/useStreamMessage';
+import { RemoteState } from '@/contexts/util';
 
 export type ThreadViewId = string;
 
@@ -13,6 +17,7 @@ interface ThreadViewContextProps {
     threadViewId: ThreadViewId;
     streamingMessageId?: string;
     isUpdatingMessageContent?: boolean;
+    remoteState: RemoteState;
 }
 
 const ThreadViewContext = createContext<ThreadViewContextProps | null>(null);
@@ -30,7 +35,55 @@ export const ThreadViewProvider = ({
     const streamingMessageId = thread?.streamingMessageId;
     const isUpdatingMessageContent = thread?.isUpdatingMessageContent || false;
 
-    const value = { threadId, threadViewId, streamingMessageId, isUpdatingMessageContent };
+    // Get active streams and errors from zustand
+    const isActivelyStreaming = useAppContext((state) =>
+        state.activeThreadViewIds.includes(threadViewId)
+    );
+
+    const streamingError = useAppContext((state) => state.streamErrors[threadViewId]);
+
+    const clearStreamError = useAppContext((state) => state.clearStreamError);
+
+    // Clear error when this thread starts streaming
+    if (isActivelyStreaming && streamingError) {
+        clearStreamError(threadViewId);
+    }
+
+    //  Currently only used to track errors, but could be used for more
+    const mutationStates = useMutationState({
+        filters: {
+            mutationKey: ['thread-stream'],
+            predicate: (mutation) => {
+                const variables = mutation.state.variables as
+                    | ThreadStreamMutationVariables
+                    | undefined;
+                return variables?.threadViewId === threadViewId;
+            },
+        },
+    });
+
+    // Derive RemoteState
+    const remoteState = useMemo(() => {
+        if (isActivelyStreaming) {
+            return RemoteState.Loading;
+        }
+
+        // Check for streaming errors or mutation errors
+        const latestThreadMutation = mutationStates[mutationStates.length - 1];
+        if (streamingError || (latestThreadMutation && latestThreadMutation.status === 'error')) {
+            return RemoteState.Error;
+        }
+
+        return RemoteState.Loaded; // Default to "loaded"
+    }, [isActivelyStreaming, streamingError, mutationStates]);
+
+    const value = {
+        threadId,
+        threadViewId,
+        streamingMessageId,
+        isUpdatingMessageContent,
+        remoteState,
+    };
 
     return <ThreadViewContext.Provider value={value}>{children}</ThreadViewContext.Provider>;
 };

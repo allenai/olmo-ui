@@ -63,7 +63,9 @@ export const MessageInteraction = ({
         setCopySnackbarOpen(true);
     }, [content]);
 
-    if (role === Role.User || isStreaming) {
+    const shouldHide = role === Role.User || isStreaming;
+
+    if (shouldHide) {
         return null;
     }
 

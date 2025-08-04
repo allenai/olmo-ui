@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { error } from '@/api/error';
@@ -8,6 +9,7 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
 import { InferenceOpts } from '@/api/Schema';
+import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
@@ -15,6 +17,14 @@ import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import { StreamingMessageResponse } from './submission-process';
+
+export interface ThreadStreamMutationVariables {
+    request: StreamMessageRequest;
+    threadViewId: string;
+    model: Model;
+    thread?: Thread;
+    inferenceOpts: RequestInferenceOpts;
+}
 
 interface StreamCallbacks {
     onNewUserMessage?: (threadViewId: string) => void;
@@ -38,25 +48,21 @@ const MODEL_DEFAULT_OVERRIDES: Record<string, NullishPartial<InferenceOpts>> = {
 };
 
 export const useStreamMessage = (callbacks?: StreamCallbacks) => {
-    const [activeStreams, setActiveStreams] = useState<Set<string>>(new Set());
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
     const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
 
-    // Internal state management functions
+    // Track active streams with zustand
+    const activeStreams = useAppContext(useShallow((state) => state.activeThreadViewIds));
+    const addActiveStream = useAppContext((state) => state.addActiveStream);
+    const removeActiveStream = useAppContext((state) => state.removeActiveStream);
+    const clearAllActiveStreams = useAppContext((state) => state.clearAllActiveStreams);
+
     const startStream = (threadViewId: ThreadViewId) => {
-        setActiveStreams((prev) => {
-            const next = new Set(prev);
-            next.add(threadViewId);
-            return next;
-        });
+        addActiveStream(threadViewId);
     };
 
     const stopStream = (threadViewId: ThreadViewId) => {
-        setActiveStreams((prev) => {
-            const next = new Set(prev);
-            next.delete(threadViewId);
-            return next;
-        });
+        removeActiveStream(threadViewId);
         abortControllersRef.current.delete(threadViewId);
     };
 
@@ -192,41 +198,44 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         }
     };
 
-    const mutation = useMutation({
+    const mutation = useMutation<
+        { response: Response; abortController: AbortController },
+        Error,
+        ThreadStreamMutationVariables
+    >({
+        mutationKey: ['thread-stream'],
         mutationFn: queryToThreadOrView,
         onMutate(variables) {
-            console.log('DEBUG [bb] useStreamMessage: onMutate', variables);
+            startStream(variables.threadViewId);
         },
-        onSuccess(data, variables) {
-            // this gets the stream before its done
-            console.log('DEBUG [bb] onSuccess', data, variables);
+        onSuccess(_data, _variables) {
+            // Stream is now active (not completed)
         },
-        onSettled(data, error, variables, context) {
-            console.log('DEBUG [bb] onSettled', data, error, variables, context);
+        onSettled(_data, _error, _variables, _context) {
+            // We might not need onComplete to be called in submission-process
         },
-        onError(error, variables, context) {
-            console.log('DEBUG [bb] onError', error, variables, context);
-            // Clean up stream state on error
-            if (variables.threadViewId) {
-                stopStream(variables.threadViewId);
-            }
+        onError(_error, variables, _context) {
+            stopStream(variables.threadViewId);
         },
     });
 
     // Abort functionality
-    const abortAllStreams = () => {
+    const abortAllStreams = useCallback(() => {
         abortControllersRef.current.forEach((controller, _threadViewId) => {
             controller.abort();
         });
         abortControllersRef.current.clear();
-        setActiveStreams(new Set());
-    };
+        clearAllActiveStreams();
+    }, [clearAllActiveStreams]);
 
     // Function to clean up a specific stream when it completes
-    const completeStream = (threadViewId: ThreadViewId) => {
-        stopStream(threadViewId);
-        callbacks?.onCompleteStream?.(threadViewId);
-    };
+    const completeStream = useCallback(
+        (threadViewId: ThreadViewId) => {
+            stopStream(threadViewId);
+            callbacks?.onCompleteStream?.(threadViewId);
+        },
+        [callbacks, stopStream]
+    );
 
     return {
         // Original mutation interface
@@ -242,17 +251,17 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         onFirstMessage: handleFirstMessage,
 
         // State
-        canPause: mutation.isPending || activeStreams.size > 0,
-        activeStreamCount: activeStreams.size,
+        canPause: mutation.isPending || activeStreams.length > 0,
+        activeStreamCount: activeStreams.length,
         hasReceivedFirstResponse,
         remoteState: (() => {
             // Compatibility with RemoteState
             switch (true) {
-                case mutation.isPending || activeStreams.size > 0:
+                case mutation.isPending || activeStreams.length > 0:
                     return RemoteState.Loading;
                 case mutation.isError:
                     return RemoteState.Error;
-                case activeStreams.size === 0:
+                case activeStreams.length === 0:
                     return RemoteState.Loaded;
                 default:
                     return RemoteState.Loaded;

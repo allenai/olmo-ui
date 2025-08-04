@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react';
+import React, { createContext, useEffect, useRef } from 'react';
 
 import { StreamingMessageResponse } from './submission-process';
+import { ensureContext } from './util';
 
 // Callback types for each event
 type OnNewUserMessageCallback = (threadViewId: string) => void;
@@ -16,30 +17,33 @@ interface StreamEventMap {
     onError: OnErrorCallback;
 }
 
-type StreamEventRegistry = {
-    [K in keyof StreamEventMap]: Set<StreamEventMap[K]>;
+type CallbackWithFilter<T> = {
+    callback: T;
+    threadViewId?: string; // If provided, only call for this threadViewId
 };
 
-// Context for the callback registry ref
-const StreamCallbackRegistryContext = createContext<React.MutableRefObject<
-    Partial<StreamEventRegistry>
-> | null>(null);
+type StreamEventRegistry = {
+    [K in keyof StreamEventMap]: Set<CallbackWithFilter<StreamEventMap[K]>>;
+};
 
-// Hook for containers to register stream event callbacks
-// This way, containers can be "smart" and add stream-related features
-// QueryContext Providers don't need to be "ever-growing" as features are added
-// UI components can be "dumb" and only render the data they receive
+interface StreamRegistryContextValue {
+    callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>;
+}
+
+// Context for the registries
+const StreamRegistryContext = createContext<StreamRegistryContextValue | undefined>(undefined);
+
+// Hook to register stream event callbacks
+// This will facilitate modular feature directories
 export const useStreamEvent = <T extends keyof StreamEventMap>(
     event: T,
-    callback: StreamEventMap[T]
+    callback: StreamEventMap[T],
+    threadViewId?: string // Optional: only receive events for this threadViewId
 ) => {
-    const callbackRegistryRef = useContext(StreamCallbackRegistryContext);
-
-    if (!callbackRegistryRef) {
-        throw new Error(
-            'useStreamEvent must be used within a provider that supports streaming events'
-        );
-    }
+    const callbackRegistryRef = ensureContext(
+        StreamRegistryContext,
+        'StreamEventRegistry'
+    ).callbackRegistryRef;
 
     useEffect(() => {
         const registry = callbackRegistryRef.current;
@@ -47,65 +51,77 @@ export const useStreamEvent = <T extends keyof StreamEventMap>(
             registry[event] = new Set() as StreamEventRegistry[T];
         }
 
-        // We know registry[event] exists after the check above
+        const callbackWithFilter = { callback, threadViewId };
         const eventSet = registry[event];
         if (eventSet) {
-            eventSet.add(callback);
+            eventSet.add(callbackWithFilter);
         }
 
         return () => {
-            registry[event]?.delete(callback);
+            registry[event]?.delete(callbackWithFilter);
         };
-    }, [event, callback, callbackRegistryRef]);
+    }, [event, callback, threadViewId, callbackRegistryRef]);
 };
 
 // Provider for stream event registry
 export const StreamEventRegistryProvider = ({ children }: { children: React.ReactNode }) => {
     const callbackRegistryRef = useRef<Partial<StreamEventRegistry>>({});
 
+    const contextValue: StreamRegistryContextValue = {
+        callbackRegistryRef,
+    };
+
     return (
-        <StreamCallbackRegistryContext.Provider value={callbackRegistryRef}>
+        <StreamRegistryContext.Provider value={contextValue}>
             {children}
-        </StreamCallbackRegistryContext.Provider>
+        </StreamRegistryContext.Provider>
     );
 };
 
 // Hook to get the registry ref (for providers to use)
 export const useStreamCallbackRegistry = () => {
-    const callbackRegistryRef = useContext(StreamCallbackRegistryContext);
-
-    if (!callbackRegistryRef) {
-        throw new Error(
-            'useStreamCallbackRegistry must be used within a StreamEventRegistryProvider'
-        );
-    }
-
-    return callbackRegistryRef;
+    const context = ensureContext(StreamRegistryContext, 'StreamEventRegistry');
+    return context.callbackRegistryRef;
 };
 
 // Create callbacks that each call all registered handlers for that event
 export const createStreamCallbacks = (
-    registryRef: React.MutableRefObject<Partial<StreamEventRegistry>>
+    callbackRegistryRef: React.MutableRefObject<Partial<StreamEventRegistry>>
 ) => {
+    // Call callbacks, optionally filter by threadViewId
+    const callFilteredCallbacks = <T extends keyof StreamEventMap>(
+        eventName: T,
+        threadViewId: string,
+        invokeCallback: (callback: StreamEventMap[T]) => void
+    ) => {
+        callbackRegistryRef.current[eventName]?.forEach(
+            ({ callback, threadViewId: filterThreadViewId }) => {
+                if (!filterThreadViewId || filterThreadViewId === threadViewId) {
+                    invokeCallback(callback);
+                }
+            }
+        );
+    };
+
     return {
         onNewUserMessage: (threadViewId: string) => {
-            registryRef.current.onNewUserMessage?.forEach((cb) => {
-                cb(threadViewId);
+            callFilteredCallbacks('onNewUserMessage', threadViewId, (callback) => {
+                callback(threadViewId);
             });
         },
         onFirstMessage: (threadViewId: string, message: StreamingMessageResponse) => {
-            registryRef.current.onFirstMessage?.forEach((cb) => {
-                cb(threadViewId, message);
+            callFilteredCallbacks('onFirstMessage', threadViewId, (callback) => {
+                callback(threadViewId, message);
             });
         },
         onCompleteStream: (threadViewId: string, message?: StreamingMessageResponse) => {
-            registryRef.current.onCompleteStream?.forEach((cb) => {
-                cb(threadViewId, message);
+            callFilteredCallbacks('onCompleteStream', threadViewId, (callback) => {
+                callback(threadViewId, message);
             });
         },
         onError: (threadViewId: string, error: unknown) => {
-            registryRef.current.onError?.forEach((cb) => {
-                cb(threadViewId, error);
+            callFilteredCallbacks('onError', threadViewId, (callback) => {
+                callback(threadViewId, error);
             });
         },
     };

@@ -3,6 +3,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
 import { ThreadDisplay, ThreadDisplayView } from '@/components/thread/ThreadDisplay/ThreadDisplay';
+import { StreamingThread } from '@/contexts/submission-process';
 
 import { CompareModelSelect } from './CompareModelSelect';
 import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
@@ -46,7 +47,12 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     const shouldShowAttributionHighlightDescription = false;
     const selectedMessageId = undefined;
 
-    const { data, error: _ } = useThread(threadRootId);
+    // Currently, useThread() always needs `staleTime: Infinity` set by the consumer. That is bad.
+    // Byron has a proposed solution: https://github.com/allenai/playground-issues-repo/issues/518
+    const { data } = useThread(threadRootId, {
+        select: (thread): StreamingThread => thread as StreamingThread,
+        staleTime: Infinity,
+    });
     // TODO, handle errors: https://github.com/allenai/playground-issues-repo/issues/412
 
     const messages = data?.messages ?? [];

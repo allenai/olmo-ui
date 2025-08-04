@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
@@ -9,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
-import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { StreamingMessageResponse } from '@/contexts/submission-process';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
@@ -49,10 +50,12 @@ vi.mock('@/contexts/StreamEventRegistry', () => ({
 
 const mockUseStreamMessage = vi.mocked(useStreamMessage);
 const mockUseStreamEvent = vi.mocked(useStreamEvent);
+const mockUseStreamCallbackRegistry = vi.mocked(useStreamCallbackRegistry);
 
 beforeEach(() => {
     mockUseStreamMessage.mockReturnValue(createStreamMessageMock());
     mockUseStreamEvent.mockImplementation(() => {});
+    mockUseStreamCallbackRegistry.mockReturnValue({ current: {} });
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 });
 
