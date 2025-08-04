@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { ThinkingWidget } from './ThinkingWidget';
+import { FadeOverflowContent } from './FadeOverflowContent';
 
 const lipsum = `
     lipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
@@ -17,25 +17,27 @@ const lipsum = `
     est laborum.
 `;
 
-const meta: Meta<typeof ThinkingWidget> = {
-    title: 'Widgets/Thinking Widget',
-    component: ThinkingWidget,
+const meta: Meta<typeof FadeOverflowContent> = {
+    title: 'Widgets/FadeOverflowContent',
+    component: FadeOverflowContent,
     args: {
-        defaultExpanded: true,
         children: lipsum,
     },
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ThinkingWidget>;
+type Story = StoryObj<typeof FadeOverflowContent>;
 
 export const Default: Story = {
     args: {},
 };
 
-export const ThinkingConstrainedHeight: Story = {
+export const SizeConstrained: Story = {
     args: {
-        style: { maxHeight: '300px' },
+        // children: lipsum,
+        style: {
+            height: '100px',
+        },
     },
 };

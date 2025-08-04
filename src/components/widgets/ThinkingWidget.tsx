@@ -1,26 +1,51 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
+import { css, sva } from '@allenai/varnish-panda-runtime/css';
+import { cx } from '@allenai/varnish-ui';
+import { PropsWithChildren } from 'react';
 
-import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
+import {
+    CollapsibleWidgetBase,
+    type CollapsibleWidgetBaseProps,
+} from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
 import { CollapsibleWidgetFooter } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
-import {
-    CollapsibleWidgetPanel,
-    CollapsibleWidgetPanelContent,
-} from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { CollapsibleWidgetTrigger } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetTrigger';
 import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 import { ThinkingIcon } from '../svg/Thinking';
+import { FadeOverflowContent } from './FadeOverflowContent';
 
-const thinkingFooter = css({
-    display: 'grid',
-    gridTemplateColumns: '1fr auto',
-    justifyItems: 'left',
+const thinkingWidgetRecipe = sva({
+    slots: ['container', 'footer'],
+    base: {
+        container: {
+            maxWidth: '[672px]',
+        },
+        footer: {
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            justifyItems: 'left',
+        },
+    },
 });
 
-const ThinkingWidet = () => {
+interface ThinkingWidgetProps
+    extends Omit<CollapsibleWidgetBaseProps, 'children'>,
+        PropsWithChildren {
+    contentClassName?: string;
+}
+
+const ThinkingWidget = ({
+    className,
+    contentClassName,
+    children,
+    ...rest
+}: ThinkingWidgetProps) => {
+    const thinkingWidgetClassNames = thinkingWidgetRecipe();
     return (
-        <CollapsibleWidgetBase className={css({ maxWidth: '[672px]' })}>
+        <CollapsibleWidgetBase
+            className={cx(thinkingWidgetClassNames.container, className)}
+            {...rest}>
             {({ isExpanded }) => {
                 return (
                     <>
@@ -30,12 +55,12 @@ const ThinkingWidet = () => {
                             Thinking
                         </CollapsibleWidgetHeading>
                         <CollapsibleWidgetPanel>
-                            <CollapsibleWidgetPanelContent>
-                                <p>Thinking...</p>
-                            </CollapsibleWidgetPanelContent>
+                            <FadeOverflowContent className={contentClassName}>
+                                {children}
+                            </FadeOverflowContent>
                         </CollapsibleWidgetPanel>
                         <CollapsibleWidgetFooter bordered>
-                            <CollapsibleWidgetTrigger className={thinkingFooter}>
+                            <CollapsibleWidgetTrigger className={thinkingWidgetClassNames.footer}>
                                 <FooterContent isExpanded={isExpanded} />
                                 <ExpandArrow />
                             </CollapsibleWidgetTrigger>
@@ -59,4 +84,4 @@ const StatusIndicator = () => {
     return <span>•••</span>;
 };
 
-export { ThinkingWidet };
+export { ThinkingWidget };
