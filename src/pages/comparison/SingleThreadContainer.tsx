@@ -49,12 +49,10 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
     const shouldShowAttributionHighlightDescription = false;
     const selectedMessageId = undefined;
 
-    // Currently, useThread() always needs `staleTime: Infinity` set by the consumer. That is bad.
-    // Byron has a proposed solution: https://github.com/allenai/playground-issues-repo/issues/518
-    const { data } = useThread(threadRootId, {
-        select: (thread): StreamingThread => thread as StreamingThread,
-        staleTime: Infinity,
-    });
+    const { data } = useThread(
+        threadRootId,
+        (thread): StreamingThread => thread as StreamingThread
+    );
     // TODO, handle errors: https://github.com/allenai/playground-issues-repo/issues/412
 
     const messages = data?.messages ?? [];

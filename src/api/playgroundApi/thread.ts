@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
 import { playgroundApiQueryClient } from './playgroundApiClient';
 import type {
@@ -14,11 +14,6 @@ export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
 
-type useThreadOptions<R> = {
-    select: (thread: Thread) => R;
-    staleTime?: number;
-};
-
 const threadParams = (threadId: ThreadId) => ({
     params: {
         path: {
@@ -27,19 +22,22 @@ const threadParams = (threadId: ThreadId) => ({
     },
 });
 
-export const threadOptions = <R = Thread>(threadId: ThreadId, options?: useThreadOptions<R>) => {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+export const threadOptions = <R = Thread>(threadId: ThreadId, select?: (thread: Thread) => R) => {
     return playgroundApiQueryClient.queryOptions(
         'get',
         '/v4/threads/{thread_id}',
         threadParams(threadId),
-        options
+        { select, staleTime: Infinity }
     );
 };
 
 export const selectMessageById = (messageId: MessageId) => (thread: Thread) =>
     thread.messages.find(({ id }) => messageId === id);
 
-export const useThread = <R = Thread>(threadId: ThreadId, options?: useThreadOptions<R>) => {
-    const queryOptions = threadOptions<R>(threadId, options);
+export function useThread(threadId: ThreadId): UseQueryResult<Thread>;
+export function useThread<R>(threadId: ThreadId, select: (thread: Thread) => R): UseQueryResult<R>;
+export function useThread<R>(threadId: ThreadId, select?: (thread: Thread) => R) {
+    const queryOptions = threadOptions<R>(threadId, select);
     return useQuery(queryOptions);
-};
+}

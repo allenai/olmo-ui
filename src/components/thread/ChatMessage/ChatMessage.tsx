@@ -29,10 +29,7 @@ export const ChatMessage = ({
     const { threadId } = useThreadView();
     const { remoteState } = useQueryContext();
 
-    const { data: message } = useThread(threadId, {
-        select: selectMessageById(messageId),
-        staleTime: Infinity,
-    });
+    const { data: message } = useThread(threadId, selectMessageById(messageId));
 
     // When streaming completes, announce the final content for this message
     const finalMessageContent = remoteState === RemoteState.Loaded ? message?.content : null;
