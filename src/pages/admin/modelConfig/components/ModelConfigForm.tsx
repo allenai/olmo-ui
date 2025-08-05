@@ -164,10 +164,11 @@ type BaseModelFormFieldValues = {
         | 'modelType'
         | 'name'
         | 'promptType'
+        | 'canCallTools'
     >
 >;
 
-const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: React.ReactNode }> = {
+const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description?: React.ReactNode }> = {
     modal: {
         label: 'App ID',
         description: (
@@ -181,11 +182,9 @@ const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: Rea
     },
     inferd: {
         label: 'Compute Source ID',
-        description: undefined,
     },
     beaker_queues: {
         label: 'Queue ID',
-        description: undefined,
     },
     cirrascale_backend: {
         label: 'Backend API Port',
@@ -195,6 +194,15 @@ const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: Rea
                 <code>https://ai2models.cirrascalecloud.services:{'<PORT>'}/v1/models</code>
             </span>
         ),
+    },
+    cirrascale: {
+        label: 'Model name',
+    },
+    modal_openai: {
+        label: 'Modal app URL',
+    },
+    pydantic_test: {
+        label: 'Fake model name',
     },
 };
 
@@ -313,6 +321,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     granularity="minute"
                     placeholderValue={now(userTimeZone)}
                 />
+                <ControlledSwitch name="canCallTools">This model can call tools</ControlledSwitch>
                 <Stack direction="row" align="center" justify="center" spacing={3}>
                     <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                     <Button variant="contained" type="submit">

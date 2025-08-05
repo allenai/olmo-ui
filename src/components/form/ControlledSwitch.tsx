@@ -13,9 +13,17 @@ export const ControlledSwitch = ({
     ...rest
 }: ControlledSwitchProps): ReactNode => {
     const {
-        field,
+        field: { ref, ...field },
         fieldState: { error },
     } = useController({ name, ...controllerProps });
-
-    return <Switch errorMessage={error?.message} {...field} {...rest} />;
+    return (
+        <Switch
+            errorMessage={error?.message}
+            // @ts-expect-error - The types here are both refs but they don't agree with each other
+            inputRef={ref}
+            isSelected={field.value}
+            {...field}
+            {...rest}
+        />
+    );
 };
