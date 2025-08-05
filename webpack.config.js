@@ -113,7 +113,7 @@ module.exports = (env) => ({
             IS_ANALYTICS_ENABLED: 'true',
             IS_MULTI_MODAL_ENABLED: 'true',
             IS_MODEL_CONFIG_ENABLED: 'true',
-            IS_COMPARISON_PAGE_ENABLED: 'false',
+            IS_COMPARISON_PAGE_ENABLED: 'true',
             IS_OLMO_ASR_ENABLED: 'true',
             BASE_URL: 'https://playground.allenai.org',
         }),

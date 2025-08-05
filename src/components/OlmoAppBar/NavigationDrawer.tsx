@@ -2,6 +2,7 @@ import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-materia
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
+import ScienceIcon from '@mui/icons-material/Science';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Stack } from '@mui/material';
@@ -55,6 +56,9 @@ export const NavigationDrawer = ({
     const { isComparisonPageEnabled, isDatasetExplorerEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
+    const hasPermission = (permission: string) =>
+        userAuthInfo.userInfo?.permissions?.some((p) => p === permission) ?? false;
+
     useCloseDrawerOnNavigation({
         handleDrawerClose: onClose,
     });
@@ -100,11 +104,13 @@ export const NavigationDrawer = ({
                                 Dataset Explorer
                             </NavigationLink>
                         )}
-                        {isComparisonPageEnabled && (
+                        {isComparisonPageEnabled && hasPermission('read:internal-models') && (
                             <NavigationLink
                                 icon={<ViewColumnIcon />}
                                 selected={curriedDoesMatchPath(links.comparison)}
-                                href={links.comparison}>
+                                href={links.comparison}
+                                DisclosureIcon={ScienceIcon}
+                                experimental>
                                 Compare models
                             </NavigationLink>
                         )}
@@ -115,9 +121,7 @@ export const NavigationDrawer = ({
                             variant="footer">
                             FAQ
                         </NavigationLink>
-                        {userAuthInfo.userInfo?.permissions?.some(
-                            (permission) => permission === 'write:model-config'
-                        ) && (
+                        {hasPermission('write:model-config') && (
                             <NavigationLink
                                 icon={<AdminPanelSettingsOutlinedIcon />}
                                 selected={curriedDoesMatchPath(links.admin)}
