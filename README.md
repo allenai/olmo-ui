@@ -45,20 +45,41 @@ to the production API to get things working.
 
 #### E2E Tests
 
-To start running E2E tests follow the steps below:
+E2E tests use automated scripts that handle environment variable configuration, so you don't need to manually switch settings when moving between regular development and E2E testing.
 
-- Copy the E2E_TEST_USER and E2E_TEST_PASSWORD to .env.local
-  they can be found here: https://start.1password.com/open/i?a=DES74C5MCVDCTGGUDF3CJBUJC4&v=i2t3yrat34bj23pimhovzdorpu&i=wxfuwokc7qmolsjft2d7bsscuu&h=allenai.1password.com
-- Set the AUTH0_CLIENT_ID and AUTH0_DOMAIN to point at our dev environment in .env.local
-  ```
-  AUTH0_CLIENT_ID=9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd
-  AUTH0_DOMAIN=allenai-public-dev.us.auth0.com
-  ```
-- Make sure mocking is enabled when running the dev server: `ENABLE_MOCKING=true docker compose up --build`
-- Run `yarn test:e2e` to run all the e2e tests
-- More commands: https://playwright.dev/docs/test-cli
+**Setup:**
 
-To update e2e test screenshots for CI:
+Add the E2E test credentials to your `.env.local`:
+```
+E2E_TEST_USER=playground-e2e-test@allenai.org
+E2E_TEST_PASSWORD=[get from 1Password]
+```
+
+The `E2E_TEST_PASSWORD` can be found in 1Password: https://start.1password.com/open/i?a=DES74C5MCVDCTGGUDF3CJBUJC4&v=i2t3yrat34bj23pimhovzdorpu&i=wxfuwokc7qmolsjft2d7bsscuu&h=allenai.1password.com
+
+**Running E2E tests:**
+
+1. Start the E2E development server:
+   ```
+   yarn test:e2e:server
+   ```
+
+2. Run the tests (in a separate terminal):
+   ```
+   yarn test:e2e:local:chromium  # Run only Chromium tests
+   yarn test:e2e:local           # Run all browser tests
+   ```
+
+3. Run an individual test file:
+   ```
+   yarn test:e2e:local:chromium e2e/olmo.spec.ts
+   ```
+
+The scripts automatically configure all necessary environment variables for E2E testing (mocking, Auth0 dev environment, feature flags, etc.).
+
+More Playwright commands: https://playwright.dev/docs/test-cli
+
+**To update e2e test screenshots for CI:**
 
 - `docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v{CURRENT_PLAYWRIGHT_VERSION}-focal /bin/bash`
 - `yarn test:e2e --update-screenshots`
