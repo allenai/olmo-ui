@@ -37,7 +37,7 @@ export const selectMessageById = (messageId: MessageId) => (thread: Thread) =>
 
 export function useThread(threadId: ThreadId): UseQueryResult<Thread>;
 export function useThread<R>(threadId: ThreadId, select: (thread: Thread) => R): UseQueryResult<R>;
-export function useThread<R = Thread>(threadId: ThreadId, select?: (thread: Thread) => R) {
+export function useThread<R>(threadId: ThreadId, select?: (thread: Thread) => R) {
     const queryOptions = threadOptions<R>(threadId, select);
     return useQuery(queryOptions);
 }
