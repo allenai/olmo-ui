@@ -21,7 +21,7 @@ export const ControlledSwitch = ({
             errorMessage={error?.message}
             // @ts-expect-error - The types here are both refs but they don't agree with each other
             inputRef={ref}
-            isSelected={field.value}
+            isSelected={field.value as boolean}
             {...field}
             {...rest}
         />

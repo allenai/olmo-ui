@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
-import { withRouter } from 'storybook-addon-react-router-v6';
+import { withRouter } from 'storybook-addon-remix-react-router';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 

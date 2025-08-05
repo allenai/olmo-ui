@@ -169,7 +169,7 @@
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "sort-package-json": "^2.10.0",
-    "storybook-addon-react-router-v6": "^2.0.15",
+    "storybook-addon-remix-react-router": "^3.1.0",
     "style-loader": "^3.3.4",
     "ts-loader": "^9.5.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
