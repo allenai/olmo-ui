@@ -75,6 +75,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         availableTime: null,
@@ -94,6 +95,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         availableTime: null,
@@ -113,6 +115,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         availableTime: null,
@@ -132,6 +135,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         acceptedFileTypes: ['image/*', 'application/pdf'],
@@ -156,6 +160,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         requireFileToPrompt: null,
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
 ];
 

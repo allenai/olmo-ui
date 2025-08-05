@@ -27,6 +27,7 @@ const mockModels: SchemaResponseModel[] = [
         order: 10,
         promptType: 'text_only',
         updatedTime: '2025-04-25T20:16:09.543846+00:00',
+        canCallTools: false,
     },
     {
         availability: 'internal',
@@ -46,6 +47,7 @@ const mockModels: SchemaResponseModel[] = [
         order: 160,
         promptType: 'text_only',
         updatedTime: '2025-04-25T21:15:10.861378+00:00',
+        canCallTools: false,
     },
     {
         availability: 'public',
@@ -65,6 +67,7 @@ const mockModels: SchemaResponseModel[] = [
         order: 210,
         promptType: 'text_only',
         updatedTime: '2025-04-25T21:26:41.187139+00:00',
+        canCallTools: false,
     },
 ];
 

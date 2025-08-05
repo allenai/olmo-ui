@@ -962,7 +962,7 @@ export type components = {
             | 'cirrascale_backend'
             | 'cirrascale'
             | 'modal_openai'
-            | 'pydantic_test';
+            | 'test_backend';
         /** ModelOrder */
         readonly ModelOrder: {
             /** Id */
@@ -1065,6 +1065,8 @@ export type components = {
              * @default null
              */
             readonly availableTime?: string | null;
+            /** Cancalltools */
+            readonly canCallTools: boolean;
             /**
              * Createdtime
              * Format: date-time
@@ -1176,6 +1178,8 @@ export type components = {
              * @default null
              */
             readonly availableTime?: string | null;
+            /** Cancalltools */
+            readonly canCallTools: boolean;
             /**
              * Createdtime
              * Format: date-time

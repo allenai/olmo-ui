@@ -201,7 +201,7 @@ const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description?: Re
     modal_openai: {
         label: 'Modal app URL',
     },
-    pydantic_test: {
+    test_backend: {
         label: 'Fake model name',
     },
 };
