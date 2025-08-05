@@ -1,4 +1,5 @@
 import { Switch, type SwitchProps } from '@allenai/varnish-ui';
+import { useObjectRef } from '@react-aria/utils';
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
@@ -16,11 +17,13 @@ export const ControlledSwitch = ({
         field: { ref, ...field },
         fieldState: { error },
     } = useController({ name, ...controllerProps });
+
+    const inputRef = useObjectRef(ref);
+
     return (
         <Switch
             errorMessage={error?.message}
-            // @ts-expect-error - The types here are both refs but they don't agree with each other
-            inputRef={ref}
+            inputRef={inputRef}
             isSelected={field.value as boolean}
             {...field}
             {...rest}
