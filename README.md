@@ -8,7 +8,20 @@ https://olmo.allen.ai
 
 If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will use `husky` to set up our standard git hooks.
 
-#### Forwarding the API
+### Local Development (without Docker)
+
+For the fastest and simplest development experience, you can run the application locally while connected to production APIs:
+
+```
+yarn dev
+```
+
+This command:
+- Starts the development server on `http://localhost:8080`
+- Connects directly to production APIs
+- Provides hot reload for development
+
+#### Running Locally With Docker
 
 The UI depends on the [API](https://github.com/allenai/olmo-api). You'll need to forward a local port
 to the production API to get things working.
