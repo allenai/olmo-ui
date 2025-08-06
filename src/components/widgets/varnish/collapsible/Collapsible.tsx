@@ -25,12 +25,10 @@ const Collapsible = ({
     panelClassName,
     ...rest
 }: CollapsibleProps) => {
+    const arrow = hasArrow ? <ExpandArrow /> : null;
     return (
         <CollapsibleBase {...rest}>
-            <CollapsibleHeading>
-                {heading}
-                {hasArrow ? <ExpandArrow /> : null}
-            </CollapsibleHeading>
+            <CollapsibleHeading endAdornment={arrow}>{heading}</CollapsibleHeading>
             <CollapsiblePanel>
                 <CollapsiblePanelContent>{children}</CollapsiblePanelContent>
             </CollapsiblePanel>

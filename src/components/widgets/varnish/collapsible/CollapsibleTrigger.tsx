@@ -6,6 +6,7 @@ const collapsibleTriggerClassName = css({
     display: 'flex',
     flexGrow: '1',
     justifyContent: 'space-between',
+    gap: '3',
 });
 
 interface CollapsibleTriggerProps extends AriaButtonProps {

@@ -1,5 +1,5 @@
-import { cx } from '@allenai/varnish-panda-runtime/css';
-import { PropsWithChildren, ReactNode } from 'react';
+import { css, cx } from '@allenai/varnish-panda-runtime/css';
+import { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 import {
     Heading as AriaHeading,
     type HeadingProps as AriaHeadingProps,
@@ -7,6 +7,11 @@ import {
 
 import { collapsibleRecipe } from './collapsible.styles';
 import { CollapsibleTrigger } from './CollapsibleTrigger';
+
+const titleAlignClassName = css({
+    flexGrow: '1',
+    textAlign: 'left',
+});
 
 interface CollapsibleHeadingBaseProps extends AriaHeadingProps, PropsWithChildren {
     className?: string;
@@ -19,6 +24,14 @@ const CollapsibleHeadingBase = ({ className, children, ...rest }: CollapsibleHea
         <AriaHeading className={cx(classNames.heading, className)} {...localProps}>
             {children}
         </AriaHeading>
+    );
+};
+
+const CollapsibleTitle = ({ children, className, ...rest }: HTMLAttributes<HTMLSpanElement>) => {
+    return (
+        <span className={cx(titleAlignClassName, className)} {...rest}>
+            {children}
+        </span>
     );
 };
 
@@ -38,7 +51,11 @@ const CollapsibleHeading = ({
 }: CollapsibleHeadingProps) => {
     return (
         <CollapsibleHeadingBase className={className} {...rest}>
-            <CollapsibleTrigger className={triggerClass}>{children}</CollapsibleTrigger>
+            <CollapsibleTrigger className={triggerClass}>
+                {startAdornment}
+                <CollapsibleTitle>{children}</CollapsibleTitle>
+                {endAdornment}
+            </CollapsibleTrigger>
         </CollapsibleHeadingBase>
     );
 };

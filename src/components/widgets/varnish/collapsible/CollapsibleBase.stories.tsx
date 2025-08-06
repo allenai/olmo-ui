@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { ChatIcon } from '@/components/assets/ChatIcon';
+
 import { CollapsibleBase } from './CollapsibleBase';
 import { CollapsibleFooter } from './CollapsibleFooter';
 import { CollapsibleHeading } from './CollapsibleHeading';
@@ -21,8 +23,8 @@ export const Default: Story = {
         defaultExpanded: true,
         children: (
             <>
-                <CollapsibleHeading>
-                    Heading <ExpandArrow />
+                <CollapsibleHeading startAdornment={<ChatIcon />} endAdornment={<ExpandArrow />}>
+                    Heading
                 </CollapsibleHeading>
                 <CollapsiblePanel>
                     <CollapsiblePanelContent>
@@ -40,9 +42,7 @@ export const FooterInsidePanel: Story = {
         defaultExpanded: false,
         children: (
             <>
-                <CollapsibleHeading>
-                    Heading <ExpandArrow />
-                </CollapsibleHeading>
+                <CollapsibleHeading endAdornment={<ExpandArrow />}>Heading</CollapsibleHeading>
                 <CollapsiblePanel>
                     <CollapsiblePanelContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
@@ -59,9 +59,7 @@ export const AlertatingFooters: Story = {
         defaultExpanded: true,
         children: (
             <>
-                <CollapsibleHeading>
-                    Heading <ExpandArrow />
-                </CollapsibleHeading>
+                <CollapsibleHeading endAdornment={<ExpandArrow />}>Heading</CollapsibleHeading>
                 <CollapsiblePanel>
                     <CollapsiblePanelContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
