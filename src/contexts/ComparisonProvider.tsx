@@ -297,6 +297,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             getThreadViewModel: (threadViewId?: string) => {
                 if (!threadViewId) return undefined;
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const modelId = comparisonState[threadViewId]?.modelId;
                 return modelId ? models.find((model) => model.id === modelId) : undefined;
             },
