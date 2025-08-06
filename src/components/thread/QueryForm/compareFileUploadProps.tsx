@@ -9,12 +9,17 @@ interface FileUploadDef {
     allowFilesInFollowups: boolean;
 }
 
+export const DEFAULT_FILE_UPLOAD_PROPS: FileUploadDef = {
+    acceptsFileUpload: false,
+    acceptedFileTypes: new Set<string>(),
+    requiredFileOption: undefined,
+    acceptsMultiple: false,
+    allowFilesInFollowups: false,
+};
+
 export const convertToFileUploadProps = (model?: Model): FileUploadDef => {
     const baseProps: FileUploadDef = {
-        acceptedFileTypes: new Set(),
-        requiredFileOption: undefined,
-        acceptsMultiple: false,
-        allowFilesInFollowups: false,
+        ...DEFAULT_FILE_UPLOAD_PROPS,
         acceptsFileUpload: model?.accepts_files ?? false,
     };
     if (model?.prompt_type === 'multi_modal') {
