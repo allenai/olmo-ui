@@ -1,6 +1,6 @@
 import { cva, RecipeVariantProps } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { PropsWithChildren } from 'react';
+import { HTMLAttributes } from 'react';
 
 const collapsibleFooterRecipe = cva({
     base: {
@@ -36,13 +36,25 @@ type CollapsibleFooterVariantProps = Exclude<
     undefined
 >;
 
-interface CollapsibleFooterProps extends PropsWithChildren, CollapsibleFooterVariantProps {
+interface CollapsibleFooterProps
+    extends HTMLAttributes<HTMLDivElement>,
+        CollapsibleFooterVariantProps {
     className?: string;
 }
 
-const CollapsibleFooter = ({ className, children, variant, bordered }: CollapsibleFooterProps) => {
+const CollapsibleFooter = ({
+    className,
+    children,
+    variant,
+    bordered,
+    ...rest
+}: CollapsibleFooterProps) => {
     const collapsibleFooterClassName = collapsibleFooterRecipe({ variant, bordered });
-    return <div className={cx(collapsibleFooterClassName, className)}>{children}</div>;
+    return (
+        <div className={cx(collapsibleFooterClassName, className)} {...rest}>
+            {children}
+        </div>
+    );
 };
 
 export { CollapsibleFooter };

@@ -1,10 +1,13 @@
 import { cx } from '@allenai/varnish-ui';
-import { type PropsWithChildren } from 'react';
-import { DisclosurePanel as AriaDisclosurePanel } from 'react-aria-components';
+import { HTMLAttributes } from 'react';
+import {
+    DisclosurePanel as AriaDisclosurePanel,
+    DisclosurePanelProps as AriaDisclosurePanelProps,
+} from 'react-aria-components';
 
 import { collapsibleRecipe } from './collapsible.styles';
 
-interface CollapsiblePanelContentProps extends PropsWithChildren {
+interface CollapsiblePanelContentProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
@@ -22,7 +25,7 @@ const CollapsiblePanelContent = ({
     );
 };
 
-interface CollapsiblePanelProps extends PropsWithChildren {
+interface CollapsiblePanelProps extends AriaDisclosurePanelProps {
     className?: string;
 }
 

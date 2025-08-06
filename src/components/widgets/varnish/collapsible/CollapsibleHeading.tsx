@@ -1,11 +1,14 @@
 import { cx } from '@allenai/varnish-panda-runtime/css';
 import { PropsWithChildren, ReactNode } from 'react';
-import { Heading as AriaHeading } from 'react-aria-components';
+import {
+    Heading as AriaHeading,
+    type HeadingProps as AriaHeadingProps,
+} from 'react-aria-components';
 
 import { collapsibleRecipe } from './collapsible.styles';
-import { CollapsibleTrigger, CollapsibleTriggerProps } from './CollapsibleTrigger';
+import { CollapsibleTrigger } from './CollapsibleTrigger';
 
-interface CollapsibleHeadingBaseProps extends PropsWithChildren {
+interface CollapsibleHeadingBaseProps extends AriaHeadingProps, PropsWithChildren {
     className?: string;
 }
 
@@ -19,7 +22,7 @@ const CollapsibleHeadingBase = ({ className, children, ...rest }: CollapsibleHea
     );
 };
 
-interface CollapsibleHeadingProps extends CollapsibleHeadingBaseProps, CollapsibleTriggerProps {
+interface CollapsibleHeadingProps extends CollapsibleHeadingBaseProps {
     triggerClass?: string;
     startAdornment?: ReactNode;
     endAdornment?: ReactNode;
