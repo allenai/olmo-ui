@@ -1,7 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { type PropsWithChildren } from 'react';
-import { Button as AriaButton } from 'react-aria-components';
+import { Button as AriaButton, ButtonProps as AriaButtonProps } from 'react-aria-components';
 
 const collapsibleTriggerClassName = css({
     display: 'flex',
@@ -9,13 +8,13 @@ const collapsibleTriggerClassName = css({
     justifyContent: 'space-between',
 });
 
-interface CollapsibleTriggerProps extends PropsWithChildren {
+interface CollapsibleTriggerProps extends AriaButtonProps {
     className?: string;
 }
 
-const CollapsibleTrigger = ({ className, children }: CollapsibleTriggerProps) => {
+const CollapsibleTrigger = ({ className, children, ...rest }: CollapsibleTriggerProps) => {
     return (
-        <AriaButton slot="trigger" className={cx(collapsibleTriggerClassName, className)}>
+        <AriaButton slot="trigger" className={cx(collapsibleTriggerClassName, className)} {...rest}>
             {children}
         </AriaButton>
     );
