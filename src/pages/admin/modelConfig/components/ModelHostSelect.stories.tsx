@@ -1,17 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 
 import { withReactHookForm } from '@/utils/storybook/withReactHookForm';
 
-import { ModelConfigForm } from './ModelConfigForm';
+import { ModelHostSelect } from './ModelHostSelect';
 
 const meta = {
-    component: ModelConfigForm,
+    component: ModelHostSelect,
     decorators: [withReactHookForm],
-} satisfies Meta<typeof ModelConfigForm>;
+} satisfies Meta<typeof ModelHostSelect>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { args: { onSubmit: fn() } };
+export const Default: Story = {
+    args: {
+        label: 'Model Host',
+        name: 'host',
+    },
+};
