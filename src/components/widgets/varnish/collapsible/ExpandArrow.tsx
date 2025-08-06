@@ -1,5 +1,4 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import type { RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 import { KeyboardArrowDown } from '@mui/icons-material';
 
 const expandArrowRecipe = css({
