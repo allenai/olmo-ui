@@ -542,6 +542,11 @@ export type components = {
              */
             readonly availableTime?: string | null;
             /**
+             * Cancalltools
+             * @default false
+             */
+            readonly canCallTools?: boolean;
+            /**
              * Defaultsystemprompt
              * @default null
              */
@@ -603,6 +608,11 @@ export type components = {
              * @default null
              */
             readonly availableTime?: string | null;
+            /**
+             * Cancalltools
+             * @default false
+             */
+            readonly canCallTools?: boolean;
             /**
              * Defaultsystemprompt
              * @default null
@@ -802,6 +812,7 @@ export type components = {
         };
         /** GetThreadsResponse */
         readonly GetThreadsResponse: {
+            readonly meta: components['schemas']['ListMeta'];
             /** Threads */
             readonly threads: readonly components['schemas']['Thread'][];
         };
@@ -876,6 +887,23 @@ export type components = {
             readonly message: string;
             readonly rating: components['schemas']['Rating'];
         };
+        /** ListMeta */
+        readonly ListMeta: {
+            /**
+             * Limit
+             * @default null
+             */
+            readonly limit?: number | null;
+            /**
+             * Offset
+             * @default null
+             */
+            readonly offset?: number | null;
+            /** @default null */
+            readonly sort?: components['schemas']['Sort'] | null;
+            /** Total */
+            readonly total: number;
+        };
         /** Model */
         readonly Model: {
             /**
@@ -927,7 +955,14 @@ export type components = {
          * ModelHost
          * @enum {string}
          */
-        readonly ModelHost: 'inferd' | 'modal' | 'beaker_queues' | 'cirrascale_backend';
+        readonly ModelHost:
+            | 'inferd'
+            | 'modal'
+            | 'beaker_queues'
+            | 'cirrascale_backend'
+            | 'cirrascale'
+            | 'modal_openai'
+            | 'test_backend';
         /** ModelOrder */
         readonly ModelOrder: {
             /** Id */
@@ -1030,6 +1065,8 @@ export type components = {
              * @default null
              */
             readonly availableTime?: string | null;
+            /** Cancalltools */
+            readonly canCallTools: boolean;
             /**
              * Createdtime
              * Format: date-time
@@ -1121,6 +1158,13 @@ export type components = {
         readonly RootUpdateModelConfigRequest:
             | components['schemas']['UpdateTextOnlyModelConfigRequest']
             | components['schemas']['UpdateMultiModalModelConfigRequest'];
+        /** Sort */
+        readonly Sort: {
+            /** @default DESC */
+            readonly direction?: components['schemas']['SortDirection'];
+            /** Field */
+            readonly field: string;
+        };
         /**
          * SortDirection
          * @enum {string}
@@ -1134,6 +1178,8 @@ export type components = {
              * @default null
              */
             readonly availableTime?: string | null;
+            /** Cancalltools */
+            readonly canCallTools: boolean;
             /**
              * Createdtime
              * Format: date-time
@@ -1206,6 +1252,11 @@ export type components = {
              */
             readonly availableTime?: string | null;
             /**
+             * Cancalltools
+             * @default false
+             */
+            readonly canCallTools?: boolean;
+            /**
              * Defaultsystemprompt
              * @default null
              */
@@ -1265,6 +1316,11 @@ export type components = {
              * @default null
              */
             readonly availableTime?: string | null;
+            /**
+             * Cancalltools
+             * @default false
+             */
+            readonly canCallTools?: boolean;
             /**
              * Defaultsystemprompt
              * @default null
@@ -1328,6 +1384,7 @@ export type SchemaGetTranscriptionRequest = components['schemas']['GetTranscript
 export type SchemaGetTranscriptionResponse = components['schemas']['GetTranscriptionResponse'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
 export type SchemaLabelResponse = components['schemas']['LabelResponse'];
+export type SchemaListMeta = components['schemas']['ListMeta'];
 export type SchemaModel = components['schemas']['Model'];
 export type SchemaModelAvailability = components['schemas']['ModelAvailability'];
 export type SchemaModelHost = components['schemas']['ModelHost'];
@@ -1344,6 +1401,7 @@ export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
 export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
+export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSortDirection = components['schemas']['SortDirection'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
 export type SchemaThread = components['schemas']['Thread'];

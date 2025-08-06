@@ -81,6 +81,7 @@ const fakeAdminModelsResponse = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         availableTime: null,
@@ -100,6 +101,7 @@ const fakeAdminModelsResponse = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         availableTime: null,
@@ -119,6 +121,7 @@ const fakeAdminModelsResponse = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         availableTime: null,
@@ -138,6 +141,7 @@ const fakeAdminModelsResponse = [
         promptType: 'text_only',
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
     {
         acceptedFileTypes: ['image/*', 'application/pdf'],
@@ -162,6 +166,7 @@ const fakeAdminModelsResponse = [
         requireFileToPrompt: null,
         updatedTime: '2025-05-07T22:40:01.919975+00:00',
         availability: 'public',
+        canCallTools: false,
     },
 ] satisfies SchemaAdminModelResponse;
 

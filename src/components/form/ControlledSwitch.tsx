@@ -1,4 +1,5 @@
 import { Switch, type SwitchProps } from '@allenai/varnish-ui';
+import { useObjectRef } from '@react-aria/utils';
 import type { ReactNode } from 'react';
 import { useController, type UseControllerProps } from 'react-hook-form';
 
@@ -13,9 +14,19 @@ export const ControlledSwitch = ({
     ...rest
 }: ControlledSwitchProps): ReactNode => {
     const {
-        field,
+        field: { ref, ...field },
         fieldState: { error },
     } = useController({ name, ...controllerProps });
 
-    return <Switch errorMessage={error?.message} {...field} {...rest} />;
+    const inputRef = useObjectRef(ref);
+
+    return (
+        <Switch
+            errorMessage={error?.message}
+            inputRef={inputRef}
+            isSelected={field.value as boolean}
+            {...field}
+            {...rest}
+        />
+    );
 };

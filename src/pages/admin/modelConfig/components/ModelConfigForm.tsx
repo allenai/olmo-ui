@@ -15,7 +15,6 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import {
     type SchemaCreateMultiModalModelConfigRequest,
-    SchemaModelHost,
     SchemaRootCreateModelConfigRequest,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
@@ -28,6 +27,8 @@ import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 
 import { FileSizeInput } from './FileSizeInput/FileSizeInput';
+import { ModelHostSelect } from './ModelHostSelect';
+import { ModelIdOnHostInput } from './ModelIdOnHostInput';
 
 const inputSizing = css({ maxWidth: '[20rem]' });
 
@@ -164,39 +165,9 @@ type BaseModelFormFieldValues = {
         | 'modelType'
         | 'name'
         | 'promptType'
+        | 'canCallTools'
     >
 >;
-
-const hostIdFieldMeta: Record<SchemaModelHost, { label: string; description: React.ReactNode }> = {
-    modal: {
-        label: 'App ID',
-        description: (
-            <Link
-                href="https://github.com/allenai/reviz-modal/blob/main/docs/self-serve-hosting.md"
-                target="_blank"
-                rel="noopener">
-                View Modal hosting docs
-            </Link>
-        ),
-    },
-    inferd: {
-        label: 'Compute Source ID',
-        description: undefined,
-    },
-    beaker_queues: {
-        label: 'Queue ID',
-        description: undefined,
-    },
-    cirrascale_backend: {
-        label: 'Backend API Port',
-        description: (
-            <span>
-                The port this model runs on. E.g.{' '}
-                <code>https://ai2models.cirrascalecloud.services:{'<PORT>'}/v1/models</code>
-            </span>
-        ),
-    },
-};
 
 export type ModelConfigFormValues = BaseModelFormFieldValues & MultiModalFormValues;
 
@@ -215,21 +186,6 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     const handleSubmit = (formData: ModelConfigFormValues) => {
         onSubmit(formData);
     };
-
-    const modelHostSelection = formContext.watch('host');
-    const hostMeta = modelHostSelection ? hostIdFieldMeta[modelHostSelection] : null;
-
-    const modelHostIdLabel =
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        modelHostSelection && hostMeta?.label
-            ? hostIdFieldMeta[modelHostSelection].label
-            : 'Model Host Id';
-
-    const modelHostIdDescription =
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        modelHostSelection && hostMeta?.description
-            ? hostIdFieldMeta[modelHostSelection].description
-            : 'The ID of this model on the host';
 
     return (
         <form className={formSizing} onSubmit={formContext.handleSubmit(handleSubmit)}>
@@ -262,25 +218,18 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                         <SelectListBoxItem text="Tülu" id="tulu" />
                     </SelectListBoxSection>
                 </ControlledSelect>
-                <ControlledSelect
+
+                <ModelHostSelect
                     name="host"
                     label="Model host"
-                    controllerProps={{ rules: { required: true } }}>
-                    <SelectListBoxSection>
-                        <SelectListBoxItem text="Modal" id="modal" />
-                        <SelectListBoxItem text="InferD" id="inferd" />
-                        <SelectListBoxItem text="Beaker Queues" id="beaker_queues" />
-                        <SelectListBoxItem text="Cirrascale (Backend)" id="cirrascale_backend" />
-                    </SelectListBoxSection>
-                </ControlledSelect>
+                    controllerProps={{ rules: { required: true } }}
+                />
 
-                <ControlledInput
+                <ModelIdOnHostInput
                     name="modelIdOnHost"
-                    label={modelHostIdLabel}
-                    fullWidth
-                    // @ts-expect-error: description can be a ReactNode, not just string
-                    description={modelHostIdDescription}
+                    hostKey="host"
                     className={inputSizing}
+                    fullWidth
                     controllerProps={{ rules: { required: true } }}
                 />
                 <ExpandableTextArea
@@ -313,6 +262,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     granularity="minute"
                     placeholderValue={now(userTimeZone)}
                 />
+                <ControlledSwitch name="canCallTools" size="large">
+                    This model can call tools
+                </ControlledSwitch>
                 <Stack direction="row" align="center" justify="center" spacing={3}>
                     <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                     <Button variant="contained" type="submit">
