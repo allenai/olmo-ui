@@ -322,6 +322,16 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         };
     }, [selectedModelsWithIds, comparisonState, models]);
 
+    const isFileUploadDisabled = useMemo(() => {
+        return threadIds.some((threadId) => {
+            if (!threadId) return false;
+            const thread = getThread(threadId);
+            return (
+                (thread?.messages.length ?? 0) > 1 && !reducedFileUploadProps.allowFilesInFollowups
+            );
+        });
+    }, [threadIds, reducedFileUploadProps]);
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
@@ -335,7 +345,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             shouldResetForm: false,
             fileUploadProps: {
                 ...reducedFileUploadProps,
-                isFileUploadDisabled: !areFilesAllowed,
+                isFileUploadDisabled: !areFilesAllowed || isFileUploadDisabled,
                 isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
                 acceptedFileTypes: Array.from(reducedFileUploadProps.acceptedFileTypes),
             },
@@ -388,6 +398,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         threadIds,
         areFilesAllowed,
         reducedFileUploadProps,
+        isFileUploadDisabled,
     ]);
 
     return (
