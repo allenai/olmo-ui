@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
-import { KeyboardEvent, UIEvent, useEffect } from 'react';
+import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
@@ -65,6 +65,8 @@ export const QueryFormController = ({
             files: undefined,
         },
     });
+
+    const [placeholderValue, setPlaceholderValue] = useState(placeholderText);
 
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
 
@@ -168,11 +170,17 @@ export const QueryFormController = ({
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
-                                placeholder={placeholderText}
+                                placeholder={placeholderValue}
                                 isDisabled={isTranscribing || isProcessingAudio}
                                 startAdornment={
                                     <>
                                         <AudioInputButton
+                                            onRecordingBegin={() => {
+                                                setPlaceholderValue('Press stop when done');
+                                            }}
+                                            onRecordingEnd={() => {
+                                                setPlaceholderValue(placeholderText);
+                                            }}
                                             onTranscriptionComplete={(content) => {
                                                 const values = formContext.getValues();
                                                 formContext.setValue(

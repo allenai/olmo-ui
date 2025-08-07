@@ -16,10 +16,18 @@ const iconClassName = css({
 });
 
 interface AudioInputButtonProps {
-    onTranscriptionComplete: (content: string) => void;
+    onRecordingBegin?: () => void;
+    onRecordingEnd?: () => void;
+    onTranscriptionBegin?: () => void;
+    onTranscriptionComplete?: (content: string) => void;
 }
 
-export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonProps) => {
+export const AudioInputButton = ({
+    onRecordingBegin,
+    onRecordingEnd,
+    onTranscriptionBegin,
+    onTranscriptionComplete,
+}: AudioInputButtonProps) => {
     const { isOLMoASREnabled } = useFeatureToggles();
     const { isTranscribing, addSnackMessage, isProcessingAudio, setIsProcessingAudio } =
         useAppContext();
@@ -37,6 +45,7 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
             stopRecording();
         } else {
             try {
+                onRecordingBegin?.();
                 await startRecording({
                     pollLength,
                     maxLength,
@@ -52,8 +61,10 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                             });
                         }
                         try {
+                            onRecordingEnd?.();
+                            onTranscriptionBegin?.();
                             const { text } = await handleTranscribe(data);
-                            onTranscriptionComplete(text);
+                            onTranscriptionComplete?.(text);
                         } catch (error: unknown) {
                             addSnackMessage(
                                 errorToAlert(
