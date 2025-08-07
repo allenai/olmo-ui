@@ -6,13 +6,11 @@ import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 
 import { AttributionSlice, createAttributionSlice } from './slices/attribution/AttributionSlice';
-import { CompareModelSlice, createCompareModelSlice } from './slices/CompareModelSlice';
 import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createGlobalThreadsUISlice, GlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
 import { createMetaSlice, MetaSlice } from './slices/MetaSlice';
-import { createModelSlice, ModelSlice } from './slices/ModelSlice';
 import { createPromptTemplateSlice, PromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
 import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
@@ -32,8 +30,6 @@ export type AppContextState = LabelSlice &
     ThreadStreamSlice &
     SnackMessageSlice &
     UserSlice &
-    ModelSlice &
-    CompareModelSlice &
     SchemaSlice &
     DrawerSlice &
     ThreadUpdateSlice &
@@ -65,8 +61,6 @@ export const createAppContext = (
                         ...createThreadStreamSlice(...store),
                         ...createLabelSlice(...store),
                         ...createUserSlice(...store),
-                        ...createModelSlice(...store),
-                        ...createCompareModelSlice(...store),
                         ...createSchemaSlice(...store),
                         ...createDrawerSlice(...store),
                         ...createSearchSlice(...store),

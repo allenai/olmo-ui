@@ -10,6 +10,7 @@ import {
     StreamBadRequestError,
     V4CreateMessageRequest,
 } from '@/api/Message';
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Thread } from '@/api/playgroundApi/thread';
 import { postMessageGenerator } from '@/api/postMessageGenerator';
 import { Role } from '@/api/Role';
@@ -64,7 +65,7 @@ export interface ThreadUpdateSlice {
     streamingMessageId: string | null;
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
-    streamPrompt: (newMessage: StreamMessageRequest) => Promise<void>;
+    streamPrompt: (newMessage: StreamMessageRequest, model: Model) => Promise<void>;
     addThreadToAllThreads: (thread: Thread) => void;
     handleFinalMessage: (finalMessage: Message, isCreatingNewThread: boolean) => void;
     abortPrompt: () => void;
@@ -124,9 +125,8 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
         );
     },
 
-    streamPrompt: async (newMessage: StreamMessageRequest) => {
+    streamPrompt: async (newMessage: StreamMessageRequest, selectedModel: Model) => {
         const {
-            selectedModel,
             addContentToMessage,
             addChildToSelectedThread,
             addSnackMessage,
@@ -149,15 +149,7 @@ export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set
             'threadUpdate/startCreateNewThread'
         );
 
-        if (selectedModel == null) {
-            // This _shouldn't_ ever happen, but there's a chance it can happen if we let the user submit before models are loaded.
-            addSnackMessage({
-                type: SnackMessageType.Brief,
-                id: `missing-model${new Date().getTime()}`,
-                message: 'You must select a model before submitting a prompt.',
-            });
-            return;
-        }
+
 
         // TEMP HACK: Override default inference options for specific models.
         // If a user sets an option in the UI, it takes precedence.
