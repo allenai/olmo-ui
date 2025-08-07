@@ -104,6 +104,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
+    const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
 
     // Get the stream event registry
     const callbackRegistryRef = useStreamCallbackRegistry();
@@ -265,6 +266,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 return;
             }
 
+            // Clear stream errors on new submission
+            clearStreamError('0');
+
             streamMessage.prepareForNewSubmission();
 
             await processSingleModelSubmission(
@@ -279,7 +283,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 addSnackMessage
             );
         },
-        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage]
+        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage, clearStreamError]
     );
 
     const handleAbort = useCallback(

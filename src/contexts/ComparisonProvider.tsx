@@ -23,12 +23,12 @@ import {
     isModelVisible,
     useModels,
 } from '@/components/thread/ModelSelect/useModels';
-import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import {
     DEFAULT_FILE_UPLOAD_PROPS,
     mapCompareFileUploadProps,
     reduceCompareFileUploadProps,
 } from '@/components/thread/QueryForm/compareFileUploadProps';
+import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -116,6 +116,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const streamErrors = useAppContext((state) => state.streamErrors);
+    const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -276,6 +277,11 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     // Checks model compatibility before submission
     const checkCompatibilityAndSubmit = useCallback(
         async (data: QueryFormValues): Promise<void> => {
+            // Clear stream errors on new submission
+            Object.keys(comparisonState).forEach((threadViewId) => {
+                clearStreamError(threadViewId);
+            });
+
             const modelsOnly = selectedModelsWithIds.map((item) => item.model);
             const allCompatible = areAllModelsCompatible(modelsOnly);
 
@@ -287,7 +293,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 await processSubmission(data);
             }
         },
-        [selectedModelsWithIds, processSubmission]
+        [selectedModelsWithIds, processSubmission, comparisonState, clearStreamError]
     );
 
     // Handle confirmation of compatibility warning
