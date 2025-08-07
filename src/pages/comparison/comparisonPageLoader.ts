@@ -92,6 +92,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             getSchema,
             schema,
             abortPrompt,
+            clearAllStreamErrors,
         } = appContext.getState();
 
         const promises = [];
@@ -115,10 +116,16 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
 
         await Promise.all(promises);
 
-        const threadListString = new URL(request.url).searchParams.get('threads');
+        const searchParams = new URL(request.url).searchParams;
+        const threadListString = searchParams.get('threads');
         const threadListStrArray = threadListString?.split(',').map((m) => m.trim()) ?? [];
 
-        const modelListString = new URL(request.url).searchParams.get('models');
+        // Clear stream errors only for fresh comparison (no threads in URL)
+        if (threadListStrArray.length === 0) {
+            clearAllStreamErrors();
+        }
+
+        const modelListString = searchParams.get('models');
         const modelListStrArray = modelListString?.split(',').map((m) => m.trim()) ?? [];
 
         // If no URL parameters provided, initialize with default models for comparison

@@ -104,6 +104,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
+    const streamErrors = useAppContext((state) => state.streamErrors);
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -167,35 +168,47 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         [callbackRegistryRef]
     );
 
-    // Handle nav when first messages of *all* streams arrive
+    // Handle nav when first messages of *all* streams *without errors* arrive
+    const checkAndNavigateIfReady = useCallback(() => {
+        const expectedThreadViews = Object.keys(comparisonState);
+        const erroredThreadViews = Object.keys(streamErrors).filter((tvId) => streamErrors[tvId]);
+        const nonErroredThreadViews = expectedThreadViews.filter(
+            (tvId) => !erroredThreadViews.includes(tvId)
+        );
+        const receivedThreadViews = Object.keys(firstMessageThreadIdsRef.current);
+
+        if (
+            threadIds.length === 0 &&
+            nonErroredThreadViews.every((tvId) => receivedThreadViews.includes(tvId)) &&
+            nonErroredThreadViews.length > 0
+        ) {
+            const successfulThreadIds = Object.values(firstMessageThreadIdsRef.current);
+            const compareUrl = `/comparison?threads=${successfulThreadIds.join(',')}`;
+            navigate(compareUrl);
+        }
+    }, [comparisonState, streamErrors, threadIds, navigate]);
+
     useStreamEvent(
         'onFirstMessage',
         useCallback(
             (threadViewId: string, message: StreamingMessageResponse) => {
                 if (isFirstMessage(message)) {
-                    const updated = {
+                    firstMessageThreadIdsRef.current = {
                         ...firstMessageThreadIdsRef.current,
                         [threadViewId]: message.id,
                     };
-                    firstMessageThreadIdsRef.current = updated;
-
-                    // Check if we've received first messages from all thread views
-                    const expectedThreadViews = Object.keys(comparisonState);
-                    const receivedThreadViews = Object.keys(updated);
-
-                    if (
-                        threadIds.length === 0 &&
-                        expectedThreadViews.every((tvId) => receivedThreadViews.includes(tvId))
-                    ) {
-                        // Navigate to comparison URL with all thread IDs
-                        const threadIds = Object.values(updated);
-                        const compareUrl = `/comparison?threads=${threadIds.join(',')}`;
-                        navigate(compareUrl);
-                    }
+                    checkAndNavigateIfReady();
                 }
             },
-            [comparisonState, navigate, threadIds]
+            [checkAndNavigateIfReady]
         )
+    );
+
+    useStreamEvent(
+        'onError',
+        useCallback(() => {
+            checkAndNavigateIfReady();
+        }, [checkAndNavigateIfReady])
     );
 
     const streamMessage = useStreamMessage(streamCallbacks);

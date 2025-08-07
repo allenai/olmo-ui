@@ -214,8 +214,9 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         onSettled(_data, _error, _variables, _context) {
             // We might not need onComplete to be called in submission-process
         },
-        onError(_error, variables, _context) {
+        onError(error, variables, _context) {
             stopStream(variables.threadViewId);
+            callbacks?.onError?.(variables.threadViewId, error);
         },
     });
 
