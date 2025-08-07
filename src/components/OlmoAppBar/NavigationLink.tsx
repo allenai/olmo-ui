@@ -12,6 +12,8 @@ import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
+import { StyledTooltip } from '../StyledTooltip';
+
 export const NavigationListItemIcon = ({ sx, ...props }: ComponentProps<typeof ListItemIcon>) => (
     <ListItemIcon
         sx={[
@@ -82,83 +84,97 @@ export const NavigationLink = ({
         onClick?.(event);
     };
 
-    return (
-        <ListItem disablePadding dense sx={sx}>
-            <ListItemButton
-                alignItems="center"
-                selected={selected}
-                disableGutters
-                dense={variant === 'footer'}
-                onClick={handleClick}
-                sx={(theme) => ({
-                    paddingBlock: 1,
-                    paddingInline: 4,
-                    gap: theme.spacing(2),
-                    color: theme.palette.text.drawer.primary,
+    const buttonContent = (
+        <ListItemButton
+            alignItems="center"
+            selected={selected}
+            disableGutters
+            dense={variant === 'footer'}
+            onClick={handleClick}
+            sx={(theme) => ({
+                paddingBlock: 1,
+                paddingInline: 4,
+                gap: theme.spacing(2),
+                color: theme.palette.text.drawer.primary,
+
+                ':hover': {
+                    backgroundColor: 'transparent',
+                },
+
+                '&.Mui-selected': {
+                    backgroundColor: 'transparent',
+                    color: theme.palette.secondary.main,
 
                     ':hover': {
                         backgroundColor: 'transparent',
                     },
 
-                    '&.Mui-selected': {
-                        backgroundColor: 'transparent',
-                        color: theme.palette.secondary.main,
-
-                        ':hover': {
-                            backgroundColor: 'transparent',
-                        },
-
-                        ':focus-visible': {
-                            backgroundColor: theme.palette.secondary.light,
-                            color: theme.palette.secondary.contrastText,
-                        },
-                    },
-
-                    '&.Mui-focusVisible': {
+                    ':focus-visible': {
                         backgroundColor: theme.palette.secondary.light,
                         color: theme.palette.secondary.contrastText,
                     },
-                })}
-                {...linkPropsMerged}>
-                <NavigationListItemIcon
-                    sx={{
-                        height: '1.25rem',
-                        width: '1.25rem',
-                        '& svg': { fontSize: '1.25rem' },
-                        opacity: 0.5,
-                        '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
-                    }}>
-                    {/* We need something to take up space if this item is inset */}
-                    {inset && icon == null && <div />}
-                    {icon}
-                </NavigationListItemIcon>
-                <ListItemText
-                    sx={[
-                        { margin: 0, marginInlineEnd: 'auto' },
-                        ...(Array.isArray(textSx) ? textSx : [textSx]),
-                    ]}
-                    primaryTypographyProps={{
-                        variant: 'body1',
-                        fontWeight: 500,
-                        component: 'span',
-                    }}>
-                    {children}
-                </ListItemText>
-                <NavigationListItemIcon>
-                    {DisclosureIcon ? (
-                        <DisclosureIcon
-                            sx={{
-                                fontSize: '1rem',
-                                opacity: 0.5,
-                                ...(experimental && {
-                                    color: (theme) => theme.palette.warning.main,
-                                    opacity: 1,
-                                }),
-                            }}
-                        />
-                    ) : null}
-                </NavigationListItemIcon>
-            </ListItemButton>
+                },
+
+                '&.Mui-focusVisible': {
+                    backgroundColor: theme.palette.secondary.light,
+                    color: theme.palette.secondary.contrastText,
+                },
+            })}
+            {...linkPropsMerged}>
+            <NavigationListItemIcon
+                sx={{
+                    height: '1.25rem',
+                    width: '1.25rem',
+                    '& svg': { fontSize: '1.25rem' },
+                    opacity: 0.5,
+                    '.Mui-selected &, &.Mui-focusVisible': { opacity: 1 },
+                }}>
+                {/* We need something to take up space if this item is inset */}
+                {inset && icon == null && <div />}
+                {icon}
+            </NavigationListItemIcon>
+            <ListItemText
+                sx={[
+                    { margin: 0, marginInlineEnd: 'auto' },
+                    ...(Array.isArray(textSx) ? textSx : [textSx]),
+                ]}
+                primaryTypographyProps={{
+                    variant: 'body1',
+                    fontWeight: 500,
+                    component: 'span',
+                }}>
+                {children}
+            </ListItemText>
+            <NavigationListItemIcon>
+                {DisclosureIcon ? (
+                    <DisclosureIcon
+                        sx={{
+                            fontSize: '1rem',
+                            opacity: 0.5,
+                            ...(experimental && {
+                                color: (theme) => theme.palette.warning.main,
+                                opacity: 1,
+                            }),
+                        }}
+                    />
+                ) : null}
+            </NavigationListItemIcon>
+        </ListItemButton>
+    );
+
+    return (
+        <ListItem disablePadding dense sx={sx}>
+            {experimental ? (
+                <StyledTooltip
+                    title="This feature is experimental"
+                    placement="right"
+                    desktopPlacement="right"
+                    arrow>
+                    {buttonContent}
+                </StyledTooltip>
+            ) : (
+                buttonContent
+            )}
         </ListItem>
     );
 };
