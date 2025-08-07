@@ -1,9 +1,10 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { MicRounded, StopCircleOutlined } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAppContext } from '@/AppContext';
+import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/SnackMessageSlice';
 
@@ -79,6 +80,16 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
         }
     };
 
+    let tooltipText = 'Press record to start recording audio for transcription with OLMoASR';
+
+    if (isTranscribing) {
+        tooltipText =
+            'OLMoASR is listening and transcribing. Press stop when you’re done speaking..';
+    }
+    if (isProcessingAudio) {
+        tooltipText = 'Transcribing Audio. Please wait.';
+    }
+
     return (
         <IconButton
             onClick={handleAudioClick}
@@ -97,15 +108,15 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                 },
                 cursor: isProcessingAudio ? 'default' : 'hand',
             }}>
-            {isProcessingAudio ? (
-                <Tooltip title="Transcribing Audio. Please wait.">
-                    <CircularProgress size="1.5rem" color="secondary" />
-                </Tooltip>
-            ) : isTranscribing ? (
-                <StopCircleOutlined className={iconClassName} />
-            ) : (
-                <MicRounded className={iconClassName} />
-            )}
+            <StyledTooltip title={tooltipText} placement="top">
+                {isProcessingAudio ? (
+                    <CircularProgress size="1.5rem" color="inherit" />
+                ) : isTranscribing ? (
+                    <StopCircleOutlined className={iconClassName} />
+                ) : (
+                    <MicRounded className={iconClassName} />
+                )}
+            </StyledTooltip>
         </IconButton>
     );
 };
