@@ -174,7 +174,11 @@ export const QueryFormController = ({
                                     <>
                                         <AudioInputButton
                                             onTranscriptionComplete={(content) => {
-                                                formContext.setValue('content', content);
+                                                const values = formContext.getValues();
+                                                formContext.setValue(
+                                                    'content',
+                                                    values.content + content
+                                                );
                                             }}
                                         />
                                         <FileUploadButton
