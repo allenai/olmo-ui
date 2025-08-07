@@ -9,6 +9,7 @@ export interface ThreadStreamSlice {
     setStreamError: (threadViewId: string, error: unknown) => void;
     clearStreamError: (threadViewId: string) => void;
     clearAllActiveStreams: () => void;
+    clearAllStreamErrors: () => void;
 }
 
 export const createThreadStreamSlice: OlmoStateCreator<ThreadStreamSlice> = (set) => ({
@@ -51,6 +52,14 @@ export const createThreadStreamSlice: OlmoStateCreator<ThreadStreamSlice> = (set
             // Do not change this unless you're very certain of what you're doing!
             if (state.activeThreadViewIds.length > 0) {
                 state.activeThreadViewIds = [];
+            }
+        });
+    },
+
+    clearAllStreamErrors: () => {
+        set((state: ThreadStreamSlice) => {
+            if (Object.keys(state.streamErrors).length > 0) {
+                state.streamErrors = {};
             }
         });
     },

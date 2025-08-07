@@ -2,9 +2,11 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
+import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder';
 import { StreamingThread } from '@/contexts/submission-process';
+import { RemoteState } from '@/contexts/util';
 
 import { CompareModelSelect } from './CompareModelSelect';
 import { ThreadViewProvider, useThreadView } from './ThreadViewContext';
@@ -45,7 +47,7 @@ interface SingleThreadProps {
 }
 
 const SingleThread = ({ threadRootId }: SingleThreadProps) => {
-    const { streamingMessageId, isUpdatingMessageContent } = useThreadView();
+    const { streamingMessageId, isUpdatingMessageContent, remoteState } = useThreadView();
     const shouldShowAttributionHighlightDescription = false;
     const selectedMessageId = undefined;
 
@@ -53,7 +55,6 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
         threadRootId,
         (thread): StreamingThread => thread as StreamingThread
     );
-    // TODO, handle errors: https://github.com/allenai/playground-issues-repo/issues/412
 
     const messages = data?.messages ?? [];
     const childMessageIds = messages.map((message) => {
@@ -67,6 +68,7 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
             streamingMessageId={streamingMessageId ?? null}
             isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
+            showError={remoteState === RemoteState.Error}
         />
     );
 };
@@ -74,6 +76,25 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
 type ThreadViewPlaceholderProps = Pick<SingleThreadContainerProps, 'threadViewIdx' | 'models'>;
 
 const ThreadViewPlaceholder = ({ threadViewIdx, models }: ThreadViewPlaceholderProps) => {
+    const streamErrors = useAppContext((state) => state.streamErrors);
+    const hasError = streamErrors[threadViewIdx];
+
+    if (hasError) {
+        return (
+            <div className={singleThreadClasses}>
+                <CompareModelSelect threadViewId={threadViewIdx} models={models} />
+                <ThreadDisplay
+                    childMessageIds={[]}
+                    shouldShowAttributionHighlightDescription={false}
+                    streamingMessageId={null}
+                    isUpdatingMessageContent={false}
+                    selectedMessageId={null}
+                    showError={true}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className={singleThreadClasses}>
             <CompareModelSelect threadViewId={threadViewIdx} models={models} />
