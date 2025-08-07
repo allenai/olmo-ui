@@ -1,6 +1,8 @@
 import { expect, test } from './playwright-utils';
 
-test('should show form field errors for inappropriate content in single thread', async ({ page }) => {
+test('should show form field errors for inappropriate content in single thread', async ({
+    page,
+}) => {
     await page.goto('/');
 
     // Submit message that triggers inappropriate content error
@@ -21,7 +23,9 @@ test('should show form field errors for inappropriate content in single thread',
     await expect(page.getByRole('textbox', { name: /^Message*/ })).toBeEnabled();
 });
 
-test('should show form field errors for inappropriate content in comparison mode', async ({ page }) => {
+test('should show form field errors for inappropriate content in comparison mode', async ({
+    page,
+}) => {
     await page.goto('/comparison');
 
     const model1Select = page.getByRole('combobox', { name: 'Model' }).first();
