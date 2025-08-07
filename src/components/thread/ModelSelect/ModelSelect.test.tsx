@@ -50,7 +50,6 @@ const getInitialState = () =>
                 parent: 'userMessage',
             },
         },
-
     }) satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
 
 describe('Model Select', () => {
