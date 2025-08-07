@@ -11,6 +11,7 @@ import { FlatMessage, Thread as BaseThread, threadOptions } from '@/api/playgrou
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
+import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
@@ -207,6 +208,10 @@ export const handleSubmissionError = (
     modelId: string,
     addSnackMessage: (message: SnackMessage) => void
 ): null => {
+    // Re-throw form-specific errors so they reach the form's try-catch block
+    if (isInappropriateFormError(error)) {
+        throw error;
+    }
     let snackMessage = errorToAlert(
         `create-message-${new Date().getTime()}`.toLowerCase(),
         'Unable to Submit Message',

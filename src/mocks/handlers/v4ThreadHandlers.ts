@@ -7,6 +7,7 @@ import { PaginationData } from '@/api/Schema';
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
+import { inappropriateContentErrorResponse } from './responses/v4/inappropriateContentErrorResponse';
 import multiplePointerMessageResponse from './responses/v4/multiplePointerMessageResponse';
 import { overlappingSpansResponse } from './responses/v4/overlappingSpansResponse';
 import {
@@ -263,6 +264,10 @@ export const v4ThreadHandlers = [
         const formData = await request.formData();
 
         const content = formData.get('content');
+
+        if (content === 'test-inappropriate') {
+            return HttpResponse.json(inappropriateContentErrorResponse, { status: 400 });
+        }
 
         let response: Array<Thread | MessageChunk>;
         if (formData.get('parent') != null) {

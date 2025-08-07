@@ -5,6 +5,55 @@ import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
 
 import { QueryFormValues } from './QueryFormController';
 
+const INAPPROPRIATE_FORM_ERROR_CONFIGS = {
+    inappropriate_prompt_text: {
+        type: 'inappropriate' as const,
+        message:
+            'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
+        analytics: () => {
+            analyticsClient.trackInappropriatePrompt('text');
+        },
+    },
+    inappropriate_prompt: {
+        type: 'inappropriate' as const,
+        message:
+            'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
+        analytics: () => {
+            analyticsClient.trackInappropriatePrompt('text');
+        },
+    },
+    inappropriate_prompt_file: {
+        type: 'inappropriate' as const,
+        message:
+            'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
+        analytics: () => {
+            analyticsClient.trackInappropriatePrompt('file');
+        },
+    },
+    invalid_captcha: {
+        type: 'recaptcha' as const,
+        message: 'We were unable to verify your request. Please reload the page and try again.',
+        analytics: undefined,
+    },
+    failed_captcha_assessment: {
+        type: 'recaptcha' as const,
+        message: 'Our systems have detected unusual traffic. Please log in to send new messages.',
+        analytics: undefined,
+    },
+} as const;
+
+export const isInappropriateFormError = (error: unknown): boolean => {
+    if (error instanceof StreamBadRequestError) {
+        if (error instanceof StreamValidationError) {
+            return true;
+        }
+
+        return error.description != null && error.description in INAPPROPRIATE_FORM_ERROR_CONFIGS;
+    }
+
+    return false;
+};
+
 export const handleFormSubmitException = (
     e: unknown,
     formContext: UseFormReturn<QueryFormValues>
@@ -18,45 +67,23 @@ export const handleFormSubmitException = (
             return;
         }
 
-        switch (e.description) {
-            case 'inappropriate_prompt_text':
-            case 'inappropriate_prompt': // fallthrough
-                formContext.setError('content', {
-                    type: 'inappropriate',
-                    message:
-                        'This prompt text was flagged as inappropriate. Please change your prompt text and resubmit.',
-                });
-                analyticsClient.trackInappropriatePrompt('text');
-                return;
+        const config = e.description
+            ? INAPPROPRIATE_FORM_ERROR_CONFIGS[
+                  e.description as keyof typeof INAPPROPRIATE_FORM_ERROR_CONFIGS
+              ]
+            : undefined;
 
-            case 'inappropriate_prompt_file':
-                formContext.setError('content', {
-                    type: 'inappropriate',
-                    message:
-                        'The submitted image was flagged as inappropriate. Please change your image and resubmit.',
-                });
-                analyticsClient.trackInappropriatePrompt('file');
-                return;
+        if (config) {
+            formContext.setError('content', {
+                type: config.type,
+                message: config.message,
+            });
 
-            case 'invalid_captcha':
-                formContext.setError('content', {
-                    type: 'recaptcha',
-                    message:
-                        'We were unable to verify your request. Please reload the page and try again.',
-                });
-                return;
-
-            case 'failed_captcha_assessment':
-                formContext.setError('content', {
-                    type: 'recaptcha',
-                    message:
-                        'Our systems have detected unusual traffic. Please log in to send new messages.',
-                });
-                return;
-
-            default:
-                throw e;
+            config.analytics?.(); // Track analytics if required for this error type
+            return;
         }
+
+        throw e;
     } else {
         throw e;
     }
