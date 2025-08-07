@@ -1,5 +1,4 @@
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { CompareModelState } from '@/slices/CompareModelSlice';
 
 interface FileUploadDef {
     acceptsFileUpload: boolean;
@@ -31,28 +30,4 @@ export const convertToFileUploadProps = (model?: Model): FileUploadDef => {
     }
 
     return baseProps;
-};
-
-export const mapCompareFileUploadProps = (
-    selectedCompareModels: CompareModelState[]
-): FileUploadDef[] => {
-    const mappedProps = selectedCompareModels.map(({ model }) => {
-        return convertToFileUploadProps(model);
-    });
-    return mappedProps;
-};
-
-export const reduceCompareFileUploadProps = (compareFileUploadProps: FileUploadDef[]) => {
-    const reducedProps = compareFileUploadProps.reduce((combinedValues, model) => {
-        combinedValues.acceptsFileUpload &&= model.acceptsFileUpload;
-        combinedValues.acceptsMultiple &&= model.acceptsMultiple;
-        combinedValues.requiredFileOption &&= model.requiredFileOption;
-        combinedValues.allowFilesInFollowups &&= model.allowFilesInFollowups;
-        combinedValues.acceptedFileTypes = combinedValues.acceptedFileTypes.intersection(
-            model.acceptedFileTypes
-        );
-        return combinedValues;
-    });
-
-    return reducedProps;
 };

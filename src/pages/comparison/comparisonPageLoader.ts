@@ -13,8 +13,14 @@ import {
 } from '@/components/thread/ModelSelect/useModels';
 import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
 import { getFeatureToggles } from '@/FeatureToggleContext';
-import { CompareModelState } from '@/slices/CompareModelSlice';
 import { arrayZip } from '@/utils/arrayZip';
+
+// Local type definition for comparison state
+export interface CompareModelState {
+    threadViewId: string;
+    rootThreadId?: string;
+    model?: Model;
+}
 
 export interface ComparisonLoaderData {
     comparisonModels?: CompareModelState[];
