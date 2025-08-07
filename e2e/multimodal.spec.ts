@@ -36,7 +36,9 @@ test("removes files when switching to a modal that doesn't allow them", async ({
     await expect(page.getByRole('img', { name: 'User file molmo-boats.png' })).not.toBeAttached();
 });
 
-test('disables file upload after first message when models do not allow followup files', async ({ page }) => {
+test('disables file upload after first message when models do not allow followup files', async ({
+    page,
+}) => {
     await page.goto('/');
 
     await page.getByRole('combobox', { name: 'Model:' }).click();

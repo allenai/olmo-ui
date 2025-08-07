@@ -34,7 +34,9 @@ test('hides file upload icon when models do not all support files', async ({ pag
     await expect(page.getByLabel('Upload file')).not.toBeVisible();
 });
 
-test('disables file upload after first message when models do not allow follow-up files', async ({ page }) => {
+test('disables file upload after first message when models do not allow follow-up files', async ({
+    page,
+}) => {
     await page.goto('/comparison');
 
     const model1Select = page.getByRole('combobox', { name: 'Model' }).first();
