@@ -23,6 +23,7 @@ import {
     isModelVisible,
     useModels,
 } from '@/components/thread/ModelSelect/useModels';
+import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
@@ -225,7 +226,16 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             });
 
             // Wait for all submissions to complete (success or failure)
-            await Promise.allSettled(submissions);
+            const results = await Promise.allSettled(submissions);
+
+            // Re-throw form-specific errors so they reach the form's try-catch block
+            const formError = results.find(
+                (result) => result.status === 'rejected' && isInappropriateFormError(result.reason)
+            );
+
+            if (formError && formError.status === 'rejected') {
+                throw formError.reason;
+            }
         },
         [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models, threadIds]
     );
