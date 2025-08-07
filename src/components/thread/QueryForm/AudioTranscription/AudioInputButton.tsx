@@ -2,6 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { MicRounded, StopCircleOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
 import { StyledTooltip } from '@/components/StyledTooltip';
@@ -10,6 +11,8 @@ import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/S
 
 import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
+
+const HAS_SHOWN_STOP_RECORDING_HINT_KEY = 'has_shown_stop_recording';
 
 const iconClassName = css({
     transform: 'translateY(1px)', // Microphone looks odd sitting higher than the camera icon
@@ -34,6 +37,14 @@ export const AudioInputButton = ({
         useAppContext();
     const { startRecording, stopRecording } = useAudioRecording();
 
+    const [isHintVisible, setIsHintVisible] = useState(
+        !localStorage.getItem(HAS_SHOWN_STOP_RECORDING_HINT_KEY)
+    );
+    const onCloseHint = () => {
+        setIsHintVisible(false);
+        localStorage.setItem(HAS_SHOWN_STOP_RECORDING_HINT_KEY, 'true');
+    };
+
     if (!isOLMoASREnabled) {
         return null;
     }
@@ -43,6 +54,7 @@ export const AudioInputButton = ({
 
     const handleAudioClick = async () => {
         if (isTranscribing) {
+            onCloseHint();
             stopRecording();
         } else {
             try {
@@ -119,7 +131,11 @@ export const AudioInputButton = ({
                 },
                 cursor: isProcessingAudio ? 'default' : 'hand',
             }}>
-            <StyledTooltip title={tooltipText} placement="top">
+            <StyledTooltip
+                title={tooltipText}
+                placement="top"
+                open={isHintVisible && isTranscribing}
+                onClose={onCloseHint}>
                 {isProcessingAudio ? (
                     <CircularProgress size="1.5rem" color="inherit" />
                 ) : isTranscribing ? (
