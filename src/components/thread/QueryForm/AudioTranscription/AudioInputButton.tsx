@@ -1,13 +1,12 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { MicRounded } from '@mui/icons-material';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { PromptButton } from '../PromptButton';
+import { AcceptOrCancelButtons } from './AcceptOrCancelButtons';
 import { DotIndicator } from './DotIndicator';
 import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
@@ -106,53 +105,13 @@ export const AudioInputButton = ({
         }
     };
 
-    const cancelButton = (
-        <PromptButton
-            onClick={() => {
-                cancelRecording();
-            }}
-            disableRipple={true}
-            color="default"
-            size="medium"
-            sx={{
-                color: 'var(--palette-light-text-default)',
-                ':hover': {
-                    color: 'var(--palette-light-accent-secondary)',
-                },
-            }}>
-            <CloseIcon fontSize="small" />
-        </PromptButton>
-    );
-    const acceptButton = (
-        <PromptButton
-            onClick={() => {
-                stopRecording();
-            }}
-            disableRipple={true}
-            color="secondary"
-            size="medium">
-            <CheckIcon fontSize="small" />
-        </PromptButton>
-    );
-
-    if (isTranscribing) {
-        return (
-            <>
-                {cancelButton}
-                {acceptButton}
-            </>
-        );
-    }
-
-    return (
-        <PromptButton
-            onClick={handleAudioClick}
-            disableRipple={true}
-            color="secondary"
-            sx={{
-                cursor: isProcessingAudio ? 'default' : 'hand',
-            }}>
-            {isProcessingAudio ? <DotIndicator /> : <MicRounded className={iconClassName} />}
+    return isTranscribing ? (
+        <AcceptOrCancelButtons stopRecording={stopRecording} cancelRecording={cancelRecording} />
+    ) : isProcessingAudio ? (
+        <DotIndicator />
+    ) : (
+        <PromptButton onClick={handleAudioClick} disableRipple={true} color="secondary">
+            <MicRounded className={iconClassName} />
         </PromptButton>
     );
 };
