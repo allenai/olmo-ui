@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 const fadeOverflowRecipe = sva({
-    slots: ['container', 'fade', 'anchor'],
+    slots: ['container', 'content', 'fade', 'anchor'],
     base: {
         container: {
             backgroundColor: {
@@ -13,7 +13,6 @@ const fadeOverflowRecipe = sva({
             color: 'text',
             position: 'relative',
             overflowY: 'auto',
-            padding: '5',
         },
         fade: {
             display: 'none',

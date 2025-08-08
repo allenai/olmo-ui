@@ -8,7 +8,10 @@ import {
 } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
 import { CollapsibleWidgetFooter } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
-import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import {
+    CollapsibleWidgetPanel,
+    CollapsibleWidgetPanelContent,
+} from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { CollapsibleWidgetTrigger } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetTrigger';
 import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
@@ -56,7 +59,9 @@ const ThinkingWidget = ({
                         </CollapsibleWidgetHeading>
                         <CollapsibleWidgetPanel>
                             <FadeOverflowContent className={contentClassName}>
-                                {children}
+                                <CollapsibleWidgetPanelContent>
+                                    {children}
+                                </CollapsibleWidgetPanelContent>
                             </FadeOverflowContent>
                         </CollapsibleWidgetPanel>
                         <CollapsibleWidgetFooter bordered>
