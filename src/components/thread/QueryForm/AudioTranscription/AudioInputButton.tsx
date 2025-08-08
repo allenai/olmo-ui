@@ -105,11 +105,20 @@ export const AudioInputButton = ({
         }
     };
 
-    return isTranscribing ? (
-        <AcceptOrCancelButtons stopRecording={stopRecording} cancelRecording={cancelRecording} />
-    ) : isProcessingAudio ? (
-        <DotIndicator />
-    ) : (
+    if (isTranscribing) {
+        return (
+            <AcceptOrCancelButtons
+                stopRecording={stopRecording}
+                cancelRecording={cancelRecording}
+            />
+        );
+    }
+
+    if (isProcessingAudio) {
+        return <DotIndicator />;
+    }
+
+    return (
         <PromptButton onClick={handleAudioClick} disableRipple={true} color="secondary">
             <MicRounded className={iconClassName} />
         </PromptButton>
