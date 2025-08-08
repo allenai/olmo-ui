@@ -97,14 +97,10 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
             resetAttribution: _rstAtr,
             getSchema,
             schema,
-            abortPrompt,
             clearAllStreamErrors,
         } = appContext.getState();
 
         const promises = [];
-
-        // abort the current streaming prompt if there is any
-        abortPrompt();
 
         const allModels = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
         // Filter models to match ComparisonProvider behavior
