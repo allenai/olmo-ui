@@ -5,6 +5,11 @@ const collapsibleWidgetRecipe = sva({
     slots: ['container', 'heading', 'panel', 'panelContent', 'footer'],
     base: {
         container: {
+            // This was originally display: grid
+            // flex with minHeight allows it to fit the container when we have overflow
+            // better, if this causes problems with other collapsible implementations
+            // this can change back to grid, and these styles can be made specific to thinking
+            // or as a variant here.
             display: 'flex',
             flexDirection: 'column',
             minHeight: '[0]',
