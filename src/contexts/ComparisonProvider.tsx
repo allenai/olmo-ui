@@ -23,6 +23,11 @@ import {
     isModelVisible,
     useModels,
 } from '@/components/thread/ModelSelect/useModels';
+import {
+    DEFAULT_FILE_UPLOAD_PROPS,
+    mapCompareFileUploadProps,
+    reduceCompareFileUploadProps,
+} from '@/components/thread/QueryForm/compareFileUploadProps';
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
@@ -56,6 +61,11 @@ interface ComparisonProviderProps {
     children: React.ReactNode;
     initialState?: ComparisonState;
 }
+
+const DEFAULT_FILE_UPLOAD_STATE = {
+    areFilesAllowed: false,
+    reducedFileUploadProps: DEFAULT_FILE_UPLOAD_PROPS,
+};
 
 function getThread(threadId: string): StreamingThread | undefined {
     const { queryKey } = threadOptions(threadId);
@@ -106,6 +116,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const setIsShareReady = useAppContext(useShallow((state) => state.setIsShareReady));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const streamErrors = useAppContext((state) => state.streamErrors);
+    const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -253,16 +264,26 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models, threadIds]
     );
 
+    const selectedModelsWithIds = useMemo(() => {
+        return Object.entries(comparisonState)
+            .filter(([, state]) => state.modelId)
+            .map(([threadViewId, state]) => {
+                const model = models.find((m) => m.id === state.modelId);
+                return model ? { threadViewId, model } : null;
+            })
+            .filter((item): item is { threadViewId: string; model: Model } => item !== null);
+    }, [comparisonState, models]);
+
     // Checks model compatibility before submission
     const checkCompatibilityAndSubmit = useCallback(
         async (data: QueryFormValues): Promise<void> => {
-            const selectedModels = Object.values(comparisonState)
-                .map((state) => state.modelId)
-                .filter(Boolean)
-                .map((modelId) => models.find((m) => m.id === modelId))
-                .filter(Boolean) as Model[];
+            // Clear stream errors on new submission
+            Object.keys(comparisonState).forEach((threadViewId) => {
+                clearStreamError(threadViewId);
+            });
 
-            const allCompatible = areAllModelsCompatible(selectedModels);
+            const modelsOnly = selectedModelsWithIds.map((item) => item.model);
+            const allCompatible = areAllModelsCompatible(modelsOnly);
 
             if (!allCompatible) {
                 // Store the pending submission and show warning
@@ -272,7 +293,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 await processSubmission(data);
             }
         },
-        [comparisonState, models, processSubmission]
+        [selectedModelsWithIds, processSubmission, comparisonState, clearStreamError]
     );
 
     // Handle confirmation of compatibility warning
@@ -293,24 +314,46 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         pendingSubmissionRef.current = null;
     }, []);
 
+    const { areFilesAllowed, reducedFileUploadProps } = useMemo(() => {
+        if (selectedModelsWithIds.length === 0) {
+            return DEFAULT_FILE_UPLOAD_STATE;
+        }
+
+        const mappedProps = mapCompareFileUploadProps(selectedModelsWithIds);
+        const reducedProps = reduceCompareFileUploadProps(mappedProps);
+
+        return {
+            areFilesAllowed: reducedProps.acceptsFileUpload,
+            reducedFileUploadProps: reducedProps,
+        };
+    }, [selectedModelsWithIds, comparisonState, models]);
+
+    const isFileUploadDisabled = useMemo(() => {
+        return threadIds.some((threadId) => {
+            if (!threadId) return false;
+            const thread = getThread(threadId);
+            return (
+                (thread?.messages.length ?? 0) > 1 && !reducedFileUploadProps.allowFilesInFollowups
+            );
+        });
+    }, [threadIds, reducedFileUploadProps]);
+
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             canSubmit,
             autofocus,
             placeholderText,
             availableModels: models,
-            areFilesAllowed: false,
+            areFilesAllowed,
             canPauseThread: streamMessage.canPause,
             isLimitReached,
             remoteState: streamMessage.remoteState,
             shouldResetForm: false,
             fileUploadProps: {
-                isFileUploadDisabled: true,
+                ...reducedFileUploadProps,
+                isFileUploadDisabled: !areFilesAllowed || isFileUploadDisabled,
                 isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
-                acceptsFileUpload: false,
-                acceptedFileTypes: [],
-                acceptsMultiple: false,
-                allowFilesInFollowups: false,
+                acceptedFileTypes: Array.from(reducedFileUploadProps.acceptedFileTypes),
             },
 
             onModelChange: (event: SelectChangeEvent, threadViewId?: string) => {
@@ -359,6 +402,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         checkCompatibilityAndSubmit,
         inferenceOpts,
         threadIds,
+        areFilesAllowed,
+        reducedFileUploadProps,
+        isFileUploadDisabled,
     ]);
 
     return (

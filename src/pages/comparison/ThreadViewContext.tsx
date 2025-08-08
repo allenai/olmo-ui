@@ -39,13 +39,6 @@ export const ThreadViewProvider = ({
 
     const streamingError = useAppContext((state) => state.streamErrors[threadViewId]);
 
-    const clearStreamError = useAppContext((state) => state.clearStreamError);
-
-    // Clear error when this thread starts streaming
-    if (isActivelyStreaming && streamingError) {
-        clearStreamError(threadViewId);
-    }
-
     //  Currently only used to track errors, but could be used for more
     const mutationStates = useMutationState({
         filters: {
@@ -67,6 +60,9 @@ export const ThreadViewProvider = ({
 
         // Check for streaming errors or mutation errors
         const latestThreadMutation = mutationStates[mutationStates.length - 1];
+
+        // Lint is wrong. `latestThreadMutation` is necessary here
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (streamingError || (latestThreadMutation && latestThreadMutation.status === 'error')) {
             return RemoteState.Error;
         }
