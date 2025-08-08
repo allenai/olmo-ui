@@ -20,23 +20,22 @@ export const AcceptOrCancelButtons = ({
                 }}
                 disableRipple={true}
                 color="default"
-                size="medium"
+                size="small"
                 sx={{
                     color: 'var(--palette-light-text-default)',
                     ':hover': {
                         color: 'var(--palette-light-accent-secondary)',
                     },
                 }}>
-                <CloseIcon fontSize="small" />
+                <CloseIcon fontSize="small" sx={{ margin: 0.25 }} />
             </PromptButton>
             <PromptButton
                 onClick={() => {
                     stopRecording();
                 }}
                 disableRipple={true}
-                color="secondary"
-                size="medium">
-                <CheckIcon fontSize="small" />
+                size="large">
+                <CheckIcon fontSize="small" sx={{ margin: 0.25 }} />
             </PromptButton>
         </>
     );
