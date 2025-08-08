@@ -25,23 +25,16 @@ export interface ThreadUpdateSlice {
     streamPromptState?: RemoteState;
     isUpdatingMessageContent: boolean;
     addThreadToAllThreads: (thread: Thread) => void;
-    abortPrompt: () => void;
 }
-export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, get) => ({
+export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, _get) => ({
     abortController: null,
     streamingMessageId: null,
     streamPromptState: undefined,
     isUpdatingMessageContent: false,
 
-    // used by new react-query code path
-    // TODO: replace this whole slice with react-query
     addThreadToAllThreads: (thread: Thread) => {
         set((state) => ({
             allThreads: [thread, ...state.allThreads],
         }));
-    },
-
-    abortPrompt: () => {
-        get().abortController?.abort();
     },
 });
