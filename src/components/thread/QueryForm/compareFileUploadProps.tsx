@@ -1,5 +1,6 @@
 import { Model } from '@/api/playgroundApi/additionalTypes';
 
+// Based on old slice state
 interface CompareModelState {
     model?: Model;
 }

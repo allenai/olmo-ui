@@ -15,7 +15,7 @@ import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
 import { getFeatureToggles } from '@/FeatureToggleContext';
 import { arrayZip } from '@/utils/arrayZip';
 
-// Local type definition for comparison state
+// Based on old slice state
 export interface CompareModelState {
     threadViewId: string;
     rootThreadId?: string;
