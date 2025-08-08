@@ -177,7 +177,7 @@ export const QueryFormController = ({
                                     <>
                                         <AudioInputButton
                                             onRecordingBegin={() => {
-                                                setPlaceholderValue('Press stop when done');
+                                                setPlaceholderValue('Recording...');
                                             }}
                                             onComplete={() => {
                                                 setPlaceholderValue(placeholderText);
