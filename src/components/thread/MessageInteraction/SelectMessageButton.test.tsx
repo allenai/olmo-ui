@@ -1,6 +1,7 @@
 import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import { ComponentProps } from 'react';
 import * as reactRouter from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 
 import * as AppContext from '@/AppContext';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
@@ -10,9 +11,11 @@ import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoade
 import { SelectMessageButton } from './SelectMessageButton';
 
 const FakeThreadViewProvider = ({ children }: { children: React.ReactNode }) => (
-    <ThreadViewProvider threadId="test-thread-id" threadViewId="test-thread-view-id">
-        {children}
-    </ThreadViewProvider>
+    <MemoryRouter>
+        <ThreadViewProvider threadId="test-thread-id" threadViewId="test-thread-view-id">
+            {children}
+        </ThreadViewProvider>
+    </MemoryRouter>
 );
 
 describe('SelectMessageButton', () => {
