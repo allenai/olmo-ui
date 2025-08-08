@@ -44,14 +44,14 @@ const CollapsibleWidgetTitle = ({
 };
 
 interface CollapsibleWidgetHeadingProps extends CollapsibleWidgetHeadingBaseProps {
-    triggerClass?: string;
+    triggerClassName?: string;
     startAdornment?: ReactNode;
     endAdornment?: ReactNode;
 }
 
 const CollapsibleWidgetHeading = ({
     className,
-    triggerClass,
+    triggerClassName,
     startAdornment,
     endAdornment,
     children,
@@ -59,7 +59,7 @@ const CollapsibleWidgetHeading = ({
 }: CollapsibleWidgetHeadingProps) => {
     return (
         <CollapsibleWidgetHeadingBase className={className} {...rest}>
-            <CollapsibleWidgetTrigger className={triggerClass}>
+            <CollapsibleWidgetTrigger className={triggerClassName}>
                 {startAdornment}
                 <CollapsibleWidgetTitle>{children}</CollapsibleWidgetTitle>
                 {endAdornment}

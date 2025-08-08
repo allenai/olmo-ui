@@ -58,7 +58,7 @@ export const FooterInsidePanel: Story = {
     },
 };
 
-export const AlertatingFooters: Story = {
+export const AlternatingFooters: Story = {
     args: {
         defaultExpanded: true,
         children: (

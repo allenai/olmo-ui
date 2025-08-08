@@ -14,6 +14,8 @@ interface CollapsibleWidgetProps extends CollapsibleWidgetBaseProps {
     // parts classNames:
     headingClassName?: string;
     panelClassName?: string;
+    contentClassName?: string;
+    footerClassName?: string;
 }
 
 const CollapsibleWidget = ({
@@ -23,17 +25,25 @@ const CollapsibleWidget = ({
     children,
     headingClassName,
     panelClassName,
+    contentClassName,
+    footerClassName,
     ...rest
 }: CollapsibleWidgetProps) => {
     const arrow = hasArrow ? <ExpandArrow /> : null;
     return (
         <CollapsibleWidgetBase {...rest}>
-            <CollapsibleWidgetHeading endAdornment={arrow}>{heading}</CollapsibleWidgetHeading>
-            <CollapsibleWidgetPanel>
-                <CollapsibleWidgetPanelContent>{children}</CollapsibleWidgetPanelContent>
+            <CollapsibleWidgetHeading endAdornment={arrow} className={headingClassName}>
+                {heading}
+            </CollapsibleWidgetHeading>
+            <CollapsibleWidgetPanel className={panelClassName}>
+                <CollapsibleWidgetPanelContent className={contentClassName}>
+                    {children}
+                </CollapsibleWidgetPanelContent>
             </CollapsibleWidgetPanel>
             {footer ? (
-                <CollapsibleWidgetFooter bordered={true}>{footer}</CollapsibleWidgetFooter>
+                <CollapsibleWidgetFooter bordered={true} className={footerClassName}>
+                    {footer}
+                </CollapsibleWidgetFooter>
             ) : null}
         </CollapsibleWidgetBase>
     );
