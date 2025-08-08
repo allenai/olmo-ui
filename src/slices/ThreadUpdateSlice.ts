@@ -20,17 +20,13 @@ export interface StreamMessageRequest {
 }
 
 export interface ThreadUpdateSlice {
-    abortController: AbortController | null;
-    streamingMessageId: string | null;
     streamPromptState?: RemoteState;
-    isUpdatingMessageContent: boolean;
+    streamingMessageId: string | null;
     addThreadToAllThreads: (thread: Thread) => void;
 }
 export const createThreadUpdateSlice: OlmoStateCreator<ThreadUpdateSlice> = (set, _get) => ({
-    abortController: null,
-    streamingMessageId: null,
     streamPromptState: undefined,
-    isUpdatingMessageContent: false,
+    streamingMessageId: null,
 
     addThreadToAllThreads: (thread: Thread) => {
         set((state) => ({
