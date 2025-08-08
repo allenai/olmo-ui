@@ -23,6 +23,7 @@ export const IconButtonWithTooltip = ({
     desktopPlacement = placement,
     children,
     isActive = false,
+    disabled = false,
     ...rest
 }: IconButtonWithTooltipProps) => {
     return (
@@ -33,6 +34,7 @@ export const IconButtonWithTooltip = ({
             desktopPlacement={desktopPlacement}>
             <IconButton
                 {...rest}
+                disabled={disabled}
                 color={color}
                 sx={[
                     (theme) => ({

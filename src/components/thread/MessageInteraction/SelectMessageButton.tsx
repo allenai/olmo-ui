@@ -3,7 +3,7 @@ import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { alpha, Button, IconButton, Stack, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { FlatMessage } from '@/api/playgroundApi/thread';
@@ -64,6 +64,9 @@ export const SelectMessageButton = ({
 
     const isDesktop = useDesktopOrUp();
     const { isCorpusLinkEnabled } = useFeatureToggles();
+    const location = useLocation();
+    const isOnComparisonPage = location.pathname.startsWith('/comparison');
+
     const [isHintVisible, setIsHintVisible] = useState(
         !localStorage.getItem(HAS_EXPOSED_OLMOTRACE_KEY)
     );
@@ -73,7 +76,7 @@ export const SelectMessageButton = ({
         isLastButton && isHintVisible
     );
 
-    if (!isCorpusLinkEnabled) {
+    if (!isCorpusLinkEnabled || isOnComparisonPage) {
         return null;
     }
 
