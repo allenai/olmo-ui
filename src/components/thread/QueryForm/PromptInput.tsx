@@ -161,7 +161,15 @@ export const PromptInput = forwardRef<HTMLTextAreaElement, AutoSizedInputProps>(
                         {/* This intentionally has a space at the end, the css-tricks article says it helps it be smoother */}
                         {value}{' '}
                     </Box>
-                    <Box sx={{ gridArea: 'end-adornment', alignSelf: 'end' }}>{endAdornment}</Box>
+                    <Box
+                        sx={{
+                            gridArea: 'end-adornment',
+                            alignSelf: 'end',
+                            display: 'flex',
+                            gap: '1',
+                        }}>
+                        {endAdornment}
+                    </Box>
                 </Box>
                 <FormHelperText
                     sx={{

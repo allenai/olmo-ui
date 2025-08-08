@@ -1,16 +1,14 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { MicRounded, StopCircleOutlined } from '@mui/icons-material';
+import { MicRounded } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, IconButtonProps, Stack, styled, Tooltip } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useState } from 'react';
 
 import { useAppContext } from '@/AppContext';
-import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/SnackMessageSlice';
 
+import { PromptButton } from '../PromptButton';
+import { DotIndicator } from './DotIndicator';
 import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
 
@@ -62,6 +60,7 @@ export const AudioInputButton = ({
                     maxLength,
                     onStop: async (data, reason) => {
                         if (reason === 'userCancel') {
+                            onComplete?.(null);
                             return;
                         }
                         setIsProcessingAudio(true);
@@ -153,29 +152,7 @@ export const AudioInputButton = ({
             sx={{
                 cursor: isProcessingAudio ? 'default' : 'hand',
             }}>
-            {isProcessingAudio ? (
-                <StyledTooltip title="Transcribing Audio. Please wait." placement="top">
-                    <CircularProgress size="1.5rem" color="secondary" />
-                </StyledTooltip>
-            ) : isTranscribing ? (
-                <StopCircleOutlined className={iconClassName} />
-            ) : (
-                <MicRounded className={iconClassName} />
-            )}
+            {isProcessingAudio ? <DotIndicator /> : <MicRounded className={iconClassName} />}
         </PromptButton>
     );
 };
-
-const PromptButton = styled(IconButton)({
-    padding: 0.5,
-    width: '32px',
-    color: 'var(--palette-light-accent-secondary)',
-    ':hover': {
-        backgroundColor: 'transparent',
-        color: 'var(--color-teal-100)',
-    },
-    ':has(:focus-visible)': {
-        outline: '1px solid',
-        borderRadius: 'var(--radii-full, 9999px)',
-    },
-});

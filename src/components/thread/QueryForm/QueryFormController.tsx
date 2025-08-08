@@ -9,6 +9,7 @@ import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
+import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { handleFormSubmitException } from './handleFormSubmitException';
@@ -178,7 +179,7 @@ export const QueryFormController = ({
                                             onRecordingBegin={() => {
                                                 setPlaceholderValue('Press stop when done');
                                             }}
-                                            onRecordingEnd={() => {
+                                            onComplete={() => {
                                                 setPlaceholderValue(placeholderText);
                                             }}
                                             onTranscriptionComplete={(content) => {
@@ -196,17 +197,20 @@ export const QueryFormController = ({
                                     </>
                                 }
                                 endAdornment={
-                                    <SubmitPauseAdornment
-                                        canPause={canPauseThread}
-                                        onPause={onAbort}
-                                        isSubmitDisabled={
-                                            isSelectedThreadLoading ||
-                                            isLimitReached ||
-                                            isTranscribing ||
-                                            isProcessingAudio ||
-                                            !canEditThread
-                                        }
-                                    />
+                                    <>
+                                        {isTranscribing ? <Waveform /> : null}
+                                        <SubmitPauseAdornment
+                                            canPause={canPauseThread}
+                                            onPause={onAbort}
+                                            isSubmitDisabled={
+                                                isSelectedThreadLoading ||
+                                                isLimitReached ||
+                                                isTranscribing ||
+                                                isProcessingAudio ||
+                                                !canEditThread
+                                            }
+                                        />
+                                    </>
                                 }
                             />
                         )}
