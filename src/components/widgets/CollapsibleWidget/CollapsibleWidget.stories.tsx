@@ -1,15 +1,15 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Collapsible } from './Collapsible';
+import { CollapsibleWidget } from './CollapsibleWidget';
 
-const meta: Meta<typeof Collapsible> = {
+const meta: Meta<typeof CollapsibleWidget> = {
     title: 'Widgets/Collapsible',
-    component: Collapsible,
+    component: CollapsibleWidget,
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Collapsible>;
+type Story = StoryObj<typeof CollapsibleWidget>;
 
 export const Default: Story = {
     args: {

@@ -2,7 +2,7 @@ import { cva, RecipeVariantProps } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import { HTMLAttributes } from 'react';
 
-const collapsibleFooterRecipe = cva({
+const collapsibleWidgetFooterRecipe = cva({
     base: {
         display: 'flex',
         paddingInline: '4',
@@ -31,31 +31,31 @@ const collapsibleFooterRecipe = cva({
     },
 });
 
-type CollapsibleFooterVariantProps = Exclude<
-    RecipeVariantProps<typeof collapsibleFooterRecipe>,
+type CollapsibleWidgetFooterVariantProps = Exclude<
+    RecipeVariantProps<typeof collapsibleWidgetFooterRecipe>,
     undefined
 >;
 
-interface CollapsibleFooterProps
+interface CollapsibleWidgetFooterProps
     extends HTMLAttributes<HTMLDivElement>,
-        CollapsibleFooterVariantProps {
+        CollapsibleWidgetFooterVariantProps {
     className?: string;
 }
 
-const CollapsibleFooter = ({
+const CollapsibleWidgetFooter = ({
     className,
     children,
     variant,
     bordered,
     ...rest
-}: CollapsibleFooterProps) => {
-    const collapsibleFooterClassName = collapsibleFooterRecipe({ variant, bordered });
+}: CollapsibleWidgetFooterProps) => {
+    const collapsibleWidgetFooterClassName = collapsibleWidgetFooterRecipe({ variant, bordered });
     return (
-        <div className={cx(collapsibleFooterClassName, className)} {...rest}>
+        <div className={cx(collapsibleWidgetFooterClassName, className)} {...rest}>
             {children}
         </div>
     );
 };
 
-export { CollapsibleFooter };
-export type { CollapsibleFooterProps, CollapsibleFooterVariantProps };
+export { CollapsibleWidgetFooter };
+export type { CollapsibleWidgetFooterProps, CollapsibleWidgetFooterVariantProps };

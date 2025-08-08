@@ -1,7 +1,7 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { type RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 
-const collapsibleRecipe = sva({
+const collapsibleWidgetRecipe = sva({
     slots: ['container', 'heading', 'panel', 'panelContent', 'footer'],
     base: {
         container: {
@@ -45,7 +45,7 @@ const collapsibleRecipe = sva({
     },
 });
 
-type CollapsibleRecipeVariantProps = RecipeVariantProps<typeof collapsibleRecipe>;
+type CollapsibleWidgetRecipeVariantProps = RecipeVariantProps<typeof collapsibleWidgetRecipe>;
 
-export { collapsibleRecipe };
-export type { CollapsibleRecipeVariantProps };
+export { collapsibleWidgetRecipe };
+export type { CollapsibleWidgetRecipeVariantProps };
