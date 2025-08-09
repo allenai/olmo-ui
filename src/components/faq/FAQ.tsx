@@ -1,5 +1,12 @@
 import { ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Link, Typography } from '@mui/material';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Link,
+    Typography,
+} from '@mui/material';
 import { ComponentProps, createRef, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
@@ -37,6 +44,7 @@ const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
 
         return <Link href={href} {...props} target="_blank" />;
     },
+    img: (props) => <Box component="img" sx={{ display: 'inline-block' }} {...props} />,
 };
 
 interface FAQProps {
