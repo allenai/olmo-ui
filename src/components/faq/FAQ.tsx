@@ -44,7 +44,9 @@ const markdownComponents: ComponentProps<typeof Markdown>['components'] = {
 
         return <Link href={href} {...props} target="_blank" />;
     },
-    img: (props) => <Box component="img" sx={{ display: 'inline-block' }} {...props} />,
+    img: ({ src, alt }) => (
+        <Box component="img" sx={{ display: 'inline-block' }} src={src} alt={alt} />
+    ),
 };
 
 interface FAQProps {
