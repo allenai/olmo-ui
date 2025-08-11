@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useAppContext } from '@/AppContext';
 
 type StreamState = 'idle' | 'init';
-type StopReason = 'user' | 'maxLength' | 'unknown';
+type StopReason = 'userStop' | 'userCancel' | 'maxLength' | 'unknown';
 
 interface UseAudioRecordingProps {
     debug?: boolean;
@@ -126,7 +126,7 @@ export const useAudioRecording = (opts: UseAudioRecordingProps = {}) => {
         }
     };
 
-    const stopRecording = (reason: StopReason = 'user'): void => {
+    const stopRecording = (reason: StopReason = 'userStop'): void => {
         if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
             stopReason.current = reason;
             debugLog('Stopping MediaRecorder');

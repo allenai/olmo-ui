@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
-import { KeyboardEvent, UIEvent, useEffect } from 'react';
+import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
+import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
 import { FileUploadThumbnails } from './FileUploadThumbnails/FileThumbnailDisplay';
 import { handleFormSubmitException } from './handleFormSubmitException';
@@ -65,6 +66,8 @@ export const QueryFormController = ({
             files: undefined,
         },
     });
+
+    const [placeholderValue, setPlaceholderValue] = useState(placeholderText);
 
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
 
@@ -168,13 +171,23 @@ export const QueryFormController = ({
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
-                                placeholder={placeholderText}
+                                placeholder={placeholderValue}
                                 isDisabled={isTranscribing || isProcessingAudio}
                                 startAdornment={
                                     <>
                                         <AudioInputButton
+                                            onRecordingBegin={() => {
+                                                setPlaceholderValue('Recording...');
+                                            }}
+                                            onComplete={() => {
+                                                setPlaceholderValue(placeholderText);
+                                            }}
                                             onTranscriptionComplete={(content) => {
-                                                formContext.setValue('content', content);
+                                                const values = formContext.getValues();
+                                                formContext.setValue(
+                                                    'content',
+                                                    values.content + content
+                                                );
                                             }}
                                         />
                                         <FileUploadButton
@@ -184,17 +197,20 @@ export const QueryFormController = ({
                                     </>
                                 }
                                 endAdornment={
-                                    <SubmitPauseAdornment
-                                        canPause={canPauseThread}
-                                        onPause={onAbort}
-                                        isSubmitDisabled={
-                                            isSelectedThreadLoading ||
-                                            isLimitReached ||
-                                            isTranscribing ||
-                                            isProcessingAudio ||
-                                            !canEditThread
-                                        }
-                                    />
+                                    <>
+                                        {isTranscribing ? <Waveform /> : null}
+                                        <SubmitPauseAdornment
+                                            canPause={canPauseThread}
+                                            onPause={onAbort}
+                                            isSubmitDisabled={
+                                                isSelectedThreadLoading ||
+                                                isLimitReached ||
+                                                isTranscribing ||
+                                                isProcessingAudio ||
+                                                !canEditThread
+                                            }
+                                        />
+                                    </>
                                 }
                             />
                         )}
