@@ -124,6 +124,27 @@ export const faqs: FAQCategory[] = [
             },
         ],
     },
+    {
+        category: 'Ai2 Playground voice transcription',
+        questions: [
+            {
+                question: 'How does speech-to-text (STT) on the Playground work?',
+                answer: 'The Ai2 Playground uses OLMoASR for speech-to-text functionality. OLMoASR is our open-source automatic speech recognition model trained from scratch on a curated, large-scale dataset to deliver low-latency, high-accuracy transcription.',
+            },
+            {
+                question: 'How do I start a STT recording on the Playground?',
+                answer: 'To interact with the LLMs in the Playground via your voice, click the microphone icon ![microphone icon](/icons/mic-icon.svg) in the chat input, grant microphone access when prompted, then simply speak your prompt.',
+            },
+            {
+                question: 'How do I stop recording?',
+                answer: 'When you’re finished speaking, click the check mark icon ![check mark icon](/icons/check-icon.svg) to see your fully transcribed query. Press the ![close](/icons/close-icon.svg) icon to cancel audio capture.',
+            },
+            {
+                question: 'What are the limitations of OLMoASR?',
+                answer: 'The Playground’s transcription feature has some limitations. It may not work equally well for all languages, accents, and dialects, and it may not recognize microphones on certain devices. Recordings are limited to 25 seconds in length.\n\nIf you’re encountering problems, please ensure that your web browser and operating system is up to date.',
+            },
+        ],
+    },
 ] as const;
 
 export const corpusLinkFaqs: FAQCategory[] = [
