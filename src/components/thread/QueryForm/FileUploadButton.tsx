@@ -69,6 +69,7 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 });
 
 const Label = styled('label')(({ theme }) => ({
+    // TODO: share
     cursor: 'pointer',
     borderRadius: 'var(--radii-full, 9999px)',
     padding: 4,

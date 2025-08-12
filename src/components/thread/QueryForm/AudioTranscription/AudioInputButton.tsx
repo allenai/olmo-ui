@@ -1,12 +1,13 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { MicRounded, StopCircleOutlined } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import { MicRounded } from '@mui/icons-material';
 
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { AlertMessageSeverity, errorToAlert, SnackMessageType } from '@/slices/SnackMessageSlice';
 
+import { PromptButton } from '../PromptButton';
+import { AcceptOrCancelButtons } from './AcceptOrCancelButtons';
+import { DotIndicator } from './DotIndicator';
 import { handleTranscribe } from './handleTranscribe';
 import { useAudioRecording } from './useAudioRecording';
 
@@ -16,14 +17,28 @@ const iconClassName = css({
 });
 
 interface AudioInputButtonProps {
-    onTranscriptionComplete: (content: string) => void;
+    onRecordingBegin?: () => void;
+    onRecordingEnd?: () => void;
+    onTranscriptionBegin?: () => void;
+    onTranscriptionComplete?: (content: string) => void;
+    onComplete?: (content?: string | null) => void;
 }
 
-export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonProps) => {
+export const AudioInputButton = ({
+    onRecordingBegin,
+    onRecordingEnd,
+    onTranscriptionBegin,
+    onTranscriptionComplete,
+    onComplete,
+}: AudioInputButtonProps) => {
     const { isOLMoASREnabled } = useFeatureToggles();
     const { isTranscribing, addSnackMessage, isProcessingAudio, setIsProcessingAudio } =
         useAppContext();
     const { startRecording, stopRecording } = useAudioRecording();
+
+    const cancelRecording = () => {
+        stopRecording('userCancel');
+    };
 
     if (!isOLMoASREnabled) {
         return null;
@@ -35,12 +50,18 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
     const handleAudioClick = async () => {
         if (isTranscribing) {
             stopRecording();
+            onComplete?.(null);
         } else {
             try {
+                onRecordingBegin?.();
                 await startRecording({
                     pollLength,
                     maxLength,
                     onStop: async (data, reason) => {
+                        if (reason === 'userCancel') {
+                            onComplete?.(null);
+                            return;
+                        }
                         setIsProcessingAudio(true);
                         if (reason === 'maxLength') {
                             addSnackMessage({
@@ -52,8 +73,11 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                             });
                         }
                         try {
+                            onRecordingEnd?.();
+                            onTranscriptionBegin?.();
                             const { text } = await handleTranscribe(data);
-                            onTranscriptionComplete(text);
+                            onTranscriptionComplete?.(text);
+                            onComplete?.(text);
                         } catch (error: unknown) {
                             addSnackMessage(
                                 errorToAlert(
@@ -62,6 +86,7 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                                     error
                                 )
                             );
+                            onComplete?.(null);
                         } finally {
                             setIsProcessingAudio(false);
                         }
@@ -75,37 +100,27 @@ export const AudioInputButton = ({ onTranscriptionComplete }: AudioInputButtonPr
                         error
                     )
                 );
+                onComplete?.(null);
             }
         }
     };
 
+    if (isTranscribing) {
+        return (
+            <AcceptOrCancelButtons
+                stopRecording={stopRecording}
+                cancelRecording={cancelRecording}
+            />
+        );
+    }
+
+    if (isProcessingAudio) {
+        return <DotIndicator />;
+    }
+
     return (
-        <IconButton
-            onClick={handleAudioClick}
-            disableRipple={true}
-            sx={{
-                // style like the FileUploadButton
-                padding: 0.5,
-                color: 'var(--palette-light-accent-secondary)',
-                ':hover': {
-                    backgroundColor: 'transparent',
-                    color: 'var(--color-teal-100)',
-                },
-                ':has(:focus-visible)': {
-                    outline: '1px solid',
-                    borderRadius: 'var(--radii-full, 9999px)',
-                },
-                cursor: isProcessingAudio ? 'default' : 'hand',
-            }}>
-            {isProcessingAudio ? (
-                <Tooltip title="Transcribing Audio. Please wait.">
-                    <CircularProgress size="1.5rem" color="secondary" />
-                </Tooltip>
-            ) : isTranscribing ? (
-                <StopCircleOutlined className={iconClassName} />
-            ) : (
-                <MicRounded className={iconClassName} />
-            )}
-        </IconButton>
+        <PromptButton onClick={handleAudioClick} disableRipple={true} color="secondary">
+            <MicRounded className={iconClassName} />
+        </PromptButton>
     );
 };
