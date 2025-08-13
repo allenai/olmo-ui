@@ -2,17 +2,11 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     MessageStreamError,
     MessageStreamErrorReason,
-    MessageStreamErrorType,
-    RequestInferenceOpts,
+    type RequestInferenceOpts,
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import type {
-    SchemaModelResponseChunk,
-    SchemaThinkingChunk,
-    SchemaToolCallChunk,
-} from '@/api/playgroundApi/playgroundApiSchema';
-import { FlatMessage, Thread as BaseThread, threadOptions } from '@/api/playgroundApi/thread';
+import { FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
@@ -22,11 +16,16 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
-// Thread plus streaming state
-export interface StreamingThread extends BaseThread {
-    streamingMessageId?: string;
-    isUpdatingMessageContent?: boolean;
-}
+import { isFinalMessage, isFirstMessage, isMessageStreamError } from './streamTypes';
+import {
+    containsMessages,
+    isModelResponseChunk,
+    isOldMessageChunk,
+    isThinkingChunk,
+    isToolCallChunk,
+    type StreamingMessageResponse,
+    type StreamingThread,
+} from './streamTypes';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {
@@ -74,65 +73,6 @@ export const prepareRequest = (
     if (lastMessageId) request.parent = lastMessageId;
 
     return request;
-};
-
-export type MessageChunk = Pick<FlatMessage, 'content'> & {
-    message: FlatMessage['id'];
-};
-
-export type Chunk = {
-    type: string;
-    message: FlatMessage['id'];
-};
-
-export type StreamingMessageResponse =
-    | StreamingThread
-    | MessageChunk
-    | MessageStreamErrorType
-    | Chunk;
-
-export const isMessageStreamError = (
-    message: StreamingMessageResponse
-): message is MessageStreamErrorType => {
-    return 'error' in message;
-};
-
-export const containsMessages = (message: StreamingMessageResponse): message is StreamingThread => {
-    return 'messages' in message;
-};
-
-export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
-    return containsMessages(message) && !message.messages.some((msg) => msg.final);
-};
-
-export const isFinalMessage = (message: StreamingMessageResponse): message is StreamingThread => {
-    return containsMessages(message) && !message.messages.some((msg) => !msg.final);
-};
-
-export const isOldMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
-    return 'message' in message;
-};
-
-export const isChunk = (message: StreamingMessageResponse): message is Chunk => {
-    return 'type' in message && 'message' in message;
-};
-
-export const isToolCallChunk = (
-    message: StreamingMessageResponse
-): message is SchemaToolCallChunk => {
-    return isChunk(message) && message.type === 'toolCall';
-};
-
-export const isThinkingChunk = (
-    message: StreamingMessageResponse
-): message is SchemaThinkingChunk => {
-    return isChunk(message) && message.type === 'thinking';
-};
-
-export const isModelResponseChunk = (
-    message: StreamingMessageResponse
-): message is SchemaModelResponseChunk => {
-    return isChunk(message) && message.type === 'modelResponse';
 };
 
 export async function* readStream(response: Response, abortSignal?: AbortSignal) {
@@ -223,6 +163,7 @@ export const updateCacheWithMessagePart = async (
                 return newThread;
             });
         }
+
         if (isThinkingChunk(message)) {
             const { message: messageId, content: thinkingContent } = message;
             const { queryKey } = threadOptions(currentThreadId);
@@ -247,6 +188,7 @@ export const updateCacheWithMessagePart = async (
                 return newThread;
             });
         }
+
         if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
             const { message: messageId, content } = message;
             const { queryKey } = threadOptions(currentThreadId);
