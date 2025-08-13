@@ -1192,6 +1192,28 @@ export type components = {
          * @enum {string}
          */
         readonly SortDirection: 'ASC' | 'DESC';
+        /** StreamEndChunk */
+        readonly StreamEndChunk: {
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @default end
+             * @constant
+             */
+            readonly type?: 'end';
+        };
+        /** StreamStartChunk */
+        readonly StreamStartChunk: {
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @default start
+             * @constant
+             */
+            readonly type?: 'start';
+        };
         /** TextOnlyResponseModel */
         readonly TextOnlyResponseModel: {
             readonly availability: components['schemas']['ModelAvailability'];
@@ -1484,6 +1506,8 @@ export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSortDirection = components['schemas']['SortDirection'];
+export type SchemaStreamEndChunk = components['schemas']['StreamEndChunk'];
+export type SchemaStreamStartChunk = components['schemas']['StreamStartChunk'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
 export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
 export type SchemaThread = components['schemas']['Thread'];
