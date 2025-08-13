@@ -12,10 +12,11 @@
  * @returns {JSX.Element} The rendered toggle button.
  */
 
-import { FormatClear, TitleRounded } from '@mui/icons-material';
+import { DataObject } from '@mui/icons-material';
 import { ReactNode } from 'react';
 
 import { FlatMessage } from '@/api/playgroundApi/thread';
+import DataObjectOff from '@/components/assets/dataObjectOff.svg?react';
 
 import { FeatureToggleButton } from './FeatureToggleButton';
 
@@ -37,14 +38,14 @@ interface RawToggleButtonProps {
 }
 
 export const RawToggleButton = ({ isRawMode, setRawMode }: RawToggleButtonProps): ReactNode => {
-    const toolTipText = isRawMode ? 'Display Formatted' : 'Clear Formatting';
+    const toolTipText = isRawMode ? 'Hide Message Data' : 'Show Message Data';
 
     return (
         <FeatureToggleButton
             selected={isRawMode}
             onChange={setRawMode}
-            iconOn={<TitleRounded />}
-            iconOff={<FormatClear />}
+            iconOn={<DataObjectOff />}
+            iconOff={<DataObject />}
             hint={toolTipText}
             mobileTooltip={toolTipText}
             buttonProps={{ sx: { padding: 1 } }}
