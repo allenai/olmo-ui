@@ -993,7 +993,6 @@ export type components = {
             readonly message: string;
             /**
              * Type
-             * @default modelResponse
              * @constant
              */
             readonly type: 'modelResponse';
@@ -1266,7 +1265,6 @@ export type components = {
             readonly message: string;
             /**
              * Type
-             * @default thinking
              * @constant
              */
             readonly type: 'thinking';
@@ -1315,7 +1313,6 @@ export type components = {
             readonly toolName: string;
             /**
              * Type
-             * @default toolCall
              * @constant
              */
             readonly type: 'toolCall';
