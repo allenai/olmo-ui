@@ -133,11 +133,11 @@ export const faqs: FAQCategory[] = [
             },
             {
                 question: 'How do I start a STT recording on the Playground?',
-                answer: 'To interact with the LLMs in the Playground via your voice, click the microphone icon ![microphone icon](/icons/mic-icon.svg) in the chat input, grant microphone access when prompted, then simply speak your prompt.',
+                answer: 'To interact with the LLMs in the Playground via your voice, click the microphone icon ![microphone icon](/mic-icon.svg) in the chat input, grant microphone access when prompted, then simply speak your prompt.',
             },
             {
                 question: 'How do I stop recording?',
-                answer: 'When you’re finished speaking, click the check mark icon ![check mark icon](/icons/check-icon.svg) to see your fully transcribed query. Press the ![close](/icons/close-icon.svg) icon to cancel audio capture.',
+                answer: 'When you’re finished speaking, click the check mark icon ![check mark icon](/check-icon.svg) to see your fully transcribed query. Press the ![close](/close-icon.svg) icon to cancel audio capture.',
             },
             {
                 question: 'What are the limitations of OLMoASR?',
