@@ -1,6 +1,5 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
-    isMessageChunk,
     MessageStreamError,
     MessageStreamErrorReason,
     MessageStreamErrorType,
@@ -200,7 +199,7 @@ export const updateCacheWithMessagePart = async (
     }
 
     // currentThreadId should be set at this point
-    if (isMessageChunk(message) && currentThreadId) {
+    if (isOldMessageChunk(message) && currentThreadId) {
         const { message: messageId, content } = message;
         // += message.content
         // addContentToMessage(message.message, message.content);
