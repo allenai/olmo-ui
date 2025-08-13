@@ -1,5 +1,6 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
+    isMessageChunk,
     MessageStreamError,
     MessageStreamErrorReason,
     MessageStreamErrorType,
@@ -7,6 +8,11 @@ import {
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import type {
+    SchemaModelResponseChunk,
+    SchemaThinkingChunk,
+    SchemaToolCallChunk,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage, Thread as BaseThread, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
@@ -75,7 +81,16 @@ export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
 
-export type StreamingMessageResponse = StreamingThread | MessageChunk | MessageStreamErrorType;
+export type Chunk = {
+    type: string;
+    message: FlatMessage['id'];
+};
+
+export type StreamingMessageResponse =
+    | StreamingThread
+    | MessageChunk
+    | MessageStreamErrorType
+    | Chunk;
 
 export const isMessageStreamError = (
     message: StreamingMessageResponse
@@ -95,8 +110,30 @@ export const isFinalMessage = (message: StreamingMessageResponse): message is St
     return containsMessages(message) && !message.messages.some((msg) => !msg.final);
 };
 
-export const isMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
-    return 'content' in message;
+export const isOldMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
+    return 'message' in message;
+};
+
+export const isChunk = (message: StreamingMessageResponse): message is Chunk => {
+    return 'type' in message && 'message' in message;
+};
+
+export const isToolCallChunk = (
+    message: StreamingMessageResponse
+): message is SchemaToolCallChunk => {
+    return isChunk(message) && message.type === 'toolCall';
+};
+
+export const isThinkingChunk = (
+    message: StreamingMessageResponse
+): message is SchemaThinkingChunk => {
+    return isChunk(message) && message.type === 'thinking';
+};
+
+export const isModelResponseChunk = (
+    message: StreamingMessageResponse
+): message is SchemaModelResponseChunk => {
+    return isChunk(message) && message.type === 'modelResponse';
 };
 
 export async function* readStream(response: Response, abortSignal?: AbortSignal) {
