@@ -38,12 +38,8 @@ import {
     useStreamCallbackRegistry,
     useStreamEvent,
 } from './StreamEventRegistry';
-import {
-    isFirstMessage,
-    processSingleModelSubmission,
-    StreamingMessageResponse,
-    StreamingThread,
-} from './submission-process';
+import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './streamTypes';
+import { processSingleModelSubmission } from './submission-process';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
