@@ -760,10 +760,16 @@ export type components = {
              * @default null
              */
             readonly template?: string | null;
-            /** Thinking */
-            readonly thinking: string | null;
-            /** Toolcalls */
-            readonly toolCalls: readonly components['schemas']['ToolCall'][] | null;
+            /**
+             * Thinking
+             * @default null
+             */
+            readonly thinking?: string | null;
+            /**
+             * Toolcalls
+             * @default null
+             */
+            readonly toolCalls?: readonly components['schemas']['ToolCall'][] | null;
         };
         /** GetAttributionRequest */
         readonly GetAttributionRequest: {
@@ -798,12 +804,12 @@ export type components = {
             readonly deleted?: boolean;
             /**
              * Limit
-             * @default null
+             * @default 10
              */
-            readonly limit?: number | null;
+            readonly limit?: number;
             /**
              * Offset
-             * @default null
+             * @default 0
              */
             readonly offset?: number | null;
             /** @default DESC */

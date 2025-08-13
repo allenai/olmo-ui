@@ -11,7 +11,7 @@ import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamEventRegistry';
-import { StreamingMessageResponse } from '@/contexts/submission-process';
+import { StreamingMessageResponse } from '@/contexts/streamTypes';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {

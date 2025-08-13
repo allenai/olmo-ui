@@ -16,7 +16,7 @@ import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
-import { StreamingMessageResponse } from './submission-process';
+import { StreamingMessageResponse } from './streamTypes';
 
 export interface ThreadStreamMutationVariables {
     request: StreamMessageRequest;
