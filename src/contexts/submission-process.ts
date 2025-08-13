@@ -142,30 +142,26 @@ export const updateCacheWithMessagePart = async (
 
     const state = appContext.getState();
 
-    if (isFirstMessage(message)) {
-        if (isCreatingNewThread) {
-            currentThreadId = message.id;
-            if (currentThreadId) {
-                const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, message);
-            }
-        } else {
-            if (currentThreadId) {
-                const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, (oldData: StreamingThread) => {
-                    const newData = {
-                        ...oldData,
-                        messages: [...oldData.messages, ...message.messages],
-                    };
-                    return newData;
-                });
-            }
+    if (isCreatingNewThread && isFirstMessage(message)) {
+        currentThreadId = message.id;
+        if (currentThreadId) {
+            const { queryKey } = threadOptions(currentThreadId);
+            queryClient.setQueryData(queryKey, message);
         }
-
         // Our first message callbacks need to run after we set the message in the cache
         // Make sure this stays below any cache setting
         onFirstMessage?.(threadViewId, message);
+    } else if (currentThreadId && containsMessages(message)) {
+        const { queryKey } = threadOptions(currentThreadId);
+        queryClient.setQueryData(queryKey, (oldData: StreamingThread) => {
+            const newData = {
+                ...oldData,
+                messages: mergeMessages(oldData.messages, message.messages),
+            };
+            return newData;
+        });
     }
+
     // currentThreadId should be set at this point
     if (isMessageChunk(message) && currentThreadId) {
         const { message: messageId, content } = message;
@@ -201,6 +197,34 @@ export const updateCacheWithMessagePart = async (
     }
 
     return currentThreadId;
+};
+
+const mergeMessages = (
+    oldMessages: readonly FlatMessage[],
+    newMessages: readonly FlatMessage[]
+) => {
+    const newMessageObj = newMessages.reduce<Record<string, FlatMessage>>((acc, current) => {
+        acc[current.id] = current;
+        return acc;
+    }, {});
+
+    // update oldMessages if we have them. Manly to cover children changing.
+    const newMessageList = oldMessages.map((oldMessage) => {
+        if (newMessageObj[oldMessage.id]) {
+            return newMessageObj[oldMessage.id];
+        }
+        return oldMessage;
+    });
+
+    // if message is not in current messages, add it. This code assumes message order is correct in array
+    newMessages.forEach((message) => {
+        const found = oldMessages.find((oldMessages) => oldMessages.id === message.id);
+        if (!found) {
+            newMessageList.push(message);
+        }
+    });
+
+    return newMessageList;
 };
 
 export const handleSubmissionError = (
@@ -331,6 +355,7 @@ export const processStreamResponse = async (
     let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
     const chunks = readStream(response, abortController.signal);
+
     for await (const chunk of chunks) {
         // return the root thread id (this shouldn't be undefined anymore)
         streamingRootThreadId = await updateCacheWithMessagePart(
