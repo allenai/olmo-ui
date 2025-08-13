@@ -41,7 +41,7 @@ export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
                 {JSON.stringify(data, (key, value) => (key === 'content' ? undefined : value), 2)}
             </div>
             <Typography variant="body2">Message Content</Typography>
-            <div className={cleanWrap}>{getCleanContent(content)}</div>
+            <div className={cleanWrap}>{escapeForDisplay(content)}</div>
         </div>
     );
 };
@@ -52,8 +52,10 @@ export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
-const getCleanContent = (content: string): string => {
-    // Remove any leading or trailing whitespace and newlines
+// Convert control characters to visible escape sequences for display,
+// without adding wrapping quotes or escaping internal quotes/backslashes.
+const escapeForDisplay = (content: string): string => {
+    // Remove any leading or trailing quotes and newlines
     return JSON.stringify(content).slice(1, -1).replace(/\\"/g, '"');
 };
 
@@ -106,7 +108,7 @@ export const MessageView = ({
 
             <MessageInteraction
                 role={role as Role}
-                content={rawMode ? getCleanContent(content) : content}
+                content={rawMode ? escapeForDisplay(content) : content}
                 messageLabels={messageLabels}
                 messageId={messageId}
                 isLastMessage={isLastMessageInThread}

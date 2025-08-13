@@ -1,13 +1,8 @@
 /**
- * A responsive toggle button for enabling or disabling a feature, with
- * different UI/UX on desktop vs. mobile.
+ * A responsive toggle button for enabling or disabling a feature,
+ * with different UI/UX on desktop vs. mobile.
  *
- * **Desktop:** Renders a MUI `Button` wrapped in a `StyledTooltip` for
- *   optional hints.
- *
- *  **Mobile:** Renders an `IconButton` wrapped in a `StyledTooltip`.
- *
- * Common usage:
+ * @example
  * <FeatureToggleButton
  *   selected={isEnabled}
  *   onChange={(next) => setIsEnabled(next)}
@@ -18,6 +13,9 @@
  *   hint="Toggle detail view"
  *   onTrack={(next) => logToggle(next)}
  * />
+ *
+ * @param {FeatureToggleButtonProps} props - The component props.
+ * @returns {JSX.Element} The rendered toggle button.
  */
 
 import { alpha, Button, ButtonProps, IconButton, IconButtonProps } from '@mui/material';
@@ -26,31 +24,59 @@ import { ReactNode } from 'react';
 import { useDesktopOrUp } from '@/components/dolma/shared';
 import { StyledTooltip } from '@/components/StyledTooltip';
 
+/**
+ * Props for the {@link FeatureToggleButton} component.
+ */
 export interface FeatureToggleButtonProps {
+    /** Current on/off state of the feature. */
     selected: boolean;
+
+    /** Fired when the control is toggled. Receives the new state. */
     onChange: (next: boolean) => void;
 
-    // Labels/icons (strings and nodes are both supported)
+    /** Text label when `selected` is true. */
     labelOn?: string;
+
+    /** Text label when `selected` is false. */
     labelOff?: string;
+
+    /** Icon to display when `selected` is true. */
     iconOn?: ReactNode;
+
+    /** Icon to display when `selected` is false. */
     iconOff?: ReactNode;
 
-    hint?: ReactNode; // shown on desktop as tooltip content
-    mobileTooltip?: ReactNode; // shown on mobile
+    /** Tooltip content shown on desktop. */
+    hint?: ReactNode;
+
+    /** Tooltip content shown on mobile (defaults to current label). */
+    mobileTooltip?: ReactNode;
+
+    /** Controls mobile tooltip visibility in controlled mode. */
     mobileTooltipOpen?: boolean;
+
+    /** Handler for mobile tooltip visibility changes. */
     onMobileTooltipOpenChange?: (open: boolean) => void;
 
+    /** Tooltip placement relative to the button. */
     placement?: 'top' | 'bottom' | 'left' | 'right';
-    showHint?: boolean; // whether to show the hint tooltip
 
+    /** Whether to force-show the desktop hint tooltip. */
+    showHint?: boolean;
+
+    /** Extra props forwarded to the desktop `Button`. */
     buttonProps?: Omit<ButtonProps, 'onClick'>;
+
+    /** Extra props forwarded to the mobile `IconButton`. */
     iconButtonProps?: Omit<IconButtonProps, 'onClick' | 'aria-pressed' | 'aria-label'>;
 
+    /** Accessible label when `selected` is true (mobile). */
     ariaLabelOn?: string;
+
+    /** Accessible label when `selected` is false (mobile). */
     ariaLabelOff?: string;
 
-    // Analytics or side-effects
+    /** Optional analytics callback invoked after state changes. */
     onTrack?: (nextSelected: boolean) => void;
 }
 

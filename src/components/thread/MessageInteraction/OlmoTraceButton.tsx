@@ -1,33 +1,13 @@
 /**
  * A context-aware toggle button for showing or hiding OLMoTrace results for a given message.
+ * Integrates with the thread view, feature toggles, analytics, and a one-time hints system to
+ * conditionally render a `FeatureToggleButton` that opens or closes attribution data.
  *
- * The `OlmoTraceButton` integrates with the app's thread view, feature toggles, analytics,
- * and one-time hints system to conditionally render a `FeatureToggleButton` that opens or
- * closes attribution data for a selected message.
- *
- * Key behaviors:
- * - Renders only when the "corpus link" feature toggle is enabled and the current page is not
- *   the comparison view.
- * - Selected state (`selected` prop) reflects whether this `messageId` matches the
- *   `selectedMessageId` in app state.
- * - Clicking toggles selection:
- *   - When selecting: sets the URL's `PARAM_SELECTED_MESSAGE`, updates app state, optionally
- *     opens the attribution drawer (desktop only), and dismisses the one-time hint.
- *   - When deselecting: clears the selection from state and URL.
- * - Fires `analyticsClient.trackPromptOlmoTrace` with the selected model ID whenever toggled.
- * - Uses `useOneTimeHint` to show a dismissible hint (`DismissibleHint`) the first time the
- *   user encounters the button.
- * - On desktop, hint content is passed to the `FeatureToggleButton` as a tooltip.
- * - On mobile, the hint can be shown inline via `mobileTooltip` and controlled with state when
- *   this is the "last" button in a list (`isLastButton`).
- *
- * Props:
- * - messageId: The ID of the message this toggle controls.
- * - isLastButton: Whether this is the final button in a sequence, used to control mobile
- *   tooltip behavior.
- *
- * Common usage inside a thread view:
+ * @example
  * <OlmoTraceButton messageId={msg.id} isLastButton={idx === lastIndex} />
+ *
+ * @param {OlmoTraceButtonProps} props - Component props.
+ * @returns {JSX.Element} The rendered button.
  */
 
 import Article from '@mui/icons-material/Article';
@@ -49,14 +29,17 @@ import { useOneTimeHint } from './useOneTimeHint';
 
 const HAS_EXPOSED_OLMOTRACE_KEY = 'has_exposed_olmotrace';
 
-const OlmotraceHint = ({ onClose }: { onClose: () => void }) => (
-    <DismissibleHint
-        onClose={onClose}
-        content="Curious about how this response matches the model's training data? Click this to dig deeper."
-    />
-);
+/**
+ * Props for the {@link OlmoTraceButton} component.
+ */
 interface OlmoTraceButtonProps {
+    /** The ID of the message this toggle controls. */
     messageId: FlatMessage['id'];
+
+    /**
+     * Whether this is the final button in a list, used to adjust mobile tooltip behavior
+     * (e.g., allow controlled inline hint on the last item).
+     */
     isLastButton?: boolean;
 }
 
@@ -144,3 +127,21 @@ export const OlmoTraceButton = ({
         />
     );
 };
+
+/**
+ * A small wrapper component that renders a {@link DismissibleHint} with
+ * pre-defined OLMoTrace hint text.
+ *
+ * @example
+ * <OlmotraceHint onClose={() => setShowHint(false)} />
+ *
+ * @param {{ onClose: () => void }} props - Component props.
+ * @param {() => void} props.onClose - Callback fired when the hint is dismissed.
+ * @returns {JSX.Element} The rendered dismissible hint.
+ */
+const OlmotraceHint = ({ onClose }: { onClose: () => void }) => (
+    <DismissibleHint
+        onClose={onClose}
+        content="Curious about how this response matches the model's training data? Click this to dig deeper."
+    />
+);

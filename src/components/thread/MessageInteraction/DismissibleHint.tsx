@@ -1,37 +1,38 @@
 /**
  * A small UI component for displaying a dismissible hint or message block.
  *
- * The `DismissibleHint` renders optional `title` and `content` areas, with sensible
- * typography defaults for string values. If `content` is not provided, the `children`
- * are rendered instead. The component also includes a close control:
- *   - By default, this is an `IconButton` with an accessible label (`closeAriaLabel`).
- *   - Consumers can override this by passing a custom `CloseAdornment` node.
- *
- * Common usage:
+ * @example
  * <DismissibleHint
  *   title="Info"
  *   content="This action cannot be undone."
  *   onClose={handleClose}
  * />
  *
- * Props:
- * - title: Optional heading, string or node.
- * - content: Optional main text as a string or node; omit to render `children`.
- * - onClose: Callback fired when the close control is clicked.
- * - closeAriaLabel: Accessible label for the default close button.
- * - CloseAdornment: Optional custom close control to replace the default.
- * - All other `StackProps` are forwarded to the root Stack.
+ * @param {DismissibleHintProps} props - The component props.
+ * @returns {JSX.Element} Rendered dismissible hint component.
  */
 
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, Stack, StackProps, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
+/**
+ * Props for the {@link DismissibleHint} component.
+ */
 export interface DismissibleHintProps extends Omit<StackProps, 'title'> {
+    /** Callback fired when the close control is clicked. */
     onClose: () => void;
+
+    /** Optional heading, can be a string or a React node. */
     title?: ReactNode;
-    content?: string | undefined;
+
+    /** Optional main text as a string; omit to render `children`. */
+    content?: string;
+
+    /** Accessible label for the default close button. */
     closeAriaLabel?: string;
+
+    /** Optional custom close control to replace the default. */
     CloseAdornment?: ReactNode;
 }
 
