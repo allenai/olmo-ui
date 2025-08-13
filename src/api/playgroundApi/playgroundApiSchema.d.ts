@@ -760,6 +760,10 @@ export type components = {
              * @default null
              */
             readonly template?: string | null;
+            /** Thinking */
+            readonly thinking: string | null;
+            /** Toolcalls */
+            readonly toolCalls: readonly components['schemas']['ToolCall'][] | null;
         };
         /** GetAttributionRequest */
         readonly GetAttributionRequest: {
@@ -983,6 +987,7 @@ export type components = {
             readonly message: string;
             /**
              * Type
+             * @default modelResponse
              * @constant
              */
             readonly type: 'modelResponse';
@@ -1255,6 +1260,7 @@ export type components = {
             readonly message: string;
             /**
              * Type
+             * @default thinking
              * @constant
              */
             readonly type: 'thinking';
@@ -1265,6 +1271,23 @@ export type components = {
             readonly id: string;
             /** Messages */
             readonly messages: readonly components['schemas']['FlatMessage'][];
+        };
+        /** ToolCall */
+        readonly ToolCall: {
+            /**
+             * Args
+             * @default null
+             */
+            readonly args?:
+                | string
+                | {
+                      readonly [key: string]: unknown;
+                  }
+                | null;
+            /** Toolcallid */
+            readonly toolCallId: string;
+            /** Toolname */
+            readonly toolName: string;
         };
         /** ToolCallChunk */
         readonly ToolCallChunk: {
@@ -1286,6 +1309,7 @@ export type components = {
             readonly toolName: string;
             /**
              * Type
+             * @default toolCall
              * @constant
              */
             readonly type: 'toolCall';
@@ -1460,6 +1484,7 @@ export type SchemaSortDirection = components['schemas']['SortDirection'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
 export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
 export type SchemaThread = components['schemas']['Thread'];
+export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];

@@ -198,32 +198,81 @@ export const updateCacheWithMessagePart = async (
         });
     }
 
-    // currentThreadId should be set at this point
-    if (isOldMessageChunk(message) && currentThreadId) {
-        const { message: messageId, content } = message;
-        // += message.content
-        // addContentToMessage(message.message, message.content);
-        const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
-            const newThread = {
-                ...oldThread,
-                streamingMessageId: messageId,
-                isUpdatingMessageContent: true,
-                messages: oldThread.messages.map((message) => {
-                    if (message.id === messageId) {
-                        const updatedMessage = {
-                            ...message,
-                            content: message.content + content,
-                        };
-                        return updatedMessage;
-                    } else {
-                        return message;
-                    }
-                }),
-            };
-            return newThread;
-        });
+    if (currentThreadId) {
+        if (isToolCallChunk(message)) {
+            const { message: messageId, args, toolCallId, toolName } = message;
+            const { queryKey } = threadOptions(currentThreadId);
+
+            queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
+                const newThread = {
+                    ...oldThread,
+                    streamingMessageId: messageId,
+                    isUpdatingMessageContent: true,
+                    messages: oldThread.messages.map((message) => {
+                        if (message.id === messageId) {
+                            const updatedMessage = {
+                                ...message,
+                                toolCalls: [message.toolCalls, { toolName, toolCallId, args }],
+                            };
+                            return updatedMessage;
+                        } else {
+                            return message;
+                        }
+                    }),
+                };
+                return newThread;
+            });
+        }
+        if (isThinkingChunk(message)) {
+            const { message: messageId, content: thinkingContent } = message;
+            const { queryKey } = threadOptions(currentThreadId);
+
+            queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
+                const newThread = {
+                    ...oldThread,
+                    streamingMessageId: messageId,
+                    isUpdatingMessageContent: true,
+                    messages: oldThread.messages.map((message) => {
+                        if (message.id === messageId) {
+                            const updatedMessage = {
+                                ...message,
+                                thinking: (message.thinking ?? '') + thinkingContent,
+                            };
+                            return updatedMessage;
+                        } else {
+                            return message;
+                        }
+                    }),
+                };
+                return newThread;
+            });
+        }
+        if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
+            const { message: messageId, content } = message;
+            const { queryKey } = threadOptions(currentThreadId);
+
+            queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
+                const newThread = {
+                    ...oldThread,
+                    streamingMessageId: messageId,
+                    isUpdatingMessageContent: true,
+                    messages: oldThread.messages.map((message) => {
+                        if (message.id === messageId) {
+                            const updatedMessage = {
+                                ...message,
+                                content: message.content + content,
+                            };
+                            return updatedMessage;
+                        } else {
+                            return message;
+                        }
+                    }),
+                };
+                return newThread;
+            });
+        }
     }
+
     if (isFinalMessage(message)) {
         clearStreamingState(currentThreadId);
 
