@@ -162,9 +162,7 @@ export const updateCacheWithMessagePart = async (
                 };
                 return newThread;
             });
-        }
-
-        if (isThinkingChunk(message)) {
+        } else if (isThinkingChunk(message)) {
             const { message: messageId, content: thinkingContent } = message;
             const { queryKey } = threadOptions(currentThreadId);
 
@@ -187,9 +185,7 @@ export const updateCacheWithMessagePart = async (
                 };
                 return newThread;
             });
-        }
-
-        if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
+        } else if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
             const { message: messageId, content } = message;
             const { queryKey } = threadOptions(currentThreadId);
 

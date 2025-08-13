@@ -46,7 +46,7 @@ export const isFinalMessage = (message: StreamingMessageResponse): message is St
 };
 
 export const isOldMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
-    return 'message' in message;
+    return 'message' in message && !Object.hasOwn(message, 'type');
 };
 
 export const isChunk = (message: StreamingMessageResponse): message is Chunk => {
