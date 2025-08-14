@@ -7,7 +7,7 @@ import type {
 } from '@/api/playgroundApi/playgroundApiSchema';
 import type { FlatMessage } from '@/api/playgroundApi/thread';
 
-import type { MessageChunk, StreamingThread } from './streamTypes';
+import type { MessageChunk, StreamingThread } from './stream-types';
 
 const applyUpdateToMessage = (
     threadToUpdate: Draft<StreamingThread>,
@@ -62,4 +62,19 @@ export const updateThreadWithMessageContent = (
         applyUpdateToMessage(threadToUpdate, messageId, (messageToUpdate) => {
             messageToUpdate.content += content;
         });
+    });
+
+export const mergeMessages = (newThread: StreamingThread) =>
+    produce<StreamingThread>((threadToUpdate) => {
+        for (const newMessage of newThread.messages as Draft<FlatMessage[]>) {
+            const index = threadToUpdate.messages.findIndex(
+                (messageToUpdate) => messageToUpdate.id === newMessage.id
+            );
+
+            if (index === -1) {
+                threadToUpdate.messages.push(newMessage);
+            } else {
+                threadToUpdate.messages.splice(index, 1, newMessage);
+            }
+        }
     });

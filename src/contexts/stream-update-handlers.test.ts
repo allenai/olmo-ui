@@ -5,12 +5,13 @@ import type {
 } from '@/api/playgroundApi/playgroundApiSchema';
 import type { FlatMessage } from '@/api/playgroundApi/thread';
 
+import type { MessageChunk, StreamingThread } from './stream-types';
 import {
+    mergeMessages,
     updateThreadWithMessageContent,
     updateThreadWithThinking,
     updateThreadWithToolCall,
-} from './chunk-handlers';
-import type { MessageChunk, StreamingThread } from './streamTypes';
+} from './stream-update-handlers';
 
 describe('updateThreadWithToolCall', () => {
     it('should update when tool calls start as undefined', () => {
@@ -326,5 +327,215 @@ describe('updateThreadWithMessageContent', () => {
 
         expect(messageWithUpdatedContent).toBeDefined();
         expect(messageWithUpdatedContent.content).toEqual(modelResponseChunk.content);
+    });
+});
+
+describe('mergeMessages', () => {
+    it('should append messages when the new messages only include new messages', () => {
+        const existingThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'user message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+            ],
+        } as const satisfies StreamingThread;
+
+        const newThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'assistant message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-2',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'assistant',
+                    root: 'fake-message-1',
+                    snippet: '',
+                },
+            ],
+        } as const satisfies StreamingThread;
+
+        const mergedThread = mergeMessages(newThread)(existingThread);
+
+        expect(mergedThread.messages).toHaveLength(2);
+        expect(mergedThread.messages[0].id).toBe('fake-message-1');
+        expect(mergedThread.messages[1].id).toBe('fake-message-2');
+    });
+
+    it('should only update messages when there are no wholly new messages', () => {
+        const existingThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'user message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+            ],
+        } as const satisfies StreamingThread;
+
+        const newThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'a user message with fully new content',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+            ],
+        } as const satisfies StreamingThread;
+
+        const mergedThread = mergeMessages(newThread)(existingThread);
+
+        expect(mergedThread.messages).toHaveLength(1);
+        expect(mergedThread.messages[0].id).toBe('fake-message-1');
+        expect(mergedThread.messages[0].content).toBe(newThread.messages[0].content);
+    });
+
+    it('should update and append messages when the new messages include existing and new messages', () => {
+        const existingThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'user message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+                {
+                    content: 'assistant message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-2',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'assistant',
+                    root: 'fake-message-1',
+                    snippet: '',
+                },
+                {
+                    content: 'user message 2',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-3',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+                {
+                    content: 'assistant message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-4',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'assistant',
+                    root: 'fake-message-1',
+                    snippet: '',
+                },
+            ],
+        } as const satisfies StreamingThread;
+
+        const updatedMessageContent = {
+            content: 'a whole new assistant message with new content',
+            created: '2025-08-14T20:29:22.385Z',
+            creator: 'me',
+            id: 'fake-message-4',
+            isLimitReached: false,
+            isOlderThan30Days: false,
+            modelId: 'model',
+            modelHost: 'modelHost',
+            opts: {},
+            role: 'assistant',
+            root: 'fake-message-1',
+            snippet: '',
+            thinking: 'am i?',
+        } as const satisfies FlatMessage;
+
+        const appendedMessageContent = {
+            content: 'assistant message with updated content',
+            created: '2025-08-14T20:29:22.385Z',
+            creator: 'me',
+            id: 'fake-message-5',
+            isLimitReached: false,
+            isOlderThan30Days: false,
+            modelId: 'model',
+            modelHost: 'modelHost',
+            opts: {},
+            role: 'assistant',
+            root: 'fake-message-1',
+            snippet: '',
+
+            toolCalls: [{ args: { foo: 'bar' }, toolCallId: 'tool-call', toolName: 'cool-tool' }],
+        } as const satisfies FlatMessage;
+
+        const newThread = {
+            id: 'test-thread',
+            messages: [updatedMessageContent, appendedMessageContent],
+        } as const satisfies StreamingThread;
+
+        const mergedThread = mergeMessages(newThread)(existingThread);
+
+        expect(mergedThread.messages).toHaveLength(5);
+
+        const updatedMessage = mergedThread.messages[3];
+        expect(updatedMessage).toEqual(updatedMessageContent);
+
+        const appendedMessage = mergedThread.messages[4];
+        expect(appendedMessage).toEqual(appendedMessageContent);
     });
 });

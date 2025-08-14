@@ -6,7 +6,7 @@ import {
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
@@ -16,11 +16,6 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
-import {
-    updateThreadWithMessageContent,
-    updateThreadWithThinking,
-    updateThreadWithToolCall,
-} from './chunk-handlers';
 import {
     containsMessages,
     isFinalMessage,
@@ -32,7 +27,13 @@ import {
     isToolCallChunk,
     type StreamingMessageResponse,
     type StreamingThread,
-} from './streamTypes';
+} from './stream-types';
+import {
+    mergeMessages,
+    updateThreadWithMessageContent,
+    updateThreadWithThinking,
+    updateThreadWithToolCall,
+} from './stream-update-handlers';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {
@@ -134,21 +135,14 @@ export const updateCacheWithMessagePart = async (
         // Our first message callbacks need to run after we set the message in the cache
         // Make sure this stays below any cache setting
         onFirstMessage?.(threadViewId, message);
-    } else if (currentThreadId && containsMessages(message)) {
-        const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, (oldData: StreamingThread) => {
-            const newData = {
-                ...oldData,
-                messages: mergeMessages(oldData.messages, message.messages),
-            };
-            return newData;
-        });
     }
 
     if (currentThreadId) {
         const { queryKey } = threadOptions(currentThreadId);
 
-        if (isToolCallChunk(message)) {
+        if (containsMessages(message)) {
+            queryClient.setQueryData(queryKey, mergeMessages(message));
+        } else if (isToolCallChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithToolCall(message));
         } else if (isThinkingChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithThinking(message));
@@ -166,34 +160,6 @@ export const updateCacheWithMessagePart = async (
     }
 
     return currentThreadId;
-};
-
-const mergeMessages = (
-    oldMessages: readonly FlatMessage[],
-    newMessages: readonly FlatMessage[]
-) => {
-    const newMessageObj = newMessages.reduce<Record<string, FlatMessage>>((acc, current) => {
-        acc[current.id] = current;
-        return acc;
-    }, {});
-
-    // update oldMessages if we have them. Manly to cover children changing.
-    const newMessageList = oldMessages.map((oldMessage) => {
-        if (newMessageObj[oldMessage.id]) {
-            return newMessageObj[oldMessage.id];
-        }
-        return oldMessage;
-    });
-
-    // if message is not in current messages, add it. This code assumes message order is correct in array
-    newMessages.forEach((message) => {
-        const found = oldMessages.find((oldMessages) => oldMessages.id === message.id);
-        if (!found) {
-            newMessageList.push(message);
-        }
-    });
-
-    return newMessageList;
 };
 
 export const handleSubmissionError = (
