@@ -102,6 +102,7 @@ export const ParameterContent = () => {
     const opts = schemaData.Message.InferenceOpts;
     const initialTemperature = inferenceOpts.temperature ?? opts.temperature.default ?? undefined;
     const initialTopP = inferenceOpts.top_p ?? opts.top_p.default ?? undefined;
+    const maxTokens = inferenceOpts.max_tokens ?? opts.max_tokens.default ?? undefined;
 
     return (
         <Stack>
@@ -148,7 +149,7 @@ export const ParameterContent = () => {
                         min={opts.max_tokens.min}
                         max={opts.max_tokens.max}
                         step={opts.max_tokens.step}
-                        initialValue={2000}
+                        initialValue={maxTokens}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'max_tokens',
