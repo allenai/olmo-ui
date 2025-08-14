@@ -1198,10 +1198,9 @@ export type components = {
             readonly message: string;
             /**
              * Type
-             * @default end
              * @constant
              */
-            readonly type?: 'end';
+            readonly type: 'end';
         };
         /** StreamStartChunk */
         readonly StreamStartChunk: {
@@ -1209,10 +1208,9 @@ export type components = {
             readonly message: string;
             /**
              * Type
-             * @default start
              * @constant
              */
-            readonly type?: 'start';
+            readonly type: 'start';
         };
         /** TextOnlyResponseModel */
         readonly TextOnlyResponseModel: {

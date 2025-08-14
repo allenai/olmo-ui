@@ -152,7 +152,10 @@ export const updateCacheWithMessagePart = async (
                         if (message.id === messageId) {
                             const updatedMessage = {
                                 ...message,
-                                toolCalls: [message.toolCalls, { toolName, toolCallId, args }],
+                                toolCalls: [
+                                    ...(message.toolCalls ?? []),
+                                    { toolName, toolCallId, args },
+                                ],
                             };
                             return updatedMessage;
                         } else {
