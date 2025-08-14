@@ -12,6 +12,15 @@ If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will
 
 For the fastest and simplest development experience, you can run the application locally while connected to production APIs:
 
+Settings for running dev server against prod apis:
+- recaptcha should be enabled by adding `IS_RECAPTCHA_ENABLED=true` in your .env.local
+- you should remove `LOCAL_PLAYGROUND_API_URL` from your .env.local
+- you must logged in, otherwise you will get an error in the ui
+
+Settings for running against olmo-api running locally:
+- recaptcha should be disabled by removing `IS_RECAPTCHA_ENABLED` from your .env.local
+- you should set `LOCAL_PLAYGROUND_API_URL=http://localhost:8000` in your .env.local to connect to the local olmo-api
+
 ```
 yarn dev
 ```
