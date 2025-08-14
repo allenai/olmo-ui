@@ -86,8 +86,7 @@ module.exports = (env) => ({
         new CopyPlugin({
             patterns: [
                 {
-                    from: 'public/**/*',
-                    to: '[name][ext]',
+                    from: 'public',
                     filter: (absPathToFile) => {
                         return absPathToFile !== path.resolve(__dirname, 'public', 'index.html');
                     },
