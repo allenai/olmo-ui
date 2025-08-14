@@ -10,6 +10,12 @@ import type { FlatMessage } from '@/api/playgroundApi/thread';
 
 import type { Chunk, MessageChunk, StreamingThread } from './stream-types';
 
+/**
+ * @name updateThreadWithChunk
+ * @description A curried function to help make standard updates to threads from chunks. The first function accepts a function to update a message. The second takes a chunk. The third takes the thread it needs to update, which is usually provided by the code to handle the streaming process
+ * @param messageUpdateFunction A function that takes a message to update and a chunk. It uses the chunk to update the message
+ *
+ */
 const updateThreadWithChunk =
     <TChunk extends Chunk | MessageChunk>(
         messageUpdateFunction: (messageToUpdate: Draft<FlatMessage>, chunk: TChunk) => void
