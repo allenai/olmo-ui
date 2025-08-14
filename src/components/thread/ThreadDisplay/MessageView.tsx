@@ -51,7 +51,7 @@ export const MessageView = ({
         : [];
 
     const MessageComponent = hasPoints(content) ? PointResponseMessage : StandardMessage;
-    const isStreaming = remoteState === RemoteState.Loading || streamingMessageId === messageId;
+    const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
     return (
         <ChatMessage role={role as Role} messageId={messageId}>
