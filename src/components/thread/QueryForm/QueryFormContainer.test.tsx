@@ -10,8 +10,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
+import { StreamingMessageResponse } from '@/contexts/stream-types';
 import { useStreamCallbackRegistry, useStreamEvent } from '@/contexts/StreamEventRegistry';
-import { StreamingMessageResponse } from '@/contexts/streamTypes';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
