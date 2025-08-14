@@ -21,7 +21,7 @@ const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
 
 const MAX_TOKENS_INFO =
-    'Max Tokens controls how many tokens the model is allowed to output before being halted.';
+    'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
