@@ -16,9 +16,16 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
-import { isFinalMessage, isFirstMessage, isMessageStreamError } from './streamTypes';
+import {
+    updateThreadWithMessageContent,
+    updateThreadWithThinking,
+    updateThreadWithToolCall,
+} from './chunk-handlers';
 import {
     containsMessages,
+    isFinalMessage,
+    isFirstMessage,
+    isMessageStreamError,
     isModelResponseChunk,
     isOldMessageChunk,
     isThinkingChunk,
@@ -139,78 +146,14 @@ export const updateCacheWithMessagePart = async (
     }
 
     if (currentThreadId) {
+        const { queryKey } = threadOptions(currentThreadId);
+
         if (isToolCallChunk(message)) {
-            const { message: messageId, args, toolCallId, toolName } = message;
-            const { queryKey } = threadOptions(currentThreadId);
-
-            queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
-                const newThread = {
-                    ...oldThread,
-                    streamingMessageId: messageId,
-                    isUpdatingMessageContent: true,
-                    messages: oldThread.messages.map((message) => {
-                        if (message.id === messageId) {
-                            const updatedMessage = {
-                                ...message,
-                                toolCalls: [
-                                    ...(message.toolCalls ?? []),
-                                    { toolName, toolCallId, args },
-                                ],
-                            };
-                            return updatedMessage;
-                        } else {
-                            return message;
-                        }
-                    }),
-                };
-                return newThread;
-            });
+            queryClient.setQueryData(queryKey, updateThreadWithToolCall(message));
         } else if (isThinkingChunk(message)) {
-            const { message: messageId, content: thinkingContent } = message;
-            const { queryKey } = threadOptions(currentThreadId);
-
-            queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
-                const newThread = {
-                    ...oldThread,
-                    streamingMessageId: messageId,
-                    isUpdatingMessageContent: true,
-                    messages: oldThread.messages.map((message) => {
-                        if (message.id === messageId) {
-                            const updatedMessage = {
-                                ...message,
-                                thinking: (message.thinking ?? '') + thinkingContent,
-                            };
-                            return updatedMessage;
-                        } else {
-                            return message;
-                        }
-                    }),
-                };
-                return newThread;
-            });
+            queryClient.setQueryData(queryKey, updateThreadWithThinking(message));
         } else if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
-            const { message: messageId, content } = message;
-            const { queryKey } = threadOptions(currentThreadId);
-
-            queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
-                const newThread = {
-                    ...oldThread,
-                    streamingMessageId: messageId,
-                    isUpdatingMessageContent: true,
-                    messages: oldThread.messages.map((message) => {
-                        if (message.id === messageId) {
-                            const updatedMessage = {
-                                ...message,
-                                content: message.content + content,
-                            };
-                            return updatedMessage;
-                        } else {
-                            return message;
-                        }
-                    }),
-                };
-                return newThread;
-            });
+            queryClient.setQueryData(queryKey, updateThreadWithMessageContent(message));
         }
     }
 
