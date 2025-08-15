@@ -7,7 +7,7 @@ export const followupUserMessageId = 'msg_G8D2Q9Y8Q7';
 const followupLLMMessageId = 'msg_V6Y0U4H414';
 export const fakeFollowupResponse = (parentId: string): Array<Thread | MessageChunk> => [
     {
-        id: followupUserMessageId,
+        id: newMessageId,
         messages: [
             {
                 content: 'Second user message',
@@ -26,7 +26,7 @@ export const fakeFollowupResponse = (parentId: string): Array<Thread | MessageCh
                 final: false,
                 private: false,
                 labels: [],
-                id: '',
+                id: followupUserMessageId,
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 modelHost: '',
@@ -106,7 +106,7 @@ export const fakeFollowupResponse = (parentId: string): Array<Thread | MessageCh
                 final: true,
                 private: false,
                 labels: [],
-                id: '',
+                id: followupUserMessageId,
                 isLimitReached: false,
                 isOlderThan30Days: false,
                 modelHost: '',

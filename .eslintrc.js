@@ -78,6 +78,7 @@ module.exports = {
                             'Import from @test-utils instead. It provides a VarnishApp wrapper for our themed components.',
                     },
                 ],
+                '@typescript-eslint/no-non-null-assertion': 'off',
             },
         },
         {

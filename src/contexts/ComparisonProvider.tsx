@@ -32,18 +32,14 @@ import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
 import { QueryContext, QueryContextValue } from './QueryContext';
+import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
     StreamEventRegistryProvider,
     useStreamCallbackRegistry,
     useStreamEvent,
 } from './StreamEventRegistry';
-import {
-    isFirstMessage,
-    processSingleModelSubmission,
-    StreamingMessageResponse,
-    StreamingThread,
-} from './submission-process';
+import { processSingleModelSubmission } from './submission-process';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 

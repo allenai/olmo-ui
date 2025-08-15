@@ -5,7 +5,7 @@ import { ThreadId, useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { ThreadPlaceholder } from '@/components/thread/ThreadPlaceholder';
-import { StreamingThread } from '@/contexts/submission-process';
+import { StreamingThread } from '@/contexts/stream-types';
 import { RemoteState } from '@/contexts/util';
 
 import { CompareModelSelect } from './CompareModelSelect';

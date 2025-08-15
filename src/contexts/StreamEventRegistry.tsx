@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useRef } from 'react';
 
-import { StreamingMessageResponse } from './submission-process';
+import { StreamingMessageResponse } from './stream-types';
 import { ensureContext } from './util';
 
 // Callback types for each event

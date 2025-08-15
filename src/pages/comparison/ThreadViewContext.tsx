@@ -6,7 +6,7 @@ import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
-import { StreamingThread } from '@/contexts/submission-process';
+import { StreamingThread } from '@/contexts/stream-types';
 import { ThreadStreamMutationVariables } from '@/contexts/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 

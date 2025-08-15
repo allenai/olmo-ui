@@ -760,6 +760,16 @@ export type components = {
              * @default null
              */
             readonly template?: string | null;
+            /**
+             * Thinking
+             * @default null
+             */
+            readonly thinking?: string | null;
+            /**
+             * Toolcalls
+             * @default null
+             */
+            readonly toolCalls?: readonly components['schemas']['ToolCall'][] | null;
         };
         /** GetAttributionRequest */
         readonly GetAttributionRequest: {
@@ -794,12 +804,12 @@ export type components = {
             readonly deleted?: boolean;
             /**
              * Limit
-             * @default null
+             * @default 10
              */
-            readonly limit?: number | null;
+            readonly limit?: number;
             /**
              * Offset
-             * @default null
+             * @default 0
              */
             readonly offset?: number | null;
             /** @default DESC */
@@ -975,6 +985,18 @@ export type components = {
             | components['schemas']['Model']
             | components['schemas']['MultiModalModel']
         )[];
+        /** ModelResponseChunk */
+        readonly ModelResponseChunk: {
+            /** Content */
+            readonly content: string;
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'modelResponse';
+        };
         /**
          * ModelType
          * @enum {string}
@@ -1149,7 +1171,7 @@ export type components = {
          * Role
          * @enum {string}
          */
-        readonly Role: 'user' | 'assistant' | 'system';
+        readonly Role: 'user' | 'assistant' | 'system' | 'tool_call_result';
         /** RootCreateModelConfigRequest */
         readonly RootCreateModelConfigRequest:
             | components['schemas']['CreateTextOnlyModelConfigRequest']
@@ -1170,6 +1192,26 @@ export type components = {
          * @enum {string}
          */
         readonly SortDirection: 'ASC' | 'DESC';
+        /** StreamEndChunk */
+        readonly StreamEndChunk: {
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'end';
+        };
+        /** StreamStartChunk */
+        readonly StreamStartChunk: {
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'start';
+        };
         /** TextOnlyResponseModel */
         readonly TextOnlyResponseModel: {
             readonly availability: components['schemas']['ModelAvailability'];
@@ -1230,12 +1272,70 @@ export type components = {
              */
             readonly updatedTime: string;
         };
+        /** ThinkingChunk */
+        readonly ThinkingChunk: {
+            /** Content */
+            readonly content: string;
+            /**
+             * Id
+             * @default null
+             */
+            readonly id?: string | null;
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'thinking';
+        };
         /** Thread */
         readonly Thread: {
             /** Id */
             readonly id: string;
             /** Messages */
             readonly messages: readonly components['schemas']['FlatMessage'][];
+        };
+        /** ToolCall */
+        readonly ToolCall: {
+            /**
+             * Args
+             * @default null
+             */
+            readonly args?:
+                | string
+                | {
+                      readonly [key: string]: unknown;
+                  }
+                | null;
+            /** Toolcallid */
+            readonly toolCallId: string;
+            /** Toolname */
+            readonly toolName: string;
+        };
+        /** ToolCallChunk */
+        readonly ToolCallChunk: {
+            /**
+             * Args
+             * @default null
+             */
+            readonly args?:
+                | string
+                | {
+                      readonly [key: string]: unknown;
+                  }
+                | null;
+            /** Message */
+            readonly message: string;
+            /** Toolcallid */
+            readonly toolCallId: string;
+            /** Toolname */
+            readonly toolName: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'toolCall';
         };
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
@@ -1390,6 +1490,7 @@ export type SchemaModelAvailability = components['schemas']['ModelAvailability']
 export type SchemaModelHost = components['schemas']['ModelHost'];
 export type SchemaModelOrder = components['schemas']['ModelOrder'];
 export type SchemaModelResponse = components['schemas']['ModelResponse'];
+export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk'];
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
@@ -1403,8 +1504,13 @@ export type SchemaRootUpdateModelConfigRequest =
     components['schemas']['RootUpdateModelConfigRequest'];
 export type SchemaSort = components['schemas']['Sort'];
 export type SchemaSortDirection = components['schemas']['SortDirection'];
+export type SchemaStreamEndChunk = components['schemas']['StreamEndChunk'];
+export type SchemaStreamStartChunk = components['schemas']['StreamStartChunk'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
+export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
 export type SchemaThread = components['schemas']['Thread'];
+export type SchemaToolCall = components['schemas']['ToolCall'];
+export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =

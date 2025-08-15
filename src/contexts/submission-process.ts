@@ -2,12 +2,11 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import {
     MessageStreamError,
     MessageStreamErrorReason,
-    MessageStreamErrorType,
-    RequestInferenceOpts,
+    type RequestInferenceOpts,
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { FlatMessage, Thread as BaseThread, threadOptions } from '@/api/playgroundApi/thread';
+import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
@@ -17,11 +16,24 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 
-// Thread plus streaming state
-export interface StreamingThread extends BaseThread {
-    streamingMessageId?: string;
-    isUpdatingMessageContent?: boolean;
-}
+import {
+    containsMessages,
+    isFinalMessage,
+    isFirstMessage,
+    isMessageStreamError,
+    isModelResponseChunk,
+    isOldMessageChunk,
+    isThinkingChunk,
+    isToolCallChunk,
+    type StreamingMessageResponse,
+    type StreamingThread,
+} from './stream-types';
+import {
+    mergeMessages,
+    updateThreadWithMessageContent,
+    updateThreadWithThinking,
+    updateThreadWithToolCall,
+} from './stream-update-handlers';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {
@@ -71,34 +83,6 @@ export const prepareRequest = (
     return request;
 };
 
-export type MessageChunk = Pick<FlatMessage, 'content'> & {
-    message: FlatMessage['id'];
-};
-
-export type StreamingMessageResponse = StreamingThread | MessageChunk | MessageStreamErrorType;
-
-export const isMessageStreamError = (
-    message: StreamingMessageResponse
-): message is MessageStreamErrorType => {
-    return 'error' in message;
-};
-
-export const containsMessages = (message: StreamingMessageResponse): message is StreamingThread => {
-    return 'messages' in message;
-};
-
-export const isFirstMessage = (message: StreamingMessageResponse): message is StreamingThread => {
-    return containsMessages(message) && !message.messages.some((msg) => msg.final);
-};
-
-export const isFinalMessage = (message: StreamingMessageResponse): message is StreamingThread => {
-    return containsMessages(message) && !message.messages.some((msg) => !msg.final);
-};
-
-export const isMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
-    return 'content' in message;
-};
-
 export async function* readStream(response: Response, abortSignal?: AbortSignal) {
     const rdr = response.body
         ?.pipeThrough(new ReadableJSONLStream<StreamingMessageResponse>())
@@ -142,56 +126,31 @@ export const updateCacheWithMessagePart = async (
 
     const state = appContext.getState();
 
-    if (isFirstMessage(message)) {
-        if (isCreatingNewThread) {
-            currentThreadId = message.id;
-            if (currentThreadId) {
-                const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, message);
-            }
-        } else {
-            if (currentThreadId) {
-                const { queryKey } = threadOptions(currentThreadId);
-                queryClient.setQueryData(queryKey, (oldData: StreamingThread) => {
-                    const newData = {
-                        ...oldData,
-                        messages: [...oldData.messages, ...message.messages],
-                    };
-                    return newData;
-                });
-            }
+    if (isCreatingNewThread && isFirstMessage(message)) {
+        currentThreadId = message.id;
+        if (currentThreadId) {
+            const { queryKey } = threadOptions(currentThreadId);
+            queryClient.setQueryData(queryKey, message);
         }
-
         // Our first message callbacks need to run after we set the message in the cache
         // Make sure this stays below any cache setting
         onFirstMessage?.(threadViewId, message);
     }
-    // currentThreadId should be set at this point
-    if (isMessageChunk(message) && currentThreadId) {
-        const { message: messageId, content } = message;
-        // += message.content
-        // addContentToMessage(message.message, message.content);
+
+    if (currentThreadId) {
         const { queryKey } = threadOptions(currentThreadId);
-        queryClient.setQueryData(queryKey, (oldThread: StreamingThread) => {
-            const newThread = {
-                ...oldThread,
-                streamingMessageId: messageId,
-                isUpdatingMessageContent: true,
-                messages: oldThread.messages.map((message) => {
-                    if (message.id === messageId) {
-                        const updatedMessage = {
-                            ...message,
-                            content: message.content + content,
-                        };
-                        return updatedMessage;
-                    } else {
-                        return message;
-                    }
-                }),
-            };
-            return newThread;
-        });
+
+        if (containsMessages(message)) {
+            queryClient.setQueryData(queryKey, mergeMessages(message));
+        } else if (isToolCallChunk(message)) {
+            queryClient.setQueryData(queryKey, updateThreadWithToolCall(message));
+        } else if (isThinkingChunk(message)) {
+            queryClient.setQueryData(queryKey, updateThreadWithThinking(message));
+        } else if (isModelResponseChunk(message) || isOldMessageChunk(message)) {
+            queryClient.setQueryData(queryKey, updateThreadWithMessageContent(message));
+        }
     }
+
     if (isFinalMessage(message)) {
         clearStreamingState(currentThreadId);
 
@@ -331,6 +290,7 @@ export const processStreamResponse = async (
     let streamingRootThreadId: string | undefined = rootThreadId; // may be undefined
 
     const chunks = readStream(response, abortController.signal);
+
     for await (const chunk of chunks) {
         // return the root thread id (this shouldn't be undefined anymore)
         streamingRootThreadId = await updateCacheWithMessagePart(
