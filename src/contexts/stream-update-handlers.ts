@@ -42,11 +42,8 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
             args: chunk.args,
         };
 
-        if (messageToUpdate.toolCalls == null) {
-            messageToUpdate.toolCalls = [toolCallToAdd];
-        } else {
-            messageToUpdate.toolCalls.push(toolCallToAdd);
-        }
+        messageToUpdate.toolCalls ??= [];
+        messageToUpdate.toolCalls.push(toolCallToAdd);
     }
 );
 
