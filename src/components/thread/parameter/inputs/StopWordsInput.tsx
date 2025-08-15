@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { Autocomplete, AutocompleteProps, Chip, TextField } from '@mui/material';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
@@ -27,6 +28,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                 freeSolo
                 options={[]}
                 onChange={onChange}
+                disableClearable
                 renderTags={(stopWords: readonly string[], getTagProps) =>
                     stopWords.map((word: string, index: number) => {
                         // Show special characters '\n' & '\t' in text on UI
