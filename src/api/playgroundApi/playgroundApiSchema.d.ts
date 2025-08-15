@@ -600,6 +600,7 @@ export type components = {
             readonly requireFileToPrompt?:
                 | components['schemas']['FileRequiredToPromptOption']
                 | null;
+            readonly thinkingLevel: components['schemas']['ThinkingLevel'];
         };
         /** CreateTextOnlyModelConfigRequest */
         readonly CreateTextOnlyModelConfigRequest: {
@@ -653,6 +654,7 @@ export type components = {
              * @enum {string}
              */
             readonly promptType: 'text_only';
+            readonly thinkingLevel: components['schemas']['ThinkingLevel'];
         };
         /**
          * FileRequiredToPromptOption
@@ -993,9 +995,10 @@ export type components = {
             readonly message: string;
             /**
              * Type
+             * @default modelResponse
              * @constant
              */
-            readonly type: 'modelResponse';
+            readonly type?: 'modelResponse';
         };
         /**
          * ModelType
@@ -1147,6 +1150,7 @@ export type components = {
             readonly requireFileToPrompt?:
                 | components['schemas']['FileRequiredToPromptOption']
                 | null;
+            readonly thinkingLevel: components['schemas']['ThinkingLevel'];
             /**
              * Updatedtime
              * Format: date-time
@@ -1266,6 +1270,7 @@ export type components = {
              * @enum {string}
              */
             readonly promptType: 'text_only';
+            readonly thinkingLevel: components['schemas']['ThinkingLevel'];
             /**
              * Updatedtime
              * Format: date-time
@@ -1289,6 +1294,11 @@ export type components = {
              */
             readonly type: 'thinking';
         };
+        /**
+         * ThinkingLevel
+         * @enum {string}
+         */
+        readonly ThinkingLevel: 'off' | 'low' | 'medium' | 'high';
         /** Thread */
         readonly Thread: {
             /** Id */
@@ -1408,6 +1418,7 @@ export type components = {
             readonly requireFileToPrompt?:
                 | components['schemas']['FileRequiredToPromptOption']
                 | null;
+            readonly thinkingLevel: components['schemas']['ThinkingLevel'];
         };
         /** UpdateTextOnlyModelConfigRequest */
         readonly UpdateTextOnlyModelConfigRequest: {
@@ -1459,6 +1470,7 @@ export type components = {
              * @enum {string}
              */
             readonly promptType: 'text_only';
+            readonly thinkingLevel: components['schemas']['ThinkingLevel'];
         };
     };
     responses: never;
@@ -1508,6 +1520,7 @@ export type SchemaStreamEndChunk = components['schemas']['StreamEndChunk'];
 export type SchemaStreamStartChunk = components['schemas']['StreamStartChunk'];
 export type SchemaTextOnlyResponseModel = components['schemas']['TextOnlyResponseModel'];
 export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
+export type SchemaThinkingLevel = components['schemas']['ThinkingLevel'];
 export type SchemaThread = components['schemas']['Thread'];
 export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
