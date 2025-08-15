@@ -8,6 +8,7 @@ import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
+import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsInput';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -18,6 +19,9 @@ const TEMPERATURE_INFO =
 
 const TOP_P_INFO =
     'Top-p controls how the model selects tokens for output. It sets a probability threshold and selects tokens from most probable to least until the combined probability reaches this threshold. A lower value is suitable for factual answers while a higher one leads to more diverse output.';
+
+const MAX_TOKENS_INFO =
+    'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
@@ -98,6 +102,7 @@ export const ParameterContent = () => {
     const opts = schemaData.Message.InferenceOpts;
     const initialTemperature = inferenceOpts.temperature ?? opts.temperature.default ?? undefined;
     const initialTopP = inferenceOpts.top_p ?? opts.top_p.default ?? undefined;
+    const maxTokens = inferenceOpts.max_tokens ?? opts.max_tokens.default ?? undefined;
 
     return (
         <Stack>
@@ -138,6 +143,34 @@ export const ParameterContent = () => {
                         id="top-p"
                     />
                 </ParametersListItem>
+                <ParametersListItem>
+                    <ParameterSlider
+                        label="Max Tokens"
+                        min={opts.max_tokens.min}
+                        max={opts.max_tokens.max}
+                        step={100}
+                        initialValue={maxTokens}
+                        onChange={(v) => {
+                            analyticsClient.trackParametersUpdate({
+                                parameterUpdated: 'max_tokens',
+                            });
+                            updateInferenceOpts({ max_tokens: v });
+                        }}
+                        dialogContent={MAX_TOKENS_INFO}
+                        dialogTitle="Max Tokens"
+                        id="max-tokens"
+                    />
+                </ParametersListItem>
+                <StopWordsInput
+                    id="stop-words"
+                    value={inferenceOpts.stop || []}
+                    onChange={(_event, value) => {
+                        analyticsClient.trackParametersUpdate({
+                            parameterUpdated: 'stop',
+                        });
+                        updateInferenceOpts({ stop: value });
+                    }}
+                />
             </ParametersList>
         </Stack>
     );
