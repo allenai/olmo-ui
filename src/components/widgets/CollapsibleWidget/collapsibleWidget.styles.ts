@@ -5,14 +5,20 @@ const collapsibleWidgetRecipe = sva({
     slots: ['container', 'heading', 'panel', 'panelContent', 'footer'],
     base: {
         container: {
-            display: 'grid',
+            // This was originally display: grid
+            // flex with minHeight allows it to fit the container when we have overflow
+            // better, if this causes problems with other collapsible implementations
+            // this can change back to grid, and these styles can be made specific to thinking
+            // or as a variant here.
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '[0]',
             backgroundColor: 'dark-teal.100', // dark only right now
             color: 'text',
             borderRadius: 'sm',
             overflow: 'hidden',
         },
         heading: {
-            // grid?
             display: 'flex',
             backgroundColor: 'cream.4', // wrong name, right color
             paddingInline: '4',
@@ -20,6 +26,8 @@ const collapsibleWidgetRecipe = sva({
             // contained1
         },
         panel: {
+            display: 'flex',
+            minHeight: '[0]',
             // Note: not cross-browser animation/transition
             // RAC uses `hidden` on the panel, which isn't animatible (in firefox)
             // This currently works on chrome
