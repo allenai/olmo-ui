@@ -25,7 +25,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                 multiple
                 value={value}
                 freeSolo
-                options={value}
+                options={[]}
                 onChange={onChange}
                 renderTags={(stopWords: readonly string[], getTagProps) =>
                     stopWords.map((word: string, index: number) => {

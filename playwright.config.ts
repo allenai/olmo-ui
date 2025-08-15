@@ -82,8 +82,6 @@ export default defineConfig<TestOptions>({
                 storageState: 'e2e/.auth/storageState.json',
             },
             dependencies: ['auth-setup'],
-            // This test is flaky on FF. It seems to work just fine in browser, but be extra careful when you make changes to this!
-            testIgnore: ['*sticky-scroll*'],
         },
 
         {
@@ -93,8 +91,8 @@ export default defineConfig<TestOptions>({
                 storageState: 'e2e/.auth/storageState.json',
             },
             dependencies: ['auth-setup'],
-            // TODO: OEUI-350 - I think the streaming issues are causing trouble with this test
-            testIgnore: ['*sticky-scroll*', '**/message-streaming.spec.ts'],
+            // Webkit e2e tests seem to have issues with scrolling.
+            testIgnore: ['*streaming-scroll*', '**/message-streaming.spec.ts'],
         },
 
         /* Test against mobile viewports. */

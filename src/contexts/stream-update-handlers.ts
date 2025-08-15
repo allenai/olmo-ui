@@ -3,66 +3,61 @@ import { type Draft, produce } from 'immer';
 import type {
     SchemaModelResponseChunk,
     SchemaThinkingChunk,
+    SchemaToolCall,
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import type { FlatMessage } from '@/api/playgroundApi/thread';
 
-import type { MessageChunk, StreamingThread } from './stream-types';
+import type { Chunk, MessageChunk, StreamingThread } from './stream-types';
 
-const applyUpdateToMessage = (
-    threadToUpdate: Draft<StreamingThread>,
-    messageId: string,
-    updateFunction: (messageToUpdate: Draft<FlatMessage>) => void
-) => {
-    const messageToUpdate = threadToUpdate.messages.find(
-        (draftMessage) => draftMessage.id === messageId
-    );
+/**
+ * @name updateThreadWithChunk
+ * @description A curried function to help make standard updates to threads from chunks. The first function accepts a function to update a message. The second takes a chunk. The third takes the thread it needs to update, which is usually provided by the code to handle the streaming process
+ * @param messageUpdateFunction A function that takes a message to update and a chunk. It uses the chunk to update the message
+ *
+ */
+const updateThreadWithChunk =
+    <TChunk extends Chunk | MessageChunk>(
+        messageUpdateFunction: (messageToUpdate: Draft<FlatMessage>, chunk: TChunk) => void
+    ) =>
+    (chunk: TChunk) =>
+        produce<StreamingThread>((threadToUpdate) => {
+            threadToUpdate.streamingMessageId = chunk.message;
+            threadToUpdate.isUpdatingMessageContent = true;
 
-    if (messageToUpdate != null) {
-        updateFunction(messageToUpdate);
-    }
-};
+            const messageToUpdate = threadToUpdate.messages.find(
+                (draftMessage) => draftMessage.id === chunk.message
+            );
 
-export const updateThreadWithToolCall = (toolCallChunk: SchemaToolCallChunk) =>
-    produce<StreamingThread>((threadToUpdate) => {
-        const { message: messageId, args, toolCallId, toolName } = toolCallChunk;
-        threadToUpdate.streamingMessageId = messageId;
-
-        applyUpdateToMessage(threadToUpdate, messageId, (messageToUpdate) => {
-            const toolCallToAdd = { toolName, toolCallId, args };
-
-            if (messageToUpdate.toolCalls == null) {
-                messageToUpdate.toolCalls = [toolCallToAdd];
-            } else {
-                messageToUpdate.toolCalls.push(toolCallToAdd);
+            if (messageToUpdate != null) {
+                messageUpdateFunction(messageToUpdate, chunk);
             }
         });
-    });
 
-export const updateThreadWithThinking = (thinkingChunk: SchemaThinkingChunk) =>
-    produce<StreamingThread>((threadToUpdate) => {
-        const { message: messageId, content: thinkingContent } = thinkingChunk;
+export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChunk>(
+    (messageToUpdate, chunk) => {
+        const toolCallToAdd: SchemaToolCall = {
+            toolName: chunk.toolName,
+            toolCallId: chunk.toolCallId,
+            args: chunk.args,
+        };
 
-        threadToUpdate.streamingMessageId = messageId;
+        messageToUpdate.toolCalls ??= [];
+        messageToUpdate.toolCalls.push(toolCallToAdd);
+    }
+);
 
-        applyUpdateToMessage(threadToUpdate, messageId, (messageToUpdate) => {
-            messageToUpdate.thinking = (messageToUpdate.thinking ?? '') + thinkingContent;
-        });
-    });
+export const updateThreadWithThinking = updateThreadWithChunk<SchemaThinkingChunk>(
+    (messageToUpdate, chunk) => {
+        messageToUpdate.thinking = (messageToUpdate.thinking ?? '') + chunk.content;
+    }
+);
 
-export const updateThreadWithMessageContent = (
-    messageContentChunk: SchemaModelResponseChunk | MessageChunk
-) =>
-    produce<StreamingThread>((threadToUpdate) => {
-        const { message: messageId, content } = messageContentChunk;
-
-        threadToUpdate.streamingMessageId = messageId;
-        threadToUpdate.isUpdatingMessageContent = true;
-
-        applyUpdateToMessage(threadToUpdate, messageId, (messageToUpdate) => {
-            messageToUpdate.content += content;
-        });
-    });
+export const updateThreadWithMessageContent = updateThreadWithChunk<
+    SchemaModelResponseChunk | MessageChunk
+>((messageToUpdate, chunk) => {
+    messageToUpdate.content += chunk.content;
+});
 
 export const mergeMessages = (newThread: StreamingThread) =>
     produce<StreamingThread>((threadToUpdate) => {

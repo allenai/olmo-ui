@@ -169,6 +169,8 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     // Apply adjusted inference options with model-specific overrides
                     temperature: adjustedInferenceOpts.temperature ?? undefined,
                     topP: adjustedInferenceOpts.top_p ?? undefined,
+                    maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
+                    stop: adjustedInferenceOpts.stop ?? undefined,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();

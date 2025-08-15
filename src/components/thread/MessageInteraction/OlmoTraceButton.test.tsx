@@ -8,7 +8,7 @@ import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
 import { PARAM_SELECTED_MESSAGE } from '../ThreadDisplay/selectedThreadPageLoader';
-import { SelectMessageButton } from './SelectMessageButton';
+import { OlmoTraceButton } from './OlmoTraceButton';
 
 const FakeThreadViewProvider = ({ children }: { children: React.ReactNode }) => (
     <MemoryRouter>
@@ -18,16 +18,14 @@ const FakeThreadViewProvider = ({ children }: { children: React.ReactNode }) => 
     </MemoryRouter>
 );
 
-describe('SelectMessageButton', () => {
-    it('should show "Hide OLMoTrace" when the message is selected', () => {
+describe('OlmoTraceButton', () => {
+    it('shows "Hide OLMoTrace" when the message is selected', () => {
+        const messageId = 'message-1';
+
         let searchParams = new URLSearchParams();
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
         vi.spyOn(reactRouter, 'useSearchParams').mockImplementation(() => {
-            const setURLSearchParams: reactRouter.SetURLSearchParams = (
-                newParams?:
-                    | reactRouter.URLSearchParamsInit
-                    | ((prev: URLSearchParams) => reactRouter.URLSearchParamsInit)
-            ) => {
+            const setURLSearchParams: reactRouter.SetURLSearchParams = (newParams) => {
                 if (newParams instanceof URLSearchParams) {
                     searchParams = newParams;
                 }
@@ -36,25 +34,20 @@ describe('SelectMessageButton', () => {
         });
 
         const initialState = {
-            attribution: {
-                selectedMessageId: 'message-1',
-            },
+            attribution: { selectedMessageId: messageId },
         } satisfies ComponentProps<typeof FakeAppContextProvider>['initialState'];
 
         render(
             <FakeAppContextProvider initialState={initialState}>
                 <FakeQueryContextProvider>
                     <FakeThreadViewProvider>
-                        <SelectMessageButton messageId="message-1" />
+                        <OlmoTraceButton messageId={messageId} />
                     </FakeThreadViewProvider>
                 </FakeQueryContextProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
-                    featureToggles: {
-                        logToggles: false,
-                        isCorpusLinkEnabled: true,
-                    },
+                    featureToggles: { logToggles: false, isCorpusLinkEnabled: true },
                 },
             }
         );
@@ -62,17 +55,13 @@ describe('SelectMessageButton', () => {
         expect(screen.getByRole('button', { name: 'Hide OLMoTrace' })).toBeInTheDocument();
     });
 
-    it('should show "Show OLMoTrace" when the message is not selected', () => {
-        let searchParams = new URLSearchParams({
-            [PARAM_SELECTED_MESSAGE]: 'message-1',
-        });
+    it('shows "Show OLMoTrace" when the message is not selected', () => {
+        const messageId = 'message-1';
+
+        let searchParams = new URLSearchParams({ [PARAM_SELECTED_MESSAGE]: messageId });
         vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
         vi.spyOn(reactRouter, 'useSearchParams').mockImplementation(() => {
-            const setURLSearchParams: reactRouter.SetURLSearchParams = (
-                newParams?:
-                    | reactRouter.URLSearchParamsInit
-                    | ((prev: URLSearchParams) => reactRouter.URLSearchParamsInit)
-            ) => {
+            const setURLSearchParams: reactRouter.SetURLSearchParams = (newParams) => {
                 if (newParams instanceof URLSearchParams) {
                     searchParams = newParams;
                 }
@@ -84,16 +73,13 @@ describe('SelectMessageButton', () => {
             <FakeAppContextProvider>
                 <FakeQueryContextProvider>
                     <FakeThreadViewProvider>
-                        <SelectMessageButton messageId="message-1" />
+                        <OlmoTraceButton messageId={messageId} />
                     </FakeThreadViewProvider>
                 </FakeQueryContextProvider>
             </FakeAppContextProvider>,
             {
                 wrapperProps: {
-                    featureToggles: {
-                        logToggles: false,
-                        isCorpusLinkEnabled: true,
-                    },
+                    featureToggles: { logToggles: false, isCorpusLinkEnabled: true },
                 },
             }
         );

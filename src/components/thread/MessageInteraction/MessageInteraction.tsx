@@ -18,7 +18,8 @@ import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
 
 import { CHAT_MESSAGE_CLASS_NAME } from '../ChatMessage/ChatMessage';
 import { MessageInteractionIcon } from './MessageInteractionIcon';
-import { SelectMessageButton } from './SelectMessageButton';
+import { OlmoTraceButton } from './OlmoTraceButton';
+import { RawToggleButton } from './RawToggleButton';
 
 interface MessageInteractionProps {
     role: FlatMessage['role'];
@@ -27,6 +28,8 @@ interface MessageInteractionProps {
     messageId: MessageId;
     isLastMessage: boolean;
     isStreaming: boolean;
+    isRawMode: boolean;
+    setRawMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const MessageInteraction = ({
@@ -36,6 +39,8 @@ export const MessageInteraction = ({
     messageId,
     isLastMessage,
     isStreaming,
+    isRawMode,
+    setRawMode,
 }: MessageInteractionProps): React.JSX.Element | null => {
     const userInfo = useAppContext((state) => state.userInfo);
     const updateLabel = useAppContext((state) => state.updateLabel);
@@ -122,7 +127,13 @@ export const MessageInteraction = ({
                 }}
                 message="LLM Response Copied."
             />
-            <SelectMessageButton messageId={messageId} isLastButton={isLastMessage} />
+            <RawToggleButton
+                isRawMode={isRawMode}
+                setRawMode={setRawMode}
+                messageId={messageId}
+                isLastButton={isLastMessage}
+            />
+            <OlmoTraceButton messageId={messageId} isLastButton={isLastMessage} />
         </Stack>
     );
 };
