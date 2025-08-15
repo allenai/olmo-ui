@@ -130,7 +130,12 @@ export const updateCacheWithMessagePart = async (
         currentThreadId = message.id;
         if (currentThreadId) {
             const { queryKey } = threadOptions(currentThreadId);
-            queryClient.setQueryData(queryKey, message);
+
+            const updatedMessage = { ...message };
+
+            updatedMessage.streamingMessageId = message.messages.at(-1)?.id;
+
+            queryClient.setQueryData(queryKey, updatedMessage);
         }
         // Our first message callbacks need to run after we set the message in the cache
         // Make sure this stays below any cache setting
