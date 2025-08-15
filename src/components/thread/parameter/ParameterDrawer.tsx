@@ -148,7 +148,7 @@ export const ParameterContent = () => {
                         label="Max Tokens"
                         min={opts.max_tokens.min}
                         max={opts.max_tokens.max}
-                        step={opts.max_tokens.step}
+                        step={100}
                         initialValue={maxTokens}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
