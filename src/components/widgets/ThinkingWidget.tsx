@@ -1,4 +1,4 @@
-import { css, sva } from '@allenai/varnish-panda-runtime/css';
+import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import { PropsWithChildren } from 'react';
 
