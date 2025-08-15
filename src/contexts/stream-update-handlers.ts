@@ -36,14 +36,32 @@ const updateThreadWithChunk =
 
 export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChunk>(
     (messageToUpdate, chunk) => {
-        const toolCallToAdd: SchemaToolCall = {
-            toolName: chunk.toolName,
-            toolCallId: chunk.toolCallId,
-            args: chunk.args,
-        };
-
         messageToUpdate.toolCalls ??= [];
-        messageToUpdate.toolCalls.push(toolCallToAdd);
+
+        const toolCallToUpdate = messageToUpdate.toolCalls.find(
+            (toolCall) => toolCall.toolCallId === chunk.toolCallId
+        );
+
+        if (toolCallToUpdate != null) {
+            toolCallToUpdate.toolName += chunk.toolName;
+
+            if (typeof chunk.args === 'object') {
+                // Assuming it's a finished object if we get an object from the API
+                toolCallToUpdate.args = chunk.args;
+            } else if (typeof chunk.args === 'string') {
+                // TODO: Figure out when we could have an object in the store with a string coming from args and how we should handle that
+                if (typeof toolCallToUpdate.args === 'string') {
+                    toolCallToUpdate.args = (toolCallToUpdate.args ?? '') + chunk.args;
+                }
+            }
+        } else {
+            const toolCallToAdd: SchemaToolCall = {
+                toolName: chunk.toolName,
+                toolCallId: chunk.toolCallId,
+                args: chunk.args,
+            };
+            messageToUpdate.toolCalls.push(toolCallToAdd);
+        }
     }
 );
 
