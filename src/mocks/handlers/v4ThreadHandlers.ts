@@ -3,6 +3,7 @@ import { delay, http, HttpResponse } from 'msw';
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { PaginationData } from '@/api/Schema';
+import type { StreamingMessageResponse } from '@/contexts/stream-types';
 
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
@@ -21,6 +22,7 @@ import {
 } from './responses/v4/stream/default';
 import { fakeFollowupResponse } from './responses/v4/stream/followup';
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
+import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
 import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
 import { typedHttp } from './typedHttp';
 
@@ -269,7 +271,7 @@ export const v4ThreadHandlers = [
             return HttpResponse.json(inappropriateContentErrorResponse, { status: 400 });
         }
 
-        let response: Array<Thread | MessageChunk>;
+        let response: StreamingMessageResponse[];
         if (formData.get('parent') != null) {
             response = fakeFollowupResponse(formData.get('parent') as string);
         } else if (content === 'include system message') {
@@ -283,6 +285,8 @@ export const v4ThreadHandlers = [
             } else if (modelId === 'OLMo-peteish-dpo-preview') {
                 response = fakeNewThreadMessages;
             }
+        } else if (content === 'thinkingAndToolCalls') {
+            response = thinkingAndToolCallsStreamResponse;
         } else {
             response = fakeNewThreadMessages;
         }

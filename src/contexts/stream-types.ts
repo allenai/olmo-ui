@@ -1,6 +1,8 @@
 import { MessageStreamErrorType } from '@/api/Message';
 import type {
     SchemaModelResponseChunk,
+    SchemaStreamEndChunk,
+    SchemaStreamStartChunk,
     SchemaThinkingChunk,
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/playgroundApiSchema';
@@ -16,10 +18,12 @@ export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };
 
-export type Chunk = {
-    type: string;
-    message: FlatMessage['id'];
-};
+export type Chunk =
+    | SchemaModelResponseChunk
+    | SchemaThinkingChunk
+    | SchemaToolCallChunk
+    | SchemaStreamStartChunk
+    | SchemaStreamEndChunk;
 
 export type StreamingMessageResponse =
     | StreamingThread
