@@ -1,4 +1,3 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { Autocomplete, AutocompleteProps, Chip, TextField } from '@mui/material';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
