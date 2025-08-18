@@ -2,7 +2,7 @@ import { styled, Typography, useTheme } from '@mui/material';
 import { Box, Stack, SxProps, Theme } from '@mui/system';
 import React, { ReactNode, useState } from 'react';
 
-import { selectMessageById, useThread } from '@/api/playgroundApi/thread';
+import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
@@ -154,7 +154,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const theme = useTheme();
     const { threadId } = useThreadView();
-    const { data: message, error: _error } = useThread(threadId, selectMessageById(messageId));
+    const { data: message, error: _error } = useMessage(threadId, messageId);
     const { data: lastImagesInThread } = useThread(threadId, (thread) => {
         return thread.messages
             .filter((message) => message.role === Role.User && message.fileUrls?.length)
