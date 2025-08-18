@@ -17,10 +17,14 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
-  viteFinal: async (config) =>
-    mergeConfig(config, {
+  viteFinal: async (config) => {
+    // HACK: SB uses vite, our main build uses Webpack. We may be able to skip this when we move the main build to Vite
+    config.define = { 'process.env': {}}
+
+    return mergeConfig(config, {
       plugins: [tsconfigPaths()],
-    }),
+    })
+  }
 };
 
 export default config;  
