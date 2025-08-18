@@ -7,7 +7,6 @@ import { useNavigation } from 'react-router-dom';
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
-import { ThreadError } from '@/pages/comparison/ThreadError';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
@@ -151,7 +150,7 @@ export const QueryFormController = ({
     return (
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
-                <Stack gap={1} alignItems="center" width={1} position="relative">
+                <Stack gap={1} alignItems="flex-start" width={1} position="relative">
                     <FileUploadThumbnails files={files} onRemoveFile={handleRemoveFile} />
                     <Controller
                         control={formContext.control}
@@ -164,59 +163,56 @@ export const QueryFormController = ({
                             field: { onChange, value, ref, name },
                             fieldState: { error },
                         }) => (
-                            <>
-                                {!!error?.message && <ThreadError />}
-                                <PromptInput
-                                    name={name}
-                                    onChange={onChange}
-                                    errorMessage={error?.message}
-                                    value={value}
-                                    ref={ref}
-                                    onKeyDown={handleKeyDown}
-                                    aria-label={placeholderText}
-                                    placeholder={placeholderValue}
-                                    isDisabled={isTranscribing || isProcessingAudio}
-                                    startAdornment={
-                                        <>
-                                            <AudioInputButton
-                                                onRecordingBegin={() => {
-                                                    setPlaceholderValue('Recording...');
-                                                }}
-                                                onComplete={() => {
-                                                    setPlaceholderValue(placeholderText);
-                                                }}
-                                                onTranscriptionComplete={(content) => {
-                                                    const values = formContext.getValues();
-                                                    formContext.setValue(
-                                                        'content',
-                                                        values.content + content
-                                                    );
-                                                }}
-                                            />
-                                            <FileUploadButton
-                                                {...formContext.register('files')}
-                                                {...fileUploadProps}
-                                            />
-                                        </>
-                                    }
-                                    endAdornment={
-                                        <>
-                                            {isTranscribing ? <Waveform /> : null}
-                                            <SubmitPauseAdornment
-                                                canPause={canPauseThread}
-                                                onPause={onAbort}
-                                                isSubmitDisabled={
-                                                    isSelectedThreadLoading ||
-                                                    isLimitReached ||
-                                                    isTranscribing ||
-                                                    isProcessingAudio ||
-                                                    !canEditThread
-                                                }
-                                            />
-                                        </>
-                                    }
-                                />
-                            </>
+                            <PromptInput
+                                name={name}
+                                onChange={onChange}
+                                errorMessage={error?.message}
+                                value={value}
+                                ref={ref}
+                                onKeyDown={handleKeyDown}
+                                aria-label={placeholderText}
+                                placeholder={placeholderValue}
+                                isDisabled={isTranscribing || isProcessingAudio}
+                                startAdornment={
+                                    <>
+                                        <AudioInputButton
+                                            onRecordingBegin={() => {
+                                                setPlaceholderValue('Recording...');
+                                            }}
+                                            onComplete={() => {
+                                                setPlaceholderValue(placeholderText);
+                                            }}
+                                            onTranscriptionComplete={(content) => {
+                                                const values = formContext.getValues();
+                                                formContext.setValue(
+                                                    'content',
+                                                    values.content + content
+                                                );
+                                            }}
+                                        />
+                                        <FileUploadButton
+                                            {...formContext.register('files')}
+                                            {...fileUploadProps}
+                                        />
+                                    </>
+                                }
+                                endAdornment={
+                                    <>
+                                        {isTranscribing ? <Waveform /> : null}
+                                        <SubmitPauseAdornment
+                                            canPause={canPauseThread}
+                                            onPause={onAbort}
+                                            isSubmitDisabled={
+                                                isSelectedThreadLoading ||
+                                                isLimitReached ||
+                                                isTranscribing ||
+                                                isProcessingAudio ||
+                                                !canEditThread
+                                            }
+                                        />
+                                    </>
+                                }
+                            />
                         )}
                     />
                     {isLimitReached && (
