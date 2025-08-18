@@ -166,6 +166,7 @@ type BaseModelFormFieldValues = {
         | 'name'
         | 'promptType'
         | 'canCallTools'
+        | 'canThink'
     >
 >;
 
