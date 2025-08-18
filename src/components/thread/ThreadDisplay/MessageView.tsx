@@ -120,7 +120,7 @@ export const MessageView = ({
                     </ImageListItem>
                 ))}
             </ImageList>
-            <AllToolCalls toolCalls={message.toolCalls ?? undefined} />
+            <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
 
             {isLastMessageInThread && remoteState === RemoteState.Error && <ThreadError />}
 

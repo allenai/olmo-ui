@@ -326,7 +326,7 @@ export const v4ThreadHandlers = [
                     controller.enqueue(encoder.encode(formatMessage(response.at(-1))));
                 } else {
                     for (const message of response) {
-                        await delay(10);
+                        await delay(25);
                         controller.enqueue(encoder.encode(formatMessage(message)));
                     }
                 }

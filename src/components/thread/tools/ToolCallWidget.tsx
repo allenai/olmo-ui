@@ -11,29 +11,17 @@ import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow'
 import { FadeOverflowContent } from '@/components/widgets/FadeOverflowContent';
 import { css } from '@/styled-system/css';
 
+import { mapToolCallArgs } from './mapToolCallArgs';
+
 interface ToolCallWidgetProps {
     toolCall: SchemaToolCall;
     answer?: string;
 }
 
-const mapToolCallArgs = (
-    toolCall: SchemaToolCall
-): Record<string, unknown> | string | undefined => {
-    if (typeof toolCall.args === 'string') {
-        try {
-            return JSON.parse(toolCall.args) as Record<string, unknown>;
-        } catch {
-            return toolCall.args;
-        }
-    } else {
-        return toolCall.args ?? undefined;
-    }
-};
-
 export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
     const mappedArgs = mapToolCallArgs(toolCall);
     return (
-        <CollapsibleWidgetBase>
+        <CollapsibleWidgetBase defaultExpanded>
             <CollapsibleWidgetHeading endAdornment={<ExpandArrow />}>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>

@@ -3,13 +3,14 @@ import type { ReactNode } from 'react';
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { stack } from '@/styled-system/patterns';
 
-import { ToolCallWidget } from './ToolCallWidget';
+import { ToolCallWithAnswer } from './ToolCallWithAnswer';
 
 interface AllToolCallsProps {
     toolCalls?: readonly SchemaToolCall[];
+    threadId: string;
 }
 
-export default function AllToolCalls({ toolCalls }: AllToolCallsProps): ReactNode {
+export default function AllToolCalls({ toolCalls, threadId }: AllToolCallsProps): ReactNode {
     if (toolCalls == null) {
         return null;
     }
@@ -17,7 +18,11 @@ export default function AllToolCalls({ toolCalls }: AllToolCallsProps): ReactNod
     return (
         <div className={stack({ gap: '4' })}>
             {toolCalls.map((toolCall) => (
-                <ToolCallWidget toolCall={toolCall} key={toolCall.toolCallId} />
+                <ToolCallWithAnswer
+                    toolCall={toolCall}
+                    threadId={threadId}
+                    key={toolCall.toolCallId}
+                />
             ))}
         </div>
     );
