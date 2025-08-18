@@ -96,7 +96,7 @@ export const MessageView = ({
     }
     const { role, content, fileUrls, labels } = message;
 
-    if (role === Role.System) {
+    if (role === 'system' || role === 'tool_call_result') {
         return null;
     }
 
