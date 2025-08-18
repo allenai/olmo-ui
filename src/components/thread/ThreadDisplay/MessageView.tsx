@@ -15,6 +15,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
+import AllToolCalls from '../tools/AllToolCalls';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 
 export interface MessageProps {
@@ -119,6 +120,7 @@ export const MessageView = ({
                     </ImageListItem>
                 ))}
             </ImageList>
+            <AllToolCalls toolCalls={message.toolCalls ?? undefined} />
 
             {isLastMessageInThread && remoteState === RemoteState.Error && <ThreadError />}
 

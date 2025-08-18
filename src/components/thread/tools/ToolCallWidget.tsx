@@ -16,9 +16,15 @@ interface ToolCallWidgetProps {
     answer?: string;
 }
 
-const mapToolCallArgs = (toolCall: SchemaToolCall): Record<string, unknown> | undefined => {
+const mapToolCallArgs = (
+    toolCall: SchemaToolCall
+): Record<string, unknown> | string | undefined => {
     if (typeof toolCall.args === 'string') {
-        return JSON.parse(toolCall.args) as Record<string, unknown>;
+        try {
+            return JSON.parse(toolCall.args) as Record<string, unknown>;
+        } catch {
+            return toolCall.args;
+        }
     } else {
         return toolCall.args ?? undefined;
     }
