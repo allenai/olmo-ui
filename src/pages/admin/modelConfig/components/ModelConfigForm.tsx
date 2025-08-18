@@ -265,17 +265,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 <ControlledSwitch name="canCallTools" size="large">
                     This model can call tools
                 </ControlledSwitch>
-                <ControlledSelect
-                    name="thinkingLevel"
-                    label="Thinking Level"
-                    controllerProps={{ rules: { required: true } }}>
-                    <SelectListBoxSection>
-                        <SelectListBoxItem text="Off" id="off" />
-                        <SelectListBoxItem text="Low" id="low" />
-                        <SelectListBoxItem text="Medium" id="medium" />
-                        <SelectListBoxItem text="High" id="high" />
-                    </SelectListBoxSection>
-                </ControlledSelect>
+                <ControlledSwitch name="canThin" size="large">
+                    This model can think
+                </ControlledSwitch>
                 <Stack direction="row" align="center" justify="center" spacing={3}>
                     <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                     <Button variant="contained" type="submit">
