@@ -36,12 +36,14 @@ interface ThinkingWidgetProps
     extends Omit<CollapsibleWidgetBaseProps, 'children'>,
         PropsWithChildren {
     contentClassName?: string;
+    thinking: boolean;
 }
 
 const ThinkingWidget = ({
     className,
     contentClassName,
     children,
+    thinking,
     ...rest
 }: ThinkingWidgetProps) => {
     const thinkingWidgetClassNames = thinkingWidgetRecipe();
@@ -55,7 +57,7 @@ const ThinkingWidget = ({
                         <CollapsibleWidgetHeading
                             startAdornment={<ThinkingIcon size="small" />}
                             endAdornment={<StatusIndicator />}>
-                            Thinking
+                            {thinking ? 'Thinking' : 'Thoughts'}
                         </CollapsibleWidgetHeading>
                         <CollapsibleWidgetPanel>
                             <FadeOverflowContent className={contentClassName}>

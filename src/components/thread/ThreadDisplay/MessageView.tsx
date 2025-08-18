@@ -61,7 +61,12 @@ export const MessageThinking = ({ messageId }: MessageProps): ReactNode => {
     }
 
     return (
-        <ThinkingWidget className={css({ marginBottom: '2' })}>
+        <ThinkingWidget
+            style={{
+                maxHeight: '536px',
+            }}
+            thinking={!data.final}
+            className={css({ marginBottom: '2' })}>
             <MarkdownRenderer>{data.thinking}</MarkdownRenderer>
         </ThinkingWidget>
     );
