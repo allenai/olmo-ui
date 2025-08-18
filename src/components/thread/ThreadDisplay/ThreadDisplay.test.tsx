@@ -2,7 +2,7 @@
 // jsdom doesn't support IntersectionObserver
 
 import { IDLE_NAVIGATION } from '@remix-run/router';
-import { render, screen, setupMswThreadHandler, waitFor } from '@test-utils';
+import { render, screen, waitFor } from '@test-utils';
 import { MemoryRouter } from 'react-router-dom';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
@@ -14,6 +14,7 @@ import { links } from '@/Links';
 import { firstThreadMessageId } from '@/mocks/handlers/v4ThreadHandlers';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { getFakeUseUserAuthInfo } from '@/utils/FakeAuthLoaders';
+import { setupMswThreadHandler } from '@/utils/test/setupMswThreadHandler';
 
 import { ATTRIBUTION_DRAWER_ID } from '../attribution/drawer/AttributionDrawer';
 import { ThreadDisplayContainer } from './ThreadDisplayContainer';
