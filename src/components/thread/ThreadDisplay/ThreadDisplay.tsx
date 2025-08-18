@@ -3,8 +3,6 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
 
-import { ThreadError } from '@/pages/comparison/ThreadError';
-
 import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
@@ -255,19 +253,13 @@ export const ThreadDisplay = ({
                     }}
                 />
             )}
-            {showError ? (
-                <Box sx={{ gridColumn: '2 / -1' }}>
-                    <ThreadError />
-                </Box>
-            ) : (
-                childMessageIds.map((messageId) => (
-                    <MessageView
-                        messageId={messageId}
-                        key={messageId}
-                        isLastMessageInThread={lastMessageId === messageId}
-                    />
-                ))
-            )}
+            {childMessageIds.map((messageId) => (
+                <MessageView
+                    messageId={messageId}
+                    key={messageId}
+                    isLastMessageInThread={lastMessageId === messageId}
+                />
+            ))}
         </ThreadDisplayView>
     );
 };
