@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useDragAndDrop } from 'react-aria-components';
 import { useListData } from 'react-stately';
-import { withRouter } from 'storybook-addon-remix-react-router';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
@@ -75,7 +74,6 @@ const meta: Meta<typeof ModelConfigurationList> = {
     title: 'Components/ModelConfigurationList',
     component: ModelConfigurationList,
     subcomponents: { ModelConfigurationListItem },
-    decorators: [withRouter],
     parameters: {
         reactRouter: {
             routePath: '/admin/models/:modelId',

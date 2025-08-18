@@ -1,6 +1,8 @@
+import type { Thread } from '@/api/playgroundApi/thread';
+
 export const THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID = 'msg_R4B2M1O4D6';
 
-export const thinkingAndToolCallsResponse = {
+export const thinkingAndToolCallsResponse: Thread = {
     id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
     messages: [
         {
