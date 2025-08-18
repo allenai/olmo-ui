@@ -24,6 +24,10 @@ import { fakeFollowupResponse } from './responses/v4/stream/followup';
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
 import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
 import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
+import {
+    THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+    thinkingAndToolCallsResponse,
+} from './responses/v4/thinkingAndToolCallsResponse';
 import { typedHttp } from './typedHttp';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -225,6 +229,7 @@ const v4ThreadResponses = {
     msg_multiplesnippets: documentWithMultipleSnippetsResponse,
     msg_multiple_points: multiplePointerMessageResponse,
     msg_overlapping_spans: overlappingSpansResponse,
+    [THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID]: thinkingAndToolCallsResponse,
 };
 
 export interface MessagesResponseV4 {
