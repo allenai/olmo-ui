@@ -265,7 +265,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 <ControlledSwitch name="canCallTools" size="large">
                     This model can call tools
                 </ControlledSwitch>
-                <ControlledSwitch name="canThin" size="large">
+                <ControlledSwitch name="canThink" size="large">
                     This model can think
                 </ControlledSwitch>
                 <Stack direction="row" align="center" justify="center" spacing={3}>
