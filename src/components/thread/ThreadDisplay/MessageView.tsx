@@ -15,8 +15,8 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
-import { MessageThinking } from './MessageThinking';
 import AllToolCalls from '../tools/AllToolCalls';
+import { MessageThinking } from './MessageThinking';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 export interface MessageProps {
     messageId: MessageId;
