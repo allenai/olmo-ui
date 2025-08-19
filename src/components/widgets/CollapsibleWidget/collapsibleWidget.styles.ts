@@ -17,6 +17,8 @@ const collapsibleWidgetRecipe = sva({
             color: 'text',
             borderRadius: 'sm',
             overflow: 'hidden',
+            '--padding-block': 'spacing.3',
+            '--padding-inline': 'spacing.4',
         },
         heading: {
             display: 'flex',
@@ -44,16 +46,17 @@ const collapsibleWidgetRecipe = sva({
             },
         },
         panelContent: {
-            paddingInline: '4',
-            paddingBlock: '3',
+            paddingInline: 'var(--padding-inline)',
+            paddingBlock: 'var(--padding-block)',
         },
         trigger: {
             display: 'flex',
             flexGrow: '1',
             justifyContent: 'space-between',
+            alignItems: 'center',
             gap: '3',
-            paddingInline: '4',
-            paddingBlock: '3',
+            paddingInline: 'var(--padding-inline)',
+            paddingBlock: 'var(--padding-block)',
         },
     },
 });

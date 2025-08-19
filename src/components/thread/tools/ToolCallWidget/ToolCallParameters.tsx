@@ -5,6 +5,7 @@ import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
 import { CollapsibleWidgetPanelContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
+import { css } from '@/styled-system/css';
 
 interface ToolCallParametersProps {
     // Not using the optional ? here ensures that children are passed
@@ -26,18 +27,25 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
 
     return (
         <CollapsibleWidgetPanelContent>
-            <IconButtonWithTooltip
-                label="Copy tool call parameters"
-                color="default"
-                placement="top"
-                onClick={copyParameters}
-                sx={{ position: 'absolute', top: 0, right: 0 }}>
-                <ContentCopy />
-            </IconButtonWithTooltip>
-            <ThemeSyntaxHighlighter
-                customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
-                {children}
-            </ThemeSyntaxHighlighter>
+            <div className={css({ position: 'relative' })}>
+                <IconButtonWithTooltip
+                    label="Copy tool call parameters"
+                    color="default"
+                    placement="top"
+                    onClick={copyParameters}
+                    sx={{
+                        position: 'absolute',
+                        right: '0',
+                        // top: 'var(--padding-inline)',
+                        // right: 'var(--padding-block)',
+                    }}>
+                    <ContentCopy />
+                </IconButtonWithTooltip>
+                <ThemeSyntaxHighlighter
+                    customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
+                    {children}
+                </ThemeSyntaxHighlighter>
+            </div>
         </CollapsibleWidgetPanelContent>
     );
 };

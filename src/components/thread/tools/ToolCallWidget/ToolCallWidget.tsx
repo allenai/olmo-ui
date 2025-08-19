@@ -1,8 +1,8 @@
 import { DataObject } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
-import { CollapsibleWidgetFooter } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
@@ -27,13 +27,16 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject titleAccess="Tool call" />}
-                endAdornment={<ExpandArrow />}>
+                endAdornment={
+                    <IconButton>
+                        <ExpandArrow />
+                    </IconButton>
+                }>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
                 <FadeOverflowContent className={css({ width: '[100%]' })}>
                     <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                    <CollapsibleWidgetFooter></CollapsibleWidgetFooter>
                     <ToolCallAnswer>{answer}</ToolCallAnswer>
                 </FadeOverflowContent>
             </CollapsibleWidgetPanel>
