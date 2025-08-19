@@ -61,14 +61,21 @@ export const ThreadViewProvider = ({
         // Check for streaming errors or mutation errors
         const latestThreadMutation = mutationStates[mutationStates.length - 1];
 
-        // Lint is wrong. `latestThreadMutation` is necessary here
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (streamingError || (latestThreadMutation && latestThreadMutation.status === 'error')) {
+        if (
+            (latestThreadMutation.variables as { thread: { id: string } | undefined }).thread
+                ?.id !== threadId
+        ) {
+            return RemoteState.Loaded;
+        }
+
+        if (streamingError || latestThreadMutation.status === 'error') {
+            // Lint is wrong. `latestThreadMutation` is necessary here
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             return RemoteState.Error;
         }
 
         return RemoteState.Loaded; // Default to "loaded"
-    }, [isActivelyStreaming, streamingError, mutationStates]);
+    }, [isActivelyStreaming, streamingError, mutationStates, threadId]);
 
     const value = {
         threadId,
