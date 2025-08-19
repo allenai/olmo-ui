@@ -5,7 +5,6 @@ import { ReactNode, useState } from 'react';
 import { Label } from '@/api/Label';
 import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
-import { ThinkingWidget } from '@/components/widgets/ThinkingWidget';
 import { RemoteState } from '@/contexts/util';
 import { ThreadError } from '@/pages/comparison/ThreadError';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
@@ -16,6 +15,7 @@ import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
+import { MessageThinking } from './MessageThinking';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
 export interface MessageProps {
     messageId: MessageId;
@@ -57,25 +57,6 @@ export const StandardMessage = ({ messageId }: MessageProps): ReactNode => {
     return <MarkdownRenderer>{contentWithMarks}</MarkdownRenderer>;
 };
 
-export const MessageThinking = ({ messageId }: MessageProps): ReactNode => {
-    const { threadId } = useThreadView();
-    const { data, error: _error } = useThread(threadId, selectMessageById(messageId));
-
-    if (!data?.thinking) {
-        return null;
-    }
-
-    return (
-        <ThinkingWidget
-            style={{
-                maxHeight: '536px',
-            }}
-            thinking={!data.final}
-            className={css({ marginBottom: '2' })}>
-            <MarkdownRenderer>{data.thinking}</MarkdownRenderer>
-        </ThinkingWidget>
-    );
-};
 // Convert control characters to visible escape sequences for display,
 // without adding wrapping quotes or escaping internal quotes/backslashes.
 const escapeForDisplay = (content: string): string => {
