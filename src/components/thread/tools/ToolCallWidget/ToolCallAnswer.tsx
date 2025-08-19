@@ -1,9 +1,8 @@
 import { ContentCopy } from '@mui/icons-material';
 
 import { useAppContext } from '@/AppContext';
+import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
-import { MessageInteractionIcon } from '@/components/thread/MessageInteraction/MessageInteractionIcon';
-import { CollapsibleWidgetFooter } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
 import { CollapsibleWidgetPanelContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { hstack } from '@/styled-system/patterns';
@@ -27,20 +26,15 @@ export const ToolCallAnswer = ({ children = '' }: ToolCallAnswerProps) => {
 
     return (
         <>
-            <CollapsibleWidgetFooter className={hstack({ justifyContent: 'space-between' })}>
-                <MessageInteractionIcon
-                    tooltip="Copy tool call parameters"
-                    Icon={ContentCopy}
-                    onClick={copyAnswer}
-                />
-                Tool call
-            </CollapsibleWidgetFooter>
             <CollapsibleWidgetPanelContent className={hstack()}>
-                <MessageInteractionIcon
-                    tooltip="Copy tool call answer"
-                    Icon={ContentCopy}
+                <IconButtonWithTooltip
+                    label="Copy tool call answer"
                     onClick={copyAnswer}
-                />
+                    color="default"
+                    placement="top"
+                    edge="start">
+                    <ContentCopy />
+                </IconButtonWithTooltip>
                 <ThemeSyntaxHighlighter
                     customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
                     {children}

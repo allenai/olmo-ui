@@ -24,6 +24,7 @@ const CollapsibleWidgetHeadingBase = ({
 }: CollapsibleWidgetHeadingBaseProps) => {
     const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
     const classNames = collapsibleWidgetRecipe(variantProps);
+
     return (
         <AriaHeading className={cx(classNames.heading, className)} {...localProps}>
             {children}
@@ -55,11 +56,14 @@ const CollapsibleWidgetHeading = ({
     startAdornment,
     endAdornment,
     children,
+    'aria-label': ariaLabel,
     ...rest
 }: CollapsibleWidgetHeadingProps) => {
     return (
-        <CollapsibleWidgetHeadingBase className={className} {...rest}>
-            <CollapsibleWidgetTrigger className={triggerClassName}>
+        <CollapsibleWidgetHeadingBase className={className} aria-label={ariaLabel} {...rest}>
+            <CollapsibleWidgetTrigger
+                className={triggerClassName}
+                aria-label={`Expand ${ariaLabel}`}>
                 {startAdornment}
                 <CollapsibleWidgetTitle>{children}</CollapsibleWidgetTitle>
                 {endAdornment}

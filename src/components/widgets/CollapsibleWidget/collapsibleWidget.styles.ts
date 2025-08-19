@@ -2,7 +2,7 @@ import { sva } from '@allenai/varnish-panda-runtime/css';
 import { type RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 
 const collapsibleWidgetRecipe = sva({
-    slots: ['container', 'heading', 'panel', 'panelContent', 'footer'],
+    slots: ['container', 'heading', 'panel', 'panelContent', 'footer', 'trigger'],
     base: {
         container: {
             // This was originally display: grid
@@ -21,9 +21,6 @@ const collapsibleWidgetRecipe = sva({
         heading: {
             display: 'flex',
             backgroundColor: 'cream.4', // wrong name, right color
-            paddingInline: '4',
-            paddingBlock: '3',
-            // contained1
         },
         panel: {
             display: 'flex',
@@ -47,6 +44,14 @@ const collapsibleWidgetRecipe = sva({
             },
         },
         panelContent: {
+            paddingInline: '4',
+            paddingBlock: '3',
+        },
+        trigger: {
+            display: 'flex',
+            flexGrow: '1',
+            justifyContent: 'space-between',
+            gap: '3',
             paddingInline: '4',
             paddingBlock: '3',
         },
