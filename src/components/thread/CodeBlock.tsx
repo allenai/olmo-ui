@@ -1,8 +1,7 @@
-import { Button, useTheme } from '@mui/material';
+import { Button } from '@mui/material';
 import { PropsWithChildren } from 'react';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
+import { ThemeSyntaxHighlighter } from '../ThemeSyntaxHighlighter';
 import { useAttributionHighlights } from './attribution/AttributionHighlight';
 import { attributionHighlightRegex } from './attribution/highlighting/match-span-in-codeblock';
 
@@ -20,7 +19,6 @@ export const CodeBlock = ({
     ...props
 }: CodeBlockProps) => {
     const match = /language-(\w+)/.exec(className || '');
-    const theme = useTheme();
 
     const spansInsideThisCodeBlock =
         typeof children === 'string'
@@ -48,15 +46,9 @@ export const CodeBlock = ({
         } else {
             return (
                 <>
-                    <SyntaxHighlighter
-                        style={atomDark}
-                        customStyle={{ background: theme.palette.background.code }}
-                        PreTag="div"
-                        language={match[1]}
-                        {...props}
-                        wrapLongLines>
+                    <ThemeSyntaxHighlighter PreTag="div" language={match[1]}>
                         {childrenWithoutAttributionHighlights}
-                    </SyntaxHighlighter>
+                    </ThemeSyntaxHighlighter>
                     {spansInsideThisCodeBlock.length > 0 && (
                         <Button
                             variant="outlined"

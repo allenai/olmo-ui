@@ -19,7 +19,7 @@ import {
     createMockThread,
     createMockUser,
     createStreamMessageMock,
-} from '@/utils/test-utils';
+} from '@/utils/test/createMockModel';
 
 import { QueryFormContainer } from './QueryFormContainer';
 

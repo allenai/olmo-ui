@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as useModels from '@/components/thread/ModelSelect/useModels';
 import { server } from '@/mocks/node';
-import { createMockModel } from '@/utils/test-utils';
+import { createMockModel } from '@/utils/test/createMockModel';
 
 import { ComparisonLoaderData, comparisonPageLoader } from './comparisonPageLoader';
 

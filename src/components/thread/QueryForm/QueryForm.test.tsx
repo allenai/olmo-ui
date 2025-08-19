@@ -12,7 +12,11 @@ import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 import { useStreamMessage } from '@/contexts/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
-import { createMockUser, createStreamMessageMock, setupThreadInCache } from '@/utils/test-utils';
+import {
+    createMockUser,
+    createStreamMessageMock,
+    setupThreadInCache,
+} from '@/utils/test/createMockModel';
 
 import { QueryForm } from './QueryForm';
 

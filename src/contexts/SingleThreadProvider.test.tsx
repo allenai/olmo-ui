@@ -1,6 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { act, renderHook, waitFor } from '@test-utils';
 // Get the mocked useParams function
 import { useParams } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
@@ -12,15 +13,12 @@ import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
-    act,
     convertMessagesForSetup,
     createMockMessage,
     createMockThread,
     createMockUser,
-    renderHook,
     setupThreadInCache,
-    waitFor,
-} from '@/utils/test-utils';
+} from '@/utils/test/createMockModel';
 
 import { useQueryContext } from './QueryContext';
 import { SingleThreadProvider } from './SingleThreadProvider';

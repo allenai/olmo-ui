@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
-import { createMockMessage, createMockModel } from '@/utils/test-utils';
+import { createMockMessage, createMockModel } from '@/utils/test/createMockModel';
 
 import { selectModelIdForThread } from './modelSelectionUtils';
 
