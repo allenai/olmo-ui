@@ -166,6 +166,7 @@ type BaseModelFormFieldValues = {
         | 'name'
         | 'promptType'
         | 'canCallTools'
+        | 'canThink'
     >
 >;
 
@@ -264,6 +265,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 />
                 <ControlledSwitch name="canCallTools" size="large">
                     This model can call tools
+                </ControlledSwitch>
+                <ControlledSwitch name="canThink" size="large">
+                    This model can think
                 </ControlledSwitch>
                 <Stack direction="row" align="center" justify="center" spacing={3}>
                     <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>

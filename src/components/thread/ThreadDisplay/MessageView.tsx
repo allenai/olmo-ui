@@ -3,7 +3,7 @@ import { ImageList, ImageListItem, Typography } from '@mui/material';
 import { ReactNode, useState } from 'react';
 
 import { Label } from '@/api/Label';
-import { MessageId, selectMessageById, useThread } from '@/api/playgroundApi/thread';
+import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { ThinkingWidget } from '@/components/widgets/ThinkingWidget';
 import { RemoteState } from '@/contexts/util';
@@ -23,8 +23,8 @@ export interface MessageProps {
 
 export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
     const { threadId } = useThreadView();
-    const { data, error: _error } = useThread(threadId, selectMessageById(messageId));
-    const content = data?.content || '';
+    const { message } = useMessage(threadId, messageId);
+    const content = message?.content || '';
     const cleanWrap = css({
         whiteSpace: 'pre',
         textWrap: '[auto]',
@@ -38,7 +38,12 @@ export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
         <div>
             <Typography variant="body2">Message Metadata</Typography>
             <div className={cleanWrap}>
-                {JSON.stringify(data, (key, value) => (key === 'content' ? undefined : value), 2)}
+                {JSON.stringify(
+                    message,
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                    (key, value) => (key === 'content' ? undefined : value),
+                    2
+                )}
             </div>
             <Typography variant="body2">Message Content</Typography>
             <div className={cleanWrap}>{escapeForDisplay(content)}</div>
@@ -78,6 +83,23 @@ const escapeForDisplay = (content: string): string => {
     return JSON.stringify(content).slice(1, -1).replace(/\\"/g, '"');
 };
 
+interface MessageContentProps {
+    rawMode?: boolean;
+    hasPoints?: boolean;
+    messageId: string;
+}
+const MessageContent = ({ rawMode = false, hasPoints = false, messageId }: MessageContentProps) => {
+    if (rawMode) {
+        return <RawMessage messageId={messageId} />;
+    }
+
+    if (hasPoints) {
+        return <PointResponseMessage messageId={messageId} />;
+    }
+
+    return <StandardMessage messageId={messageId} />;
+};
+
 interface MessageViewProps {
     messageId: MessageId;
     isLastMessageInThread?: boolean;
@@ -88,7 +110,7 @@ export const MessageView = ({
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
     const { threadId, streamingMessageId, remoteState } = useThreadView();
-    const { data: message, error: _error } = useThread(threadId, selectMessageById(messageId));
+    const { message } = useMessage(threadId, messageId);
     // should we display a message's actual content or the raw content?
     const [rawMode, setRawMode] = useState(false);
 
@@ -105,17 +127,16 @@ export const MessageView = ({
         ? labels.map((label) => ({ ...label, created: new Date(label.created) }) as Label)
         : [];
 
-    const MessageComponent = rawMode
-        ? RawMessage
-        : hasPoints(content)
-          ? PointResponseMessage
-          : StandardMessage;
     const isStreaming = remoteState === RemoteState.Loading && streamingMessageId === messageId;
 
     return (
         <ChatMessage role={role as Role} messageId={messageId}>
             <MessageThinking messageId={messageId} />
-            <MessageComponent messageId={messageId} />
+            <MessageContent
+                messageId={messageId}
+                rawMode={rawMode}
+                hasPoints={hasPoints(content)}
+            />
             <ImageList>
                 {(fileUrls || []).map((url, idx) => (
                     <ImageListItem key={idx} sx={{ maxHeight: MAX_THREAD_IMAGE_HEIGHT }}>

@@ -1,4 +1,4 @@
-import { selectMessageById, useThread } from '@/api/playgroundApi/thread';
+import { useMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useFeatureToggles } from '@/FeatureToggleContext';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
@@ -8,10 +8,10 @@ import { addHighlightsToText } from './add-highlights-to-text';
 export const useSpanHighlighting = (messageId: string) => {
     const { isCorpusLinkEnabled } = useFeatureToggles();
     const { threadId } = useThreadView();
-    const { data, error: _error } = useThread(threadId, selectMessageById(messageId));
+    const { message } = useMessage(threadId, messageId);
 
     // this shouldn't happen
-    const content = data?.content || '';
+    const content = message?.content || '';
 
     const spans = useAppContext(
         (state) => state.attribution.attributionsByMessageId[messageId]?.spans ?? {}

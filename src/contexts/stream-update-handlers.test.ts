@@ -1,6 +1,7 @@
 import type {
     SchemaModelResponseChunk,
     SchemaThinkingChunk,
+    SchemaToolCall,
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/playgroundApiSchema';
 import type { FlatMessage } from '@/api/playgroundApi/thread';
@@ -144,6 +145,175 @@ describe('updateThreadWithToolCall', () => {
             toolName: toolCallChunk.toolName,
             args: toolCallChunk.args,
         });
+    });
+
+    it('should update an existing tool call with new string args', () => {
+        const existingToolCall = {
+            toolCallId: 'tool-call-1',
+            toolName: 'cool-tool',
+            args: undefined,
+        } as const satisfies SchemaToolCall;
+
+        const existingToolCallTwo = {
+            toolCallId: 'tool-call-2',
+            toolName: 'cool-tool',
+            args: { foo: 'two' },
+        } as const satisfies SchemaToolCall;
+
+        const initialAssistantMessage = {
+            content: 'initial content',
+            created: '2025-08-14T20:29:22.385Z',
+            creator: 'me',
+            id: 'fake-message-2',
+            isLimitReached: false,
+            isOlderThan30Days: false,
+            modelId: 'model',
+            modelHost: 'modelHost',
+            opts: {},
+            role: 'assistant',
+            root: 'fake-message-1',
+            snippet: 'initial content',
+            toolCalls: [existingToolCall, existingToolCallTwo],
+        } as const satisfies FlatMessage;
+
+        const initialThread: StreamingThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'user message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+                initialAssistantMessage,
+            ],
+        };
+
+        const toolCallChunk: SchemaToolCallChunk = {
+            message: 'fake-message-2',
+            toolCallId: 'tool-call-1',
+            toolName: '',
+            type: 'toolCall',
+            args: '{ bar:',
+        };
+
+        const updatedThread = updateThreadWithToolCall(toolCallChunk)(initialThread);
+
+        const messageThatShouldHaveAToolCall = updatedThread.messages.find(
+            (message) => message.id === initialAssistantMessage.id
+        )!;
+
+        expect(messageThatShouldHaveAToolCall.toolCalls).toHaveLength(2);
+        expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
+            toolCallId: existingToolCall.toolCallId,
+            toolName: existingToolCall.toolName,
+            args: '{ bar:',
+        });
+        expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
+
+        const secondToolCallChunk: SchemaToolCallChunk = {
+            message: 'fake-message-2',
+            toolCallId: 'tool-call-1',
+            toolName: '',
+            type: 'toolCall',
+            args: " 'foo' }",
+        };
+
+        const updatedThreadUpdatedAgain =
+            updateThreadWithToolCall(secondToolCallChunk)(updatedThread);
+
+        const updatedMessageThatShouldHaveAToolCall = updatedThreadUpdatedAgain.messages.find(
+            (message) => message.id === initialAssistantMessage.id
+        )!;
+
+        expect(updatedMessageThatShouldHaveAToolCall.toolCalls).toHaveLength(2);
+        expect(updatedMessageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
+            toolCallId: existingToolCall.toolCallId,
+            toolName: existingToolCall.toolName,
+            args: "{ bar: 'foo' }",
+        });
+        expect(updatedMessageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
+    });
+
+    it('should update an existing tool call with new object args', () => {
+        const existingToolCall = {
+            toolCallId: 'tool-call-1',
+            toolName: 'cool-tool',
+            args: '{ foo: "bar" ',
+        } as const satisfies SchemaToolCall;
+
+        const existingToolCallTwo = {
+            toolCallId: 'tool-call-2',
+            toolName: 'cool-tool',
+            args: { foo: 'two' },
+        } as const satisfies SchemaToolCall;
+
+        const initialAssistantMessage = {
+            content: 'initial content',
+            created: '2025-08-14T20:29:22.385Z',
+            creator: 'me',
+            id: 'fake-message-2',
+            isLimitReached: false,
+            isOlderThan30Days: false,
+            modelId: 'model',
+            modelHost: 'modelHost',
+            opts: {},
+            role: 'assistant',
+            root: 'fake-message-1',
+            snippet: 'initial content',
+            toolCalls: [existingToolCall, existingToolCallTwo],
+        } as const satisfies FlatMessage;
+
+        const initialThread: StreamingThread = {
+            id: 'test-thread',
+            messages: [
+                {
+                    content: 'user message',
+                    created: '2025-08-14T20:29:22.385Z',
+                    creator: 'me',
+                    id: 'fake-message-1',
+                    isLimitReached: false,
+                    isOlderThan30Days: false,
+                    modelId: 'model',
+                    modelHost: 'modelHost',
+                    opts: {},
+                    role: 'user',
+                    root: 'fake-message-1',
+                    snippet: 'user message',
+                },
+                initialAssistantMessage,
+            ],
+        };
+
+        const toolCallChunk: SchemaToolCallChunk = {
+            message: 'fake-message-2',
+            toolCallId: 'tool-call-1',
+            toolName: '',
+            type: 'toolCall',
+            args: { foo: 'bar' },
+        };
+
+        const updatedThread = updateThreadWithToolCall(toolCallChunk)(initialThread);
+
+        const messageThatShouldHaveAToolCall = updatedThread.messages.find(
+            (message) => message.id === initialAssistantMessage.id
+        )!;
+
+        expect(messageThatShouldHaveAToolCall.toolCalls).toHaveLength(2);
+        expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
+            toolCallId: existingToolCall.toolCallId,
+            toolName: existingToolCall.toolName,
+            args: toolCallChunk.args,
+        });
+        expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
     });
 });
 
