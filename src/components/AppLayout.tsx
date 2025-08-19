@@ -11,10 +11,10 @@ import { OlmoAppBar } from './OlmoAppBar';
 interface AppLayout extends PropsWithChildren {}
 
 export const AppLayout = ({ children }: AppLayout) => {
-    const [colorPreference] = useColorMode();
+    const { colorMode } = useColorMode();
 
     return (
-        <OuterContainer className={colorPreference === 'light' ? 'light' : 'dark'}>
+        <OuterContainer className={colorMode}>
             <OlmoAppBar />
             <GlobalSnackMessageList />
             <Container

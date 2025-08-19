@@ -18,12 +18,17 @@ import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '../olmoTheme';
 
 export type ColorPreference = PaletteMode | 'system';
 
-type ColorModeContextValues = [ColorPreference, (color: ColorPreference) => void];
+type ColorModeContextValues = {
+    colorMode: PaletteMode;
+    colorPreference: ColorPreference;
+    setColorPreference: (color: ColorPreference) => void;
+};
 
-const ColorModeContext = createContext<ColorModeContextValues>([
-    'light',
-    (_: ColorPreference) => {},
-]);
+const ColorModeContext = createContext<ColorModeContextValues>({
+    colorMode: 'light',
+    colorPreference: 'system',
+    setColorPreference: (_: ColorPreference) => {},
+});
 
 type ColorModeProviderProps = PropsWithChildren<{
     defaultColorPreference?: ColorPreference;
@@ -37,7 +42,8 @@ export const ColorModeProvider = ({
     defaultThemeColorMode = 'light',
     theme = uiRefreshOlmoTheme,
 }: ColorModeProviderProps) => {
-    const [colorPreference, setColorPreference] = useState<ColorPreference>(defaultColorPreference);
+    const [colorPreference, setColorPreferenceValue] =
+        useState<ColorPreference>(defaultColorPreference);
     const [themeColorMode, setThemeColorMode] = useState<PaletteMode>(defaultThemeColorMode);
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
@@ -48,9 +54,9 @@ export const ColorModeProvider = ({
         );
     }, [themeColorMode, theme]);
 
-    const changeColorScheme = useCallback(
+    const setColorPreference = useCallback(
         (color: ColorPreference) => {
-            setColorPreference(color);
+            setColorPreferenceValue(color);
             localStorage.setItem('color-scheme-preference', color);
             const newThemeColorMode =
                 color === 'system' ? (prefersDarkMode ? 'dark' : 'light') : color;
@@ -64,11 +70,16 @@ export const ColorModeProvider = ({
     useEffect(() => {
         const preference = (localStorage.getItem('color-scheme-preference') ||
             'system') as ColorPreference;
-        changeColorScheme(preference);
-    }, [changeColorScheme]);
+        setColorPreference(preference);
+    }, [setColorPreference]);
 
     return (
-        <ColorModeContext.Provider value={[colorPreference, changeColorScheme]}>
+        <ColorModeContext.Provider
+            value={{
+                colorMode: themeColorMode,
+                colorPreference,
+                setColorPreference,
+            }}>
             <ThemeProvider theme={combinedTheme}>
                 <VarnishApp layout="left-aligned" theme={combinedTheme}>
                     {children}

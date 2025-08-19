@@ -21,15 +21,15 @@ const ColorModeSelectionMenuItem = ({
     onClick,
     ...menuItemProps
 }: ColorModeSelectionMenuItemProps): ReactNode => {
-    const [colorMode, setColorMode] = useColorMode();
-    const isSelected = mode === colorMode;
+    const { colorPreference, setColorPreference } = useColorMode();
+    const isSelected = mode === colorPreference;
 
     return (
         <MenuItem
             {...menuItemProps}
             onClick={(e) => {
                 analyticsClient.trackColorModeChange({ colorMode: mode });
-                setColorMode(mode);
+                setColorPreference(mode);
                 onClick?.(e);
             }}>
             <Box flexGrow={1}>{title}</Box>

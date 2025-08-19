@@ -25,7 +25,7 @@ const MAX_TOKENS_INFO =
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
-    const [colorMode] = useColorMode();
+    const { colorMode } = useColorMode();
 
     return (
         <DesktopExpandingDrawer open={open} id="desktop-parameter-drawer">
