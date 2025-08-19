@@ -237,8 +237,7 @@ export const ThreadDisplay = ({
     selectedMessageId,
     hasError = false,
 }: ThreadDisplayProps) => {
-    const lastMessageId =
-        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
+    const lastMessageId = childMessageIds.at(-1);
 
     return (
         <ThreadDisplayView

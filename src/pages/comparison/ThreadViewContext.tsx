@@ -62,8 +62,7 @@ export const ThreadViewProvider = ({
             return RemoteState.Loading;
         }
 
-        const latestThreadMutation =
-            mutationStates.length > 0 ? mutationStates[mutationStates.length - 1] : undefined;
+        const latestThreadMutation = mutationStates.at(-1);
 
         if (
             streamingError ||
