@@ -42,5 +42,7 @@ export function useThread<R>(threadId: ThreadId, select?: (thread: Thread) => R)
 export const selectMessageById = (messageId: MessageId) => (thread: Thread) =>
     thread.messages.find(({ id }) => messageId === id);
 
-export const useMessage = (threadId: ThreadId, messageId: MessageId) =>
-    useThread(threadId, selectMessageById(messageId));
+export const useMessage = (threadId: ThreadId, messageId: MessageId) => {
+    const { data: message, ...rest } = useThread(threadId, selectMessageById(messageId));
+    return { message, ...rest };
+};

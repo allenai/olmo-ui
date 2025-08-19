@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, type ReactNode } from 'react';
 
 import { useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
@@ -25,11 +25,11 @@ export const ChatMessage = ({
     role: variant,
     messageId,
     children,
-}: ChatMessageProps): JSX.Element => {
+}: ChatMessageProps): ReactNode => {
     const { threadId } = useThreadView();
     const { remoteState } = useQueryContext();
 
-    const { data: message } = useMessage(threadId, messageId);
+    const { message } = useMessage(threadId, messageId);
 
     // When streaming completes, announce the final content for this message
     const finalMessageContent = remoteState === RemoteState.Loaded ? message?.content : null;
