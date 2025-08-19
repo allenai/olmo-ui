@@ -1,10 +1,7 @@
 ARG UI_IMAGE
-FROM $UI_IMAGE as ui
+FROM $UI_IMAGE AS ui
 
-ENV NODE_ENV=production
-RUN yarn build
-
-FROM nginx:1.29-alpine
+FROM nginx:1.29.0-alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
