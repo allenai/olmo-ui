@@ -13,7 +13,7 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@test-utils": ["src/utils/test-utils"],
+      "@test-utils": ["src/utils/test/test-utils"],
       "@playwright-utils": ["e2e/playwright-utils"],
       "@/styled-system/*": ["styled-system/*"],
       "@/*": ["src/*"]
