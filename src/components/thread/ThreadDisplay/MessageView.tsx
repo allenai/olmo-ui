@@ -24,8 +24,8 @@ export interface MessageProps {
 
 export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
     const { threadId } = useThreadView();
-    const { data } = useMessage(threadId, messageId);
-    const content = data?.content || '';
+    const { message } = useMessage(threadId, messageId);
+    const content = message?.content || '';
     const cleanWrap = css({
         whiteSpace: 'pre',
         textWrap: '[auto]',
@@ -39,7 +39,12 @@ export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
         <div>
             <Typography variant="body2">Message Metadata</Typography>
             <div className={cleanWrap}>
-                {JSON.stringify(data, (key, value) => (key === 'content' ? undefined : value), 2)}
+                {JSON.stringify(
+                    message,
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                    (key, value) => (key === 'content' ? undefined : value),
+                    2
+                )}
             </div>
             <Typography variant="body2">Message Content</Typography>
             <div className={cleanWrap}>{escapeForDisplay(content)}</div>
@@ -87,7 +92,7 @@ export const MessageView = ({
     isLastMessageInThread = false,
 }: MessageViewProps): ReactNode => {
     const { threadId, streamingMessageId, remoteState } = useThreadView();
-    const { data: message } = useMessage(threadId, messageId);
+    const { message } = useMessage(threadId, messageId);
     // should we display a message's actual content or the raw content?
     const [rawMode, setRawMode] = useState(false);
 

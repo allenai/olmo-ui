@@ -154,7 +154,7 @@ export const PointResponseMessage = ({ messageId }: MessageProps): ReactNode => 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const theme = useTheme();
     const { threadId } = useThreadView();
-    const { data: message, error: _error } = useMessage(threadId, messageId);
+    const { message } = useMessage(threadId, messageId);
     const { data: lastImagesInThread } = useThread(threadId, (thread) => {
         return thread.messages
             .filter((message) => message.role === Role.User && message.fileUrls?.length)

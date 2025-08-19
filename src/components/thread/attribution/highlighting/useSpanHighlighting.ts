@@ -8,10 +8,10 @@ import { addHighlightsToText } from './add-highlights-to-text';
 export const useSpanHighlighting = (messageId: string) => {
     const { isCorpusLinkEnabled } = useFeatureToggles();
     const { threadId } = useThreadView();
-    const { data } = useMessage(threadId, messageId);
+    const { message } = useMessage(threadId, messageId);
 
     // this shouldn't happen
-    const content = data?.content || '';
+    const content = message?.content || '';
 
     const spans = useAppContext(
         (state) => state.attribution.attributionsByMessageId[messageId]?.spans ?? {}

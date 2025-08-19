@@ -547,6 +547,11 @@ export type components = {
              */
             readonly canCallTools?: boolean;
             /**
+             * Canthink
+             * @default false
+             */
+            readonly canThink?: boolean;
+            /**
              * Defaultsystemprompt
              * @default null
              */
@@ -613,6 +618,11 @@ export type components = {
              * @default false
              */
             readonly canCallTools?: boolean;
+            /**
+             * Canthink
+             * @default false
+             */
+            readonly canThink?: boolean;
             /**
              * Defaultsystemprompt
              * @default null
@@ -1089,6 +1099,8 @@ export type components = {
             readonly availableTime?: string | null;
             /** Cancalltools */
             readonly canCallTools: boolean;
+            /** Canthink */
+            readonly canThink: boolean;
             /**
              * Createdtime
              * Format: date-time
@@ -1222,6 +1234,8 @@ export type components = {
             readonly availableTime?: string | null;
             /** Cancalltools */
             readonly canCallTools: boolean;
+            /** Canthink */
+            readonly canThink: boolean;
             /**
              * Createdtime
              * Format: date-time
@@ -1357,6 +1371,11 @@ export type components = {
              */
             readonly canCallTools?: boolean;
             /**
+             * Canthink
+             * @default false
+             */
+            readonly canThink?: boolean;
+            /**
              * Defaultsystemprompt
              * @default null
              */
@@ -1421,6 +1440,11 @@ export type components = {
              * @default false
              */
             readonly canCallTools?: boolean;
+            /**
+             * Canthink
+             * @default false
+             */
+            readonly canThink?: boolean;
             /**
              * Defaultsystemprompt
              * @default null
