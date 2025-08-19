@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMockMessage, createMockThread } from '@test-utils';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
+import { createMockMessage, createMockThread } from '@/utils/test/createMockModel';
 
 import AllToolCalls from './AllToolCalls';
 

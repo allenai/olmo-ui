@@ -1,3 +1,4 @@
+import { render, waitFor } from '@test-utils';
 import React from 'react';
 import * as ReactRouterDom from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
@@ -5,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
-import { createMockUser, render, setupThreadInCache, waitFor } from '@/utils/test-utils';
+import { createMockUser, setupThreadInCache } from '@/utils/test/createMockModel';
 
 import { ComparisonProvider } from './ComparisonProvider';
 import { useQueryContext } from './QueryContext';
