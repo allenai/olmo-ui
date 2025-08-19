@@ -1,4 +1,3 @@
-import { useTheme } from '@mui/material';
 import {
     PrismAsyncLight as SyntaxHighlighter,
     type SyntaxHighlighterProps,
@@ -13,12 +12,10 @@ export const ThemeSyntaxHighlighter = ({
     customStyle,
     ...rest
 }: ThemeSyntaxHighlighterProps) => {
-    const theme = useTheme();
-
     return (
         <SyntaxHighlighter
             style={atomDark}
-            customStyle={{ background: theme.palette.background.code, ...customStyle }}
+            customStyle={customStyle}
             PreTag="div"
             language={language}
             {...rest}
