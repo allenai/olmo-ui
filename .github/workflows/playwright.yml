@@ -11,11 +11,16 @@ on:
   push:
     branches: [main, dev]
   pull_request:
-    branches: [main, dev, comparison-page]
+    branches: [main, dev]
 jobs:
   playwright-test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-noble
       options: --user 1001
@@ -28,19 +33,52 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Run Playwright tests
-        run: yarn test:e2e
+        run: yarn test:e2e --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           NODE_ENV: test
           E2E_TEST_USER: ${{ vars.E2E_TEST_USER }}
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
           AUTH0_DOMAIN: ${{ vars.E2E_AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ vars.E2E_AUTH0_CLIENT_ID }}
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report
+          retention-days: 1
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [playwright-test]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "yarn"
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html,github ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 14
+
   storybook-test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
