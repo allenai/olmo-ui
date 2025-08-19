@@ -10,7 +10,6 @@ RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn ins
 FROM base AS runner
 
 COPY --from=dependencies /ui/node_modules ./node_modules
-COPY --from=dependencies /ui/.yarn ./.yarn
 
 COPY . .
 
