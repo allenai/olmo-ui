@@ -10,6 +10,8 @@ export const ThreadError = () => {
                 justifyContent: 'center',
                 padding: 2,
                 minHeight: 120,
+                gridColumnStart: 1,
+                gridColumnEnd: 'span 2',
             }}>
             <ErrorOutline
                 sx={(theme) => ({

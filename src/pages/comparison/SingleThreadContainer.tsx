@@ -68,7 +68,7 @@ const SingleThread = ({ threadRootId }: SingleThreadProps) => {
             streamingMessageId={streamingMessageId ?? null}
             isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
-            showError={remoteState === RemoteState.Error}
+            hasError={remoteState === RemoteState.Error}
         />
     );
 };
@@ -89,7 +89,7 @@ const ThreadViewPlaceholder = ({ threadViewIdx, models }: ThreadViewPlaceholderP
                     streamingMessageId={null}
                     isUpdatingMessageContent={false}
                     selectedMessageId={null}
-                    showError={true}
+                    hasError={true}
                 />
             </div>
         );

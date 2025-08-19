@@ -3,6 +3,8 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
 
+import { ThreadError } from '@/pages/comparison/ThreadError';
+
 import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
@@ -15,7 +17,7 @@ interface ThreadDisplayProps {
     streamingMessageId: string | null;
     isUpdatingMessageContent: boolean;
     selectedMessageId?: string | null;
-    showError?: boolean;
+    hasError?: boolean;
 }
 
 // same as ThreadDisplay, but children instead of props
@@ -233,7 +235,7 @@ export const ThreadDisplay = ({
     streamingMessageId,
     isUpdatingMessageContent,
     selectedMessageId,
-    showError = false,
+    hasError = false,
 }: ThreadDisplayProps) => {
     const lastMessageId =
         childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
@@ -244,7 +246,7 @@ export const ThreadDisplay = ({
             streamingMessageId={streamingMessageId}
             isUpdatingMessageContent={isUpdatingMessageContent}
             selectedMessageId={selectedMessageId}>
-            {(childMessageIds.length > 0 || showError) && (
+            {(childMessageIds.length > 0 || hasError) && (
                 <Divider
                     sx={{
                         gridColumn: '2 / -1',
@@ -260,6 +262,7 @@ export const ThreadDisplay = ({
                     isLastMessageInThread={lastMessageId === messageId}
                 />
             ))}
+            {hasError && <ThreadError />}
         </ThreadDisplayView>
     );
 };
