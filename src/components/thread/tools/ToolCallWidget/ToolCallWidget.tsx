@@ -28,7 +28,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject titleAccess="Tool call" />}
                 endAdornment={
-                    <IconButton>
+                    <IconButton tabIndex={-1} role="presentation">
                         <ExpandArrow />
                     </IconButton>
                 }>

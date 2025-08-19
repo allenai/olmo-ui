@@ -36,8 +36,6 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
                     sx={{
                         position: 'absolute',
                         right: '0',
-                        // top: 'var(--padding-inline)',
-                        // right: 'var(--padding-block)',
                     }}>
                     <ContentCopy />
                 </IconButtonWithTooltip>

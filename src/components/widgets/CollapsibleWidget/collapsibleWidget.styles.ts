@@ -57,6 +57,10 @@ const collapsibleWidgetRecipe = sva({
             gap: '3',
             paddingInline: 'var(--padding-inline)',
             paddingBlock: 'var(--padding-block)',
+
+            '&[data-focus-visible="true"]': {
+                outline: '1px solid white',
+            },
         },
     },
 });
