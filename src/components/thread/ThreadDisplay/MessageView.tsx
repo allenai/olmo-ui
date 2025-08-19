@@ -16,8 +16,8 @@ import { MessageInteraction } from '../MessageInteraction/MessageInteraction';
 import { PointResponseMessage } from '../PointResponseMessage/PointResponseMessage';
 import { hasPoints } from '../points/isPointResponse';
 import AllToolCalls from '../tools/AllToolCalls';
+import { MessageThinking } from './MessageThinking';
 import { MAX_THREAD_IMAGE_HEIGHT } from './threadDisplayConsts';
-
 export interface MessageProps {
     messageId: MessageId;
 }
@@ -113,6 +113,7 @@ export const MessageView = ({
 
     return (
         <ChatMessage role={role as Role} messageId={messageId}>
+            <MessageThinking messageId={messageId} />
             <MessageContent
                 messageId={messageId}
                 rawMode={rawMode}

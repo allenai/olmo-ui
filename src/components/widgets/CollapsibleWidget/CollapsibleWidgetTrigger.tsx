@@ -7,6 +7,7 @@ const collapsibleWidgetTriggerClassName = css({
     flexGrow: '1',
     justifyContent: 'space-between',
     gap: '3',
+    cursor: 'pointer',
 });
 
 interface CollapsibleWidgetTriggerProps extends AriaButtonProps {
