@@ -17,7 +17,7 @@ interface ThreadDisplayProps {
     streamingMessageId: string | null;
     isUpdatingMessageContent: boolean;
     selectedMessageId?: string | null;
-    showError?: boolean;
+    hasError?: boolean;
 }
 
 // same as ThreadDisplay, but children instead of props
@@ -235,10 +235,9 @@ export const ThreadDisplay = ({
     streamingMessageId,
     isUpdatingMessageContent,
     selectedMessageId,
-    showError = false,
+    hasError = false,
 }: ThreadDisplayProps) => {
-    const lastMessageId =
-        childMessageIds.length > 0 ? childMessageIds[childMessageIds.length - 1] : null;
+    const lastMessageId = childMessageIds.at(-1);
 
     return (
         <ThreadDisplayView
@@ -246,7 +245,7 @@ export const ThreadDisplay = ({
             streamingMessageId={streamingMessageId}
             isUpdatingMessageContent={isUpdatingMessageContent}
             selectedMessageId={selectedMessageId}>
-            {(childMessageIds.length > 0 || showError) && (
+            {(childMessageIds.length > 0 || hasError) && (
                 <Divider
                     sx={{
                         gridColumn: '2 / -1',
@@ -255,19 +254,14 @@ export const ThreadDisplay = ({
                     }}
                 />
             )}
-            {showError ? (
-                <Box sx={{ gridColumn: '2 / -1' }}>
-                    <ThreadError />
-                </Box>
-            ) : (
-                childMessageIds.map((messageId) => (
-                    <MessageView
-                        messageId={messageId}
-                        key={messageId}
-                        isLastMessageInThread={lastMessageId === messageId}
-                    />
-                ))
-            )}
+            {childMessageIds.map((messageId) => (
+                <MessageView
+                    messageId={messageId}
+                    key={messageId}
+                    isLastMessageInThread={lastMessageId === messageId}
+                />
+            ))}
+            {hasError && <ThreadError />}
         </ThreadDisplayView>
     );
 };

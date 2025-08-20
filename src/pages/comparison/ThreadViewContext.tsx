@@ -50,25 +50,30 @@ export const ThreadViewProvider = ({
                 return variables?.threadViewId === threadViewId;
             },
         },
+        // This is how to add types to output according to TKdodo
+        select: (mutation) => ({
+            status: mutation.state.status,
+            variables: mutation.state.variables as ThreadStreamMutationVariables | undefined,
+        }),
     });
 
-    // Derive RemoteState
     const remoteState = useMemo(() => {
         if (isActivelyStreaming) {
             return RemoteState.Loading;
         }
 
-        // Check for streaming errors or mutation errors
-        const latestThreadMutation = mutationStates[mutationStates.length - 1];
+        const latestThreadMutation = mutationStates.at(-1);
 
-        // Lint is wrong. `latestThreadMutation` is necessary here
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (streamingError || (latestThreadMutation && latestThreadMutation.status === 'error')) {
+        if (
+            streamingError ||
+            (latestThreadMutation?.variables?.thread?.id === threadId &&
+                latestThreadMutation.status === 'error')
+        ) {
             return RemoteState.Error;
         }
 
-        return RemoteState.Loaded; // Default to "loaded"
-    }, [isActivelyStreaming, streamingError, mutationStates]);
+        return RemoteState.Loaded;
+    }, [isActivelyStreaming, streamingError, mutationStates, threadId]);
 
     const value = {
         threadId,

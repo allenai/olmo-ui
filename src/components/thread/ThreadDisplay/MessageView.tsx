@@ -6,7 +6,6 @@ import { Label } from '@/api/Label';
 import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { RemoteState } from '@/contexts/util';
-import { ThreadError } from '@/pages/comparison/ThreadError';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 import { useSpanHighlighting } from '../attribution/highlighting/useSpanHighlighting';
@@ -127,8 +126,6 @@ export const MessageView = ({
                 ))}
             </ImageList>
             <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
-
-            {isLastMessageInThread && remoteState === RemoteState.Error && <ThreadError />}
 
             <MessageInteraction
                 role={role as Role}

@@ -46,6 +46,7 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         handleAttributionForChangingThread,
         abortPrompt,
         selectMessage,
+        clearAllStreamErrors,
     } = appContext.getState();
 
     if (params.id == null) {
@@ -57,6 +58,8 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         return null;
     }
 
+    // Clear stream errors only on fresh thread load
+    clearAllStreamErrors();
     // get the latest state of the selectedThread if we're changing to a different thread
     handleAttributionForChangingThread();
     // abort the current streaming prompt if there is any

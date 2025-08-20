@@ -5,6 +5,7 @@ import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { RemoteState } from '@/contexts/util';
 import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
 import { messageAttributionsSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -16,6 +17,7 @@ const ThreadDisplayContent = () => {
         threadId: selectedThreadRootId,
         streamingMessageId,
         isUpdatingMessageContent,
+        remoteState,
     } = useThreadView();
 
     const shouldShowAttributionHighlightDescription = useAppContext((state) => {
@@ -40,15 +42,16 @@ const ThreadDisplayContent = () => {
     const { data, error: _error } = useThread(selectedThreadRootId);
     // TODO handle errors: https://github.com/allenai/playground-issues-repo/issues/412
     const messages = data?.messages ?? [];
-    const childIds = messages.map((message) => message.id);
+    const childMessageIds = messages.map((message) => message.id);
 
     return (
         <ThreadDisplay
-            childMessageIds={childIds}
+            childMessageIds={childMessageIds}
             shouldShowAttributionHighlightDescription={shouldShowAttributionHighlightDescription}
             streamingMessageId={streamingMessageId ?? null}
             isUpdatingMessageContent={isUpdatingMessageContent ?? false}
             selectedMessageId={selectedMessageId}
+            hasError={remoteState === RemoteState.Error}
         />
     );
 };
