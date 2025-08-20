@@ -19,7 +19,7 @@ export const NewChatButton = (): ReactNode => {
                     paddingBlock: theme.spacing(2),
                     paddingInline: theme.spacing(2),
                     gap: theme.spacing(2),
-                    color: theme.color['off-white'].hex,
+                    color: theme.color['cream-100'].hex,
                     borderRadius: '9999px',
                     backgroundColor: alpha(theme.palette.common.white, 0.1),
 

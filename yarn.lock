@@ -12,37 +12,31 @@
   resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-2.0.3.tgz#705cab3be01fbea16d56dc457e237c6976eac4ad"
   integrity sha512-KguMr+/BTWWHOsNlnPNMkvddOSEV/zQq9/tN3Xl+edsN3CrUPfCCt0m0vZezi8RzSjTCAJ2E7CwoZiIbQwWJAw==
 
-"@allenai/varnish-panda-runtime@^1.2.4-alpha.0":
-  version "1.2.4-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.2.4-alpha.0.tgz#d1ae4709011255a8bcf98752b8a070b80533fa40"
-  integrity sha512-Yu37AQlgX2AptdlCTb/y0vfJf7oo2gHdkPdAQ79IgMdMDkybfPoOH135lKjMk/H+692ZCbzbm6zGztiMPtkDng==
+"@allenai/varnish-panda-runtime@^1.2.13-alpha.3":
+  version "1.2.13-alpha.3"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.2.13-alpha.3.tgz#3428d99d37384c5497cd1b35914095e23f3180c8"
+  integrity sha512-6tYSfvKa6psI8AFiok4rOf5Sp/VbqTBs/mQV1801A627uaJo0XboSdXgUX51moaMjcbrIWXgCnVrfk54rVpGSA==
 
-"@allenai/varnish-theme@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-2.0.6.tgz#44763f3254a8079b17275dd6225f20f8406943d8"
-  integrity sha512-j4t4xV3APCOb+6Hw+ETd468DJfKKz/mep/MAnJzV4FFfn0bg6sozLylcMc+FfUgqE+pFAy3uvSwW+NDKVOmZPw==
+"@allenai/varnish-theme@^3.0.7-alpha.2":
+  version "3.0.7-alpha.2"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.7-alpha.2.tgz#0e6f755e70f7a8af6e290412225a97f2a94ce25c"
+  integrity sha512-kAP/49iYX8A6u7wSFCZC4ou+9av7LtV8SZuvW++TdnZa6E+c4Us620k+MWOod5hW5fmpJED15xUSADvKaStJvw==
 
-"@allenai/varnish-theme@^3.0.6-alpha.0":
-  version "3.0.6-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.6-alpha.0.tgz#4cd69f6650f9c93624b59ba08364e5fd9710ce03"
-  integrity sha512-KRnl6SV/UzOIOKqqbzk7Gtosgh2dw9VLtlzZE6WCYVe6oqhupi6apB5+gMFkHVnXJKJJV5yL7wWbHlYyblId3A==
-
-"@allenai/varnish-ui@^1.2.12-alpha.0":
-  version "1.2.12-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-ui/-/varnish-ui-1.2.12-alpha.0.tgz#afc4a0e7cc0701c5eb0072c7d1e12d6701f835cd"
-  integrity sha512-xuI0MNDovkRYgrq0+F/CCaBNZSh1AcOvX3H49MjNP4E7/hlu40qwqEHmMIJYXsOlp8OCEJpKkIIMVQ1j5S8qJQ==
+"@allenai/varnish-ui@^1.2.13-alpha.3":
+  version "1.2.13-alpha.3"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-ui/-/varnish-ui-1.2.13-alpha.3.tgz#d206f749818d1dd349fbd22eadc56e6f4b07ede1"
+  integrity sha512-HKOJix5ClvlMVcpcpV7W09wqbpTY8qsysEdbQY5vBfnN2SQVM3mc92/TAylUEwfE0j1z7EzPRj5hL3FyGkheIg==
   dependencies:
-    "@allenai/varnish-theme" "^3.0.6-alpha.0"
-    lucide-react "^0.468.0"
+    "@allenai/varnish-theme" "^3.0.7-alpha.2"
     react-markdown "^10.1.0"
     react-syntax-highlighter "^15.6.1"
 
-"@allenai/varnish2@2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-2.0.6.tgz#b50d1ab77bffd906b223faf4e238f8391b705fa6"
-  integrity sha512-iAX731heUP2nYAASjXpwCBX83WQC0529wP3TX8Ke+hvdT5czZtHS2/Gvk4H+XvmtC2WzMCoc8Wdq8J0RX92SNQ==
+"@allenai/varnish2@^3.0.7-alpha.2":
+  version "3.0.7-alpha.2"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-3.0.7-alpha.2.tgz#66c49ee6fb1f07837468a54100873624ff0e1d50"
+  integrity sha512-NWW9Run8QOP+kNaKvvW7I7cI7Gh5A9Jspx4/aTlVVSPGFM27FX+6jWkM2ktW0Myy1P2i3MBP+onL1jmViAQu4g==
   dependencies:
-    "@allenai/varnish-theme" "^2.0.6"
+    "@allenai/varnish-theme" "^3.0.7-alpha.2"
     react-markdown "^9.0.1"
     remark-gfm "^4.0.0"
 
@@ -10684,11 +10678,6 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
-
-lucide-react@^0.468.0:
-  version "0.468.0"
-  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.468.0.tgz#830c1bfd905575ddd23b832baa420c87db166910"
-  integrity sha512-6koYRhnM2N0GGZIdXzSeiNwguv1gt/FAjZOiPl76roBi3xKEXa4WmfpxgQwTTL4KipXjefrnf3oV4IsYhi4JFA==
 
 lz-string@^1.5.0:
   version "1.5.0"

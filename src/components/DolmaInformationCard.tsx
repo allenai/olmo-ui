@@ -70,7 +70,7 @@ export const DolmaInformationCard = ({
                             },
                             '&:focus-visible': {
                                 backgroundColor: (theme) => theme.color['green-20'].hex,
-                                border: (theme) => `1px solid ${theme.color['dark-teal'].hex}`,
+                                border: (theme) => `1px solid ${theme.color['dark-teal-100'].hex}`,
                             },
                         }}>
                         {buttonText}

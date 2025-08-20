@@ -32,19 +32,19 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                     color: (theme) => theme.palette.text.drawer.primary,
                     '&.Mui-selected': {
                         backgroundColor: (theme) => theme.palette.secondary.light,
-                        color: (theme) => theme.color['dark-teal'].hex,
+                        color: (theme) => theme.color['dark-teal-100'].hex,
                         fontWeight: 'normal',
 
                         '&:hover': {
                             backgroundColor: (theme) => theme.palette.secondary.light,
-                            color: (theme) => theme.color['dark-teal'].hex,
+                            color: (theme) => theme.color['dark-teal-100'].hex,
                             fontWeight: 'normal',
                         },
                     },
 
                     '&.Mui-focusVisible': (theme) => ({
                         backgroundColor: theme.palette.secondary.light,
-                        color: theme.color['dark-teal'].hex,
+                        color: theme.color['dark-teal-100'].hex,
                     }),
                 }}
                 component={Link}
@@ -70,7 +70,7 @@ export const ThreadLink = ({ content, created, id }: ThreadLinkProps) => {
                         right: '6px',
                         top: '50%',
                         transform: 'translateY(-45%)', // visually center
-                        color: theme.color['dark-teal'].hex,
+                        color: theme.color['dark-teal-100'].hex,
                         width: theme.spacing(1.5),
                         height: theme.spacing(1.5),
                     })}

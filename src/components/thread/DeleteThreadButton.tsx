@@ -93,7 +93,7 @@ export const DeleteThreadIconButton = ({ threadId }: { threadId: string }) => {
             <IconButtonWithTooltip
                 sx={(theme) => ({
                     color: isSelectedThread
-                        ? theme.color['dark-teal'].hex
+                        ? theme.color['dark-teal-100'].hex
                         : theme.palette.text.drawer.primary,
                     opacity: isSelectedThread ? 1 : 0,
                     transition: '300ms opacity ease-in-out',
