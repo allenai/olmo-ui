@@ -1,7 +1,7 @@
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { useThread } from '@/api/playgroundApi/thread';
 
-import { ToolCallWidget } from './ToolCallWidget';
+import { ToolCallWidget } from './ToolCallWidget/ToolCallWidget';
 
 const useToolCallAnswer = (threadId: string, toolCallId: string): string | undefined => {
     const { data: lastMessageWithMatchingToolCall } = useThread(threadId, (thread) =>

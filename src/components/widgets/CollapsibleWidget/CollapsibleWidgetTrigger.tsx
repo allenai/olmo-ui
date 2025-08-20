@@ -1,14 +1,7 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
 import { Button as AriaButton, ButtonProps as AriaButtonProps } from 'react-aria-components';
 
-const collapsibleWidgetTriggerClassName = css({
-    display: 'flex',
-    flexGrow: '1',
-    justifyContent: 'space-between',
-    gap: '3',
-    cursor: 'pointer',
-});
+import { collapsibleWidgetRecipe } from './collapsibleWidget.styles';
 
 interface CollapsibleWidgetTriggerProps extends AriaButtonProps {
     className?: string;
@@ -19,11 +12,11 @@ const CollapsibleWidgetTrigger = ({
     children,
     ...rest
 }: CollapsibleWidgetTriggerProps) => {
+    const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
+    const classNames = collapsibleWidgetRecipe(variantProps);
+
     return (
-        <AriaButton
-            slot="trigger"
-            className={cx(collapsibleWidgetTriggerClassName, className)}
-            {...rest}>
+        <AriaButton slot="trigger" className={cx(classNames.trigger, className)} {...localProps}>
             {children}
         </AriaButton>
     );

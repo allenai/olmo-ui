@@ -1,16 +1,13 @@
 import {
-    Box,
     Breakpoint,
     Card,
     CardProps,
     Container,
     Grid,
-    IconButton,
-    Snackbar,
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -70,55 +67,6 @@ export const BaseCard = ({ children, ...cardProps }: CardProps) => (
         {children}
     </Card>
 );
-
-interface CopyToClipboardButtonProps {
-    text?: string;
-    autoHideDuration?: number;
-    buttonContent?: React.ReactNode;
-    ariaLabel?: string;
-    children: React.ReactNode;
-}
-
-export function CopyToClipboardButton({
-    text,
-    autoHideDuration,
-    buttonContent,
-    ariaLabel,
-    children,
-}: CopyToClipboardButtonProps) {
-    const [open, setOpen] = useState<boolean>(false);
-    const value = text || JSON.stringify(children);
-    const handleClick = () => {
-        setOpen(true);
-        navigator.clipboard.writeText(value);
-    };
-
-    return (
-        <Box sx={{ display: 'inline-flex', whiteSpace: 'nowrap', alignItems: 'center' }}>
-            <IconButton
-                size="small"
-                aria-label={ariaLabel || 'Copy'}
-                onClick={handleClick}
-                sx={{
-                    padding: '0',
-                    verticalAlign: 'top',
-                    color: (theme) => theme.color.N8.hex,
-                    opacity: 0.66,
-                }}>
-                {buttonContent || 'Copy'}
-            </IconButton>
-            <Snackbar
-                open={open}
-                onClose={() => {
-                    setOpen(false);
-                }}
-                autoHideDuration={autoHideDuration || 2500}
-                message={`Copied '${value}' to clipboard`}
-            />
-            {children}
-        </Box>
-    );
-}
 
 export const useIsOnlyBreakpoint = (breakpoint: Breakpoint): boolean => {
     const theme = useTheme();

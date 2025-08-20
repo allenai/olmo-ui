@@ -2,7 +2,7 @@ import { sva } from '@allenai/varnish-panda-runtime/css';
 import { type RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 
 const collapsibleWidgetRecipe = sva({
-    slots: ['container', 'heading', 'panel', 'panelContent', 'footer'],
+    slots: ['container', 'heading', 'panel', 'panelContent', 'footer', 'trigger'],
     base: {
         container: {
             // This was originally display: grid
@@ -17,13 +17,12 @@ const collapsibleWidgetRecipe = sva({
             color: 'text',
             borderRadius: 'sm',
             overflow: 'hidden',
+            '--padding-block': 'spacing.3',
+            '--padding-inline': 'spacing.4',
         },
         heading: {
             display: 'flex',
             backgroundColor: 'cream.4', // wrong name, right color
-            paddingInline: '4',
-            paddingBlock: '3',
-            // contained1
         },
         panel: {
             display: 'flex',
@@ -47,8 +46,29 @@ const collapsibleWidgetRecipe = sva({
             },
         },
         panelContent: {
-            paddingInline: '4',
-            paddingBlock: '3',
+            paddingInline: 'var(--padding-inline)',
+            paddingBlock: 'var(--padding-block)',
+        },
+        trigger: {
+            display: 'flex',
+            flexGrow: '1',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '3',
+            paddingInline: 'var(--padding-inline)',
+            paddingBlock: 'var(--padding-block)',
+
+            cursor: 'pointer',
+
+            _focusVisible: {
+                '--outline-width': '1px',
+                outlineWidth: 'var(--outline-width)',
+                outlineStyle: 'solid',
+                outlineColor: 'accent.secondary',
+                // The outline won't show since it's fully contained by its parent
+                // Setting the offset to the same as the outline makes it show
+                outlineOffset: '[calc(var(--outline-width) * -1)]',
+            },
         },
     },
 });
