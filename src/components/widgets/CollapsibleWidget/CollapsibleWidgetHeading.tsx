@@ -1,6 +1,7 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
+import { HTMLAttributes, PropsWithChildren, ReactNode, useContext } from 'react';
 import {
+    DisclosureStateContext,
     Heading as AriaHeading,
     type HeadingProps as AriaHeadingProps,
 } from 'react-aria-components';
@@ -44,10 +45,23 @@ const CollapsibleWidgetTitle = ({
     );
 };
 
+const createTriggerAriaLabel = (
+    isExpanded: boolean,
+    ariaLabel: string | undefined
+): string | undefined => {
+    const prefix = isExpanded ? 'Collapse' : 'Expand';
+    if (ariaLabel == null) {
+        return undefined;
+    }
+
+    return `${prefix} ${ariaLabel}`;
+};
+
 interface CollapsibleWidgetHeadingProps extends CollapsibleWidgetHeadingBaseProps {
     triggerClassName?: string;
     startAdornment?: ReactNode;
     endAdornment?: ReactNode;
+    triggerAriaDescribedBy?: string;
 }
 
 const CollapsibleWidgetHeading = ({
@@ -57,13 +71,20 @@ const CollapsibleWidgetHeading = ({
     endAdornment,
     children,
     'aria-label': ariaLabel,
+    triggerAriaDescribedBy,
     ...rest
 }: CollapsibleWidgetHeadingProps) => {
+    const disclosureState = useContext(DisclosureStateContext);
+    const isExpanded = disclosureState?.isExpanded ?? false;
+
+    const triggerAriaLabel = createTriggerAriaLabel(isExpanded, ariaLabel);
+
     return (
         <CollapsibleWidgetHeadingBase className={className} aria-label={ariaLabel} {...rest}>
             <CollapsibleWidgetTrigger
                 className={triggerClassName}
-                aria-label={`Expand ${ariaLabel}`}>
+                aria-label={triggerAriaLabel}
+                aria-describedby={triggerAriaDescribedBy}>
                 {startAdornment}
                 <CollapsibleWidgetTitle>{children}</CollapsibleWidgetTitle>
                 {endAdornment}

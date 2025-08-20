@@ -1,6 +1,6 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useId } from 'react';
 
 import {
     CollapsibleWidgetBase,
@@ -47,6 +47,9 @@ const ThinkingWidget = ({
     ...rest
 }: ThinkingWidgetProps) => {
     const thinkingWidgetClassNames = thinkingWidgetRecipe();
+
+    const footerId = useId();
+
     return (
         <CollapsibleWidgetBase
             className={cx(thinkingWidgetClassNames.container, className)}
@@ -56,7 +59,8 @@ const ThinkingWidget = ({
                     <>
                         <CollapsibleWidgetHeading
                             startAdornment={<ThinkingIcon size="small" />}
-                            endAdornment={<StatusIndicator />}>
+                            endAdornment={<StatusIndicator />}
+                            triggerAriaDescribedBy={footerId}>
                             {thinking ? 'Thinking' : 'Thoughts'}
                         </CollapsibleWidgetHeading>
                         <CollapsibleWidgetPanel>
@@ -68,7 +72,7 @@ const ThinkingWidget = ({
                         </CollapsibleWidgetPanel>
                         <CollapsibleWidgetFooter bordered>
                             <CollapsibleWidgetTrigger className={thinkingWidgetClassNames.footer}>
-                                <FooterContent isExpanded={isExpanded} />
+                                <FooterContent isExpanded={isExpanded} id={footerId} />
                                 <ExpandArrow />
                             </CollapsibleWidgetTrigger>
                         </CollapsibleWidgetFooter>
@@ -79,16 +83,21 @@ const ThinkingWidget = ({
     );
 };
 
-const FooterContent = ({ isExpanded }: { isExpanded: boolean }) => {
+interface FooterContentProps {
+    isExpanded: boolean;
+    id: string;
+}
+
+const FooterContent = ({ isExpanded, id }: FooterContentProps) => {
     return (
-        <span>
+        <span id={id}>
             {isExpanded ? 'Collapse to hide model thoughts' : 'Expand to view model thoughts'}
         </span>
     );
 };
 
 const StatusIndicator = () => {
-    return <span>•••</span>;
+    return <span aria-hidden>•••</span>;
 };
 
 export { ThinkingWidget };

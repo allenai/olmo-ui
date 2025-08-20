@@ -26,7 +26,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
         <CollapsibleWidgetBase defaultExpanded>
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
-                startAdornment={<DataObject titleAccess="Tool call" />}
+                startAdornment={<DataObject />}
                 endAdornment={
                     <IconButton tabIndex={-1} role="presentation">
                         <ExpandArrow />
