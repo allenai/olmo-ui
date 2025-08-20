@@ -25,21 +25,20 @@ export const ToolCallAnswer = ({ children = '' }: ToolCallAnswerProps) => {
     };
 
     return (
-        <>
-            <CollapsibleWidgetPanelContent className={hstack({ justifyContent: 'space-between' })}>
-                <ThemeSyntaxHighlighter
-                    customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
-                    {children}
-                </ThemeSyntaxHighlighter>
-
-                <IconButtonWithTooltip
-                    label="Copy tool call answer"
-                    onClick={copyAnswer}
-                    color="default"
-                    placement="top">
-                    <ContentCopy />
-                </IconButtonWithTooltip>
-            </CollapsibleWidgetPanelContent>
-        </>
+        <CollapsibleWidgetPanelContent
+            contrast="low"
+            className={hstack({ justifyContent: 'space-between' })}>
+            <ThemeSyntaxHighlighter
+                customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
+                {children}
+            </ThemeSyntaxHighlighter>
+            <IconButtonWithTooltip
+                label="Copy tool call answer"
+                onClick={copyAnswer}
+                color="default"
+                placement="top">
+                <ContentCopy />
+            </IconButtonWithTooltip>
+        </CollapsibleWidgetPanelContent>
     );
 };

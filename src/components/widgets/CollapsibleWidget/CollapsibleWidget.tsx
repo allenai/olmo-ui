@@ -1,12 +1,18 @@
 import { type ReactNode } from 'react';
 
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 import { CollapsibleWidgetBase, type CollapsibleWidgetBaseProps } from './CollapsibleWidgetBase';
 import { CollapsibleWidgetFooter } from './CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from './CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel, CollapsibleWidgetPanelContent } from './CollapsibleWidgetPanel';
 import { ExpandArrow } from './ExpandArrow';
 
-interface CollapsibleWidgetProps extends CollapsibleWidgetBaseProps {
+interface CollapsibleWidgetProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        CollapsibleWidgetBaseProps {
     children?: ReactNode;
     heading: ReactNode;
     hasArrow?: boolean;
@@ -29,13 +35,14 @@ const CollapsibleWidget = ({
     footerClassName,
     ...rest
 }: CollapsibleWidgetProps) => {
+    const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
     const arrow = hasArrow ? <ExpandArrow /> : null;
     return (
-        <CollapsibleWidgetBase {...rest}>
+        <CollapsibleWidgetBase {...localProps}>
             <CollapsibleWidgetHeading endAdornment={arrow} className={headingClassName}>
                 {heading}
             </CollapsibleWidgetHeading>
-            <CollapsibleWidgetPanel className={panelClassName}>
+            <CollapsibleWidgetPanel className={panelClassName} {...variantProps}>
                 <CollapsibleWidgetPanelContent className={contentClassName}>
                     {children}
                 </CollapsibleWidgetPanelContent>

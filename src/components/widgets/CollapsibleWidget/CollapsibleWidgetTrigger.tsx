@@ -1,9 +1,14 @@
 import { cx } from '@allenai/varnish-ui';
-import { Button as AriaButton, ButtonProps as AriaButtonProps } from 'react-aria-components';
+import { Button as AriaButton, type ButtonProps as AriaButtonProps } from 'react-aria-components';
 
-import { collapsibleWidgetRecipe } from './collapsibleWidget.styles';
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 
-interface CollapsibleWidgetTriggerProps extends AriaButtonProps {
+interface CollapsibleWidgetTriggerProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        AriaButtonProps {
     className?: string;
 }
 

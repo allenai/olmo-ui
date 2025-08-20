@@ -6,8 +6,6 @@ import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/Co
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
-import { FadeOverflowContent } from '@/components/widgets/FadeOverflowContent';
-import { css } from '@/styled-system/css';
 
 import { mapToolCallArgs } from '../mapToolCallArgs';
 import { ToolCallAnswer } from './ToolCallAnswer';
@@ -28,17 +26,15 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
                 endAdornment={
-                    <IconButton tabIndex={-1} component="span">
+                    <IconButton tabIndex={-1} component="span" size="small">
                         <ExpandArrow />
                     </IconButton>
                 }>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
-                <FadeOverflowContent className={css({ width: '[100%]' })}>
-                    <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                    <ToolCallAnswer>{answer}</ToolCallAnswer>
-                </FadeOverflowContent>
+                <ToolCallParameters>{stringArgs}</ToolCallParameters>
+                <ToolCallAnswer>{answer}</ToolCallAnswer>
             </CollapsibleWidgetPanel>
         </CollapsibleWidgetBase>
     );

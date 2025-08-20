@@ -5,9 +5,14 @@ import {
     DisclosurePanelProps as AriaDisclosurePanelProps,
 } from 'react-aria-components';
 
-import { collapsibleWidgetRecipe } from './collapsibleWidget.styles';
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 
-interface CollapsibleWidgetPanelContentProps extends HTMLAttributes<HTMLDivElement> {
+interface CollapsibleWidgetPanelContentProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
@@ -25,7 +30,9 @@ const CollapsibleWidgetPanelContent = ({
     );
 };
 
-interface CollapsibleWidgetPanelProps extends AriaDisclosurePanelProps {
+interface CollapsibleWidgetPanelProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        AriaDisclosurePanelProps {
     className?: string;
 }
 

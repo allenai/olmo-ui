@@ -6,10 +6,7 @@ const fadeOverflowRecipe = sva({
     slots: ['container', 'content', 'fade', 'anchor'],
     base: {
         container: {
-            backgroundColor: {
-                base: 'cream.100',
-                _dark: 'teal.100',
-            },
+            backgroundColor: 'var(--background-color, var(--variant-background-color))',
             color: 'text',
             position: 'relative',
             overflowY: 'auto',
@@ -20,16 +17,12 @@ const fadeOverflowRecipe = sva({
             position: 'sticky',
             bottom: '[0]',
             // transition: '[opacity 300ms ease-in-out]',
-            color: {
-                base: 'cream.100',
-                _dark: 'teal.100',
-            },
             _after: {
                 content: '""',
                 display: 'block',
                 backgroundGradient: 'to-t',
-                gradientFrom: '[currentColor]',
-                gradientTo: '[currentColor/0]',
+                gradientFrom: 'var(--background-color, var(--variant-background-color))',
+                gradientTo: 'transparent',
                 height: '[80px]',
                 position: 'absolute',
                 bottom: '[0]',
@@ -51,9 +44,27 @@ const fadeOverflowRecipe = sva({
             },
             false: {}, // default
         },
+        contrast: {
+            low: {
+                container: {
+                    '--variant-background-color': 'colors.elements.overlay.content-contrast-low',
+                },
+            },
+            medium: {
+                container: {
+                    '--variant-background-color': '{colors.elements.overlay.content-contrast-med}',
+                },
+            },
+            high: {
+                container: {
+                    '--variant-background-color': 'colors.elements.overlay.content-contrast-high',
+                },
+            },
+        },
     },
     defaultVariants: {
         isVisible: false,
+        contrast: 'high',
     },
 });
 

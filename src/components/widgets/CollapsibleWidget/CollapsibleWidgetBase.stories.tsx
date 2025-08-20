@@ -33,7 +33,7 @@ export const Default: Story = {
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
                     </CollapsibleWidgetPanelContent>
                 </CollapsibleWidgetPanel>
-                <CollapsibleWidgetFooter bordered={true}>Footer</CollapsibleWidgetFooter>
+                <CollapsibleWidgetFooter bordered>Footer</CollapsibleWidgetFooter>
             </>
         ),
     },
@@ -58,7 +58,7 @@ export const FooterInsidePanel: Story = {
     },
 };
 
-export const AlternatingFooters: Story = {
+export const MultiplePanelContent: Story = {
     args: {
         defaultExpanded: true,
         children: (
@@ -70,10 +70,14 @@ export const AlternatingFooters: Story = {
                     <CollapsibleWidgetPanelContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
                     </CollapsibleWidgetPanelContent>
-                    <CollapsibleWidgetFooter>Top</CollapsibleWidgetFooter>
-                    <CollapsibleWidgetFooter variant="alternate">Middle</CollapsibleWidgetFooter>
-                    <CollapsibleWidgetFooter>Footer bottom</CollapsibleWidgetFooter>
+                    <CollapsibleWidgetPanelContent contrast="high">
+                        Top
+                    </CollapsibleWidgetPanelContent>
+                    <CollapsibleWidgetPanelContent contrast="low">
+                        Middle
+                    </CollapsibleWidgetPanelContent>
                 </CollapsibleWidgetPanel>
+                <CollapsibleWidgetFooter>Footer bottom</CollapsibleWidgetFooter>
             </>
         ),
     },

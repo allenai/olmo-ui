@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { ContentCopy } from '@mui/icons-material';
 
 import { useAppContext } from '@/AppContext';
@@ -5,7 +6,6 @@ import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
 import { CollapsibleWidgetPanelContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
-import { css } from '@/styled-system/css';
 
 interface ToolCallParametersProps {
     // Not using the optional ? here ensures that children are passed
@@ -26,7 +26,7 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
     };
 
     return (
-        <CollapsibleWidgetPanelContent>
+        <CollapsibleWidgetPanelContent contrast="medium">
             <div className={css({ position: 'relative' })}>
                 <IconButtonWithTooltip
                     label="Copy tool call parameters"

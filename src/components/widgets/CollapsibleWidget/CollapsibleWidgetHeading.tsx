@@ -1,12 +1,15 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import { HTMLAttributes, PropsWithChildren, ReactNode, useContext } from 'react';
+import { type HTMLAttributes, type PropsWithChildren, type ReactNode, useContext } from 'react';
 import {
     DisclosureStateContext,
     Heading as AriaHeading,
     type HeadingProps as AriaHeadingProps,
 } from 'react-aria-components';
 
-import { collapsibleWidgetRecipe } from './collapsibleWidget.styles';
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 import { CollapsibleWidgetTrigger } from './CollapsibleWidgetTrigger';
 
 const titleAlignClassName = css({
@@ -14,7 +17,10 @@ const titleAlignClassName = css({
     textAlign: 'left',
 });
 
-interface CollapsibleWidgetHeadingBaseProps extends AriaHeadingProps, PropsWithChildren {
+interface CollapsibleWidgetHeadingBaseProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        AriaHeadingProps,
+        PropsWithChildren {
     className?: string;
 }
 
