@@ -61,7 +61,13 @@ const collapsibleWidgetRecipe = sva({
             cursor: 'pointer',
 
             '&[data-focus-visible="true"]': {
-                outline: '1px solid white',
+                '--outline-width': '1px',
+                outlineWidth: 'var(--outline-width)',
+                outlineStyle: 'solid',
+                outlineColor: 'accent.secondary',
+                // The outline won't show since it's fully contained by its parent
+                // Setting the offset to the same as the outline makes it show
+                outlineOffset: '[calc(var(--outline-width) * -1)]',
             },
         },
     },
