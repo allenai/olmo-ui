@@ -33,8 +33,8 @@ const ThemeModeSelectMenuItem = ({
     onClick,
     ...menuItemProps
 }: ThemeModeSelectMenuItemProps): ReactNode => {
-    const [colorMode, setColorMode] = useColorMode();
-    const isSelected = mode === colorMode;
+    const { colorPreference, setColorPreference } = useColorMode();
+    const isSelected = mode === colorPreference;
 
     const sx: SxProps<Theme> = (theme) => ({
         '--theme-select-text-color': theme.palette.common.white,
@@ -74,7 +74,7 @@ const ThemeModeSelectMenuItem = ({
             {...menuItemProps}
             onClick={(e) => {
                 analyticsClient.trackColorModeChange({ colorMode: mode });
-                setColorMode(mode);
+                setColorPreference(mode);
                 onClick?.(e);
             }}>
             <Box flexGrow={1}>{title}</Box>
@@ -99,7 +99,7 @@ type ThemeModeInputProps = InputBaseProps & {
 };
 
 export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptive?: boolean }) => {
-    const [colorMode] = useColorMode();
+    const { colorPreference } = useColorMode();
     const themeOptions: Array<{
         title: string;
         mode: ColorPreference;
@@ -119,7 +119,7 @@ export const ThemeModeSelect = ({ themeModeAdaptive = true }: { themeModeAdaptiv
     ];
 
     const selectedThemeMode = (
-        themeOptions.find((option) => option.mode === colorMode) || themeOptions[0]
+        themeOptions.find((option) => option.mode === colorPreference) || themeOptions[0]
     ).mode;
 
     return (

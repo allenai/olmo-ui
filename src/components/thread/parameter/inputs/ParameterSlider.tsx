@@ -47,7 +47,7 @@ export const ParameterSlider = ({
         _setValue(initialValue);
     }, [initialValue]);
 
-    const [colorMode] = useColorMode();
+    const { colorMode } = useColorMode();
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
