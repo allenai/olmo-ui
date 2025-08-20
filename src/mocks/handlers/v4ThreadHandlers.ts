@@ -331,8 +331,7 @@ export const v4ThreadHandlers = [
                     controller.enqueue(encoder.encode(formatMessage(response.at(-1))));
                 } else {
                     for (const message of response) {
-                        const delayTime = process.env.CI ? undefined : 25;
-                        await delay(delayTime);
+                        await delay();
                         controller.enqueue(encoder.encode(formatMessage(message)));
                     }
                 }
