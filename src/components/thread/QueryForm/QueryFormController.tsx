@@ -176,6 +176,9 @@ export const QueryFormController = ({
                                 startAdornment={
                                     <>
                                         <AudioInputButton
+                                            onTranscriptionBegin={() => {
+                                                setPlaceholderValue('Transcribing...');
+                                            }}
                                             onRecordingBegin={() => {
                                                 setPlaceholderValue('Recording...');
                                             }}
