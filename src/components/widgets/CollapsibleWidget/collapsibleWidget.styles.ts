@@ -60,7 +60,7 @@ const collapsibleWidgetRecipe = sva({
 
             cursor: 'pointer',
 
-            '&[data-focus-visible="true"]': {
+            _focusVisible: {
                 '--outline-width': '1px',
                 outlineWidth: 'var(--outline-width)',
                 outlineStyle: 'solid',
