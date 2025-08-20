@@ -4,7 +4,7 @@ import { MouseEventHandler } from 'react';
 
 import { StyledTooltip, type StyledTooltipProps } from './StyledTooltip';
 
-type IconButtonWithTooltipProps = Pick<IconButtonOwnProps, 'color' | 'disabled' | 'edge'> &
+type IconButtonWithTooltipProps = Pick<IconButtonOwnProps, 'color' | 'disabled'> &
     Pick<StyledTooltipProps, 'children' | 'arrow' | 'placement' | 'desktopPlacement'> & {
         label: string;
         sx?: SxProps<Theme>;
