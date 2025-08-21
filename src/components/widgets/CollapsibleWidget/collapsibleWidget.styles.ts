@@ -54,7 +54,7 @@ const collapsibleWidgetRecipe = sva({
         },
         trigger: {
             display: 'flex',
-            flexGrow: '1',
+            width: '[100%]',
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: '3',
