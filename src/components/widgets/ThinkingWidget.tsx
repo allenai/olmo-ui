@@ -1,6 +1,7 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { cx } from '@allenai/varnish-ui';
-import { PropsWithChildren, useId } from 'react';
+import { PropsWithChildren, useContext, useId } from 'react';
+import { DisclosureStateContext } from 'react-aria-components';
 
 import {
     CollapsibleWidgetBase,
@@ -45,48 +46,41 @@ const ThinkingWidget = ({
     ...rest
 }: ThinkingWidgetProps) => {
     const thinkingWidgetClassNames = thinkingWidgetRecipe();
-
     const footerId = useId();
 
     return (
         <CollapsibleWidgetBase
             className={cx(thinkingWidgetClassNames.container, className)}
             {...rest}>
-            {({ isExpanded }) => {
-                return (
-                    <>
-                        <CollapsibleWidgetHeading
-                            startAdornment={<ThinkingIcon size="small" />}
-                            endAdornment={<StatusIndicator />}
-                            triggerAriaDescribedBy={footerId}>
-                            {thinking ? 'Thinking' : 'Thoughts'}
-                        </CollapsibleWidgetHeading>
-                        <CollapsibleWidgetPanel>
-                            <FadeOverflowContent className={contentClassName}>
-                                <CollapsibleWidgetContent contrast="off">
-                                    {children}
-                                </CollapsibleWidgetContent>
-                            </FadeOverflowContent>
-                        </CollapsibleWidgetPanel>
-                        <CollapsibleWidgetFooterBase bordered>
-                            <CollapsibleWidgetTrigger>
-                                <FooterContent isExpanded={isExpanded} id={footerId} />
-                                <ExpandArrow />
-                            </CollapsibleWidgetTrigger>
-                        </CollapsibleWidgetFooterBase>
-                    </>
-                );
-            }}
+            <CollapsibleWidgetHeading
+                startAdornment={<ThinkingIcon size="small" />}
+                endAdornment={<StatusIndicator />}
+                triggerAriaDescribedBy={footerId}>
+                {thinking ? 'Thinking' : 'Thoughts'}
+            </CollapsibleWidgetHeading>
+            <CollapsibleWidgetPanel>
+                <FadeOverflowContent className={contentClassName}>
+                    <CollapsibleWidgetContent contrast="off">{children}</CollapsibleWidgetContent>
+                </FadeOverflowContent>
+            </CollapsibleWidgetPanel>
+            <CollapsibleWidgetFooterBase bordered>
+                <CollapsibleWidgetTrigger>
+                    <FooterContent id={footerId} />
+                    <ExpandArrow />
+                </CollapsibleWidgetTrigger>
+            </CollapsibleWidgetFooterBase>
         </CollapsibleWidgetBase>
     );
 };
 
 interface FooterContentProps {
-    isExpanded: boolean;
     id: string;
 }
 
-const FooterContent = ({ isExpanded, id }: FooterContentProps) => {
+const FooterContent = ({ id }: FooterContentProps) => {
+    const disclosureState = useContext(DisclosureStateContext);
+    const isExpanded = disclosureState?.isExpanded ?? false;
+
     return (
         <span id={id}>
             {isExpanded ? 'Collapse to hide model thoughts' : 'Expand to view model thoughts'}
