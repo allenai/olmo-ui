@@ -12,10 +12,9 @@
   resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-2.0.3.tgz#705cab3be01fbea16d56dc457e237c6976eac4ad"
   integrity sha512-KguMr+/BTWWHOsNlnPNMkvddOSEV/zQq9/tN3Xl+edsN3CrUPfCCt0m0vZezi8RzSjTCAJ2E7CwoZiIbQwWJAw==
 
-"@allenai/varnish-panda-runtime@^1.2.4-alpha.0":
-  version "1.2.4-alpha.0"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.2.4-alpha.0.tgz#d1ae4709011255a8bcf98752b8a070b80533fa40"
-  integrity sha512-Yu37AQlgX2AptdlCTb/y0vfJf7oo2gHdkPdAQ79IgMdMDkybfPoOH135lKjMk/H+692ZCbzbm6zGztiMPtkDng==
+"@allenai/varnish-panda-runtime@link:./styled-system":
+  version "0.0.0"
+  uid ""
 
 "@allenai/varnish-theme@^2.0.6":
   version "2.0.6"

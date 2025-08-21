@@ -20,6 +20,7 @@ services:
     volumes:
       - ./src:/ui/src
       - ./public:/ui/public
+      - ./styled-system/:/ui/styled-system
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - LLMX_API_URL

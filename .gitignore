@@ -27,4 +27,6 @@ e2e/.auth/
 *storybook.log
 
 # Pandacss
-styled-system
+# Ignore the generated files, but track the local package.json
+styled-system/*
+!styled-system/package.json

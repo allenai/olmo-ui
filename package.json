@@ -37,7 +37,7 @@
     "@types/react": "^18.2.55"
   },
   "dependencies": {
-    "@allenai/varnish-panda-runtime": "^1.2.4-alpha.0",
+    "@allenai/varnish-panda-runtime": "link:./styled-system",
     "@allenai/varnish-theme": "^2.0.6",
     "@allenai/varnish-ui": "^1.2.12-alpha.0",
     "@allenai/varnish2": "2.0.6",
