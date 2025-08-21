@@ -26,7 +26,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
                 endAdornment={
-                    <IconButton tabIndex={-1} component="span" size="small">
+                    <IconButton tabIndex={-1} component="span">
                         <ExpandArrow />
                     </IconButton>
                 }>
