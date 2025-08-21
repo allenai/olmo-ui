@@ -1,3 +1,4 @@
+import { LoadingSpinner } from '@allenai/varnish-ui';
 import { ContentCopy } from '@mui/icons-material';
 
 import { useAppContext } from '@/AppContext';
@@ -11,7 +12,7 @@ type ToolCallAnswerProps = {
     children: string | undefined;
 };
 
-export const ToolCallAnswer = ({ children = '' }: ToolCallAnswerProps) => {
+export const ToolCallAnswer = ({ children }: ToolCallAnswerProps) => {
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const copyAnswer = async () => {
         if (children) {
@@ -24,15 +25,22 @@ export const ToolCallAnswer = ({ children = '' }: ToolCallAnswerProps) => {
         }
     };
 
+    const isLoadingAnswer = children == null;
+
     return (
         <CollapsibleWidgetContent
             contrast="low"
             className={hstack({ justifyContent: 'space-between' })}>
-            <ThemeSyntaxHighlighter
-                customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
-                {children}
-            </ThemeSyntaxHighlighter>
+            {isLoadingAnswer ? (
+                <LoadingSpinner />
+            ) : (
+                <ThemeSyntaxHighlighter
+                    customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
+                    {children}
+                </ThemeSyntaxHighlighter>
+            )}
             <IconButtonWithTooltip
+                disabled={isLoadingAnswer}
                 label="Copy tool call answer"
                 onClick={copyAnswer}
                 color="default"
