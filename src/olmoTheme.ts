@@ -151,8 +151,8 @@ const darkPaletteFromTheme = (theme: Theme): Theme => {
                 reversed: background.paper,
                 default: '#032629',
                 drawer: {
-                    primary: background.reversed,
-                    secondary: background.reversed,
+                    primary: varnishTheme.color['dark-teal-100'].hex,
+                    secondary: varnishTheme.color['dark-teal-100'].hex,
                 },
                 code: background.reversed,
             },

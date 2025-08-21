@@ -106,7 +106,8 @@ export const DomainsTable = () => {
                                 '& .MuiPaginationItem-root': {
                                     '&.Mui-selected': {
                                         // these can be hard coded -- they work with dark and light
-                                        backgroundColor: (theme) => theme.color['dark-blue'].hex, // Background color for the selected item
+                                        backgroundColor: (theme) =>
+                                            theme.color['extra-dark-teal-100'].hex, // Background color for the selected item
                                         color: 'white', // Text color for the selected item
                                     },
                                 },
