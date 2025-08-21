@@ -5,9 +5,10 @@ import {
     type CollapsibleWidgetRecipeVariantProps,
 } from './collapsibleWidget.styles';
 import { CollapsibleWidgetBase, type CollapsibleWidgetBaseProps } from './CollapsibleWidgetBase';
+import { CollapsibleWidgetContent } from './CollapsibleWidgetContent';
 import { CollapsibleWidgetFooter } from './CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from './CollapsibleWidgetHeading';
-import { CollapsibleWidgetPanel, CollapsibleWidgetPanelContent } from './CollapsibleWidgetPanel';
+import { CollapsibleWidgetPanel } from './CollapsibleWidgetPanel';
 import { ExpandArrow } from './ExpandArrow';
 
 interface CollapsibleWidgetProps
@@ -43,9 +44,9 @@ const CollapsibleWidget = ({
                 {heading}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel className={panelClassName} {...variantProps}>
-                <CollapsibleWidgetPanelContent className={contentClassName}>
+                <CollapsibleWidgetContent className={contentClassName}>
                     {children}
-                </CollapsibleWidgetPanelContent>
+                </CollapsibleWidgetContent>
             </CollapsibleWidgetPanel>
             {footer ? (
                 <CollapsibleWidgetFooter bordered={true} className={footerClassName}>

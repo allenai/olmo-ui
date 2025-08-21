@@ -4,7 +4,7 @@ import { ContentCopy } from '@mui/icons-material';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
-import { CollapsibleWidgetPanelContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 interface ToolCallParametersProps {
@@ -26,7 +26,7 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
     };
 
     return (
-        <CollapsibleWidgetPanelContent contrast="medium">
+        <CollapsibleWidgetContent contrast="medium">
             <div className={css({ position: 'relative' })}>
                 <IconButtonWithTooltip
                     label="Copy tool call parameters"
@@ -44,6 +44,6 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
                     {children}
                 </ThemeSyntaxHighlighter>
             </div>
-        </CollapsibleWidgetPanelContent>
+        </CollapsibleWidgetContent>
     );
 };

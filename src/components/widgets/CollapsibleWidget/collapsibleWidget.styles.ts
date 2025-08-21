@@ -48,9 +48,9 @@ const collapsibleWidgetRecipe = sva({
             },
         },
         panelContent: {
+            width: '[100%]',
             paddingInline: 'var(--padding-inline)',
             paddingBlock: 'var(--padding-block)',
-            width: '[100%]',
         },
         trigger: {
             display: 'flex',

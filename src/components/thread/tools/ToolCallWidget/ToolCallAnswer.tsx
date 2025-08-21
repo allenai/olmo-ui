@@ -3,7 +3,7 @@ import { ContentCopy } from '@mui/icons-material';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
-import { CollapsibleWidgetPanelContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { hstack } from '@/styled-system/patterns';
 
@@ -25,7 +25,7 @@ export const ToolCallAnswer = ({ children = '' }: ToolCallAnswerProps) => {
     };
 
     return (
-        <CollapsibleWidgetPanelContent
+        <CollapsibleWidgetContent
             contrast="low"
             className={hstack({ justifyContent: 'space-between' })}>
             <ThemeSyntaxHighlighter
@@ -39,6 +39,6 @@ export const ToolCallAnswer = ({ children = '' }: ToolCallAnswerProps) => {
                 placement="top">
                 <ContentCopy />
             </IconButtonWithTooltip>
-        </CollapsibleWidgetPanelContent>
+        </CollapsibleWidgetContent>
     );
 };

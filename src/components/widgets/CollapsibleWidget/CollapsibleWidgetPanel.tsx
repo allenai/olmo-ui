@@ -1,5 +1,4 @@
 import { cx } from '@allenai/varnish-ui';
-import { HTMLAttributes } from 'react';
 import {
     DisclosurePanel as AriaDisclosurePanel,
     DisclosurePanelProps as AriaDisclosurePanelProps,
@@ -9,26 +8,6 @@ import {
     collapsibleWidgetRecipe,
     type CollapsibleWidgetRecipeVariantProps,
 } from './collapsibleWidget.styles';
-
-interface CollapsibleWidgetPanelContentProps
-    extends CollapsibleWidgetRecipeVariantProps,
-        HTMLAttributes<HTMLDivElement> {
-    className?: string;
-}
-
-const CollapsibleWidgetPanelContent = ({
-    className,
-    children,
-    ...rest
-}: CollapsibleWidgetPanelContentProps) => {
-    const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
-    const classNames = collapsibleWidgetRecipe(variantProps);
-    return (
-        <div className={cx(classNames.panelContent, className)} {...localProps}>
-            {children}
-        </div>
-    );
-};
 
 interface CollapsibleWidgetPanelProps
     extends CollapsibleWidgetRecipeVariantProps,
@@ -46,5 +25,5 @@ const CollapsibleWidgetPanel = ({ className, children, ...rest }: CollapsibleWid
     );
 };
 
-export { CollapsibleWidgetPanel, CollapsibleWidgetPanelContent };
-export type { CollapsibleWidgetPanelContentProps, CollapsibleWidgetPanelProps };
+export { CollapsibleWidgetPanel };
+export type { CollapsibleWidgetPanelProps };

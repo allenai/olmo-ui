@@ -6,12 +6,10 @@ import {
     CollapsibleWidgetBase,
     type CollapsibleWidgetBaseProps,
 } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
-import { CollapsibleWidgetFooter } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
+import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
+import { CollapsibleWidgetFooterBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
-import {
-    CollapsibleWidgetPanel,
-    CollapsibleWidgetPanelContent,
-} from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { CollapsibleWidgetTrigger } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetTrigger';
 import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
@@ -65,17 +63,17 @@ const ThinkingWidget = ({
                         </CollapsibleWidgetHeading>
                         <CollapsibleWidgetPanel>
                             <FadeOverflowContent className={contentClassName}>
-                                <CollapsibleWidgetPanelContent contrast="off">
+                                <CollapsibleWidgetContent contrast="off">
                                     {children}
-                                </CollapsibleWidgetPanelContent>
+                                </CollapsibleWidgetContent>
                             </FadeOverflowContent>
                         </CollapsibleWidgetPanel>
-                        <CollapsibleWidgetFooter bordered>
-                            <CollapsibleWidgetTrigger className={thinkingWidgetClassNames.footer}>
+                        <CollapsibleWidgetFooterBase bordered>
+                            <CollapsibleWidgetTrigger>
                                 <FooterContent isExpanded={isExpanded} id={footerId} />
                                 <ExpandArrow />
                             </CollapsibleWidgetTrigger>
-                        </CollapsibleWidgetFooter>
+                        </CollapsibleWidgetFooterBase>
                     </>
                 );
             }}
