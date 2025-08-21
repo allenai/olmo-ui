@@ -65,7 +65,7 @@ const ThinkingWidget = ({
                         </CollapsibleWidgetHeading>
                         <CollapsibleWidgetPanel>
                             <FadeOverflowContent className={contentClassName}>
-                                <CollapsibleWidgetPanelContent>
+                                <CollapsibleWidgetPanelContent contrast="off">
                                     {children}
                                 </CollapsibleWidgetPanelContent>
                             </FadeOverflowContent>

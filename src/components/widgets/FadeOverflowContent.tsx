@@ -1,4 +1,4 @@
-import { cx, sva } from '@allenai/varnish-panda-runtime/css';
+import { cx, RecipeVariantProps, sva } from '@allenai/varnish-panda-runtime/css';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -68,7 +68,11 @@ const fadeOverflowRecipe = sva({
     },
 });
 
-interface FadeOverflowContentProps extends React.HTMLAttributes<HTMLDivElement> {
+type FadeOverFlowVariantProps = Exclude<RecipeVariantProps<typeof fadeOverflowRecipe>, undefined>;
+
+interface FadeOverflowContentProps
+    extends FadeOverFlowVariantProps,
+        React.HTMLAttributes<HTMLDivElement> {
     className?: string;
     fadeClassName?: string;
 }
@@ -79,6 +83,7 @@ const FadeOverflowContent = ({
     children,
     ...rest
 }: FadeOverflowContentProps) => {
+    const [variantProps, localProps] = fadeOverflowRecipe.splitVariantProps(rest);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
 
@@ -90,7 +95,10 @@ const FadeOverflowContent = ({
         },
     });
 
-    const classNames = fadeOverflowRecipe({ isVisible: !isScrolledToBottom });
+    const classNames = fadeOverflowRecipe({
+        ...variantProps,
+        isVisible: !isScrolledToBottom,
+    });
 
     return (
         <div
@@ -98,7 +106,7 @@ const FadeOverflowContent = ({
             ref={(el) => {
                 setContainer(el);
             }}
-            {...rest}>
+            {...localProps}>
             {children}
             <div
                 className={cx(classNames.fade, fadeClassName)}

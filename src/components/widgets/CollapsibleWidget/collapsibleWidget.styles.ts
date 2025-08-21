@@ -76,6 +76,9 @@ const collapsibleWidgetRecipe = sva({
     },
     variants: {
         contrast: {
+            off: {
+                panelContent: {}, // no backgroundColor
+            },
             low: {
                 panelContent: {
                     backgroundColor: 'elements.overlay.content-contrast-low',
