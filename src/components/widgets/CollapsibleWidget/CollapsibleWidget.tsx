@@ -1,12 +1,19 @@
 import { type ReactNode } from 'react';
 
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 import { CollapsibleWidgetBase, type CollapsibleWidgetBaseProps } from './CollapsibleWidgetBase';
+import { CollapsibleWidgetContent } from './CollapsibleWidgetContent';
 import { CollapsibleWidgetFooter } from './CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from './CollapsibleWidgetHeading';
-import { CollapsibleWidgetPanel, CollapsibleWidgetPanelContent } from './CollapsibleWidgetPanel';
+import { CollapsibleWidgetPanel } from './CollapsibleWidgetPanel';
 import { ExpandArrow } from './ExpandArrow';
 
-interface CollapsibleWidgetProps extends CollapsibleWidgetBaseProps {
+interface CollapsibleWidgetProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        CollapsibleWidgetBaseProps {
     children?: ReactNode;
     heading: ReactNode;
     hasArrow?: boolean;
@@ -29,16 +36,17 @@ const CollapsibleWidget = ({
     footerClassName,
     ...rest
 }: CollapsibleWidgetProps) => {
+    const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
     const arrow = hasArrow ? <ExpandArrow /> : null;
     return (
-        <CollapsibleWidgetBase {...rest}>
+        <CollapsibleWidgetBase {...localProps}>
             <CollapsibleWidgetHeading endAdornment={arrow} className={headingClassName}>
                 {heading}
             </CollapsibleWidgetHeading>
-            <CollapsibleWidgetPanel className={panelClassName}>
-                <CollapsibleWidgetPanelContent className={contentClassName}>
+            <CollapsibleWidgetPanel className={panelClassName} {...variantProps}>
+                <CollapsibleWidgetContent className={contentClassName}>
                     {children}
-                </CollapsibleWidgetPanelContent>
+                </CollapsibleWidgetContent>
             </CollapsibleWidgetPanel>
             {footer ? (
                 <CollapsibleWidgetFooter bordered={true} className={footerClassName}>

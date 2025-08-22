@@ -3,9 +3,10 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ChatIcon } from '@/components/assets/ChatIcon';
 
 import { CollapsibleWidgetBase } from './CollapsibleWidgetBase';
-import { CollapsibleWidgetFooter } from './CollapsibleWidgetFooter';
+import { CollapsibleWidgetContent } from './CollapsibleWidgetContent';
+import { CollapsibleWidgetFooter, CollapsibleWidgetFooterBase } from './CollapsibleWidgetFooter';
 import { CollapsibleWidgetHeading } from './CollapsibleWidgetHeading';
-import { CollapsibleWidgetPanel, CollapsibleWidgetPanelContent } from './CollapsibleWidgetPanel';
+import { CollapsibleWidgetPanel } from './CollapsibleWidgetPanel';
 import { CollapsibleWidgetTrigger } from './CollapsibleWidgetTrigger';
 import { ExpandArrow } from './ExpandArrow';
 
@@ -29,11 +30,11 @@ export const Default: Story = {
                     Heading
                 </CollapsibleWidgetHeading>
                 <CollapsibleWidgetPanel>
-                    <CollapsibleWidgetPanelContent>
+                    <CollapsibleWidgetContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
-                    </CollapsibleWidgetPanelContent>
+                    </CollapsibleWidgetContent>
                 </CollapsibleWidgetPanel>
-                <CollapsibleWidgetFooter bordered={true}>Footer</CollapsibleWidgetFooter>
+                <CollapsibleWidgetFooter bordered>Footer</CollapsibleWidgetFooter>
             </>
         ),
     },
@@ -48,9 +49,9 @@ export const FooterInsidePanel: Story = {
                     Heading
                 </CollapsibleWidgetHeading>
                 <CollapsibleWidgetPanel>
-                    <CollapsibleWidgetPanelContent>
+                    <CollapsibleWidgetContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
-                    </CollapsibleWidgetPanelContent>
+                    </CollapsibleWidgetContent>
                     <CollapsibleWidgetFooter>Footer</CollapsibleWidgetFooter>
                 </CollapsibleWidgetPanel>
             </>
@@ -58,7 +59,7 @@ export const FooterInsidePanel: Story = {
     },
 };
 
-export const AlternatingFooters: Story = {
+export const MultiplePanelContent: Story = {
     args: {
         defaultExpanded: true,
         children: (
@@ -67,13 +68,13 @@ export const AlternatingFooters: Story = {
                     Heading
                 </CollapsibleWidgetHeading>
                 <CollapsibleWidgetPanel>
-                    <CollapsibleWidgetPanelContent>
+                    <CollapsibleWidgetContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
-                    </CollapsibleWidgetPanelContent>
-                    <CollapsibleWidgetFooter>Top</CollapsibleWidgetFooter>
-                    <CollapsibleWidgetFooter variant="alternate">Middle</CollapsibleWidgetFooter>
-                    <CollapsibleWidgetFooter>Footer bottom</CollapsibleWidgetFooter>
+                    </CollapsibleWidgetContent>
+                    <CollapsibleWidgetContent contrast="high">Top</CollapsibleWidgetContent>
+                    <CollapsibleWidgetContent contrast="low">Middle</CollapsibleWidgetContent>
                 </CollapsibleWidgetPanel>
+                <CollapsibleWidgetFooter>Footer bottom</CollapsibleWidgetFooter>
             </>
         ),
     },
@@ -86,15 +87,15 @@ export const FooterWithTrigger: Story = {
             <>
                 <CollapsibleWidgetHeading>Heading</CollapsibleWidgetHeading>
                 <CollapsibleWidgetPanel>
-                    <CollapsibleWidgetPanelContent>
+                    <CollapsibleWidgetContent>
                         <pre>{'{\n  "city": "Seattle"\n}'}</pre>
-                    </CollapsibleWidgetPanelContent>
+                    </CollapsibleWidgetContent>
                 </CollapsibleWidgetPanel>
-                <CollapsibleWidgetFooter bordered>
+                <CollapsibleWidgetFooterBase bordered>
                     <CollapsibleWidgetTrigger>
                         Footer bottom <ExpandArrow />
                     </CollapsibleWidgetTrigger>
-                </CollapsibleWidgetFooter>
+                </CollapsibleWidgetFooterBase>
             </>
         ),
     },

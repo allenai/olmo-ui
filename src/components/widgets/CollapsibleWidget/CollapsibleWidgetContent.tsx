@@ -1,31 +1,30 @@
 import { cx } from '@allenai/varnish-ui';
-import { Button as AriaButton, type ButtonProps as AriaButtonProps } from 'react-aria-components';
+import { HTMLAttributes } from 'react';
 
 import {
     collapsibleWidgetRecipe,
     type CollapsibleWidgetRecipeVariantProps,
 } from './collapsibleWidget.styles';
 
-interface CollapsibleWidgetTriggerProps
+interface CollapsibleWidgetContentProps
     extends CollapsibleWidgetRecipeVariantProps,
-        AriaButtonProps {
+        HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
-const CollapsibleWidgetTrigger = ({
+const CollapsibleWidgetContent = ({
     className,
     children,
     ...rest
-}: CollapsibleWidgetTriggerProps) => {
+}: CollapsibleWidgetContentProps) => {
     const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
     const classNames = collapsibleWidgetRecipe(variantProps);
-
     return (
-        <AriaButton slot="trigger" className={cx(classNames.trigger, className)} {...localProps}>
+        <div className={cx(classNames.panelContent, className)} {...localProps}>
             {children}
-        </AriaButton>
+        </div>
     );
 };
 
-export { CollapsibleWidgetTrigger };
-export type { CollapsibleWidgetTriggerProps };
+export { CollapsibleWidgetContent };
+export type { CollapsibleWidgetContentProps };

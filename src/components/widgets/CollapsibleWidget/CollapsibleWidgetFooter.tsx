@@ -1,23 +1,17 @@
-import { cva, RecipeVariantProps } from '@allenai/varnish-panda-runtime/css';
+import { cva } from '@allenai/varnish-panda-runtime/css';
+import type { RecipeVariantProps } from '@allenai/varnish-panda-runtime/types';
 import { cx } from '@allenai/varnish-ui';
-import { HTMLAttributes } from 'react';
+import { type HTMLAttributes } from 'react';
+
+import { CollapsibleWidgetContent } from './CollapsibleWidgetContent';
 
 const collapsibleWidgetFooterRecipe = cva({
     base: {
         display: 'flex',
-        paddingInline: '4',
-        paddingBlock: '3',
-        fontSize: 'sm', // correct token: `contained2`
+        fontSize: 'sm',
+        backgroundColor: 'elements.overlay.footer',
     },
     variants: {
-        variant: {
-            default: {
-                backgroundColor: 'cream.4', // wrong name, right color
-            },
-            alternate: {
-                backgroundColor: 'extra-dark-teal.70',
-            },
-        },
         bordered: {
             true: {
                 borderTop: '[1px solid]',
@@ -26,7 +20,6 @@ const collapsibleWidgetFooterRecipe = cva({
         },
     },
     defaultVariants: {
-        variant: 'default',
         bordered: false,
     },
 });
@@ -42,14 +35,13 @@ interface CollapsibleWidgetFooterProps
     className?: string;
 }
 
-const CollapsibleWidgetFooter = ({
+const CollapsibleWidgetFooterBase = ({
     className,
     children,
-    variant,
     bordered,
     ...rest
 }: CollapsibleWidgetFooterProps) => {
-    const collapsibleWidgetFooterClassName = collapsibleWidgetFooterRecipe({ variant, bordered });
+    const collapsibleWidgetFooterClassName = collapsibleWidgetFooterRecipe({ bordered });
     return (
         <div className={cx(collapsibleWidgetFooterClassName, className)} {...rest}>
             {children}
@@ -57,5 +49,11 @@ const CollapsibleWidgetFooter = ({
     );
 };
 
-export { CollapsibleWidgetFooter };
+const CollapsibleWidgetFooter = ({ children, ...rest }: CollapsibleWidgetFooterProps) => (
+    <CollapsibleWidgetFooterBase {...rest}>
+        <CollapsibleWidgetContent contrast="off">{children}</CollapsibleWidgetContent>
+    </CollapsibleWidgetFooterBase>
+);
+
+export { CollapsibleWidgetFooter, CollapsibleWidgetFooterBase };
 export type { CollapsibleWidgetFooterProps, CollapsibleWidgetFooterVariantProps };

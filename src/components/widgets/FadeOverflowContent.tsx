@@ -1,4 +1,4 @@
-import { cx, sva } from '@allenai/varnish-panda-runtime/css';
+import { cx, RecipeVariantProps, sva } from '@allenai/varnish-panda-runtime/css';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -6,10 +6,7 @@ const fadeOverflowRecipe = sva({
     slots: ['container', 'content', 'fade', 'anchor'],
     base: {
         container: {
-            backgroundColor: {
-                base: 'cream.100',
-                _dark: 'teal.100',
-            },
+            backgroundColor: 'var(--background-color, var(--variant-background-color))',
             color: 'text',
             position: 'relative',
             overflowY: 'auto',
@@ -20,16 +17,12 @@ const fadeOverflowRecipe = sva({
             position: 'sticky',
             bottom: '[0]',
             // transition: '[opacity 300ms ease-in-out]',
-            color: {
-                base: 'cream.100',
-                _dark: 'teal.100',
-            },
             _after: {
                 content: '""',
                 display: 'block',
                 backgroundGradient: 'to-t',
-                gradientFrom: '[currentColor]',
-                gradientTo: '[currentColor/0]',
+                gradientFrom: 'var(--background-color, var(--variant-background-color))',
+                gradientTo: 'transparent',
                 height: '[80px]',
                 position: 'absolute',
                 bottom: '[0]',
@@ -51,13 +44,35 @@ const fadeOverflowRecipe = sva({
             },
             false: {}, // default
         },
+        contrast: {
+            low: {
+                container: {
+                    '--variant-background-color': 'colors.elements.overlay.content-contrast-low',
+                },
+            },
+            medium: {
+                container: {
+                    '--variant-background-color': '{colors.elements.overlay.content-contrast-med}',
+                },
+            },
+            high: {
+                container: {
+                    '--variant-background-color': 'colors.elements.overlay.content-contrast-high',
+                },
+            },
+        },
     },
     defaultVariants: {
         isVisible: false,
+        contrast: 'high',
     },
 });
 
-interface FadeOverflowContentProps extends React.HTMLAttributes<HTMLDivElement> {
+type FadeOverFlowVariantProps = Exclude<RecipeVariantProps<typeof fadeOverflowRecipe>, undefined>;
+
+interface FadeOverflowContentProps
+    extends FadeOverFlowVariantProps,
+        React.HTMLAttributes<HTMLDivElement> {
     className?: string;
     fadeClassName?: string;
 }
@@ -68,6 +83,7 @@ const FadeOverflowContent = ({
     children,
     ...rest
 }: FadeOverflowContentProps) => {
+    const [variantProps, localProps] = fadeOverflowRecipe.splitVariantProps(rest);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
 
@@ -79,7 +95,10 @@ const FadeOverflowContent = ({
         },
     });
 
-    const classNames = fadeOverflowRecipe({ isVisible: !isScrolledToBottom });
+    const classNames = fadeOverflowRecipe({
+        ...variantProps,
+        isVisible: !isScrolledToBottom,
+    });
 
     return (
         <div
@@ -87,7 +106,7 @@ const FadeOverflowContent = ({
             ref={(el) => {
                 setContainer(el);
             }}
-            {...rest}>
+            {...localProps}>
             {children}
             <div
                 className={cx(classNames.fade, fadeClassName)}

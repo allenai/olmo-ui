@@ -1,31 +1,17 @@
 import { cx } from '@allenai/varnish-ui';
-import { HTMLAttributes } from 'react';
 import {
     DisclosurePanel as AriaDisclosurePanel,
     DisclosurePanelProps as AriaDisclosurePanelProps,
 } from 'react-aria-components';
 
-import { collapsibleWidgetRecipe } from './collapsibleWidget.styles';
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 
-interface CollapsibleWidgetPanelContentProps extends HTMLAttributes<HTMLDivElement> {
-    className?: string;
-}
-
-const CollapsibleWidgetPanelContent = ({
-    className,
-    children,
-    ...rest
-}: CollapsibleWidgetPanelContentProps) => {
-    const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
-    const classNames = collapsibleWidgetRecipe(variantProps);
-    return (
-        <div className={cx(classNames.panelContent, className)} {...localProps}>
-            {children}
-        </div>
-    );
-};
-
-interface CollapsibleWidgetPanelProps extends AriaDisclosurePanelProps {
+interface CollapsibleWidgetPanelProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        AriaDisclosurePanelProps {
     className?: string;
 }
 
@@ -39,5 +25,5 @@ const CollapsibleWidgetPanel = ({ className, children, ...rest }: CollapsibleWid
     );
 };
 
-export { CollapsibleWidgetPanel, CollapsibleWidgetPanelContent };
-export type { CollapsibleWidgetPanelContentProps, CollapsibleWidgetPanelProps };
+export { CollapsibleWidgetPanel };
+export type { CollapsibleWidgetPanelProps };

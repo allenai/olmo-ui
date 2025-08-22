@@ -4,9 +4,14 @@ import {
     type DisclosureProps as AriaDisclosureProps,
 } from 'react-aria-components';
 
-import { collapsibleWidgetRecipe } from './collapsibleWidget.styles';
+import {
+    collapsibleWidgetRecipe,
+    type CollapsibleWidgetRecipeVariantProps,
+} from './collapsibleWidget.styles';
 
-interface CollapsibleWidgetBaseProps extends AriaDisclosureProps {
+interface CollapsibleWidgetBaseProps
+    extends CollapsibleWidgetRecipeVariantProps,
+        AriaDisclosureProps {
     className?: string; // overwrite RAC's className which takes a fn
 }
 
