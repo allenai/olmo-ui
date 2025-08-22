@@ -11,7 +11,7 @@ const response: Thread = {
             deleted: null,
             expirationTime: null,
             fileUrls: [
-                'https://storage.googleapis.com/ai2-playground-molmo/msg_I5D5V8H8G4/msg_I5D5V8H8G4-0.png',
+                'https://storage.googleapis.com/ai2-playground-molmo/msg_Q8C2J3A4F9/msg_Q8C2J3A4F9-0.png',
             ],
             final: true,
             finishReason: null,
