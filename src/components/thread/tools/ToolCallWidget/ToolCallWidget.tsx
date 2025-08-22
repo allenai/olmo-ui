@@ -1,11 +1,10 @@
 import { DataObject } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
 
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
-import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
+import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 import { mapToolCallArgs } from '../mapToolCallArgs';
 import { ToolCallAnswer } from './ToolCallAnswer';
@@ -25,11 +24,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
-                endAdornment={
-                    <IconButton tabIndex={-1} component="span">
-                        <ExpandArrow />
-                    </IconButton>
-                }>
+                endAdornment={<ExpandArrowButton />}>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
