@@ -12,7 +12,7 @@ import { CollapsibleWidgetFooterBase } from '@/components/widgets/CollapsibleWid
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { CollapsibleWidgetTrigger } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetTrigger';
-import { ExpandArrow } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
+import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 import { ThinkingIcon } from '../svg/Thinking';
 import { FadeOverflowContent } from './FadeOverflowContent';
@@ -20,9 +20,7 @@ import { FadeOverflowContent } from './FadeOverflowContent';
 const thinkingWidgetRecipe = sva({
     slots: ['container', 'footer'],
     base: {
-        container: {
-            maxWidth: '[672px]',
-        },
+        container: {},
         footer: {
             display: 'grid',
             gridTemplateColumns: '1fr auto',
@@ -66,7 +64,7 @@ const ThinkingWidget = ({
             <CollapsibleWidgetFooterBase bordered>
                 <CollapsibleWidgetTrigger>
                     <FooterContent id={footerId} />
-                    <ExpandArrow />
+                    <ExpandArrowButton />
                 </CollapsibleWidgetTrigger>
             </CollapsibleWidgetFooterBase>
         </CollapsibleWidgetBase>
