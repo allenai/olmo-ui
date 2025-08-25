@@ -1,5 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, DialogCloseButton, Modal, ModalTrigger } from '@allenai/varnish-ui';
+import { FieldValues } from 'react-hook-form';
 
 import { ControlledTextArea, ControlledTextAreaProps } from './ControlledTextArea';
 
@@ -13,9 +14,14 @@ const modalWrapper = css({
     paddingY: '2',
 });
 
-type ExpandableTextAreaProps = Omit<ControlledTextAreaProps, 'fullWidth'>;
+type ExpandableTextAreaProps<TFieldValues extends FieldValues> = Omit<
+    ControlledTextAreaProps<TFieldValues>,
+    'fullWidth'
+>;
 
-export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
+export function ExpandableTextArea<TFieldValues extends FieldValues>(
+    props: ExpandableTextAreaProps<TFieldValues>
+) {
     return (
         <div className={expandableTextAreaWrapper}>
             <ControlledTextArea fullWidth {...props} minRows={3} maxRows={3} />
@@ -35,4 +41,4 @@ export const ExpandableTextArea = (props: ExpandableTextAreaProps) => {
             </ModalTrigger>
         </div>
     );
-};
+}
