@@ -1,7 +1,9 @@
 import type { Thread } from '@/api/playgroundApi/thread';
 
+export const MULTIPLE_POINTS_THREAD_ID = 'msg_multiple_points';
+
 const response: Thread = {
-    id: 'msg_multiple_points',
+    id: MULTIPLE_POINTS_THREAD_ID,
     messages: [
         {
             completion: null,
@@ -16,7 +18,7 @@ const response: Thread = {
             final: true,
             finishReason: null,
             harmful: false,
-            id: 'msg_multiple_points',
+            id: MULTIPLE_POINTS_THREAD_ID,
             labels: [],
             modelHost: 'modal',
             modelId: 'mm-olmo-uber-model-v4-synthetic',
@@ -33,7 +35,7 @@ const response: Thread = {
             parent: null,
             private: false,
             role: 'user',
-            root: 'msg_multiple_points',
+            root: MULTIPLE_POINTS_THREAD_ID,
             snippet: 'point_qa: what colors are the boats',
             template: null,
             isLimitReached: false,
@@ -52,7 +54,7 @@ const response: Thread = {
             final: true,
             finishReason: null,
             harmful: null,
-            id: 'msg_A2Y2H0V5R2',
+            id: 'multiple-pointer-assistant',
             labels: [],
             modelHost: 'modal',
             modelId: 'mm-olmo-uber-model-v4-synthetic',
@@ -66,10 +68,10 @@ const response: Thread = {
                 topP: 0.8,
             },
             original: null,
-            parent: 'msg_I5D5V8H8G4',
+            parent: MULTIPLE_POINTS_THREAD_ID,
             private: false,
             role: 'assistant',
-            root: 'msg_I5D5V8H8G4',
+            root: MULTIPLE_POINTS_THREAD_ID,
             snippet:
                 'The image shows a marina with boats in various colors. White boats are prominent, along with\u2026',
             template: null,

@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { DecoratorFunction } from 'storybook/internal/types';
 
 const storyQueryClient = new QueryClient({
@@ -12,6 +13,7 @@ export const withMockReactQuery: DecoratorFunction = (Story, { parameters: { moc
 
     return (
         <QueryClientProvider client={storyQueryClient}>
+            <ReactQueryDevtools client={storyQueryClient} />
             <Story />
         </QueryClientProvider>
     );
