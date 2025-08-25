@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
+import multiplePointerThreadResponse from '@/mocks/handlers/responses/v4/multiplePointerMessageResponse';
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
 import { withMockThreadView } from '@/utils/storybook/withMockThreadView';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
@@ -30,6 +31,7 @@ const mockThread = createMockThread({
 });
 
 const meta = {
+    title: 'organism/ThreadDisplay',
     component: ThreadDisplay,
     decorators: [withMockQueryContext, withMockThreadView, withMockReactQuery],
     parameters: {
@@ -42,7 +44,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const StandardTextThread: Story = {
     args: {
         childMessageIds: mockThread.messages
             .filter((message) => message.role !== 'system')
@@ -50,5 +52,27 @@ export const Default: Story = {
         shouldShowAttributionHighlightDescription: false,
         streamingMessageId: null,
         isUpdatingMessageContent: false,
+    },
+};
+
+export const MultiplePointsThread: Story = {
+    args: {
+        childMessageIds: multiplePointerThreadResponse.messages
+            .filter((message) => message.role !== 'system')
+            .map((message) => message.id),
+        shouldShowAttributionHighlightDescription: false,
+        streamingMessageId: null,
+        isUpdatingMessageContent: false,
+    },
+    parameters: {
+        mockData: [
+            {
+                queryKey: threadOptions(multiplePointerThreadResponse.id).queryKey,
+                data: multiplePointerThreadResponse,
+            },
+        ],
+        threadView: {
+            threadId: multiplePointerThreadResponse.id,
+        },
     },
 };
