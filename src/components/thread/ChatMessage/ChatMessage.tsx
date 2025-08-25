@@ -3,7 +3,7 @@ import { Box, ImageList, ImageListItem, Typography } from '@mui/material';
 import { PropsWithChildren, type ReactNode, useState } from 'react';
 
 import { Label } from '@/api/Label';
-import { type FlatMessage, MessageId, useMessage } from '@/api/playgroundApi/thread';
+import { MessageId, useMessage } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { Ai2Avatar } from '@/components/avatars/Ai2Avatar';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
@@ -93,16 +93,11 @@ const MessageContent = ({ rawMode = false, hasPoints = false, messageId }: Messa
 };
 
 interface ChatMessageProps extends PropsWithChildren {
-    role: FlatMessage['role'];
     messageId: string;
     isLastMessageInThread: boolean;
 }
 
-export const ChatMessage = ({
-    role: variant,
-    messageId,
-    isLastMessageInThread,
-}: ChatMessageProps): ReactNode => {
+export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessageProps): ReactNode => {
     const { threadId, streamingMessageId } = useThreadView();
     const { remoteState } = useQueryContext();
 
@@ -119,8 +114,8 @@ export const ChatMessage = ({
     // When streaming completes, announce the final content for this message
     const finalMessageContent = remoteState === RemoteState.Loaded ? message.content : null;
 
-    const MessageComponent = variant === Role.User ? UserMessage : LLMMessage;
-    const icon = variant === Role.User ? <UserAvatar /> : <Ai2Avatar />;
+    const MessageComponent = message.role === Role.User ? UserMessage : LLMMessage;
+    const icon = message.role === Role.User ? <UserAvatar /> : <Ai2Avatar />;
 
     const messageLabels = labels
         ? labels.map((label) => ({ ...label, created: new Date(label.created) }) as Label)
