@@ -46,9 +46,7 @@ type Story = StoryObj<typeof meta>;
 
 export const StandardTextThread: Story = {
     args: {
-        childMessageIds: mockThread.messages
-            .filter((message) => message.role !== 'system')
-            .map((message) => message.id),
+        childMessageIds: mockThread.messages.map((message) => message.id),
         shouldShowAttributionHighlightDescription: false,
         streamingMessageId: null,
         isUpdatingMessageContent: false,
@@ -57,9 +55,7 @@ export const StandardTextThread: Story = {
 
 export const MultiplePointsThread: Story = {
     args: {
-        childMessageIds: multiplePointerThreadResponse.messages
-            .filter((message) => message.role !== 'system')
-            .map((message) => message.id),
+        childMessageIds: multiplePointerThreadResponse.messages.map((message) => message.id),
         shouldShowAttributionHighlightDescription: false,
         streamingMessageId: null,
         isUpdatingMessageContent: false,

@@ -105,7 +105,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
 
     const { message } = useMessage(threadId, messageId);
 
-    if (!message) {
+    if (!message || message.role === 'system' || message.role === 'tool_call_result') {
         return null;
     }
 
