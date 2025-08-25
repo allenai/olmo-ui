@@ -46,7 +46,6 @@ type Story = StoryObj<typeof meta>;
 
 export const UserMessage: Story = {
     args: {
-        role: 'user',
         messageId: 'thread-user',
         isLastMessageInThread: true,
     },
@@ -54,7 +53,6 @@ export const UserMessage: Story = {
 
 export const AssistantMessage: Story = {
     args: {
-        role: 'assistant',
         messageId: 'thread-assistant',
         isLastMessageInThread: true,
     },
@@ -62,7 +60,6 @@ export const AssistantMessage: Story = {
 
 export const PointsMessage: Story = {
     args: {
-        role: 'assistant',
         messageId: 'multiple-pointer-assistant',
         isLastMessageInThread: true,
     },
