@@ -7,6 +7,8 @@ import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '@/olmoTheme';
 import { getTheme } from '@allenai/varnish2/theme';
 
 import '../styled-system/styles.css'
+import { fn } from '@storybook/test';
+import { ColorModeContext } from '@/components/ColorModeProvider';
 
 const preview: Preview = {
   parameters: {
@@ -44,6 +46,22 @@ const preview: Preview = {
       },
       Provider: ThemeProvider
     }),
+    withThemeFromJSXProvider({
+      themes: {
+        light: {
+          colorMode: 'light',
+          colorPreference: 'light',
+          setColorPreference: fn()
+        },
+        dark: {
+          colorMode: 'dark',
+          colorPreference: 'dark',
+          setColorPreference: fn()
+        }
+      },
+      // @ts-expect-error - Provider is typed as `any`, we're assuming that it accepts `theme` and `children` props
+       Provider: ({ theme, children }) => <ColorModeContext.Provider value={theme}>{children}</ColorModeContext.Provider>
+    })
   ]
 };
 
