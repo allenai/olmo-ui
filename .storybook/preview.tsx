@@ -1,10 +1,12 @@
+// Don't mess with the import order here, it can cause problems if some things are imported before the others, esp varnish and MUI things 
+import { ReactRenderer, type Preview } from '@storybook/react'
+import { withThemeByClassName, withThemeFromJSXProvider } from '@storybook/addon-themes'
+import { withRouter } from 'storybook-addon-remix-react-router';
+import { ThemeProvider, Paper } from '@mui/material';
 import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '@/olmoTheme';
 import { getTheme } from '@allenai/varnish2/theme';
-import { Paper, ThemeProvider } from '@mui/material';
-import { withThemeByClassName, withThemeFromJSXProvider } from '@storybook/addon-themes';
-import { ReactRenderer, type Preview } from '@storybook/react';
-import { withRouter } from 'storybook-addon-remix-react-router';
-import '../styled-system/styles.css';
+
+import '../styled-system/styles.css'
 
 const preview: Preview = {
   parameters: {
