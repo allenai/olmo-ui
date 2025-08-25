@@ -20,3 +20,14 @@ export const Default: Story = {
         answer: '74yl0r bl4n70n',
     },
 };
+
+export const Loading: Story = {
+    args: {
+        toolCall: {
+            args: '{ "firstName": "Taylor", "lastName": "Blanton" }',
+            toolCallId: 'tool-call-id',
+            toolName: 'leetName',
+        },
+        answer: undefined,
+    },
+};
