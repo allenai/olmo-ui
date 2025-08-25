@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react';
+import deepmerge from 'deepmerge';
 import type { DecoratorFunction } from 'storybook/internal/types';
 
 import { RemoteState } from '@/contexts/util';
@@ -7,26 +7,25 @@ import {
     type ThreadViewContextProps,
 } from '@/pages/comparison/ThreadViewContext';
 
+export interface MockThreadViewParameters {
+    threadView?: Partial<ThreadViewContextProps>;
+}
+
 const DEFAULT_THREAD_VIEW_PROPS = {
     threadId: 'thread',
     threadViewId: 'threadView',
     remoteState: RemoteState.Loaded,
 };
 
-interface MockThreadViewProviderProps extends PropsWithChildren {
-    threadView: ThreadViewContextProps;
-}
-
-const MockThreadViewProvider = ({ children, threadView }: MockThreadViewProviderProps) => {
-    return <ThreadViewContext.Provider value={threadView}>{children}</ThreadViewContext.Provider>;
-};
-
 export const withMockThreadView: DecoratorFunction = (
     Story,
-    { parameters: { threadView = DEFAULT_THREAD_VIEW_PROPS } }
-) => (
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    <MockThreadViewProvider threadView={threadView}>
-        <Story />
-    </MockThreadViewProvider>
-);
+    { parameters: { threadView } }: { parameters: MockThreadViewParameters }
+) => {
+    const threadViewContextValue = deepmerge(DEFAULT_THREAD_VIEW_PROPS, threadView ?? {});
+
+    return (
+        <ThreadViewContext.Provider value={threadViewContextValue}>
+            <Story />
+        </ThreadViewContext.Provider>
+    );
+};
