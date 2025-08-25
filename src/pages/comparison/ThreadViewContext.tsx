@@ -12,7 +12,7 @@ import { RemoteState } from '@/contexts/util';
 
 export type ThreadViewId = string;
 
-interface ThreadViewContextProps {
+export interface ThreadViewContextProps {
     threadId: ThreadId;
     threadViewId: ThreadViewId;
     streamingMessageId?: string;
@@ -20,7 +20,7 @@ interface ThreadViewContextProps {
     remoteState: RemoteState;
 }
 
-const ThreadViewContext = createContext<ThreadViewContextProps | null>(null);
+export const ThreadViewContext = createContext<ThreadViewContextProps | null>(null);
 
 export const ThreadViewProvider = ({
     threadId,
