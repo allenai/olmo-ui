@@ -3,9 +3,10 @@ import { ContentCopy } from '@mui/icons-material';
 
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
-import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
+
+import { ToolCallCodeBlock } from './ToolCallCodeBlock';
 
 interface ToolCallParametersProps {
     // Not using the optional ? here ensures that children are passed
@@ -43,10 +44,7 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
                     }}>
                     <ContentCopy />
                 </IconButtonWithTooltip>
-                <ThemeSyntaxHighlighter
-                    customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
-                    {children}
-                </ThemeSyntaxHighlighter>
+                <ToolCallCodeBlock>{children}</ToolCallCodeBlock>
             </div>
         </CollapsibleWidgetContent>
     );

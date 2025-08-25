@@ -3,10 +3,11 @@ import { ContentCopy } from '@mui/icons-material';
 
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
-import { ThemeSyntaxHighlighter } from '@/components/ThemeSyntaxHighlighter';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { hstack } from '@/styled-system/patterns';
+
+import { ToolCallCodeBlock } from './ToolCallCodeBlock';
 
 type ToolCallAnswerProps = {
     children: string | undefined;
@@ -34,10 +35,7 @@ export const ToolCallAnswer = ({ children }: ToolCallAnswerProps) => {
             {isLoadingAnswer ? (
                 <LoadingSpinner />
             ) : (
-                <ThemeSyntaxHighlighter
-                    customStyle={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
-                    {children}
-                </ThemeSyntaxHighlighter>
+                <ToolCallCodeBlock>{children}</ToolCallCodeBlock>
             )}
             <IconButtonWithTooltip
                 disabled={isLoadingAnswer}
