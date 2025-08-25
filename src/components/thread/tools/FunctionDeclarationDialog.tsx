@@ -51,7 +51,7 @@ export function FunctionDeclarationDialog({
     onReset,
     onClose,
 }: FunctionDeclarationDialogProps) {
-    const { handleSubmit, reset, control, formState } = useForm<DataFields>({
+    const { handleSubmit, reset, control } = useForm<DataFields>({
         defaultValues: {
             declaration: jsonData,
         },
@@ -101,7 +101,7 @@ export function FunctionDeclarationDialog({
                         type="submit"
                         form={formId}
                         aria-label="Save function declarations"
-                        isDisabled={!formState.isValid || isDisabled}>
+                        isDisabled={isDisabled}>
                         Save
                     </Button>
                 </ModalActions>
