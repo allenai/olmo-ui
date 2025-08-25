@@ -33,6 +33,16 @@ const escapeForDisplay = (content: string): string => {
     return JSON.stringify(content).slice(1, -1).replace(/\\"/g, '"');
 };
 
+const cleanWrap = css({
+    whiteSpace: 'pre',
+    textWrap: '[auto]',
+    fontFamily: 'monospace',
+    fontSize: 'sm',
+    padding: '4',
+    margin: '2',
+    backgroundColor: 'background.opacity-10.reversed',
+});
+
 export interface MessageProps {
     messageId: MessageId;
 }
@@ -41,15 +51,7 @@ export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
     const content = message?.content || '';
-    const cleanWrap = css({
-        whiteSpace: 'pre',
-        textWrap: '[auto]',
-        fontFamily: 'monospace',
-        fontSize: 'sm',
-        padding: '4',
-        margin: '2',
-        backgroundColor: 'background.opacity-10.reversed',
-    });
+
     return (
         <div>
             <Typography variant="body2">Message Metadata</Typography>
