@@ -1,6 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
-import { DevTool } from '@hookform/devtools';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
 
@@ -106,7 +105,6 @@ export function FunctionDeclarationDialog({
                     </Button>
                 </ModalActions>
             }>
-            <DevTool control={control} />
             <form id={formId} onSubmit={handleSave}>
                 <ControlledTextArea
                     className={modalInput}
