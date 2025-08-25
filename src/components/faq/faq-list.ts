@@ -125,7 +125,7 @@ export const faqs: FAQCategory[] = [
         ],
     },
     {
-        category: 'Voice transcription"',
+        category: 'Voice transcription',
         questions: [
             {
                 question: 'How does speech-to-text (STT) on the Playground work?',
