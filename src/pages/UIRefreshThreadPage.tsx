@@ -67,13 +67,10 @@ const createModelDeprecationNotice = () => {
 export const playgroundLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async ({ params, request }) => {
-        const { resetSelectedThreadState, resetAttribution, getSchema, schema, abortPrompt } =
+        const { resetSelectedThreadState, resetAttribution, getSchema, schema } =
             appContext.getState();
 
         const promises = [];
-
-        // abort the current streaming prompt if there is any
-        abortPrompt();
 
         const models = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
 

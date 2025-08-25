@@ -44,7 +44,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
     const {
         getAttributionsForMessage,
         handleAttributionForChangingThread,
-        abortPrompt,
         selectMessage,
         clearAllStreamErrors,
     } = appContext.getState();
@@ -62,8 +61,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
     clearAllStreamErrors();
     // get the latest state of the selectedThread if we're changing to a different thread
     handleAttributionForChangingThread();
-    // abort the current streaming prompt if there is any
-    abortPrompt();
 
     const modelsPromise = queryClient.ensureQueryData(getModelsQueryOptions);
 
