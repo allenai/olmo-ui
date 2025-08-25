@@ -6,14 +6,6 @@ import { createMockMessage, createMockThread } from '@/utils/test/createMockMode
 
 import AllToolCalls from './AllToolCalls';
 
-const meta = {
-    component: AllToolCalls,
-} satisfies Meta<typeof AllToolCalls>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
 const mockThread = createMockThread({
     id: 'thread',
     messages: [
@@ -82,6 +74,18 @@ const mockThread = createMockThread({
     ],
 });
 
+const meta = {
+    component: AllToolCalls,
+    decorators: [withMockReactQuery],
+    parameters: {
+        mockData: [{ queryKey: threadOptions(mockThread.id).queryKey, data: mockThread }],
+    },
+} satisfies Meta<typeof AllToolCalls>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
 export const Default: Story = {
     args: {
         threadId: 'thread',
@@ -113,8 +117,4 @@ export const Default: Story = {
             },
         ],
     },
-    parameters: {
-        mockData: [{ queryKey: threadOptions(mockThread.id).queryKey, data: mockThread }],
-    },
-    decorators: [withMockReactQuery],
 };
