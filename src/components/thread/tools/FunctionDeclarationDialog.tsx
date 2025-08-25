@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { DialogCloseButton, Modal, ModalActions, ModalCloseIconButton } from '@allenai/varnish-ui';
+import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
@@ -34,33 +34,41 @@ interface DataFields {
     declaration: string;
 }
 
-interface FunctionDeclarationDialogProps {
+export interface FunctionDeclarationDialogProps {
     jsonData?: string;
     isOpen?: boolean;
-    isPending?: boolean;
     isDisabled?: boolean;
     onSave: (data: DataFields) => void;
-    onReset: () => void;
+    onReset?: () => void;
+    onClose?: () => void;
 }
 
 export function FunctionDeclarationDialog({
     jsonData = '',
     isOpen,
-    isPending,
     isDisabled,
     onSave,
     onReset,
+    onClose,
 }: FunctionDeclarationDialogProps) {
-    const { handleSubmit, control, formState } = useForm<DataFields>({
+    const { handleSubmit, reset, control, formState } = useForm<DataFields>({
         defaultValues: {
             declaration: jsonData,
         },
         mode: 'onSubmit',
     });
 
+    const handleSave = handleSubmit((data) => {
+        onSave(data);
+        onClose?.();
+    });
+
     const handleReset = () => {
-        onReset();
+        reset();
+        onReset?.();
     };
+
+    const formId = 'function-declaration-form';
 
     return (
         <Modal
@@ -72,29 +80,34 @@ export function FunctionDeclarationDialog({
             heading="Function Declarations"
             headingClassName={modalHeading}
             closeButton={
-                <ModalCloseIconButton>
+                <IconButton onClick={onClose} aria-label="Close function declarations dialog">
                     <CloseIcon />
-                </ModalCloseIconButton>
+                </IconButton>
             }
             buttons={
                 <ModalActions>
-                    <DialogCloseButton color="secondary" shape="rounded" onClick={handleReset}>
+                    <Button
+                        color="secondary"
+                        shape="rounded"
+                        onClick={handleReset}
+                        aria-label="Reset form"
+                        isDisabled={isDisabled}>
                         Reset
-                    </DialogCloseButton>
-                    <DialogCloseButton
+                    </Button>
+                    <Button
                         color="secondary"
                         shape="rounded"
                         variant="contained"
                         type="submit"
-                        form="jsonForm"
-                        isPending={isPending}
+                        form={formId}
+                        aria-label="Save function declarations"
                         isDisabled={!formState.isValid || isDisabled}>
                         Save
-                    </DialogCloseButton>
+                    </Button>
                 </ModalActions>
             }>
             <DevTool control={control} />
-            <form id="jsonForm" onSubmit={handleSubmit(onSave)}>
+            <form id={formId} onSubmit={handleSave}>
                 <ControlledTextArea
                     className={modalInput}
                     name="declaration"
@@ -107,7 +120,6 @@ export function FunctionDeclarationDialog({
                         rules: {
                             validate: (value) => {
                                 try {
-                                    console.log(value);
                                     JSON.parse(value);
                                 } catch {
                                     return 'Invalid JSON format';
