@@ -24,7 +24,7 @@ type ColorModeContextValues = {
     setColorPreference: (color: ColorPreference) => void;
 };
 
-const ColorModeContext = createContext<ColorModeContextValues>({
+export const ColorModeContext = createContext<ColorModeContextValues>({
     colorMode: 'light',
     colorPreference: 'system',
     setColorPreference: (_: ColorPreference) => {},

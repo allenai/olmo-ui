@@ -5,8 +5,11 @@ import { withRouter } from 'storybook-addon-remix-react-router';
 import { ThemeProvider, Paper } from '@mui/material';
 import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '@/olmoTheme';
 import { getTheme } from '@allenai/varnish2/theme';
+import { fn } from '@storybook/test';
+import { ColorModeContext } from '@/components/ColorModeProvider';
 
 import '../styled-system/styles.css'
+
 
 const preview: Preview = {
   parameters: {
@@ -44,6 +47,22 @@ const preview: Preview = {
       },
       Provider: ThemeProvider
     }),
+    withThemeFromJSXProvider({
+      themes: {
+        light: {
+          colorMode: 'light',
+          colorPreference: 'light',
+          setColorPreference: fn()
+        },
+        dark: {
+          colorMode: 'dark',
+          colorPreference: 'dark',
+          setColorPreference: fn()
+        }
+      },
+      // @ts-expect-error - Provider is typed as `any`, we're assuming that it accepts `theme` and `children` props
+       Provider: ({ theme, children }) => <ColorModeContext.Provider value={theme}>{children}</ColorModeContext.Provider>
+    })
   ]
 };
 

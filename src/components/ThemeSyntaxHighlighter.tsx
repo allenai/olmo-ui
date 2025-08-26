@@ -1,26 +1,20 @@
-import {
-    PrismAsyncLight as SyntaxHighlighter,
-    type SyntaxHighlighterProps,
-} from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { CodeBlock, type CodeBlockProps } from '@allenai/varnish-ui';
 
-interface ThemeSyntaxHighlighterProps extends SyntaxHighlighterProps {}
+import { useColorMode } from './ColorModeProvider';
+
+type ThemeSyntaxHighlighterProps = Omit<CodeBlockProps, 'value'> & {
+    children: string;
+};
 
 export const ThemeSyntaxHighlighter = ({
     language = 'text',
     children,
-    customStyle,
     ...rest
 }: ThemeSyntaxHighlighterProps) => {
+    const { colorMode } = useColorMode();
     return (
-        <SyntaxHighlighter
-            style={atomDark}
-            customStyle={customStyle}
-            PreTag="div"
-            language={language}
-            {...rest}
-            wrapLongLines>
+        <CodeBlock language={language} {...rest} wrapLongLines colorMode={colorMode}>
             {children}
-        </SyntaxHighlighter>
+        </CodeBlock>
     );
 };

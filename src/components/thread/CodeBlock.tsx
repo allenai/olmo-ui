@@ -1,4 +1,4 @@
-import { Button, useTheme } from '@mui/material';
+import { Button } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 import { ThemeSyntaxHighlighter } from '../ThemeSyntaxHighlighter';
@@ -18,7 +18,6 @@ export const CodeBlock = ({
     node: _node,
     ...props
 }: CodeBlockProps) => {
-    const theme = useTheme();
     const match = /language-(\w+)/.exec(className || '');
 
     const spansInsideThisCodeBlock =
@@ -47,10 +46,7 @@ export const CodeBlock = ({
         } else {
             return (
                 <>
-                    <ThemeSyntaxHighlighter
-                        PreTag="div"
-                        language={match[1]}
-                        customStyle={{ background: theme.palette.background.code }}>
+                    <ThemeSyntaxHighlighter PreTag="div" language={match[1]}>
                         {childrenWithoutAttributionHighlights}
                     </ThemeSyntaxHighlighter>
                     {spansInsideThisCodeBlock.length > 0 && (
