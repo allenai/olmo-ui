@@ -5,7 +5,7 @@ import type { Fixtures } from 'e2e/playwright-types';
 const envSuffix = `.${process.env.NODE_ENV ?? 'test'}`;
 
 dotenv.config({
-    path: [`.env${envSuffix}.local`, '.env.local', `.env${envSuffix}`, '.env'],
+    path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'],
 });
 
 const bypassCSP = {
