@@ -45,9 +45,12 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
         if (toolCallToUpdate != null) {
             toolCallToUpdate.toolName += chunk.toolName;
 
-            if (chunk.toolSource) {
+            // toolCallToUpdate and/or chunk _should_ be / are partial
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (chunk.toolSource != null) {
                 toolCallToUpdate.toolSource = chunk.toolSource;
             }
+
             if (typeof chunk.args === 'object') {
                 // Assuming it's a finished object if we get an object from the API
                 toolCallToUpdate.args = chunk.args;
