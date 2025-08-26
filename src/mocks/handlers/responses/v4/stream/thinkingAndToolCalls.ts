@@ -1398,8 +1398,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: 'combine_number_and_unit',
         args: null,
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
-        // I expect the toolSource to be on this initial chunk at least.
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1407,7 +1406,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: '{"number": 10',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1415,7 +1414,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: '0',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1423,7 +1422,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: ',',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1431,7 +1430,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: ' "',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1439,7 +1438,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: 'unit',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1447,7 +1446,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: '":',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1455,7 +1454,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: ' "',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1463,7 +1462,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: 'Ki',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1471,7 +1470,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: 'B',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1479,7 +1478,7 @@ export const thinkingAndToolCallsStreamResponse = [
         toolName: '',
         args: '"}',
         type: 'toolCall',
-        toolSource: 'internal', // Should this be on a chunk?
+        toolSource: 'internal',
     },
     {
         message: 'msg_P7C1R5N8G6',
@@ -1746,7 +1745,6 @@ export const thinkingAndToolCallsStreamResponse = [
                 isLimitReached: false,
                 isOlderThan30Days: false,
             },
-            //
             {
                 id: 'msg_Y1P2K4J6Q8',
                 content: '100 and KiB combined is 100KiB',
