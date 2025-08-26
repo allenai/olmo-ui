@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { TestOptions } from 'e2e/playwright-utils';
+import type { Fixtures } from 'e2e/playwright-types';
 import { loadEnv } from 'vite';
 
 const env = loadEnv('test', process.cwd(), '');
@@ -13,7 +13,7 @@ const bypassCSP = {
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig<TestOptions>({
+export default defineConfig<Fixtures>({
     testDir: './e2e',
     /* Run tests in files in parallel */
     fullyParallel: true,
