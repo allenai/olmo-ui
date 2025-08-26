@@ -14,7 +14,7 @@ import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
-import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
 
 import {
     containsMessages,
@@ -27,6 +27,7 @@ import {
     isToolCallChunk,
     type StreamingMessageResponse,
     type StreamingThread,
+    type StreamMessageRequest,
 } from './stream-types';
 import {
     mergeMessages,

@@ -14,6 +14,14 @@ export interface StreamingThread extends BaseThread {
     isUpdatingMessageContent?: boolean;
 }
 
+export interface StreamMessageRequest {
+    content: string;
+    captchaToken?: string | null;
+    parent?: string;
+    files?: FileList;
+    role?: FlatMessage['role'];
+}
+
 export type MessageChunk = Pick<FlatMessage, 'content'> & {
     message: FlatMessage['id'];
 };

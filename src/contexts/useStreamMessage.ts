@@ -12,11 +12,10 @@ import { InferenceOpts } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
-import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
-import { StreamingMessageResponse } from './stream-types';
+import type { StreamingMessageResponse, StreamMessageRequest } from './stream-types';
 
 export interface ThreadStreamMutationVariables {
     request: StreamMessageRequest;
@@ -149,7 +148,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 request.parent = lastMessageId;
             }
 
-            const { content, captchaToken, parent, files } = request;
+            const { content, captchaToken, parent, files, role = 'user' } = request;
 
             // Refer to the "TEMP HACK" comment above
             const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
@@ -166,6 +165,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     parent,
                     host: model.host,
                     model: model.id,
+                    role,
                     // Apply adjusted inference options with model-specific overrides
                     temperature: adjustedInferenceOpts.temperature ?? undefined,
                     topP: adjustedInferenceOpts.top_p ?? undefined,
