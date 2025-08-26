@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /ui
 
@@ -13,7 +13,7 @@ ENV VITE_API_URL=https://olmo-api.allen.ai
 ENV VITE_DOLMA_API_URL=/api
 RUN yarn build
 
-FROM nginx:1.17.0-alpine
+FROM nginx:1.29-alpine
 
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
