@@ -5,10 +5,11 @@ import { withRouter } from 'storybook-addon-remix-react-router';
 import { ThemeProvider, Paper } from '@mui/material';
 import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '@/olmoTheme';
 import { getTheme } from '@allenai/varnish2/theme';
-
-import '../styled-system/styles.css'
 import { fn } from '@storybook/test';
 import { ColorModeContext } from '@/components/ColorModeProvider';
+
+import '../styled-system/styles.css'
+
 
 const preview: Preview = {
   parameters: {
