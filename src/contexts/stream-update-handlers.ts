@@ -45,6 +45,9 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
         if (toolCallToUpdate != null) {
             toolCallToUpdate.toolName += chunk.toolName;
 
+            if (chunk.toolSource) {
+                toolCallToUpdate.toolSource = chunk.toolSource;
+            }
             if (typeof chunk.args === 'object') {
                 // Assuming it's a finished object if we get an object from the API
                 toolCallToUpdate.args = chunk.args;
@@ -59,6 +62,7 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
                 toolName: chunk.toolName,
                 toolCallId: chunk.toolCallId,
                 args: chunk.args,
+                toolSource: chunk.toolSource,
             };
             messageToUpdate.toolCalls.push(toolCallToAdd);
         }

@@ -8,8 +8,8 @@ import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/C
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 import { mapToolCallArgs } from '../mapToolCallArgs';
-import { ToolCallAnswer } from './ToolCallAnswer';
 import { ToolCallParameters } from './ToolCallParameters';
+import { ToolCallResult } from './ToolCallResult';
 
 interface ToolCallWidgetProps {
     toolCall: SchemaToolCall;
@@ -34,7 +34,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
                 <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                <ToolCallAnswer>{answer}</ToolCallAnswer>
+                <ToolCallResult toolCall={toolCall} answer={answer} />
             </CollapsibleWidgetPanel>
         </CollapsibleWidgetBase>
     );
