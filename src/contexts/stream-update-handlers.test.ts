@@ -73,6 +73,7 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: toolCallChunk.toolCallId,
             toolName: toolCallChunk.toolName,
+            toolSource: toolCallChunk.toolSource,
             args: toolCallChunk.args,
         });
     });
@@ -141,11 +142,13 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: toolCallChunk.toolSource,
             args: existingToolCall.args,
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual({
             toolCallId: toolCallChunk.toolCallId,
             toolName: toolCallChunk.toolName,
+            toolSource: toolCallChunk.toolSource,
             args: toolCallChunk.args,
         });
     });
@@ -221,6 +224,7 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
             args: '{ bar:',
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
@@ -245,6 +249,7 @@ describe('updateThreadWithToolCall', () => {
         expect(updatedMessageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
             args: "{ bar: 'foo' }",
         });
         expect(updatedMessageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
@@ -321,6 +326,7 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
             args: toolCallChunk.args,
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
