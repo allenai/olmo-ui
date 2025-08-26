@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
             setupFiles: ['./vitest-setup.ts'],
             exclude: [...configDefaults.exclude, 'e2e/*'],
             restoreMocks: true,
-            env,
+            env: loadEnv(mode, process.cwd(), ''),
         },
         // we are facing issue with nivo import that make unit test won't run so we are using this to resolve it
         // Ref: https://github.com/plouc/nivo/issues/2310
