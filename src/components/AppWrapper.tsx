@@ -26,9 +26,9 @@ interface VarnishedAppProps extends PropsWithChildren {
 }
 
 const ReCaptchaWrapper = ({ children }: PropsWithChildren) => {
-    const siteKey = process.env.RECAPTCHA_SITE_KEY;
+    const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
-    if (process.env.IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
+    if (import.meta.env.VITE_IS_RECAPTCHA_ENABLED !== 'true' || !siteKey) {
         return <>{children}</>;
     }
 

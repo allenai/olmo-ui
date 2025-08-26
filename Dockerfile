@@ -9,8 +9,8 @@ COPY . .
 ARG SKIFF_ENV_ARG
 ENV SKIFF_ENV=$SKIFF_ENV_ARG
 ENV NODE_ENV=production
-ENV LLMX_API_URL=https://olmo-api.allen.ai
-ENV DOLMA_API_URL=/api
+ENV VITE_API_URL=https://olmo-api.allen.ai
+ENV VITE_DOLMA_API_URL=/api
 RUN yarn build
 
 FROM nginx:1.17.0-alpine

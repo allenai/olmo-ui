@@ -10,7 +10,7 @@ export abstract class ClientBase {
     anonymousUserId: string;
 
     constructor(
-        readonly origin = process.env.LLMX_API_URL,
+        readonly origin = import.meta.env.VITE_API_URL,
         anonymousUserId?: string
     ) {
         if (anonymousUserId != null) {

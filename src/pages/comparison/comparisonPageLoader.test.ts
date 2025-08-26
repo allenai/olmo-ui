@@ -15,7 +15,7 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
 
     beforeEach(() => {
         queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-        vi.stubEnv('IS_COMPARISON_PAGE_ENABLED', 'true');
+        vi.stubEnv('VITE_IS_COMPARISON_PAGE_ENABLED', 'true');
     });
 
     afterEach(() => {

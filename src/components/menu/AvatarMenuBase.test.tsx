@@ -92,8 +92,8 @@ describe('AvatarMenuBase', () => {
         expect(optOut as HTMLInputElement).not.toBeChecked();
     });
 
-    it('conditionally renders Privacy Settings link when IS_ANALYTICS_ENABLED is true', () => {
-        vi.stubEnv('IS_ANALYTICS_ENABLED', 'true');
+    it('conditionally renders Privacy Settings link when VITE_IS_ANALYTICS_ENABLED is true', () => {
+        vi.stubEnv('VITE_IS_ANALYTICS_ENABLED', 'true');
 
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 
@@ -102,8 +102,8 @@ describe('AvatarMenuBase', () => {
         vi.unstubAllEnvs(); // clean up
     });
 
-    it('does not render Privacy Settings if IS_ANALYTICS_ENABLED is false', () => {
-        vi.stubEnv('IS_ANALYTICS_ENABLED', 'false');
+    it('does not render Privacy Settings if VITE_IS_ANALYTICS_ENABLED is false', () => {
+        vi.stubEnv('VITE_IS_ANALYTICS_ENABLED', 'false');
 
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 

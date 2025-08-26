@@ -21,11 +21,11 @@ export const handlers = [
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
 
-    http.get(`${process.env.LLMX_API_URL}${SchemaApiUrl}`, () => {
+    http.get(`${import.meta.env.VITE_API_URL}${SchemaApiUrl}`, () => {
         return HttpResponse.json(fakeSchemaResponse);
     }),
 
-    http.get(`${process.env.LLMX_API_URL}${WhoamiApiUrl}`, () => {
+    http.get(`${import.meta.env.VITE_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
             client: 'murphy@allenai.org',
             hasAcceptedTermsAndConditions: true,
@@ -33,7 +33,7 @@ export const handlers = [
         });
     }),
 
-    http.put(`${process.env.LLMX_API_URL}${MigrateFromAnonymousUserUrl}`, () => {
+    http.put(`${import.meta.env.VITE_API_URL}${MigrateFromAnonymousUserUrl}`, () => {
         return HttpResponse.json({
             updated_user: {
                 client: 'murphy@allenai.org',
@@ -43,11 +43,11 @@ export const handlers = [
         });
     }),
 
-    http.get(`${process.env.LLMX_API_URL}${PromptTemplatesApiUrl}`, () => {
+    http.get(`${import.meta.env.VITE_API_URL}${PromptTemplatesApiUrl}`, () => {
         return HttpResponse.json(fakePromptsResponse);
     }),
 
-    http.get(`${process.env.DOLMA_API_URL}/v1/search`, ({ request }) => {
+    http.get(`${import.meta.env.VITE_DOLMA_API_URL}/v1/search`, ({ request }) => {
         const searchParams = new URL(request.url).searchParams;
         const query = searchParams.get('query');
         if (query === 'Seattle') {
@@ -58,7 +58,7 @@ export const handlers = [
     }),
 
     http.get(
-        `${process.env.DOLMA_API_URL}/v1/document/a718be1486e24cbb7e0aee7d0bef8442`,
+        `${import.meta.env.VITE_DOLMA_API_URL}/v1/document/a718be1486e24cbb7e0aee7d0bef8442`,
         ({ request }) => {
             const searchParams = new URL(request.url).searchParams;
             const query = searchParams.get('query');
