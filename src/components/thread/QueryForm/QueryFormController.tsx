@@ -128,7 +128,7 @@ export const QueryFormController = ({
         if (!canEditThread || isSelectedThreadLoading) {
             return;
         }
-        const isReCaptchaEnabled = import.meta.env.VITE_IS_RECAPTCHA_ENABLED;
+        const isReCaptchaEnabled = process.env.VITE_IS_RECAPTCHA_ENABLED;
 
         if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
             analyticsClient.trackCaptchaNotLoaded();
