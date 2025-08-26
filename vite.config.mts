@@ -1,12 +1,13 @@
 import { loadEnv } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { configDefaults, defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react-swc'
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '')
     
     return {
-        plugins: [tsconfigPaths()],
+        plugins: [tsconfigPaths(), react()],
         test: {
             name: 'base',
             globals: true,
