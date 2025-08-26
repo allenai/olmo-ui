@@ -1,4 +1,3 @@
-import { search } from '../api/dolma/search';
 import { plausibleTrackEvent, plausibleTrackPageview } from './plausible';
 
 export enum EventType {
@@ -23,24 +22,6 @@ export enum EventType {
     CaptchaNotLoaded = 'queryform.captcha-not-loaded',
 }
 
-export type SearchQueryDetails = {
-    request: search.Request;
-    response: { meta: search.Meta };
-};
-
-export type SearchResultClickDetails = {
-    id: string;
-    request: search.Request;
-    source: search.Source;
-    index: number;
-};
-
-export type DocumentEventDetails = {
-    id: string;
-    source: search.Source;
-    query?: string;
-};
-
 export type PromptMessageDetails = {
     threadId: string;
 };
@@ -48,12 +29,7 @@ export type PromptMessageDetails = {
 export interface AnalyticsEvent {
     type: EventType;
     occurred: Date;
-    details?:
-        | SearchQueryDetails
-        | SearchResultClickDetails
-        | DocumentEventDetails
-        | PromptMessageDetails
-        | Record<string, unknown>;
+    details?: PromptMessageDetails | Record<string, unknown>;
 }
 
 const generatePlausibleEvent = (et: EventType, details?: object): AnalyticsEvent => {
@@ -86,22 +62,6 @@ export class AnalyticsClient {
             console.error('Something went wrong when sending analytics', e);
             return false;
         }
-    }
-
-    trackSearchQuery(details: SearchQueryDetails): boolean {
-        return this.track(EventType.SearchQuery, details);
-    }
-
-    trackSearchResultClick(details: SearchResultClickDetails): boolean {
-        return this.track(EventType.SearchResultClick, details);
-    }
-
-    trackDocumentView(details: DocumentEventDetails): boolean {
-        return this.track(EventType.DocumentView, details);
-    }
-
-    trackDocumentShare(details: DocumentEventDetails): boolean {
-        return this.track(EventType.DocumentShare, details);
     }
 
     trackNewPrompt(): boolean {

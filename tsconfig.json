@@ -22,7 +22,6 @@
   },
   "include": [
     "src/**/*",
-    "@types",
     "./vitest-setup.ts",
     "index.d.ts",
     "__mocks__",

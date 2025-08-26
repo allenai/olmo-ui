@@ -5,7 +5,6 @@ import { Schema, SchemaApiUrl } from '@/api/Schema';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
 import { attributionHandlers } from './attributionHandlers';
-import { dolmaHandlers } from './dolmaHandlers';
 import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
@@ -16,7 +15,6 @@ import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
 
 export const handlers = [
     ...messageStreamHandlers,
-    ...dolmaHandlers,
     ...attributionHandlers,
     ...messageHandlers,
     ...v4ThreadHandlers,
