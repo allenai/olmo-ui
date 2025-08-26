@@ -1,12 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
 import { TestOptions } from 'e2e/playwright-utils';
+import { loadEnv } from 'vite';
 
-const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
-
-dotenv.config({
-    path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'],
-});
+const env = loadEnv('test', process.cwd(), '');
 
 const bypassCSP = {
     // For some reason only Playwright tests are having CORS issues when coming back from the login screen. These resolve that problem
@@ -22,17 +18,17 @@ export default defineConfig<TestOptions>({
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
-    forbidOnly: !!process.env.CI,
+    forbidOnly: !!env.CI,
     /* Retry on CI only */
-    retries: process.env.CI ? 2 : 0,
+    retries: env.CI ? 2 : 0,
     /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    workers: env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: process.env.CI ? [['blob']] : [['html', { open: 'never' }]],
+    reporter: env.CI ? [['blob']] : [['html', { open: 'never' }]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         /* Base URL to use in actions like `await page.goto('/')`. */
-        baseURL: process.env.PLAYWRIGHT_VITE_BASE_URL,
+        baseURL: env.PLAYWRIGHT_BASE_URL,
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         // trace: 'on-first-retry',
@@ -116,8 +112,8 @@ export default defineConfig<TestOptions>({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'yarn start',
-        url: process.env.PLAYWRIGHT_VITE_BASE_URL,
-        reuseExistingServer: !process.env.CI,
+        command: 'yarn test:e2e:server',
+        url: env.PLAYWRIGHT_BASE_URL,
+        reuseExistingServer: !env.CI,
     },
 });

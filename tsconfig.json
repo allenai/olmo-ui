@@ -32,8 +32,7 @@
     "playwright.config.ts",
     "panda.config.ts",
     "styled-system",
-    ".storybook/**/*",
-    "vite.config.ts"
+    ".storybook/**/*"
   ],
   "exclude": ["node_modules", "dist"]
 }
