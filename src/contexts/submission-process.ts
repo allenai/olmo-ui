@@ -60,7 +60,7 @@ export const validateSubmission = (canSubmit: boolean, isLoading: boolean): bool
 export const setupRecaptcha = async (
     executeRecaptcha?: ((action?: string) => Promise<string> | null) | null
 ): Promise<string | undefined> => {
-    if (import.meta.env.VITE_IS_RECAPTCHA_ENABLED !== 'true') return undefined;
+    if (process.env.VITE_IS_RECAPTCHA_ENABLED !== 'true') return undefined;
 
     if (!executeRecaptcha) {
         analyticsClient.trackCaptchaNotLoaded();

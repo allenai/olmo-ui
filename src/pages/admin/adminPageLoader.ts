@@ -9,7 +9,7 @@ export const adminPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ request }) => {
         const userData = await queryClient.ensureQueryData(getUserModel);
         const hasAdminPermission = userData.permissions?.includes('write:model-config');
-        const isModelConfigEnabled = import.meta.env.VITE_IS_MODEL_CONFIG_ENABLED === 'true';
+        const isModelConfigEnabled = process.env.VITE_IS_MODEL_CONFIG_ENABLED === 'true';
 
         if (!isModelConfigEnabled || !hasAdminPermission) {
             // React-router recommends throwing a response

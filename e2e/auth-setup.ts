@@ -5,7 +5,7 @@ import { test } from './playwright-utils';
 const authFile = path.join(__dirname, '../e2e/.auth/storageState.json');
 
 test('set up auth', async ({ page }) => {
-    if (import.meta.env.E2E_TEST_USER == null || import.meta.env.E2E_TEST_PASSWORD == null) {
+    if (process.env.E2E_TEST_USER == null || process.env.E2E_TEST_PASSWORD == null) {
         throw new Error('Missing required Auth user credentials');
     }
 
@@ -18,8 +18,8 @@ test('set up auth', async ({ page }) => {
 
     await page.getByRole('link', { name: 'Log in' }).click();
 
-    await page.getByLabel('Email address').fill(import.meta.env.E2E_TEST_USER);
-    await page.getByLabel('Password').fill(import.meta.env.E2E_TEST_PASSWORD);
+    await page.getByLabel('Email address').fill(process.env.E2E_TEST_USER);
+    await page.getByLabel('Password').fill(process.env.E2E_TEST_PASSWORD);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
 
     await page.waitForURL('/');
