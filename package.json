@@ -13,7 +13,7 @@
     "lint": "eslint '**/*.{js,ts,tsx,json}'",
     "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && sort-package-json",
     "prepare": "panda",
-    "start": "run-p -r watch:css build:dev",
+    "start": "run-p -r watch:css \"build:dev --port 3000 --host\"",
     "dev": "run-p -r watch:css \"build:dev --port 8080\"",
     "storybook": "run-p -r  watch:css storybook-start-dev",
     "storybook-start-dev": "storybook dev -p 6006",
