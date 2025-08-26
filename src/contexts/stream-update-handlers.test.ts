@@ -127,6 +127,7 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: 'tool-call-2',
             toolName: 'cooler-tool',
             type: 'toolCall',
+            toolSource: 'internal',
             args: { bar: 'foo' },
         };
 
