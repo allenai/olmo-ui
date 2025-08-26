@@ -6,9 +6,9 @@ import { useLocation } from 'react-router-dom';
 import { ThreadError } from '@/pages/comparison/ThreadError';
 
 import { AttributionHighlightDescription } from '../attribution/AttributionHighlightDescription';
+import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { getLegalNoticeTextColor, LegalNotice } from '../LegalNotice/LegalNotice';
 import { ScrollToBottomButton } from '../ScrollToBottomButton';
-import { MessageView } from './MessageView';
 import { ThreadMaxWidthContainer } from './ThreadMaxWidthContainer';
 
 interface ThreadDisplayProps {
@@ -255,7 +255,7 @@ export const ThreadDisplay = ({
                 />
             )}
             {childMessageIds.map((messageId) => (
-                <MessageView
+                <ChatMessage
                     messageId={messageId}
                     key={messageId}
                     isLastMessageInThread={lastMessageId === messageId}

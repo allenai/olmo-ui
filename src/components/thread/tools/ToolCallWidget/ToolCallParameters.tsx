@@ -25,6 +25,10 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
         }
     };
 
+    if (children.length === 0) {
+        return null;
+    }
+
     return (
         <CollapsibleWidgetContent contrast="medium">
             <div className={css({ position: 'relative' })}>

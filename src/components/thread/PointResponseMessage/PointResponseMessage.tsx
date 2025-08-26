@@ -6,10 +6,10 @@ import { useMessage, useThread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
+import { type MessageProps, StandardMessage } from '../ChatMessage/ChatMessage';
 import { MarkdownRenderer } from '../Markdown/MarkdownRenderer';
 import { extractPointData, Point, PointInfo } from '../points/extractPointData';
 import { pointRegex } from '../points/pointRegex';
-import { MessageProps, StandardMessage } from '../ThreadDisplay/MessageView';
 import { MAX_THREAD_IMAGE_HEIGHT } from '../ThreadDisplay/threadDisplayConsts';
 import { PointPictureModal } from './PointPictureModal';
 

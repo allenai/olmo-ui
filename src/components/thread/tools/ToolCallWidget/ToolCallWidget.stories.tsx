@@ -10,7 +10,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const WithParameters: Story = {
     args: {
         toolCall: {
             args: '{ "firstName": "Taylor", "lastName": "Blanton" }',
@@ -21,13 +21,13 @@ export const Default: Story = {
     },
 };
 
-export const Loading: Story = {
+export const WithEmptyParameters: Story = {
     args: {
         toolCall: {
-            args: '{ "firstName": "Taylor", "lastName": "Blanton" }',
+            args: undefined,
             toolCallId: 'tool-call-id',
-            toolName: 'leetName',
+            toolName: 'create_random_number',
         },
-        answer: undefined,
+        answer: '42',
     },
 };
