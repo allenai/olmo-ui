@@ -87,14 +87,14 @@ function createToggles(initialToggles = defaultFeatureToggles) {
     const queryToggles = parseToggles(Object.fromEntries(query));
 
     const envToggles = parseToggles({
-        isCorpusLinkEnabled: process.env.VITE_IS_CORPUS_LINK_ENABLED,
-        absoluteSpanScore: process.env.VITE_ABSOLUTE_SPAN_SCORE,
-        bucketColors: process.env.VITE_BUCKET_COLORS,
-        isDatasetExplorerEnabled: process.env.VITE_IS_DATASET_EXPLORER_ENABLED,
-        isMultiModalEnabled: process.env.VITE_IS_MULTI_MODAL_ENABLED,
-        isModelConfigEnabled: process.env.VITE_IS_MODEL_CONFIG_ENABLED,
-        isComparisonPageEnabled: process.env.VITE_IS_COMPARISON_PAGE_ENABLED,
-        isOLMoASREnabled: process.env.VITE_IS_OLMO_ASR_ENABLED,
+        isCorpusLinkEnabled: import.meta.env.VITE_IS_CORPUS_LINK_ENABLED,
+        absoluteSpanScore: import.meta.env.VITE_ABSOLUTE_SPAN_SCORE,
+        bucketColors: import.meta.env.VITE_BUCKET_COLORS,
+        isDatasetExplorerEnabled: import.meta.env.VITE_IS_DATASET_EXPLORER_ENABLED,
+        isMultiModalEnabled: import.meta.env.VITE_IS_MULTI_MODAL_ENABLED,
+        isModelConfigEnabled: import.meta.env.VITE_IS_MODEL_CONFIG_ENABLED,
+        isComparisonPageEnabled: import.meta.env.VITE_IS_COMPARISON_PAGE_ENABLED,
+        isOLMoASREnabled: import.meta.env.VITE_IS_OLMO_ASR_ENABLED,
     });
 
     const toggles = {

@@ -96,7 +96,7 @@ export const AvatarMenuBase = ({
                 themeModeAdaptive={themeModeAdaptive}>
                 Data Collection
             </AvatarMenuItem>
-            {process.env.VITE_IS_ANALYTICS_ENABLED === 'true' && (
+            {import.meta.env.VITE_IS_ANALYTICS_ENABLED === 'true' && (
                 <AvatarMenuItem
                     icon={<ShieldOutlined />}
                     onClick={() => {

@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom';
 import { AppWrapper } from './components/AppWrapper';
 
 const enableMocking = async () => {
-    if (process.env.NODE_ENV === 'production' || process.env.VITE_ENABLE_MOCKING !== 'true') {
+    if (import.meta.env.PROD || import.meta.env.VITE_ENABLE_MOCKING !== 'true') {
         return;
     }
 

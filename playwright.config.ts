@@ -32,7 +32,7 @@ export default defineConfig<Fixtures>({
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         /* Base URL to use in actions like `await page.goto('/')`. */
-        baseURL: process.env.PLAYWRIGHT_BASE_URL,
+        baseURL: process.env.PLAYWRIGHT_VITE_BASE_URL,
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         // trace: 'on-first-retry',
@@ -120,8 +120,8 @@ export default defineConfig<Fixtures>({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'yarn test:e2e:server',
-        url: process.env.PLAYWRIGHT_BASE_URL,
+        command: 'yarn start',
+        url: process.env.PLAYWRIGHT_VITE_BASE_URL,
         reuseExistingServer: !process.env.CI,
     },
 });

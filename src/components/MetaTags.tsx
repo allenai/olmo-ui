@@ -22,7 +22,10 @@ export const MetaTags = ({
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={socialSharingImageUrl} />
-            <meta property="og:url" content={`${process.env.VITE_BASE_URL}/${location.pathname}`} />
+            <meta
+                property="og:url"
+                content={`${import.meta.env.VITE_BASE_URL}/${location.pathname}`}
+            />
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:site" content="@allen_ai" />
         </Helmet>
