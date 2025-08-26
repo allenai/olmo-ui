@@ -289,7 +289,7 @@ export const v4ThreadHandlers = [
 
         // if we are responding to a user tool function
         // we need to handle this before formData.get('parent'), as it will respond otherwise
-        if (formData.get('role') === 'tool_call_response') {
+        if (formData.get('role') === 'tool_call_result') {
             response = userToolCallsStreamToolResponse;
         } else if (formData.get('parent') != null) {
             response = fakeFollowupResponse(formData.get('parent') as string);

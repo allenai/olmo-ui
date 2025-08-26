@@ -1,9 +1,7 @@
-import type { UseFormReturn } from 'react-hook-form-mui';
+import type { Path, UseFormReturn } from 'react-hook-form-mui';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
-
-import { QueryFormValues } from './QueryFormController';
 
 const INAPPROPRIATE_FORM_ERROR_CONFIGS = {
     inappropriate_prompt_text: {
@@ -54,13 +52,15 @@ export const isInappropriateFormError = (error: unknown): boolean => {
     return false;
 };
 
-export const handleFormSubmitException = (
+type FormContextWithContent<T extends { content: string }> = UseFormReturn<T>;
+
+export const handleFormSubmitException = <T extends { content: string }>(
     e: unknown,
-    formContext: UseFormReturn<QueryFormValues>
+    formContext: FormContextWithContent<T>
 ) => {
     if (e instanceof StreamBadRequestError) {
         if (e instanceof StreamValidationError) {
-            formContext.setError('content', {
+            formContext.setError('content' as Path<T>, {
                 type: 'validation',
                 message: e.description,
             });
@@ -74,7 +74,7 @@ export const handleFormSubmitException = (
             : undefined;
 
         if (config) {
-            formContext.setError('content', {
+            formContext.setError('content' as Path<T>, {
                 type: config.type,
                 message: config.message,
             });
