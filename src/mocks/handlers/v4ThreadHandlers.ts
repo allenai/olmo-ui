@@ -23,11 +23,19 @@ import {
 import { fakeFollowupResponse } from './responses/v4/stream/followup';
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
 import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
+import {
+    userToolCallsStreamResponse,
+    userToolCallsStreamToolResponse,
+} from './responses/v4/stream/userToolCalls';
 import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
 import {
     THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
     thinkingAndToolCallsResponse,
 } from './responses/v4/thinkingAndToolCallsResponse';
+import {
+    USER_TOOL_CALLS_THREAD_ROOT_ID,
+    userToolCallsResponse,
+} from './responses/v4/userToolCallsResponse';
 import { typedHttp } from './typedHttp';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -230,6 +238,7 @@ const v4ThreadResponses = {
     msg_multiple_points: multiplePointerMessageResponse,
     msg_overlapping_spans: overlappingSpansResponse,
     [THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID]: thinkingAndToolCallsResponse,
+    [USER_TOOL_CALLS_THREAD_ROOT_ID]: userToolCallsResponse,
 };
 
 export interface MessagesResponseV4 {
@@ -277,7 +286,12 @@ export const v4ThreadHandlers = [
         }
 
         let response: StreamingMessageResponse[];
-        if (formData.get('parent') != null) {
+
+        // if we are responding to a user tool function
+        // we need to handle this before formData.get('parent'), as it will respond otherwise
+        if (formData.get('role') === 'tool_call_response') {
+            response = userToolCallsStreamToolResponse;
+        } else if (formData.get('parent') != null) {
             response = fakeFollowupResponse(formData.get('parent') as string);
         } else if (content === 'include system message') {
             response = streamResponseWithSystemMessage;
@@ -292,6 +306,8 @@ export const v4ThreadHandlers = [
             }
         } else if (content === 'thinkingAndToolCalls') {
             response = thinkingAndToolCallsStreamResponse;
+        } else if (content === 'userToolCalls') {
+            response = userToolCallsStreamResponse;
         } else {
             response = fakeNewThreadMessages;
         }
