@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { TestOptions } from 'e2e/playwright-utils';
+import type { Fixtures } from 'e2e/playwright-types';
 import { loadEnv } from 'vite';
 
 const env = loadEnv('test', process.cwd(), '');

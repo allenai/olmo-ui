@@ -1,8 +1,11 @@
+import { createNetworkFixture } from '@msw/playwright';
 import { expect, Locator, Page, test as base } from '@playwright/test';
 
+import { handlers } from '../src/mocks/handlers/index';
 import type { Fixtures } from './playwright-types';
 
 const test = base.extend<Fixtures>({
+    network: createNetworkFixture({ initialHandlers: handlers }),
     isAnonymousTest: [false, { option: true }],
 });
 
