@@ -11,6 +11,7 @@ import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterS
 import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsInput';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
 import { ParameterToggle } from './inputs/ParameterToggle';
@@ -114,6 +115,7 @@ export const ParameterContent = () => {
     const [showFunctionDialog, setShowFunctionDialog] = React.useState(false);
     const [functionEditDisabled, setFunctionEditDisabled] = React.useState(!hasDefinitions);
 
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
     if (schemaData == null) {
         return null;
@@ -222,6 +224,11 @@ export const ParameterContent = () => {
                             parameterUpdated: 'tool_definitions',
                         });
                         updateUserToolDefinitions(declaration);
+                        addSnackMessage({
+                            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                            type: SnackMessageType.Brief,
+                            message: 'Function Definition Saved',
+                        });
                     }}
                 />
             </ParametersList>

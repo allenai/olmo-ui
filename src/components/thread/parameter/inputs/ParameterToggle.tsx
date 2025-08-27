@@ -4,11 +4,7 @@
 
 import { stack } from '@allenai/varnish-panda-runtime/patterns';
 import { Button, Switch } from '@allenai/varnish-ui';
-import { useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
-
-import { useAppContext } from '@/AppContext';
-import { SnackMessageType } from '@/slices/SnackMessageSlice';
+import { useEffect, useState } from 'react';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
@@ -35,24 +31,21 @@ export const ParameterToggle = ({
     onChange,
     id,
 }: Props) => {
-    const [value, setValue] = useState(initialValue);
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const [value, setValue] = useState(false);
     const viewOnly = disableToggle && !disableEditButton;
 
-    const handleChange = useDebouncedCallback((value: boolean) => {
+    const handleChange = (value: boolean) => {
         onChange?.(value);
-
-        addSnackMessage({
-            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-            type: SnackMessageType.Brief,
-            message: 'Parameters Saved',
-        });
-    }, 800);
+    };
 
     const handleToggleChange = (newValue: boolean) => {
         setValue(newValue);
         handleChange(newValue);
     };
+
+    useEffect(() => {
+        setValue(initialValue);
+    }, [initialValue]);
 
     return (
         <ParameterDrawerInputWrapper
