@@ -1,4 +1,3 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
 import { DataObject } from '@mui/icons-material';
 
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
@@ -16,16 +15,12 @@ interface ToolCallWidgetProps {
     answer?: string;
 }
 
-const toolCallWidgetClassName = css({
-    marginBottom: '1',
-});
-
 export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
     const mappedArgs = mapToolCallArgs(toolCall);
     const stringArgs = JSON.stringify(mappedArgs, undefined, 2);
 
     return (
-        <CollapsibleWidgetBase className={toolCallWidgetClassName} defaultExpanded>
+        <CollapsibleWidgetBase defaultExpanded>
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
