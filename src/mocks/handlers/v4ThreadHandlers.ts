@@ -9,6 +9,10 @@ import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
 import { inappropriateContentErrorResponse } from './responses/v4/inappropriateContentErrorResponse';
+import {
+    INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+    internalToolCallsResponse,
+} from './responses/v4/internalToolCallResponse';
 import multiplePointerMessageResponse from './responses/v4/multiplePointerMessageResponse';
 import { overlappingSpansResponse } from './responses/v4/overlappingSpansResponse';
 import {
@@ -21,6 +25,7 @@ import {
     newMessageId,
 } from './responses/v4/stream/default';
 import { fakeFollowupResponse } from './responses/v4/stream/followup';
+import { internalToolCallsStreamResponse } from './responses/v4/stream/internalToolCall';
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
 import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
 import {
@@ -239,6 +244,7 @@ const v4ThreadResponses = {
     msg_overlapping_spans: overlappingSpansResponse,
     [THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID]: thinkingAndToolCallsResponse,
     [USER_TOOL_CALLS_THREAD_ROOT_ID]: userToolCallsResponse,
+    [INTERNAL_TOOL_CALLS_THREAD_ROOT_ID]: internalToolCallsResponse,
 };
 
 export interface MessagesResponseV4 {
@@ -306,6 +312,8 @@ export const v4ThreadHandlers = [
             }
         } else if (content === 'thinkingAndToolCalls') {
             response = thinkingAndToolCallsStreamResponse;
+        } else if (content === 'internalToolCalls') {
+            response = internalToolCallsStreamResponse;
         } else if (content === 'userToolCalls') {
             response = userToolCallsStreamResponse;
         } else {
