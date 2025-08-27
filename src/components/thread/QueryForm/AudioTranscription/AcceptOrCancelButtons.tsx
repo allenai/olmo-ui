@@ -22,7 +22,7 @@ export const AcceptOrCancelButtons = ({
                 color="default"
                 size="small"
                 sx={{
-                    color: 'var(--palette-light-text-default)',
+                    color: (theme) => theme.palette.text.primary,
                     ':hover': {
                         color: 'var(--palette-light-accent-secondary)',
                     },
