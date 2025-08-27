@@ -21,12 +21,12 @@ export const AcceptOrCancelButtons = ({
                 disableRipple={true}
                 color="default"
                 size="small"
-                sx={{
-                    color: 'var(--palette-light-text-default)',
+                sx={(theme) => ({
+                    color: theme.palette.text.primary,
                     ':hover': {
-                        color: 'var(--palette-light-accent-secondary)',
+                        color: theme.palette.secondary.main,
                     },
-                }}>
+                })}>
                 <CloseIcon fontSize="small" sx={{ margin: 0.25 }} />
             </PromptButton>
             <PromptButton
