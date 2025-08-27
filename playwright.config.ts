@@ -116,7 +116,7 @@ export default defineConfig<Fixtures>({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'yarn start',
+        command: 'yarn test:e2e:server',
         url: process.env.PLAYWRIGHT_BASE_URL,
         reuseExistingServer: !process.env.CI,
     },
