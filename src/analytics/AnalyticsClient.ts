@@ -61,6 +61,7 @@ export class AnalyticsClient {
                 return navigator.sendBeacon('/api/v1/event', data);
             } else {
                 console.log('Track event', details);
+                return true;
             }
         } catch (e: unknown) {
             console.error('Something went wrong when sending analytics', e);
