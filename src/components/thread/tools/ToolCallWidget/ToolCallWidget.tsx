@@ -20,7 +20,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
     const stringArgs = JSON.stringify(mappedArgs, undefined, 2);
 
     return (
-        <CollapsibleWidgetBase defaultExpanded>
+        <CollapsibleWidgetBase defaultExpanded data-widget-type="tool-call">
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}

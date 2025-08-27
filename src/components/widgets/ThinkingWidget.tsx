@@ -49,6 +49,7 @@ const ThinkingWidget = ({
     return (
         <CollapsibleWidgetBase
             className={cx(thinkingWidgetClassNames.container, className)}
+            data-widget-type="thinking"
             {...rest}>
             <CollapsibleWidgetHeading
                 startAdornment={<ThinkingIcon size="small" />}
