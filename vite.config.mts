@@ -51,6 +51,9 @@ export default defineConfig(({ mode }) => {
                     changeOrigin: true,
                 }
             }
-        }   
+        },
+        preview: {
+            port: 8080
+        }
     }
 })
