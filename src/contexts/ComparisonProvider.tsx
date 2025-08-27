@@ -191,6 +191,10 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         return threadIds.length > 0 && threadIds.every((threadId) => threadId != null);
     }, [threadIds]);
 
+    useEffect(() => {
+        setUserToolDefinitions(getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1]));
+    }, [threadIds]);
+
     // Sync local state with any necessary global UI state
     useEffect(() => {
         setIsShareReady(isShareReady);
