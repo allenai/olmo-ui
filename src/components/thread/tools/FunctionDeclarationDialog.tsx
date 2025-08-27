@@ -1,8 +1,9 @@
-import { css } from '@allenai/varnish-panda-runtime/css';
+import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
 
+import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
 
 const modalBase = css({
@@ -50,6 +51,7 @@ export function FunctionDeclarationDialog({
     onReset,
     onClose,
 }: FunctionDeclarationDialogProps) {
+    const { colorMode } = useColorMode();
     const { handleSubmit, reset, control } = useForm<DataFields>({
         defaultValues: {
             declaration: jsonData,
@@ -71,7 +73,7 @@ export function FunctionDeclarationDialog({
 
     return (
         <Modal
-            className={modalBase}
+            className={cx(colorMode, modalBase)}
             isOpen={isOpen}
             isDismissable
             fullWidth
