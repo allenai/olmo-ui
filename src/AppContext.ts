@@ -7,15 +7,12 @@ import { createStore } from 'zustand/vanilla';
 
 import { AttributionSlice, createAttributionSlice } from './slices/attribution/AttributionSlice';
 import { CompareModelSlice, createCompareModelSlice } from './slices/CompareModelSlice';
-import { createDocumentSlice, DocumentSlice } from './slices/DocumentSlice';
 import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createGlobalThreadsUISlice, GlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
-import { createMetaSlice, MetaSlice } from './slices/MetaSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
 import { createPromptTemplateSlice, PromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
-import { createSearchSlice, SearchSlice } from './slices/SearchSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
@@ -23,8 +20,6 @@ import { createThreadStreamSlice, ThreadStreamSlice } from './slices/ThreadStrea
 import { createThreadUpdateSlice, ThreadUpdateSlice } from './slices/ThreadUpdateSlice';
 import { createTranscriptionSlice, TranscriptionSlice } from './slices/TranscriptionSlice';
 import { createUserSlice, UserSlice } from './slices/UserSlice';
-
-type DatasetExplorerSliceStates = SearchSlice & MetaSlice & DocumentSlice;
 
 export type AppContextState = LabelSlice &
     PromptTemplateSlice &
@@ -40,7 +35,6 @@ export type AppContextState = LabelSlice &
     TranscriptionSlice &
     SelectedThreadSlice &
     GlobalThreadsUISlice &
-    DatasetExplorerSliceStates &
     AttributionSlice;
 
 export type ZustandDevtools = [['zustand/devtools', never], ['zustand/immer', never]];
@@ -69,9 +63,6 @@ export const createAppContext = (
                         ...createCompareModelSlice(...store),
                         ...createSchemaSlice(...store),
                         ...createDrawerSlice(...store),
-                        ...createSearchSlice(...store),
-                        ...createMetaSlice(...store),
-                        ...createDocumentSlice(...store),
                         ...createThreadUpdateSlice(...store),
                         ...createTranscriptionSlice(...store),
                         ...createSelectedThreadSlice(...store),
@@ -89,6 +80,7 @@ export const createAppContext = (
 export const appContext = createAppContext();
 
 type SelectorType<TSelectorReturnValue> = Parameters<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     typeof useStore<typeof appContext, TSelectorReturnValue>
 >[1];
 
@@ -100,14 +92,21 @@ export function useAppContext<TSelectorReturnValue>(
 
 export function useAppContext<TSelectorReturnValue>(selector?: SelectorType<TSelectorReturnValue>) {
     if (selector == null) {
+        // eslint-disable-next-line react-compiler/react-compiler
         return useStore(appContext);
     }
 
+    // eslint-disable-next-line react-compiler/react-compiler
     return useStore(appContext, selector);
 }
 /* eslint-enable no-redeclare */
 
 // @ts-expect-error - Making a new function to be able to show T&Cs whenever we want
 window.showTermsAndConditions = () => {
-    appContext.getState().updateTermsAndConditions(false);
+    appContext
+        .getState()
+        .updateTermsAndConditions(false)
+        .catch((e: unknown) => {
+            console.error('There was an error opening the terms and conditions', e);
+        });
 };

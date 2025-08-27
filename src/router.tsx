@@ -1,6 +1,4 @@
-import { Box } from '@mui/material';
-import type { ReactNode } from 'react';
-import { createBrowserRouter, Navigate, Outlet, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
 import {
     loginAction,
@@ -12,14 +10,12 @@ import {
 import { queryClient } from './api/query-client';
 import { userInfoLoader } from './api/user-info-loader';
 import { AppWrapper } from './components/AppWrapper';
-import { DolmaDataLoader } from './components/dolma/DolmaTabs';
 import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplayContainer } from './components/thread/ThreadDisplay/ThreadDisplayContainer';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
-import { getFeatureToggles } from './FeatureToggleContext';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
@@ -36,32 +32,13 @@ import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/Updat
 import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
-import { Document } from './pages/Document';
-import { DolmaExplorer } from './pages/DolmaExplorer';
 import { ErrorPage } from './pages/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import { Search, searchPageLoader } from './pages/Search';
 import {
     handleRevalidation,
     playgroundLoader,
     UIRefreshThreadPage,
 } from './pages/UIRefreshThreadPage';
-
-const DolmaPage = (): ReactNode => {
-    return (
-        <Box
-            sx={{
-                // this maps to grid-row-start / grid-column-start / grid-row-end / grid-column-end
-                gridArea: 'content / content / aside / aside',
-                overflow: 'auto',
-                paddingInline: 2,
-                paddingBlockEnd: 2,
-            }}>
-            <MetaTags title="Ai2 Playground - Dataset Explorer" />
-            <Outlet />
-        </Box>
-    );
-};
 
 export const routes: RouteObject[] = [
     {
@@ -119,51 +96,6 @@ export const routes: RouteObject[] = [
                         ],
                         loader: playgroundLoader(queryClient),
                         shouldRevalidate: handleRevalidation,
-                    },
-                    {
-                        element: <DolmaPage />,
-                        loader: () => {
-                            const { isDatasetExplorerEnabled } = getFeatureToggles();
-                            if (!isDatasetExplorerEnabled) {
-                                // React-router recommends throwing a
-                                // eslint-disable-next-line @typescript-eslint/only-throw-error
-                                throw new Response('Not Found', { status: 404 });
-                            }
-
-                            return new Response();
-                        },
-                        children: [
-                            {
-                                path: links.document(':id'),
-                                element: <Document />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                            },
-                            {
-                                path: links.document(':id', ':index'),
-                                element: <Document />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                            },
-                            {
-                                path: links.datasetExplorer,
-                                element: <DolmaExplorer />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                                loader: DolmaDataLoader,
-                            },
-                            {
-                                path: links.search,
-                                element: <Search />,
-                                handle: {
-                                    title: 'Dataset Explorer',
-                                },
-                                loader: searchPageLoader,
-                            },
-                        ],
                     },
                     {
                         path: links.faqs,

@@ -71,29 +71,6 @@ test('can load threads from history drawer', async ({ page }) => {
     expect(page.url()).toContain(secondThreadMessageId);
 });
 
-test('can search pretraining documents in DataSet Explorer', async ({ page }) => {
-    await page.goto('/dolma');
-    await page.getByLabel('Search Term').focus();
-    await page.getByLabel('Search Term').fill('Seattle');
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await page.waitForLoadState('networkidle');
-
-    await expect(
-        page.getByText(
-            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
-        )
-    ).toBeVisible();
-    await page
-        .getByText(
-            'Gnishimura/We_Eat: data/restaurant_aliases.txt (bff1b112a1b0f6cb411e8b9f43792cc42412765b)'
-        )
-        .click();
-    await page.waitForLoadState('networkidle');
-    await expect(
-        page.getByText('Test1SeattleTest2SeattleTestTestTestSeattleOkey okey okey okey…')
-    ).toBeVisible();
-});
-
 test('thread id resets when user navigates to New chat', async ({ page }) => {
     const selectedThreadId = 'msg_A8E5H1X2O4';
 

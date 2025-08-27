@@ -9,8 +9,6 @@ export const links = {
     home: '/',
     playground: '/',
     comparison: '/comparison',
-    datasetExplorer: '/dolma',
-    ourDatasets: 'https://huggingface.co/datasets/allenai/dolma',
     thread: (threadId: string) => `/thread/${threadId}`,
     faqs: '/faqs',
     login: (redirectTo?: string) => {

@@ -1,7 +1,6 @@
 import { ArrowForwardIosOutlined, StickyNote2Outlined } from '@mui/icons-material';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import ScienceIcon from '@mui/icons-material/Science';
 import SortIcon from '@mui/icons-material/Sort';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
@@ -53,7 +52,7 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
 
-    const { isComparisonPageEnabled, isDatasetExplorerEnabled } = useFeatureToggles();
+    const { isComparisonPageEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     const hasPermission = (permission: string) =>
@@ -92,18 +91,6 @@ export const NavigationDrawer = ({
                             DisclosureIcon={ArrowForwardIosOutlined}>
                             Thread history
                         </NavigationLink>
-                        {isDatasetExplorerEnabled && (
-                            <NavigationLink
-                                href={links.datasetExplorer}
-                                icon={<ExploreIcon />}
-                                selected={
-                                    curriedDoesMatchPath(links.datasetExplorer) ||
-                                    curriedDoesMatchPath(links.search) ||
-                                    curriedDoesMatchPath(links.document(''))
-                                }>
-                                Dataset Explorer
-                            </NavigationLink>
-                        )}
                         {isComparisonPageEnabled && hasPermission('read:internal-models') && (
                             <NavigationLink
                                 icon={<ViewColumnIcon />}

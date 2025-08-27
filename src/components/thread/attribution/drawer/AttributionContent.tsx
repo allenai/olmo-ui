@@ -12,7 +12,6 @@ import {
     StandardModal,
 } from '@/components/StandardModal';
 import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
-import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { messageLengthSelector } from '@/slices/attribution/attribution-selectors';
 
@@ -83,7 +82,6 @@ const AboutAttributionModal = ({ open, closeModal: handleClose }: AttributesModa
 
 export const AttributionContent = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const { isDatasetExplorerEnabled } = useFeatureToggles();
     const closeModal = () => {
         setOpen(false);
     };
@@ -122,18 +120,6 @@ export const AttributionContent = () => {
                         More about how OLMoTrace works
                     </Button>
                 </Typography>
-                {isDatasetExplorerEnabled ? (
-                    <Button
-                        variant="contained"
-                        href={links.datasetExplorer}
-                        color="secondary"
-                        disableRipple={true}
-                        sx={{
-                            marginTop: 1,
-                        }}>
-                        <Typography fontWeight={500}>Explore the full training dataset</Typography>
-                    </Button>
-                ) : null}
                 <ClearSelectedSpanButton />
             </Stack>
             <AttributionDrawerDocumentList />
