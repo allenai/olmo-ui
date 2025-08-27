@@ -57,6 +57,10 @@ export const handlers = [
         return passthrough();
     }),
 
+    http.post(`${process.env.VITE_DOLMA_API_URL}/v1/event`, () => {
+        return new HttpResponse(undefined, { status: 200 });
+    }),
+
     http.get(
         `${process.env.VITE_DOLMA_API_URL}/v1/document/a718be1486e24cbb7e0aee7d0bef8442`,
         ({ request }) => {
