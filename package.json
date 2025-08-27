@@ -4,6 +4,9 @@
   "private": true,
   "license": "UNLICENSED",
   "author": "reviz@allenai.org",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "add-git-hooks": "husky",
     "build": "panda && vite build --mode production",
@@ -20,13 +23,15 @@
     "test": "vitest run",
     "test:base": "vitest --project=base",
     "test:coverage": "test --coverage",
+    "test:e2e:build": "NODE_ENV=test vite build --mode test",
     "test:e2e": "NODE_ENV=test playwright test",
-    "test:e2e:server": "LOCAL_E2E_TEST=true NODE_ENV=test run-s prepare \"build:dev --port 8080 --mode test\"",
+    "test:e2e:server": "LOCAL_E2E_TEST=true NODE_ENV=test run-s prepare test:e2e:build preview",
     "test:e2e:local": "env LOCAL_E2E_TEST=true VITE_ENABLE_MOCKING=true PLAYWRIGHT_BASE_URL=http://localhost:8080 VITE_AUTH0_CLIENT_ID=9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd VITE_AUTH0_DOMAIN=allenai-public-dev.us.auth0.com VITE_IS_RECAPTCHA_ENABLED=false playwright test",
     "test:e2e:local:chromium": "env LOCAL_E2E_TEST=true VITE_ENABLE_MOCKING=true PLAYWRIGHT_BASE_URL=http://localhost:8080 VITE_AUTH0_CLIENT_ID=9AcX0KdTaiaz4CtonRRMIgsLi1uqP7Vd VITE_AUTH0_DOMAIN=allenai-public-dev.us.auth0.com VITE_IS_RECAPTCHA_ENABLED=false playwright test --project=chromium",
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
+    "preview": "vite preview",
     "watch:css": "panda --watch"
   },
   "lint-staged": {
