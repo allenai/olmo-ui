@@ -40,8 +40,6 @@ jobs:
       - run: yarn install --frozen-lockfile
       - name: build
         run: yarn build
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
 
   lint:
     timeout-minutes: 10
