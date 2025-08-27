@@ -9,11 +9,15 @@ RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn ins
 
 FROM base AS runner
 
+WORKDIR /ui
+
 COPY --from=dependencies /ui/node_modules ./node_modules
 
 COPY . .
 
 FROM runner AS prod 
+
+WORKDIR /ui
 
 ARG SKIFF_ENV_ARG
 ENV SKIFF_ENV=$SKIFF_ENV_ARG
