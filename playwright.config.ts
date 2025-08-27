@@ -90,7 +90,11 @@ export default defineConfig<Fixtures>({
             },
             dependencies: ['auth-setup'],
             // Webkit e2e tests seem to have issues with scrolling.
-            testIgnore: ['*streaming-scroll*', '**/message-streaming.spec.ts'],
+            testIgnore: [
+                '*streaming-scroll*',
+                '**/message-streaming.spec.ts',
+                '*thinking-and-tools*',
+            ],
         },
 
         /* Test against mobile viewports. */
