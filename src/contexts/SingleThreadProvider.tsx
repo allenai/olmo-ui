@@ -232,6 +232,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         }
     }, [threadId]);
 
+    useEffect(() => {
+        setUserToolDefinitions(getUserToolDefinitionsFromThread(threadId));
+    }, [threadId]);
+
     // Sync local state with any necessary global UI state
     useEffect(() => {
         setIsShareReady(isShareReady);
