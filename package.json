@@ -46,7 +46,6 @@
     "@auth0/auth0-spa-js": "^2.1.3",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@msw/playwright": "^0.4.2",
     "@mui/base": "^5.0.0-beta.40",
     "@mui/icons-material": "^5.15.15",
     "@mui/lab": "5.0.0-alpha.173",
