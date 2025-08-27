@@ -49,15 +49,19 @@ export class AnalyticsClient {
      */
     track(et: EventType, details?: object): boolean {
         try {
-            if (window.heap?.track != null) {
-                window.heap.track(et, details);
+            if (process.env.IS_ANALYTICS_ENABLED === 'true') {
+                if (window.heap?.track != null) {
+                    window.heap.track(et, details);
+                }
+
+                const event = generatePlausibleEvent(et, details);
+                plausibleTrackEvent(event);
+
+                const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
+                return navigator.sendBeacon('/api/v1/event', data);
+            } else {
+                console.log('Track event', details);
             }
-
-            const event = generatePlausibleEvent(et, details);
-            plausibleTrackEvent(event);
-
-            const data = new Blob([JSON.stringify(event)], { type: 'application/json' });
-            return navigator.sendBeacon('/api/v1/event', data);
         } catch (e: unknown) {
             console.error('Something went wrong when sending analytics', e);
             return false;
