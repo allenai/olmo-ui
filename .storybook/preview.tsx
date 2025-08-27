@@ -1,14 +1,14 @@
 // Don't mess with the import order here, it can cause problems if some things are imported before the others, esp varnish and MUI things 
-import { ReactRenderer, type Preview } from '@storybook/react'
+import { ReactRenderer, type Preview } from '@storybook/react-vite'
 import { withThemeByClassName, withThemeFromJSXProvider } from '@storybook/addon-themes'
-import { withRouter } from 'storybook-addon-remix-react-router';
 import { ThemeProvider, Paper } from '@mui/material';
 import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '@/olmoTheme';
 import { getTheme } from '@allenai/varnish2/theme';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 import { ColorModeContext } from '@/components/ColorModeProvider';
 
 import '../styled-system/styles.css'
+import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
 
 
 const preview: Preview = {
@@ -37,7 +37,6 @@ const preview: Preview = {
       },
       defaultTheme: 'light'
     }),
-    withRouter,
     // This is needed to get typography to inherit the right colors when using MUI
     (Story) => <Paper><Story /></Paper>,
     withThemeFromJSXProvider({
@@ -62,7 +61,8 @@ const preview: Preview = {
       },
       // @ts-expect-error - Provider is typed as `any`, we're assuming that it accepts `theme` and `children` props
        Provider: ({ theme, children }) => <ColorModeContext.Provider value={theme}>{children}</ColorModeContext.Provider>
-    })
+    }),
+    (Story) => { const router = createMemoryRouter([{ path: '/', element: <Story />}]); return <RouterProvider router={router} />}
   ]
 };
 

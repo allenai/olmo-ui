@@ -1,6 +1,6 @@
 import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider } from '@mui/material/styles';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { uiRefreshOlmoTheme } from '../../../olmoTheme';

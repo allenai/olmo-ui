@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';

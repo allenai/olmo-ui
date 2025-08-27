@@ -1,5 +1,5 @@
-import { fn } from '@storybook/test';
 import type { DecoratorFunction } from 'storybook/internal/types';
+import { fn } from 'storybook/test';
 
 import { QueryContext, type QueryContextValue } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';

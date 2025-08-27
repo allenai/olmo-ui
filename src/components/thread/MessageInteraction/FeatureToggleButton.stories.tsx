@@ -1,7 +1,7 @@
 import { cva } from '@allenai/varnish-panda-runtime/css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 
 import { FeatureToggleButton } from './FeatureToggleButton';
