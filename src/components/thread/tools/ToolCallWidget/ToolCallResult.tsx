@@ -13,7 +13,7 @@ import { ToolCallUserResponse } from './ToolCallUserResponse';
 
 interface ToolCallResultProps {
     toolCallId: SchemaToolCall['toolCallId'];
-    toolSource: SchemaToolSource;
+    toolSource: SchemaToolCall['toolSource'];
     answer?: string;
 }
 
