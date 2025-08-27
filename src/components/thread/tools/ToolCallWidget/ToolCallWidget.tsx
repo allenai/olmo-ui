@@ -34,7 +34,11 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
                 <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                <ToolCallResult toolCall={toolCall} answer={answer} />
+                <ToolCallResult
+                    toolCallId={toolCall.toolCallId}
+                    toolSource={toolCall.toolSource}
+                    answer={answer}
+                />
             </CollapsibleWidgetPanel>
         </CollapsibleWidgetBase>
     );

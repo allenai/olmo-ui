@@ -1,17 +1,16 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
-import { SendOutlined } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { Send } from '@mui/icons-material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import { FormProvider, type SubmitHandler, useForm } from 'react-hook-form';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledInput } from '@/components/form/ControlledInput';
+import { handleFormSubmitException } from '@/components/thread/QueryForm/handleFormSubmitException';
+import { QueryFormButton } from '@/components/thread/QueryForm/QueryFormButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 import { useQueryContext } from '@/contexts/QueryContext';
-
-import { handleFormSubmitException } from '../../QueryForm/handleFormSubmitException';
 
 interface ToolCallUserResponseFormValues {
     content: string;
@@ -27,15 +26,20 @@ const toolCallResponseRecipe = sva({
             display: 'flex',
             gap: '2',
             alignItems: 'center',
+            paddingInline: '0',
+            paddingBlock: '0',
         },
         wrapper: {
             flexGrow: '1',
         },
         inputContainer: {
             backgroundColor: '[transparent]',
+            paddingInlineEnd: 'var(--padding-inline)',
         },
         input: {
             width: '[100%]',
+            paddingInlineStart: '4!', // this is poorly set in varnish-ui -- so I'm cheating
+            paddingBlock: '3!', // also can't use important with var, so not re-using those vars()
         },
     },
 });
@@ -87,25 +91,34 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     return (
         <FormProvider {...formContext}>
             <form onSubmit={formContext.handleSubmit(handleSubmitController)}>
-                <CollapsibleWidgetContent contrast="low" className={classNames.widget}>
+                <CollapsibleWidgetContent contrast="medium" className={classNames.widget}>
                     <ControlledInput
                         name="content"
                         className={classNames.wrapper}
                         fullWidth
                         controllerProps={{ rules: { required: true, minLength: 1 } }}
-                        // isDisabled={isResponseDisabled}
-                        // onChange={onChange}
-                        // errorMessage={error?.message}
                         variant="contained"
                         containerClassName={classNames.inputContainer}
                         inputClassName={classNames.input}
                         aria-label="Fucntion response"
                         // @ts-expect-error Placeholder is appearantly not on the varnish-ui component, but it _does_get passed
                         placeholder="Function response"
+                        endControls={
+                            <QueryFormButton
+                                sx={{
+                                    color: 'secondary.main',
+                                    '&:hover': {
+                                        // should this be the default for this control?
+                                        color: 'secondary.dark',
+                                    },
+                                }}
+                                type="submit"
+                                aria-label="Submit function response"
+                                disabled={!formContext.formState.isValid}>
+                                <Send />
+                            </QueryFormButton>
+                        }
                     />
-                    <IconButton type="submit" aria-label="Submit response">
-                        <SendOutlined />
-                    </IconButton>
                 </CollapsibleWidgetContent>
             </form>
         </FormProvider>
