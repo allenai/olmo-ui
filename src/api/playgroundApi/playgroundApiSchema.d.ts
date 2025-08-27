@@ -1413,7 +1413,7 @@ export type components = {
             readonly description: string;
             readonly parameters: components['schemas']['ParameterDef'];
             /** Toolname */
-            readonly toolName: string;
+            readonly name: string;
             readonly toolSource: components['schemas']['ToolSource'];
         };
         /**
