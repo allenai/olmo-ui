@@ -87,6 +87,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     };
 
     const classNames = toolCallResponseRecipe();
+    const labelAndPlaceholder = 'Function response';
 
     return (
         <FormProvider {...formContext}>
@@ -100,9 +101,9 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         variant="contained"
                         containerClassName={classNames.inputContainer}
                         inputClassName={classNames.input}
-                        aria-label="Fucntion response"
+                        aria-label={labelAndPlaceholder}
                         // @ts-expect-error Placeholder is appearantly not on the varnish-ui component, but it _does_get passed
-                        placeholder="Function response"
+                        placeholder={labelAndPlaceholder}
                         endControls={
                             <QueryFormButton
                                 sx={{
