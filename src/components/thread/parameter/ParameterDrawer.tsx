@@ -12,6 +12,9 @@ import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsIn
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 
+import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
+import { ParameterToggle } from './inputs/ParameterToggle';
+
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
 const TEMPERATURE_INFO =
@@ -85,16 +88,33 @@ const ParametersList = ({ children }: React.PropsWithChildren) => (
         {children}
     </Box>
 );
-const ParametersListItem = ({ children }: React.PropsWithChildren) => (
+const ParametersListItemTwoRows = ({ children }: React.PropsWithChildren) => (
     <Box component="li" display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1">
         {children}
     </Box>
 );
 
-export const ParameterContent = () => {
-    const { updateInferenceOpts, inferenceOpts } = useQueryContext();
-    const schemaData = useAppContext((state) => state.schema);
+const ParametersListItemOneRow = ({ children }: React.PropsWithChildren) => (
+    <Box component="li" display="grid" gridTemplateColumns="1fr auto" gridColumn="1 / 3">
+        {children}
+    </Box>
+);
 
+export const ParameterContent = () => {
+    const {
+        threadStarted,
+        canCallTools,
+        inferenceOpts,
+        updateInferenceOpts,
+        userToolDefinitions,
+        updateUserToolDefinitions,
+    } = useQueryContext();
+    const hasDefinitions = userToolDefinitions !== undefined;
+    const canCreateToolDefinitions = canCallTools && !threadStarted;
+    const [showFunctionDialog, setShowFunctionDialog] = React.useState(false);
+    const [functionEditDisabled, setFunctionEditDisabled] = React.useState(!hasDefinitions);
+
+    const schemaData = useAppContext((state) => state.schema);
     if (schemaData == null) {
         return null;
     }
@@ -107,7 +127,7 @@ export const ParameterContent = () => {
     return (
         <Stack>
             <ParametersList>
-                <ParametersListItem>
+                <ParametersListItemTwoRows>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
@@ -124,8 +144,8 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </ParametersListItem>
-                <ParametersListItem>
+                </ParametersListItemTwoRows>
+                <ParametersListItemTwoRows>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
@@ -142,8 +162,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </ParametersListItem>
-                <ParametersListItem>
+                </ParametersListItemTwoRows>
+                <ParametersListItemTwoRows>
                     <ParameterSlider
                         label="Max tokens"
                         min={opts.max_tokens.min}
@@ -160,7 +180,26 @@ export const ParameterContent = () => {
                         dialogTitle="Max Tokens"
                         id="max-tokens"
                     />
-                </ParametersListItem>
+                </ParametersListItemTwoRows>
+                {canCallTools && (
+                    <ParametersListItemOneRow>
+                        <ParameterToggle
+                            initialValue={hasDefinitions}
+                            label="Function calling"
+                            dialogContent="If enabled, function calling will be used."
+                            dialogTitle="Function Calling"
+                            disableToggle={!canCreateToolDefinitions}
+                            disableEditButton={functionEditDisabled}
+                            id="function-calling"
+                            onEditClick={() => {
+                                setShowFunctionDialog(true);
+                            }}
+                            onChange={(v) => {
+                                setFunctionEditDisabled(!v);
+                            }}
+                        />
+                    </ParametersListItemOneRow>
+                )}
                 <StopWordsInput
                     id="stop-words"
                     value={inferenceOpts.stop || []}
@@ -169,6 +208,20 @@ export const ParameterContent = () => {
                             parameterUpdated: 'stop',
                         });
                         updateInferenceOpts({ stop: value });
+                    }}
+                />
+                <FunctionDeclarationDialog
+                    jsonData={userToolDefinitions || undefined}
+                    isDisabled={threadStarted}
+                    isOpen={showFunctionDialog}
+                    onClose={() => {
+                        setShowFunctionDialog(false);
+                    }}
+                    onSave={({ declaration }) => {
+                        analyticsClient.trackParametersUpdate({
+                            parameterUpdated: 'tool_definitions',
+                        });
+                        updateUserToolDefinitions(declaration);
                     }}
                 />
             </ParametersList>

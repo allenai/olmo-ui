@@ -63,9 +63,22 @@ const shouldShowCompatibilityWarning = (
     );
 };
 
+const getUserToolDefinitionsFromThread = (threadId: string | undefined) => {
+    if (!threadId) {
+        return;
+    }
+
+    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
+    const userToolDefs = toolDefs?.filter((def) => def.toolSource === 'user_defined');
+    return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
+};
+
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
 
+    const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
+        getUserToolDefinitionsFromThread(threadId)
+    );
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -171,6 +184,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return `${actionText} ${modelText}`;
     }, [threadId, selectedModel]);
 
+    const canCallTools = useMemo(() => {
+        return Boolean(selectedModel?.can_call_tools);
+    }, [selectedModel]);
+
     const areFilesAllowed = useMemo(() => {
         return Boolean(selectedModel?.accepts_files);
     }, [selectedModel]);
@@ -226,6 +243,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
     }, []);
 
+    const updateUserToolDefinitions = useCallback((jsonDefinition: string) => {
+        setUserToolDefinitions(jsonDefinition);
+    }, []);
+
     const onModelChange = useCallback(
         (event: SelectChangeEvent, _threadViewId?: string) => {
             const newModel = findModelById(availableModels, event.target.value);
@@ -268,6 +289,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 threadId,
                 threadViewId,
                 inferenceOpts,
+                userToolDefinitions,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -282,6 +304,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             streamMessage.mutateAsync,
             streamMessage.onFirstMessage,
             threadId,
+            userToolDefinitions,
         ]
     );
 
@@ -323,9 +346,12 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const contextValue: QueryContextValue = useMemo(() => {
         return {
+            threadStarted: Boolean(threadId),
             canSubmit,
             autofocus,
             placeholderText,
+            canCallTools,
+            userToolDefinitions,
             areFilesAllowed,
             availableModels,
             canPauseThread: streamMessage.canPause,
@@ -351,11 +377,14 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             inferenceOpts,
             updateInferenceOpts,
             submitToThreadView,
+            updateUserToolDefinitions,
         };
     }, [
         canSubmit,
         autofocus,
         placeholderText,
+        canCallTools,
+        userToolDefinitions,
         areFilesAllowed,
         availableModels,
         selectedModel,
@@ -370,6 +399,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         inferenceOpts,
         updateInferenceOpts,
         submitToThreadView,
+        updateUserToolDefinitions,
     ]);
 
     return (

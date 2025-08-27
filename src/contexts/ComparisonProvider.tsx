@@ -91,6 +91,16 @@ const areAllModelsCompatible = (models: Model[]): boolean => {
     return true;
 };
 
+const getUserToolDefinitionsFromThreads = (threadId: string | undefined) => {
+    if (!threadId) {
+        return;
+    }
+
+    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
+    const userToolDefs = toolDefs?.filter((def) => def.toolSource === 'user_defined');
+    return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
+};
+
 // TODO: create more nuanced state to avoid unnecessary re-renders
 const ComparisonProviderContent = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
@@ -113,6 +123,10 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const streamErrors = useAppContext((state) => state.streamErrors);
     const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
+
+    const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
+        getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1])
+    );
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -137,6 +151,19 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const autofocus = useMemo(() => {
         return threadIds.length === 0;
     }, [threadIds]);
+
+    const canCallTools = useMemo(() => {
+        const modelsWithTools = Object.values(comparisonState)
+            .map((state) => state.modelId)
+            .filter(Boolean)
+            .map((modelId) => {
+                const model = models.find((m) => m.id === modelId);
+                return model?.can_call_tools;
+            })
+            .filter(Boolean);
+
+        return modelsWithTools.length > 1;
+    }, [comparisonState, models]);
 
     const placeholderText = useMemo(() => {
         const modelNames = Object.values(comparisonState)
@@ -240,6 +267,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 threadId,
                 threadViewId,
                 inferenceOpts,
+                userToolDefinitions,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -250,6 +278,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             addSnackMessage,
             comparisonState,
             inferenceOpts,
+            userToolDefinitions,
             models,
             streamMessage.completeStream,
             streamMessage.mutateAsync,
@@ -360,8 +389,11 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const contextValue: QueryContextValue = useMemo(() => {
         return {
+            threadStarted: threadIds.length > 0,
             canSubmit,
             autofocus,
+            canCallTools,
+            userToolDefinitions,
             placeholderText,
             availableModels: models,
             areFilesAllowed,
@@ -411,22 +443,27 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
             },
             submitToThreadView,
+            updateUserToolDefinitions: (jsonDefinition: string) => {
+                setUserToolDefinitions(jsonDefinition);
+            },
         };
     }, [
+        threadIds,
         canSubmit,
         autofocus,
+        canCallTools,
+        userToolDefinitions,
         placeholderText,
-        isLimitReached,
-        comparisonState,
         models,
-        streamMessage,
-        checkCompatibilityAndSubmit,
-        inferenceOpts,
-        threadIds,
         areFilesAllowed,
+        streamMessage,
+        isLimitReached,
         reducedFileUploadProps,
         isFileUploadDisabled,
+        checkCompatibilityAndSubmit,
+        inferenceOpts,
         submitToThreadView,
+        comparisonState,
     ]);
 
     return (
