@@ -97,7 +97,9 @@ const getUserToolDefinitionsFromThreads = (threadId: string | undefined) => {
     }
 
     const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
-    const userToolDefs = toolDefs?.filter((def) => def.toolSource === 'user_defined');
+    const userToolDefs = toolDefs
+        ?.filter((def) => def.toolSource === 'user_defined')
+        .map(({ toolSource, ...def }) => def); // Remove toolSource property;
     return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
 };
 
