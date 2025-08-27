@@ -6,7 +6,7 @@ import {
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { threadOptions } from '@/api/playgroundApi/thread';
+import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
@@ -225,12 +225,14 @@ export const processSingleModelSubmission = async (
     rootThreadId: string | undefined,
     threadViewId: ThreadViewId,
     inferenceOpts: RequestInferenceOpts,
+    toolDefinitions: CreateMessageRequest['toolDefinitions'],
     streamMutateAsync: (params: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
         thread?: StreamingThread;
         inferenceOpts: RequestInferenceOpts;
+        toolDefinitions: CreateMessageRequest['toolDefinitions'];
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
@@ -255,6 +257,7 @@ export const processSingleModelSubmission = async (
             model,
             thread,
             inferenceOpts,
+            toolDefinitions,
         });
 
         // Return the final thread ID for parallel streaming navigation
