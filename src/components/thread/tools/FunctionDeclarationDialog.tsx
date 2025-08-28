@@ -107,37 +107,41 @@ export function FunctionDeclarationDialog({
             }
             buttons={
                 <ModalActions className={modalActions}>
-                    <MenuTrigger>
-                        <Button
-                            color="secondary"
-                            shape="rounded"
-                            variant="text"
-                            aria-label="Cancel and close dialog">
-                            Use example
-                        </Button>
-                        <Popover placement="top left">
-                            <AriaMenu aria-label="Start with an example">
-                                <MenuItem
-                                    onAction={() => {
-                                        setValue(
-                                            'declaration',
-                                            EXAMPLE_DECLARATIONS.getWeather.trim()
-                                        );
-                                    }}>
-                                    getWeather
-                                </MenuItem>
-                                <MenuItem
-                                    onAction={() => {
-                                        setValue(
-                                            'declaration',
-                                            EXAMPLE_DECLARATIONS.getStockIndex.trim()
-                                        );
-                                    }}>
-                                    getCurrentTime
-                                </MenuItem>
-                            </AriaMenu>
-                        </Popover>
-                    </MenuTrigger>
+                    {!isDisabled ? (
+                        <MenuTrigger>
+                            <Button
+                                color="secondary"
+                                shape="rounded"
+                                variant="text"
+                                aria-label="Cancel and close dialog">
+                                Use example
+                            </Button>
+                            <Popover placement="top left">
+                                <AriaMenu aria-label="Start with an example">
+                                    <MenuItem
+                                        onAction={() => {
+                                            setValue(
+                                                'declaration',
+                                                EXAMPLE_DECLARATIONS.getWeather.trim()
+                                            );
+                                        }}>
+                                        getWeather
+                                    </MenuItem>
+                                    <MenuItem
+                                        onAction={() => {
+                                            setValue(
+                                                'declaration',
+                                                EXAMPLE_DECLARATIONS.getStockIndex.trim()
+                                            );
+                                        }}>
+                                        getCurrentTime
+                                    </MenuItem>
+                                </AriaMenu>
+                            </Popover>
+                        </MenuTrigger>
+                    ) : (
+                        <div />
+                    )}
                     <div>
                         <Button
                             color="secondary"
