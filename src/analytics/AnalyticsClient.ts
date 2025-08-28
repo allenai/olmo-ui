@@ -49,7 +49,7 @@ export class AnalyticsClient {
      */
     track(et: EventType, details?: object): boolean {
         try {
-            if (process.env.IS_ANALYTICS_ENABLED === 'true') {
+            if (process.env.VITE_IS_ANALYTICS_ENABLED === 'true') {
                 if (window.heap?.track != null) {
                     window.heap.track(et, details);
                 }
