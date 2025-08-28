@@ -11,6 +11,7 @@ import { QueryFormButton } from '@/components/thread/QueryForm/QueryFormButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 import { useQueryContext } from '@/contexts/QueryContext';
+import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
 interface ToolCallUserResponseFormValues {
     content: string;
@@ -46,6 +47,7 @@ const toolCallResponseRecipe = sva({
 
 const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     const { executeRecaptcha } = useReCaptcha();
+    const { threadViewId } = useThreadView();
 
     const formContext = useForm<ToolCallUserResponseFormValues>({
         defaultValues: {
@@ -59,7 +61,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     const queryContext = useQueryContext();
 
     const handleSubmit = async (data: QueryFormValues) => {
-        await queryContext.onSubmit(data);
+        await queryContext.submitToThreadView(threadViewId, data);
     };
 
     const handleSubmitController: SubmitHandler<ToolCallUserResponseFormValues> = async (data) => {

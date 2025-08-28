@@ -53,6 +53,7 @@ export const FakeQueryContextProvider = ({
         setModelId: () => {},
         inferenceOpts: {},
         updateInferenceOpts: () => {},
+        submitToThreadView: () => new Promise(() => null),
     };
 
     return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;
