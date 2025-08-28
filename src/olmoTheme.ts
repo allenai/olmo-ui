@@ -126,6 +126,14 @@ export const uiRefreshOlmoTheme = {
                 }),
             },
         },
+        MuiFormHelperText: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    marginBlockStart: theme.spacing(1),
+                    marginInline: theme.spacing(1),
+                }),
+            },
+        },
     },
 } satisfies Partial<ThemeOptions>;
 
