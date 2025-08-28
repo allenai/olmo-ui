@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
+import { withMockThreadView } from '@/utils/storybook/withMockThreadView';
 
 import { ToolCallWidget } from './ToolCallWidget';
 
 const meta = {
-    decorators: [withMockQueryContext],
+    decorators: [withMockQueryContext, withMockThreadView],
     component: ToolCallWidget,
 } satisfies Meta<typeof ToolCallWidget>;
 

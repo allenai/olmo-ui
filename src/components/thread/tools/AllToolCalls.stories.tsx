@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { withMockQueryContext } from '@/utils/storybook/withMockQueryContext';
+import { withMockThreadView } from '@/utils/storybook/withMockThreadView';
 import { withMockReactQuery } from '@/utils/storybook/withReactQuery';
 import { createMockMessage, createMockThread } from '@/utils/test/createMockModel';
 
@@ -97,7 +98,7 @@ const mockThread = createMockThread({
 
 const meta = {
     component: AllToolCalls,
-    decorators: [withMockReactQuery, withMockQueryContext],
+    decorators: [withMockReactQuery, withMockQueryContext, withMockThreadView],
     parameters: {
         mockData: [{ queryKey: threadOptions(mockThread.id).queryKey, data: mockThread }],
     },
