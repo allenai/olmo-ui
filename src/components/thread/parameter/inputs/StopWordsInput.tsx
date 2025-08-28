@@ -15,7 +15,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
     return (
         <ParameterDrawerInputWrapper
             inputId="stop-words-input"
-            label="Stop Words"
+            label="Stop words"
             tooltipContent={STOP_WORDS_TOOLTIP_CONTENT}
             aria-label="Show description for Stop Words"
             tooltipTitle="Stop Words">

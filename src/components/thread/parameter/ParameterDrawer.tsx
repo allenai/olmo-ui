@@ -145,7 +145,7 @@ export const ParameterContent = () => {
                 </ParametersListItem>
                 <ParametersListItem>
                     <ParameterSlider
-                        label="Max Tokens"
+                        label="Max tokens"
                         min={opts.max_tokens.min}
                         max={opts.max_tokens.max}
                         step={100}
