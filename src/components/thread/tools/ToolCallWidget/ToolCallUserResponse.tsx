@@ -2,19 +2,11 @@ import { sva } from '@allenai/varnish-panda-runtime/css';
 import { Send } from '@mui/icons-material';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { QueryFormButton } from '@/components/thread/QueryForm/QueryFormButton';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
 
-import { useToolCallUserResponse } from './useToolCallUserResponse';
-
-interface ToolCallUserResponseFormValues {
-    content: string;
-    private: boolean;
-    role: 'tool_call_result';
-    toolCallId: SchemaToolCall['toolCallId'];
-}
+import { ToolCallUserResponseFormValues, useToolCallUserResponse } from './useToolCallUserResponse';
 
 const toolCallResponseRecipe = sva({
     slots: ['widget', 'wrapper', 'inputContainer', 'input'],
@@ -51,7 +43,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
         },
     });
 
-    const { submitToolCallResponse } = useToolCallUserResponse();
+    const { submitToolCallResponse } = useToolCallUserResponse(formContext);
 
     const classNames = toolCallResponseRecipe();
     const labelAndPlaceholder = 'Function response';

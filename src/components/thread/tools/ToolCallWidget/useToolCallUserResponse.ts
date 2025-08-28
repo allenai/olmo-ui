@@ -1,13 +1,25 @@
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import {
+    type FormContextWithContent,
+    handleFormSubmitException,
+} from '@/components/thread/QueryForm/handleFormSubmitException';
+import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { useThreadView } from '@/pages/comparison/ThreadViewContext';
 
-import { handleFormSubmitException } from '../../QueryForm/handleFormSubmitException';
-import { QueryFormValues } from '../../QueryForm/QueryFormController';
+export interface ToolCallUserResponseFormValues {
+    content: string;
+    private: boolean;
+    role: 'tool_call_result';
+    toolCallId: SchemaToolCall['toolCallId'];
+}
 
-export const useToolCallUserResponse = () => {
+export const useToolCallUserResponse = <T extends { content: string }>(
+    formContext: FormContextWithContent<T>
+) => {
     const { executeRecaptcha } = useReCaptcha();
     const { threadViewId } = useThreadView();
 
@@ -32,7 +44,7 @@ export const useToolCallUserResponse = () => {
                 captchaToken: token,
             });
         } catch (e) {
-            handleFormSubmitException(e);
+            handleFormSubmitException(e, formContext);
             console.error(e);
         }
     };
