@@ -1,15 +1,17 @@
 import { MessageStreamErrorType } from '@/api/Message';
 import type {
+    SchemaFlatMessage,
     SchemaModelResponseChunk,
     SchemaStreamEndChunk,
     SchemaStreamStartChunk,
     SchemaThinkingChunk,
+    SchemaThread,
+    SchemaToolCall,
     SchemaToolCallChunk,
 } from '@/api/playgroundApi/playgroundApiSchema';
-import { FlatMessage, Thread as BaseThread } from '@/api/playgroundApi/thread';
 
 // Thread plus streaming state
-export interface StreamingThread extends BaseThread {
+export interface StreamingThread extends SchemaThread {
     streamingMessageId?: string;
     isUpdatingMessageContent?: boolean;
 }
@@ -19,11 +21,12 @@ export interface StreamMessageRequest {
     captchaToken?: string | null;
     parent?: string;
     files?: FileList;
-    role?: FlatMessage['role'];
+    role?: SchemaFlatMessage['role'];
+    toolCallId?: SchemaToolCall['toolCallId'];
 }
 
-export type MessageChunk = Pick<FlatMessage, 'content'> & {
-    message: FlatMessage['id'];
+export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {
+    message: SchemaFlatMessage['id'];
 };
 
 export type Chunk =

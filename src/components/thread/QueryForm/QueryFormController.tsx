@@ -25,7 +25,7 @@ export interface QueryFormValues {
     // This isn't part of the form data explicitly, but is added in the submit handler
     captchaToken?: string | null;
     role?: FlatMessage['role'];
-    toolCallId?: SchemaToolCall['toolCallId']; // get correct type
+    toolCallId?: SchemaToolCall['toolCallId'];
 }
 
 interface QueryFormControllerProps {

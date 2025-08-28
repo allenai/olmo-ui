@@ -148,7 +148,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 request.parent = lastMessageId;
             }
 
-            const { content, captchaToken, parent, files, role = 'user' } = request;
+            const { content, captchaToken, parent, files, role = 'user', toolCallId } = request;
 
             // Refer to the "TEMP HACK" comment above
             const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
@@ -166,6 +166,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     host: model.host,
                     model: model.id,
                     role,
+                    toolCallId,
                     // Apply adjusted inference options with model-specific overrides
                     temperature: adjustedInferenceOpts.temperature ?? undefined,
                     topP: adjustedInferenceOpts.top_p ?? undefined,
