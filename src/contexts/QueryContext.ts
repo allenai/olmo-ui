@@ -37,6 +37,8 @@ interface QueryContextValue {
 
     inferenceOpts: RequestInferenceOpts;
     updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
+
+    submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods
