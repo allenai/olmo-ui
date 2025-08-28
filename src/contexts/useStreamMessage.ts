@@ -175,6 +175,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     topP: adjustedInferenceOpts.top_p ?? undefined,
                     maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
                     stop: adjustedInferenceOpts.stop ?? undefined,
+                    toolDefinitions: toolDefinitions ?? undefined,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();
