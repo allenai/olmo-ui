@@ -27,7 +27,6 @@ export const userToolCallsResponse: Thread = {
                         type: 'object',
                         properties: {
                             city: {
-                                description: 'City to get the weather from',
                                 type: 'string',
                             },
                         },

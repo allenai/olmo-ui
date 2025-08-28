@@ -1211,8 +1211,11 @@ export type components = {
         };
         /** PropertiesType */
         readonly PropertiesType: {
-            /** Description */
-            readonly description: string;
+            /**
+             * Description
+             * @default null
+             */
+            readonly description?: string | null;
             /** Type */
             readonly type: string;
         };
@@ -1408,9 +1411,9 @@ export type components = {
         readonly ToolDefinition: {
             /** Description */
             readonly description: string;
+            /** Name */
+            readonly name: string;
             readonly parameters: components['schemas']['ParameterDef'];
-            /** Toolname */
-            readonly toolName: string;
             readonly toolSource: components['schemas']['ToolSource'];
         };
         /**

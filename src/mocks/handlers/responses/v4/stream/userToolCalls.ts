@@ -33,7 +33,6 @@ export const userToolCallsStreamResponse = [
                             type: 'object',
                             properties: {
                                 city: {
-                                    description: 'City to get the weather from',
                                     type: 'string',
                                 },
                             },
@@ -248,7 +247,6 @@ export const userToolCallsStreamResponse = [
                             type: 'object',
                             properties: {
                                 city: {
-                                    description: 'City to get the weather from',
                                     type: 'string',
                                 },
                             },
