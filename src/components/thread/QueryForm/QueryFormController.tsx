@@ -147,7 +147,7 @@ export const QueryFormController = ({
         try {
             await handleSubmit({ ...data, captchaToken: token });
         } catch (e) {
-            handleFormSubmitException(e, formContext);
+            handleFormSubmitException(e);
         }
     };
 

@@ -1,4 +1,4 @@
-import type { Path, UseFormReturn } from 'react-hook-form-mui';
+import { useFormContext } from 'react-hook-form-mui';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
@@ -52,15 +52,12 @@ export const isInappropriateFormError = (error: unknown): boolean => {
     return false;
 };
 
-type FormContextWithContent<T extends { content: string }> = UseFormReturn<T>;
+export const handleFormSubmitException = (e: unknown) => {
+    const formContext = useFormContext();
 
-export const handleFormSubmitException = <T extends { content: string }>(
-    e: unknown,
-    formContext: FormContextWithContent<T>
-) => {
     if (e instanceof StreamBadRequestError) {
         if (e instanceof StreamValidationError) {
-            formContext.setError('content' as Path<T>, {
+            formContext.setError('content', {
                 type: 'validation',
                 message: e.description,
             });
@@ -74,7 +71,7 @@ export const handleFormSubmitException = <T extends { content: string }>(
             : undefined;
 
         if (config) {
-            formContext.setError('content' as Path<T>, {
+            formContext.setError('content', {
                 type: config.type,
                 message: config.message,
             });

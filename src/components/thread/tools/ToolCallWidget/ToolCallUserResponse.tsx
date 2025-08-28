@@ -1,17 +1,13 @@
 import { sva } from '@allenai/varnish-panda-runtime/css';
 import { Send } from '@mui/icons-material';
-import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
-import { FormProvider, type SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledInput } from '@/components/form/ControlledInput';
-import { handleFormSubmitException } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormButton } from '@/components/thread/QueryForm/QueryFormButton';
-import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
-import { useQueryContext } from '@/contexts/QueryContext';
-import { useThreadView } from '@/pages/comparison/ThreadViewContext';
+
+import { useToolCallUserResponse } from './useToolCallUserResponse';
 
 interface ToolCallUserResponseFormValues {
     content: string;
@@ -46,9 +42,6 @@ const toolCallResponseRecipe = sva({
 });
 
 const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
-    const { executeRecaptcha } = useReCaptcha();
-    const { threadViewId } = useThreadView();
-
     const formContext = useForm<ToolCallUserResponseFormValues>({
         defaultValues: {
             content: '',
@@ -58,42 +51,14 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
         },
     });
 
-    const queryContext = useQueryContext();
-
-    const handleSubmit = async (data: QueryFormValues) => {
-        await queryContext.submitToThreadView(threadViewId, data);
-    };
-
-    const handleSubmitController: SubmitHandler<ToolCallUserResponseFormValues> = async (data) => {
-        const isReCaptchaEnabled = process.env.IS_RECAPTCHA_ENABLED;
-
-        if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
-            analyticsClient.trackCaptchaNotLoaded();
-        }
-
-        // TODO: Make sure executeRecaptcha is present when we require recaptchas
-        const token =
-            isReCaptchaEnabled === 'true'
-                ? await executeRecaptcha?.('user_tool_response')
-                : undefined;
-
-        try {
-            await handleSubmit({
-                ...data,
-                captchaToken: token,
-            });
-        } catch (e) {
-            handleFormSubmitException(e, formContext);
-            console.error(e);
-        }
-    };
+    const { submitToolCallResponse } = useToolCallUserResponse();
 
     const classNames = toolCallResponseRecipe();
     const labelAndPlaceholder = 'Function response';
 
     return (
         <FormProvider {...formContext}>
-            <form onSubmit={formContext.handleSubmit(handleSubmitController)}>
+            <form onSubmit={formContext.handleSubmit(submitToolCallResponse)}>
                 <CollapsibleWidgetContent contrast="medium" className={classNames.widget}>
                     <ControlledInput
                         name="content"
