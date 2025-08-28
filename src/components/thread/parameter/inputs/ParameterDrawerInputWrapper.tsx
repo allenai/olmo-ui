@@ -67,7 +67,7 @@ export const ParameterDrawerInputWrapper = ({
                         <IconButton
                             tabIndex={0}
                             aria-expanded={isTooltipOpen}
-                            sx={{ color: 'inherit', justifySelf: 'left' }}
+                            sx={{ color: 'inherit', justifySelf: 'left', opacity: '50%' }}
                             onClick={toggleTooltipOpen}
                             aria-label={ariaLabel}
                             onKeyDown={(event) => {
