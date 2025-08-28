@@ -10,6 +10,7 @@ import { RemoteState } from '@/contexts/util';
 // Single interface that adapts based on context type
 interface QueryContextValue {
     // Form state properties
+    threadStarted: boolean;
     canSubmit: boolean;
     autofocus: boolean;
     placeholderText: string;

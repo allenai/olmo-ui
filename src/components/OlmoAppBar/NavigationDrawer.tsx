@@ -55,9 +55,6 @@ export const NavigationDrawer = ({
     const { isComparisonPageEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
-    const hasPermission = (permission: string) =>
-        userAuthInfo.userInfo?.permissions?.some((p) => p === permission) ?? false;
-
     useCloseDrawerOnNavigation({
         handleDrawerClose: onClose,
     });
@@ -91,16 +88,17 @@ export const NavigationDrawer = ({
                             DisclosureIcon={ArrowForwardIosOutlined}>
                             Thread history
                         </NavigationLink>
-                        {isComparisonPageEnabled && hasPermission('read:internal-models') && (
-                            <NavigationLink
-                                icon={<ViewColumnIcon />}
-                                selected={curriedDoesMatchPath(links.comparison)}
-                                href={links.comparison}
-                                DisclosureIcon={ScienceIcon}
-                                experimental>
-                                Compare models
-                            </NavigationLink>
-                        )}
+                        {isComparisonPageEnabled &&
+                            userAuthInfo.hasPermission('read:internal-models') && (
+                                <NavigationLink
+                                    icon={<ViewColumnIcon />}
+                                    selected={curriedDoesMatchPath(links.comparison)}
+                                    href={links.comparison}
+                                    DisclosureIcon={ScienceIcon}
+                                    experimental>
+                                    Compare models
+                                </NavigationLink>
+                            )}
                         <NavigationLink
                             icon={<StickyNote2Outlined />}
                             selected={curriedDoesMatchPath(links.faqs)}
@@ -108,7 +106,7 @@ export const NavigationDrawer = ({
                             variant="footer">
                             FAQ
                         </NavigationLink>
-                        {hasPermission('write:model-config') && (
+                        {userAuthInfo.hasPermission('write:model-config') && (
                             <NavigationLink
                                 icon={<AdminPanelSettingsOutlinedIcon />}
                                 selected={curriedDoesMatchPath(links.admin)}

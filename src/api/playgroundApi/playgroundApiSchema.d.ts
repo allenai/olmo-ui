@@ -881,6 +881,11 @@ export type components = {
              * @default 1
              */
             readonly topP?: number;
+            /**
+             * Systemprompt
+             * @default null
+             */
+            readonly systemPrompt?: string | null;
         };
         /** LabelResponse */
         readonly LabelResponse: {

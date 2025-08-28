@@ -24,6 +24,7 @@ import { fakeFollowupResponse } from './responses/v4/stream/followup';
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
 import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
 import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
+import { streamResponseWithSystemPromptOverrideResponse } from './responses/v4/stream/withSystemPromptOverride';
 import {
     THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
     thinkingAndToolCallsResponse,
@@ -281,6 +282,8 @@ export const v4ThreadHandlers = [
             response = fakeFollowupResponse(formData.get('parent') as string);
         } else if (content === 'include system message') {
             response = streamResponseWithSystemMessage;
+        } else if (content === 'override system prompt') {
+            response = streamResponseWithSystemPromptOverrideResponse;
         } else if (content === 'multimodaltest: Count the boats') {
             response = fakeMultiModalStreamMessages;
         } else if (content === 'compare') {

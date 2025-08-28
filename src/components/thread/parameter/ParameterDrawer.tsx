@@ -1,14 +1,16 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useMemo } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
 import { FullScreenDrawer, FullScreenDrawerHeader } from '@/components/FullScreenDrawer';
 import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterSlider';
 import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsInput';
+import { SystemPromptTextArea } from '@/components/thread/parameter/inputs/SystemPromptTextArea';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
 
@@ -92,12 +94,22 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 );
 
 export const ParameterContent = () => {
-    const { updateInferenceOpts, inferenceOpts } = useQueryContext();
+    const userAuthInfo = useUserAuthInfo();
+    const { threadStarted, updateInferenceOpts, inferenceOpts, getThreadViewModel, transform } =
+        useQueryContext();
     const schemaData = useAppContext((state) => state.schema);
+
+    // Detect if we're in comparison mode by checking if transform returns multiple thread views
+    const isComparisonMode = useMemo(() => {
+        const threadViews = transform(() => true);
+        return threadViews.length > 1;
+    }, [transform]);
 
     if (schemaData == null) {
         return null;
     }
+
+    const selectedModel = getThreadViewModel();
 
     const opts = schemaData.Message.InferenceOpts;
     const initialTemperature = inferenceOpts.temperature ?? opts.temperature.default ?? undefined;
@@ -106,6 +118,13 @@ export const ParameterContent = () => {
 
     return (
         <Stack>
+            {isComparisonMode && (
+                <Box sx={{ paddingBlock: 1 }}>
+                    <Typography variant="caption">
+                        Note: all threads are passed the same parameters.
+                    </Typography>
+                </Box>
+            )}
             <ParametersList>
                 <ParametersListItem>
                     <ParameterSlider
@@ -171,6 +190,26 @@ export const ParameterContent = () => {
                         updateInferenceOpts({ stop: value });
                     }}
                 />
+                {userAuthInfo.hasPermission('write:model-config') && (
+                    <SystemPromptTextArea
+                        id="system-prompt"
+                        value={inferenceOpts.system_prompt ?? selectedModel?.system_prompt ?? ''}
+                        readOnly={threadStarted}
+                        onChange={(value) => {
+                            analyticsClient.trackParametersUpdate({
+                                parameterUpdated: 'system_prompt',
+                            });
+
+                            const modelDefault = selectedModel?.system_prompt || '';
+                            // Only store in opts if different from model default
+                            if (!value || value === modelDefault) {
+                                updateInferenceOpts({ system_prompt: undefined }); // Clear override, use model default
+                            } else {
+                                updateInferenceOpts({ system_prompt: value }); // Store user override
+                            }
+                        }}
+                    />
+                )}
             </ParametersList>
         </Stack>
     );

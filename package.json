@@ -27,7 +27,8 @@
     "test:storybook": "vitest --project=storybook",
     "test:watch": "vitest",
     "vitest-preview": "vitest-preview",
-    "watch:css": "panda --watch"
+    "watch:css": "panda --watch",
+    "cc:precommit": "yarn build && lint-staged && yarn test && yarn build-storybook"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",

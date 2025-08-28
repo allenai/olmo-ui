@@ -28,3 +28,7 @@ e2e/.auth/
 
 # Pandacss
 styled-system
+
+# Claude Code
+.claude
+CLAUDE.md

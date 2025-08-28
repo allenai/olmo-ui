@@ -25,13 +25,20 @@ export interface UserAuthInfo {
     userInfo?: ApiUser;
     userAuthInfo?: Auth0User;
     isAuthenticated: boolean;
+    hasPermission: (permission: string) => boolean;
 }
 
 const getUserAuthInfo = async (): Promise<UserAuthInfo> => {
     const userAuthInfo = await auth0Client.getUserInfo();
     const isAuthenticated = await auth0Client.isAuthenticated();
+    const hasPermission = (permission: string) => {
+        return userHasPermission(permission);
+    };
+    return { userAuthInfo, isAuthenticated, hasPermission };
+};
 
-    return { userAuthInfo, isAuthenticated };
+const userHasPermission = (permission: string, userInfo?: ApiUser) => {
+    return userInfo?.permissions?.some((p) => p === permission) ?? false;
 };
 
 export const requireAuthorizationLoader: LoaderFunction = async (props) => {
@@ -147,5 +154,8 @@ export const useUserAuthInfo = (): UserAuthInfo => {
         userInfo: userInfo ?? undefined,
         userAuthInfo: userInfoFromLoader?.userAuthInfo?.userAuthInfo,
         isAuthenticated: Boolean(userInfoFromLoader?.userAuthInfo?.isAuthenticated),
+        hasPermission: (permission: string) => {
+            return userHasPermission(permission, userInfo ?? undefined);
+        },
     };
 };

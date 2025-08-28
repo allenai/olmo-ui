@@ -125,6 +125,13 @@ const fakeSchemaResponse: Schema = {
                 name: 'top_p',
                 step: 0.01,
             },
+            system_prompt: {
+                default: null,
+                max: undefined,
+                min: undefined,
+                name: 'system_prompt',
+                step: undefined,
+            },
         },
     },
 };
