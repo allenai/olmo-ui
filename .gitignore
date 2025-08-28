@@ -19,7 +19,8 @@ coverage/
 api/config*.json
 api/service_account.json
 
-.env.local
+.env.*local
+
 e2e/.auth/
 
 .gcloudignore
