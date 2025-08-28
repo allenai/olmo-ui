@@ -21,7 +21,7 @@ export const userToolCallsResponse: Thread = {
             },
             toolDefinitions: [
                 {
-                    toolName: 'getWeather',
+                    name: 'getWeather',
                     description: 'gets the weather for a requested city',
                     parameters: {
                         type: 'object',

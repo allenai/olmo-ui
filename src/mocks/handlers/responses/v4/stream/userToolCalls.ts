@@ -27,7 +27,7 @@ export const userToolCallsStreamResponse = [
                 },
                 toolDefinitions: [
                     {
-                        toolName: 'getWeather',
+                        name: 'getWeather',
                         description: 'gets the weather for a requested city',
                         parameters: {
                             type: 'object',
@@ -241,7 +241,7 @@ export const userToolCallsStreamResponse = [
                 toolCalls: null,
                 toolDefinitions: [
                     {
-                        toolName: 'getWeather',
+                        name: 'getWeather',
                         description: 'gets the weather for a requested city',
                         parameters: {
                             type: 'object',
