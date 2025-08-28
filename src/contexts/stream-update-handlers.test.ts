@@ -57,8 +57,8 @@ describe('updateThreadWithToolCall', () => {
             message: 'fake-message-2',
             toolCallId: 'tool-call-1',
             toolName: 'cool-tool',
+            toolSource: 'user_defined',
             type: 'toolCall',
-            toolSource: 'internal',
             args: { foo: 'bar' },
         };
 
@@ -127,8 +127,8 @@ describe('updateThreadWithToolCall', () => {
             message: 'fake-message-2',
             toolCallId: 'tool-call-2',
             toolName: 'cooler-tool',
+            toolSource: 'user_defined',
             type: 'toolCall',
-            toolSource: 'internal',
             args: { bar: 'foo' },
         };
 
@@ -209,8 +209,8 @@ describe('updateThreadWithToolCall', () => {
             message: 'fake-message-2',
             toolCallId: 'tool-call-1',
             toolName: '',
-            type: 'toolCall',
             toolSource: 'internal',
+            type: 'toolCall',
             args: '{ bar:',
         };
 
@@ -233,8 +233,8 @@ describe('updateThreadWithToolCall', () => {
             message: 'fake-message-2',
             toolCallId: 'tool-call-1',
             toolName: '',
-            type: 'toolCall',
             toolSource: 'internal',
+            type: 'toolCall',
             args: " 'foo' }",
         };
 
@@ -311,8 +311,8 @@ describe('updateThreadWithToolCall', () => {
             message: 'fake-message-2',
             toolCallId: 'tool-call-1',
             toolName: '',
-            type: 'toolCall',
             toolSource: 'internal',
+            type: 'toolCall',
             args: { foo: 'bar' },
         };
 

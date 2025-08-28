@@ -66,6 +66,7 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
             // or the api could defer sending the toolCall until it knows for sure
             const toolCallToAdd: Partial<SchemaToolCall> = {
                 toolName: chunk.toolName,
+                toolSource: chunk.toolSource,
                 toolCallId: chunk.toolCallId,
                 toolSource: chunk.toolSource ?? undefined,
                 args: chunk.args,

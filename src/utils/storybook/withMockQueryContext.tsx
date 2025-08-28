@@ -22,6 +22,10 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     inferenceOpts: {},
     updateInferenceOpts: fn(),
     submitToThreadView: fn(),
+    updateUserToolDefinitions: fn(),
+    threadStarted: false,
+    userToolDefinitions: null,
+    canCallTools: false,
 
     fileUploadProps: {
         isFileUploadDisabled: true,
