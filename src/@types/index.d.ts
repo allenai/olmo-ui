@@ -1,13 +1,3 @@
-declare module '*.svg' {
-    const content: string;
-    export default content;
-}
-
-declare module '*.svg?react' {
-    const content: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-    export default content;
-}
-
 interface Window {
     // taken from https://developers.heap.io/reference/client-side-apis-overview#typescript-type-definitions
     heap?: {

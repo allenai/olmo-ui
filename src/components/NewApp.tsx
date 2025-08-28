@@ -22,7 +22,7 @@ export const NewApp = () => {
 
     return (
         <AppLayout>
-            {process.env.IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
+            {process.env.VITE_IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
             {shouldShowTermsAndConditionsModal && (
                 <TermsAndConditionsProvider>
                     <TermsAndConditionsModal

@@ -7,12 +7,10 @@ const config: StorybookConfig = {
     '../src/**/*.mdx',
     '../src/**/*.stories.@(js|jsx|ts|tsx)',
   ],
-  addons: [{
-    name: '@storybook/addon-essentials',
-    options: {
-      docs: false,
-    },
-  }, '@storybook/addon-onboarding', '@storybook/experimental-addon-test', '@storybook/addon-themes', 'storybook-addon-remix-react-router', 'storybook/addon-interactions'],
+  addons: [
+    '@storybook/addon-vitest',
+    '@storybook/addon-themes',
+  ],
   framework: {
     name: '@storybook/react-vite',
     options: {},

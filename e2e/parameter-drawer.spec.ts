@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '@playwright-utils';
 
 test.describe('Parameter Drawer - Cached Message Values', () => {
     test('should initialize parameter values from last LLM message in cached thread', async ({
