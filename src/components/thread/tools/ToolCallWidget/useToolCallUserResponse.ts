@@ -14,7 +14,7 @@ export const useToolCallUserResponse = () => {
     const queryContext = useQueryContext();
 
     const submitToolCallResponse = async (data: QueryFormValues) => {
-        const isReCaptchaEnabled = process.env.IS_RECAPTCHA_ENABLED;
+        const isReCaptchaEnabled = process.env.VITE_IS_RECAPTCHA_ENABLED;
 
         if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
             analyticsClient.trackCaptchaNotLoaded();
