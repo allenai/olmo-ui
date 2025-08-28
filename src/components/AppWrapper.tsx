@@ -33,7 +33,7 @@ const ReCaptchaWrapper = ({ children }: PropsWithChildren) => {
     }
 
     return (
-        <ReCaptchaProvider reCaptchaKey={siteKey} useEnterprise useRecaptchaNet>
+        <ReCaptchaProvider reCaptchaKey={siteKey} useEnterprise>
             <GlobalStyle />
             {children}
         </ReCaptchaProvider>
