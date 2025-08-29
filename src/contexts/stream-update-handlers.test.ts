@@ -327,7 +327,8 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
             toolSource: existingToolCall.toolSource,
-            args: existingToolCall.args,
+            // toolCallChunk contains the new full args object, which is what we are testing
+            args: toolCallChunk.args,
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
     });
