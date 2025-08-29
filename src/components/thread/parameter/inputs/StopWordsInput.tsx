@@ -27,6 +27,7 @@ export const StopWordsInput = ({ value = [], onChange }: StopWordsInputProps) =>
                 freeSolo
                 options={[]}
                 onChange={onChange}
+                sx={{ gridColumn: '1 / -1' }}
                 renderTags={(stopWords: readonly string[], getTagProps) =>
                     stopWords.map((word: string, index: number) => {
                         // Show special characters '\n' & '\t' in text on UI
