@@ -33,17 +33,10 @@ test.describe('Thinking and tool calling', () => {
         await page.getByRole('textbox', { name: /^Message/ }).fill('thinkingAndToolCalls');
         await page.getByRole('button', { name: 'Submit prompt' }).click();
 
-        // Wait for responses to complete
-        // Thinking is streaming
-        // await expect(page.locator('[data-is-streaming="true"]')).not.toBeVisible();
-
         const thinkingWidget = page.locator('[data-widget-type="thinking"]');
 
         // fail fast
         await expect(thinkingWidget).toBeVisible();
-
-        // no attribute yet
-        // await expect(thinkingWidget).toHaveAttribute('[data-expanded]', 'false');
 
         await expect(thinkingWidget.locator('h3')).toContainText('Thinking');
 
@@ -61,9 +54,6 @@ test.describe('Thinking and tool calling', () => {
         await expect(page.locator('[data-is-streaming="true"]')).not.toBeVisible();
 
         const userToolCallWidget = page.locator('[data-widget-type="tool-call"]');
-
-        // // fail fast
-        // await expect(userToolCallWidget).toBeVisible();
 
         await expect(userToolCallWidget.getByLabel(/^tool call/)).toContainText('getWeather');
 
