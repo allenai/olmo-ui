@@ -221,6 +221,43 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const streamMessage = useStreamMessage(streamCallbacks);
 
+    const submitToThreadView = useCallback(
+        async (threadViewId: string, data: QueryFormValues) => {
+            // these are bad assumptions, by design they are true
+            // TODO: Fix comparison (all of it)
+            const { modelId } = comparisonState[threadViewId];
+            const threadViewIdx = parseInt(threadViewId);
+            const threadId = isNaN(threadViewIdx) ? undefined : threadIds[threadViewIdx];
+            const model = models.find((m) => m.id === modelId);
+
+            if (model == null) {
+                return null;
+            }
+
+            return await processSingleModelSubmission(
+                data,
+                model,
+                threadId,
+                threadViewId,
+                inferenceOpts,
+                streamMessage.mutateAsync,
+                streamMessage.onFirstMessage,
+                streamMessage.completeStream,
+                addSnackMessage
+            );
+        },
+        [
+            addSnackMessage,
+            comparisonState,
+            inferenceOpts,
+            models,
+            streamMessage.completeStream,
+            streamMessage.mutateAsync,
+            streamMessage.onFirstMessage,
+            threadIds,
+        ]
+    );
+
     const processSubmission = useCallback(
         async (data: QueryFormValues): Promise<void> => {
             // Reset first message tracking for new submission
@@ -228,21 +265,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             streamMessage.prepareForNewSubmission();
 
-            const submissions = Object.entries(comparisonState).map(([threadViewId, state]) => {
-                const model = models.find((m) => m.id === state.modelId);
-                const threadId = threadIds[parseInt(threadViewId)] || undefined;
-
-                return processSingleModelSubmission(
-                    data,
-                    model as Model,
-                    threadId,
-                    threadViewId,
-                    inferenceOpts,
-                    streamMessage.mutateAsync,
-                    streamMessage.onFirstMessage,
-                    streamMessage.completeStream,
-                    addSnackMessage
-                );
+            const submissions = Object.entries(comparisonState).map(([threadViewId]) => {
+                return submitToThreadView(threadViewId, data);
             });
 
             // Wait for all submissions to complete (success or failure)
@@ -257,7 +281,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 throw formError.reason;
             }
         },
-        [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models, threadIds]
+        [comparisonState, streamMessage, submitToThreadView]
     );
 
     const selectedModelsWithIds = useMemo(() => {
@@ -386,6 +410,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
                 setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
             },
+            submitToThreadView,
         };
     }, [
         canSubmit,
@@ -401,6 +426,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         areFilesAllowed,
         reducedFileUploadProps,
         isFileUploadDisabled,
+        submitToThreadView,
     ]);
 
     return (

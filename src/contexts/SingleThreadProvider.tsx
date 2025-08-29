@@ -256,22 +256,17 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setShouldShowModelSwitchWarning(false);
     }, []);
 
-    const onSubmit = useCallback(
-        async (data: QueryFormValues): Promise<void> => {
-            if (!selectedModel) {
-                return;
+    const submitToThreadView = useCallback(
+        async (threadViewId: string, data: QueryFormValues) => {
+            // this shouldn't happen
+            if (selectedModel == null) {
+                return null;
             }
-
-            // Clear stream errors on new submission
-            clearStreamError('0');
-
-            streamMessage.prepareForNewSubmission();
-
-            await processSingleModelSubmission(
+            return await processSingleModelSubmission(
                 data,
                 selectedModel,
                 threadId,
-                '0', // single-thread view id is always '0'
+                threadViewId,
                 inferenceOpts,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
@@ -279,7 +274,35 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 addSnackMessage
             );
         },
-        [selectedModel, streamMessage, threadId, inferenceOpts, addSnackMessage, clearStreamError]
+        [
+            addSnackMessage,
+            inferenceOpts,
+            selectedModel,
+            streamMessage.completeStream,
+            streamMessage.mutateAsync,
+            streamMessage.onFirstMessage,
+            threadId,
+        ]
+    );
+
+    const onSubmit = useCallback(
+        async (data: QueryFormValues): Promise<void> => {
+            if (!selectedModel) {
+                return;
+            }
+
+            // this should not be assumed
+            // TODO: Fix comparison (all of it)
+            const threadViewId = '0';
+
+            // Clear stream errors on new submission
+            clearStreamError(threadViewId);
+
+            streamMessage.prepareForNewSubmission();
+
+            await submitToThreadView(threadViewId, data);
+        },
+        [clearStreamError, selectedModel, streamMessage, submitToThreadView]
     );
 
     const handleAbort = useCallback(
@@ -327,6 +350,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             },
             inferenceOpts,
             updateInferenceOpts,
+            submitToThreadView,
         };
     }, [
         canSubmit,
@@ -345,6 +369,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         threadId,
         inferenceOpts,
         updateInferenceOpts,
+        submitToThreadView,
     ]);
 
     return (

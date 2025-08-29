@@ -522,6 +522,16 @@ export type components = {
              */
             readonly template?: string | null;
             /**
+             * Toolcallid
+             * @default null
+             */
+            readonly toolCallId?: string | null;
+            /**
+             * Tooldefinitions
+             * @default null
+             */
+            readonly toolDefinitions?: string | null;
+            /**
              * Topp
              * @default 1
              */
@@ -780,6 +790,11 @@ export type components = {
              * @default null
              */
             readonly toolCalls?: readonly components['schemas']['ToolCall'][] | null;
+            /**
+             * Tooldefinitions
+             * @default null
+             */
+            readonly toolDefinitions?: readonly components['schemas']['ToolDefinition'][] | null;
         };
         /** GetAttributionRequest */
         readonly GetAttributionRequest: {
@@ -931,6 +946,16 @@ export type components = {
              * @default false
              */
             readonly accepts_files?: boolean;
+            /**
+             * Can Call Tools
+             * @default false
+             */
+            readonly can_call_tools?: boolean;
+            /**
+             * Can Think
+             * @default false
+             */
+            readonly can_think?: boolean;
             /** Description */
             readonly description: string;
             /**
@@ -1030,6 +1055,16 @@ export type components = {
              * @default false
              */
             readonly allow_files_in_followups?: boolean;
+            /**
+             * Can Call Tools
+             * @default false
+             */
+            readonly can_call_tools?: boolean;
+            /**
+             * Can Think
+             * @default false
+             */
+            readonly can_think?: boolean;
             /** Description */
             readonly description: string;
             /**
@@ -1164,6 +1199,40 @@ export type components = {
              * Format: date-time
              */
             readonly updatedTime: string;
+        };
+        /** ParameterDef */
+        readonly ParameterDef: {
+            /**
+             * Default
+             * @default null
+             */
+            readonly default?: {
+                readonly [key: string]: string;
+            } | null;
+            /**
+             * Description
+             * @default null
+             */
+            readonly description?: string | null;
+            /**
+             * Properties
+             * @default null
+             */
+            readonly properties?: {
+                readonly [key: string]: components['schemas']['ParameterDef'];
+            } | null;
+            /**
+             * Property Ordering
+             * @default null
+             */
+            readonly property_ordering?: readonly string[] | null;
+            /**
+             * Required
+             * @default []
+             */
+            readonly required?: readonly string[] | null;
+            /** Type */
+            readonly type: string;
         };
         /**
          * Rating
@@ -1326,6 +1395,7 @@ export type components = {
             readonly toolCallId: string;
             /** Toolname */
             readonly toolName: string;
+            readonly toolSource: components['schemas']['ToolSource'];
         };
         /** ToolCallChunk */
         readonly ToolCallChunk: {
@@ -1345,12 +1415,27 @@ export type components = {
             readonly toolCallId: string;
             /** Toolname */
             readonly toolName: string;
+            readonly toolSource: components['schemas']['ToolSource'] | null;
             /**
              * Type
              * @constant
              */
             readonly type: 'toolCall';
         };
+        /** ToolDefinition */
+        readonly ToolDefinition: {
+            /** Description */
+            readonly description: string;
+            /** Name */
+            readonly name: string;
+            readonly parameters: components['schemas']['ParameterDef'];
+            readonly toolSource: components['schemas']['ToolSource'];
+        };
+        /**
+         * ToolSource
+         * @enum {string}
+         */
+        readonly ToolSource: 'internal' | 'user_defined';
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
             /** Acceptedfiletypes */
@@ -1518,6 +1603,7 @@ export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
+export type SchemaParameterDef = components['schemas']['ParameterDef'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
@@ -1535,6 +1621,8 @@ export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
 export type SchemaThread = components['schemas']['Thread'];
 export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
+export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
+export type SchemaToolSource = components['schemas']['ToolSource'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =

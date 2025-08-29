@@ -21,6 +21,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     setModelId: fn(),
     inferenceOpts: {},
     updateInferenceOpts: fn(),
+    submitToThreadView: fn(),
 
     fileUploadProps: {
         isFileUploadDisabled: true,

@@ -58,6 +58,7 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: 'tool-call-1',
             toolName: 'cool-tool',
             type: 'toolCall',
+            toolSource: 'internal',
             args: { foo: 'bar' },
         };
 
@@ -72,6 +73,7 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: toolCallChunk.toolCallId,
             toolName: toolCallChunk.toolName,
+            toolSource: toolCallChunk.toolSource,
             args: toolCallChunk.args,
         });
     });
@@ -80,8 +82,9 @@ describe('updateThreadWithToolCall', () => {
         const existingToolCall = {
             toolCallId: 'tool-call-1',
             toolName: 'cool-tool',
+            toolSource: 'internal',
             args: { foo: 'bar' },
-        };
+        } as const satisfies SchemaToolCall;
 
         const initialAssistantMessage = {
             content: 'initial content',
@@ -125,6 +128,7 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: 'tool-call-2',
             toolName: 'cooler-tool',
             type: 'toolCall',
+            toolSource: 'internal',
             args: { bar: 'foo' },
         };
 
@@ -138,11 +142,13 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
             args: existingToolCall.args,
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual({
             toolCallId: toolCallChunk.toolCallId,
             toolName: toolCallChunk.toolName,
+            toolSource: toolCallChunk.toolSource,
             args: toolCallChunk.args,
         });
     });
@@ -151,12 +157,14 @@ describe('updateThreadWithToolCall', () => {
         const existingToolCall = {
             toolCallId: 'tool-call-1',
             toolName: 'cool-tool',
+            toolSource: 'internal',
             args: undefined,
         } as const satisfies SchemaToolCall;
 
         const existingToolCallTwo = {
             toolCallId: 'tool-call-2',
             toolName: 'cool-tool',
+            toolSource: 'internal',
             args: { foo: 'two' },
         } as const satisfies SchemaToolCall;
 
@@ -202,6 +210,7 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: 'tool-call-1',
             toolName: '',
             type: 'toolCall',
+            toolSource: 'internal',
             args: '{ bar:',
         };
 
@@ -215,6 +224,7 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
             args: '{ bar:',
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
@@ -224,6 +234,7 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: 'tool-call-1',
             toolName: '',
             type: 'toolCall',
+            toolSource: 'internal',
             args: " 'foo' }",
         };
 
@@ -238,6 +249,7 @@ describe('updateThreadWithToolCall', () => {
         expect(updatedMessageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
             args: "{ bar: 'foo' }",
         });
         expect(updatedMessageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
@@ -247,12 +259,14 @@ describe('updateThreadWithToolCall', () => {
         const existingToolCall = {
             toolCallId: 'tool-call-1',
             toolName: 'cool-tool',
+            toolSource: 'internal',
             args: '{ foo: "bar" ',
         } as const satisfies SchemaToolCall;
 
         const existingToolCallTwo = {
             toolCallId: 'tool-call-2',
             toolName: 'cool-tool',
+            toolSource: 'internal',
             args: { foo: 'two' },
         } as const satisfies SchemaToolCall;
 
@@ -298,6 +312,7 @@ describe('updateThreadWithToolCall', () => {
             toolCallId: 'tool-call-1',
             toolName: '',
             type: 'toolCall',
+            toolSource: 'internal',
             args: { foo: 'bar' },
         };
 
@@ -311,6 +326,8 @@ describe('updateThreadWithToolCall', () => {
         expect(messageThatShouldHaveAToolCall.toolCalls![0]).toEqual({
             toolCallId: existingToolCall.toolCallId,
             toolName: existingToolCall.toolName,
+            toolSource: existingToolCall.toolSource,
+            // toolCallChunk contains the new full args object, which is what we are testing
             args: toolCallChunk.args,
         });
         expect(messageThatShouldHaveAToolCall.toolCalls![1]).toEqual(existingToolCallTwo);
@@ -690,7 +707,14 @@ describe('mergeMessages', () => {
             root: 'fake-message-1',
             snippet: '',
 
-            toolCalls: [{ args: { foo: 'bar' }, toolCallId: 'tool-call', toolName: 'cool-tool' }],
+            toolCalls: [
+                {
+                    args: { foo: 'bar' },
+                    toolCallId: 'tool-call',
+                    toolSource: 'internal',
+                    toolName: 'cool-tool',
+                },
+            ],
         } as const satisfies FlatMessage;
 
         const newThread = {

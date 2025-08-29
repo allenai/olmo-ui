@@ -7,8 +7,8 @@ import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/C
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 import { mapToolCallArgs } from '../mapToolCallArgs';
-import { ToolCallAnswer } from './ToolCallAnswer';
 import { ToolCallParameters } from './ToolCallParameters';
+import { ToolCallResult } from './ToolCallResult';
 
 interface ToolCallWidgetProps {
     toolCall: SchemaToolCall;
@@ -20,7 +20,7 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
     const stringArgs = JSON.stringify(mappedArgs, undefined, 2);
 
     return (
-        <CollapsibleWidgetBase defaultExpanded>
+        <CollapsibleWidgetBase defaultExpanded data-widget-type="tool-call">
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
@@ -29,7 +29,11 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
                 <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                <ToolCallAnswer>{answer}</ToolCallAnswer>
+                <ToolCallResult
+                    toolCallId={toolCall.toolCallId}
+                    toolSource={toolCall.toolSource}
+                    answer={answer}
+                />
             </CollapsibleWidgetPanel>
         </CollapsibleWidgetBase>
     );

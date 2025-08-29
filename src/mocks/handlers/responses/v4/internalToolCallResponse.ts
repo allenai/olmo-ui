@@ -1,12 +1,12 @@
 import type { Thread } from '@/api/playgroundApi/thread';
 
-export const THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID = 'msg_R4B2M1O4D6';
+export const INTERNAL_TOOL_CALLS_THREAD_ROOT_ID = 'msg_XAS28D23AD';
 
-export const thinkingAndToolCallsResponse: Thread = {
-    id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+export const internalToolCallsResponse: Thread = {
+    id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
     messages: [
         {
-            id: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            id: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
             content: 'Combine the number 1000 and the unit KiB',
             creator: 'google-oauth2|106113864953374894702',
             role: 'user',
@@ -18,7 +18,7 @@ export const thinkingAndToolCallsResponse: Thread = {
                 logprobs: null,
                 stop: [],
             },
-            root: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            root: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
             created: '2025-08-15T22:29:57.951706+00:00',
             modelId: 'qwen3-openai',
             modelHost: 'modal_openai',
@@ -55,12 +55,12 @@ export const thinkingAndToolCallsResponse: Thread = {
                 logprobs: null,
                 stop: [],
             },
-            root: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            root: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
             created: '2025-08-15T22:29:57.973314+00:00',
             modelId: 'qwen3-openai',
             modelHost: 'modal_openai',
             deleted: null,
-            parent: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            parent: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
             template: null,
             children: ['msg_O4T3G5X7H0'],
             completion: 'cpl_I3M1H1V6P8',
@@ -76,13 +76,12 @@ export const thinkingAndToolCallsResponse: Thread = {
             toolCalls: [
                 {
                     toolName: 'combine_number_and_unit',
-                    toolSource: 'internal',
                     args: '{"number": 100, "unit": "KiB"}',
                     toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
+                    toolSource: 'internal',
                 },
             ],
-            thinking:
-                "\nOkay, let's see. The user wants to combine the number 1000 with the unit KiB. I need to check the available functions to see which one can handle this.\n\nLooking at the tools provided, there's the combine_number_and_unit function. Its parameters require a number and a unit. The number here is 1000, which is an integer, and the unit is KiB, which is a string. \n\nWait, but the function's parameters specify that the number must be an integer. The user provided 1000, which is an integer, so that's fine. The unit is KiB, which is a valid string. \n\nI should make sure there's no other function needed. The other function is create_random_number, but that's not relevant here. So the correct function to call is combine_number_and_unit with number 1000 and unit KiB. \n\nNo issues here. The parameters match, and the function does exactly what's needed. So the tool call should be straightforward.\n",
+            thinking: null,
             snippet: '',
             isLimitReached: false,
             isOlderThan30Days: false,
@@ -100,7 +99,7 @@ export const thinkingAndToolCallsResponse: Thread = {
                 logprobs: null,
                 stop: [],
             },
-            root: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            root: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
             created: '2025-08-15T22:30:06.023927+00:00',
             modelId: 'qwen3-openai',
             modelHost: 'modal_openai',
@@ -121,9 +120,9 @@ export const thinkingAndToolCallsResponse: Thread = {
             toolCalls: [
                 {
                     toolName: 'combine_number_and_unit',
-                    toolSource: 'internal',
                     args: '{"number": 100, "unit": "KiB"}',
                     toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
+                    toolSource: 'internal',
                 },
             ],
             thinking: null,
@@ -144,7 +143,7 @@ export const thinkingAndToolCallsResponse: Thread = {
                 logprobs: null,
                 stop: [],
             },
-            root: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
+            root: INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
             created: '2025-08-15T22:30:06.035256+00:00',
             modelId: 'qwen3-openai',
             modelHost: 'modal_openai',

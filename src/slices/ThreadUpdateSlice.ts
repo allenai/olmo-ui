@@ -29,13 +29,6 @@ export const ABORT_ERROR_MESSAGE: SnackMessage = {
     severity: AlertMessageSeverity.Warning,
 } as const;
 
-export interface StreamMessageRequest {
-    content: string;
-    captchaToken?: string | null;
-    parent?: string;
-    files?: FileList;
-}
-
 export interface ThreadUpdateSlice {
     abortController: AbortController | null;
     streamingMessageId: string | null;
