@@ -65,6 +65,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         aria-label={labelAndPlaceholder}
                         // @ts-expect-error Placeholder is appearantly not on the varnish-ui component, but it _does_get passed
                         placeholder={labelAndPlaceholder}
+                        isDisabled={isPending}
                         endControls={
                             <QueryFormButton
                                 sx={{
