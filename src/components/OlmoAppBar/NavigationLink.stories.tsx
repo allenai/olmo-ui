@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 
 import { NavigationLink } from './NavigationLink';
 
@@ -20,10 +21,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+    // @ts-expect-error - I think storybook doesn't know how to interpret our discriminated union?
     args: {
         children: 'Navigation link',
-        linkProps: {},
-        sx: {},
-        textSx: {},
+        onClick: fn(),
     },
 };
