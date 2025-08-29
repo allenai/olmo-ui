@@ -12,8 +12,7 @@ const modalBase = css({
     fontSize: 'sm',
     paddingTop: '4',
     paddingBottom: '6',
-    paddingLeft: '2',
-    paddingRight: '2',
+    paddingX: '2',
 });
 
 const modalHeading = css({
@@ -22,11 +21,15 @@ const modalHeading = css({
     fontWeight: 'regular',
 });
 
+const labelStyle = css({
+    marginBottom: '2',
+});
+
 const exampleButtons = css({
     display: 'flex',
     justifyContent: 'flex-start',
     paddingX: '0',
-    paddingY: '6',
+    marginBottom: '4',
 });
 
 const modalInput = css({
@@ -34,10 +37,6 @@ const modalInput = css({
         fontFamily: 'monospace',
         fontSize: 'md',
         textWrap: 'nowrap',
-    },
-    '& label': {
-        marginTop: '4',
-        marginBottom: '8',
     },
 });
 
@@ -119,33 +118,34 @@ export function FunctionDeclarationDialog({
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
-                <p>
+                <p className={labelStyle}>
                     Enter a JSON array of function declarations the model can call. Each function
                     should include a name, description, and JSON Schema parameters. Start with an
                     example below or see the API docs for more.
                 </p>
-                <ModalActions className={exampleButtons} fullWidth>
-                    <Button
-                        size="small"
-                        color="secondary"
-                        onClick={() => {
-                            setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
-                        }}>
-                        getWeather
-                    </Button>
-                    <Button
-                        size="small"
-                        color="secondary"
-                        onClick={() => {
-                            setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
-                        }}>
-                        getStockIndex
-                    </Button>
-                </ModalActions>
+                {!isDisabled && (
+                    <ModalActions className={exampleButtons} fullWidth>
+                        <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                                setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
+                            }}>
+                            getWeather
+                        </Button>
+                        <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                                setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
+                            }}>
+                            getStockIndex
+                        </Button>
+                    </ModalActions>
+                )}
                 <ControlledTextArea
                     className={modalInput}
                     name="declaration"
-                    // label="Enter a JSON array of function declarations the model can call. Each function should include a name, description, and JSON Schema parameters. Start with an example below or see the API docs for more."
                     isDisabled={isDisabled}
                     minRows={18}
                     maxRows={18}
