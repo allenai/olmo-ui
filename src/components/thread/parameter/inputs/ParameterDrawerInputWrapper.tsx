@@ -84,7 +84,7 @@ export const ParameterDrawerInputWrapper = ({
                     </ResponsiveTooltip>
                 )}
             </Box>
-            <Box display="grid" gridTemplateColumns="subgrid" gridArea="input" columnGap={1}>
+            <Box display="grid" gridTemplateColumns="subgrid" gridArea="input" columnGap={3}>
                 {children instanceof Function ? children({ inputLabelId }) : children}
             </Box>
         </Box>
