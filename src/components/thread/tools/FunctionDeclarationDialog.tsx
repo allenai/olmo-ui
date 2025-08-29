@@ -11,7 +11,9 @@ import {
 } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
+import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
 
@@ -43,6 +45,7 @@ const modalInput = css({
     '& textarea': {
         fontFamily: 'monospace',
         fontSize: 'md',
+        textWrap: 'nowrap',
     },
     '& label': {
         marginTop: '4',
@@ -175,15 +178,7 @@ export function FunctionDeclarationDialog({
                     controllerProps={{
                         control,
                         rules: {
-                            validate: (value) => {
-                                try {
-                                    JSON.parse(value);
-                                } catch {
-                                    return 'Invalid JSON format';
-                                }
-
-                                return true;
-                            },
+                            validate: validateToolDefinitions,
                         },
                     }}
                 />
@@ -191,6 +186,32 @@ export function FunctionDeclarationDialog({
         </Modal>
     );
 }
+
+const validateToolDefinitions = (value: string) => {
+    const definitionSchema = z.strictObject({
+        name: z.string().min(1, { error: 'Name is required' }),
+        description: z.string().min(1, { error: 'Description is required' }),
+        parameters: z.record(z.string(), z.unknown()),
+    });
+    const toolsSchema = z.array(definitionSchema);
+
+    try {
+        const toolDefs = JSON.parse(value) as SchemaToolDefinition[];
+        toolsSchema.parse(toolDefs);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            return `Invalid JSON format: ${e.message}`;
+        }
+        if (e instanceof z.core.$ZodError) {
+            // Return the first issue message for simplicity
+            const message = `[${e.issues[0].path}]: ${e.issues[0].message}`;
+            return `Invalid definition: ${message}`;
+        }
+        return 'Unknown parsing error';
+    }
+
+    return true;
+};
 
 const EXAMPLE_DECLARATIONS = {
     getWeather: `
