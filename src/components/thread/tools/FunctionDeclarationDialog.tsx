@@ -1,14 +1,5 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import {
-    AriaMenu,
-    Button,
-    IconButton,
-    MenuItem,
-    MenuTrigger,
-    Modal,
-    ModalActions,
-    Popover,
-} from '@allenai/varnish-ui';
+import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,6 +9,7 @@ import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
 
 const modalBase = css({
+    fontSize: 'sm',
     paddingTop: '4',
     paddingBottom: '6',
     paddingLeft: '2',
@@ -30,15 +22,11 @@ const modalHeading = css({
     fontWeight: 'regular',
 });
 
-const modalActions = css({
+const exampleButtons = css({
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '[100%]',
-    '& > div': {
-        gap: '2',
-        display: 'flex',
-    },
+    justifyContent: 'flex-start',
+    paddingX: '0',
+    paddingY: '6',
 });
 
 const modalInput = css({
@@ -109,69 +97,55 @@ export function FunctionDeclarationDialog({
                 </IconButton>
             }
             buttons={
-                <ModalActions className={modalActions}>
-                    {!isDisabled ? (
-                        <MenuTrigger>
-                            <Button
-                                color="secondary"
-                                shape="rounded"
-                                variant="text"
-                                aria-label="Cancel and close dialog">
-                                Use example
-                            </Button>
-                            <Popover placement="top left">
-                                <AriaMenu aria-label="Start with an example">
-                                    <MenuItem
-                                        onAction={() => {
-                                            setValue(
-                                                'declaration',
-                                                EXAMPLE_DECLARATIONS.getWeather.trim()
-                                            );
-                                        }}>
-                                        getWeather
-                                    </MenuItem>
-                                    <MenuItem
-                                        onAction={() => {
-                                            setValue(
-                                                'declaration',
-                                                EXAMPLE_DECLARATIONS.getStockIndex.trim()
-                                            );
-                                        }}>
-                                        getCurrentTime
-                                    </MenuItem>
-                                </AriaMenu>
-                            </Popover>
-                        </MenuTrigger>
-                    ) : (
-                        <div />
-                    )}
-                    <div>
-                        <Button
-                            color="secondary"
-                            shape="rounded"
-                            onClick={handleReset}
-                            aria-label="Reset form"
-                            isDisabled={isDisabled}>
-                            Reset
-                        </Button>
-                        <Button
-                            color="secondary"
-                            shape="rounded"
-                            variant="contained"
-                            type="submit"
-                            form={formId}
-                            aria-label="Save function declarations"
-                            isDisabled={isDisabled}>
-                            Save
-                        </Button>
-                    </div>
+                <ModalActions fullWidth>
+                    <Button
+                        color="secondary"
+                        shape="rounded"
+                        onClick={handleReset}
+                        aria-label="Reset form"
+                        isDisabled={isDisabled}>
+                        Reset
+                    </Button>
+                    <Button
+                        color="secondary"
+                        shape="rounded"
+                        variant="contained"
+                        type="submit"
+                        form={formId}
+                        aria-label="Save function declarations"
+                        isDisabled={isDisabled}>
+                        Save
+                    </Button>
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
+                <p>
+                    Enter a JSON array of function declarations the model can call. Each function
+                    should include a name, description, and JSON Schema parameters. Start with an
+                    example below or see the API docs for more.
+                </p>
+                <ModalActions className={exampleButtons} fullWidth>
+                    <Button
+                        size="small"
+                        color="secondary"
+                        onClick={() => {
+                            setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
+                        }}>
+                        getWeather
+                    </Button>
+                    <Button
+                        size="small"
+                        color="secondary"
+                        onClick={() => {
+                            setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
+                        }}>
+                        getStockIndex
+                    </Button>
+                </ModalActions>
                 <ControlledTextArea
                     className={modalInput}
                     name="declaration"
-                    label="Enter a list of function declarations for the model to call upon. See the API documentation for examples."
+                    // label="Enter a JSON array of function declarations the model can call. Each function should include a name, description, and JSON Schema parameters. Start with an example below or see the API docs for more."
                     isDisabled={isDisabled}
                     minRows={18}
                     maxRows={18}
