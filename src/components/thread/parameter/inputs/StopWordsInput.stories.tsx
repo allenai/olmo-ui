@@ -4,7 +4,7 @@ import { fn } from 'storybook/test';
 import { StopWordsInput } from './StopWordsInput';
 
 const meta = {
-    title: 'molecule/StopWordsInput',
+    title: 'parameters/StopWordsInput',
     component: StopWordsInput,
 } satisfies Meta<typeof StopWordsInput>;
 
