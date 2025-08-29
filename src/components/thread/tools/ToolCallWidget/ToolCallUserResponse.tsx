@@ -43,10 +43,12 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
         },
     });
 
-    const { submitToolCallResponse } = useToolCallUserResponse(formContext);
+    const { submitToolCallResponse, isPending } = useToolCallUserResponse(formContext);
 
     const classNames = toolCallResponseRecipe();
     const labelAndPlaceholder = 'Function response';
+
+    const isSubmitDisabled = isPending || !formContext.formState.isValid;
 
     return (
         <FormProvider {...formContext}>
@@ -74,7 +76,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                                 }}
                                 type="submit"
                                 aria-label="Submit function response"
-                                disabled={!formContext.formState.isValid}>
+                                disabled={isSubmitDisabled}>
                                 <Send />
                             </QueryFormButton>
                         }
