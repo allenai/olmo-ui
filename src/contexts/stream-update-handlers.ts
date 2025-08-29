@@ -45,8 +45,7 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
         if (toolCallToUpdate != null) {
             toolCallToUpdate.toolName += chunk.toolName;
 
-            // toolCallToUpdate and/or chunk _should_ be / are partial
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            // toolSource could not exist yet
             if (chunk.toolSource != null) {
                 toolCallToUpdate.toolSource = chunk.toolSource;
             }
@@ -61,13 +60,17 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
                 }
             }
         } else {
-            const toolCallToAdd: SchemaToolCall = {
+            // toolSource maybe null as we recieve chunks
+            // so we are forcing the type, for now
+            // we could either add to the toolSource enum `unknown`
+            // or the api could defer sending the toolCall until it knows for sure
+            const toolCallToAdd: Partial<SchemaToolCall> = {
                 toolName: chunk.toolName,
                 toolCallId: chunk.toolCallId,
-                toolSource: chunk.toolSource,
+                toolSource: chunk.toolSource ?? undefined,
                 args: chunk.args,
             };
-            messageToUpdate.toolCalls.push(toolCallToAdd);
+            messageToUpdate.toolCalls.push(toolCallToAdd as SchemaToolCall);
         }
     }
 );

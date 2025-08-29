@@ -1202,20 +1202,35 @@ export type components = {
         };
         /** ParameterDef */
         readonly ParameterDef: {
-            /** Properties */
-            readonly properties: {
-                readonly [key: string]: components['schemas']['PropertiesType'];
-            };
-            /** Type */
-            readonly type: string;
-        };
-        /** PropertiesType */
-        readonly PropertiesType: {
+            /**
+             * Default
+             * @default null
+             */
+            readonly default?: {
+                readonly [key: string]: string;
+            } | null;
             /**
              * Description
              * @default null
              */
             readonly description?: string | null;
+            /**
+             * Properties
+             * @default null
+             */
+            readonly properties?: {
+                readonly [key: string]: components['schemas']['ParameterDef'];
+            } | null;
+            /**
+             * Property Ordering
+             * @default null
+             */
+            readonly property_ordering?: readonly string[] | null;
+            /**
+             * Required
+             * @default []
+             */
+            readonly required?: readonly string[] | null;
             /** Type */
             readonly type: string;
         };
@@ -1400,7 +1415,7 @@ export type components = {
             readonly toolCallId: string;
             /** Toolname */
             readonly toolName: string;
-            readonly toolSource: components['schemas']['ToolSource'];
+            readonly toolSource: components['schemas']['ToolSource'] | null;
             /**
              * Type
              * @constant
@@ -1589,7 +1604,6 @@ export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
 export type SchemaParameterDef = components['schemas']['ParameterDef'];
-export type SchemaPropertiesType = components['schemas']['PropertiesType'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
