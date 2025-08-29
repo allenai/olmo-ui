@@ -64,8 +64,8 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
             const toolCallToAdd: SchemaToolCall = {
                 toolName: chunk.toolName,
                 toolCallId: chunk.toolCallId,
-                args: chunk.args,
                 toolSource: chunk.toolSource,
+                args: chunk.args,
             };
             messageToUpdate.toolCalls.push(toolCallToAdd);
         }
