@@ -130,7 +130,7 @@ export const uiRefreshOlmoTheme = {
             styleOverrides: {
                 root: ({ theme }) => ({
                     marginBlockStart: theme.spacing(1),
-                    marginInline: theme.spacing(1),
+                    marginInline: theme.spacing(0),
                 }),
             },
         },
