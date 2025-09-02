@@ -203,7 +203,7 @@ const EXAMPLE_DECLARATIONS = {
                         "string_value": "Boston, MA"
                     }
                 }
-            }
+            },
             "required": [
                 "location"
             ]
