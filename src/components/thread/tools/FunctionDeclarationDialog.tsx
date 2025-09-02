@@ -63,7 +63,7 @@ export function FunctionDeclarationDialog({
 }: FunctionDeclarationDialogProps) {
     const { colorMode } = useColorMode();
     const { handleSubmit, reset, setValue, control } = useForm<DataFields>({
-        defaultValues: {
+        values: {
             declaration: jsonData,
         },
         mode: 'onSubmit',
