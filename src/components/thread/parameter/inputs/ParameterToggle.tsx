@@ -1,7 +1,3 @@
-/**
- * A slider with a number control next to it.
- */
-
 import { stack } from '@allenai/varnish-panda-runtime/patterns';
 import { Button, Switch } from '@allenai/varnish-ui';
 
