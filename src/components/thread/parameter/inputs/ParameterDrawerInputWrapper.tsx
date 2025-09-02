@@ -1,14 +1,13 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, BoxProps, IconButton, Typography } from '@mui/material';
 import { ReactNode, useRef, useState } from 'react';
 
 import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 
-interface ParameterDrawerInputWrapperProps {
+interface ParameterDrawerInputWrapperProps extends Omit<BoxProps, 'children' | 'aria-label'> {
     label: string;
     'aria-label': string;
     inputId: string;
-    rows?: 'one-row' | 'two-rows';
     children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
     tooltipContent?: string;
     tooltipTitle?: string;
@@ -20,8 +19,8 @@ export const ParameterDrawerInputWrapper = ({
     children,
     label,
     inputId,
-    rows = 'two-rows',
     'aria-label': ariaLabel,
+    ...boxProps
 }: ParameterDrawerInputWrapperProps) => {
     const containerRef = useRef<HTMLElement>();
 
@@ -39,27 +38,17 @@ export const ParameterDrawerInputWrapper = ({
         setIsTooltipOpen(false);
     };
 
-    const gridProps =
-        rows === 'one-row'
-            ? {
-                  gridTemplateRows: 'auto',
-                  gridTemplateColumns: '2fr 1fr',
-                  gridTemplateAreas: '"label input"',
-              }
-            : {
-                  gridTemplateRows: 'auto auto',
-                  gridTemplateColumns: 'subgrid',
-                  gridTemplateAreas: '"label label" "input input"',
-                  gridColumn: '1 / -1',
-              };
-
     return (
         <Box
             // MUI's Grid component had some weird stuff going on with top padding so we're using CSS grid here instead
             display="grid"
-            {...gridProps}
-            ref={containerRef}
-            paddingY={1}>
+            gridTemplateRows="auto auto"
+            gridTemplateColumns="subgrid"
+            gridTemplateAreas='"label label" "input input"'
+            gridColumn="1 / -1"
+            paddingY={1}
+            {...boxProps}
+            ref={containerRef}>
             <Box display="flex" flexDirection="row" gap={1} alignItems="center" gridArea="label">
                 <Typography variant="body1" component="label" htmlFor={inputId} id={inputLabelId}>
                     {label}

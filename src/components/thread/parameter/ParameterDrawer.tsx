@@ -89,14 +89,8 @@ const ParametersList = ({ children }: React.PropsWithChildren) => (
         {children}
     </Box>
 );
-const ParametersListItemTwoRows = ({ children }: React.PropsWithChildren) => (
+const ParametersListItem = ({ children }: React.PropsWithChildren) => (
     <Box component="li" display="grid" gridTemplateColumns="subgrid" gridColumn="1 / -1">
-        {children}
-    </Box>
-);
-
-const ParametersListItemOneRow = ({ children }: React.PropsWithChildren) => (
-    <Box component="li" display="grid" gridTemplateColumns="1fr auto" gridColumn="1 / 3">
         {children}
     </Box>
 );
@@ -129,7 +123,7 @@ export const ParameterContent = () => {
     return (
         <Stack>
             <ParametersList>
-                <ParametersListItemTwoRows>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Temperature"
                         min={opts.temperature.min}
@@ -146,8 +140,8 @@ export const ParameterContent = () => {
                         dialogTitle="Temperature"
                         id="temperature"
                     />
-                </ParametersListItemTwoRows>
-                <ParametersListItemTwoRows>
+                </ParametersListItem>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Top P"
                         min={opts.top_p.min}
@@ -164,8 +158,8 @@ export const ParameterContent = () => {
                         dialogTitle="Top P"
                         id="top-p"
                     />
-                </ParametersListItemTwoRows>
-                <ParametersListItemTwoRows>
+                </ParametersListItem>
+                <ParametersListItem>
                     <ParameterSlider
                         label="Max tokens"
                         min={opts.max_tokens.min}
@@ -182,9 +176,9 @@ export const ParameterContent = () => {
                         dialogTitle="Max Tokens"
                         id="max-tokens"
                     />
-                </ParametersListItemTwoRows>
+                </ParametersListItem>
                 {canCallTools && (
-                    <ParametersListItemOneRow>
+                    <ParametersListItem>
                         <ParameterToggle
                             value={isToolCallingEnabled}
                             label="Function calling"
@@ -200,7 +194,7 @@ export const ParameterContent = () => {
                                 updateIsToolCallingEnabled(v);
                             }}
                         />
-                    </ParametersListItemOneRow>
+                    </ParametersListItem>
                 )}
                 <StopWordsInput
                     id="stop-words"

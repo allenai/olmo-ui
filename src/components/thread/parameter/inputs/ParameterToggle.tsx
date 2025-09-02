@@ -36,7 +36,9 @@ export const ParameterToggle = ({
         <ParameterDrawerInputWrapper
             inputId={id}
             label={label}
-            rows="one-row"
+            gridTemplateRows="auto"
+            gridTemplateColumns="2fr 1fr"
+            gridTemplateAreas="'label input'"
             aria-label={`Show description for ${label}`}
             tooltipContent={dialogContent}
             tooltipTitle={dialogTitle}>
