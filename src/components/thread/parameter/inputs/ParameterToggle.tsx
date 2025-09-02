@@ -4,48 +4,33 @@
 
 import { stack } from '@allenai/varnish-panda-runtime/patterns';
 import { Button, Switch } from '@allenai/varnish-ui';
-import { useEffect, useState } from 'react';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
 interface Props {
     label: string;
-    initialValue?: boolean;
+    value?: boolean;
     dialogContent: string;
     dialogTitle: string;
     disableEditButton?: boolean;
     disableToggle?: boolean;
     onEditClick?: () => void;
-    onChange?: (value: boolean) => void;
+    onToggleChange?: (value: boolean) => void;
     id: string;
 }
 
 export const ParameterToggle = ({
     label,
-    initialValue = false,
+    value = false,
     dialogContent,
     dialogTitle,
     disableEditButton = false,
     disableToggle = false,
     onEditClick,
-    onChange,
+    onToggleChange,
     id,
 }: Props) => {
-    const [value, setValue] = useState(false);
     const viewOnly = disableToggle && !disableEditButton;
-
-    const handleChange = (value: boolean) => {
-        onChange?.(value);
-    };
-
-    const handleToggleChange = (newValue: boolean) => {
-        setValue(newValue);
-        handleChange(newValue);
-    };
-
-    useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
 
     return (
         <ParameterDrawerInputWrapper
@@ -76,7 +61,7 @@ export const ParameterToggle = ({
                         size="large"
                         isSelected={value}
                         isDisabled={disableToggle}
-                        onChange={handleToggleChange}
+                        onChange={onToggleChange}
                         aria-labelledby={inputLabelId}
                     />
                 </div>

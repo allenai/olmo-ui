@@ -82,6 +82,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThread(threadId)
     );
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
+        userToolDefinitions !== undefined
+    );
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -234,6 +237,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     useEffect(() => {
         setUserToolDefinitions(getUserToolDefinitionsFromThread(threadId));
+        if (!threadId) {
+            // reset on new thread
+            setIsToolCallingEnabled(false);
+        }
     }, [threadId]);
 
     // Sync local state with any necessary global UI state
@@ -252,6 +259,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const updateUserToolDefinitions = useCallback((jsonDefinition: string) => {
         setUserToolDefinitions(jsonDefinition);
+    }, []);
+
+    const updateIsToolCallingEnabled = useCallback((enabled: boolean) => {
+        setIsToolCallingEnabled(enabled);
     }, []);
 
     const onModelChange = useCallback(
@@ -358,6 +369,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             autofocus,
             placeholderText,
             canCallTools,
+            isToolCallingEnabled,
             userToolDefinitions,
             areFilesAllowed,
             availableModels,
@@ -385,12 +397,14 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             updateInferenceOpts,
             submitToThreadView,
             updateUserToolDefinitions,
+            updateIsToolCallingEnabled,
         };
     }, [
         canSubmit,
         autofocus,
         placeholderText,
         canCallTools,
+        isToolCallingEnabled,
         userToolDefinitions,
         areFilesAllowed,
         availableModels,
@@ -407,6 +421,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         updateInferenceOpts,
         submitToThreadView,
         updateUserToolDefinitions,
+        updateIsToolCallingEnabled,
     ]);
 
     return (

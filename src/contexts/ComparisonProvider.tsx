@@ -129,6 +129,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1])
     );
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
+        userToolDefinitions !== undefined
+    );
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -193,6 +196,10 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     useEffect(() => {
         setUserToolDefinitions(getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1]));
+        if (!threadIds) {
+            // reset on new thread
+            setIsToolCallingEnabled(false);
+        }
     }, [threadIds]);
 
     // Sync local state with any necessary global UI state
@@ -400,6 +407,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             autofocus,
             canCallTools,
             userToolDefinitions,
+            isToolCallingEnabled,
             placeholderText,
             availableModels: models,
             areFilesAllowed,
@@ -452,6 +460,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             updateUserToolDefinitions: (jsonDefinition: string) => {
                 setUserToolDefinitions(jsonDefinition);
             },
+            updateIsToolCallingEnabled: (enabled: boolean) => {
+                setIsToolCallingEnabled(enabled);
+            },
         };
     }, [
         threadIds,
@@ -459,6 +470,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         autofocus,
         canCallTools,
         userToolDefinitions,
+        isToolCallingEnabled,
         placeholderText,
         models,
         areFilesAllowed,

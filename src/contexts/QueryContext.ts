@@ -17,6 +17,7 @@ interface QueryContextValue {
     placeholderText: string;
     areFilesAllowed: boolean;
     canCallTools: boolean;
+    isToolCallingEnabled: boolean;
     userToolDefinitions: CreateMessageRequest['toolDefinitions'];
     canPauseThread: boolean;
     isLimitReached: boolean;
@@ -43,6 +44,7 @@ interface QueryContextValue {
     updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
 
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
+    updateIsToolCallingEnabled: (enabled: boolean) => void;
     updateUserToolDefinitions: (jsonDefinition: string) => void;
 }
 

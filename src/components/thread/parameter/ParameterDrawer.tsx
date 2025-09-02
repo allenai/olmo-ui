@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import React, { ReactElement, ReactNode, useEffect } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
@@ -109,18 +109,11 @@ export const ParameterContent = () => {
         updateInferenceOpts,
         userToolDefinitions,
         updateUserToolDefinitions,
+        isToolCallingEnabled,
+        updateIsToolCallingEnabled,
     } = useQueryContext();
-    const hasDefinitions = userToolDefinitions !== undefined;
     const canCreateToolDefinitions = canCallTools && !threadStarted;
-    const [showFunctionDialog, setShowFunctionDialog] = React.useState(false);
-    const [toolCallingEnabled, setToolCallingEnabled] = React.useState(!hasDefinitions);
-
-    useEffect(() => {
-        if (!threadStarted) {
-            // reset on new thread
-            setToolCallingEnabled(false);
-        }
-    }, [threadStarted]);
+    const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
@@ -193,18 +186,18 @@ export const ParameterContent = () => {
                 {canCallTools && (
                     <ParametersListItemOneRow>
                         <ParameterToggle
-                            initialValue={hasDefinitions}
+                            value={isToolCallingEnabled}
                             label="Function calling"
                             dialogContent="If enabled, function calling will be used."
                             dialogTitle="Function Calling"
                             disableToggle={!canCreateToolDefinitions}
-                            disableEditButton={threadStarted ? false : !toolCallingEnabled}
+                            disableEditButton={threadStarted ? false : !isToolCallingEnabled}
                             id="function-calling"
                             onEditClick={() => {
-                                setShowFunctionDialog(true);
+                                setShouldShowFunctionDialog(true);
                             }}
-                            onChange={(v) => {
-                                setToolCallingEnabled(v);
+                            onToggleChange={(v) => {
+                                updateIsToolCallingEnabled(v);
                             }}
                         />
                     </ParametersListItemOneRow>
@@ -222,9 +215,9 @@ export const ParameterContent = () => {
                 <FunctionDeclarationDialog
                     jsonData={userToolDefinitions || undefined}
                     isDisabled={threadStarted}
-                    isOpen={showFunctionDialog}
+                    isOpen={shouldShowFunctionDialog}
                     onClose={() => {
-                        setShowFunctionDialog(false);
+                        setShouldShowFunctionDialog(false);
                     }}
                     onSave={({ declaration }) => {
                         analyticsClient.trackParametersUpdate({
