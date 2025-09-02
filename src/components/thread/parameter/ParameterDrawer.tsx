@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material';
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useEffect } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
@@ -113,7 +113,14 @@ export const ParameterContent = () => {
     const hasDefinitions = userToolDefinitions !== undefined;
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [showFunctionDialog, setShowFunctionDialog] = React.useState(false);
-    const [functionEditDisabled, setFunctionEditDisabled] = React.useState(!hasDefinitions);
+    const [toolCallingEnabled, setToolCallingEnabled] = React.useState(!hasDefinitions);
+
+    useEffect(() => {
+        if (!threadStarted) {
+            // reset on new thread
+            setToolCallingEnabled(false);
+        }
+    }, [threadStarted]);
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
@@ -191,13 +198,13 @@ export const ParameterContent = () => {
                             dialogContent="If enabled, function calling will be used."
                             dialogTitle="Function Calling"
                             disableToggle={!canCreateToolDefinitions}
-                            disableEditButton={functionEditDisabled}
+                            disableEditButton={threadStarted ? false : !toolCallingEnabled}
                             id="function-calling"
                             onEditClick={() => {
                                 setShowFunctionDialog(true);
                             }}
                             onChange={(v) => {
-                                setFunctionEditDisabled(!v);
+                                setToolCallingEnabled(v);
                             }}
                         />
                     </ParametersListItemOneRow>
