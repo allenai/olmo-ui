@@ -61,6 +61,15 @@ const fadeOverflowRecipe = sva({
                 },
             },
         },
+        shouldStickToBottom: {
+            true: {
+                container: {
+                    display: 'flex',
+                    flexDirection: 'column-reverse',
+                },
+            },
+            false: {},
+        },
     },
     defaultVariants: {
         isVisible: false,
