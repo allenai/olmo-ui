@@ -8,13 +8,13 @@ const meta = {
     component: ParameterToggle,
     args: {
         label: 'Toggle',
-        initialValue: true,
+        value: true,
         dialogContent: 'In the dialog',
         dialogTitle: 'Dialog title',
         disableEditButton: false,
         disableToggle: false,
         id: 'toggle',
-        onChange: fn(),
+        onToggleChange: fn(),
         onEditClick: fn(),
     },
     decorators: [
@@ -38,7 +38,7 @@ export const Default: Story = {
         });
 
         await userEvent.click(checkboxInput);
-        await waitFor(() => expect(args.onChange).toHaveBeenCalled(), {
+        await waitFor(() => expect(args.onToggleChange).toHaveBeenCalled(), {
             // The value is debounced to 800ms in this component
             timeout: 900,
         });
