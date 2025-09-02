@@ -12,7 +12,7 @@ const modalBase = css({
     fontSize: 'sm',
     paddingTop: '4',
     paddingBottom: '6',
-    paddingX: '2',
+    paddingInline: '2',
 });
 
 const modalHeading = css({
@@ -28,7 +28,7 @@ const labelStyle = css({
 const exampleButtons = css({
     display: 'flex',
     justifyContent: 'flex-start',
-    paddingX: '0',
+    paddingInline: '0',
     marginBottom: '4',
 });
 
@@ -204,10 +204,10 @@ const EXAMPLE_DECLARATIONS = {
                     }
                 }
             }
+            "required": [
+                "location"
+            ]
         },
-        "required": [
-            "location"
-        ]
     }
 ]
 `,
