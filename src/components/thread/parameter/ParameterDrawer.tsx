@@ -27,6 +27,9 @@ const TOP_P_INFO =
 const MAX_TOKENS_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
 
+const FUNCTION_CALLING_INFO =
+    'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
+
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const { colorMode } = useColorMode();
@@ -182,7 +185,7 @@ export const ParameterContent = () => {
                         <ParameterToggle
                             value={isToolCallingEnabled}
                             label="Function calling"
-                            dialogContent="If enabled, function calling will be used."
+                            dialogContent={FUNCTION_CALLING_INFO}
                             dialogTitle="Function Calling"
                             disableToggle={!canCreateToolDefinitions}
                             disableEditButton={threadStarted ? false : !isToolCallingEnabled}
