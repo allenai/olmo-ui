@@ -207,7 +207,7 @@ const EXAMPLE_DECLARATIONS = {
             "required": [
                 "location"
             ]
-        },
+        }
     }
 ]
 `,
