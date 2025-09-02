@@ -1,10 +1,10 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, BoxProps, IconButton, Typography } from '@mui/material';
 import { ReactNode, useRef, useState } from 'react';
 
 import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
 
-interface ParameterDrawerInputWrapperProps {
+interface ParameterDrawerInputWrapperProps extends Omit<BoxProps, 'children' | 'aria-label'> {
     label: string;
     'aria-label': string;
     inputId: string;
@@ -20,6 +20,7 @@ export const ParameterDrawerInputWrapper = ({
     label,
     inputId,
     'aria-label': ariaLabel,
+    ...boxProps
 }: ParameterDrawerInputWrapperProps) => {
     const containerRef = useRef<HTMLElement>();
 
@@ -45,8 +46,9 @@ export const ParameterDrawerInputWrapper = ({
             gridTemplateColumns="subgrid"
             gridTemplateAreas='"label label" "input input"'
             gridColumn="1 / -1"
-            ref={containerRef}
-            paddingY={1}>
+            paddingY={1}
+            {...boxProps}
+            ref={containerRef}>
             <Box display="flex" flexDirection="row" gap={1} alignItems="center" gridArea="label">
                 <Typography variant="body1" component="label" htmlFor={inputId} id={inputLabelId}>
                     {label}

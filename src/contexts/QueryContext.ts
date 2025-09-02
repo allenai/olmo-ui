@@ -3,6 +3,7 @@ import React, { UIEvent } from 'react';
 
 import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import { CreateMessageRequest } from '@/api/playgroundApi/thread';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
@@ -10,10 +11,14 @@ import { RemoteState } from '@/contexts/util';
 // Single interface that adapts based on context type
 interface QueryContextValue {
     // Form state properties
+    threadStarted: boolean;
     canSubmit: boolean;
     autofocus: boolean;
     placeholderText: string;
     areFilesAllowed: boolean;
+    canCallTools: boolean;
+    isToolCallingEnabled: boolean;
+    userToolDefinitions: CreateMessageRequest['toolDefinitions'];
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;
@@ -39,6 +44,8 @@ interface QueryContextValue {
     updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
 
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
+    updateIsToolCallingEnabled: (enabled: boolean) => void;
+    updateUserToolDefinitions: (jsonDefinition: string) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

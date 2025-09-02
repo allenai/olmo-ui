@@ -11,6 +11,10 @@ import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterS
 import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsInput';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
+
+import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
+import { ParameterToggle } from './inputs/ParameterToggle';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -22,6 +26,9 @@ const TOP_P_INFO =
 
 const MAX_TOKENS_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
+
+const FUNCTION_CALLING_INFO =
+    'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
@@ -92,9 +99,21 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 );
 
 export const ParameterContent = () => {
-    const { updateInferenceOpts, inferenceOpts } = useQueryContext();
-    const schemaData = useAppContext((state) => state.schema);
+    const {
+        threadStarted,
+        canCallTools,
+        inferenceOpts,
+        updateInferenceOpts,
+        userToolDefinitions,
+        updateUserToolDefinitions,
+        isToolCallingEnabled,
+        updateIsToolCallingEnabled,
+    } = useQueryContext();
+    const canCreateToolDefinitions = canCallTools && !threadStarted;
+    const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
 
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const schemaData = useAppContext((state) => state.schema);
     if (schemaData == null) {
         return null;
     }
@@ -161,6 +180,25 @@ export const ParameterContent = () => {
                         id="max-tokens"
                     />
                 </ParametersListItem>
+                {canCallTools && (
+                    <ParametersListItem>
+                        <ParameterToggle
+                            value={isToolCallingEnabled}
+                            label="Function calling"
+                            dialogContent={FUNCTION_CALLING_INFO}
+                            dialogTitle="Function Calling"
+                            disableToggle={!canCreateToolDefinitions}
+                            disableEditButton={threadStarted ? false : !isToolCallingEnabled}
+                            id="function-calling"
+                            onEditClick={() => {
+                                setShouldShowFunctionDialog(true);
+                            }}
+                            onToggleChange={(v) => {
+                                updateIsToolCallingEnabled(v);
+                            }}
+                        />
+                    </ParametersListItem>
+                )}
                 <StopWordsInput
                     id="stop-words"
                     value={inferenceOpts.stop || []}
@@ -169,6 +207,25 @@ export const ParameterContent = () => {
                             parameterUpdated: 'stop',
                         });
                         updateInferenceOpts({ stop: value });
+                    }}
+                />
+                <FunctionDeclarationDialog
+                    jsonData={userToolDefinitions || undefined}
+                    isDisabled={threadStarted}
+                    isOpen={shouldShowFunctionDialog}
+                    onClose={() => {
+                        setShouldShowFunctionDialog(false);
+                    }}
+                    onSave={({ declaration }) => {
+                        analyticsClient.trackParametersUpdate({
+                            parameterUpdated: 'tool_definitions',
+                        });
+                        updateUserToolDefinitions(declaration);
+                        addSnackMessage({
+                            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                            type: SnackMessageType.Brief,
+                            message: 'Function Definition Saved',
+                        });
                     }}
                 />
             </ParametersList>
