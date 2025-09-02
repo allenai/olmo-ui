@@ -7,6 +7,7 @@
   "scripts": {
     "add-git-hooks": "husky",
     "build": "panda && vite build --mode production",
+    "build:preview": "run-s build preview",
     "build:dev": "vite dev --mode development",
     "build-storybook": "storybook build",
     "generate-playground-api-client": "openapi-typescript --default-non-nullable=false --empty-objects-unknown=true --immutable=true --root-types=true -t http://localhost:8000/openapi.json -o ./src/api/playgroundApi/playgroundApiSchema.d.ts",

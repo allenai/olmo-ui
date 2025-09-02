@@ -148,13 +148,15 @@ export const NavigationLink = ({
             <NavigationListItemIcon>
                 {DisclosureIcon ? (
                     <DisclosureIcon
+                        data-experimental={experimental || undefined}
                         sx={{
                             fontSize: '1rem',
                             opacity: 0.5,
-                            ...(experimental && {
-                                color: (theme) => theme.palette.warning.main,
+
+                            '&[data-experimental="true"]': {
+                                color: (theme) => theme.palette.secondary.main,
                                 opacity: 1,
-                            }),
+                            },
                         }}
                     />
                 ) : null}
