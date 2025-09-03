@@ -20,32 +20,13 @@ steps:
     dir: "api"
     waitFor: ["-"]
 
-  - id: "ui.build.js"
+  - id: "ui.build.nginx"
     name: "gcr.io/cloud-builders/docker"
     args:
       [
         "build",
         "--target",
         "prod",
-        "-t",
-        "gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:latest",
-        "-t",
-        "gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:$COMMIT_SHA",
-        "--cache-from",
-        "gcr.io/$PROJECT_ID/$REPO_NAME-ui-build:latest",
-        "--build-arg",
-        "BUILDKIT_INLINE_CACHE=1",
-        "--build-arg",
-        "SKIFF_ENV_ARG=$_ENV",
-        ".",
-      ]
-    waitFor: ["-"]
-
-  - id: "ui.build.nginx"
-    name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "build",
         "-t",
         "gcr.io/$PROJECT_ID/$REPO_NAME-ui:latest",
         "-t",
@@ -58,7 +39,6 @@ steps:
         "BUILDKIT_INLINE_CACHE=1",
         ".",
       ]
-    dir: "nginx"
     waitFor: ["ui.build.js"]
 
   - id: "ui.push"

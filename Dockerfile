@@ -15,7 +15,7 @@ COPY --from=dependencies /ui/node_modules ./node_modules
 
 COPY . .
 
-FROM runner AS prod 
+FROM runner AS builder 
 
 WORKDIR /ui
 
@@ -26,3 +26,12 @@ ENV VITE_API_URL=https://olmo-api.allen.ai
 ENV VITE_DOLMA_API_URL=/api
 
 RUN yarn build
+
+FROM nginx:1.29-alpine AS prod
+
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+ARG CONF_FILE=nginx/prod.conf
+COPY $CONF_FILE /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /ui/dist /var/www/ui/ 
