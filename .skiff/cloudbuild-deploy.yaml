@@ -39,7 +39,6 @@ steps:
         "BUILDKIT_INLINE_CACHE=1",
         ".",
       ]
-    waitFor: ["ui.build.js"]
 
   - id: "ui.push"
     name: "gcr.io/cloud-builders/docker"
