@@ -58,6 +58,7 @@ steps:
         "BUILDKIT_INLINE_CACHE=1",
         ".",
       ]
+    dir: "nginx"
     waitFor: ["ui.build.js"]
 
   - id: "ui.push"
