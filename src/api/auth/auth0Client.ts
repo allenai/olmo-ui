@@ -21,8 +21,6 @@ class Auth0Client {
                     // This isn't noted in the docs but it's needed if you want to use the token on the API end
                     audience: process.env.VITE_AUTH0_OLMO_API_AUDIENCE,
                 },
-                // if we set up a custom auth0 domain we can get rid of useRefreshTokens and cacheLocation
-                useRefreshTokens: true,
                 cacheLocation: 'localstorage',
             });
         }
@@ -44,7 +42,6 @@ class Auth0Client {
                 }
 
                 await this.login(window.location.href);
-                throw e;
             }
         }
 
