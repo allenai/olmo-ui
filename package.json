@@ -40,10 +40,10 @@
     "@types/react": "^18.2.55"
   },
   "dependencies": {
-    "@allenai/varnish-panda-runtime": "^1.2.13-alpha.3",
-    "@allenai/varnish-theme": "^3.0.7-alpha.3",
-    "@allenai/varnish-ui": "^1.2.13-alpha.4",
-    "@allenai/varnish2": "^3.0.7-alpha.3",
+    "@allenai/varnish-panda-runtime": "^1.2.13-alpha.5",
+    "@allenai/varnish-theme": "^3.0.7-alpha.4",
+    "@allenai/varnish-ui": "^1.2.13-alpha.5",
+    "@allenai/varnish2": "^3.0.7-alpha.4",
     "@auth0/auth0-spa-js": "^2.1.3",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
