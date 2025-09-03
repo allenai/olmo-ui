@@ -17,7 +17,6 @@ export enum FeatureToggle {
     isPeteishModelEnabled = 'isPeteishModelEnabled',
     isMultiModalEnabled = 'isMultiModalEnabled',
     isModelConfigEnabled = 'isModelConfigEnabled',
-    isComparisonPageEnabled = 'isComparisonPageEnabled',
     isOLMoASREnabled = 'isOLMoASREnabled',
 }
 
@@ -32,7 +31,6 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isPeteishModelEnabled]: false,
     [FeatureToggle.isMultiModalEnabled]: false,
     [FeatureToggle.isModelConfigEnabled]: false,
-    [FeatureToggle.isComparisonPageEnabled]: false,
     [FeatureToggle.isOLMoASREnabled]: false,
 };
 
@@ -93,7 +91,6 @@ function createToggles(initialToggles = defaultFeatureToggles) {
         isDatasetExplorerEnabled: process.env.VITE_IS_DATASET_EXPLORER_ENABLED,
         isMultiModalEnabled: process.env.VITE_IS_MULTI_MODAL_ENABLED,
         isModelConfigEnabled: process.env.VITE_IS_MODEL_CONFIG_ENABLED,
-        isComparisonPageEnabled: process.env.VITE_IS_COMPARISON_PAGE_ENABLED,
         isOLMoASREnabled: process.env.VITE_IS_OLMO_ASR_ENABLED,
     });
 
