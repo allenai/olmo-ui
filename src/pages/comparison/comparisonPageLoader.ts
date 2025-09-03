@@ -12,7 +12,6 @@ import {
     modelById,
 } from '@/components/thread/ModelSelect/useModels';
 import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
-import { getFeatureToggles } from '@/FeatureToggleContext';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 import { arrayZip } from '@/utils/arrayZip';
 
@@ -77,14 +76,6 @@ const initializeDefaultComparisonModels = (
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
     return async ({ params: _params, request }) => {
-        const { isComparisonPageEnabled } = getFeatureToggles();
-
-        if (!isComparisonPageEnabled) {
-            // React-router recommends throwing a response
-            // eslint-disable-next-line @typescript-eslint/only-throw-error
-            throw new Response('Not Found', { status: 404 });
-        }
-
         // from playgroundLoader.ts
         const {
             resetSelectedThreadState,
