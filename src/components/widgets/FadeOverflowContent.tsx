@@ -74,6 +74,7 @@ const fadeOverflowRecipe = sva({
     defaultVariants: {
         isVisible: false,
         contrast: 'high',
+        shouldStickToBottom: false,
     },
 });
 
@@ -109,6 +110,26 @@ const FadeOverflowContent = ({
         isVisible: !isScrolledToBottom,
     });
 
+    const childElements = [children];
+
+    if (variantProps.shouldStickToBottom) {
+        childElements.unshift(
+            <div className={classNames.anchor} ref={scrollAnchorRef} />,
+            <div
+                className={cx(classNames.fade, fadeClassName)}
+                data-is-visible={!isScrolledToBottom}
+            />
+        );
+    } else {
+        childElements.push(
+            <div
+                className={cx(classNames.fade, fadeClassName)}
+                data-is-visible={!isScrolledToBottom}
+            />,
+            <div className={classNames.anchor} ref={scrollAnchorRef} />
+        );
+    }
+
     return (
         <div
             className={cx(classNames.container, className)}
@@ -116,12 +137,7 @@ const FadeOverflowContent = ({
                 setContainer(el);
             }}
             {...localProps}>
-            {children}
-            <div
-                className={cx(classNames.fade, fadeClassName)}
-                data-is-visible={!isScrolledToBottom}
-            />
-            <div className={classNames.anchor} ref={scrollAnchorRef} />
+            {childElements}
         </div>
     );
 };
