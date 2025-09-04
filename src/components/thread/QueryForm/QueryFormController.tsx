@@ -71,7 +71,7 @@ export const QueryFormController = ({
         },
     });
 
-    const [placeholderValue, setPlaceholderValue] = useState(placeholderText);
+    const [tempPlaceholder, setTempPlaceholder] = useState('');
 
     const isSelectedThreadLoading = remoteState === RemoteState.Loading;
 
@@ -175,19 +175,19 @@ export const QueryFormController = ({
                                 ref={ref}
                                 onKeyDown={handleKeyDown}
                                 aria-label={placeholderText}
-                                placeholder={placeholderValue}
+                                placeholder={tempPlaceholder || placeholderText}
                                 isDisabled={isTranscribing || isProcessingAudio}
                                 startAdornment={
                                     <>
                                         <AudioInputButton
                                             onTranscriptionBegin={() => {
-                                                setPlaceholderValue('Transcribing...');
+                                                setTempPlaceholder('Transcribing...');
                                             }}
                                             onRecordingBegin={() => {
-                                                setPlaceholderValue('Recording...');
+                                                setTempPlaceholder('Recording...');
                                             }}
                                             onComplete={() => {
-                                                setPlaceholderValue(placeholderText);
+                                                setTempPlaceholder('');
                                             }}
                                             onTranscriptionComplete={(content) => {
                                                 const values = formContext.getValues();
