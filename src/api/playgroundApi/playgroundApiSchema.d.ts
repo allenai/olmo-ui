@@ -466,6 +466,18 @@ export type components = {
             /** Permissions */
             readonly permissions?: readonly string[];
         };
+        /**
+         * AvailableInfiniGramIndexId
+         * @enum {string}
+         */
+        readonly AvailableInfiniGramIndexId:
+            | 'olmoe-0125-1b-7b'
+            | 'olmo-2-0325-32b'
+            | 'olmo-2-1124-13b'
+            | 'pileval-llama'
+            | 'tulu-3-8b'
+            | 'tulu-3-70b'
+            | 'tulu-3-405b';
         /** CreateMessageRequest */
         readonly CreateMessageRequest: {
             /**
@@ -586,6 +598,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -658,6 +672,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -1166,6 +1182,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /** Internal */
             readonly internal: boolean;
             /**
@@ -1199,40 +1217,6 @@ export type components = {
              * Format: date-time
              */
             readonly updatedTime: string;
-        };
-        /** ParameterDef */
-        readonly ParameterDef: {
-            /**
-             * Default
-             * @default null
-             */
-            readonly default?: {
-                readonly [key: string]: string;
-            } | null;
-            /**
-             * Description
-             * @default null
-             */
-            readonly description?: string | null;
-            /**
-             * Properties
-             * @default null
-             */
-            readonly properties?: {
-                readonly [key: string]: components['schemas']['ParameterDef'];
-            } | null;
-            /**
-             * Property Ordering
-             * @default null
-             */
-            readonly property_ordering?: readonly string[] | null;
-            /**
-             * Required
-             * @default []
-             */
-            readonly required?: readonly string[] | null;
-            /** Type */
-            readonly type: string;
         };
         /**
          * Rating
@@ -1335,6 +1319,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /** Internal */
             readonly internal: boolean;
             /** Modelidonhost */
@@ -1428,14 +1414,20 @@ export type components = {
             readonly description: string;
             /** Name */
             readonly name: string;
-            readonly parameters: components['schemas']['ParameterDef'];
+            /**
+             * Parameters
+             * @default null
+             */
+            readonly parameters?: {
+                readonly [key: string]: unknown;
+            } | null;
             readonly toolSource: components['schemas']['ToolSource'];
         };
         /**
          * ToolSource
          * @enum {string}
          */
-        readonly ToolSource: 'internal' | 'user_defined';
+        readonly ToolSource: 'internal' | 'user_defined' | 'model_context_protocol';
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
             /** Acceptedfiletypes */
@@ -1483,6 +1475,8 @@ export type components = {
              */
             readonly familyName?: string | null;
             readonly host: components['schemas']['ModelHost'];
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -1553,6 +1547,8 @@ export type components = {
              */
             readonly familyName?: string | null;
             readonly host: components['schemas']['ModelHost'];
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -1578,6 +1574,7 @@ export type components = {
 };
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
+export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
 export type SchemaCreateMessageRequest = components['schemas']['CreateMessageRequest'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
@@ -1603,7 +1600,6 @@ export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
-export type SchemaParameterDef = components['schemas']['ParameterDef'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
@@ -1628,4 +1624,85 @@ export type SchemaUpdateMultiModalModelConfigRequest =
 export type SchemaUpdateTextOnlyModelConfigRequest =
     components['schemas']['UpdateTextOnlyModelConfigRequest'];
 export type $defs = Record<string, never>;
+type ReadonlyArray<T> = [Exclude<T, undefined>] extends [any[]]
+    ? Readonly<Exclude<T, undefined>>
+    : Readonly<Exclude<T, undefined>[]>;
+export const availableInfiniGramIndexIdValues: ReadonlyArray<
+    components['schemas']['AvailableInfiniGramIndexId']
+> = [
+    'olmoe-0125-1b-7b',
+    'olmo-2-0325-32b',
+    'olmo-2-1124-13b',
+    'pileval-llama',
+    'tulu-3-8b',
+    'tulu-3-70b',
+    'tulu-3-405b',
+];
+export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['CreateMultiModalModelConfigRequest']['promptType']
+> = ['files_only', 'multi_modal'];
+export const createTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['CreateTextOnlyModelConfigRequest']['promptType']
+> = ['text_only'];
+export const fileRequiredToPromptOptionValues: ReadonlyArray<
+    components['schemas']['FileRequiredToPromptOption']
+> = ['first_message', 'all_messages', 'no_requirement'];
+export const finishReasonValues: ReadonlyArray<components['schemas']['FinishReason']> = [
+    'unclosed stream',
+    'length',
+    'stop',
+    'aborted',
+    'model overloaded',
+    'bad connection',
+    'value error',
+    'unknown',
+];
+export const modelPrompt_typeValues: ReadonlyArray<components['schemas']['Model']['prompt_type']> =
+    ['text_only'];
+export const modelAvailabilityValues: ReadonlyArray<components['schemas']['ModelAvailability']> = [
+    'public',
+    'internal',
+    'prerelease',
+];
+export const modelHostValues: ReadonlyArray<components['schemas']['ModelHost']> = [
+    'inferd',
+    'modal',
+    'beaker_queues',
+    'cirrascale_backend',
+    'cirrascale',
+    'modal_openai',
+    'test_backend',
+];
+export const modelTypeValues: ReadonlyArray<components['schemas']['ModelType']> = ['base', 'chat'];
+export const multiModalModelPrompt_typeValues: ReadonlyArray<
+    components['schemas']['MultiModalModel']['prompt_type']
+> = ['files_only', 'multi_modal'];
+export const multiModalResponseModelPromptTypeValues: ReadonlyArray<
+    components['schemas']['MultiModalResponseModel']['promptType']
+> = ['files_only', 'multi_modal'];
+export const ratingValues: ReadonlyArray<components['schemas']['Rating']> = [-1, 0, 1];
+export const roleValues: ReadonlyArray<components['schemas']['Role']> = [
+    'user',
+    'assistant',
+    'system',
+    'tool_call_result',
+];
+export const sortDirectionValues: ReadonlyArray<components['schemas']['SortDirection']> = [
+    'ASC',
+    'DESC',
+];
+export const textOnlyResponseModelPromptTypeValues: ReadonlyArray<
+    components['schemas']['TextOnlyResponseModel']['promptType']
+> = ['text_only'];
+export const toolSourceValues: ReadonlyArray<components['schemas']['ToolSource']> = [
+    'internal',
+    'user_defined',
+    'model_context_protocol',
+];
+export const updateMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['UpdateMultiModalModelConfigRequest']['promptType']
+> = ['files_only', 'multi_modal'];
+export const updateTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['UpdateTextOnlyModelConfigRequest']['promptType']
+> = ['text_only'];
 export type operations = Record<string, never>;
