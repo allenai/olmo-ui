@@ -19,6 +19,7 @@ import {
 } from '@/utils/test/createMockModel';
 
 import { QueryForm } from './QueryForm';
+import { QueryFormController } from './QueryFormController';
 
 // Mock react-router-dom with configurable useParams
 vi.mock('react-router-dom', () => ({
@@ -160,6 +161,38 @@ describe('QueryForm', () => {
         await waitFor(() => {
             expect(screen.getByRole('textbox', { name: 'Message Tülu' })).toBeVisible();
         });
+    });
+
+    it('should change the prompt placeholder when placeholderText changes (new model selected)', () => {
+        const initProps = {
+            handleSubmit: () => undefined,
+            canEditThread: true,
+            placeholderText: 'Message Olmo',
+            onAbort: () => undefined,
+            autofocus: false,
+            areFilesAllowed: false,
+            canPauseThread: false,
+            isLimitReached: false,
+            fileUploadProps: {
+                isFileUploadDisabled: true,
+                isSendingPrompt: false,
+                acceptsFileUpload: false,
+                acceptedFileTypes: [],
+                acceptsMultiple: false,
+                allowFilesInFollowups: false,
+            },
+        };
+
+        const { rerender, getByRole } = render(<QueryFormController {...initProps} />);
+
+        const el = getByRole('textbox', { name: 'Message Olmo' });
+        expect(el).toBeInTheDocument();
+
+        // rerender without remounting to test prop change
+        rerender(<QueryFormController {...initProps} placeholderText="Message Tülu" />);
+
+        const el2 = getByRole('textbox', { name: 'Message Tülu' });
+        expect(el2).toBeInTheDocument();
     });
 
     it("should show a model's family name in the reply placeholder and label", async () => {
