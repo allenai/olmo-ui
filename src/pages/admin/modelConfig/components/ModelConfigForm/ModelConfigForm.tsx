@@ -27,6 +27,7 @@ import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 
 import { FileSizeInput } from './inputs/FileSizeInput/FileSizeInput';
+import { InfiniGramIndexInput } from './inputs/InfiniGramIndexInput';
 import { ModelHostSelect } from './inputs/ModelHostSelect';
 import { ModelIdOnHostInput } from './inputs/ModelIdOnHostInput';
 
@@ -244,6 +245,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     <SelectListBoxItem text="Chat" id="chat" />
                     <SelectListBoxItem text="Base" id="base" />
                 </ControlledSelect>
+
+                <InfiniGramIndexInput name="infiniGramIndex" label="Infini-gram index" />
+
                 <ControlledRadioGroup name="promptType" label="Prompt type">
                     <Radio value="text_only">Text only</Radio>
                     <Radio value="multi_modal">Multimodal</Radio>
@@ -269,6 +273,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 <ControlledSwitch name="canThink" size="large">
                     This model can think
                 </ControlledSwitch>
+
                 <Stack direction="row" align="center" justify="center" spacing={3}>
                     <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                     <Button variant="contained" type="submit">
