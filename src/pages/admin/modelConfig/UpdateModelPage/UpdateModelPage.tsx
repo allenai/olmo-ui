@@ -7,7 +7,10 @@ import { useModelConfigValidationActionData } from '@/api/useModelConfigValidati
 import { MetaTags } from '@/components/MetaTags';
 import { links } from '@/Links';
 
-import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
+import {
+    ModelConfigForm,
+    type ModelConfigFormValues,
+} from '../components/ModelConfigForm/ModelConfigForm';
 import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
 import { useAdminModelById } from '../useGetAdminModels';
 

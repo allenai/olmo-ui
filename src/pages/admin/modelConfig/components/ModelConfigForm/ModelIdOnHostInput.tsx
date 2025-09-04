@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { ControlledInput } from '@/components/form/ControlledInput';
 
-import { modelHostMeta } from '../modelHostMeta';
+import { modelHostMeta } from '../../modelHostMeta';
 import type { ModelConfigFormValues } from './ModelConfigForm';
 
 interface ModelIdOnHostInputProps {
