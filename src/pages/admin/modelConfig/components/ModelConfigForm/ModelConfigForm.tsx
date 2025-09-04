@@ -26,9 +26,9 @@ import { ExpandableTextArea } from '@/components/form/TextArea/ExpandableTextAre
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 
-import { FileSizeInput } from './FileSizeInput/FileSizeInput';
-import { ModelHostSelect } from './ModelHostSelect';
-import { ModelIdOnHostInput } from './ModelIdOnHostInput';
+import { FileSizeInput } from './inputs/FileSizeInput/FileSizeInput';
+import { ModelHostSelect } from './inputs/ModelHostSelect';
+import { ModelIdOnHostInput } from './inputs/ModelIdOnHostInput';
 
 const inputSizing = css({ maxWidth: '[20rem]' });
 
