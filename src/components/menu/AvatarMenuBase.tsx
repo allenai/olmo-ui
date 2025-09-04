@@ -41,7 +41,7 @@ export const AvatarMenuBase = ({
                 flexDirection: 'column',
                 gap: 1,
                 bgcolor:
-                    theme.palette.mode === 'light'
+                    themeModeAdaptive && theme.palette.mode === 'light'
                         ? theme.palette.background.default
                         : theme.palette.background.drawer.primary,
             })}>
