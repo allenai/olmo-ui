@@ -271,7 +271,7 @@ const isValidThreadRequestId = (id: string): id is v4ThreadResponseIds => {
     return id in v4ThreadResponses;
 };
 
-const formatMessage = (message: unknown) => {
+const formatMessage = (message: StreamingMessageResponse) => {
     return JSON.stringify(message) + '\n';
 };
 
@@ -322,7 +322,11 @@ export const v4ThreadHandlers = [
 
         const stream = new ReadableStream({
             async start(controller) {
-                if (formData.get('content') === 'infinite') {
+                const content = formData.get('content');
+                if (content === 'infinite' || content === 'infiniteThinking') {
+                    const isThinkingMode = content === 'infiniteThinking';
+                    const chunkType = isThinkingMode ? 'thinking' : 'modelResponse';
+
                     await delay();
                     controller.enqueue(encoder.encode(formatMessage(response[0])));
 
@@ -336,6 +340,7 @@ export const v4ThreadHandlers = [
                             controller.enqueue(
                                 encoder.encode(
                                     formatMessage({
+                                        type: chunkType,
                                         message: LOREM_IPSUM_MESSAGE_ID,
                                         content: ' ',
                                     })
@@ -344,15 +349,19 @@ export const v4ThreadHandlers = [
                         }
 
                         await delay();
-                        controller.enqueue(
-                            encoder.encode(formatMessage(response[responsePosition]))
-                        );
+
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        const message = response[responsePosition];
+                        // @ts-expect-error - should probably add a type guard or something here instead of just forcing this
+                        message.type = chunkType;
+                        controller.enqueue(encoder.encode(formatMessage(message)));
 
                         responsePosition++;
                     }
 
                     await delay(25);
-                    controller.enqueue(encoder.encode(formatMessage(response.at(-1))));
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    controller.enqueue(encoder.encode(formatMessage(response.at(-1)!)));
                 } else {
                     for (const message of response) {
                         await delay();

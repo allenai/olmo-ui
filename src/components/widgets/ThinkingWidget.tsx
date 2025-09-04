@@ -58,7 +58,7 @@ const ThinkingWidget = ({
                 {thinking ? 'Thinking' : 'Thoughts'}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
-                <FadeOverflowContent className={contentClassName}>
+                <FadeOverflowContent className={contentClassName} shouldStickToBottom>
                     <CollapsibleWidgetContent contrast="off">{children}</CollapsibleWidgetContent>
                 </FadeOverflowContent>
             </CollapsibleWidgetPanel>
