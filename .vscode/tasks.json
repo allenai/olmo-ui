@@ -20,7 +20,7 @@
       "script": "update-api-schema",
       "problemMatcher": ["$eslint-stylish"],
       "label": "npm: update-api-schema",
-      "detail": "run-s generate-playground-api-client \"eslint ./src/api/playgroundApi/playgroundApiSchema.d.ts\""
+      "detail": "Update the generated Playground API schema"
     }
   ]
 }
