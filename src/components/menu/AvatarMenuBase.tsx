@@ -8,8 +8,7 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { ThemeModeSelect } from '@/components/OlmoAppBar/ThemeModeSelect';
 
-import { TermsAndConditionsModal } from '../TermsAndConditionsModal';
-import { TermsAndConditionsProvider } from '../TermsAndConditionsModalContext';
+import { TermsAndDataCollectionModal } from '../TermsAndDataCollectionModal';
 import { Auth0LoginLink } from './Auth0LoginLink';
 import { AvatarMenuItem } from './AvatarMenuItem';
 
@@ -114,17 +113,13 @@ export const AvatarMenuBase = ({
         <>
             {children(content)}
             {showModal ? (
-                <TermsAndConditionsProvider>
-                    <TermsAndConditionsModal
-                        onClose={async () => {
-                            setShowModal(false);
-                        }}
-                        initialTermsAndConditionsValue={hasAcceptedTermsAndConditions}
-                        initialDataCollectionValue={
-                            hasAcceptedDataCollection ? 'opt-in' : 'opt-out'
-                        }
-                    />
-                </TermsAndConditionsProvider>
+                <TermsAndDataCollectionModal
+                    onClose={async () => {
+                        setShowModal(false);
+                    }}
+                    initialTermsAndConditionsValue={hasAcceptedTermsAndConditions}
+                    initialDataCollectionValue={hasAcceptedDataCollection}
+                />
             ) : null}
         </>
     );
