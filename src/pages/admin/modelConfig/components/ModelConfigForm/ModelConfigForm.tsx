@@ -26,9 +26,10 @@ import { ExpandableTextArea } from '@/components/form/TextArea/ExpandableTextAre
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';
 
-import { FileSizeInput } from './FileSizeInput/FileSizeInput';
-import { ModelHostSelect } from './ModelHostSelect';
-import { ModelIdOnHostInput } from './ModelIdOnHostInput';
+import { FileSizeInput } from './inputs/FileSizeInput/FileSizeInput';
+import { InfiniGramIndexInput } from './inputs/InfiniGramIndexInput';
+import { ModelHostSelect } from './inputs/ModelHostSelect';
+import { ModelIdOnHostInput } from './inputs/ModelIdOnHostInput';
 
 const inputSizing = css({ maxWidth: '[20rem]' });
 
@@ -191,7 +192,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     return (
         <form className={formSizing} onSubmit={formContext.handleSubmit(handleSubmit)}>
             <Stack fullWidth spacing={12} direction="column">
-                <DevTool control={formContext.control} />
+                {process.env.NODE_ENV === 'development' && (
+                    <DevTool control={formContext.control} />
+                )}
                 <ControlledInput
                     name="name"
                     label="Name"
@@ -244,6 +247,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     <SelectListBoxItem text="Chat" id="chat" />
                     <SelectListBoxItem text="Base" id="base" />
                 </ControlledSelect>
+
+                <InfiniGramIndexInput name="infiniGramIndex" label="Infini-gram index" />
+
                 <ControlledRadioGroup name="promptType" label="Prompt type">
                     <Radio value="text_only">Text only</Radio>
                     <Radio value="multi_modal">Multimodal</Radio>
@@ -269,6 +275,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 <ControlledSwitch name="canThink" size="large">
                     This model can think
                 </ControlledSwitch>
+
                 <Stack direction="row" align="center" justify="center" spacing={3}>
                     <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
                     <Button variant="contained" type="submit">

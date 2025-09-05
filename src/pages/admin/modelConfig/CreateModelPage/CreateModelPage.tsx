@@ -4,7 +4,10 @@ import { useSubmit } from 'react-router-dom';
 import { useModelConfigValidationActionData } from '@/api/useModelConfigValidationActionData';
 import { MetaTags } from '@/components/MetaTags';
 
-import { ModelConfigForm, type ModelConfigFormValues } from '../components/ModelConfigForm';
+import {
+    ModelConfigForm,
+    type ModelConfigFormValues,
+} from '../components/ModelConfigForm/ModelConfigForm';
 import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
 
 export const CreateModelPage = () => {

@@ -82,9 +82,11 @@ module.exports = {
             },
         },
         {
-            files: ['src/api/playgroundApi/*.d.ts'],
+            files: ['src/api/playgroundApi/*.ts'],
             rules: {
                 'no-use-before-define': 'off',
+                '@typescript-eslint/no-explicit-any': 'off',
+                camelcase: 'warn',
             },
         },
     ],

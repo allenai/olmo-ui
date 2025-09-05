@@ -1,3 +1,4 @@
+import { DevTool } from '@hookform/devtools';
 import { FormProvider, useForm } from 'react-hook-form';
 import type { DecoratorFunction } from 'storybook/internal/types';
 
@@ -10,6 +11,7 @@ export const withReactHookForm: DecoratorFunction = (Story) => {
     return (
         <FormProvider {...formContext}>
             <Story />
+            <DevTool control={formContext.control} />
         </FormProvider>
     );
 };

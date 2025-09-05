@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 
-import { modelHostMeta } from '../modelHostMeta';
+import { modelHostMeta } from './modelHostMeta';
 
 interface ModelHostSelectProps {
     name: string;
