@@ -30,6 +30,7 @@ export type SectionTitle =
     | 'Limitations'
     | 'Notice & Consent'
     | 'Terms of Use'
+    | 'Terms of Use & Data Collection'
     | 'Contribute to Public Datasets';
 
 export type OptionValues = 'opt-in' | 'opt-out';
@@ -72,8 +73,9 @@ export const TermsAndConditionsModal = ({
 
     const sections = !initialTermsAndConditionsValue ? AllSections : [DataConsentSection];
 
-    const updateTermsAndConditions = useAppContext((state) => state.updateTermsAndConditions);
-    const updateDataCollection = useAppContext((state) => state.updateDataCollection);
+    const updateTermsAndOrConsent = useAppContext(
+        (state) => state.updateUserTermsAndDataCollection
+    );
 
     const {
         step: activeStep,
@@ -139,12 +141,16 @@ export const TermsAndConditionsModal = ({
                         stagedResponses['Terms of Use'].acknowledgements.every(Boolean) ?? false;
 
                     if (termsAccepted !== initialTermsAndConditionsValue) {
-                        await updateTermsAndConditions(termsAccepted);
+                        await updateTermsAndOrConsent({
+                            hasAcceptedTermsAndConditions: termsAccepted,
+                        });
                     }
                 }
 
                 if (dataCollectionOpt !== initialDataCollectionValue) {
-                    await updateDataCollection(dataCollectionOpt === 'opt-in');
+                    await updateTermsAndOrConsent({
+                        hasAcceptedDataCollection: dataCollectionOpt === 'opt-in',
+                    });
                 }
 
                 onClose?.();
@@ -525,6 +531,57 @@ const DataConsentSection: TermsAndConditionsSection = {
         </span>
     ),
     submitButtonText: "Let's Go!",
+};
+
+// section unused for now, keeping in case we need in multi-step flow
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const TermsAndDataCollectionCombinedSection: TermsAndConditionsSection = {
+    title: 'Terms of Use & Data Collection',
+    image: '/getting-started-section-2.png',
+    contents: (
+        <Stack gap={2}>
+            <Typography variant="body1">
+                By using Playground, you agree to Ai2&apos;s{' '}
+                <TermAndConditionsLink link={links.terms}>Terms of Use</TermAndConditionsLink> and{' '}
+                <TermAndConditionsLink link={links.responsibleUseGuidelines}>
+                    Responsible Use Guidelines
+                </TermAndConditionsLink>{' '}
+                and have read Ai2&apos;s{' '}
+                <TermAndConditionsLink link={links.privacyPolicy}>
+                    Privacy Policy
+                </TermAndConditionsLink>
+                . By accepting these terms, you agree{' '}
+                <strong>
+                    not to submit any personal, sensitive, proprietary, or confidential information
+                    to Playground,
+                </strong>
+                and agree that Ai2 may use your interactions for AI training and scientific
+                research.
+            </Typography>
+            <Typography variant="body1">
+                To accelerate scientific discovery, Ai2 may publish your{' '}
+                <strong>de-identified</strong> Playground interactions in a public research dataset
+                as part of its commitment to open science if you consent by checking the box below.
+            </Typography>
+        </Stack>
+    ),
+    acknowledgements: [
+        <Typography variant="body1" key="data-consent">
+            <strong>Help improve open science!</strong> I consent to the inclusion of my{' '}
+            <strong>de-identified</strong> interactions with Playground in a public research
+            dataset.
+        </Typography>,
+    ],
+    optionGroups: [],
+    endNote: (
+        <span>
+            <Typography variant="body1">
+                If you do not wish to agree to these terms, exit this page. You can still use
+                Playground if you choose not to participate in the public research dataset.
+            </Typography>
+        </span>
+    ),
+    submitButtonText: 'Accept Terms & Use Playground',
 };
 
 export const AllSections = [LimitationsSection, TermsSection, DataConsentSection];
