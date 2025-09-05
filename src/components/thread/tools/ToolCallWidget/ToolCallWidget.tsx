@@ -28,10 +28,9 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
                 endAdornment={<ExpandArrowButton />}>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
-            <FadeOverflowContent contrast="low" shouldStickToBottom>
+            <FadeOverflowContent contrast="low">
                 <CollapsibleWidgetPanel>
                     <ToolCallParameters>{stringArgs}</ToolCallParameters>
-
                     <ToolCallResult
                         toolCallId={toolCall.toolCallId}
                         toolSource={toolCall.toolSource}
