@@ -192,7 +192,9 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     return (
         <form className={formSizing} onSubmit={formContext.handleSubmit(handleSubmit)}>
             <Stack fullWidth spacing={12} direction="column">
-                <DevTool control={formContext.control} />
+                {process.env.NODE_ENV === 'development' && (
+                    <DevTool control={formContext.control} />
+                )}
                 <ControlledInput
                     name="name"
                     label="Name"
