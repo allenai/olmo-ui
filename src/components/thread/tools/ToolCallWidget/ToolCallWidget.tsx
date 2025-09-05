@@ -5,6 +5,7 @@ import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/Co
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
+import { FadeOverflowContent } from '@/components/widgets/FadeOverflowContent';
 
 import { mapToolCallArgs } from '../mapToolCallArgs';
 import { ToolCallParameters } from './ToolCallParameters';
@@ -27,14 +28,17 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
                 endAdornment={<ExpandArrowButton />}>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
-            <CollapsibleWidgetPanel>
-                <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                <ToolCallResult
-                    toolCallId={toolCall.toolCallId}
-                    toolSource={toolCall.toolSource}
-                    answer={answer}
-                />
-            </CollapsibleWidgetPanel>
+            <FadeOverflowContent contrast="medium" shouldStickToBottom>
+                <CollapsibleWidgetPanel>
+                    <ToolCallParameters>{stringArgs}</ToolCallParameters>
+
+                    <ToolCallResult
+                        toolCallId={toolCall.toolCallId}
+                        toolSource={toolCall.toolSource}
+                        answer={answer}
+                    />
+                </CollapsibleWidgetPanel>
+            </FadeOverflowContent>
         </CollapsibleWidgetBase>
     );
 };

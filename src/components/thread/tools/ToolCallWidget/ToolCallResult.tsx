@@ -5,6 +5,7 @@ import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
+import { FadeOverflowContent } from '@/components/widgets/FadeOverflowContent';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { hstack } from '@/styled-system/patterns';
 
@@ -37,18 +38,24 @@ export const ToolCallResult = ({ toolCallId, toolSource, answer }: ToolCallResul
     }
 
     return (
-        <CollapsibleWidgetContent
-            contrast="medium"
-            className={hstack({ justifyContent: 'space-between' })}>
-            {isPendingAnswer ? <LoadingSpinner /> : <ToolCallCodeBlock>{answer}</ToolCallCodeBlock>}
-            <IconButtonWithTooltip
-                disabled={isPendingAnswer}
-                label="Copy tool call answer"
-                onClick={copyAnswer}
-                color="default"
-                placement="top">
-                <ContentCopy />
-            </IconButtonWithTooltip>
-        </CollapsibleWidgetContent>
+        <FadeOverflowContent contrast="medium" style={{ maxHeight: '300px' }} shouldStickToBottom>
+            <CollapsibleWidgetContent
+                contrast="medium"
+                className={hstack({ justifyContent: 'space-between' })}>
+                {isPendingAnswer ? (
+                    <LoadingSpinner />
+                ) : (
+                    <ToolCallCodeBlock>{answer}</ToolCallCodeBlock>
+                )}
+                <IconButtonWithTooltip
+                    disabled={isPendingAnswer}
+                    label="Copy tool call answer"
+                    onClick={copyAnswer}
+                    color="default"
+                    placement="top">
+                    <ContentCopy />
+                </IconButtonWithTooltip>
+            </CollapsibleWidgetContent>
+        </FadeOverflowContent>
     );
 };

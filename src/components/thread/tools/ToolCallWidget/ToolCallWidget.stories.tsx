@@ -26,6 +26,25 @@ export const WithParameters: Story = {
     },
 };
 
+function randomString(n: number) {
+    let s = '';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n';
+    for (let i = 0; i < n; i++) s += chars[Math.floor(Math.random() * chars.length)];
+    return s;
+}
+
+export const WithLongResponse: Story = {
+    args: {
+        toolCall: {
+            args: '{ "firstName": "Taylor", "lastName": "Blanton" }',
+            toolCallId: 'tool-call-id',
+            toolName: 'leetName',
+            toolSource: 'internal',
+        },
+        answer: randomString(20000),
+    },
+};
+
 export const WithEmptyParameters: Story = {
     args: {
         toolCall: {
