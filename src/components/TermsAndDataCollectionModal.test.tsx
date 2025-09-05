@@ -6,29 +6,29 @@ import { TermsAndDataCollectionModal } from './TermsAndDataCollectionModal';
 const brandNewUser = {};
 
 const dataCollectionWasOptedInProps = {
-    initialDataCollectionValue: true,
     initialTermsAndConditionsValue: true,
+    initialDataCollectionValue: true,
 };
 
 const dataCollectionWasOptedOutProps = {
-    initialDataCollectionValue: true,
-    initialTermsAndConditionsValue: false,
+    initialTermsAndConditionsValue: true,
+    initialDataCollectionValue: false,
 };
 
 describe('TermsAndDataCollectionModal', () => {
-    it('opens without cancel button and checkbox is unchecked when user is new', () => {
+    it('opens without cancel button and checkbox is unchecked when user is new', async () => {
         render(<TermsAndDataCollectionModal {...brandNewUser} />);
 
         const modalHeading = screen.getByText('Terms of Use & Publication Consent');
-        const closeButton = screen.getByRole('button', { name: 'Cancel' });
+        const closeButtons = screen.queryByRole('button', { name: 'Cancel' });
         const checkbox = screen.getByRole('checkbox');
 
         expect(modalHeading).toBeVisible();
-        expect(closeButton).not.toBeInTheDocument();
+        expect(closeButtons).not.toBeInTheDocument();
         expect(checkbox).not.toBeChecked();
     });
 
-    it('opens with cancel button when reopened after opting in to terms and data collection', async () => {
+    it('has cancel button when reopened after opting in to terms and data collection', async () => {
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedInProps} />);
 
         const modalHeading = screen.getByText('Terms of Use & Publication Consent');
@@ -38,7 +38,7 @@ describe('TermsAndDataCollectionModal', () => {
         expect(closeButton).toBeInTheDocument();
     });
 
-    it('opens with cancel button when reopened after opting in to terms and out of data collection', async () => {
+    it('has cancel button when reopened after opting in to terms and out of data collection', async () => {
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedOutProps} />);
 
         const modalHeading = screen.getByText('Terms of Use & Publication Consent');
