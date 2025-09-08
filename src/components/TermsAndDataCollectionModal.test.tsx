@@ -16,7 +16,7 @@ const dataCollectionWasOptedOutProps = {
 };
 
 describe('TermsAndDataCollectionModal', () => {
-    it('opens without cancel button and checkbox is unchecked when user is new', async () => {
+    it('opens without cancel button and checkbox is unchecked when user is new', () => {
         render(<TermsAndDataCollectionModal {...brandNewUser} />);
 
         const modalHeading = screen.getByText('Terms of Use & Publication Consent');
@@ -28,7 +28,7 @@ describe('TermsAndDataCollectionModal', () => {
         expect(checkbox).not.toBeChecked();
     });
 
-    it('has cancel button when reopened after opting in to terms and data collection', async () => {
+    it('has cancel button when reopened after opting in to terms and data collection', () => {
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedInProps} />);
 
         const modalHeading = screen.getByText('Terms of Use & Publication Consent');
@@ -38,7 +38,7 @@ describe('TermsAndDataCollectionModal', () => {
         expect(closeButton).toBeInTheDocument();
     });
 
-    it('has cancel button when reopened after opting in to terms and out of data collection', async () => {
+    it('has cancel button when reopened after opting in to terms and out of data collection', () => {
         render(<TermsAndDataCollectionModal {...dataCollectionWasOptedOutProps} />);
 
         const modalHeading = screen.getByText('Terms of Use & Publication Consent');
