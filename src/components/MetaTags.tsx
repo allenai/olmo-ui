@@ -25,6 +25,7 @@ export const MetaTags = ({
             <meta property="og:url" content={`${process.env.VITE_BASE_URL}/${location.pathname}`} />
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:site" content="@allen_ai" />
+            <link rel="preload" href="/varnish-ui-sprite.svg" as="image" type="image/svg+xml" />
         </Helmet>
     );
 };

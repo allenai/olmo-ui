@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react-swc'
 import svgr from "vite-plugin-svgr";
 import checker from 'vite-plugin-checker';
 import environment from 'vite-plugin-environment'
+import {viteStaticCopy} from 'vite-plugin-static-copy'
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '')
@@ -20,7 +21,16 @@ export default defineConfig(({ mode }) => {
             checker({
                 typescript: mode === 'production'
             }),
-            environment('all')
+            environment('all'),
+            viteStaticCopy({
+                targets: [
+                    // gets varnish icons from the varnish package
+                    {
+                        src: 'node_modules/@allenai/varnish-ui/dist/varnish-ui-sprite.svg',
+                        dest: '.',
+                    },
+                ],
+            })
         ],
         test: {
             name: 'base',
