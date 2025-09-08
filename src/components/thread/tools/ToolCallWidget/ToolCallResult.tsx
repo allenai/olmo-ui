@@ -46,6 +46,7 @@ export const ToolCallResult = ({ toolCallId, toolSource, answer }: ToolCallResul
                 label="Copy tool call answer"
                 onClick={copyAnswer}
                 color="default"
+                sx={{ alignSelf: 'start' }}
                 placement="top">
                 <ContentCopy />
             </IconButtonWithTooltip>
