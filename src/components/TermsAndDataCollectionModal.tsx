@@ -120,6 +120,7 @@ export const TermsAndDataCollectionModal = ({
                                 control={formContext.control}
                                 render={({ field: { onChange, value } }) => (
                                     <Checkbox
+                                        className={checkboxClass}
                                         color="default"
                                         size="large"
                                         isSelected={Boolean(value)}
@@ -153,7 +154,7 @@ export const TermsAndDataCollectionModal = ({
                             form={formId}
                             isDisabled={!formContext.formState.isValid}
                             onClick={formContext.handleSubmit(handleSubmit)}>
-                            Accept Terms & Use Playground
+                            Accept terms & use Playground
                         </Button>
                     </ModalActions>
                 </div>
@@ -162,62 +163,56 @@ export const TermsAndDataCollectionModal = ({
     );
 };
 
+const containerClass = css({
+    display: 'flex',
+    fontSize: '[1rem]',
+    lineHeight: '[1.5em]',
+});
 const imgClass = css({
     display: 'none',
     width: '[380px]',
+    marginRight: '[36px]',
     maxHeight: '[100%]',
     md: {
         display: 'block',
     },
 });
-
-const containerClass = css({
-    display: 'flex',
-});
-
 const modalClass = css({
     borderRadius: 'lg',
-
     maxWidth: '[970px]',
     minWidth: '[300px]',
     overflow: 'auto',
     padding: '4',
     paddingInline: '0',
     margin: '2',
-
     sm: {
         padding: '8',
         margin: '8',
     },
 });
-
 const modalHeaderClass = css({
     fontSize: '4xl',
     lineHeight: '[1.2em]',
     paddingInline: '0',
-    sm: {
-        paddingInline: '4',
-    },
 });
-
 const modalContentClass = css({
     display: 'flex',
     flexDirection: 'column',
-    gap: '2',
+    gap: '4',
     paddingInline: '0',
-    sm: {
-        paddingInline: '4',
-    },
 });
-
 const modalActionsClass = css({
     justifyContent: 'flex-start',
-    paddingInline: '0',
-    sm: {
-        paddingInline: '4',
+    padding: '0',
+    paddingTop: '4',
+});
+const checkboxClass = css({
+    alignItems: 'flex-start',
+    '& p': {
+        // aligns checkbox with top of text instead of top of lineheight
+        marginTop: '[-0.2em]',
     },
 });
-
 const noWrapClass = css({
     whiteSpace: 'nowrap',
 });
