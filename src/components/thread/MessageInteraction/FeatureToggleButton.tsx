@@ -18,7 +18,9 @@
  * @returns {JSX.Element} The rendered toggle button.
  */
 
-import { alpha, Button, ButtonProps, IconButton, IconButtonProps } from '@mui/material';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { Button, ButtonProps, cx, IconButton, IconButtonProps } from '@allenai/varnish-ui';
+// import { IconButton, IconButtonProps } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useDesktopOrUp } from '@/components/dolma/shared';
@@ -103,6 +105,9 @@ export function FeatureToggleButton({
     const curIcon = selected ? iconOn : iconOff;
     const isDesktop = useDesktopOrUp();
 
+    const { className: buttonClassName, ...restButtonProps } = buttonProps || {};
+    const { className: iconButtonClassName, ...restIconButtonProps } = iconButtonProps || {};
+
     const handleClick = () => {
         const next = !selected;
         onChange(next);
@@ -113,33 +118,18 @@ export function FeatureToggleButton({
 
     if (isDesktop) {
         return (
-            <StyledTooltip title={hint ?? ''} placement={placement} open={showHint || undefined}>
+            <StyledTooltip
+                content={hint ?? ''}
+                placement={placement}
+                isOpen={showHint || undefined}
+                delay={50}>
                 <Button
+                    className={cx(baseButtonClass, buttonClassName)}
                     variant="text"
+                    color="primary"
                     onClick={handleClick}
                     aria-pressed={selected}
-                    title={typeof curLabel === 'string' ? curLabel : undefined}
-                    {...buttonProps}
-                    sx={[
-                        {
-                            fontWeight: 'semiBold',
-                            color: 'primary.main',
-                            gap: 1,
-                            padding: 1,
-                            '&:hover': {
-                                color: 'text.primary',
-                                backgroundColor: (theme) =>
-                                    theme.palette.mode === 'dark'
-                                        ? alpha(theme.palette.common.white, 0.04)
-                                        : alpha(theme.palette.common.black, 0.04),
-                            },
-                        },
-                        ...(Array.isArray(buttonProps?.sx)
-                            ? buttonProps.sx
-                            : buttonProps?.sx
-                              ? [buttonProps.sx]
-                              : []),
-                    ]}>
+                    {...restButtonProps}>
                     {curIcon}
                     {typeof curLabel === 'string' ? <span>{curLabel}</span> : curLabel}
                 </Button>
@@ -147,27 +137,33 @@ export function FeatureToggleButton({
         );
     }
 
-    // Mobile
     return (
         <StyledTooltip
-            title={mobileTooltip ?? curLabel ?? ''}
+            content={mobileTooltip ?? curLabel ?? ''}
             placement={placement}
-            open={mobileTooltipOpen}
-            onOpen={() => onMobileTooltipOpenChange?.(true)}
-            onClose={() => onMobileTooltipOpenChange?.(false)}>
+            isOpen={mobileTooltipOpen}
+            onOpenChange={(isOpen) => {
+                return isOpen
+                    ? onMobileTooltipOpenChange?.(isOpen)
+                    : onMobileTooltipOpenChange?.(isOpen);
+            }}>
             <IconButton
+                className={cx(baseButtonClass, iconButtonClassName)}
                 onClick={handleClick}
                 aria-pressed={selected}
                 aria-label={
                     typeof curLabel === 'string' ? curLabel : selected ? ariaLabelOn : ariaLabelOff
                 }
-                sx={{
-                    color: 'primary.main',
-                    '&:hover': { color: 'text.primary' },
-                }}
-                {...iconButtonProps}>
+                color="primary"
+                variant="text"
+                {...restIconButtonProps}>
                 {curIcon}
             </IconButton>
         </StyledTooltip>
     );
 }
+
+const baseButtonClass = css({
+    paddingInline: '2',
+    paddingBlock: '2',
+});

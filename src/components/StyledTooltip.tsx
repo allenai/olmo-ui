@@ -1,43 +1,23 @@
-import { Tooltip, TooltipProps } from '@mui/material';
+import { Tooltip, TooltipProps } from '@allenai/varnish-ui';
 
+import { useColorMode } from './ColorModeProvider';
 import { useDesktopOrUp } from './dolma/shared';
 
-type StyledTooltipProps = TooltipProps & {
+interface StyledTooltipProps extends Omit<TooltipProps, 'children'> {
     desktopPlacement?: TooltipProps['placement'];
-};
+    children: React.ReactNode;
+}
 
 const StyledTooltip = ({
     placement = 'bottom',
     desktopPlacement = placement,
-    arrow = true,
     ...props
 }: StyledTooltipProps) => {
+    const { colorMode } = useColorMode();
     const isDesktop = useDesktopOrUp();
     const responsivePlacement = isDesktop ? desktopPlacement : placement;
 
-    return (
-        <Tooltip
-            {...props}
-            arrow={arrow}
-            placement={responsivePlacement}
-            slotProps={{
-                tooltip: {
-                    sx: (theme) => ({
-                        ...theme.typography.caption,
-                        backgroundColor: theme.palette.background.reversed,
-                        color: theme.palette.text.reversed,
-                        boxShadow: 'none',
-                    }),
-                },
-                arrow: {
-                    sx: (theme) => ({
-                        color: theme.palette.background.reversed,
-                        boxShadow: 'none',
-                    }),
-                },
-            }}
-        />
-    );
+    return <Tooltip className={colorMode} {...props} placement={responsivePlacement} delay={50} />;
 };
 
 export { StyledTooltip, type StyledTooltipProps };

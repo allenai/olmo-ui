@@ -1,5 +1,6 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { IconButton } from '@allenai/varnish-ui';
 import { SvgIconComponent } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 
@@ -17,19 +18,20 @@ export const MessageInteractionIcon = ({
     onClick,
 }: MessageInteractionIconProps) => {
     return (
-        <StyledTooltip title={tooltip} placement="top">
+        <StyledTooltip content={tooltip} placement="top">
             <IconButton
+                className={iconButtonClass}
                 onClick={onClick}
                 aria-pressed={selected}
                 aria-label={tooltip}
-                sx={{
-                    color: 'primary.main',
-                    '&:hover': {
-                        color: 'text.primary',
-                    },
-                }}>
+                color="primary"
+                variant="text">
                 <Icon />
             </IconButton>
         </StyledTooltip>
     );
 };
+
+const iconButtonClass = css({
+    padding: '2',
+});
