@@ -28,7 +28,7 @@ export const IconButtonWithTooltip = ({
 }: IconButtonWithTooltipProps) => {
     return (
         <StyledTooltip
-            title={label}
+            content={label}
             arrow={arrow}
             placement={placement}
             desktopPlacement={desktopPlacement}>

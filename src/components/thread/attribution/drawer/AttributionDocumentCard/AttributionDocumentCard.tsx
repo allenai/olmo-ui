@@ -1,5 +1,6 @@
 import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 import { PropsWithChildren, ReactNode, useState } from 'react';
+import { Focusable } from 'react-aria-components';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Document as AttributionDocument, Document } from '@/api/AttributionClient';
@@ -241,10 +242,12 @@ const LocateSpanButton = ({
     if (locateUnavailable) {
         return (
             <StyledTooltip
-                title="Locating span is not available when a span is selected"
+                content="Locating span is not available when a span is selected"
                 placement="top">
-                {/* Mui won't show a tooltip if the child is disabled, so the <Button> needs to be wrapped */}
-                <span>{locateButton}</span>
+                {/* Tooltips shouldn't show if the child is disabled (bad a11y according to WAI-ARIA), we are overriding this by wrapping the `locateButton` */}
+                <Focusable>
+                    <span>{locateButton}</span>
+                </Focusable>
             </StyledTooltip>
         );
     }
