@@ -117,6 +117,7 @@ export function FeatureToggleButton({
     };
 
     if (isDesktop) {
+        console.log(curLabel);
         return (
             <StyledTooltip
                 content={hint ?? ''}
@@ -129,9 +130,16 @@ export function FeatureToggleButton({
                     color="primary"
                     onClick={handleClick}
                     aria-pressed={selected}
+                    aria-label={
+                        typeof curLabel === 'string'
+                            ? curLabel
+                            : selected
+                              ? ariaLabelOn
+                              : ariaLabelOff
+                    }
+                    startIcon={curIcon}
                     {...restButtonProps}>
-                    {curIcon}
-                    {typeof curLabel === 'string' ? <span>{curLabel}</span> : curLabel}
+                    {curLabel}
                 </Button>
             </StyledTooltip>
         );
