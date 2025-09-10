@@ -36,6 +36,7 @@ export const IconButtonWithTooltip = ({
                 {...rest}
                 disabled={disabled}
                 color={color}
+                aria-label={label}
                 sx={[
                     (theme) => ({
                         '&[data-active="true"]': {
