@@ -108,11 +108,14 @@ export const ParameterContent = () => {
         updateInferenceOpts,
         userToolDefinitions,
         updateUserToolDefinitions,
+        updateThreadTools,
         isToolCallingEnabled,
         updateIsToolCallingEnabled,
     } = useQueryContext();
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
+
+    const [shouldShowToolsDialog, sethouldShowToolsDialog] = React.useState(false);
 
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
@@ -214,7 +217,7 @@ export const ParameterContent = () => {
                 <FunctionDeclarationDialog
                     jsonData={userToolDefinitions || undefined}
                     isDisabled={threadStarted}
-                    isOpen={shouldShowFunctionDialog}
+                    isOpen={false}
                     onClose={() => {
                         setShouldShowFunctionDialog(false);
                     }}
@@ -233,8 +236,10 @@ export const ParameterContent = () => {
                 <ToolToggleDialog
                     tools={availableTools}
                     isDisabled={threadStarted}
-                    isOpen={true}
-                    onClose={() => {}}
+                    isOpen={shouldShowFunctionDialog}
+                    onClose={() => {
+                        setShouldShowFunctionDialog(false);
+                    }}
                     onSave={({ declaration }) => {
                         // analyticsClient.trackParametersUpdate({
                         // todo

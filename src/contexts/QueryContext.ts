@@ -47,6 +47,7 @@ interface QueryContextValue {
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
     updateIsToolCallingEnabled: (enabled: boolean) => void;
     updateUserToolDefinitions: (jsonDefinition: string) => void;
+    updateThreadTools: (tools: string[]) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

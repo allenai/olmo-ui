@@ -63,6 +63,15 @@ const shouldShowCompatibilityWarning = (
     );
 };
 
+const getNonUserToolsFromThread = (threadId: string | undefined) => {
+    if (!threadId) {
+        return [];
+    }
+    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || [];
+    const userToolDefs = toolDefs.filter((def) => def.toolSource !== 'user_defined');
+    return userToolDefs;
+};
+
 const getUserToolDefinitionsFromThread = (threadId: string | undefined) => {
     if (!threadId) {
         return;
@@ -81,6 +90,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThread(threadId)
+    );
+
+    const [threadTools, setThreadTools] = useState<string[]>(
+        getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
     const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
         userToolDefinitions !== undefined
@@ -261,6 +274,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setUserToolDefinitions(jsonDefinition);
     }, []);
 
+    const updateThreadTools = useCallback((tools: string[]) => {
+        setThreadTools(tools);
+    }, []);
+
     const updateIsToolCallingEnabled = useCallback((enabled: boolean) => {
         setIsToolCallingEnabled(enabled);
     }, []);
@@ -308,6 +325,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 threadViewId,
                 inferenceOpts,
                 userToolDefinitions,
+                threadTools,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -399,6 +417,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             submitToThreadView,
             updateUserToolDefinitions,
             updateIsToolCallingEnabled,
+            updateThreadTools,
         };
     }, [
         canSubmit,

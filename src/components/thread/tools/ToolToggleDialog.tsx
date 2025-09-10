@@ -1,7 +1,7 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, Checkbox, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { Control, useController, useForm } from 'react-hook-form';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -45,12 +45,19 @@ export function ToolToggleDialog({
     onClose,
 }: ToolToggleDialogProps) {
     const { colorMode } = useColorMode();
-    const { handleSubmit, reset, control } = useForm<DataFields>({
+    const { handleSubmit, reset, control, setValue } = useForm<DataFields>({
         defaultValues: {
             tools: (tools || []).map((t) => t.name),
         },
         mode: 'onSubmit',
     });
+
+    useEffect(() => {
+        setValue(
+            'tools',
+            (tools || []).map((t) => t.name)
+        );
+    }, [tools]);
 
     const handleSave = handleSubmit((data) => {
         console.log(data);
@@ -141,7 +148,7 @@ export const ControlledToggleTable = ({
                     key={tool.name}
                     style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                     <Checkbox
-                        isSelected={field.value.includes(tool) || false}
+                        isSelected={field.value.includes(tool.name) || false}
                         onChange={(isChecked) => {
                             handleToggle(tool.name, isChecked);
                         }}
