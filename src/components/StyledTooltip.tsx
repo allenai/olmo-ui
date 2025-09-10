@@ -1,12 +1,13 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { cx, Tooltip, TooltipProps } from '@allenai/varnish-ui';
+import { ReactNode } from 'react';
 
 import { useColorMode } from './ColorModeProvider';
 import { useDesktopOrUp } from './dolma/shared';
 
 interface StyledTooltipProps extends Omit<TooltipProps, 'children'> {
     desktopPlacement?: TooltipProps['placement'];
-    children: React.ReactNode;
+    children: ReactNode;
     arrow?: boolean;
 }
 

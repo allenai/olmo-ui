@@ -20,7 +20,6 @@
 
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, ButtonProps, cx, IconButton, IconButtonProps } from '@allenai/varnish-ui';
-// import { IconButton, IconButtonProps } from '@mui/material';
 import { ReactNode } from 'react';
 
 import { useDesktopOrUp } from '@/components/dolma/shared';
@@ -102,6 +101,8 @@ export function FeatureToggleButton({
     onTrack,
 }: FeatureToggleButtonProps) {
     const curLabel = selected ? labelOn : labelOff;
+    const ariaLabel =
+        typeof curLabel === 'string' ? curLabel : selected ? ariaLabelOn : ariaLabelOff;
     const curIcon = selected ? iconOn : iconOff;
     const isDesktop = useDesktopOrUp();
 
@@ -117,7 +118,6 @@ export function FeatureToggleButton({
     };
 
     if (isDesktop) {
-        console.log(curLabel);
         return (
             <StyledTooltip
                 content={hint ?? ''}
@@ -130,13 +130,7 @@ export function FeatureToggleButton({
                     color="primary"
                     onClick={handleClick}
                     aria-pressed={selected}
-                    aria-label={
-                        typeof curLabel === 'string'
-                            ? curLabel
-                            : selected
-                              ? ariaLabelOn
-                              : ariaLabelOff
-                    }
+                    aria-label={ariaLabel}
                     startIcon={curIcon}
                     {...restButtonProps}>
                     {curLabel}
@@ -159,9 +153,7 @@ export function FeatureToggleButton({
                 className={cx(baseButtonClass, iconButtonClassName)}
                 onClick={handleClick}
                 aria-pressed={selected}
-                aria-label={
-                    typeof curLabel === 'string' ? curLabel : selected ? ariaLabelOn : ariaLabelOff
-                }
+                aria-label={ariaLabel}
                 color="primary"
                 variant="text"
                 {...restIconButtonProps}>
