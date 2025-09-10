@@ -9,6 +9,7 @@ import {
     Theme,
 } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import { Focusable } from 'react-aria-components';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
@@ -168,11 +169,10 @@ export const NavigationLink = ({
         <ListItem disablePadding dense sx={sx}>
             {experimental ? (
                 <StyledTooltip
-                    title="This feature is experimental"
+                    content="This feature is experimental"
                     placement="right"
-                    desktopPlacement="right"
-                    arrow>
-                    {buttonContent}
+                    desktopPlacement="right">
+                    {<Focusable>{buttonContent}</Focusable>}
                 </StyledTooltip>
             ) : (
                 buttonContent

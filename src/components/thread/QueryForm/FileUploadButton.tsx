@@ -1,6 +1,7 @@
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import { styled } from '@mui/material';
 import { DetailedHTMLProps, ForwardedRef, forwardRef, InputHTMLAttributes, useRef } from 'react';
+import { Focusable } from 'react-aria-components';
 
 import { StyledTooltip } from '@/components/StyledTooltip';
 import { useFeatureToggles } from '@/FeatureToggleContext';
@@ -48,22 +49,22 @@ export const FileUploadButton = forwardRef(function FileUploadButton(
 
     return (
         <StyledTooltip
-            title="This model only supports one image per thread. Start a new chat to submit a new file."
-            disableFocusListener
-            disableHoverListener={!isFileUploadDisabled}
-            disableTouchListener={!isFileUploadDisabled}>
-            <Label ref={labelRef} aria-label="Upload file">
-                <AddAPhotoOutlinedIcon />
-                <Input
-                    {...props}
-                    disabled={isSendingPrompt || isFileUploadDisabled}
-                    accept={acceptedFileTypesString}
-                    multiple={acceptsMultiple}
-                    type="file"
-                    ref={ref}
-                    data-testid="file-upload-btn"
-                />
-            </Label>
+            content="This model only supports one image per thread. Start a new chat to submit a new file."
+            placement="top">
+            <Focusable isDisabled={!isFileUploadDisabled && !allowFilesInFollowups}>
+                <Label ref={labelRef} aria-label="Upload file">
+                    <AddAPhotoOutlinedIcon />
+                    <Input
+                        {...props}
+                        disabled={isSendingPrompt || isFileUploadDisabled}
+                        accept={acceptedFileTypesString}
+                        multiple={acceptsMultiple}
+                        type="file"
+                        ref={ref}
+                        data-testid="file-upload-btn"
+                    />
+                </Label>
+            </Focusable>
         </StyledTooltip>
     );
 });

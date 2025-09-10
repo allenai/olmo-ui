@@ -12,6 +12,7 @@
  * @returns {JSX.Element} The rendered toggle button.
  */
 
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { DataObject } from '@mui/icons-material';
 import { ReactNode } from 'react';
 
@@ -46,9 +47,17 @@ export const RawToggleButton = ({ isRawMode, setRawMode }: RawToggleButtonProps)
             onChange={setRawMode}
             iconOn={<DataObjectOff />}
             iconOff={<DataObject />}
+            ariaLabelOn="Hide Message Data"
+            ariaLabelOff="Show Message Data"
             hint={toolTipText}
             mobileTooltip={toolTipText}
-            buttonProps={{ sx: { padding: 1 } }}
+            buttonProps={{
+                className: buttonClassName,
+            }}
         />
     );
 };
+
+const buttonClassName = css({
+    paddingInline: '5',
+});

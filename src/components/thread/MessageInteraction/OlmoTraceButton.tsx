@@ -123,7 +123,6 @@ export const OlmoTraceButton = ({
                       }
                     : undefined
             }
-            buttonProps={{ sx: { padding: 1 } }}
         />
     );
 };
@@ -143,5 +142,6 @@ const OlmotraceHint = ({ onClose }: { onClose: () => void }) => (
     <DismissibleHint
         onClose={onClose}
         content="Curious about how this response matches the model's training data? Click this to dig deeper."
+        sx={{ maxWidth: 250 }}
     />
 );

@@ -28,7 +28,7 @@ export const IconButtonWithTooltip = ({
 }: IconButtonWithTooltipProps) => {
     return (
         <StyledTooltip
-            title={label}
+            content={label}
             arrow={arrow}
             placement={placement}
             desktopPlacement={desktopPlacement}>
@@ -36,6 +36,7 @@ export const IconButtonWithTooltip = ({
                 {...rest}
                 disabled={disabled}
                 color={color}
+                aria-label={label}
                 sx={[
                     (theme) => ({
                         '&[data-active="true"]': {
