@@ -14,6 +14,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
+import { ToolToggleDialog } from '../tools/ToolToggleDialog';
 import { ParameterToggle } from './inputs/ParameterToggle';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -225,6 +226,24 @@ export const ParameterContent = () => {
                             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
                             type: SnackMessageType.Brief,
                             message: 'Function Definition Saved',
+                        });
+                    }}
+                />
+                <ToolToggleDialog
+                    tools={['tool one', 'tool two']}
+                    isDisabled={threadStarted}
+                    isOpen={true}
+                    onClose={() => {}}
+                    onSave={({ declaration }) => {
+                        // analyticsClient.trackParametersUpdate({
+                        // todo
+                        //   parameterUpdated: 'tool_definitions',
+                        // });
+                        // updateUserToolDefinitions(declaration);
+                        addSnackMessage({
+                            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                            type: SnackMessageType.Brief,
+                            message: 'Active Tools Saved',
                         });
                     }}
                 />
