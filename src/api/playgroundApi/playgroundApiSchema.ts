@@ -478,6 +478,16 @@ export type components = {
             | 'tulu-3-8b'
             | 'tulu-3-70b'
             | 'tulu-3-405b';
+        /** AvailableTool */
+        readonly AvailableTool: {
+            /**
+             * Description
+             * @default null
+             */
+            readonly description?: string | null;
+            /** Name */
+            readonly name: string;
+        };
         /** CreateMessageRequest */
         readonly CreateMessageRequest: {
             /**
@@ -963,6 +973,11 @@ export type components = {
              */
             readonly accepts_files?: boolean;
             /**
+             * Available Tools
+             * @default null
+             */
+            readonly available_tools?: readonly components['schemas']['AvailableTool'][] | null;
+            /**
              * Can Call Tools
              * @default false
              */
@@ -1062,7 +1077,7 @@ export type components = {
             readonly accepted_file_types: readonly string[];
             /**
              * Accepts Files
-             * @default false
+             * @default true
              */
             readonly accepts_files?: boolean;
             /**
@@ -1071,6 +1086,11 @@ export type components = {
              * @default false
              */
             readonly allow_files_in_followups?: boolean;
+            /**
+             * Available Tools
+             * @default null
+             */
+            readonly available_tools?: readonly components['schemas']['AvailableTool'][] | null;
             /**
              * Can Call Tools
              * @default false
@@ -1575,6 +1595,7 @@ export type components = {
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
 export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
+export type SchemaAvailableTool = components['schemas']['AvailableTool'];
 export type SchemaCreateMessageRequest = components['schemas']['CreateMessageRequest'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];

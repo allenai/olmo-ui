@@ -102,6 +102,7 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 export const ParameterContent = () => {
     const {
         threadStarted,
+        availableTools,
         canCallTools,
         inferenceOpts,
         updateInferenceOpts,
@@ -230,7 +231,7 @@ export const ParameterContent = () => {
                     }}
                 />
                 <ToolToggleDialog
-                    tools={['tool one', 'tool two']}
+                    tools={availableTools}
                     isDisabled={threadStarted}
                     isOpen={true}
                     onClose={() => {}}

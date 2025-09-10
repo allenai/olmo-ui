@@ -410,6 +410,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             isToolCallingEnabled,
             placeholderText,
             availableModels: models,
+            availableTools: [],
             areFilesAllowed,
             canPauseThread: streamMessage.canPause,
             isLimitReached,

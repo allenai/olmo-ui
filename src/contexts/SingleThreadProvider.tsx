@@ -369,6 +369,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             autofocus,
             placeholderText,
             canCallTools,
+            availableTools: selectedModel?.available_tools,
             isToolCallingEnabled,
             userToolDefinitions,
             areFilesAllowed,

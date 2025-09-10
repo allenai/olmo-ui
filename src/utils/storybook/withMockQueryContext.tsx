@@ -14,6 +14,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     remoteState: RemoteState.Loaded,
     shouldResetForm: false,
     onModelChange: fn(),
+    availableTools: [],
     getThreadViewModel: () => undefined,
     transform: fn(),
     onSubmit: fn(),

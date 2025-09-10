@@ -33,6 +33,7 @@ export const FakeQueryContextProvider = ({
         placeholderText,
         areFilesAllowed,
         availableModels,
+        availableTools: [],
         canPauseThread: false,
         isLimitReached,
         remoteState: undefined,
