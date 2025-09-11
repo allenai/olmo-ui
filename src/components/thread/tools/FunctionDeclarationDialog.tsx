@@ -4,7 +4,7 @@ import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { type ReactElement, useState , useEffect} from 'react';
 import type { Key } from 'react-aria-components';
-import { Control, useForm } from 'react-hook-form';
+import { Control, UseFormSetValue, useForm, Resolver } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -61,6 +61,28 @@ export interface FunctionDeclarationDialogProps {
     onClose?: () => void;
 }
 
+const resolver: Resolver<DataFields> = async (values) => {
+    const validationResult = validateToolDefinitions(values.declaration);
+    
+    if (validationResult === true) {
+        return {
+            values,
+            errors: {},
+        };
+    } else {
+        return {
+            values: {},
+            errors: {
+                declaration: {
+                    type: 'validation',
+                    message: validationResult,
+                },
+            },
+        };
+    }
+};
+
+
 export function FunctionDeclarationDialog({
     jsonData = '',
     tools,
@@ -75,7 +97,8 @@ export function FunctionDeclarationDialog({
         values: {
             declaration: jsonData,
             tools: (tools || []).map((t) => t.name),
-                },
+        },
+        resolver,
         mode: 'onSubmit',
     });
 
@@ -138,27 +161,7 @@ export function FunctionDeclarationDialog({
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
-                <TabbedContent isDisabled={isDisabled} control={control} tools={[]} />
-                {!isDisabled && (
-                    <ModalActions className={exampleButtons} fullWidth>
-                        <Button
-                            size="small"
-                            color="secondary"
-                            onClick={() => {
-                                setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
-                            }}>
-                            getWeather
-                        </Button>
-                        <Button
-                            size="small"
-                            color="secondary"
-                            onClick={() => {
-                                setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
-                            }}>
-                            getStockIndex
-                        </Button>
-                    </ModalActions>
-                )}
+                <TabbedContent isDisabled={isDisabled} control={control} tools={tools} setValue={setValue} />
             </form>
         </Modal>
     );
@@ -175,10 +178,12 @@ type TabbedContentProps = {
     isDisabled?: boolean;
     control: Control<DataFields>;
     tools: Model['available_tools'];
+    setValue:UseFormSetValue<DataFields> ; 
 };
 
-const TabbedContent = ({ control, isDisabled, tools }: TabbedContentProps) => {
+const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentProps) => {
     const [tabSelected, setTabSelect] = useState<Key>('user-functions');
+
 
     const items: Items[] = [
         {
@@ -199,11 +204,29 @@ const TabbedContent = ({ control, isDisabled, tools }: TabbedContentProps) => {
                         maxRows={18}
                         controllerProps={{
                             control,
-                            rules: {
-                                validate: validateToolDefinitions,
-                            },
                         }}
                     />
+
+                {!isDisabled && (
+                    <ModalActions className={exampleButtons} fullWidth>
+                        <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                                setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
+                            }}>
+                            getWeather
+                        </Button>
+                        <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                                setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
+                            }}>
+                            getStockIndex
+                        </Button>
+                    </ModalActions>
+                )}
                 </varnishUi.TabPanel>
             ),
         },
