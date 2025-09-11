@@ -2,9 +2,9 @@ import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions, Tab, TabPanel } from '@allenai/varnish-ui';
 import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { type ReactElement, useState , useEffect} from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import type { Key } from 'react-aria-components';
-import { Control, UseFormSetValue, useForm } from 'react-hook-form';
+import { Control, useForm, UseFormSetValue } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -75,10 +75,9 @@ export function FunctionDeclarationDialog({
         values: {
             declaration: jsonData,
             tools: (tools || []).map((t) => t.name),
-            },
+        },
         mode: 'onSubmit',
     });
-
 
     useEffect(() => {
         // Can't rely on default, if model changes we need to set the value.
@@ -87,7 +86,6 @@ export function FunctionDeclarationDialog({
             (tools || []).map((t) => t.name)
         );
     }, [tools]);
-
 
     const handleSave = handleSubmit((data) => {
         onSave(data);
@@ -138,7 +136,12 @@ export function FunctionDeclarationDialog({
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
-                <TabbedContent isDisabled={isDisabled} control={control} tools={tools} setValue={setValue} />
+                <TabbedContent
+                    isDisabled={isDisabled}
+                    control={control}
+                    tools={tools}
+                    setValue={setValue}
+                />
             </form>
         </Modal>
     );
@@ -155,12 +158,11 @@ type TabbedContentProps = {
     isDisabled?: boolean;
     control: Control<DataFields>;
     tools: Model['available_tools'];
-    setValue:UseFormSetValue<DataFields> ; 
+    setValue: UseFormSetValue<DataFields>;
 };
 
-const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentProps) => {
+const TabbedContent = ({ control, isDisabled, tools, setValue }: TabbedContentProps) => {
     const [tabSelected, setTabSelect] = useState<Key>('user-functions');
-
 
     const items: Items[] = [
         {
@@ -187,26 +189,29 @@ const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentP
                         }}
                     />
 
-                {!isDisabled && (
-                    <ModalActions className={exampleButtons} fullWidth>
-                        <Button
-                            size="small"
-                            color="secondary"
-                            onClick={() => {
-                                setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
-                            }}>
-                            getWeather
-                        </Button>
-                        <Button
-                            size="small"
-                            color="secondary"
-                            onClick={() => {
-                                setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
-                            }}>
-                            getStockIndex
-                        </Button>
-                    </ModalActions>
-                )}
+                    {!isDisabled && (
+                        <ModalActions className={exampleButtons} fullWidth>
+                            <Button
+                                size="small"
+                                color="secondary"
+                                onClick={() => {
+                                    setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
+                                }}>
+                                getWeather
+                            </Button>
+                            <Button
+                                size="small"
+                                color="secondary"
+                                onClick={() => {
+                                    setValue(
+                                        'declaration',
+                                        EXAMPLE_DECLARATIONS.getStockIndex.trim()
+                                    );
+                                }}>
+                                getStockIndex
+                            </Button>
+                        </ModalActions>
+                    )}
                 </varnishUi.TabPanel>
             ),
         },
@@ -216,7 +221,7 @@ const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentP
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
                     <p className={labelStyle}>Tools below will be added to the conversation.</p>
-                    <ControlledToolToggleTable controllerProps={{control}} tools={tools} />
+                    <ControlledToolToggleTable control={{ control }} tools={tools} />
                 </varnishUi.TabPanel>
             ),
         },
@@ -228,7 +233,7 @@ const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentP
 };
 
 const validateToolDefinitions = (value: string | string[]) => {
-    if (Array.isArray(value)){
+    if (Array.isArray(value)) {
         return 'Expected string not array';
     }
 

@@ -497,6 +497,11 @@ export type components = {
             readonly captchaToken?: string | null;
             /** Content */
             readonly content: string;
+            /**
+             * Enabletoolcalling
+             * @default null
+             */
+            readonly enableToolCalling?: boolean | null;
             /** Host */
             readonly host: string;
             /**
@@ -533,6 +538,11 @@ export type components = {
             readonly private?: boolean;
             /** @default user */
             readonly role?: components['schemas']['Role'] | null;
+            /**
+             * Selectedtools
+             * @default null
+             */
+            readonly selectedTools?: readonly string[] | null;
             /**
              * Temperature
              * @default 0.7
