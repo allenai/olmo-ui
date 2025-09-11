@@ -4,7 +4,7 @@ import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { type ReactElement, useState , useEffect} from 'react';
 import type { Key } from 'react-aria-components';
-import { Control, UseFormSetValue, useForm, Resolver } from 'react-hook-form';
+import { Control, UseFormSetValue, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -61,28 +61,6 @@ export interface FunctionDeclarationDialogProps {
     onClose?: () => void;
 }
 
-const resolver: Resolver<DataFields> = async (values) => {
-    const validationResult = validateToolDefinitions(values.declaration);
-    
-    if (validationResult === true) {
-        return {
-            values,
-            errors: {},
-        };
-    } else {
-        return {
-            values: {},
-            errors: {
-                declaration: {
-                    type: 'validation',
-                    message: validationResult,
-                },
-            },
-        };
-    }
-};
-
-
 export function FunctionDeclarationDialog({
     jsonData = '',
     tools,
@@ -97,8 +75,7 @@ export function FunctionDeclarationDialog({
         values: {
             declaration: jsonData,
             tools: (tools || []).map((t) => t.name),
-        },
-        resolver,
+            },
         mode: 'onSubmit',
     });
 
@@ -204,6 +181,9 @@ const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentP
                         maxRows={18}
                         controllerProps={{
                             control,
+                            rules: {
+                                validate: validateToolDefinitions,
+                            },
                         }}
                     />
 
@@ -247,7 +227,11 @@ const TabbedContent = ({ control, isDisabled, tools, setValue  }: TabbedContentP
     );
 };
 
-const validateToolDefinitions = (value: string) => {
+const validateToolDefinitions = (value: string | string[]) => {
+    if (Array.isArray(value)){
+        return 'Expected string not array';
+    }
+
     const definitionSchema = z.strictObject({
         name: z.string().min(1, { error: 'Name is required' }),
         description: z.string().min(1, { error: 'Description is required' }),
