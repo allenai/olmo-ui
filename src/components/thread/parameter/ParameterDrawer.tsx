@@ -107,7 +107,7 @@ export const ParameterContent = () => {
         updateInferenceOpts,
         userToolDefinitions,
         updateUserToolDefinitions,
-        updateThreadTools,
+        updateSelectedTools,
         isToolCallingEnabled,
         updateIsToolCallingEnabled,
     } = useQueryContext();
@@ -186,12 +186,12 @@ export const ParameterContent = () => {
                     <ParametersListItem>
                         <ParameterToggle
                             value={isToolCallingEnabled}
-                            label="Function calling"
+                            label="Tool calling"
                             dialogContent={FUNCTION_CALLING_INFO}
-                            dialogTitle="Function Calling"
+                            dialogTitle="Tool Calling"
                             disableToggle={!canCreateToolDefinitions}
                             disableEditButton={threadStarted ? false : !isToolCallingEnabled}
-                            id="function-calling"
+                            id="tool-calling"
                             onEditClick={() => {
                                 setShouldShowFunctionDialog(true);
                             }}
@@ -224,7 +224,7 @@ export const ParameterContent = () => {
                             parameterUpdated: 'tool_definitions',
                         });
                         updateUserToolDefinitions(declaration);
-                        updateThreadTools(tools)
+                        updateSelectedTools(tools);
                         addSnackMessage({
                             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
                             type: SnackMessageType.Brief,
@@ -232,7 +232,6 @@ export const ParameterContent = () => {
                         });
                     }}
                 />
-               
             </ParametersList>
         </Stack>
     );

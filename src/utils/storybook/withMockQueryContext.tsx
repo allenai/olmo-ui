@@ -25,7 +25,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     submitToThreadView: fn(),
     updateIsToolCallingEnabled: fn(),
     updateUserToolDefinitions: fn(),
-    updateThreadTools: fn(),
+    updateSelectedTools: fn(),
     threadStarted: false,
     isToolCallingEnabled: false,
     userToolDefinitions: null,

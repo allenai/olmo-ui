@@ -57,7 +57,7 @@ export const FakeQueryContextProvider = ({
         submitToThreadView: () => new Promise(() => null),
         updateIsToolCallingEnabled: () => {},
         updateUserToolDefinitions: () => {},
-        updateThreadTools: () => {},
+        updateSelectedTools: () => {},
         threadStarted: false,
         isToolCallingEnabled: false,
         userToolDefinitions: null,

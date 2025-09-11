@@ -92,7 +92,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         getUserToolDefinitionsFromThread(threadId)
     );
 
-    const [threadTools, setThreadTools] = useState<string[]>(
+    const [selectedTools, setSelectedTools] = useState<string[]>(
         getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
     const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
@@ -274,8 +274,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setUserToolDefinitions(jsonDefinition);
     }, []);
 
-    const updateThreadTools = useCallback((tools: string[]) => {
-        setThreadTools(tools);
+    const updateSelectedTools = useCallback((tools: string[]) => {
+        setSelectedTools(tools);
     }, []);
 
     const updateIsToolCallingEnabled = useCallback((enabled: boolean) => {
@@ -325,7 +325,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 threadViewId,
                 inferenceOpts,
                 userToolDefinitions,
-                threadTools,
+                selectedTools,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -341,6 +341,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             streamMessage.onFirstMessage,
             threadId,
             userToolDefinitions,
+            selectedTools,
         ]
     );
 
@@ -417,7 +418,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             submitToThreadView,
             updateUserToolDefinitions,
             updateIsToolCallingEnabled,
-            updateThreadTools,
+            updateSelectedTools,
         };
     }, [
         canSubmit,
@@ -442,6 +443,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         submitToThreadView,
         updateUserToolDefinitions,
         updateIsToolCallingEnabled,
+        updateSelectedTools,
     ]);
 
     return (

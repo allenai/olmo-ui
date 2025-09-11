@@ -24,7 +24,7 @@ export interface ThreadStreamMutationVariables {
     thread?: Thread;
     inferenceOpts: RequestInferenceOpts;
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
-    threadTools: string[];
+    selectedTools: string[];
 }
 
 interface StreamCallbacks {
@@ -131,7 +131,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         thread, // maybe this is just parentId? we don't need the whole thread
         inferenceOpts,
         toolDefinitions,
-        threadTools,
+        selectedTools,
     }: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
@@ -139,7 +139,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         thread?: Thread;
         inferenceOpts: RequestInferenceOpts;
         toolDefinitions: CreateMessageRequest['toolDefinitions'];
-        threadTools: string[];
+        selectedTools: string[];
     }) => {
         startStream(threadViewId);
 
@@ -179,7 +179,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
                     stop: adjustedInferenceOpts.stop ?? undefined,
                     toolDefinitions: toolDefinitions ?? undefined,
-                    threadTools: threadTools ?? undefined,
+                    selectedTools: selectedTools ?? undefined,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();
