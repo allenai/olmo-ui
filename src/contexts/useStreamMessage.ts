@@ -25,6 +25,7 @@ export interface ThreadStreamMutationVariables {
     inferenceOpts: RequestInferenceOpts;
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
     selectedTools: string[];
+    isToolCallingEnabled: boolean
 }
 
 interface StreamCallbacks {
@@ -132,6 +133,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         inferenceOpts,
         toolDefinitions,
         selectedTools,
+        isToolCallingEnabled
     }: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
@@ -140,7 +142,8 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         inferenceOpts: RequestInferenceOpts;
         toolDefinitions: CreateMessageRequest['toolDefinitions'];
         selectedTools: string[];
-    }) => {
+        isToolCallingEnabled: boolean
+        }) => {
         startStream(threadViewId);
 
         // Create and store abort controller for this thread view
@@ -180,6 +183,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     stop: adjustedInferenceOpts.stop ?? undefined,
                     toolDefinitions: toolDefinitions ?? undefined,
                     selectedTools: selectedTools ?? undefined,
+                    enableToolCalling: isToolCallingEnabled
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();

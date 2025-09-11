@@ -95,9 +95,11 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [selectedTools, setSelectedTools] = useState<string[]>(
         getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
+
     const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
-        userToolDefinitions !== undefined
+        userToolDefinitions !== undefined || selectedTools.length > 0 
     );
+
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -326,6 +328,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 inferenceOpts,
                 userToolDefinitions,
                 selectedTools,
+                isToolCallingEnabled,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,

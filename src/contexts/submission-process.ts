@@ -228,6 +228,7 @@ export const processSingleModelSubmission = async (
     inferenceOpts: RequestInferenceOpts,
     toolDefinitions: CreateMessageRequest['toolDefinitions'],
     selectedTools: string[],
+    isToolCallingEnabled: boolean,
     streamMutateAsync: (params: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
