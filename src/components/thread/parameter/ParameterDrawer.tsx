@@ -14,7 +14,6 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
-import { ToolToggleDialog } from '../tools/ToolToggleDialog';
 import { ParameterToggle } from './inputs/ParameterToggle';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -115,8 +114,6 @@ export const ParameterContent = () => {
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
 
-    const [shouldShowToolsDialog, sethouldShowToolsDialog] = React.useState(false);
-
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
     if (schemaData == null) {
@@ -216,43 +213,26 @@ export const ParameterContent = () => {
                 />
                 <FunctionDeclarationDialog
                     jsonData={userToolDefinitions || undefined}
-                    isDisabled={threadStarted}
-                    isOpen={false}
-                    onClose={() => {
-                        setShouldShowFunctionDialog(false);
-                    }}
-                    onSave={({ declaration }) => {
-                        analyticsClient.trackParametersUpdate({
-                            parameterUpdated: 'tool_definitions',
-                        });
-                        updateUserToolDefinitions(declaration);
-                        addSnackMessage({
-                            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-                            type: SnackMessageType.Brief,
-                            message: 'Function Definition Saved',
-                        });
-                    }}
-                />
-                <ToolToggleDialog
                     tools={availableTools}
                     isDisabled={threadStarted}
                     isOpen={shouldShowFunctionDialog}
                     onClose={() => {
                         setShouldShowFunctionDialog(false);
                     }}
-                    onSave={({ declaration }) => {
-                        // analyticsClient.trackParametersUpdate({
-                        // todo
-                        //   parameterUpdated: 'tool_definitions',
-                        // });
-                        // updateUserToolDefinitions(declaration);
+                    onSave={({ declaration, tools }) => {
+                        analyticsClient.trackParametersUpdate({
+                            parameterUpdated: 'tool_definitions',
+                        });
+                        updateUserToolDefinitions(declaration);
+                        updateThreadTools(tools)
                         addSnackMessage({
                             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
                             type: SnackMessageType.Brief,
-                            message: 'Active Tools Saved',
+                            message: 'Tools Saved',
                         });
                     }}
                 />
+               
             </ParametersList>
         </Stack>
     );

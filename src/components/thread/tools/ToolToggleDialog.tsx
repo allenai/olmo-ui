@@ -2,7 +2,7 @@ import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, Checkbox, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { type ReactNode, useEffect } from 'react';
-import { Control, useController, useForm } from 'react-hook-form';
+import { Control, TFieldValues, useController, UseControllerProps, useForm } from 'react-hook-form';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { useColorMode } from '@/components/ColorModeProvider';
@@ -53,6 +53,7 @@ export function ToolToggleDialog({
     });
 
     useEffect(() => {
+        // Can't rely on default, if model changes we need to set the value.
         setValue(
             'tools',
             (tools || []).map((t) => t.name)
@@ -110,24 +111,24 @@ export function ToolToggleDialog({
             }>
             <form id={formId} onSubmit={handleSave}>
                 <p className={labelStyle}>Tools below will be added to the conversation.</p>
-                <ControlledToggleTable control={control} tools={tools} />
+                <ControlledToolToggleTable control={control} tools={tools} />
             </form>
         </Modal>
     );
 }
 
 interface ControlledToggleTableProps {
-    control: Control<DataFields>;
+    controllerProps?: Omit<UseControllerProps<TFieldValues>, 'name'>;
     tools: Model['available_tools'];
 }
 
-export const ControlledToggleTable = ({
-    control,
+export const ControlledToolToggleTable = ({
+    controllerProps,
     tools,
 }: ControlledToggleTableProps): ReactNode => {
     const { field } = useController({
         name: 'tools',
-        control,
+        ...controllerProps,
     });
 
     const handleToggle = (tool: string, isChecked: boolean) => {
@@ -152,7 +153,7 @@ export const ControlledToggleTable = ({
                         onChange={(isChecked) => {
                             handleToggle(tool.name, isChecked);
                         }}
-                        aria-label={`Toggle ${tool} tool`}
+                        aria-label={`Toggle ${tool.name} tool`}
                     />
                     <span style={{ marginLeft: '8px' }}>{tool.name}</span>
                     <span style={{ marginLeft: '8px' }}>{tool.description}</span>

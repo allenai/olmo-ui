@@ -1,12 +1,18 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
+import { Button, IconButton, Modal, ModalActions, Tab, TabPanel } from '@allenai/varnish-ui';
+import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { useForm } from 'react-hook-form';
+import { type ReactElement, useState , useEffect} from 'react';
+import type { Key } from 'react-aria-components';
+import { Control, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
+
+import { ControlledToolToggleTable } from './ToolToggleDialog';
 
 const modalBase = css({
     fontSize: 'sm',
@@ -42,9 +48,11 @@ const modalInput = css({
 
 interface DataFields {
     declaration: string;
+    tools: string[];
 }
 
 export interface FunctionDeclarationDialogProps {
+    tools: Model['available_tools'];
     jsonData?: string;
     isOpen?: boolean;
     isDisabled?: boolean;
@@ -55,6 +63,7 @@ export interface FunctionDeclarationDialogProps {
 
 export function FunctionDeclarationDialog({
     jsonData = '',
+    tools,
     isOpen,
     isDisabled,
     onSave,
@@ -65,9 +74,20 @@ export function FunctionDeclarationDialog({
     const { handleSubmit, reset, setValue, control } = useForm<DataFields>({
         values: {
             declaration: jsonData,
-        },
+            tools: (tools || []).map((t) => t.name),
+                },
         mode: 'onSubmit',
     });
+
+
+    useEffect(() => {
+        // Can't rely on default, if model changes we need to set the value.
+        setValue(
+            'tools',
+            (tools || []).map((t) => t.name)
+        );
+    }, [tools]);
+
 
     const handleSave = handleSubmit((data) => {
         onSave(data);
@@ -118,11 +138,7 @@ export function FunctionDeclarationDialog({
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
-                <p className={labelStyle}>
-                    Enter a JSON array of function declarations the model can call. Each function
-                    should include a name, description, and JSON Schema parameters. Start with an
-                    example below or see the API docs for more.
-                </p>
+                <TabbedContent isDisabled={isDisabled} control={control} tools={[]} />
                 {!isDisabled && (
                     <ModalActions className={exampleButtons} fullWidth>
                         <Button
@@ -143,23 +159,70 @@ export function FunctionDeclarationDialog({
                         </Button>
                     </ModalActions>
                 )}
-                <ControlledTextArea
-                    className={modalInput}
-                    name="declaration"
-                    isDisabled={isDisabled}
-                    minRows={18}
-                    maxRows={18}
-                    controllerProps={{
-                        control,
-                        rules: {
-                            validate: validateToolDefinitions,
-                        },
-                    }}
-                />
             </form>
         </Modal>
     );
 }
+
+type Items = {
+    id: string;
+    header: (props?: React.ComponentProps<typeof Tab>) => ReactElement;
+    content: (props?: React.ComponentProps<typeof TabPanel>) => ReactElement;
+    isDisabled?: boolean;
+};
+
+type TabbedContentProps = {
+    isDisabled?: boolean;
+    control: Control<DataFields>;
+    tools: Model['available_tools'];
+};
+
+const TabbedContent = ({ control, isDisabled, tools }: TabbedContentProps) => {
+    const [tabSelected, setTabSelect] = useState<Key>('user-functions');
+
+    const items: Items[] = [
+        {
+            id: 'user-functions',
+            header: (props) => <varnishUi.Tab {...props}>User Defined Functions</varnishUi.Tab>,
+            content: (props) => (
+                <varnishUi.TabPanel {...props}>
+                    <p className={labelStyle}>
+                        Enter a JSON array of function declarations the model can call. Each
+                        function should include a name, description, and JSON Schema parameters.
+                        Start with an example below or see the API docs for more.
+                    </p>
+                    <ControlledTextArea
+                        className={modalInput}
+                        name="declaration"
+                        isDisabled={isDisabled}
+                        minRows={18}
+                        maxRows={18}
+                        controllerProps={{
+                            control,
+                            rules: {
+                                validate: validateToolDefinitions,
+                            },
+                        }}
+                    />
+                </varnishUi.TabPanel>
+            ),
+        },
+        {
+            id: 'system-functions',
+            header: (props) => <varnishUi.Tab {...props}>System Functions</varnishUi.Tab>,
+            content: (props) => (
+                <varnishUi.TabPanel {...props}>
+                    <p className={labelStyle}>Tools below will be added to the conversation.</p>
+                    <ControlledToolToggleTable controllerProps={{control}} tools={tools} />
+                </varnishUi.TabPanel>
+            ),
+        },
+    ] as const;
+
+    return (
+        <varnishUi.Tabs onSelectionChange={setTabSelect} selectedKey={tabSelected} items={items} />
+    );
+};
 
 const validateToolDefinitions = (value: string) => {
     const definitionSchema = z.strictObject({
