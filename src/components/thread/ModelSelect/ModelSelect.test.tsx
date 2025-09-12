@@ -18,6 +18,7 @@ const createTestModel = (id: string, name: string): Model => ({
     internal: false,
     model_type: 'chat' as const,
     prompt_type: 'text_only' as const,
+    information_url: 'https://allenai.org',
     is_deprecated: false,
     is_visible: true,
 });

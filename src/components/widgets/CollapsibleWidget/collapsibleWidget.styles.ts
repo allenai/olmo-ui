@@ -36,7 +36,6 @@ const collapsibleWidgetRecipe = sva({
             // or replace it...
 
             transitionBehavior: 'allow-discrete',
-            // @ts-expect-error This is an experimental CSS prop, but panda doesn't know it
             interpolateSize: 'allow-keywords',
             overflowY: 'clip',
             transitionProperty: 'content-visibility, height',
