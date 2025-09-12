@@ -192,6 +192,12 @@ type TabbedContentProps = {
     setValue: UseFormSetValue<DataFields>;
 };
 
+const toolNameGrid = css({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '2',
+});
+
 const TabbedContent = ({
     control,
     isDisabled,
@@ -257,7 +263,11 @@ const TabbedContent = ({
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
                     <p className={labelStyle}>Tools below will be added to the conversation.</p>
-                    <ControlledToolToggleTable control={{ control }} tools={tools} />
+                    <ControlledToolToggleTable
+                        isDisabled={isDisabled}
+                        control={{ control }}
+                        tools={tools}
+                    />
                 </varnishUi.TabPanel>
             ),
         },
@@ -271,11 +281,13 @@ const TabbedContent = ({
 interface ControlledToggleTableProps {
     control?: Omit<UseControllerProps<DataFields>, 'name'>;
     tools: Model['available_tools'];
+    isDisabled?: boolean;
 }
 
 export const ControlledToolToggleTable = ({
     control,
     tools,
+    isDisabled,
 }: ControlledToggleTableProps): ReactNode => {
     const { field } = useController({
         name: 'tools',
@@ -296,21 +308,18 @@ export const ControlledToolToggleTable = ({
     };
 
     return (
-        <div>
+        <div className={toolNameGrid}>
             {(tools || []).map((tool) => (
-                <div
+                <Checkbox
                     key={tool.name}
-                    style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                    <Checkbox
-                        isSelected={field.value.includes(tool.name) || false}
-                        onChange={(isChecked) => {
-                            handleToggle(tool.name, isChecked);
-                        }}
-                        aria-label={`Toggle ${tool.name} tool`}
-                    />
-                    <span style={{ marginLeft: '8px' }}>{tool.name}</span>
-                    <span style={{ marginLeft: '8px' }}>{tool.description}</span>
-                </div>
+                    isDisabled={isDisabled}
+                    isSelected={field.value.includes(tool.name) || false}
+                    onChange={(isChecked) => {
+                        handleToggle(tool.name, isChecked);
+                    }}
+                    aria-label={`Toggle ${tool.name} tool`}>
+                    {tool.name}
+                </Checkbox>
             ))}
         </div>
     );

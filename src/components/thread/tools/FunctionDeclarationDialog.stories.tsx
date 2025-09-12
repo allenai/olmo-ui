@@ -31,6 +31,22 @@ const jsonData = `[
   }
 ]`;
 
+const selectedTools = ['get_random_number'];
+
+const availableTools = [
+    { name: 'get_random_number', description: 'get a random number.' },
+    {
+        name: 'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
+        description:
+            'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
+    },
+    {
+        name: 'longnamefunctionthatasdfasdfasdfasdfasdfadsfasdfasdfasdfsadfasdfasdfasdfasfasdfdsafasdfasdfasdfsadfis very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
+        description:
+            'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
+    },
+];
+
 export const Default: Story = {
     args: {
         isOpen: true,
@@ -38,8 +54,8 @@ export const Default: Story = {
         onSave: fn(),
         onReset: fn(),
         jsonData,
-        selectedTools: [],
-        availableTools: [],
+        selectedTools,
+        availableTools,
     },
 };
 
@@ -51,7 +67,7 @@ export const Disabled: Story = {
         onReset: fn(),
         jsonData,
         selectedTools: [],
-        availableTools: [],
+        availableTools,
     },
 };
 
@@ -85,7 +101,7 @@ export const WithTrigger: Story = {
         onSave: fn(),
         onReset: fn(),
         jsonData,
-        availableTools: [],
-        selectedTools: [],
+        availableTools,
+        selectedTools,
     },
 };
