@@ -16,6 +16,7 @@ const fakeModelsResponse = [
         is_visible: false,
         prompt_type: 'text_only',
         internal: false,
+        infini_gram_index: 'olmoe-0125-1b-7b',
     },
     {
         description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
@@ -29,6 +30,7 @@ const fakeModelsResponse = [
         is_visible: true,
         prompt_type: 'text_only',
         internal: false,
+        infini_gram_index: 'olmoe-0125-1b-7b',
     },
     {
         description: "AI2's 7B model following the 'peteish' thread of improvements.",
@@ -40,6 +42,7 @@ const fakeModelsResponse = [
         is_visible: true,
         prompt_type: 'text_only',
         internal: false,
+        infini_gram_index: 'olmoe-0125-1b-7b',
     },
     {
         description: 'Molmo',
@@ -53,6 +56,7 @@ const fakeModelsResponse = [
         is_visible: true,
         prompt_type: 'multi_modal',
         internal: false,
+        infini_gram_index: 'olmoe-0125-1b-7b',
     },
 ] satisfies Array<Model>;
 
@@ -77,6 +81,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         availability: 'public',
         canCallTools: false,
         canThink: false,
+        infiniGramIndex: 'olmoe-0125-1b-7b',
     },
     {
         availableTime: null,
@@ -98,6 +103,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         availability: 'public',
         canCallTools: false,
         canThink: false,
+        infiniGramIndex: 'olmoe-0125-1b-7b',
     },
     {
         availableTime: null,
@@ -119,6 +125,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         availability: 'public',
         canCallTools: false,
         canThink: false,
+        infiniGramIndex: 'olmoe-0125-1b-7b',
     },
     {
         availableTime: null,
@@ -140,6 +147,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         availability: 'public',
         canCallTools: false,
         canThink: false,
+        infiniGramIndex: 'olmoe-0125-1b-7b',
     },
     {
         acceptedFileTypes: ['image/*', 'application/pdf'],
@@ -166,6 +174,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         availability: 'public',
         canCallTools: false,
         canThink: false,
+        infiniGramIndex: 'olmoe-0125-1b-7b',
     },
 ];
 

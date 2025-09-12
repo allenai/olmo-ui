@@ -59,6 +59,7 @@ export const OlmoTraceButton = ({
     const openDrawer = useAppContext((state) => state.openDrawer);
 
     const model = useSelectedModel();
+
     const selectedModelId = model?.id;
 
     const isDesktop = useDesktopOrUp();
@@ -70,7 +71,7 @@ export const OlmoTraceButton = ({
         isLastButton && isHintVisible
     );
 
-    if (!isCorpusLinkEnabled || isOnComparisonPage) {
+    if (!isCorpusLinkEnabled || isOnComparisonPage || !model?.infini_gram_index) {
         return null;
     }
 
