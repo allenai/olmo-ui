@@ -38,6 +38,8 @@ export const Default: Story = {
         onSave: fn(),
         onReset: fn(),
         jsonData,
+        selectedTools: [],
+        availableTools: [],
     },
 };
 
@@ -48,6 +50,8 @@ export const Disabled: Story = {
         onSave: fn(),
         onReset: fn(),
         jsonData,
+        selectedTools: [],
+        availableTools: [],
     },
 };
 
@@ -81,5 +85,7 @@ export const WithTrigger: Story = {
         onSave: fn(),
         onReset: fn(),
         jsonData,
+        availableTools: [],
+        selectedTools: [],
     },
 };
