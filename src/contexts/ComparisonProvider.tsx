@@ -40,6 +40,7 @@ import {
     useStreamEvent,
 } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
+import { getUserToolDefinitionsFromThread } from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -91,18 +92,6 @@ const areAllModelsCompatible = (models: Model[]): boolean => {
     return true;
 };
 
-const getUserToolDefinitionsFromThreads = (threadId: string | undefined) => {
-    if (!threadId) {
-        return;
-    }
-
-    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
-    const userToolDefs = toolDefs
-        ?.filter((def) => def.toolSource === 'user_defined')
-        .map(({ toolSource, ...def }) => def); // Remove toolSource property;
-    return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
-};
-
 // TODO: create more nuanced state to avoid unnecessary re-renders
 const ComparisonProviderContent = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
@@ -127,7 +116,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
 
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
-        getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1])
+        getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1])
     );
     const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
         userToolDefinitions !== undefined
@@ -195,7 +184,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     }, [threadIds]);
 
     useEffect(() => {
-        setUserToolDefinitions(getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1]));
+        setUserToolDefinitions(getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1]));
         if (!threadIds) {
             // reset on new thread
             setIsToolCallingEnabled(false);
@@ -281,6 +270,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 threadViewId,
                 inferenceOpts,
                 userToolDefinitions,
+                [],
+                false,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -411,6 +402,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             placeholderText,
             availableModels: models,
             availableTools: [],
+            selectedTools: [],
+            updateSelectedTools: () => {},
             areFilesAllowed,
             canPauseThread: streamMessage.canPause,
             isLimitReached,

@@ -14,6 +14,7 @@ import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
 import type { Key } from 'react-aria-components';
 import {
     Control,
+    Resolver,
     useController,
     type UseControllerProps,
     useForm,
@@ -62,7 +63,6 @@ interface DataFields {
     declaration: string;
     tools: string[];
 }
-
 export interface FunctionDeclarationDialogProps {
     tools: Model['available_tools'];
     jsonData?: string;
@@ -74,7 +74,7 @@ export interface FunctionDeclarationDialogProps {
 }
 
 export function FunctionDeclarationDialog({
-    jsonData = '',
+    jsonData = '[]',
     tools,
     isOpen,
     isDisabled,
@@ -83,12 +83,28 @@ export function FunctionDeclarationDialog({
     onClose,
 }: FunctionDeclarationDialogProps) {
     const { colorMode } = useColorMode();
+    const [tabSelected, setTabSelect] = useState<Key>('user-functions');
+
+    const resolver: Resolver<DataFields> = async (data) => {
+        const validJson = validateToolDefinitions(data.declaration);
+        if (validJson === true) return { values: data, errors: {} };
+
+        setTabSelect('user-functions');
+        return {
+            values: {},
+            errors: {
+                declaration: { type: 'value', message: validJson },
+            },
+        };
+    };
+
     const { handleSubmit, reset, setValue, control } = useForm<DataFields>({
         values: {
             declaration: jsonData,
             tools: (tools || []).map((t) => t.name),
         },
         mode: 'onSubmit',
+        resolver,
     });
 
     useEffect(() => {
@@ -149,6 +165,8 @@ export function FunctionDeclarationDialog({
             }>
             <form id={formId} onSubmit={handleSave}>
                 <TabbedContent
+                    tabSelected={tabSelected}
+                    setTabSelect={setTabSelect}
                     isDisabled={isDisabled}
                     control={control}
                     tools={tools}
@@ -167,15 +185,22 @@ type Items = {
 };
 
 type TabbedContentProps = {
+    tabSelected: Key;
+    setTabSelect: (t: Key) => void;
     isDisabled?: boolean;
     control: Control<DataFields>;
     tools: Model['available_tools'];
     setValue: UseFormSetValue<DataFields>;
 };
 
-const TabbedContent = ({ control, isDisabled, tools, setValue }: TabbedContentProps) => {
-    const [tabSelected, setTabSelect] = useState<Key>('user-functions');
-
+const TabbedContent = ({
+    control,
+    isDisabled,
+    tools,
+    setValue,
+    setTabSelect,
+    tabSelected,
+}: TabbedContentProps) => {
     const items: Items[] = [
         {
             id: 'user-functions',

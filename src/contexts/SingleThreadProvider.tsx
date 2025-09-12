@@ -33,6 +33,10 @@ import {
     useStreamEvent,
 } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
+import {
+    getNonUserToolsFromThread,
+    getUserToolDefinitionsFromThread,
+} from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -63,28 +67,6 @@ const shouldShowCompatibilityWarning = (
     );
 };
 
-const getNonUserToolsFromThread = (threadId: string | undefined) => {
-    if (!threadId) {
-        return [];
-    }
-    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || [];
-    const userToolDefs = toolDefs.filter((def) => def.toolSource !== 'user_defined');
-    return userToolDefs;
-};
-
-const getUserToolDefinitionsFromThread = (threadId: string | undefined) => {
-    if (!threadId) {
-        return;
-    }
-
-    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
-    const userToolDefs = toolDefs
-        ?.filter((def) => def.toolSource === 'user_defined')
-        .map(({ toolSource, ...def }) => def); // Remove toolSource property
-
-    return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
-};
-
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
 
@@ -97,7 +79,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     );
 
     const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
-        userToolDefinitions !== undefined || selectedTools.length > 0 
+        userToolDefinitions !== undefined || selectedTools.length > 0
     );
 
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
