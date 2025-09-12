@@ -47,6 +47,7 @@ type MultiModalFormValues = Partial<
 >;
 
 const mimeTypeRegex = /^[\w.-]+\/[\w+.-\\*]+$/;
+const urlRegex = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/;
 
 const MultiModalFields = (): ReactNode => {
     const formContext = useFormContext<MultiModalFormValues>();
@@ -162,6 +163,7 @@ type BaseModelFormFieldValues = {
         | 'familyId'
         | 'host'
         | 'id'
+        | 'informationUrl'
         | 'modelIdOnHost'
         | 'modelType'
         | 'name'
@@ -236,6 +238,24 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     fullWidth
                     controllerProps={{ rules: { required: true } }}
                 />
+
+                <ControlledInput
+                    name="informationUrl"
+                    label="Information URL"
+                    description="The link to information about this model."
+                    className={inputSizing}
+                    fullWidth
+                    controllerProps={{
+                        rules: {
+                            required: false,
+                            pattern: {
+                                value: urlRegex,
+                                message: 'Please enter a valid URL.',
+                            },
+                        },
+                    }}
+                />
+
                 <ExpandableTextArea
                     name="description"
                     label="Description"
@@ -243,6 +263,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                 />
 
                 <ExpandableTextArea name="defaultSystemPrompt" label="Default System Prompt" />
+
                 <ControlledSelect name="modelType" label="Model type">
                     <SelectListBoxItem text="Chat" id="chat" />
                     <SelectListBoxItem text="Base" id="base" />
