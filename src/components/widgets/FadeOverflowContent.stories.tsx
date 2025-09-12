@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 
 import { FadeOverflowContent } from './FadeOverflowContent';
 
@@ -35,9 +35,17 @@ export const Default: Story = {
 
 export const SizeConstrained: Story = {
     args: {
-        // children: lipsum,
         style: {
             height: '100px',
         },
+    },
+};
+
+export const StickToBottom: Story = {
+    args: {
+        style: {
+            height: '100px',
+        },
+        shouldStickToBottom: true,
     },
 };

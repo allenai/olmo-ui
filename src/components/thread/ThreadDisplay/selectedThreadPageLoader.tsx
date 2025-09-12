@@ -52,11 +52,6 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
         return null;
     }
 
-    const loadedMessage = queryClient.getQueryData(threadOptions(params.id).queryKey);
-    if (loadedMessage != null) {
-        return null;
-    }
-
     // Clear stream errors only on fresh thread load
     clearAllStreamErrors();
     // get the latest state of the selectedThread if we're changing to a different thread

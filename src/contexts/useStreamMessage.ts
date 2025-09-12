@@ -12,11 +12,10 @@ import { InferenceOpts } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
-import { StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
 import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
-import { StreamingMessageResponse } from './stream-types';
+import type { StreamingMessageResponse, StreamMessageRequest } from './stream-types';
 
 export interface ThreadStreamMutationVariables {
     request: StreamMessageRequest;
@@ -24,6 +23,7 @@ export interface ThreadStreamMutationVariables {
     model: Model;
     thread?: Thread;
     inferenceOpts: RequestInferenceOpts;
+    toolDefinitions: CreateMessageRequest['toolDefinitions'];
 }
 
 interface StreamCallbacks {
@@ -129,12 +129,14 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         // messageParent,
         thread, // maybe this is just parentId? we don't need the whole thread
         inferenceOpts,
+        toolDefinitions,
     }: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
         thread?: Thread;
         inferenceOpts: RequestInferenceOpts;
+        toolDefinitions: CreateMessageRequest['toolDefinitions'];
     }) => {
         startStream(threadViewId);
 
@@ -149,7 +151,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 request.parent = lastMessageId;
             }
 
-            const { content, captchaToken, parent, files } = request;
+            const { content, captchaToken, parent, files, role = 'user', toolCallId } = request;
 
             // Refer to the "TEMP HACK" comment above
             const adjustedInferenceOpts: RequestInferenceOpts = {
@@ -166,11 +168,14 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     parent,
                     host: model.host,
                     model: model.id,
+                    role,
+                    toolCallId,
                     // Apply adjusted inference options with model-specific overrides
                     temperature: adjustedInferenceOpts.temperature ?? undefined,
                     topP: adjustedInferenceOpts.top_p ?? undefined,
                     maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
                     stop: adjustedInferenceOpts.stop ?? undefined,
+                    toolDefinitions: toolDefinitions ?? undefined,
                     systemPrompt: adjustedInferenceOpts.system_prompt ?? undefined,
                 },
                 bodySerializer: (body) => {

@@ -9,8 +9,7 @@ import { useTrackPageView } from '@/analytics/useTrackPageView';
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 
 import { AppLayout } from './AppLayout';
-import { TermsAndConditionsModal } from './TermsAndConditionsModal';
-import { TermsAndConditionsProvider } from './TermsAndConditionsModalContext';
+import { TermsAndDataCollectionModal } from './TermsAndDataCollectionModal';
 
 export const NewApp = () => {
     useTrackPageView();
@@ -22,15 +21,14 @@ export const NewApp = () => {
 
     return (
         <AppLayout>
-            {process.env.IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
+            {process.env.VITE_IS_ANALYTICS_ENABLED === 'true' && <Analytics />}
             {shouldShowTermsAndConditionsModal && (
-                <TermsAndConditionsProvider>
-                    <TermsAndConditionsModal
-                        initialTermsAndConditionsValue={
-                            userAuthInfo.userInfo?.hasAcceptedTermsAndConditions
-                        }
-                    />
-                </TermsAndConditionsProvider>
+                <TermsAndDataCollectionModal
+                    initialTermsAndConditionsValue={
+                        userAuthInfo.userInfo?.hasAcceptedTermsAndConditions
+                    }
+                    initialDataCollectionValue={userAuthInfo.userInfo?.hasAcceptedDataCollection}
+                />
             )}
             <Outlet />
         </AppLayout>

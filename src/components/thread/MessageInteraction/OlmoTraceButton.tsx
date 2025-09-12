@@ -59,6 +59,7 @@ export const OlmoTraceButton = ({
     const openDrawer = useAppContext((state) => state.openDrawer);
 
     const model = useSelectedModel();
+
     const selectedModelId = model?.id;
 
     const isDesktop = useDesktopOrUp();
@@ -70,7 +71,7 @@ export const OlmoTraceButton = ({
         isLastButton && isHintVisible
     );
 
-    if (!isCorpusLinkEnabled || isOnComparisonPage) {
+    if (!isCorpusLinkEnabled || isOnComparisonPage || !model?.infini_gram_index) {
         return null;
     }
 
@@ -123,7 +124,6 @@ export const OlmoTraceButton = ({
                       }
                     : undefined
             }
-            buttonProps={{ sx: { padding: 1 } }}
         />
     );
 };
@@ -143,5 +143,6 @@ const OlmotraceHint = ({ onClose }: { onClose: () => void }) => (
     <DismissibleHint
         onClose={onClose}
         content="Curious about how this response matches the model's training data? Click this to dig deeper."
+        sx={{ maxWidth: 250 }}
     />
 );

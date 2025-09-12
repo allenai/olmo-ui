@@ -466,6 +466,28 @@ export type components = {
             /** Permissions */
             readonly permissions?: readonly string[];
         };
+        /**
+         * AvailableInfiniGramIndexId
+         * @enum {string}
+         */
+        readonly AvailableInfiniGramIndexId:
+            | 'olmoe-0125-1b-7b'
+            | 'olmo-2-0325-32b'
+            | 'olmo-2-1124-13b'
+            | 'pileval-llama'
+            | 'tulu-3-8b'
+            | 'tulu-3-70b'
+            | 'tulu-3-405b';
+        /** AvailableTool */
+        readonly AvailableTool: {
+            /**
+             * Description
+             * @default null
+             */
+            readonly description?: string | null;
+            /** Name */
+            readonly name: string;
+        };
         /** CreateMessageRequest */
         readonly CreateMessageRequest: {
             /**
@@ -522,6 +544,16 @@ export type components = {
              */
             readonly template?: string | null;
             /**
+             * Toolcallid
+             * @default null
+             */
+            readonly toolCallId?: string | null;
+            /**
+             * Tooldefinitions
+             * @default null
+             */
+            readonly toolDefinitions?: string | null;
+            /**
              * Topp
              * @default 1
              */
@@ -576,6 +608,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -648,6 +682,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -780,6 +816,11 @@ export type components = {
              * @default null
              */
             readonly toolCalls?: readonly components['schemas']['ToolCall'][] | null;
+            /**
+             * Tooldefinitions
+             * @default null
+             */
+            readonly toolDefinitions?: readonly components['schemas']['ToolDefinition'][] | null;
         };
         /** GetAttributionRequest */
         readonly GetAttributionRequest: {
@@ -936,6 +977,21 @@ export type components = {
              * @default false
              */
             readonly accepts_files?: boolean;
+            /**
+             * Available Tools
+             * @default null
+             */
+            readonly available_tools?: readonly components['schemas']['AvailableTool'][] | null;
+            /**
+             * Can Call Tools
+             * @default false
+             */
+            readonly can_call_tools?: boolean;
+            /**
+             * Can Think
+             * @default false
+             */
+            readonly can_think?: boolean;
             /** Description */
             readonly description: string;
             /**
@@ -951,6 +1007,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infini_gram_index?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /** Internal */
             readonly internal: boolean;
             /** Is Deprecated */
@@ -1026,7 +1084,7 @@ export type components = {
             readonly accepted_file_types: readonly string[];
             /**
              * Accepts Files
-             * @default false
+             * @default true
              */
             readonly accepts_files?: boolean;
             /**
@@ -1035,6 +1093,21 @@ export type components = {
              * @default false
              */
             readonly allow_files_in_followups?: boolean;
+            /**
+             * Available Tools
+             * @default null
+             */
+            readonly available_tools?: readonly components['schemas']['AvailableTool'][] | null;
+            /**
+             * Can Call Tools
+             * @default false
+             */
+            readonly can_call_tools?: boolean;
+            /**
+             * Can Think
+             * @default false
+             */
+            readonly can_think?: boolean;
             /** Description */
             readonly description: string;
             /**
@@ -1050,6 +1123,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infini_gram_index?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /** Internal */
             readonly internal: boolean;
             /** Is Deprecated */
@@ -1136,6 +1211,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /** Internal */
             readonly internal: boolean;
             /**
@@ -1271,6 +1348,8 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** Id */
             readonly id: string;
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /** Internal */
             readonly internal: boolean;
             /** Modelidonhost */
@@ -1331,6 +1410,7 @@ export type components = {
             readonly toolCallId: string;
             /** Toolname */
             readonly toolName: string;
+            readonly toolSource: components['schemas']['ToolSource'];
         };
         /** ToolCallChunk */
         readonly ToolCallChunk: {
@@ -1350,12 +1430,33 @@ export type components = {
             readonly toolCallId: string;
             /** Toolname */
             readonly toolName: string;
+            readonly toolSource: components['schemas']['ToolSource'] | null;
             /**
              * Type
              * @constant
              */
             readonly type: 'toolCall';
         };
+        /** ToolDefinition */
+        readonly ToolDefinition: {
+            /** Description */
+            readonly description: string;
+            /** Name */
+            readonly name: string;
+            /**
+             * Parameters
+             * @default null
+             */
+            readonly parameters?: {
+                readonly [key: string]: unknown;
+            } | null;
+            readonly toolSource: components['schemas']['ToolSource'];
+        };
+        /**
+         * ToolSource
+         * @enum {string}
+         */
+        readonly ToolSource: 'internal' | 'user_defined' | 'model_context_protocol';
         /** UpdateMultiModalModelConfigRequest */
         readonly UpdateMultiModalModelConfigRequest: {
             /** Acceptedfiletypes */
@@ -1403,6 +1504,8 @@ export type components = {
              */
             readonly familyName?: string | null;
             readonly host: components['schemas']['ModelHost'];
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -1473,6 +1576,8 @@ export type components = {
              */
             readonly familyName?: string | null;
             readonly host: components['schemas']['ModelHost'];
+            /** @default null */
+            readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
              * Internal
              * @default true
@@ -1498,6 +1603,8 @@ export type components = {
 };
 export type SchemaAdminModelResponse = components['schemas']['AdminModelResponse'];
 export type SchemaAuthenticatedClient = components['schemas']['AuthenticatedClient'];
+export type SchemaAvailableInfiniGramIndexId = components['schemas']['AvailableInfiniGramIndexId'];
+export type SchemaAvailableTool = components['schemas']['AvailableTool'];
 export type SchemaCreateMessageRequest = components['schemas']['CreateMessageRequest'];
 export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
@@ -1540,9 +1647,92 @@ export type SchemaThinkingChunk = components['schemas']['ThinkingChunk'];
 export type SchemaThread = components['schemas']['Thread'];
 export type SchemaToolCall = components['schemas']['ToolCall'];
 export type SchemaToolCallChunk = components['schemas']['ToolCallChunk'];
+export type SchemaToolDefinition = components['schemas']['ToolDefinition'];
+export type SchemaToolSource = components['schemas']['ToolSource'];
 export type SchemaUpdateMultiModalModelConfigRequest =
     components['schemas']['UpdateMultiModalModelConfigRequest'];
 export type SchemaUpdateTextOnlyModelConfigRequest =
     components['schemas']['UpdateTextOnlyModelConfigRequest'];
 export type $defs = Record<string, never>;
+type ReadonlyArray<T> = [Exclude<T, undefined>] extends [any[]]
+    ? Readonly<Exclude<T, undefined>>
+    : Readonly<Exclude<T, undefined>[]>;
+export const availableInfiniGramIndexIdValues: ReadonlyArray<
+    components['schemas']['AvailableInfiniGramIndexId']
+> = [
+    'olmoe-0125-1b-7b',
+    'olmo-2-0325-32b',
+    'olmo-2-1124-13b',
+    'pileval-llama',
+    'tulu-3-8b',
+    'tulu-3-70b',
+    'tulu-3-405b',
+];
+export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['CreateMultiModalModelConfigRequest']['promptType']
+> = ['files_only', 'multi_modal'];
+export const createTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['CreateTextOnlyModelConfigRequest']['promptType']
+> = ['text_only'];
+export const fileRequiredToPromptOptionValues: ReadonlyArray<
+    components['schemas']['FileRequiredToPromptOption']
+> = ['first_message', 'all_messages', 'no_requirement'];
+export const finishReasonValues: ReadonlyArray<components['schemas']['FinishReason']> = [
+    'unclosed stream',
+    'length',
+    'stop',
+    'aborted',
+    'model overloaded',
+    'bad connection',
+    'value error',
+    'unknown',
+];
+export const modelPrompt_typeValues: ReadonlyArray<components['schemas']['Model']['prompt_type']> =
+    ['text_only'];
+export const modelAvailabilityValues: ReadonlyArray<components['schemas']['ModelAvailability']> = [
+    'public',
+    'internal',
+    'prerelease',
+];
+export const modelHostValues: ReadonlyArray<components['schemas']['ModelHost']> = [
+    'inferd',
+    'modal',
+    'beaker_queues',
+    'cirrascale_backend',
+    'cirrascale',
+    'modal_openai',
+    'test_backend',
+];
+export const modelTypeValues: ReadonlyArray<components['schemas']['ModelType']> = ['base', 'chat'];
+export const multiModalModelPrompt_typeValues: ReadonlyArray<
+    components['schemas']['MultiModalModel']['prompt_type']
+> = ['files_only', 'multi_modal'];
+export const multiModalResponseModelPromptTypeValues: ReadonlyArray<
+    components['schemas']['MultiModalResponseModel']['promptType']
+> = ['files_only', 'multi_modal'];
+export const ratingValues: ReadonlyArray<components['schemas']['Rating']> = [-1, 0, 1];
+export const roleValues: ReadonlyArray<components['schemas']['Role']> = [
+    'user',
+    'assistant',
+    'system',
+    'tool_call_result',
+];
+export const sortDirectionValues: ReadonlyArray<components['schemas']['SortDirection']> = [
+    'ASC',
+    'DESC',
+];
+export const textOnlyResponseModelPromptTypeValues: ReadonlyArray<
+    components['schemas']['TextOnlyResponseModel']['promptType']
+> = ['text_only'];
+export const toolSourceValues: ReadonlyArray<components['schemas']['ToolSource']> = [
+    'internal',
+    'user_defined',
+    'model_context_protocol',
+];
+export const updateMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['UpdateMultiModalModelConfigRequest']['promptType']
+> = ['files_only', 'multi_modal'];
+export const updateTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
+    components['schemas']['UpdateTextOnlyModelConfigRequest']['promptType']
+> = ['text_only'];
 export type operations = Record<string, never>;

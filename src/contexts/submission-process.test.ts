@@ -36,11 +36,11 @@ describe('SingleThreadSubmission', () => {
     describe('setupRecaptcha', () => {
         beforeEach(() => {
             vi.clearAllMocks();
-            delete process.env.IS_RECAPTCHA_ENABLED;
+            vi.unstubAllEnvs();
         });
 
         it('executes recaptcha when enabled', async () => {
-            process.env.IS_RECAPTCHA_ENABLED = 'true';
+            vi.stubEnv('VITE_IS_RECAPTCHA_ENABLED', 'true');
             mockExecuteRecaptcha.mockResolvedValue('token');
 
             const result = await setupRecaptcha(mockExecuteRecaptcha);
@@ -50,7 +50,7 @@ describe('SingleThreadSubmission', () => {
         });
 
         it('returns undefined when disabled', async () => {
-            process.env.IS_RECAPTCHA_ENABLED = 'false';
+            vi.stubEnv('VITE_IS_RECAPTCHA_ENABLED', 'false');
 
             expect(await setupRecaptcha(mockExecuteRecaptcha)).toBeUndefined();
             expect(mockExecuteRecaptcha).not.toHaveBeenCalled();
@@ -62,13 +62,13 @@ describe('SingleThreadSubmission', () => {
         });
 
         it('returns undefined when executeRecaptcha is null', async () => {
-            process.env.IS_RECAPTCHA_ENABLED = 'true';
+            vi.stubEnv('VITE_IS_RECAPTCHA_ENABLED', 'true');
 
             expect(await setupRecaptcha(null)).toBeUndefined();
         });
 
         it('propagates execution errors', async () => {
-            process.env.IS_RECAPTCHA_ENABLED = 'true';
+            vi.stubEnv('VITE_IS_RECAPTCHA_ENABLED', 'true');
             mockExecuteRecaptcha.mockRejectedValue(new Error('Failed'));
 
             await expect(setupRecaptcha(mockExecuteRecaptcha)).rejects.toThrow('Failed');

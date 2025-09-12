@@ -1,24 +1,27 @@
-import { LoginOutlined as LoginIcon } from '@mui/icons-material';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import { Button, Stack, Typography } from '@mui/material';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { LoginOutlined as LoginIcon, WarningAmberRounded } from '@mui/icons-material';
+import { Button, styled, Typography } from '@mui/material';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
 import { AppLayout } from '@/components/AppLayout';
-import { DESKTOP_LAYOUT_BREAKPOINT } from '@/constants';
+import { useColorMode } from '@/components/ColorModeProvider';
 import { links } from '@/Links';
 
-const hasStatusText = (error: unknown): error is { statusText: string } => {
-    return 'statusText' in (error as object);
+const HANDLED_STATUSES = {
+    404: 'We cannot find that page, if you typed the URL, check the spelling.',
+    401: "You aren't authorized to see this page.",
+    503: 'It’s not you, it’s us. Looks like our API is down.',
+} as const;
+
+const isHandledStatus = (status: number): status is keyof typeof HANDLED_STATUSES => {
+    return status in HANDLED_STATUSES;
 };
 const hasStatus = (error: unknown): error is { status: number } => {
     return 'status' in (error as object);
 };
-const hasMessage = (error: unknown): error is { message: string } => {
-    return 'message' in (error as object);
-};
-const hasStack = (error: unknown): error is { stack: string } => {
-    return 'stack' in (error as object);
+const hasStatusText = (error: unknown): error is { statusText: string } => {
+    return 'statusText' in (error as object);
 };
 
 const isLoginError = (error: unknown): error is LoginError => {
@@ -32,76 +35,67 @@ const isLoginError = (error: unknown): error is LoginError => {
     );
 };
 
+const errorPageLayoutClassName = css({
+    display: 'flex',
+    gridArea: 'content',
+    maxWidth: '[460px]',
+    marginTop: '[32dvh]',
+    marginInline: 'auto',
+    flexDirection: 'column',
+    textAlign: 'center',
+    gap: '5',
+    padding: '5',
+    fontWeight: 'medium',
+});
+
 export const ErrorPage = () => {
     const error = useRouteError();
+    const { colorMode } = useColorMode();
+    const colorModeColor = colorMode === 'light' ? 'primary' : 'secondary';
 
-    let statusMessage;
-    let statusText;
-    let message;
+    let statusMessage = 'It’s not you, it’s us. If the page doesn’t load, try hitting refresh.';
+    let loginButton;
+
+    if (hasStatus(error) && isHandledStatus(error.status)) {
+        statusMessage = HANDLED_STATUSES[error.status];
+    } else if (hasStatusText(error)) {
+        // This is more specific than `error.message`
+        statusMessage = error.statusText;
+    }
 
     if (isLoginError(error)) {
-        console.log(error);
-        statusMessage =
-            'Something went wrong when logging in. Please try again or try another page.';
-        statusText = (
+        loginButton = (
             <Button
                 endIcon={<LoginIcon />}
                 href={links.login(error.data.redirectTo)}
-                variant="contained">
+                variant="contained"
+                color={colorModeColor}>
                 Log in
             </Button>
         );
-    } else {
-        if (hasStatus(error)) {
-            if (error.status === 404) {
-                statusMessage = 'We cannot find that page';
-            } else if (error.status === 401) {
-                statusMessage = "You aren't authorized to see this";
-            } else if (error.status === 503) {
-                statusMessage = 'Looks like our API is down';
-            }
-        }
-
-        if (hasStatusText(error)) {
-            statusText = error.statusText;
-        }
-
-        if (hasMessage(error)) {
-            message = error.message;
-        }
     }
 
-    console.log(statusMessage, statusText, error);
+    // log complete error and message
+    console.debug(statusMessage, error);
 
     return (
         <AppLayout>
-            <Stack
-                gap={2}
-                gridArea="content"
-                bgcolor="background.paper"
-                paddingInline={{ xs: 2, [DESKTOP_LAYOUT_BREAKPOINT]: 0 }}>
+            <div className={errorPageLayoutClassName}>
                 <Typography variant="h3" component="h1">
-                    <SentimentVeryDissatisfiedIcon sx={{ fontSize: 150 }} />
-                    <br />
-                    Sorry, we have hit a snag
+                    <Warning />
+                    Well this is embarrassing.
                 </Typography>
-                {statusMessage != null ? (
-                    <Typography variant="h4" component="p">
-                        {statusMessage}
-                    </Typography>
-                ) : null}
-                {statusText != null ? (
-                    <Typography variant="h4" component="p">
-                        {statusText}
-                    </Typography>
-                ) : null}
-                {message != null ? (
-                    <Typography variant="h4" component="p">
-                        {message}
-                    </Typography>
-                ) : null}
-                {hasStack(error) ? <Typography>{error.stack}</Typography> : null}
-            </Stack>
+                <p>{statusMessage}</p>
+                {loginButton ? <p>{loginButton}</p> : null}
+            </div>
         </AppLayout>
     );
 };
+
+const Warning = styled(WarningAmberRounded)(({ theme }) => ({
+    fontSize: '4.5rem',
+    display: 'block',
+    marginInline: 'auto',
+    marginBottom: theme.spacing(2),
+    opacity: '0.3',
+}));

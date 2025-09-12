@@ -45,6 +45,11 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
         if (toolCallToUpdate != null) {
             toolCallToUpdate.toolName += chunk.toolName;
 
+            // toolSource could not exist yet
+            if (chunk.toolSource != null) {
+                toolCallToUpdate.toolSource = chunk.toolSource;
+            }
+
             if (typeof chunk.args === 'object') {
                 // Assuming it's a finished object if we get an object from the API
                 toolCallToUpdate.args = chunk.args;
@@ -55,12 +60,17 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
                 }
             }
         } else {
-            const toolCallToAdd: SchemaToolCall = {
+            // toolSource maybe null as we recieve chunks
+            // so we are forcing the type, for now
+            // we could either add to the toolSource enum `unknown`
+            // or the api could defer sending the toolCall until it knows for sure
+            const toolCallToAdd: Partial<SchemaToolCall> = {
                 toolName: chunk.toolName,
                 toolCallId: chunk.toolCallId,
+                toolSource: chunk.toolSource ?? undefined,
                 args: chunk.args,
             };
-            messageToUpdate.toolCalls.push(toolCallToAdd);
+            messageToUpdate.toolCalls.push(toolCallToAdd as SchemaToolCall);
         }
     }
 );

@@ -91,6 +91,18 @@ const areAllModelsCompatible = (models: Model[]): boolean => {
     return true;
 };
 
+const getUserToolDefinitionsFromThreads = (threadId: string | undefined) => {
+    if (!threadId) {
+        return;
+    }
+
+    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
+    const userToolDefs = toolDefs
+        ?.filter((def) => def.toolSource === 'user_defined')
+        .map(({ toolSource, ...def }) => def); // Remove toolSource property;
+    return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
+};
+
 // TODO: create more nuanced state to avoid unnecessary re-renders
 const ComparisonProviderContent = ({ children, initialState }: ComparisonProviderProps) => {
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
@@ -113,6 +125,13 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
     const streamErrors = useAppContext((state) => state.streamErrors);
     const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
+
+    const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
+        getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1])
+    );
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
+        userToolDefinitions !== undefined
+    );
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -138,6 +157,19 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         return threadIds.length === 0;
     }, [threadIds]);
 
+    const canCallTools = useMemo(() => {
+        const modelsWithTools = Object.values(comparisonState)
+            .map((state) => state.modelId)
+            .filter(Boolean)
+            .map((modelId) => {
+                const model = models.find((m) => m.id === modelId);
+                return model?.can_call_tools;
+            })
+            .filter(Boolean);
+
+        return modelsWithTools.length > 1;
+    }, [comparisonState, models]);
+
     const placeholderText = useMemo(() => {
         const modelNames = Object.values(comparisonState)
             .map((state) => state.modelId)
@@ -160,6 +192,14 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const isShareReady = useMemo(() => {
         return threadIds.length > 0 && threadIds.every((threadId) => threadId != null);
+    }, [threadIds]);
+
+    useEffect(() => {
+        setUserToolDefinitions(getUserToolDefinitionsFromThreads(threadIds[0] || threadIds[1]));
+        if (!threadIds) {
+            // reset on new thread
+            setIsToolCallingEnabled(false);
+        }
     }, [threadIds]);
 
     // Sync local state with any necessary global UI state
@@ -221,6 +261,45 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const streamMessage = useStreamMessage(streamCallbacks);
 
+    const submitToThreadView = useCallback(
+        async (threadViewId: string, data: QueryFormValues) => {
+            // these are bad assumptions, by design they are true
+            // TODO: Fix comparison (all of it)
+            const { modelId } = comparisonState[threadViewId];
+            const threadViewIdx = parseInt(threadViewId);
+            const threadId = isNaN(threadViewIdx) ? undefined : threadIds[threadViewIdx];
+            const model = models.find((m) => m.id === modelId);
+
+            if (model == null) {
+                return null;
+            }
+
+            return await processSingleModelSubmission(
+                data,
+                model,
+                threadId,
+                threadViewId,
+                inferenceOpts,
+                userToolDefinitions,
+                streamMessage.mutateAsync,
+                streamMessage.onFirstMessage,
+                streamMessage.completeStream,
+                addSnackMessage
+            );
+        },
+        [
+            addSnackMessage,
+            comparisonState,
+            inferenceOpts,
+            userToolDefinitions,
+            models,
+            streamMessage.completeStream,
+            streamMessage.mutateAsync,
+            streamMessage.onFirstMessage,
+            threadIds,
+        ]
+    );
+
     const processSubmission = useCallback(
         async (data: QueryFormValues): Promise<void> => {
             // Reset first message tracking for new submission
@@ -228,21 +307,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             streamMessage.prepareForNewSubmission();
 
-            const submissions = Object.entries(comparisonState).map(([threadViewId, state]) => {
-                const model = models.find((m) => m.id === state.modelId);
-                const threadId = threadIds[parseInt(threadViewId)] || undefined;
-
-                return processSingleModelSubmission(
-                    data,
-                    model as Model,
-                    threadId,
-                    threadViewId,
-                    inferenceOpts,
-                    streamMessage.mutateAsync,
-                    streamMessage.onFirstMessage,
-                    streamMessage.completeStream,
-                    addSnackMessage
-                );
+            const submissions = Object.entries(comparisonState).map(([threadViewId]) => {
+                return submitToThreadView(threadViewId, data);
             });
 
             // Wait for all submissions to complete (success or failure)
@@ -257,7 +323,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 throw formError.reason;
             }
         },
-        [comparisonState, inferenceOpts, streamMessage, addSnackMessage, models, threadIds]
+        [comparisonState, streamMessage, submitToThreadView]
     );
 
     const selectedModelsWithIds = useMemo(() => {
@@ -339,6 +405,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             threadStarted: threadIds.length > 0,
             canSubmit,
             autofocus,
+            canCallTools,
+            userToolDefinitions,
+            isToolCallingEnabled,
             placeholderText,
             availableModels: models,
             areFilesAllowed,
@@ -396,21 +465,32 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
                 setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
             },
+            submitToThreadView,
+            updateUserToolDefinitions: (jsonDefinition: string) => {
+                setUserToolDefinitions(jsonDefinition);
+            },
+            updateIsToolCallingEnabled: (enabled: boolean) => {
+                setIsToolCallingEnabled(enabled);
+            },
         };
     }, [
+        threadIds,
         canSubmit,
         autofocus,
+        canCallTools,
+        userToolDefinitions,
+        isToolCallingEnabled,
         placeholderText,
-        isLimitReached,
-        comparisonState,
         models,
-        streamMessage,
-        checkCompatibilityAndSubmit,
-        inferenceOpts,
-        threadIds,
         areFilesAllowed,
+        streamMessage,
+        isLimitReached,
         reducedFileUploadProps,
         isFileUploadDisabled,
+        checkCompatibilityAndSubmit,
+        inferenceOpts,
+        submitToThreadView,
+        comparisonState,
     ]);
 
     return (

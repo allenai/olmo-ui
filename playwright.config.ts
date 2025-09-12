@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
-import { TestOptions } from 'e2e/playwright-utils';
+import type { Fixtures } from 'e2e/playwright-types';
 
-const envSuffix = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
+const envSuffix = `.${process.env.NODE_ENV ?? 'test'}`;
 
 dotenv.config({
     path: [`./.env${envSuffix}.local`, '.env.local', `./.env${envSuffix}`, '.env'],
@@ -17,7 +17,7 @@ const bypassCSP = {
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig<TestOptions>({
+export default defineConfig<Fixtures>({
     testDir: './e2e',
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -90,7 +90,11 @@ export default defineConfig<TestOptions>({
             },
             dependencies: ['auth-setup'],
             // Webkit e2e tests seem to have issues with scrolling.
-            testIgnore: ['*streaming-scroll*', '**/message-streaming.spec.ts'],
+            testIgnore: [
+                '*streaming-scroll*',
+                '**/message-streaming.spec.ts',
+                '*thinking-and-tools*',
+            ],
         },
 
         /* Test against mobile viewports. */
@@ -116,7 +120,7 @@ export default defineConfig<TestOptions>({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'yarn start',
+        command: 'yarn test:e2e:server',
         url: process.env.PLAYWRIGHT_BASE_URL,
         reuseExistingServer: !process.env.CI,
     },

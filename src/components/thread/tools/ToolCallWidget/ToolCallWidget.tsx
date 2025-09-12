@@ -1,3 +1,4 @@
+import { css } from '@allenai/varnish-panda-runtime/css';
 import { DataObject } from '@mui/icons-material';
 
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
@@ -5,10 +6,11 @@ import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/Co
 import { CollapsibleWidgetHeading } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetHeading';
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
+import { FadeOverflowContent } from '@/components/widgets/FadeOverflowContent';
 
 import { mapToolCallArgs } from '../mapToolCallArgs';
-import { ToolCallAnswer } from './ToolCallAnswer';
 import { ToolCallParameters } from './ToolCallParameters';
+import { ToolCallResult } from './ToolCallResult';
 
 interface ToolCallWidgetProps {
     toolCall: SchemaToolCall;
@@ -20,16 +22,23 @@ export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
     const stringArgs = JSON.stringify(mappedArgs, undefined, 2);
 
     return (
-        <CollapsibleWidgetBase defaultExpanded>
+        <CollapsibleWidgetBase defaultExpanded data-widget-type="tool-call">
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
                 endAdornment={<ExpandArrowButton />}>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
+
             <CollapsibleWidgetPanel>
                 <ToolCallParameters>{stringArgs}</ToolCallParameters>
-                <ToolCallAnswer>{answer}</ToolCallAnswer>
+                <FadeOverflowContent className={css({ maxHeight: '[536px]' })} contrast="low">
+                    <ToolCallResult
+                        toolCallId={toolCall.toolCallId}
+                        toolSource={toolCall.toolSource}
+                        answer={answer}
+                    />
+                </FadeOverflowContent>
             </CollapsibleWidgetPanel>
         </CollapsibleWidgetBase>
     );

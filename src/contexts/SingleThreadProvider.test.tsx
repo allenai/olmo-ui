@@ -66,6 +66,14 @@ describe('SingleThreadProvider', () => {
             });
         });
 
+        it('userToolDefinitions should be undefined when no threadId is provided', async () => {
+            const { result } = renderProvider();
+
+            await waitFor(() => {
+                expect(result.current.userToolDefinitions).toBeUndefined();
+            });
+        });
+
         it('should initialize with empty object when thread has no LLM messages', async () => {
             const threadId = 'thread-123';
             const thread = createMockThread({
@@ -75,6 +83,7 @@ describe('SingleThreadProvider', () => {
                         id: 'msg-1',
                         role: Role.User,
                         content: 'Hello',
+                        toolDefinitions: [],
                     }),
                 ],
             });
@@ -88,6 +97,47 @@ describe('SingleThreadProvider', () => {
 
             await waitFor(() => {
                 expect(result.current.inferenceOpts).toEqual({});
+            });
+        });
+
+        it('should return json string for thread containing message with toolDefinition', async () => {
+            const threadId = 'thread-123';
+            const thread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        role: Role.User,
+                        content: 'Hello',
+                        toolDefinitions: [
+                            {
+                                name: 'getWeather',
+                                toolSource: 'user_defined',
+                                description: 'gets the weather for a requested city',
+                                parameters: {
+                                    type: 'object',
+                                    properties: {
+                                        city: {
+                                            type: 'string',
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    }),
+                ],
+            });
+
+            const { queryKey } = threadOptions(threadId);
+            queryClient.setQueryData(queryKey, thread);
+
+            const { result } = renderProvider({
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(result.current.userToolDefinitions).toContain('getWeather');
+                expect(result.current.userToolDefinitions).not.toContain('toolSource');
             });
         });
 

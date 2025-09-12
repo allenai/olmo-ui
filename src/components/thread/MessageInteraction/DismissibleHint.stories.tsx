@@ -1,7 +1,7 @@
 import { cva } from '@allenai/varnish-panda-runtime/css';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, Typography } from '@mui/material';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 
 import { DismissibleHint } from './DismissibleHint';
 

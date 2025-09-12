@@ -16,7 +16,7 @@ export default function AllToolCalls({ toolCalls, threadId }: AllToolCallsProps)
     }
 
     return (
-        <div className={stack({ gap: '4' })}>
+        <div className={stack({ gap: '4', marginBottom: '4' })}>
             {toolCalls.map((toolCall) => (
                 <ToolCallWithAnswer
                     toolCall={toolCall}

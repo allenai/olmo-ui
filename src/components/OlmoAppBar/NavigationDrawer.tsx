@@ -11,7 +11,6 @@ import { UIMatch, useMatches } from 'react-router-dom';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
-import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
@@ -52,7 +51,6 @@ export const NavigationDrawer = ({
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
 
-    const { isComparisonPageEnabled } = useFeatureToggles();
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
     useCloseDrawerOnNavigation({
@@ -88,17 +86,14 @@ export const NavigationDrawer = ({
                             DisclosureIcon={ArrowForwardIosOutlined}>
                             Thread history
                         </NavigationLink>
-                        {isComparisonPageEnabled &&
-                            userAuthInfo.hasPermission('read:internal-models') && (
-                                <NavigationLink
-                                    icon={<ViewColumnIcon />}
-                                    selected={curriedDoesMatchPath(links.comparison)}
-                                    href={links.comparison}
-                                    DisclosureIcon={ScienceIcon}
-                                    experimental>
-                                    Compare models
-                                </NavigationLink>
-                            )}
+                        <NavigationLink
+                            icon={<ViewColumnIcon />}
+                            selected={curriedDoesMatchPath(links.comparison)}
+                            href={links.comparison}
+                            DisclosureIcon={ScienceIcon}
+                            experimental>
+                            Compare models
+                        </NavigationLink>
                         <NavigationLink
                             icon={<StickyNote2Outlined />}
                             selected={curriedDoesMatchPath(links.faqs)}

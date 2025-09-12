@@ -61,20 +61,19 @@ describe('AvatarMenuBase', () => {
         expect(onClose).toHaveBeenCalled();
     });
 
-    it('opens and closes the TermsAndConditionsModal when Data Collection is clicked', async () => {
+    it('opens and closes the TermsAndDataCollectionModal when Data Collection is clicked', async () => {
         const user = userEvent.setup();
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 
         await user.click(screen.getByText('Data Collection'));
-        expect(await screen.findByText('Contribute to Public Datasets')).toBeVisible();
+        const modalHeading = await screen.findByText('Terms of Use & Publication Consent');
+        expect(modalHeading).toBeVisible();
 
-        const radios = screen.queryAllByRole('radio');
-        if (radios.length) {
-            await user.click(radios[0]);
-        }
-        await user.click(screen.getByRole('button', { name: "Let's Go!" }));
+        const closeButton = screen.getByRole('button', { name: 'Cancel' });
 
-        expect(await screen.findByText('Data Collection')).toBeVisible(); // modal has closed
+        await user.click(closeButton);
+
+        expect(modalHeading).not.toBeVisible();
     });
 
     it('sets initial modal props correctly', async () => {
@@ -83,17 +82,16 @@ describe('AvatarMenuBase', () => {
 
         await user.click(screen.getByText('Data Collection'));
 
-        const radios = screen.getAllByRole('radio');
-        const optIn = radios.find((r) => r.getAttribute('value') === 'opt-in');
-        const optOut = radios.find((r) => r.getAttribute('value') === 'opt-out');
+        const isOptInChecked = screen.getByRole('checkbox', {
+            checked: true,
+        });
 
-        // this is true die to what we set in the moc above (hasAcceptedDataCollection: true,)
-        expect(optIn as HTMLInputElement).toBeChecked();
-        expect(optOut as HTMLInputElement).not.toBeChecked();
+        // this will exist if we set in the mock above to hasAcceptedDataCollection: true
+        expect(isOptInChecked).toBeInTheDocument();
     });
 
-    it('conditionally renders Privacy Settings link when IS_ANALYTICS_ENABLED is true', () => {
-        vi.stubEnv('IS_ANALYTICS_ENABLED', 'true');
+    it('conditionally renders Privacy Settings link when VITE_IS_ANALYTICS_ENABLED is true', () => {
+        vi.stubEnv('VITE_IS_ANALYTICS_ENABLED', 'true');
 
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 
@@ -102,8 +100,8 @@ describe('AvatarMenuBase', () => {
         vi.unstubAllEnvs(); // clean up
     });
 
-    it('does not render Privacy Settings if IS_ANALYTICS_ENABLED is false', () => {
-        vi.stubEnv('IS_ANALYTICS_ENABLED', 'false');
+    it('does not render Privacy Settings if VITE_IS_ANALYTICS_ENABLED is false', () => {
+        vi.stubEnv('VITE_IS_ANALYTICS_ENABLED', 'false');
 
         render(<AvatarMenuBase>{(content) => <div>{content}</div>}</AvatarMenuBase>);
 

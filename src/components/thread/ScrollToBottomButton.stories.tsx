@@ -1,5 +1,5 @@
 import { cva } from '@allenai/varnish-panda-runtime/css';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ScrollToBottomButton } from './ScrollToBottomButton';
 

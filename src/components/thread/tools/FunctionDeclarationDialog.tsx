@@ -2,15 +2,17 @@ import { css, cx } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
+import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
 
 const modalBase = css({
+    fontSize: 'sm',
     paddingTop: '4',
     paddingBottom: '6',
-    paddingLeft: '2',
-    paddingRight: '2',
+    paddingInline: '2',
 });
 
 const modalHeading = css({
@@ -19,14 +21,22 @@ const modalHeading = css({
     fontWeight: 'regular',
 });
 
+const labelStyle = css({
+    marginBottom: '2',
+});
+
+const exampleButtons = css({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    paddingInline: '0',
+    marginBottom: '4',
+});
+
 const modalInput = css({
     '& textarea': {
         fontFamily: 'monospace',
         fontSize: 'md',
-    },
-    '& label': {
-        marginTop: '4',
-        marginBottom: '8',
+        textWrap: 'nowrap',
     },
 });
 
@@ -52,8 +62,8 @@ export function FunctionDeclarationDialog({
     onClose,
 }: FunctionDeclarationDialogProps) {
     const { colorMode } = useColorMode();
-    const { handleSubmit, reset, control } = useForm<DataFields>({
-        defaultValues: {
+    const { handleSubmit, reset, setValue, control } = useForm<DataFields>({
+        values: {
             declaration: jsonData,
         },
         mode: 'onSubmit',
@@ -86,7 +96,7 @@ export function FunctionDeclarationDialog({
                 </IconButton>
             }
             buttons={
-                <ModalActions>
+                <ModalActions fullWidth>
                     <Button
                         color="secondary"
                         shape="rounded"
@@ -108,25 +118,41 @@ export function FunctionDeclarationDialog({
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
+                <p className={labelStyle}>
+                    Enter a JSON array of function declarations the model can call. Each function
+                    should include a name, description, and JSON Schema parameters. Start with an
+                    example below or see the API docs for more.
+                </p>
+                {!isDisabled && (
+                    <ModalActions className={exampleButtons} fullWidth>
+                        <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                                setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
+                            }}>
+                            getWeather
+                        </Button>
+                        <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                                setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
+                            }}>
+                            getStockIndex
+                        </Button>
+                    </ModalActions>
+                )}
                 <ControlledTextArea
                     className={modalInput}
                     name="declaration"
-                    label="Enter a list of function declarations for the model to call upon. See the API documentation for examples."
                     isDisabled={isDisabled}
                     minRows={18}
                     maxRows={18}
                     controllerProps={{
                         control,
                         rules: {
-                            validate: (value) => {
-                                try {
-                                    JSON.parse(value);
-                                } catch {
-                                    return 'Invalid JSON format';
-                                }
-
-                                return true;
-                            },
+                            validate: validateToolDefinitions,
                         },
                     }}
                 />
@@ -134,3 +160,84 @@ export function FunctionDeclarationDialog({
         </Modal>
     );
 }
+
+const validateToolDefinitions = (value: string) => {
+    const definitionSchema = z.strictObject({
+        name: z.string().min(1, { error: 'Name is required' }),
+        description: z.string().min(1, { error: 'Description is required' }),
+        parameters: z.record(z.string(), z.unknown()),
+    });
+    const toolsSchema = z.array(definitionSchema);
+
+    try {
+        const toolDefs = JSON.parse(value) as SchemaToolDefinition[];
+        toolsSchema.parse(toolDefs);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            return `Invalid JSON format: ${e.message}`;
+        }
+        if (e instanceof z.core.$ZodError) {
+            // Return the first issue message for simplicity
+            const message = `[${e.issues[0].path}]: ${e.issues[0].message}`;
+            return `Invalid definition: ${message}`;
+        }
+        return 'Unknown parsing error';
+    }
+
+    return true;
+};
+
+const EXAMPLE_DECLARATIONS = {
+    getWeather: `
+[
+    {
+        "name": "get_current_weather",
+        "description": "Get the current weather in a given location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city name of the location for which to get the weather.",
+                    "default": {
+                        "string_value": "Boston, MA"
+                    }
+                }
+            },
+            "required": [
+                "location"
+            ]
+        }
+    }
+]
+`,
+    getStockIndex: `
+[
+    {
+        "name": "getStockIndexCloseValue",
+        "description": "Get the value of a stock index at close on a particular day",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "stockIndex": {
+                    "type": "string",
+                    "description": "The stock index to get the value for. One of: Dow Jones, NASDAQ, S&P 500",
+                    "enum": [
+                        "Dow Jones",
+                        "NASDAQ",
+                        "S&P 500"
+                    ]
+                },
+                "daysAgo": {
+                    "type": "number",
+                    "description": "The number of days ago to get the stock index value. For example, 0 means today, 1 means yesterday, 2 means the day before yesterday, and so on."
+                }
+            },
+            "required": [
+                "stockIndex"
+            ]
+        }
+    }
+]
+`,
+};

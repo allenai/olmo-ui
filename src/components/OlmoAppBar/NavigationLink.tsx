@@ -9,6 +9,7 @@ import {
     Theme,
 } from '@mui/material';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode } from 'react';
+import { Focusable } from 'react-aria-components';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 
@@ -148,13 +149,15 @@ export const NavigationLink = ({
             <NavigationListItemIcon>
                 {DisclosureIcon ? (
                     <DisclosureIcon
+                        data-experimental={experimental || undefined}
                         sx={{
                             fontSize: '1rem',
                             opacity: 0.5,
-                            ...(experimental && {
-                                color: (theme) => theme.palette.warning.main,
+
+                            '&[data-experimental="true"]': {
+                                color: (theme) => theme.palette.secondary.main,
                                 opacity: 1,
-                            }),
+                            },
                         }}
                     />
                 ) : null}
@@ -166,11 +169,10 @@ export const NavigationLink = ({
         <ListItem disablePadding dense sx={sx}>
             {experimental ? (
                 <StyledTooltip
-                    title="This feature is experimental"
+                    content="This feature is experimental"
                     placement="right"
-                    desktopPlacement="right"
-                    arrow>
-                    {buttonContent}
+                    desktopPlacement="right">
+                    {<Focusable>{buttonContent}</Focusable>}
                 </StyledTooltip>
             ) : (
                 buttonContent

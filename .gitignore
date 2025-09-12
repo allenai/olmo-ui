@@ -1,5 +1,6 @@
 node_modules/
 build
+**/.DS_Store
 
 # Playwright
 /test-results/
@@ -19,7 +20,7 @@ coverage/
 api/config*.json
 api/service_account.json
 
-.env.local
+.env.*local
 e2e/.auth/
 
 .gcloudignore
@@ -28,6 +29,8 @@ e2e/.auth/
 
 # Pandacss
 styled-system
+
+dist
 
 # Claude Code
 .claude

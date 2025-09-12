@@ -17,7 +17,6 @@ export enum FeatureToggle {
     isPeteishModelEnabled = 'isPeteishModelEnabled',
     isMultiModalEnabled = 'isMultiModalEnabled',
     isModelConfigEnabled = 'isModelConfigEnabled',
-    isComparisonPageEnabled = 'isComparisonPageEnabled',
     isOLMoASREnabled = 'isOLMoASREnabled',
 }
 
@@ -32,7 +31,6 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isPeteishModelEnabled]: false,
     [FeatureToggle.isMultiModalEnabled]: false,
     [FeatureToggle.isModelConfigEnabled]: false,
-    [FeatureToggle.isComparisonPageEnabled]: false,
     [FeatureToggle.isOLMoASREnabled]: false,
 };
 
@@ -87,14 +85,13 @@ function createToggles(initialToggles = defaultFeatureToggles) {
     const queryToggles = parseToggles(Object.fromEntries(query));
 
     const envToggles = parseToggles({
-        isCorpusLinkEnabled: process.env.IS_CORPUS_LINK_ENABLED,
-        absoluteSpanScore: process.env.ABSOLUTE_SPAN_SCORE,
-        bucketColors: process.env.BUCKET_COLORS,
-        isDatasetExplorerEnabled: process.env.IS_DATASET_EXPLORER_ENABLED,
-        isMultiModalEnabled: process.env.IS_MULTI_MODAL_ENABLED,
-        isModelConfigEnabled: process.env.IS_MODEL_CONFIG_ENABLED,
-        isComparisonPageEnabled: process.env.IS_COMPARISON_PAGE_ENABLED,
-        isOLMoASREnabled: process.env.IS_OLMO_ASR_ENABLED,
+        isCorpusLinkEnabled: process.env.VITE_IS_CORPUS_LINK_ENABLED,
+        absoluteSpanScore: process.env.VITE_ABSOLUTE_SPAN_SCORE,
+        bucketColors: process.env.VITE_BUCKET_COLORS,
+        isDatasetExplorerEnabled: process.env.VITE_IS_DATASET_EXPLORER_ENABLED,
+        isMultiModalEnabled: process.env.VITE_IS_MULTI_MODAL_ENABLED,
+        isModelConfigEnabled: process.env.VITE_IS_MODEL_CONFIG_ENABLED,
+        isOLMoASREnabled: process.env.VITE_IS_OLMO_ASR_ENABLED,
     });
 
     const toggles = {

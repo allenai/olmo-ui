@@ -1,10 +1,15 @@
-import { Tooltip, TooltipProps } from '@mui/material';
+import { css } from '@allenai/varnish-panda-runtime/css';
+import { cx, Tooltip, TooltipProps } from '@allenai/varnish-ui';
+import { ReactNode } from 'react';
 
+import { useColorMode } from './ColorModeProvider';
 import { useDesktopOrUp } from './dolma/shared';
 
-type StyledTooltipProps = TooltipProps & {
+interface StyledTooltipProps extends Omit<TooltipProps, 'children'> {
     desktopPlacement?: TooltipProps['placement'];
-};
+    children: ReactNode;
+    arrow?: boolean;
+}
 
 const StyledTooltip = ({
     placement = 'bottom',
@@ -12,32 +17,27 @@ const StyledTooltip = ({
     arrow = true,
     ...props
 }: StyledTooltipProps) => {
+    const { colorMode } = useColorMode();
     const isDesktop = useDesktopOrUp();
     const responsivePlacement = isDesktop ? desktopPlacement : placement;
 
     return (
         <Tooltip
+            className={cx(colorMode, tooltipClass)}
             {...props}
-            arrow={arrow}
             placement={responsivePlacement}
-            slotProps={{
-                tooltip: {
-                    sx: (theme) => ({
-                        ...theme.typography.caption,
-                        backgroundColor: theme.palette.background.reversed,
-                        color: theme.palette.text.reversed,
-                        boxShadow: 'none',
-                    }),
-                },
-                arrow: {
-                    sx: (theme) => ({
-                        color: theme.palette.background.reversed,
-                        boxShadow: 'none',
-                    }),
-                },
-            }}
+            delay={50}
+            arrowClassName={!arrow ? noArrowClass : undefined}
         />
     );
 };
 
 export { StyledTooltip, type StyledTooltipProps };
+
+const noArrowClass = css({
+    display: 'none !important',
+});
+
+const tooltipClass = css({
+    maxWidth: '[300px]',
+});

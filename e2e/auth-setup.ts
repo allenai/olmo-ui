@@ -19,7 +19,7 @@ test('set up auth', async ({ page }) => {
     await page.getByRole('link', { name: 'Log in' }).click();
 
     await page.getByLabel('Email address').fill(process.env.E2E_TEST_USER);
-    await page.getByLabel('Password').fill(process.env.E2E_TEST_PASSWORD);
+    await page.getByRole('textbox', { name: 'Password' }).fill(process.env.E2E_TEST_PASSWORD);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
 
     await page.waitForURL('/');

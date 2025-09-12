@@ -62,13 +62,13 @@ export const LegalNotice = () => {
             <TermAndConditionsLink link="https://allenai.org/terms">
                 Terms of use
             </TermAndConditionsLink>
-            ,{' '}
-            <TermAndConditionsLink link="https://allenai.org/privacy-policy">
-                Privacy policy
-            </TermAndConditionsLink>
             , and{' '}
             <TermAndConditionsLink link="https://allenai.org/responsible-use">
-                Responsible use guidelines
+                Responsible Use Guidelines
+            </TermAndConditionsLink>
+            , and have read Ai2&rsquo;s{' '}
+            <TermAndConditionsLink link="https://allenai.org/privacy-policy">
+                Privacy policy
             </TermAndConditionsLink>
             . This site is protected by reCAPTCHA and the Google{' '}
             <TermAndConditionsLink link="https://policies.google.com/privacy">

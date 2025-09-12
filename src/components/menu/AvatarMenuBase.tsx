@@ -8,8 +8,7 @@ import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { UserAvatar } from '@/components/avatars/UserAvatar';
 import { ThemeModeSelect } from '@/components/OlmoAppBar/ThemeModeSelect';
 
-import { TermsAndConditionsModal } from '../TermsAndConditionsModal';
-import { TermsAndConditionsProvider } from '../TermsAndConditionsModalContext';
+import { TermsAndDataCollectionModal } from '../TermsAndDataCollectionModal';
 import { Auth0LoginLink } from './Auth0LoginLink';
 import { AvatarMenuItem } from './AvatarMenuItem';
 
@@ -41,7 +40,7 @@ export const AvatarMenuBase = ({
                 flexDirection: 'column',
                 gap: 1,
                 bgcolor:
-                    theme.palette.mode === 'light'
+                    themeModeAdaptive && theme.palette.mode === 'light'
                         ? theme.palette.background.default
                         : theme.palette.background.drawer.primary,
             })}>
@@ -96,7 +95,7 @@ export const AvatarMenuBase = ({
                 themeModeAdaptive={themeModeAdaptive}>
                 Data Collection
             </AvatarMenuItem>
-            {process.env.IS_ANALYTICS_ENABLED === 'true' && (
+            {process.env.VITE_IS_ANALYTICS_ENABLED === 'true' && (
                 <AvatarMenuItem
                     icon={<ShieldOutlined />}
                     onClick={() => {
@@ -114,17 +113,13 @@ export const AvatarMenuBase = ({
         <>
             {children(content)}
             {showModal ? (
-                <TermsAndConditionsProvider>
-                    <TermsAndConditionsModal
-                        onClose={async () => {
-                            setShowModal(false);
-                        }}
-                        initialTermsAndConditionsValue={hasAcceptedTermsAndConditions}
-                        initialDataCollectionValue={
-                            hasAcceptedDataCollection ? 'opt-in' : 'opt-out'
-                        }
-                    />
-                </TermsAndConditionsProvider>
+                <TermsAndDataCollectionModal
+                    onClose={async () => {
+                        setShowModal(false);
+                    }}
+                    initialTermsAndConditionsValue={hasAcceptedTermsAndConditions}
+                    initialDataCollectionValue={hasAcceptedDataCollection}
+                />
             ) : null}
         </>
     );

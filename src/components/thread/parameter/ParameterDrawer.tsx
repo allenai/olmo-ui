@@ -13,6 +13,10 @@ import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsIn
 import { SystemPromptTextArea } from '@/components/thread/parameter/inputs/SystemPromptTextArea';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
+import { SnackMessageType } from '@/slices/SnackMessageSlice';
+
+import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
+import { ParameterToggle } from './inputs/ParameterToggle';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -24,6 +28,9 @@ const TOP_P_INFO =
 
 const MAX_TOKENS_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
+
+const FUNCTION_CALLING_INFO =
+    'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
@@ -94,9 +101,24 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 );
 
 export const ParameterContent = () => {
+    const {
+        threadStarted,
+        canCallTools,
+        inferenceOpts,
+        updateInferenceOpts,
+        userToolDefinitions,
+        updateUserToolDefinitions,
+        isToolCallingEnabled,
+        updateIsToolCallingEnabled,
+        getThreadViewModel,
+    } = useQueryContext();
+    const canCreateToolDefinitions = canCallTools && !threadStarted;
+    const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
+
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+    const schemaData = useAppContext((state) => state.schema);
+
     const userAuthInfo = useUserAuthInfo();
-    const { threadStarted, updateInferenceOpts, inferenceOpts, getThreadViewModel, transform } =
-        useQueryContext();
     const schemaData = useAppContext((state) => state.schema);
 
     // Detect if we're in comparison mode by checking if transform returns multiple thread views
@@ -164,7 +186,7 @@ export const ParameterContent = () => {
                 </ParametersListItem>
                 <ParametersListItem>
                     <ParameterSlider
-                        label="Max Tokens"
+                        label="Max tokens"
                         min={opts.max_tokens.min}
                         max={opts.max_tokens.max}
                         step={100}
@@ -180,6 +202,25 @@ export const ParameterContent = () => {
                         id="max-tokens"
                     />
                 </ParametersListItem>
+                {canCallTools && (
+                    <ParametersListItem>
+                        <ParameterToggle
+                            value={isToolCallingEnabled}
+                            label="Function calling"
+                            dialogContent={FUNCTION_CALLING_INFO}
+                            dialogTitle="Function Calling"
+                            disableToggle={!canCreateToolDefinitions}
+                            disableEditButton={threadStarted ? false : !isToolCallingEnabled}
+                            id="function-calling"
+                            onEditClick={() => {
+                                setShouldShowFunctionDialog(true);
+                            }}
+                            onToggleChange={(v) => {
+                                updateIsToolCallingEnabled(v);
+                            }}
+                        />
+                    </ParametersListItem>
+                )}
                 <StopWordsInput
                     id="stop-words"
                     value={inferenceOpts.stop || []}
@@ -188,6 +229,25 @@ export const ParameterContent = () => {
                             parameterUpdated: 'stop',
                         });
                         updateInferenceOpts({ stop: value });
+                    }}
+                />
+                <FunctionDeclarationDialog
+                    jsonData={userToolDefinitions || undefined}
+                    isDisabled={threadStarted}
+                    isOpen={shouldShowFunctionDialog}
+                    onClose={() => {
+                        setShouldShowFunctionDialog(false);
+                    }}
+                    onSave={({ declaration }) => {
+                        analyticsClient.trackParametersUpdate({
+                            parameterUpdated: 'tool_definitions',
+                        });
+                        updateUserToolDefinitions(declaration);
+                        addSnackMessage({
+                            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
+                            type: SnackMessageType.Brief,
+                            message: 'Function Definition Saved',
+                        });
                     }}
                 />
                 {userAuthInfo.hasPermission('write:model-config') && (

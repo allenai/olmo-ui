@@ -49,6 +49,7 @@ const ThinkingWidget = ({
     return (
         <CollapsibleWidgetBase
             className={cx(thinkingWidgetClassNames.container, className)}
+            data-widget-type="thinking"
             {...rest}>
             <CollapsibleWidgetHeading
                 startAdornment={<ThinkingIcon size="small" />}
@@ -57,7 +58,7 @@ const ThinkingWidget = ({
                 {thinking ? 'Thinking' : 'Thoughts'}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
-                <FadeOverflowContent className={contentClassName}>
+                <FadeOverflowContent className={contentClassName} shouldStickToBottom>
                     <CollapsibleWidgetContent contrast="off">{children}</CollapsibleWidgetContent>
                 </FadeOverflowContent>
             </CollapsibleWidgetPanel>

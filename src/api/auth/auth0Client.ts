@@ -6,23 +6,21 @@ class Auth0Client {
     #auth0Client: Auth0ClientClass | undefined;
 
     #getClient = async () => {
-        const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
-        const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
+        const VITE_AUTH0_DOMAIN = process.env.VITE_AUTH0_DOMAIN;
+        const VITE_AUTH0_CLIENT_ID = process.env.VITE_AUTH0_CLIENT_ID;
 
         if (this.#auth0Client == null) {
-            if (!AUTH0_DOMAIN || !AUTH0_CLIENT_ID) {
+            if (!VITE_AUTH0_DOMAIN || !VITE_AUTH0_CLIENT_ID) {
                 throw new Error('Auth0 env variables are missing');
             }
 
             this.#auth0Client = await createAuth0Client({
-                domain: AUTH0_DOMAIN,
-                clientId: AUTH0_CLIENT_ID,
+                domain: VITE_AUTH0_DOMAIN,
+                clientId: VITE_AUTH0_CLIENT_ID,
                 authorizationParams: {
                     // This isn't noted in the docs but it's needed if you want to use the token on the API end
-                    audience: process.env.AUTH0_OLMO_API_AUDIENCE,
+                    audience: process.env.VITE_AUTH0_OLMO_API_AUDIENCE,
                 },
-                // if we set up a custom auth0 domain we can get rid of useRefreshTokens and cacheLocation
-                useRefreshTokens: true,
                 cacheLocation: 'localstorage',
             });
         }
@@ -44,7 +42,6 @@ class Auth0Client {
                 }
 
                 await this.login(window.location.href);
-                throw e;
             }
         }
 

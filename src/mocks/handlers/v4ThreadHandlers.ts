@@ -9,6 +9,10 @@ import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
 import duplicateDocumentsResponse from './responses/v4/duplicateDocumentMessageResponse';
 import { inappropriateContentErrorResponse } from './responses/v4/inappropriateContentErrorResponse';
+import {
+    INTERNAL_TOOL_CALLS_THREAD_ROOT_ID,
+    internalToolCallsResponse,
+} from './responses/v4/internalToolCallResponse';
 import multiplePointerMessageResponse from './responses/v4/multiplePointerMessageResponse';
 import { overlappingSpansResponse } from './responses/v4/overlappingSpansResponse';
 import {
@@ -21,14 +25,23 @@ import {
     newMessageId,
 } from './responses/v4/stream/default';
 import { fakeFollowupResponse } from './responses/v4/stream/followup';
+import { internalToolCallsStreamResponse } from './responses/v4/stream/internalToolCall';
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
 import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
+import {
+    userToolCallsStreamResponse,
+    userToolCallsStreamToolResponse,
+} from './responses/v4/stream/userToolCalls';
 import { streamResponseWithSystemMessage } from './responses/v4/stream/withSystemMessage';
 import { streamResponseWithSystemPromptOverrideResponse } from './responses/v4/stream/withSystemPromptOverride';
 import {
     THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID,
     thinkingAndToolCallsResponse,
 } from './responses/v4/thinkingAndToolCallsResponse';
+import {
+    USER_TOOL_CALLS_THREAD_ROOT_ID,
+    userToolCallsResponse,
+} from './responses/v4/userToolCallsResponse';
 import { typedHttp } from './typedHttp';
 
 export const firstThreadMessageId = 'msg_G8D2Q9Y8Q3';
@@ -231,6 +244,8 @@ const v4ThreadResponses = {
     msg_multiple_points: multiplePointerMessageResponse,
     msg_overlapping_spans: overlappingSpansResponse,
     [THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID]: thinkingAndToolCallsResponse,
+    [USER_TOOL_CALLS_THREAD_ROOT_ID]: userToolCallsResponse,
+    [INTERNAL_TOOL_CALLS_THREAD_ROOT_ID]: internalToolCallsResponse,
 };
 
 export interface MessagesResponseV4 {
@@ -257,7 +272,7 @@ const isValidThreadRequestId = (id: string): id is v4ThreadResponseIds => {
     return id in v4ThreadResponses;
 };
 
-const formatMessage = (message: unknown) => {
+const formatMessage = (message: StreamingMessageResponse) => {
     return JSON.stringify(message) + '\n';
 };
 
@@ -278,7 +293,12 @@ export const v4ThreadHandlers = [
         }
 
         let response: StreamingMessageResponse[];
-        if (formData.get('parent') != null) {
+
+        // if we are responding to a user tool function
+        // we need to handle this before formData.get('parent'), as it will respond otherwise
+        if (formData.get('role') === 'tool_call_result') {
+            response = userToolCallsStreamToolResponse;
+        } else if (formData.get('parent') != null) {
             response = fakeFollowupResponse(formData.get('parent') as string);
         } else if (content === 'include system message') {
             response = streamResponseWithSystemMessage;
@@ -295,13 +315,21 @@ export const v4ThreadHandlers = [
             }
         } else if (content === 'thinkingAndToolCalls') {
             response = thinkingAndToolCallsStreamResponse;
+        } else if (content === 'internalToolCalls') {
+            response = internalToolCallsStreamResponse;
+        } else if (content === 'userToolCalls') {
+            response = userToolCallsStreamResponse;
         } else {
             response = fakeNewThreadMessages;
         }
 
         const stream = new ReadableStream({
             async start(controller) {
-                if (formData.get('content') === 'infinite') {
+                const content = formData.get('content');
+                if (content === 'infinite' || content === 'infiniteThinking') {
+                    const isThinkingMode = content === 'infiniteThinking';
+                    const chunkType = isThinkingMode ? 'thinking' : 'modelResponse';
+
                     await delay();
                     controller.enqueue(encoder.encode(formatMessage(response[0])));
 
@@ -315,6 +343,7 @@ export const v4ThreadHandlers = [
                             controller.enqueue(
                                 encoder.encode(
                                     formatMessage({
+                                        type: chunkType,
                                         message: LOREM_IPSUM_MESSAGE_ID,
                                         content: ' ',
                                     })
@@ -323,15 +352,19 @@ export const v4ThreadHandlers = [
                         }
 
                         await delay();
-                        controller.enqueue(
-                            encoder.encode(formatMessage(response[responsePosition]))
-                        );
+
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        const message = response[responsePosition];
+                        // @ts-expect-error - should probably add a type guard or something here instead of just forcing this
+                        message.type = chunkType;
+                        controller.enqueue(encoder.encode(formatMessage(message)));
 
                         responsePosition++;
                     }
 
                     await delay(25);
-                    controller.enqueue(encoder.encode(formatMessage(response.at(-1))));
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    controller.enqueue(encoder.encode(formatMessage(response.at(-1)!)));
                 } else {
                     for (const message of response) {
                         await delay();

@@ -6,7 +6,7 @@ import {
     StreamBadRequestError,
 } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { threadOptions } from '@/api/playgroundApi/thread';
+import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
 import { appContext } from '@/AppContext';
@@ -14,7 +14,7 @@ import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFo
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
-import { ABORT_ERROR_MESSAGE, StreamMessageRequest } from '@/slices/ThreadUpdateSlice';
+import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
 
 import {
     containsMessages,
@@ -27,6 +27,7 @@ import {
     isToolCallChunk,
     type StreamingMessageResponse,
     type StreamingThread,
+    type StreamMessageRequest,
 } from './stream-types';
 import {
     mergeMessages,
@@ -59,7 +60,7 @@ export const validateSubmission = (canSubmit: boolean, isLoading: boolean): bool
 export const setupRecaptcha = async (
     executeRecaptcha?: ((action?: string) => Promise<string> | null) | null
 ): Promise<string | undefined> => {
-    if (process.env.IS_RECAPTCHA_ENABLED !== 'true') return undefined;
+    if (process.env.VITE_IS_RECAPTCHA_ENABLED !== 'true') return undefined;
 
     if (!executeRecaptcha) {
         analyticsClient.trackCaptchaNotLoaded();
@@ -225,12 +226,14 @@ export const processSingleModelSubmission = async (
     rootThreadId: string | undefined,
     threadViewId: ThreadViewId,
     inferenceOpts: RequestInferenceOpts,
+    toolDefinitions: CreateMessageRequest['toolDefinitions'],
     streamMutateAsync: (params: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
         model: Model;
         thread?: StreamingThread;
         inferenceOpts: RequestInferenceOpts;
+        toolDefinitions: CreateMessageRequest['toolDefinitions'];
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
@@ -255,6 +258,7 @@ export const processSingleModelSubmission = async (
             model,
             thread,
             inferenceOpts,
+            toolDefinitions,
         });
 
         // Return the final thread ID for parallel streaming navigation

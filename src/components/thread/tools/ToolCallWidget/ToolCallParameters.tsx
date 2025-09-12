@@ -31,8 +31,8 @@ export const ToolCallParameters = ({ children = '' }: ToolCallParametersProps) =
     }
 
     return (
-        <CollapsibleWidgetContent contrast="medium">
-            <div className={css({ position: 'relative' })}>
+        <CollapsibleWidgetContent contrast="low">
+            <div className={css({ position: 'relative', minHeight: '[40px]' })}>
                 <IconButtonWithTooltip
                     label="Copy tool call parameters"
                     color="default"

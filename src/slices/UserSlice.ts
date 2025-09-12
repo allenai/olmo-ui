@@ -9,12 +9,18 @@ import { User, UserClient, WhoamiApiUrl } from '../api/User';
 import { RemoteState } from '../contexts/util';
 import { errorToAlert } from './SnackMessageSlice';
 
+interface UpdateUserTermsAndDataCollectionPayload {
+    hasAcceptedTermsAndConditions?: boolean;
+    hasAcceptedDataCollection?: boolean;
+}
+
 export interface UserSlice {
     userRemoteState?: RemoteState;
     userInfo: User | null;
     getUserInfo: (queryClient: QueryClient, retryCount?: number) => Promise<User>;
-    updateTermsAndConditions: (value: boolean) => Promise<void>;
-    updateDataCollection: (value: boolean) => Promise<void>;
+    updateUserTermsAndDataCollection: (
+        payload: UpdateUserTermsAndDataCollectionPayload
+    ) => Promise<void>;
 }
 
 const userClient = new UserClient();
@@ -69,23 +75,20 @@ export const createUserSlice: OlmoStateCreator<UserSlice> = (set, get) => ({
             throw new Error(`Error getting user.`);
         }
     },
-    updateTermsAndConditions: async (hasAcceptedTermsAndConditions: boolean) => {
+    updateUserTermsAndDataCollection: async (payload: UpdateUserTermsAndDataCollectionPayload) => {
         await userClient.updateUserTermsAndDataCollection({
-            termsAccepted: hasAcceptedTermsAndConditions,
+            termsAccepted: payload.hasAcceptedTermsAndConditions,
+            dataCollectionAccepted: payload.hasAcceptedDataCollection,
         });
         set((state) => {
             if (state.userInfo) {
-                state.userInfo.hasAcceptedTermsAndConditions = hasAcceptedTermsAndConditions;
-            }
-        });
-    },
-    updateDataCollection: async (hasAcceptedDataCollection: boolean) => {
-        await userClient.updateUserTermsAndDataCollection({
-            dataCollectionAccepted: hasAcceptedDataCollection,
-        });
-        set((state) => {
-            if (state.userInfo) {
-                state.userInfo.hasAcceptedDataCollection = hasAcceptedDataCollection;
+                if (payload.hasAcceptedTermsAndConditions !== undefined) {
+                    state.userInfo.hasAcceptedTermsAndConditions =
+                        payload.hasAcceptedTermsAndConditions;
+                }
+                if (payload.hasAcceptedDataCollection !== undefined) {
+                    state.userInfo.hasAcceptedDataCollection = payload.hasAcceptedDataCollection;
+                }
             }
         });
     },

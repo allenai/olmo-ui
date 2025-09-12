@@ -99,13 +99,11 @@ export function useAppContext<TSelectorReturnValue>(selector?: SelectorType<TSel
     // eslint-disable-next-line react-compiler/react-compiler
     return useStore(appContext, selector);
 }
-/* eslint-enable no-redeclare */
 
-// @ts-expect-error - Making a new function to be able to show T&Cs whenever we want
 window.showTermsAndConditions = () => {
     appContext
         .getState()
-        .updateTermsAndConditions(false)
+        .updateUserTermsAndDataCollection({ hasAcceptedTermsAndConditions: false })
         .catch((e: unknown) => {
             console.error('There was an error opening the terms and conditions', e);
         });

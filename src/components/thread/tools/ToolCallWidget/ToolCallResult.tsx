@@ -1,6 +1,7 @@
 import { LoadingSpinner } from '@allenai/varnish-ui';
 import { ContentCopy } from '@mui/icons-material';
 
+import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';
 import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetContent';
@@ -8,16 +9,19 @@ import { SnackMessageType } from '@/slices/SnackMessageSlice';
 import { hstack } from '@/styled-system/patterns';
 
 import { ToolCallCodeBlock } from './ToolCallCodeBlock';
+import { ToolCallUserResponse } from './ToolCallUserResponse';
 
-type ToolCallAnswerProps = {
-    children: string | undefined;
-};
+interface ToolCallResultProps {
+    toolCallId: SchemaToolCall['toolCallId'];
+    toolSource: SchemaToolCall['toolSource'];
+    answer?: string;
+}
 
-export const ToolCallAnswer = ({ children }: ToolCallAnswerProps) => {
+export const ToolCallResult = ({ toolCallId, toolSource, answer }: ToolCallResultProps) => {
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const copyAnswer = async () => {
-        if (children) {
-            await navigator.clipboard.writeText(children);
+        if (answer) {
+            await navigator.clipboard.writeText(answer);
             addSnackMessage({
                 type: SnackMessageType.Brief,
                 id: 'tool-call-answer-copied',
@@ -26,22 +30,23 @@ export const ToolCallAnswer = ({ children }: ToolCallAnswerProps) => {
         }
     };
 
-    const isLoadingAnswer = children == null;
+    const isPendingAnswer = answer == null;
+
+    if (toolSource === 'user_defined' && isPendingAnswer) {
+        return <ToolCallUserResponse toolCallId={toolCallId} />;
+    }
 
     return (
         <CollapsibleWidgetContent
-            contrast="low"
+            contrast="medium"
             className={hstack({ justifyContent: 'space-between' })}>
-            {isLoadingAnswer ? (
-                <LoadingSpinner />
-            ) : (
-                <ToolCallCodeBlock>{children}</ToolCallCodeBlock>
-            )}
+            {isPendingAnswer ? <LoadingSpinner /> : <ToolCallCodeBlock>{answer}</ToolCallCodeBlock>}
             <IconButtonWithTooltip
-                disabled={isLoadingAnswer}
+                disabled={isPendingAnswer}
                 label="Copy tool call answer"
                 onClick={copyAnswer}
                 color="default"
+                sx={{ alignSelf: 'start' }}
                 placement="top">
                 <ContentCopy />
             </IconButtonWithTooltip>

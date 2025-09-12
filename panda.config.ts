@@ -24,6 +24,8 @@ export default defineConfig({
     importMap: '@allenai/varnish-panda-runtime',
     strictTokens: true,
     jsxFramework: 'react',
+    // watch breaks on @mtblanton's computer, remove if he ever fixes that
+    poll: true,
     outdir: 'styled-system',
     outExtension: 'js',
     theme: {

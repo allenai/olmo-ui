@@ -1,6 +1,6 @@
 import { getTheme } from '@allenai/varnish2/theme';
 import { ThemeProvider } from '@mui/material/styles';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { uiRefreshOlmoTheme } from '../../olmoTheme';
 import { Ai2Avatar } from './Ai2Avatar';

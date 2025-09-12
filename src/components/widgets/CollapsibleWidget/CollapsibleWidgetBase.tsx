@@ -19,7 +19,10 @@ const CollapsibleWidgetBase = ({ className, children, ...rest }: CollapsibleWidg
     const [variantProps, localProps] = collapsibleWidgetRecipe.splitVariantProps(rest);
     const classNames = collapsibleWidgetRecipe(variantProps);
     return (
-        <AriaDisclosure className={cx('group', classNames.container, className)} {...localProps}>
+        <AriaDisclosure
+            className={cx('group', classNames.container, className)}
+            data-widget-type="generic"
+            {...localProps}>
             {children}
         </AriaDisclosure>
     );

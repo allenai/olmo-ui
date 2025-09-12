@@ -76,6 +76,7 @@ export const thinkingAndToolCallsResponse: Thread = {
             toolCalls: [
                 {
                     toolName: 'combine_number_and_unit',
+                    toolSource: 'internal',
                     args: '{"number": 100, "unit": "KiB"}',
                     toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
                 },
@@ -120,6 +121,7 @@ export const thinkingAndToolCallsResponse: Thread = {
             toolCalls: [
                 {
                     toolName: 'combine_number_and_unit',
+                    toolSource: 'internal',
                     args: '{"number": 100, "unit": "KiB"}',
                     toolCallId: 'chatcmpl-tool-004f79cbc3c343f49a7e88c49f479438',
                 },

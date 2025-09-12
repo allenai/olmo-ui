@@ -13,12 +13,14 @@ If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will
 For the fastest and simplest development experience, you can run the application locally while connected to production APIs:
 
 Settings for running dev server against prod apis:
-- recaptcha should be enabled by adding `IS_RECAPTCHA_ENABLED=true` in your .env.local
+
+- recaptcha should be enabled by adding `VITE_IS_RECAPTCHA_ENABLED=true` in your .env.local
 - you should remove `LOCAL_PLAYGROUND_API_URL` from your .env.local
 - you must logged in, otherwise you will get an error in the ui
 
 Settings for running against olmo-api running locally:
-- recaptcha should be disabled by removing `IS_RECAPTCHA_ENABLED` from your .env.local
+
+- recaptcha should be disabled by removing `VITE_IS_RECAPTCHA_ENABLED` from your .env.local
 - you should set `LOCAL_PLAYGROUND_API_URL=http://localhost:8000` in your .env.local to connect to the local olmo-api
 
 ```
@@ -26,6 +28,7 @@ yarn dev
 ```
 
 This command:
+
 - Starts the development server on `http://localhost:8080`
 - Connects directly to production APIs
 - Provides hot reload for development
@@ -72,6 +75,7 @@ E2E tests use automated scripts that handle environment variable configuration, 
 **Setup:**
 
 Add the E2E test credentials to your `.env.local`:
+
 ```
 E2E_TEST_USER=playground-e2e-test@allenai.org
 E2E_TEST_PASSWORD=[get from 1Password]
@@ -82,11 +86,13 @@ The `E2E_TEST_PASSWORD` can be found in 1Password: https://start.1password.com/o
 **Running E2E tests:**
 
 1. Start the E2E development server:
+
    ```
    yarn test:e2e:server
    ```
 
 2. Run the tests (in a separate terminal):
+
    ```
    yarn test:e2e:local:chromium  # Run only Chromium tests
    yarn test:e2e:local           # Run all browser tests
@@ -125,7 +131,7 @@ USER_EMAIL=grasshopper@allenai.org docker compose up --build
 
 ## Mocking network requests
 
-We use MSW to mock network requests for testing and local development. To enable it, have `ENABLE_MOCKING=true` as an env variable when you're starting the server. If you're starting with `docker compose`, that would look like this: `ENABLE_MOCKING=true docker compose up --build`.
+We use MSW to mock network requests for testing and local development. To enable it, have `VITE_ENABLE_MOCKING=true` as an env variable when you're starting the server. If you're starting with `docker compose`, that would look like this: `VITE_ENABLE_MOCKING=true docker compose up --build`.
 
 Mock request handlers can be found in `src/mocks/handlers`. If you want to add or modify a handler, check the MSW docs to learn more: https://mswjs.io/docs/basics/mocking-responses
 
@@ -181,4 +187,4 @@ render(
 
 ### Testing HEAP events on local
 
-Switch to `local` environment on HEAP Analytics, then have `IS_ANALYTICS_ENABLED=true` and set `HEAP_ANALYTICS_ID` to the Heap ID of the `local` environment in your `.env.local`. You will see your local events showing on HEAP dashboard.
+Switch to `local` environment on HEAP Analytics, then have `VITE_IS_ANALYTICS_ENABLED=true` and set `VITE_HEAP_ANALYTICS_ID` to the Heap ID of the `local` environment in your `.env.local`. You will see your local events showing on HEAP dashboard.
