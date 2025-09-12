@@ -233,12 +233,23 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     }, [threadId]);
 
     useEffect(() => {
-        setUserToolDefinitions(getUserToolDefinitionsFromThread(threadId));
-        if (!threadId) {
-            // reset on new thread
-            setIsToolCallingEnabled(false);
+        const userTools = getUserToolDefinitionsFromThread(threadId);
+        setUserToolDefinitions(userTools);
+
+        const selectedSystemTools = threadId
+            ? getNonUserToolsFromThread(threadId).map((t) => t.name)
+            : selectedModel?.available_tools?.map((t) => t.name) || [];
+
+        setSelectedTools(selectedSystemTools);
+
+        if (threadId) {
+            setSelectedTools(getNonUserToolsFromThread(threadId).map((t) => t.name));
+        } else {
+            setSelectedTools(selectedModel?.available_tools?.map((t) => t.name) || []);
         }
-    }, [threadId]);
+
+        setIsToolCallingEnabled(userTools !== undefined || selectedSystemTools.length > 0);
+    }, [threadId, selectedModel]);
 
     // Sync local state with any necessary global UI state
     useEffect(() => {
@@ -404,6 +415,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             updateUserToolDefinitions,
             updateIsToolCallingEnabled,
             updateSelectedTools,
+            selectedTools,
         };
     }, [
         canSubmit,
@@ -429,6 +441,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         updateUserToolDefinitions,
         updateIsToolCallingEnabled,
         updateSelectedTools,
+        selectedTools,
     ]);
 
     return (

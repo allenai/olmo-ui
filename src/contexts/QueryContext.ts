@@ -48,6 +48,8 @@ interface QueryContextValue {
     updateIsToolCallingEnabled: (enabled: boolean) => void;
     updateUserToolDefinitions: (jsonDefinition: string) => void;
     updateSelectedTools: (tools: string[]) => void;
+
+    selectedTools: string[];
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

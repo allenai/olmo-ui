@@ -64,7 +64,8 @@ interface DataFields {
     tools: string[];
 }
 export interface FunctionDeclarationDialogProps {
-    tools: Model['available_tools'];
+    availableTools: Model['available_tools'];
+    selectedTools: string[];
     jsonData?: string;
     isOpen?: boolean;
     isDisabled?: boolean;
@@ -75,7 +76,8 @@ export interface FunctionDeclarationDialogProps {
 
 export function FunctionDeclarationDialog({
     jsonData = '[]',
-    tools,
+    availableTools: tools,
+    selectedTools,
     isOpen,
     isDisabled,
     onSave,
@@ -109,11 +111,8 @@ export function FunctionDeclarationDialog({
 
     useEffect(() => {
         // Can't rely on default, if model changes we need to set the value.
-        setValue(
-            'tools',
-            (tools || []).map((t) => t.name)
-        );
-    }, [tools]);
+        setValue('tools', selectedTools);
+    }, [selectedTools]);
 
     const handleSave = handleSubmit((data) => {
         onSave(data);

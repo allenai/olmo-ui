@@ -108,6 +108,7 @@ export const ParameterContent = () => {
         userToolDefinitions,
         updateUserToolDefinitions,
         updateSelectedTools,
+        selectedTools,
         isToolCallingEnabled,
         updateIsToolCallingEnabled,
     } = useQueryContext();
@@ -213,7 +214,8 @@ export const ParameterContent = () => {
                 />
                 <FunctionDeclarationDialog
                     jsonData={userToolDefinitions || undefined}
-                    tools={availableTools}
+                    availableTools={availableTools}
+                    selectedTools={selectedTools}
                     isDisabled={threadStarted}
                     isOpen={shouldShowFunctionDialog}
                     onClose={() => {
