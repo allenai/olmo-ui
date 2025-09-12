@@ -30,6 +30,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     isToolCallingEnabled: false,
     userToolDefinitions: null,
     canCallTools: false,
+    selectedTools: [],
 
     fileUploadProps: {
         isFileUploadDisabled: true,
