@@ -133,10 +133,10 @@ export function FunctionDeclarationDialog({
             isDismissable
             fullWidth
             size="large"
-            heading="Function Declarations"
+            heading="Tool Declarations"
             headingClassName={modalHeading}
             closeButton={
-                <IconButton onClick={onClose} aria-label="Close function declarations dialog">
+                <IconButton onClick={onClose} aria-label="Close tool declarations dialog">
                     <CloseIcon />
                 </IconButton>
             }
@@ -156,7 +156,7 @@ export function FunctionDeclarationDialog({
                         variant="contained"
                         type="submit"
                         form={formId}
-                        aria-label="Save function declarations"
+                        aria-label="Save tool declarations"
                         isDisabled={isDisabled}>
                         Save
                     </Button>
@@ -192,12 +192,6 @@ type TabbedContentProps = {
     setValue: UseFormSetValue<DataFields>;
 };
 
-const toolNameGrid = css({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '2',
-});
-
 const TabbedContent = ({
     control,
     isDisabled,
@@ -209,13 +203,13 @@ const TabbedContent = ({
     const items: Items[] = [
         {
             id: 'user-functions',
-            header: (props) => <varnishUi.Tab {...props}>User Defined Functions</varnishUi.Tab>,
+            header: (props) => <varnishUi.Tab {...props}>User Defined Tools</varnishUi.Tab>,
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
                     <p className={labelStyle}>
-                        Enter a JSON array of function declarations the model can call. Each
-                        function should include a name, description, and JSON Schema parameters.
-                        Start with an example below or see the API docs for more.
+                        Enter a JSON array of tool declarations the model can call. Each tool should
+                        include a name, description, and JSON Schema parameters. Start with an
+                        example below or see the API docs for more.
                     </p>
                     <ControlledTextArea
                         className={modalInput}
@@ -259,7 +253,7 @@ const TabbedContent = ({
         },
         {
             id: 'system-functions',
-            header: (props) => <varnishUi.Tab {...props}>System Functions</varnishUi.Tab>,
+            header: (props) => <varnishUi.Tab {...props}>System Tools</varnishUi.Tab>,
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
                     <p className={labelStyle}>Tools below will be added to the conversation.</p>
@@ -283,6 +277,19 @@ interface ControlledToggleTableProps {
     tools: Model['available_tools'];
     isDisabled?: boolean;
 }
+
+const toolNameGrid = css({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '2',
+});
+
+const toolName = css({
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '[300px]',
+});
 
 export const ControlledToolToggleTable = ({
     control,
@@ -318,7 +325,7 @@ export const ControlledToolToggleTable = ({
                         handleToggle(tool.name, isChecked);
                     }}
                     aria-label={`Toggle ${tool.name} tool`}>
-                    {tool.name}
+                    <span className={toolName}>{tool.name}</span>
                 </Checkbox>
             ))}
         </div>
