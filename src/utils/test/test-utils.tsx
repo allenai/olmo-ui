@@ -62,6 +62,7 @@ export const FakeQueryContextProvider = ({
         isToolCallingEnabled: false,
         userToolDefinitions: null,
         canCallTools: false,
+        selectedTools: [],
     };
 
     return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;
