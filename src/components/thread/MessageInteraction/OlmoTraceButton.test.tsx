@@ -39,7 +39,10 @@ describe('OlmoTraceButton', () => {
 
         render(
             <FakeAppContextProvider initialState={initialState}>
-                <FakeQueryContextProvider>
+                <FakeQueryContextProvider
+                    selectedModel={{
+                        infini_gram_index: 'olmoe-0125-1b-7b',
+                    }}>
                     <FakeThreadViewProvider>
                         <OlmoTraceButton messageId={messageId} />
                     </FakeThreadViewProvider>
@@ -71,7 +74,10 @@ describe('OlmoTraceButton', () => {
 
         render(
             <FakeAppContextProvider>
-                <FakeQueryContextProvider>
+                <FakeQueryContextProvider
+                    selectedModel={{
+                        infini_gram_index: 'olmoe-0125-1b-7b',
+                    }}>
                     <FakeThreadViewProvider>
                         <OlmoTraceButton messageId={messageId} />
                     </FakeThreadViewProvider>
