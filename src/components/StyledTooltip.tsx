@@ -5,7 +5,7 @@ import { ReactNode } from 'react';
 import { useColorMode } from './ColorModeProvider';
 import { useDesktopOrUp } from './dolma/shared';
 
-interface StyledTooltipProps extends Omit<TooltipProps, 'children'> {
+interface StyledTooltipProps extends Omit<TooltipProps, 'children' | 'arrow'> {
     desktopPlacement?: TooltipProps['placement'];
     children: ReactNode;
     arrow?: boolean;
@@ -24,19 +24,15 @@ const StyledTooltip = ({
     return (
         <Tooltip
             className={cx(colorMode, tooltipClass)}
+            arrow={arrow}
             {...props}
             placement={responsivePlacement}
             delay={50}
-            arrowClassName={!arrow ? noArrowClass : undefined}
         />
     );
 };
 
 export { StyledTooltip, type StyledTooltipProps };
-
-const noArrowClass = css({
-    display: 'none !important',
-});
 
 const tooltipClass = css({
     maxWidth: '[300px]',
