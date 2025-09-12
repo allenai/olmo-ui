@@ -1,18 +1,30 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import { Button, IconButton, Modal, ModalActions, Tab, TabPanel } from '@allenai/varnish-ui';
+import {
+    Button,
+    Checkbox,
+    IconButton,
+    Modal,
+    ModalActions,
+    Tab,
+    TabPanel,
+} from '@allenai/varnish-ui';
 import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { type ReactElement, useEffect, useState } from 'react';
+import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
 import type { Key } from 'react-aria-components';
-import { Control, useForm, UseFormSetValue } from 'react-hook-form';
+import {
+    Control,
+    useController,
+    type UseControllerProps,
+    useForm,
+    UseFormSetValue,
+} from 'react-hook-form';
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
-
-import { ControlledToolToggleTable } from './ToolToggleDialog';
 
 const modalBase = css({
     fontSize: 'sm',
@@ -229,6 +241,54 @@ const TabbedContent = ({ control, isDisabled, tools, setValue }: TabbedContentPr
 
     return (
         <varnishUi.Tabs onSelectionChange={setTabSelect} selectedKey={tabSelected} items={items} />
+    );
+};
+
+interface ControlledToggleTableProps {
+    control?: Omit<UseControllerProps<DataFields>, 'name'>;
+    tools: Model['available_tools'];
+}
+
+export const ControlledToolToggleTable = ({
+    control,
+    tools,
+}: ControlledToggleTableProps): ReactNode => {
+    const { field } = useController({
+        name: 'tools',
+        ...control,
+        defaultValue: [],
+        rules: {},
+    });
+
+    const handleToggle = (tool: string, isChecked: boolean) => {
+        const currentTools = field.value;
+        if (isChecked) {
+            if (!currentTools.includes(tool)) {
+                field.onChange([...currentTools, tool]);
+            }
+        } else {
+            field.onChange(currentTools.filter((t) => t !== tool));
+        }
+    };
+
+    return (
+        <div>
+            {(tools || []).map((tool) => (
+                <div
+                    key={tool.name}
+                    style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
+                    <Checkbox
+                        isSelected={field.value.includes(tool.name) || false}
+                        onChange={(isChecked) => {
+                            handleToggle(tool.name, isChecked);
+                        }}
+                        aria-label={`Toggle ${tool.name} tool`}
+                    />
+                    <span style={{ marginLeft: '8px' }}>{tool.name}</span>
+                    <span style={{ marginLeft: '8px' }}>{tool.description}</span>
+                </div>
+            ))}
+        </div>
     );
 };
 
