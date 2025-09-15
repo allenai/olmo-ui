@@ -47,7 +47,7 @@ type MultiModalFormValues = Partial<
 >;
 
 const mimeTypeRegex = /^[\w.-]+\/[\w+.-\\*]+$/;
-const urlRegex = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/;
+const urlRegex = /^(https?:\/\/)([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/;
 
 const MultiModalFields = (): ReactNode => {
     const formContext = useFormContext<MultiModalFormValues>();
