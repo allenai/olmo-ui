@@ -35,7 +35,7 @@ const selectedTools = ['get_random_number'];
 
 const availableTools = [
     { name: 'get_random_number', description: 'get a random number.' },
-    
+
     { name: 'name with spaces', description: 'get a random number.' },
     {
         name: 'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',

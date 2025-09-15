@@ -259,7 +259,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
         setSelectedTools(selectedSystemTools);
 
-        setIsToolCallingEnabled(hasUserTools(userToolDefinitions) || selectedTools.length > 0);
+        setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
     }, [threadId, selectedModel]);
 
     // Sync local state with any necessary global UI state
