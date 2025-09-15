@@ -8,6 +8,7 @@ import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
+import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
@@ -38,7 +39,6 @@ interface QueryFormControllerProps {
     canPauseThread: boolean;
     isLimitReached: boolean;
     remoteState?: RemoteState;
-    shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
 }
 
@@ -53,7 +53,6 @@ export const QueryFormController = ({
     canPauseThread,
     isLimitReached,
     remoteState,
-    shouldResetForm,
     fileUploadProps,
 }: QueryFormControllerProps) => {
     const navigation = useNavigation();
@@ -89,12 +88,9 @@ export const QueryFormController = ({
         }
     }, [formContext, navigation.state]);
 
-    // Clear form input after the client receive the first message(s)
-    useEffect(() => {
-        if (shouldResetForm) {
-            formContext.reset();
-        }
-    }, [shouldResetForm, formContext]);
+    useStreamEvent('onFirstMessage', () => {
+        formContext.reset();
+    });
 
     useEffect(() => {
         if (!areFilesAllowed) {

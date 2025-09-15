@@ -40,6 +40,13 @@ vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
 }));
 
+vi.mock('@/contexts/StreamEventRegistry', () => ({
+    useStreamEvent: vi.fn(),
+    StreamEventRegistryProvider: ({ children }: { children: React.ReactNode }) => children,
+    useStreamCallbackRegistry: vi.fn(),
+    createStreamCallbacks: vi.fn(),
+}));
+
 const mockUseStreamMessage = vi.mocked(useStreamMessage);
 
 beforeEach(() => {

@@ -242,12 +242,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
         setSelectedTools(selectedSystemTools);
 
-        if (threadId) {
-            setSelectedTools(getNonUserToolsFromThread(threadId).map((t) => t.name));
-        } else {
-            setSelectedTools(selectedModel?.available_tools?.map((t) => t.name) || []);
-        }
-
         setIsToolCallingEnabled(userTools !== undefined || selectedSystemTools.length > 0);
     }, [threadId, selectedModel]);
 
