@@ -87,7 +87,7 @@ export function FunctionDeclarationDialog({
     const { colorMode } = useColorMode();
     const [tabSelected, setTabSelect] = useState<Key>('user-functions');
 
-    const resolver: Resolver<DataFields> = async (data) => {
+    const resolver: Resolver<DataFields> = (data) => {
         const validJson = validateToolDefinitions(data.declaration);
         if (validJson === true) return { values: data, errors: {} };
 
@@ -112,7 +112,7 @@ export function FunctionDeclarationDialog({
     useEffect(() => {
         // Can't rely on default, if model changes we need to set the value.
         setValue('tools', selectedTools);
-    }, [selectedTools]);
+    }, [selectedTools, setValue]);
 
     const handleSave = handleSubmit((data) => {
         onSave(data);
