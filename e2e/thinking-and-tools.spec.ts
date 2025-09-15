@@ -20,6 +20,15 @@ test.describe('Thinking and tool calling', () => {
             'combine_number_and_unit'
         );
 
+        // internal tool call his collapsed by default
+        await expect(toolCallWidget.getByText('"number": 100')).toBeHidden();
+        await expect(toolCallWidget.getByText('"unit": "KiB"')).toBeHidden();
+
+        await expect(page.getByText('100 and KiB combined is 100KiB')).toBeHidden();
+
+        // expand internal tool call
+        await toolCallWidget.getByLabel('Expand tool call').click();
+
         await expect(toolCallWidget.getByText('"number": 100')).toBeVisible();
         await expect(toolCallWidget.getByText('"unit": "KiB"')).toBeVisible();
 
