@@ -67,6 +67,23 @@ const shouldShowCompatibilityWarning = (
     );
 };
 
+const hasUserTools = (toolJson: string | undefined) => {
+    if (!toolJson) {
+        return false;
+    }
+    try {
+        const parsed = JSON.parse(toolJson);
+
+        if (!Array.isArray(parsed)) {
+            return false;
+        }
+
+        return parsed.length > 0;
+    } catch {
+        return false;
+    }
+};
+
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
 
@@ -79,7 +96,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     );
 
     const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
-        userToolDefinitions !== undefined || selectedTools.length > 0
+        hasUserTools(userToolDefinitions) || selectedTools.length > 0
     );
 
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
@@ -242,7 +259,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
         setSelectedTools(selectedSystemTools);
 
-        setIsToolCallingEnabled(userTools !== undefined || selectedSystemTools.length > 0);
+        setIsToolCallingEnabled(hasUserTools(userToolDefinitions) || selectedTools.length > 0);
     }, [threadId, selectedModel]);
 
     // Sync local state with any necessary global UI state
