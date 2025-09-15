@@ -611,6 +611,11 @@ export type components = {
             /** @default null */
             readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
+             * Informationurl
+             * @default null
+             */
+            readonly informationUrl?: string | null;
+            /**
              * Internal
              * @default true
              */
@@ -684,6 +689,11 @@ export type components = {
             readonly id: string;
             /** @default null */
             readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /**
+             * Informationurl
+             * @default null
+             */
+            readonly informationUrl?: string | null;
             /**
              * Internal
              * @default true
@@ -1004,6 +1014,11 @@ export type components = {
             readonly id: string;
             /** @default null */
             readonly infini_gram_index?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /**
+             * Information Url
+             * @default null
+             */
+            readonly information_url?: string | null;
             /** Internal */
             readonly internal: boolean;
             /** Is Deprecated */
@@ -1120,6 +1135,11 @@ export type components = {
             readonly id: string;
             /** @default null */
             readonly infini_gram_index?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /**
+             * Information Url
+             * @default null
+             */
+            readonly information_url?: string | null;
             /** Internal */
             readonly internal: boolean;
             /** Is Deprecated */
@@ -1208,6 +1228,11 @@ export type components = {
             readonly id: string;
             /** @default null */
             readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /**
+             * Informationurl
+             * @default null
+             */
+            readonly informationUrl?: string | null;
             /** Internal */
             readonly internal: boolean;
             /**
@@ -1345,6 +1370,11 @@ export type components = {
             readonly id: string;
             /** @default null */
             readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /**
+             * Informationurl
+             * @default null
+             */
+            readonly informationUrl?: string | null;
             /** Internal */
             readonly internal: boolean;
             /** Modelidonhost */
@@ -1502,6 +1532,11 @@ export type components = {
             /** @default null */
             readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
             /**
+             * Informationurl
+             * @default null
+             */
+            readonly informationUrl?: string | null;
+            /**
              * Internal
              * @default true
              */
@@ -1573,6 +1608,11 @@ export type components = {
             readonly host: components['schemas']['ModelHost'];
             /** @default null */
             readonly infiniGramIndex?: components['schemas']['AvailableInfiniGramIndexId'] | null;
+            /**
+             * Informationurl
+             * @default null
+             */
+            readonly informationUrl?: string | null;
             /**
              * Internal
              * @default true

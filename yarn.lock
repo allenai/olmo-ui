@@ -12,29 +12,29 @@
   resolved "https://registry.yarnpkg.com/@allenai/eslint-config-varnish/-/eslint-config-varnish-2.0.3.tgz#705cab3be01fbea16d56dc457e237c6976eac4ad"
   integrity sha512-KguMr+/BTWWHOsNlnPNMkvddOSEV/zQq9/tN3Xl+edsN3CrUPfCCt0m0vZezi8RzSjTCAJ2E7CwoZiIbQwWJAw==
 
-"@allenai/varnish-panda-runtime@^1.2.13-alpha.5":
-  version "1.2.13-alpha.5"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.2.13-alpha.5.tgz#c2f3f67f99f5c36bcbc667028203b0e81de608d2"
-  integrity sha512-7n/2Azcr0dsdNJkW/qDDUiSttLn+w32168uUEyTRs23ryALMpTQhUTYgfCjXicgiOdG66U4P8EVfvVWItWgSWg==
+"@allenai/varnish-panda-runtime@^1.2.13-alpha.6":
+  version "1.2.13-alpha.6"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-panda-runtime/-/varnish-panda-runtime-1.2.13-alpha.6.tgz#3b2632d236df880c733219bf44e525ad7c620407"
+  integrity sha512-50Ab8JkQkLTFOnYuBCNAvPSpi7APItuQM7LCSclmXmjENGJ6A8FqSvl0b1C1zsDtM575HrYVHvIq004HraJmSA==
 
 "@allenai/varnish-theme@^3.0.7-alpha.4":
   version "3.0.7-alpha.4"
   resolved "https://registry.yarnpkg.com/@allenai/varnish-theme/-/varnish-theme-3.0.7-alpha.4.tgz#81e9966ff9d434652b169293db9b0ec0ebde7610"
   integrity sha512-SX5XzmP8ivhlvJ8B1WqvRKwiO9thvqetBTriqWwS05/jMkJ248wk2/DgNgnTtNUxyc/+EBDsdgDNYdkRhzx60Q==
 
-"@allenai/varnish-ui@^1.2.13-alpha.5":
-  version "1.2.13-alpha.5"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish-ui/-/varnish-ui-1.2.13-alpha.5.tgz#4176d82072183700fea882614f3928322fe8b631"
-  integrity sha512-AikniMKv3G4BOgLSoM5DoJnxP2w8Yefg4Hgsn8kRd/krW8KhcMQeEd0K1tEwtNGtB+g8pVnJPtv1lX54r+nfxw==
+"@allenai/varnish-ui@^1.2.13-alpha.6":
+  version "1.2.13-alpha.6"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish-ui/-/varnish-ui-1.2.13-alpha.6.tgz#5c7ce1919b14514fd0366e90caf37ffe7f498223"
+  integrity sha512-89WsTLEqXHNgZ4KjtAAhLK/oXSIvnKjbyo0r+aNwAxYTUzUVb8xtnejprR7wF3RdEo606lVTxqIJt9k3Yy762Q==
   dependencies:
     "@allenai/varnish-theme" "^3.0.7-alpha.4"
     react-markdown "^10.1.0"
-    react-syntax-highlighter "^15.6.1"
+    react-syntax-highlighter "^15.6.6"
 
-"@allenai/varnish2@^3.0.7-alpha.4":
-  version "3.0.7-alpha.4"
-  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-3.0.7-alpha.4.tgz#29195fbf9766a14ff004a6affae07514b3cdc688"
-  integrity sha512-fDLhAgcAlAHub0Eovciu8/qXo/f6x/NJHVIZh9f4QIj3aECyP9AbveyUfV9Ikswcv2xId0C6vp11mjjhE1agig==
+"@allenai/varnish2@^3.0.7-alpha.5":
+  version "3.0.7-alpha.5"
+  resolved "https://registry.yarnpkg.com/@allenai/varnish2/-/varnish2-3.0.7-alpha.5.tgz#485a5c041d69dd906ee5b039573b4f13adfcea19"
+  integrity sha512-6deo4D4xUj1TsAOcUNJkc38fW8af9k1A7C6LY+5qghtLlcmh1JDXq9IQ/btMv0wKtn8WQsHOPD325n8bQepNXg==
   dependencies:
     "@allenai/varnish-theme" "^3.0.7-alpha.4"
     react-markdown "^9.0.1"
@@ -10346,10 +10346,10 @@ react-syntax-highlighter@^15.5.0:
     prismjs "^1.27.0"
     refractor "^3.6.0"
 
-react-syntax-highlighter@^15.6.1:
-  version "15.6.3"
-  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-15.6.3.tgz#8cfb23cd7d0e18a3546b88e530cec8efd77146ff"
-  integrity sha512-HebdyA9r20hgmA0q8RyRJ4c/vB4E6KL2HeWb5MNjU3iJEiT2w9jfU2RJsmI6f3Cy3SGE5tm0AIkBzM/E7e9/lQ==
+react-syntax-highlighter@^15.6.6:
+  version "15.6.6"
+  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-15.6.6.tgz#77417c81ebdc554300d0332800a2e1efe5b1190b"
+  integrity sha512-DgXrc+AZF47+HvAPEmn7Ua/1p10jNoVZVI/LoPiYdtY+OM+/nG5yefLHKJwdKqY1adMuHFbeyBaG9j64ML7vTw==
   dependencies:
     "@babel/runtime" "^7.3.1"
     highlight.js "^10.4.1"

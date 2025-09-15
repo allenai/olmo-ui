@@ -11,6 +11,7 @@ export const createMockModel = (id: string, overrides: Partial<Model> = {}): Mod
         id,
         name: `${id} Model`,
         description: `Test model ${id}`,
+        information_url: 'https://allenai.org',
         accepts_files: false,
         is_visible: true,
         is_deprecated: false,

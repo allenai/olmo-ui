@@ -42,6 +42,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
             name: 'Model',
             id: 'model',
             description: 'description',
+            information_url: 'https://allenai.org',
             host: 'test_backend',
             internal: false,
             is_deprecated: false,

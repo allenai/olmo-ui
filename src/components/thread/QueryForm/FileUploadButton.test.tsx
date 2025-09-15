@@ -24,6 +24,7 @@ const defaultModel: Model = {
     accepted_file_types: ['image/png'],
     prompt_type: 'multi_modal',
     description: '',
+    information_url: 'https://allenai.org',
     host: 'modal',
     internal: false,
     is_deprecated: false,
