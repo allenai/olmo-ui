@@ -306,14 +306,29 @@ interface ControlledToggleTableProps {
 const toolNameGrid = css({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '2',
+    gap: '4',
+    paddingX: '2',
+    paddingY: '4'
 });
 
 const toolName = css({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    fontSize: 'md',
+    fontWeight: 'medium',
     maxWidth: '[300px]',
+});
+
+
+const realToolName = css({
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '[300px]',
+    marginLeft: '[22px]',
+    fontSize: 'sm',
+    color: 'extra-dark-teal.70'
 });
 
 export const ControlledToolToggleTable = ({
@@ -342,6 +357,7 @@ export const ControlledToolToggleTable = ({
     return (
         <div className={toolNameGrid}>
             {(tools || []).map((tool) => (
+                <div>
                 <Checkbox
                     key={tool.name}
                     isDisabled={isDisabled}
@@ -350,13 +366,30 @@ export const ControlledToolToggleTable = ({
                         handleToggle(tool.name, isChecked);
                     }}
                     aria-label={`Toggle ${tool.name} tool`}>
-                    <span className={toolName}>{tool.name}</span>
+                    <span className={toolName}>{toSpacedCase(tool.name)}</span>
                 </Checkbox>
+                    <div className={realToolName}>{tool.name}</div>
+            </div>
             ))}
         </div>
     );
 };
 
+
+function toSpacedCase(str: string) {
+  return str
+    // Handle camelCase: insert space before uppercase letters
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    // Handle snake_case: replace underscores with spaces
+    .replace(/_/g, ' ')
+    // Convert to lowercase
+    .toLowerCase()
+    // Capitalize the first letter
+    .replace(/^./, char => char.toUpperCase())
+    // Clean up any extra spaces
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 const validateToolDefinitions = (value: string | string[]) => {
     if (Array.isArray(value)) {
         return 'Expected string not array';
