@@ -14,6 +14,18 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Default: Story = {
+    args: {
+        toolCall: {
+            args: '{ "firstName": "Roger", "lastName": "Moore" }',
+            toolCallId: 'tool-call-id',
+            toolName: 'leetName',
+            toolSource: 'internal',
+        },
+        answer: 'r0g3r m007re',
+    },
+};
+
 export const WithParameters: Story = {
     args: {
         toolCall: {
@@ -23,6 +35,7 @@ export const WithParameters: Story = {
             toolSource: 'internal',
         },
         answer: '74yl0r bl4n70n',
+        defaultExpanded: true,
     },
 };
 
@@ -42,6 +55,7 @@ export const WithLongResponse: Story = {
             toolSource: 'internal',
         },
         answer: randomString(20000),
+        defaultExpanded: true,
     },
 };
 
@@ -54,6 +68,7 @@ export const WithEmptyParameters: Story = {
             toolSource: 'internal',
         },
         answer: '42',
+        defaultExpanded: true,
     },
 };
 

@@ -15,14 +15,17 @@ import { ToolCallResult } from './ToolCallResult';
 interface ToolCallWidgetProps {
     toolCall: SchemaToolCall;
     answer?: string;
+    defaultExpanded?: boolean;
 }
 
-export const ToolCallWidget = ({ toolCall, answer }: ToolCallWidgetProps) => {
+export const ToolCallWidget = ({ toolCall, answer, defaultExpanded }: ToolCallWidgetProps) => {
     const mappedArgs = mapToolCallArgs(toolCall);
     const stringArgs = JSON.stringify(mappedArgs, undefined, 2);
 
+    const defaultWidgetExpanded = defaultExpanded ?? toolCall.toolSource === 'user_defined';
+
     return (
-        <CollapsibleWidgetBase defaultExpanded data-widget-type="tool-call">
+        <CollapsibleWidgetBase defaultExpanded={defaultWidgetExpanded} data-widget-type="tool-call">
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
                 startAdornment={<DataObject />}
