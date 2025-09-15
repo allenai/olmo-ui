@@ -141,7 +141,9 @@ export const updateCacheWithMessagePart = async (
     }
     // Our first message callbacks need to run after we set the message in the cache
     // Make sure this stays below any cache setting
-    onFirstMessage?.(threadViewId, message);
+    if (isFirstMessage(message)) {
+        onFirstMessage?.(threadViewId, message);
+    }
 
     if (currentThreadId) {
         const { queryKey } = threadOptions(currentThreadId);
