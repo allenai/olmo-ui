@@ -52,11 +52,26 @@ const exampleButtons = css({
 });
 
 const modalInput = css({
+    flex: '1',
     '& textarea': {
         fontFamily: 'monospace',
         fontSize: 'md',
         textWrap: 'nowrap',
     },
+    '& > div:first-of-type': {
+        // hack to select div inside of varnish text area
+        height: '[100%]',
+    },
+});
+
+const fullHeight = css({ height: '[100%]' });
+
+const tabHeight = css({ height: '[min(60dvh, 600px)]' });
+
+const textAreaContainer = css({
+    display: 'flex',
+    flexDirection: 'column',
+    height: '[100%]',
 });
 
 interface DataFields {
@@ -206,48 +221,53 @@ const TabbedContent = ({
             header: (props) => <varnishUi.Tab {...props}>User Defined Tools</varnishUi.Tab>,
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
-                    <p className={labelStyle}>
-                        Enter a JSON array of tool declarations the model can call. Each tool should
-                        include a name, description, and JSON Schema parameters. Start with an
-                        example below or see the API docs for more.
-                    </p>
-                    <ControlledTextArea
-                        className={modalInput}
-                        name="declaration"
-                        isDisabled={isDisabled}
-                        minRows={18}
-                        maxRows={18}
-                        controllerProps={{
-                            control,
-                            rules: {
-                                validate: validateToolDefinitions,
-                            },
-                        }}
-                    />
+                    <div className={textAreaContainer}>
+                        <p className={labelStyle}>
+                            Enter a JSON array of tool declarations the model can call. Each tool
+                            should include a name, description, and JSON Schema parameters. Start
+                            with an example below or see the API docs for more.
+                        </p>
+                        <ControlledTextArea
+                            className={modalInput}
+                            textAreaClassName={fullHeight}
+                            growContainerClassName={fullHeight}
+                            name="declaration"
+                            isDisabled={isDisabled}
+                            controllerProps={{
+                                control,
+                                rules: {
+                                    validate: validateToolDefinitions,
+                                },
+                            }}
+                        />
 
-                    {!isDisabled && (
-                        <ModalActions className={exampleButtons} fullWidth>
-                            <Button
-                                size="small"
-                                color="secondary"
-                                onClick={() => {
-                                    setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
-                                }}>
-                                getWeather
-                            </Button>
-                            <Button
-                                size="small"
-                                color="secondary"
-                                onClick={() => {
-                                    setValue(
-                                        'declaration',
-                                        EXAMPLE_DECLARATIONS.getStockIndex.trim()
-                                    );
-                                }}>
-                                getStockIndex
-                            </Button>
-                        </ModalActions>
-                    )}
+                        {!isDisabled && (
+                            <ModalActions className={exampleButtons} fullWidth>
+                                <Button
+                                    size="small"
+                                    color="secondary"
+                                    onClick={() => {
+                                        setValue(
+                                            'declaration',
+                                            EXAMPLE_DECLARATIONS.getWeather.trim()
+                                        );
+                                    }}>
+                                    getWeather
+                                </Button>
+                                <Button
+                                    size="small"
+                                    color="secondary"
+                                    onClick={() => {
+                                        setValue(
+                                            'declaration',
+                                            EXAMPLE_DECLARATIONS.getStockIndex.trim()
+                                        );
+                                    }}>
+                                    getStockIndex
+                                </Button>
+                            </ModalActions>
+                        )}
+                    </div>
                 </varnishUi.TabPanel>
             ),
         },
@@ -268,7 +288,12 @@ const TabbedContent = ({
     ] as const;
 
     return (
-        <varnishUi.Tabs onSelectionChange={setTabSelect} selectedKey={tabSelected} items={items} />
+        <varnishUi.Tabs
+            className={tabHeight}
+            onSelectionChange={setTabSelect}
+            selectedKey={tabSelected}
+            items={items}
+        />
     );
 };
 

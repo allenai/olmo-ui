@@ -9,13 +9,13 @@ const textAreaStyle = css({
     width: '[100%]',
 });
 
-type FullWidthTextAreaProps = Omit<TextAreaProps, 'growContainerClassName' | 'fullWidth'>;
+type FullWidthTextAreaProps = Omit<TextAreaProps, 'fullWidth'>;
 
 export function FullWidthTextArea(props: FullWidthTextAreaProps) {
     return (
         <TextArea
             {...props}
-            growContainerClassName={growContainerStyle}
+            growContainerClassName={cx(growContainerStyle, props.growContainerClassName)}
             textAreaClassName={cx(textAreaStyle, props.textAreaClassName)}
         />
     );
