@@ -338,6 +338,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             threadId,
             userToolDefinitions,
             selectedTools,
+            isToolCallingEnabled,
         ]
     );
 
