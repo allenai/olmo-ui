@@ -5,11 +5,7 @@ import { useQueryContext } from '@/contexts/QueryContext';
 
 import { QueryFormController, QueryFormValues } from './QueryFormController';
 
-interface QueryFormProps {
-    shouldResetForm?: boolean;
-}
-
-export const QueryForm = ({ shouldResetForm }: QueryFormProps): JSX.Element => {
+export const QueryForm = (): JSX.Element => {
     const queryContext = useQueryContext();
 
     const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
@@ -27,7 +23,6 @@ export const QueryForm = ({ shouldResetForm }: QueryFormProps): JSX.Element => {
             canPauseThread={queryContext.canPauseThread}
             isLimitReached={queryContext.isLimitReached}
             remoteState={queryContext.remoteState}
-            shouldResetForm={shouldResetForm}
             fileUploadProps={queryContext.fileUploadProps}
         />
     );

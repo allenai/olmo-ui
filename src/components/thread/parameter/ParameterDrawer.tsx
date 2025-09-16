@@ -101,11 +101,14 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 export const ParameterContent = () => {
     const {
         threadStarted,
+        availableTools,
         canCallTools,
         inferenceOpts,
         updateInferenceOpts,
         userToolDefinitions,
         updateUserToolDefinitions,
+        updateSelectedTools,
+        selectedTools,
         isToolCallingEnabled,
         updateIsToolCallingEnabled,
     } = useQueryContext();
@@ -184,12 +187,12 @@ export const ParameterContent = () => {
                     <ParametersListItem>
                         <ParameterToggle
                             value={isToolCallingEnabled}
-                            label="Function calling"
+                            label="Tool calling"
                             dialogContent={FUNCTION_CALLING_INFO}
-                            dialogTitle="Function Calling"
+                            dialogTitle="Tool Calling"
                             disableToggle={!canCreateToolDefinitions}
                             disableEditButton={threadStarted ? false : !isToolCallingEnabled}
-                            id="function-calling"
+                            id="tool-calling"
                             onEditClick={() => {
                                 setShouldShowFunctionDialog(true);
                             }}
@@ -211,20 +214,23 @@ export const ParameterContent = () => {
                 />
                 <FunctionDeclarationDialog
                     jsonData={userToolDefinitions || undefined}
+                    availableTools={availableTools}
+                    selectedTools={selectedTools}
                     isDisabled={threadStarted}
                     isOpen={shouldShowFunctionDialog}
                     onClose={() => {
                         setShouldShowFunctionDialog(false);
                     }}
-                    onSave={({ declaration }) => {
+                    onSave={({ declaration, tools }) => {
                         analyticsClient.trackParametersUpdate({
                             parameterUpdated: 'tool_definitions',
                         });
                         updateUserToolDefinitions(declaration);
+                        updateSelectedTools(tools);
                         addSnackMessage({
                             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
                             type: SnackMessageType.Brief,
-                            message: 'Function Definition Saved',
+                            message: 'Tools Saved',
                         });
                     }}
                 />

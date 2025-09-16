@@ -14,6 +14,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     remoteState: RemoteState.Loaded,
     shouldResetForm: false,
     onModelChange: fn(),
+    availableTools: [],
     getThreadViewModel: () => undefined,
     transform: fn(),
     onSubmit: fn(),
@@ -24,10 +25,12 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     submitToThreadView: fn(),
     updateIsToolCallingEnabled: fn(),
     updateUserToolDefinitions: fn(),
+    updateSelectedTools: fn(),
     threadStarted: false,
     isToolCallingEnabled: false,
     userToolDefinitions: null,
     canCallTools: false,
+    selectedTools: [],
 
     fileUploadProps: {
         isFileUploadDisabled: true,

@@ -1,4 +1,12 @@
-type AllowedFormValues = string | number | File | null | undefined | boolean | FileList;
+type AllowedFormValues =
+    | string
+    | number
+    | File
+    | null
+    | undefined
+    | boolean
+    | FileList
+    | readonly string[];
 
 export const mapValueToFormData = (
     formData: FormData,

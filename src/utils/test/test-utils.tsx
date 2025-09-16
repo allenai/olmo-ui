@@ -33,6 +33,7 @@ export const FakeQueryContextProvider = ({
         placeholderText,
         areFilesAllowed,
         availableModels,
+        availableTools: [],
         canPauseThread: false,
         isLimitReached,
         remoteState: undefined,
@@ -56,10 +57,12 @@ export const FakeQueryContextProvider = ({
         submitToThreadView: () => new Promise(() => null),
         updateIsToolCallingEnabled: () => {},
         updateUserToolDefinitions: () => {},
+        updateSelectedTools: () => {},
         threadStarted: false,
         isToolCallingEnabled: false,
         userToolDefinitions: null,
         canCallTools: false,
+        selectedTools: [],
     };
 
     return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;

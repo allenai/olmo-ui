@@ -33,6 +33,10 @@ import {
     useStreamEvent,
 } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
+import {
+    getNonUserToolsFromThread,
+    getUserToolDefinitionsFromThread,
+} from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -63,17 +67,21 @@ const shouldShowCompatibilityWarning = (
     );
 };
 
-const getUserToolDefinitionsFromThread = (threadId: string | undefined) => {
-    if (!threadId) {
-        return;
+const hasUserTools = (toolJson: string | undefined) => {
+    if (!toolJson) {
+        return false;
     }
+    try {
+        const parsed = JSON.parse(toolJson);
 
-    const toolDefs = getThread(threadId)?.messages.at(-1)?.toolDefinitions || null;
-    const userToolDefs = toolDefs
-        ?.filter((def) => def.toolSource === 'user_defined')
-        .map(({ toolSource, ...def }) => def); // Remove toolSource property
+        if (!Array.isArray(parsed)) {
+            return false;
+        }
 
-    return userToolDefs ? JSON.stringify(userToolDefs, null, 2) : undefined;
+        return parsed.length > 0;
+    } catch {
+        return false;
+    }
 };
 
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
@@ -82,9 +90,15 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThread(threadId)
     );
-    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
-        userToolDefinitions !== undefined
+
+    const [selectedTools, setSelectedTools] = useState<string[]>(
+        getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
+
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
+        hasUserTools(userToolDefinitions) || selectedTools.length > 0
+    );
+
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -236,12 +250,17 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     }, [threadId]);
 
     useEffect(() => {
-        setUserToolDefinitions(getUserToolDefinitionsFromThread(threadId));
-        if (!threadId) {
-            // reset on new thread
-            setIsToolCallingEnabled(false);
-        }
-    }, [threadId]);
+        const userTools = getUserToolDefinitionsFromThread(threadId);
+        setUserToolDefinitions(userTools);
+
+        const selectedSystemTools = threadId
+            ? getNonUserToolsFromThread(threadId).map((t) => t.name)
+            : selectedModel?.available_tools?.map((t) => t.name) || [];
+
+        setSelectedTools(selectedSystemTools);
+
+        setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
+    }, [threadId, selectedModel]);
 
     // Sync local state with any necessary global UI state
     useEffect(() => {
@@ -259,6 +278,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const updateUserToolDefinitions = useCallback((jsonDefinition: string) => {
         setUserToolDefinitions(jsonDefinition);
+    }, []);
+
+    const updateSelectedTools = useCallback((tools: string[]) => {
+        setSelectedTools(tools);
     }, []);
 
     const updateIsToolCallingEnabled = useCallback((enabled: boolean) => {
@@ -308,6 +331,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 threadViewId,
                 inferenceOpts,
                 userToolDefinitions,
+                selectedTools,
+                isToolCallingEnabled,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -323,6 +348,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             streamMessage.onFirstMessage,
             threadId,
             userToolDefinitions,
+            selectedTools,
+            isToolCallingEnabled,
         ]
     );
 
@@ -369,6 +396,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             autofocus,
             placeholderText,
             canCallTools,
+            availableTools: selectedModel?.available_tools,
             isToolCallingEnabled,
             userToolDefinitions,
             areFilesAllowed,
@@ -398,6 +426,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             submitToThreadView,
             updateUserToolDefinitions,
             updateIsToolCallingEnabled,
+            updateSelectedTools,
+            selectedTools,
         };
     }, [
         canSubmit,
@@ -422,6 +452,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         submitToThreadView,
         updateUserToolDefinitions,
         updateIsToolCallingEnabled,
+        updateSelectedTools,
+        selectedTools,
     ]);
 
     return (

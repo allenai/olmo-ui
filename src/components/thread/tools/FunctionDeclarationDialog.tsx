@@ -1,9 +1,28 @@
 import { css, cx } from '@allenai/varnish-panda-runtime/css';
-import { Button, IconButton, Modal, ModalActions } from '@allenai/varnish-ui';
+import {
+    Button,
+    Checkbox,
+    IconButton,
+    Modal,
+    ModalActions,
+    Tab,
+    TabPanel,
+} from '@allenai/varnish-ui';
+import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { useForm } from 'react-hook-form';
+import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
+import type { Key } from 'react-aria-components';
+import {
+    Control,
+    Resolver,
+    useController,
+    type UseControllerProps,
+    useForm,
+    UseFormSetValue,
+} from 'react-hook-form';
 import * as z from 'zod';
 
+import { Model } from '@/api/playgroundApi/additionalTypes';
 import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
@@ -33,18 +52,35 @@ const exampleButtons = css({
 });
 
 const modalInput = css({
+    flex: '1',
     '& textarea': {
         fontFamily: 'monospace',
         fontSize: 'md',
         textWrap: 'nowrap',
     },
+    '& > div:first-of-type': {
+        // hack to select div inside of varnish text area
+        height: '[100%]',
+    },
+});
+
+const fullHeight = css({ height: '[100%]' });
+
+const tabHeight = css({ height: '[min(60dvh, 600px)]' });
+
+const textAreaContainer = css({
+    display: 'flex',
+    flexDirection: 'column',
+    height: '[100%]',
 });
 
 interface DataFields {
     declaration: string;
+    tools: string[];
 }
-
 export interface FunctionDeclarationDialogProps {
+    availableTools: Model['available_tools'];
+    selectedTools: string[];
     jsonData?: string;
     isOpen?: boolean;
     isDisabled?: boolean;
@@ -54,7 +90,9 @@ export interface FunctionDeclarationDialogProps {
 }
 
 export function FunctionDeclarationDialog({
-    jsonData = '',
+    jsonData = '[]',
+    availableTools: tools,
+    selectedTools,
     isOpen,
     isDisabled,
     onSave,
@@ -62,12 +100,34 @@ export function FunctionDeclarationDialog({
     onClose,
 }: FunctionDeclarationDialogProps) {
     const { colorMode } = useColorMode();
+    const [tabSelected, setTabSelect] = useState<Key>('user-functions');
+
+    const resolver: Resolver<DataFields> = (data) => {
+        const validJson = validateToolDefinitions(data.declaration);
+        if (validJson === true) return { values: data, errors: {} };
+
+        setTabSelect('user-functions');
+        return {
+            values: {},
+            errors: {
+                declaration: { type: 'value', message: validJson },
+            },
+        };
+    };
+
     const { handleSubmit, reset, setValue, control } = useForm<DataFields>({
         values: {
             declaration: jsonData,
+            tools: (tools || []).map((t) => t.name),
         },
         mode: 'onSubmit',
+        resolver,
     });
+
+    useEffect(() => {
+        // Can't rely on default, if model changes we need to set the value.
+        setValue('tools', selectedTools);
+    }, [selectedTools, setValue]);
 
     const handleSave = handleSubmit((data) => {
         onSave(data);
@@ -88,80 +148,259 @@ export function FunctionDeclarationDialog({
             isDismissable
             fullWidth
             size="large"
-            heading="Function Declarations"
+            heading="Tool declarations"
             headingClassName={modalHeading}
             closeButton={
-                <IconButton onClick={onClose} aria-label="Close function declarations dialog">
+                <IconButton onClick={onClose} aria-label="Close tool declarations dialog">
                     <CloseIcon />
                 </IconButton>
             }
             buttons={
                 <ModalActions fullWidth>
                     <Button
-                        color="secondary"
                         shape="rounded"
+                        color="secondary"
                         onClick={handleReset}
                         aria-label="Reset form"
                         isDisabled={isDisabled}>
                         Reset
                     </Button>
                     <Button
-                        color="secondary"
                         shape="rounded"
+                        color="secondary"
                         variant="contained"
                         type="submit"
                         form={formId}
-                        aria-label="Save function declarations"
+                        aria-label="Save tool declarations"
                         isDisabled={isDisabled}>
                         Save
                     </Button>
                 </ModalActions>
             }>
             <form id={formId} onSubmit={handleSave}>
-                <p className={labelStyle}>
-                    Enter a JSON array of function declarations the model can call. Each function
-                    should include a name, description, and JSON Schema parameters. Start with an
-                    example below or see the API docs for more.
-                </p>
-                {!isDisabled && (
-                    <ModalActions className={exampleButtons} fullWidth>
-                        <Button
-                            size="small"
-                            color="secondary"
-                            onClick={() => {
-                                setValue('declaration', EXAMPLE_DECLARATIONS.getWeather.trim());
-                            }}>
-                            getWeather
-                        </Button>
-                        <Button
-                            size="small"
-                            color="secondary"
-                            onClick={() => {
-                                setValue('declaration', EXAMPLE_DECLARATIONS.getStockIndex.trim());
-                            }}>
-                            getStockIndex
-                        </Button>
-                    </ModalActions>
-                )}
-                <ControlledTextArea
-                    className={modalInput}
-                    name="declaration"
+                <TabbedContent
+                    tabSelected={tabSelected}
+                    setTabSelect={setTabSelect}
                     isDisabled={isDisabled}
-                    minRows={18}
-                    maxRows={18}
-                    controllerProps={{
-                        control,
-                        rules: {
-                            validate: validateToolDefinitions,
-                        },
-                    }}
+                    control={control}
+                    tools={tools}
+                    setValue={setValue}
                 />
             </form>
         </Modal>
     );
 }
 
-const validateToolDefinitions = (value: string) => {
+type Items = {
+    id: string;
+    header: (props?: React.ComponentProps<typeof Tab>) => ReactElement;
+    content: (props?: React.ComponentProps<typeof TabPanel>) => ReactElement;
+    isDisabled?: boolean;
+};
+
+type TabbedContentProps = {
+    tabSelected: Key;
+    setTabSelect: (t: Key) => void;
+    isDisabled?: boolean;
+    control: Control<DataFields>;
+    tools: Model['available_tools'];
+    setValue: UseFormSetValue<DataFields>;
+};
+
+const TabbedContent = ({
+    control,
+    isDisabled,
+    tools,
+    setValue,
+    setTabSelect,
+    tabSelected,
+}: TabbedContentProps) => {
+    const items: Items[] = [
+        {
+            id: 'user-functions',
+            header: (props) => <varnishUi.Tab {...props}>User defined tools</varnishUi.Tab>,
+            content: (props) => (
+                <varnishUi.TabPanel {...props}>
+                    <div className={textAreaContainer}>
+                        <p className={labelStyle}>
+                            Enter a JSON array of tool declarations the model can call. Each tool
+                            should include a name, description, and JSON Schema parameters. Start
+                            with an example below or see the API docs for more.
+                        </p>
+                        <ControlledTextArea
+                            className={modalInput}
+                            textAreaClassName={fullHeight}
+                            growContainerClassName={fullHeight}
+                            name="declaration"
+                            isDisabled={isDisabled}
+                            controllerProps={{
+                                control,
+                                rules: {
+                                    validate: validateToolDefinitions,
+                                },
+                            }}
+                        />
+
+                        {!isDisabled && (
+                            <ModalActions className={exampleButtons} fullWidth>
+                                <Button
+                                    size="small"
+                                    color="secondary"
+                                    onClick={() => {
+                                        setValue(
+                                            'declaration',
+                                            EXAMPLE_DECLARATIONS.getWeather.trim()
+                                        );
+                                    }}>
+                                    getWeather
+                                </Button>
+                                <Button
+                                    size="small"
+                                    color="secondary"
+                                    onClick={() => {
+                                        setValue(
+                                            'declaration',
+                                            EXAMPLE_DECLARATIONS.getStockIndex.trim()
+                                        );
+                                    }}>
+                                    getStockIndex
+                                </Button>
+                            </ModalActions>
+                        )}
+                    </div>
+                </varnishUi.TabPanel>
+            ),
+        },
+        {
+            id: 'system-functions',
+            header: (props) => <varnishUi.Tab {...props}>System tools</varnishUi.Tab>,
+            content: (props) => (
+                <varnishUi.TabPanel {...props}>
+                    <div className={textAreaContainer}>
+                        <p className={labelStyle}>Tools below will be added to the conversation.</p>
+                        <ControlledToolToggleTable
+                            isDisabled={isDisabled}
+                            control={{ control }}
+                            tools={tools}
+                        />
+                    </div>
+                </varnishUi.TabPanel>
+            ),
+        },
+    ] as const;
+
+    return (
+        <varnishUi.Tabs
+            className={tabHeight}
+            onSelectionChange={setTabSelect}
+            selectedKey={tabSelected}
+            items={items}
+        />
+    );
+};
+
+interface ControlledToggleTableProps {
+    control?: Omit<UseControllerProps<DataFields>, 'name'>;
+    tools: Model['available_tools'];
+    isDisabled?: boolean;
+}
+
+const toolNameGrid = css({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '4',
+    paddingX: '3',
+    paddingY: '3',
+    borderWidth: '1',
+    borderStyle: 'solid',
+    borderColor: 'elements.faded.stroke', // or 'text'
+    borderRadius: 'sm',
+    alignContent: 'start',
+    flex: '1',
+});
+
+const toolName = css({
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontSize: 'md',
+    fontWeight: 'medium',
+    maxWidth: '[300px]',
+});
+
+const realToolName = css({
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '[300px]',
+    marginLeft: '[22px]',
+    fontSize: 'sm',
+});
+
+export const ControlledToolToggleTable = ({
+    control,
+    tools,
+    isDisabled,
+}: ControlledToggleTableProps): ReactNode => {
+    const { field } = useController({
+        name: 'tools',
+        ...control,
+        defaultValue: [],
+        rules: {},
+    });
+
+    const handleToggle = (tool: string, isChecked: boolean) => {
+        const currentTools = field.value;
+        if (isChecked) {
+            if (!currentTools.includes(tool)) {
+                field.onChange([...currentTools, tool]);
+            }
+        } else {
+            field.onChange(currentTools.filter((t) => t !== tool));
+        }
+    };
+
+    return (
+        <div className={toolNameGrid}>
+            {(tools || []).map((tool) => (
+                <div key={tool.name}>
+                    <Checkbox
+                        isDisabled={isDisabled}
+                        isSelected={field.value.includes(tool.name) || false}
+                        onChange={(isChecked) => {
+                            handleToggle(tool.name, isChecked);
+                        }}
+                        aria-label={`Toggle ${tool.name} tool`}>
+                        <span className={toolName}>{toSpacedCase(tool.name)}</span>
+                    </Checkbox>
+                    <div className={realToolName}>{tool.name}</div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+function toSpacedCase(str: string) {
+    return (
+        str
+            // Handle camelCase: insert space before uppercase letters
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            // Handle snake_case: replace underscores with spaces
+            .replace(/_/g, ' ')
+            // Convert to lowercase
+            .toLowerCase()
+            // Capitalize the first letter
+            .replace(/^./, (char) => char.toUpperCase())
+            // Clean up any extra spaces
+            .replace(/\s+/g, ' ')
+            .trim()
+    );
+}
+const validateToolDefinitions = (value: string | string[]) => {
+    if (Array.isArray(value)) {
+        return 'Expected string not array';
+    }
+
     const definitionSchema = z.strictObject({
         name: z.string().min(1, { error: 'Name is required' }),
         description: z.string().min(1, { error: 'Description is required' }),
