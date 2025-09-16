@@ -182,7 +182,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
                     stop: adjustedInferenceOpts.stop ?? undefined,
                     toolDefinitions: toolDefinitions ?? undefined,
-                    selectedTools: selectedTools ?? undefined,
+                    selectedTools,
                     enableToolCalling: isToolCallingEnabled,
                 },
                 bodySerializer: (body) => {

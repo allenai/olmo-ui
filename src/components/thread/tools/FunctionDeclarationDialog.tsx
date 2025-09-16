@@ -159,6 +159,7 @@ export function FunctionDeclarationDialog({
                 <ModalActions fullWidth>
                     <Button
                         shape="rounded"
+                        color="secondary"
                         onClick={handleReset}
                         aria-label="Reset form"
                         isDisabled={isDisabled}>
@@ -166,6 +167,7 @@ export function FunctionDeclarationDialog({
                     </Button>
                     <Button
                         shape="rounded"
+                        color="secondary"
                         variant="contained"
                         type="submit"
                         form={formId}
@@ -216,7 +218,7 @@ const TabbedContent = ({
     const items: Items[] = [
         {
             id: 'user-functions',
-            header: (props) => <varnishUi.Tab {...props}>User Defined Tools</varnishUi.Tab>,
+            header: (props) => <varnishUi.Tab {...props}>User defined tools</varnishUi.Tab>,
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
                     <div className={textAreaContainer}>
@@ -271,7 +273,7 @@ const TabbedContent = ({
         },
         {
             id: 'system-functions',
-            header: (props) => <varnishUi.Tab {...props}>System Tools</varnishUi.Tab>,
+            header: (props) => <varnishUi.Tab {...props}>System tools</varnishUi.Tab>,
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
                     <div className={textAreaContainer}>
