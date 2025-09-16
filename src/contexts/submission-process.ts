@@ -138,8 +138,10 @@ export const updateCacheWithMessagePart = async (
 
             queryClient.setQueryData(queryKey, updatedMessage);
         }
-        // Our first message callbacks need to run after we set the message in the cache
-        // Make sure this stays below any cache setting
+    }
+    // Our first message callbacks need to run after we set the message in the cache
+    // Make sure this stays below any cache setting
+    if (isFirstMessage(message)) {
         onFirstMessage?.(threadViewId, message);
     }
 
