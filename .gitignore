@@ -31,3 +31,7 @@ e2e/.auth/
 styled-system
 
 dist
+
+# Claude Code
+.claude
+CLAUDE.md

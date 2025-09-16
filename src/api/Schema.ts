@@ -9,6 +9,7 @@ export interface InferenceOpts {
     top_p: number;
     logprobs: number;
     stop: string[];
+    system_prompt: string | null;
 }
 
 interface Field<TDefault = unknown> {

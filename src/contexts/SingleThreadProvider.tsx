@@ -89,29 +89,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         initialState?.selectedModelId ?? undefined
     );
 
-    const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
-        // Initialize with values from the last LLM message if available
-        if (threadId) {
-            const thread = getThread(threadId);
-            const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
-            if (lastLLMMessage?.opts) {
-                // Convert from v4 camelCase to v3 snake_case format
-                return {
-                    temperature: lastLLMMessage.opts.temperature,
-                    top_p: lastLLMMessage.opts.topP,
-                    max_tokens: lastLLMMessage.opts.maxTokens,
-                    n: lastLLMMessage.opts.n,
-                    logprobs: lastLLMMessage.opts.logprobs,
-                    // `stop` is readonly, so it needs to be cloned
-                    stop: lastLLMMessage.opts.stop
-                        ? [...lastLLMMessage.opts.stop]
-                        : lastLLMMessage.opts.stop,
-                };
-            }
-        }
-        return {};
-    });
-
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
@@ -170,6 +147,35 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return firstVisibleModel;
     }, [availableModels, selectedModelId]);
 
+    const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
+        // Initialize with values from the last LLM message if available
+        if (threadId) {
+            const thread = getThread(threadId);
+            const firstSystemMessage = thread?.messages.find((msg) => msg.role === Role.System);
+            const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
+            if (lastLLMMessage?.opts) {
+                // Convert from v4 camelCase to v3 snake_case format
+                return {
+                    temperature: lastLLMMessage.opts.temperature,
+                    top_p: lastLLMMessage.opts.topP,
+                    max_tokens: lastLLMMessage.opts.maxTokens,
+                    n: lastLLMMessage.opts.n,
+                    logprobs: lastLLMMessage.opts.logprobs,
+                    // `stop` is readonly, so it needs to be cloned
+                    stop: lastLLMMessage.opts.stop
+                        ? [...lastLLMMessage.opts.stop]
+                        : lastLLMMessage.opts.stop,
+                    // store system prompt override in opts only if different from model default
+                    system_prompt:
+                        selectedModel?.system_prompt !== firstSystemMessage?.content
+                            ? firstSystemMessage?.content
+                            : undefined,
+                };
+            }
+        }
+        return {};
+    });
+
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
         if (!threadId) return true;
@@ -210,17 +216,22 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return Boolean(threadId);
     }, [threadId]);
 
+    const updateInferenceOpts = useCallback((newOptions: Partial<RequestInferenceOpts>) => {
+        setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
+    }, []);
+
     // Initialize inference options from cached thread data when navigating to a different thread
     useEffect(() => {
         if (threadId) {
             const thread = getThread(threadId);
             if (thread) {
+                const firstSystemMessage = thread.messages.find((msg) => msg.role === Role.System);
                 const lastLLMMessage = thread.messages
                     .filter((msg) => msg.role === Role.LLM)
                     .at(-1);
                 if (lastLLMMessage?.opts && Object.keys(inferenceOpts).length === 0) {
                     // Convert from v4 camelCase to v3 snake_case format
-                    setInferenceOpts({
+                    updateInferenceOpts({
                         temperature: lastLLMMessage.opts.temperature,
                         top_p: lastLLMMessage.opts.topP,
                         max_tokens: lastLLMMessage.opts.maxTokens,
@@ -229,6 +240,11 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                         stop: lastLLMMessage.opts.stop
                             ? [...lastLLMMessage.opts.stop]
                             : lastLLMMessage.opts.stop,
+                        // store system prompt override in opts only if different from model default
+                        system_prompt:
+                            selectedModel?.system_prompt !== firstSystemMessage?.content
+                                ? firstSystemMessage?.content
+                                : undefined,
                     });
                 }
             }
@@ -285,6 +301,11 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const handleModelSwitchWarningConfirm = useCallback(() => {
         setShouldShowModelSwitchWarning(false);
         if (modelIdToSwitchTo.current) {
+            // Clear out system prompt to use model default.
+            // REVIEW: can this be done in a better place?
+            updateInferenceOpts({
+                system_prompt: undefined,
+            });
             selectModel(modelIdToSwitchTo.current);
             // Clear current thread to start fresh
             navigate(links.playground);

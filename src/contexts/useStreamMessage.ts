@@ -154,7 +154,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
             const { content, captchaToken, parent, files, role = 'user', toolCallId } = request;
 
             // Refer to the "TEMP HACK" comment above
-            const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
+            const adjustedInferenceOpts: RequestInferenceOpts = {
                 ...inferenceOpts,
                 ...(MODEL_DEFAULT_OVERRIDES[model.id] || {}),
             };
@@ -176,6 +176,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
                     stop: adjustedInferenceOpts.stop ?? undefined,
                     toolDefinitions: toolDefinitions ?? undefined,
+                    systemPrompt: adjustedInferenceOpts.system_prompt ?? undefined,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();

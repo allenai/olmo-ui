@@ -53,9 +53,6 @@ export const NavigationDrawer = ({
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
-    const hasPermission = (permission: string) =>
-        userAuthInfo.userInfo?.permissions?.some((p) => p === permission) ?? false;
-
     useCloseDrawerOnNavigation({
         handleDrawerClose: onClose,
     });
@@ -104,7 +101,7 @@ export const NavigationDrawer = ({
                             variant="footer">
                             FAQ
                         </NavigationLink>
-                        {hasPermission('write:model-config') && (
+                        {userAuthInfo.hasPermission('write:model-config') && (
                             <NavigationLink
                                 icon={<AdminPanelSettingsOutlinedIcon />}
                                 selected={curriedDoesMatchPath(links.admin)}

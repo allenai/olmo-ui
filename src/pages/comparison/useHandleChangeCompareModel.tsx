@@ -1,3 +1,4 @@
+/* not used? delete?
 import { SelectChangeEvent } from '@mui/material';
 import { useRef, useState } from 'react';
 
@@ -142,3 +143,4 @@ export const checkComparisonModelsCompatibility = (
 
     return true;
 };
+*/

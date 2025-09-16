@@ -428,7 +428,16 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             },
 
             getThreadViewModel: (threadViewId?: string) => {
-                if (!threadViewId) return undefined;
+                if (!threadViewId) {
+                    // For comparison mode, when no specific threadViewId is provided (like in ParameterDrawer),
+                    // use the first available model for system prompt reference
+                    const firstThreadViewId = Object.keys(comparisonState)[0];
+                    if (firstThreadViewId && comparisonState[firstThreadViewId].modelId) {
+                        const modelId = comparisonState[firstThreadViewId].modelId;
+                        return modelId ? models.find((model) => model.id === modelId) : undefined;
+                    }
+                    return undefined;
+                }
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const modelId = comparisonState[threadViewId]?.modelId;
                 return modelId ? models.find((model) => model.id === modelId) : undefined;
