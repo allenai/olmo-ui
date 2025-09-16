@@ -148,7 +148,7 @@ export function FunctionDeclarationDialog({
             isDismissable
             fullWidth
             size="large"
-            heading="Tool Declarations"
+            heading="Tool declarations"
             headingClassName={modalHeading}
             closeButton={
                 <IconButton onClick={onClose} aria-label="Close tool declarations dialog">
@@ -158,7 +158,6 @@ export function FunctionDeclarationDialog({
             buttons={
                 <ModalActions fullWidth>
                     <Button
-                        color="secondary"
                         shape="rounded"
                         onClick={handleReset}
                         aria-label="Reset form"
@@ -166,7 +165,6 @@ export function FunctionDeclarationDialog({
                         Reset
                     </Button>
                     <Button
-                        color="secondary"
                         shape="rounded"
                         variant="contained"
                         type="submit"
@@ -276,12 +274,14 @@ const TabbedContent = ({
             header: (props) => <varnishUi.Tab {...props}>System Tools</varnishUi.Tab>,
             content: (props) => (
                 <varnishUi.TabPanel {...props}>
-                    <p className={labelStyle}>Tools below will be added to the conversation.</p>
-                    <ControlledToolToggleTable
-                        isDisabled={isDisabled}
-                        control={{ control }}
-                        tools={tools}
-                    />
+                    <div className={textAreaContainer}>
+                        <p className={labelStyle}>Tools below will be added to the conversation.</p>
+                        <ControlledToolToggleTable
+                            isDisabled={isDisabled}
+                            control={{ control }}
+                            tools={tools}
+                        />
+                    </div>
                 </varnishUi.TabPanel>
             ),
         },
@@ -307,8 +307,14 @@ const toolNameGrid = css({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     gap: '4',
-    paddingX: '2',
-    paddingY: '4',
+    paddingX: '3',
+    paddingY: '3',
+    borderWidth: '1',
+    borderStyle: 'solid',
+    borderColor: 'elements.faded.stroke', // or 'text'
+    borderRadius: 'sm',
+    alignContent: 'start',
+    flex: '1',
 });
 
 const toolName = css({
@@ -327,7 +333,6 @@ const realToolName = css({
     width: '[300px]',
     marginLeft: '[22px]',
     fontSize: 'sm',
-    color: 'extra-dark-teal.70',
 });
 
 export const ControlledToolToggleTable = ({
