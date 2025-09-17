@@ -3,7 +3,7 @@ import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material
 import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { useUserAuthInfo, USER_PERMISSIONS } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
@@ -208,7 +208,7 @@ export const ParameterContent = () => {
                         />
                     </ParametersListItem>
                 )}
-                {userAuthInfo.hasPermission('123e') && (
+                {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_MODEL_CONFIG) && (
                     <ParametersListItem>
                         <ParameterToggle
                             value={bypassSafetyCheck}

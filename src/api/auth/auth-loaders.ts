@@ -137,8 +137,16 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
     return getUserAuthInfo();
 };
 
+export const USER_PERMISSIONS = {
+    READ_INTERNAL_MODELS: 'read:internal-models',
+    WRITE_MODEL_CONFIG: 'write:model-config',
+    WRITE_BYPASS_SAFETY_CHECKS: 'write:bypass-safety-check',
+} as const;
+
+type UserPermission = (typeof USER_PERMISSIONS)[keyof typeof USER_PERMISSIONS];
+
 export const useUserAuthInfo = (): UserAuthInfo & {
-    hasPermission: (permission: string) => boolean;
+    hasPermission: (permission: UserPermission) => boolean;
 } => {
     const userInfoFromLoader = useRouteLoaderData('userInfoRoot') as
         | UserInfoLoaderResponse
@@ -146,7 +154,7 @@ export const useUserAuthInfo = (): UserAuthInfo & {
 
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
-    const hasPermission = (permission: string) =>
+    const hasPermission = (permission: UserPermission) =>
         userInfo?.permissions?.some((p) => p === permission) ?? false;
 
     return {
