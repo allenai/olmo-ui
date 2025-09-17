@@ -137,15 +137,22 @@ export const userAuthInfoLoader: LoaderFunction = async () => {
     return getUserAuthInfo();
 };
 
-export const useUserAuthInfo = (): UserAuthInfo => {
+export const useUserAuthInfo = (): UserAuthInfo & {
+    hasPermission: (permission: string) => boolean;
+} => {
     const userInfoFromLoader = useRouteLoaderData('userInfoRoot') as
         | UserInfoLoaderResponse
         | undefined;
+
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
+
+    const hasPermission = (permission: string) =>
+        userInfo?.permissions?.some((p) => p === permission) ?? false;
 
     return {
         userInfo: userInfo ?? undefined,
         userAuthInfo: userInfoFromLoader?.userAuthInfo?.userAuthInfo,
         isAuthenticated: Boolean(userInfoFromLoader?.userAuthInfo?.isAuthenticated),
+        hasPermission,
     };
 };

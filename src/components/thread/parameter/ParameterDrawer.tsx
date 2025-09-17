@@ -3,6 +3,7 @@ import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material
 import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
@@ -119,6 +120,7 @@ export const ParameterContent = () => {
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
 
+    const userAuthInfo = useUserAuthInfo();
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
     if (schemaData == null) {
@@ -206,19 +208,21 @@ export const ParameterContent = () => {
                         />
                     </ParametersListItem>
                 )}
-                <ParametersListItem>
-                    <ParameterToggle
-                        value={bypassSafetyCheck}
-                        label="Bypass Safety Check"
-                        dialogContent={BYPASS_SAFETY_CHECKS}
-                        hideEdit
-                        dialogTitle="Bypass Prompt Safety Checks"
-                        id="bypass-safety-checks"
-                        onToggleChange={(v) => {
-                            updateBypassSafetyCheck(v);
-                        }}
-                    />
-                </ParametersListItem>
+                {userAuthInfo.hasPermission('123e') && (
+                    <ParametersListItem>
+                        <ParameterToggle
+                            value={bypassSafetyCheck}
+                            label="Bypass Safety Check"
+                            dialogContent={BYPASS_SAFETY_CHECKS}
+                            hideEdit
+                            dialogTitle="Bypass Prompt Safety Checks"
+                            id="bypass-safety-checks"
+                            onToggleChange={(v) => {
+                                updateBypassSafetyCheck(v);
+                            }}
+                        />
+                    </ParametersListItem>
+                )}
                 <StopWordsInput
                     id="stop-words"
                     value={inferenceOpts.stop || []}
