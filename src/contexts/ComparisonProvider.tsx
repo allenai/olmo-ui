@@ -122,6 +122,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         userToolDefinitions !== undefined
     );
 
+    const [bypassSafetyCheck, setBypassSafetyCheck] = React.useState(false);
+
     // Get available models from API, filtering for visible models
     const models = useModels({
         select: (data) => data.filter((model) => isModelVisible(model)),
@@ -272,6 +274,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 userToolDefinitions,
                 [],
                 false,
+                bypassSafetyCheck,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -288,6 +291,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             streamMessage.mutateAsync,
             streamMessage.onFirstMessage,
             threadIds,
+            bypassSafetyCheck,
         ]
     );
 
@@ -457,6 +461,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             updateIsToolCallingEnabled: (enabled: boolean) => {
                 setIsToolCallingEnabled(enabled);
             },
+
+            bypassSafetyCheck,
+            updateBypassSafetyCheck: setBypassSafetyCheck,
         };
     }, [
         threadIds,
@@ -476,6 +483,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         inferenceOpts,
         submitToThreadView,
         comparisonState,
+        bypassSafetyCheck,
+        setBypassSafetyCheck,
     ]);
 
     return (

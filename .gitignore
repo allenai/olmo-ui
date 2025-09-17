@@ -31,3 +31,5 @@ e2e/.auth/
 styled-system
 
 dist
+
+prettier.config.js

@@ -30,6 +30,8 @@ const MAX_TOKENS_INFO =
 const FUNCTION_CALLING_INFO =
     'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
 
+const BYPASS_SAFETY_CHECKS = 'Bypass safety checks model safety checks';
+
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
     const { colorMode } = useColorMode();
@@ -111,6 +113,8 @@ export const ParameterContent = () => {
         selectedTools,
         isToolCallingEnabled,
         updateIsToolCallingEnabled,
+        bypassSafetyCheck,
+        updateBypassSafetyCheck,
     } = useQueryContext();
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
@@ -202,6 +206,19 @@ export const ParameterContent = () => {
                         />
                     </ParametersListItem>
                 )}
+                <ParametersListItem>
+                    <ParameterToggle
+                        value={bypassSafetyCheck}
+                        label="Bypass Safety Check"
+                        dialogContent={BYPASS_SAFETY_CHECKS}
+                        hideEdit
+                        dialogTitle="Bypass Prompt Safety Checks"
+                        id="bypass-safety-checks"
+                        onToggleChange={(v) => {
+                            updateBypassSafetyCheck(v);
+                        }}
+                    />
+                </ParametersListItem>
                 <StopWordsInput
                     id="stop-words"
                     value={inferenceOpts.stop || []}
