@@ -3,7 +3,7 @@ import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material
 import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import { useUserAuthInfo, USER_PERMISSIONS } from '@/api/auth/auth-loaders';
+import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
