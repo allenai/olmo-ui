@@ -101,9 +101,7 @@ export const NavigationDrawer = ({
                             variant="footer">
                             FAQ
                         </NavigationLink>
-                        {userAuthInfo.hasPermission(
-                            USER_PERMISSIONS.WRITE_BYPASS_SAFETY_CHECKS
-                        ) && (
+                        {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_MODEL_CONFIG) && (
                             <NavigationLink
                                 icon={<AdminPanelSettingsOutlinedIcon />}
                                 selected={curriedDoesMatchPath(links.admin)}

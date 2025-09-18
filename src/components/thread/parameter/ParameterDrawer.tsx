@@ -31,7 +31,7 @@ const MAX_TOKENS_INFO =
 const FUNCTION_CALLING_INFO =
     'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
 
-const BYPASS_SAFETY_CHECKS = 'Bypass safety checks model safety checks';
+const BYPASS_SAFETY_CHECKS = 'Bypass our premodel safety checks for both prompt and image.';
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
@@ -208,14 +208,14 @@ export const ParameterContent = () => {
                         />
                     </ParametersListItem>
                 )}
-                {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_MODEL_CONFIG) && (
+                {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_BYPASS_SAFETY_CHECKS) && (
                     <ParametersListItem>
                         <ParameterToggle
                             value={bypassSafetyCheck}
-                            label="Bypass Safety Check"
+                            label="Bypass Safety"
                             dialogContent={BYPASS_SAFETY_CHECKS}
                             hideEdit
-                            dialogTitle="Bypass Prompt Safety Checks"
+                            dialogTitle="Bypass Safety Checks"
                             id="bypass-safety-checks"
                             onToggleChange={(v) => {
                                 updateBypassSafetyCheck(v);
