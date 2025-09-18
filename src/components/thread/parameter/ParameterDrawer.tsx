@@ -212,10 +212,10 @@ export const ParameterContent = () => {
                     <ParametersListItem>
                         <ParameterToggle
                             value={bypassSafetyCheck}
-                            label="Bypass Safety"
+                            label="Bypass safety"
                             dialogContent={BYPASS_SAFETY_CHECKS}
                             hideEdit
-                            dialogTitle="Bypass Safety Checks"
+                            dialogTitle="Bypass Safety"
                             id="bypass-safety-checks"
                             onToggleChange={(v) => {
                                 updateBypassSafetyCheck(v);
