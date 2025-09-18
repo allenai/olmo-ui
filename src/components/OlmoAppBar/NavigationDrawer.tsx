@@ -9,7 +9,7 @@ import { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
-import { useUserAuthInfo, USER_PERMISSIONS } from '@/api/auth/auth-loaders';
+import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
