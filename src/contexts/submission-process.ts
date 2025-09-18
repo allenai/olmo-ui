@@ -256,10 +256,10 @@ export const processSingleModelSubmission = async (
         isToolCallingEnabled: boolean;
         bypassSafetyCheck: boolean;
     }) => Promise<{ response: Response; abortController: AbortController }>,
+    executeRecaptcha: ((action?: string) => Promise<string> | null) | undefined,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
-    addSnackMessage?: (message: SnackMessage) => void,
-    executeRecaptcha?: (action?: string) => Promise<string> | null
+    addSnackMessage?: (message: SnackMessage) => void
 ): Promise<string | null> => {
     if (!model) {
         return null;
