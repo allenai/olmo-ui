@@ -222,6 +222,19 @@ export const handleSubmissionError = (
     return null; // Didn't return a thread id
 };
 
+const handleCaptcha = async (executeRecaptcha?: (action?: string) => Promise<string> | null) => {
+    const isReCaptchaEnabled = process.env.VITE_IS_RECAPTCHA_ENABLED;
+
+    if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
+        analyticsClient.trackCaptchaNotLoaded();
+    }
+
+    const token =
+        isReCaptchaEnabled === 'true' ? await executeRecaptcha?.('prompt_submission') : undefined;
+
+    return token;
+};
+
 export const processSingleModelSubmission = async (
     data: QueryFormValues,
     model: Model,
@@ -245,7 +258,8 @@ export const processSingleModelSubmission = async (
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
-    addSnackMessage?: (message: SnackMessage) => void
+    addSnackMessage?: (message: SnackMessage) => void,
+    executeRecaptcha?: (action?: string) => Promise<string> | null
 ): Promise<string | null> => {
     if (!model) {
         return null;
@@ -260,8 +274,11 @@ export const processSingleModelSubmission = async (
     analyticsClient.trackQueryFormSubmission(model.id, Boolean(rootThreadId));
 
     try {
+        const captchaToken = await handleCaptcha(executeRecaptcha);
+        const dataWithCaptchaToken = { ...data, captchaToken };
+
         const { response, abortController } = await streamMutateAsync({
-            request: data,
+            request: dataWithCaptchaToken,
             threadViewId,
             model,
             thread,
