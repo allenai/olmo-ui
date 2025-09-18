@@ -1,10 +1,8 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
-import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
@@ -59,8 +57,6 @@ export const QueryFormController = ({
 
     const isTranscribing = useAppContext((state) => state.isTranscribing);
     const isProcessingAudio = useAppContext((state) => state.isProcessingAudio);
-
-    const { executeRecaptcha } = useReCaptcha();
 
     const formContext = useForm<QueryFormValues>({
         defaultValues: {
@@ -128,20 +124,8 @@ export const QueryFormController = ({
         if (!canEditThread || isSelectedThreadLoading) {
             return;
         }
-        const isReCaptchaEnabled = process.env.VITE_IS_RECAPTCHA_ENABLED;
-
-        if (isReCaptchaEnabled === 'true' && executeRecaptcha == null) {
-            analyticsClient.trackCaptchaNotLoaded();
-        }
-
-        // TODO: Make sure executeRecaptcha is present when we require recaptchas
-        const token =
-            isReCaptchaEnabled === 'true'
-                ? await executeRecaptcha?.('prompt_submission')
-                : undefined;
-
         try {
-            await handleSubmit({ ...data, captchaToken: token });
+            await handleSubmit(data);
         } catch (e) {
             handleFormSubmitException(e, formContext);
         }
