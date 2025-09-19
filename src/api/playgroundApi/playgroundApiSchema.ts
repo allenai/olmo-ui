@@ -610,6 +610,8 @@ export type components = {
              * @default false
              */
             readonly canThink?: boolean;
+            /** @default null */
+            readonly defaultInferenceOpts?: components['schemas']['InferenceOpts'] | null;
             /**
              * Defaultsystemprompt
              * @default null
@@ -689,6 +691,8 @@ export type components = {
              * @default false
              */
             readonly canThink?: boolean;
+            /** @default null */
+            readonly defaultInferenceOpts?: components['schemas']['InferenceOpts'] | null;
             /**
              * Defaultsystemprompt
              * @default null
@@ -975,6 +979,39 @@ export type components = {
              */
             readonly topP?: number;
         };
+        /** InferenceOpts */
+        readonly InferenceOpts: {
+            /**
+             * Logprobs
+             * @default null
+             */
+            readonly logprobs?: number | null;
+            /**
+             * Max Tokens
+             * @default 2048
+             */
+            readonly max_tokens?: number;
+            /**
+             * N
+             * @default 1
+             */
+            readonly n?: number;
+            /**
+             * Stop
+             * @default null
+             */
+            readonly stop?: readonly string[] | null;
+            /**
+             * Temperature
+             * @default 0.7
+             */
+            readonly temperature?: number;
+            /**
+             * Top P
+             * @default 1
+             */
+            readonly top_p?: number;
+        };
         /** LabelResponse */
         readonly LabelResponse: {
             /**
@@ -1039,6 +1076,8 @@ export type components = {
              * @default false
              */
             readonly can_think?: boolean;
+            /** @default null */
+            readonly default_inference_opts?: components['schemas']['InferenceOpts'] | null;
             /** Description */
             readonly description: string;
             /**
@@ -1160,6 +1199,8 @@ export type components = {
              * @default false
              */
             readonly can_think?: boolean;
+            /** @default null */
+            readonly default_inference_opts?: components['schemas']['InferenceOpts'] | null;
             /** Description */
             readonly description: string;
             /**
@@ -1243,6 +1284,8 @@ export type components = {
              * Format: date-time
              */
             readonly createdTime: string;
+            /** @default null */
+            readonly defaultInferenceOpts?: components['schemas']['InferenceOpts'] | null;
             /**
              * Defaultsystemprompt
              * @default null
@@ -1419,6 +1462,8 @@ export type components = {
              * Format: date-time
              */
             readonly createdTime: string;
+            /** @default null */
+            readonly defaultInferenceOpts?: components['schemas']['InferenceOpts'] | null;
             /**
              * Defaultsystemprompt
              * @default null
@@ -1582,6 +1627,8 @@ export type components = {
              * @default false
              */
             readonly canThink?: boolean;
+            /** @default null */
+            readonly defaultInferenceOpts?: components['schemas']['InferenceOpts'] | null;
             /**
              * Defaultsystemprompt
              * @default null
@@ -1659,6 +1706,8 @@ export type components = {
              * @default false
              */
             readonly canThink?: boolean;
+            /** @default null */
+            readonly defaultInferenceOpts?: components['schemas']['InferenceOpts'] | null;
             /**
              * Defaultsystemprompt
              * @default null
@@ -1731,6 +1780,7 @@ export type SchemaGetThreadsResponse = components['schemas']['GetThreadsResponse
 export type SchemaGetTranscriptionRequest = components['schemas']['GetTranscriptionRequest'];
 export type SchemaGetTranscriptionResponse = components['schemas']['GetTranscriptionResponse'];
 export type SchemaInferenceOptionsResponse = components['schemas']['InferenceOptionsResponse'];
+export type SchemaInferenceOpts = components['schemas']['InferenceOpts'];
 export type SchemaLabelResponse = components['schemas']['LabelResponse'];
 export type SchemaListMeta = components['schemas']['ListMeta'];
 export type SchemaModel = components['schemas']['Model'];
