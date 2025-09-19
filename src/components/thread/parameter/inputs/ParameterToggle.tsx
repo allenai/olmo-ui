@@ -10,6 +10,7 @@ interface Props {
     dialogTitle: string;
     disableEditButton?: boolean;
     disableToggle?: boolean;
+    hideEdit?: boolean;
     onEditClick?: () => void;
     onToggleChange?: (value: boolean) => void;
     id: string;
@@ -22,6 +23,7 @@ export const ParameterToggle = ({
     dialogTitle,
     disableEditButton = false,
     disableToggle = false,
+    hideEdit = false,
     onEditClick,
     onToggleChange,
     id,
@@ -46,15 +48,17 @@ export const ParameterToggle = ({
                         align: 'center',
                         gap: '1',
                     })}>
-                    <Button
-                        size="small"
-                        color="primary"
-                        variant="text"
-                        onClick={onEditClick}
-                        isDisabled={disableEditButton}
-                        aria-label={`Edit ${label}`}>
-                        {viewOnly ? 'View' : 'Edit'}
-                    </Button>
+                    {!hideEdit && (
+                        <Button
+                            size="small"
+                            color="primary"
+                            variant="text"
+                            onClick={onEditClick}
+                            isDisabled={disableEditButton}
+                            aria-label={`Edit ${label}`}>
+                            {viewOnly ? 'View' : 'Edit'}
+                        </Button>
+                    )}
                     <Switch
                         size="large"
                         isSelected={value}

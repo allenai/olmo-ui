@@ -9,7 +9,7 @@ import { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
 import { UIMatch, useMatches } from 'react-router-dom';
 
-import { useUserAuthInfo } from '@/api/auth/auth-loaders';
+import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
@@ -52,9 +52,6 @@ export const NavigationDrawer = ({
     const userAuthInfo = useUserAuthInfo();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
-
-    const hasPermission = (permission: string) =>
-        userAuthInfo.userInfo?.permissions?.some((p) => p === permission) ?? false;
 
     useCloseDrawerOnNavigation({
         handleDrawerClose: onClose,
@@ -104,7 +101,7 @@ export const NavigationDrawer = ({
                             variant="footer">
                             FAQ
                         </NavigationLink>
-                        {hasPermission('write:model-config') && (
+                        {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_MODEL_CONFIG) && (
                             <NavigationLink
                                 icon={<AdminPanelSettingsOutlinedIcon />}
                                 selected={curriedDoesMatchPath(links.admin)}

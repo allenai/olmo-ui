@@ -3,6 +3,7 @@ import { Box, IconButton, ListSubheader, Stack, Typography } from '@mui/material
 import React, { ReactElement, ReactNode } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
+import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { DesktopExpandingDrawer } from '@/components/DesktopExpandingDrawer';
@@ -29,6 +30,8 @@ const MAX_TOKENS_INFO =
 
 const FUNCTION_CALLING_INFO =
     'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
+
+const BYPASS_SAFETY_CHECKS = 'Bypass our premodel safety checks for both prompt and image.';
 
 export const DesktopParameterDrawer = (): ReactNode => {
     const open = useAppContext((state) => state.currentOpenDrawer === PARAMETERS_DRAWER_ID);
@@ -111,10 +114,13 @@ export const ParameterContent = () => {
         selectedTools,
         isToolCallingEnabled,
         updateIsToolCallingEnabled,
+        bypassSafetyCheck,
+        updateBypassSafetyCheck,
     } = useQueryContext();
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
 
+    const userAuthInfo = useUserAuthInfo();
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
     const schemaData = useAppContext((state) => state.schema);
     if (schemaData == null) {
@@ -198,6 +204,21 @@ export const ParameterContent = () => {
                             }}
                             onToggleChange={(v) => {
                                 updateIsToolCallingEnabled(v);
+                            }}
+                        />
+                    </ParametersListItem>
+                )}
+                {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_BYPASS_SAFETY_CHECKS) && (
+                    <ParametersListItem>
+                        <ParameterToggle
+                            value={bypassSafetyCheck}
+                            label="Bypass safety"
+                            dialogContent={BYPASS_SAFETY_CHECKS}
+                            hideEdit
+                            dialogTitle="Bypass Safety"
+                            id="bypass-safety-checks"
+                            onToggleChange={(v) => {
+                                updateBypassSafetyCheck(v);
                             }}
                         />
                     </ParametersListItem>

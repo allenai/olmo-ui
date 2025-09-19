@@ -26,6 +26,7 @@ export interface ThreadStreamMutationVariables {
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
+    bypassSafetyCheck: boolean;
 }
 
 interface StreamCallbacks {
@@ -134,6 +135,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         toolDefinitions,
         selectedTools,
         isToolCallingEnabled,
+        bypassSafetyCheck,
     }: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
@@ -143,6 +145,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         toolDefinitions: CreateMessageRequest['toolDefinitions'];
         selectedTools: string[];
         isToolCallingEnabled: boolean;
+        bypassSafetyCheck: boolean;
     }) => {
         startStream(threadViewId);
 
@@ -184,6 +187,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     toolDefinitions: toolDefinitions ?? undefined,
                     selectedTools,
                     enableToolCalling: isToolCallingEnabled,
+                    bypassSafetyCheck,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();

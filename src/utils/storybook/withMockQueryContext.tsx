@@ -32,6 +32,9 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     canCallTools: false,
     selectedTools: [],
 
+    bypassSafetyCheck: false,
+    updateBypassSafetyCheck: () => {},
+
     fileUploadProps: {
         isFileUploadDisabled: true,
         isSendingPrompt: false,

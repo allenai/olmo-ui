@@ -50,6 +50,9 @@ interface QueryContextValue {
     updateSelectedTools: (tools: string[]) => void;
 
     selectedTools: string[];
+
+    bypassSafetyCheck: boolean;
+    updateBypassSafetyCheck: (value: boolean) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods

@@ -7,11 +7,13 @@ export const getFakeUseUserAuthInfo =
         userInfo = {} as ApiUser,
         userAuthInfo = {} as Partial<Auth0User>,
         isAuthenticated = false,
+        hasPermission = () => true,
     } = {}) =>
     () => {
         return {
             userInfo,
             userAuthInfo,
             isAuthenticated,
+            hasPermission,
         };
     };

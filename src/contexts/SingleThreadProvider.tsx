@@ -99,6 +99,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         hasUserTools(userToolDefinitions) || selectedTools.length > 0
     );
 
+    const [bypassSafetyCheck, setBypassSafetyCheck] = React.useState(false);
+
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
@@ -333,6 +335,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 userToolDefinitions,
                 selectedTools,
                 isToolCallingEnabled,
+                bypassSafetyCheck,
                 streamMessage.mutateAsync,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
@@ -350,6 +353,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             userToolDefinitions,
             selectedTools,
             isToolCallingEnabled,
+            bypassSafetyCheck,
         ]
     );
 
@@ -428,6 +432,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             updateIsToolCallingEnabled,
             updateSelectedTools,
             selectedTools,
+            bypassSafetyCheck,
+            updateBypassSafetyCheck: setBypassSafetyCheck,
         };
     }, [
         canSubmit,
@@ -454,6 +460,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         updateIsToolCallingEnabled,
         updateSelectedTools,
         selectedTools,
+        bypassSafetyCheck,
     ]);
 
     return (

@@ -231,6 +231,7 @@ export const processSingleModelSubmission = async (
     toolDefinitions: CreateMessageRequest['toolDefinitions'],
     selectedTools: string[],
     isToolCallingEnabled: boolean,
+    bypassSafetyCheck: boolean,
     streamMutateAsync: (params: {
         request: StreamMessageRequest;
         threadViewId: ThreadViewId;
@@ -240,6 +241,7 @@ export const processSingleModelSubmission = async (
         toolDefinitions: CreateMessageRequest['toolDefinitions'];
         selectedTools: string[];
         isToolCallingEnabled: boolean;
+        bypassSafetyCheck: boolean;
     }) => Promise<{ response: Response; abortController: AbortController }>,
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
     onCompleteStream?: (threadViewId: ThreadViewId) => void,
@@ -267,6 +269,8 @@ export const processSingleModelSubmission = async (
             toolDefinitions,
             selectedTools,
             isToolCallingEnabled,
+
+            bypassSafetyCheck,
         });
 
         // Return the final thread ID for parallel streaming navigation
