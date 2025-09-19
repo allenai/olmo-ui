@@ -2,12 +2,10 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import { now, type ZonedDateTime } from '@internationalized/date';
-import { useQuery } from '@tanstack/react-query';
 import { type ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
-import { SchemaClient } from '@/api/Schema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
@@ -50,7 +48,19 @@ type BaseModelFormFieldValues = {
         | 'promptType'
         | 'canCallTools'
         | 'canThink'
-        | 'defaultInferenceOpts'
+        | 'temperatureDefault'
+        | 'temperatureLower'
+        | 'temperatureUpper'
+        | 'temperatureStep'
+        | 'topPDefault'
+        | 'topPLower'
+        | 'topPUpper'
+        | 'topPStep'
+        | 'maxTokensDefault'
+        | 'maxTokensLower'
+        | 'maxTokensUpper'
+        | 'maxTokensStep'
+        | 'infiniGramIndex'
     >
 >;
 
@@ -64,20 +74,26 @@ interface ModelConfigFormProps {
 export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfigFormProps) => {
     const formContext = useFormContext<ModelConfigFormValues>();
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const { data: schema } = useQuery({
-        queryKey: ['get', '/v3/schema'],
-        queryFn: async () => {
-            const client = new SchemaClient();
-            return await client.getSchema();
-        },
-        staleTime: 1000 * 60 * 60, // 1 hour
-    });
-    const optsSchema = schema?.Message.InferenceOpts;
-    console.log('optsSchema', optsSchema);
 
     const promptTypeState = formContext.watch('promptType');
     const showTimeSection = formContext.watch('availability') === 'prerelease';
-
+    const optsSchema = {
+        temperature: {
+            min: formContext.getValues('temperatureLower') || undefined,
+            max: formContext.getValues('temperatureUpper') || undefined,
+            step: formContext.getValues('temperatureStep') || undefined,
+        },
+        topP: {
+            min: formContext.getValues('topPLower') || undefined,
+            max: formContext.getValues('topPUpper') || undefined,
+            step: formContext.getValues('topPStep') || undefined,
+        },
+        maxTokens: {
+            min: formContext.getValues('maxTokensLower') || undefined,
+            max: formContext.getValues('maxTokensUpper') || undefined,
+            step: formContext.getValues('maxTokensStep') || undefined,
+        },
+    };
     const handleSubmit = (formData: ModelConfigFormValues) => {
         onSubmit(formData);
     };
@@ -188,52 +204,49 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                     <ControlledSwitch name="canThink" size="large">
                         This model can think
                     </ControlledSwitch>
-                    {optsSchema && (
-                        <>
-                            <ControlledSliderWithInput
-                                name="defaultInferenceOpts.temperature"
-                                label="Temperature"
-                                step={optsSchema.temperature.step}
-                                minValue={optsSchema.temperature.min}
-                                maxValue={optsSchema.temperature.max}
-                                controllerProps={{
-                                    rules: {
-                                        required: true,
-                                        min: optsSchema.temperature.min,
-                                        max: optsSchema.temperature.max,
-                                    },
-                                }}
-                            />
-                            <ControlledSliderWithInput
-                                name="defaultInferenceOpts.top_p"
-                                label="Top P"
-                                step={optsSchema.top_p.step}
-                                minValue={optsSchema.top_p.min}
-                                maxValue={optsSchema.top_p.max}
-                                controllerProps={{
-                                    rules: {
-                                        required: true,
-                                        min: optsSchema.top_p.min,
-                                        max: optsSchema.top_p.max,
-                                    },
-                                }}
-                            />
-                            <ControlledSliderWithInput
-                                name="defaultInferenceOpts.max_tokens"
-                                label="Max tokens"
-                                step={optsSchema.max_tokens.step}
-                                minValue={optsSchema.max_tokens.min}
-                                maxValue={optsSchema.max_tokens.max}
-                                controllerProps={{
-                                    rules: {
-                                        required: true,
-                                        min: optsSchema.max_tokens.min,
-                                        max: optsSchema.max_tokens.max,
-                                    },
-                                }}
-                            />
-                        </>
-                    )}
+
+                    <ControlledSliderWithInput
+                        name="temperatureDefault"
+                        label="Temperature"
+                        step={optsSchema.temperature.step}
+                        minValue={optsSchema.temperature.min}
+                        maxValue={optsSchema.temperature.max}
+                        controllerProps={{
+                            rules: {
+                                required: true,
+                                min: optsSchema.temperature.min,
+                                max: optsSchema.temperature.max,
+                            },
+                        }}
+                    />
+                    <ControlledSliderWithInput
+                        name="topPDefault"
+                        label="Top P"
+                        step={optsSchema.topP.step}
+                        minValue={optsSchema.topP.min}
+                        maxValue={optsSchema.topP.max}
+                        controllerProps={{
+                            rules: {
+                                required: true,
+                                min: optsSchema.topP.min,
+                                max: optsSchema.topP.max,
+                            },
+                        }}
+                    />
+                    <ControlledSliderWithInput
+                        name="maxTokensDefault"
+                        label="Max tokens"
+                        step={optsSchema.maxTokens.step}
+                        minValue={optsSchema.maxTokens.min}
+                        maxValue={optsSchema.maxTokens.max}
+                        controllerProps={{
+                            rules: {
+                                required: true,
+                                min: optsSchema.maxTokens.min,
+                                max: optsSchema.maxTokens.max,
+                            },
+                        }}
+                    />
                 </Fieldset>
             </CollapsibleWidget>
 

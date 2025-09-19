@@ -26,7 +26,7 @@ export const ControlledSliderWithInput = <T extends number | number[]>({
     };
 
     return (
-        <div
+        <fieldset
             className={css({
                 display: 'flex',
                 gap: '3',
@@ -48,6 +48,6 @@ export const ControlledSliderWithInput = <T extends number | number[]>({
                 {...field}
                 onChange={handleInputChange}
             />
-        </div>
+        </fieldset>
     );
 };
