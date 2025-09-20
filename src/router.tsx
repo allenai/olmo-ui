@@ -1,3 +1,4 @@
+import LinearProgress from '@mui/material/LinearProgress';
 import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 
 import {
@@ -43,6 +44,11 @@ import {
 export const routes: RouteObject[] = [
     {
         id: 'root',
+        hydrateFallbackElement: (
+            <AppWrapper>
+                <LinearProgress />
+            </AppWrapper>
+        ),
         element: (
             <AppWrapper theme={uiRefreshOlmoTheme}>
                 <MetaTags />
@@ -179,4 +185,12 @@ export const routes: RouteObject[] = [
     },
 ];
 
-export const router = createBrowserRouter(routes);
+export const router = createBrowserRouter(routes, {
+    future: {
+        v7_relativeSplatPath: true,
+        v7_fetcherPersist: true,
+        v7_normalizeFormMethod: true,
+        v7_partialHydration: true,
+        v7_skipActionErrorRevalidation: true,
+    },
+});

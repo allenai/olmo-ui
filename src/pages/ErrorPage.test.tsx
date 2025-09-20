@@ -2,7 +2,7 @@
 // jsdom doesn't support IntersectionObserver
 
 import { render, screen, waitFor } from '@test-utils';
-import { createMemoryRouter, json, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
 import { AppWrapper } from '@/components/AppWrapper';
@@ -35,7 +35,7 @@ describe('Error Page', () => {
 
                         // react-router seems to recommend throwing Responses
                         // eslint-disable-next-line @typescript-eslint/only-throw-error
-                        throw json(responseData, {
+                        throw Response.json(responseData, {
                             status: 502,
                             statusText: 'Something went wrong when logging in. Please try again.',
                         });

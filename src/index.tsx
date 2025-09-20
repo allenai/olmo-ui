@@ -1,8 +1,5 @@
-import { LinearProgress } from '@mui/material';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-
-import { AppWrapper } from './components/AppWrapper';
 
 const enableMocking = async () => {
     if (process.env.NODE_ENV === 'production' || process.env.VITE_ENABLE_MOCKING !== 'true') {
@@ -20,20 +17,12 @@ if (!container) {
 }
 
 const root = createRoot(container);
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 enableMocking().then(async () => {
     // We need to intiate the router in one place.
     // If we import it directly it starts fetching things before MSW has a chance to initialize.
     // Dynamically importing it gives us the best of both worlds here
     const { router } = await import('./router');
 
-    root.render(
-        <RouterProvider
-            router={router}
-            fallbackElement={
-                <AppWrapper>
-                    <LinearProgress />
-                </AppWrapper>
-            }
-        />
-    );
+    root.render(<RouterProvider router={router} />);
 });
