@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, IconButton, Modal, ModalTrigger } from '@allenai/varnish-ui';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useSubmit } from 'react-router-dom';
+import { useSubmit } from 'react-router';
 
 import { links } from '@/Links';
 

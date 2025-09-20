@@ -1,7 +1,7 @@
 import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import userEvent from '@testing-library/user-event';
 import { act, ComponentProps } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { Role } from '@/api/Role';

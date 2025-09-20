@@ -1,6 +1,6 @@
 import { Link, Typography } from '@mui/material';
 import { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import { useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { links } from '@/Links';

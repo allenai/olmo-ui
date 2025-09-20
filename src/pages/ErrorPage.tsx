@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { LoginOutlined as LoginIcon, WarningAmberRounded } from '@mui/icons-material';
 import { Button, styled, Typography } from '@mui/material';
-import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import { isRouteErrorResponse, useRouteError } from 'react-router';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
 import { AppLayout } from '@/components/AppLayout';

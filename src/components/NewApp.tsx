@@ -2,7 +2,7 @@ import '../osano.css';
 import '@allenai/varnish-theme/tokens.css';
 import '@/styled-system/styles.css';
 
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 
 import { Analytics } from '@/analytics/Analytics';
 import { useTrackPageView } from '@/analytics/useTrackPageView';

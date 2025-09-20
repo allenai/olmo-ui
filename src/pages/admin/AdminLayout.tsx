@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 
 import { MetaTags } from '@/components/MetaTags';
 

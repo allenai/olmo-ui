@@ -1,4 +1,4 @@
-import { defer, LoaderFunction, redirect } from 'react-router-dom';
+import { LoaderFunction, redirect } from 'react-router';
 
 import { error } from '@/api/error';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
@@ -103,15 +103,15 @@ export const selectedThreadPageLoader: LoaderFunction = async ({ request, params
             selectMessage(threadRootId, selectedMessage.id);
         }
 
-        return defer({
+        return {
             selectedThread,
             attributions: attributionsPromise,
             selectedModelId,
-        });
+        };
     } else {
-        return defer({
+        return {
             selectedThread,
             selectedModelId,
-        });
+        };
     }
 };

@@ -10,7 +10,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useShallow } from 'zustand/react/shallow';
 
 import { RequestInferenceOpts } from '@/api/Message';

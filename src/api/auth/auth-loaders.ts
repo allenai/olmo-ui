@@ -3,11 +3,10 @@ import { QueryClient } from '@tanstack/react-query';
 import {
     ActionFunction,
     ErrorResponse,
-    json,
     LoaderFunction,
     redirect,
     useRouteLoaderData,
-} from 'react-router-dom';
+} from 'react-router';
 import { useShallow } from 'zustand/react/shallow';
 
 import { User as ApiUser } from '@/api/User';
@@ -95,7 +94,7 @@ export const loginResultLoader = (queryClient: QueryClient): LoaderFunction => {
             };
 
             // eslint-disable-next-line @typescript-eslint/only-throw-error
-            throw json(responseData, {
+            throw Response.json(responseData, {
                 status: 502,
                 statusText: 'Something went wrong when logging in. Please try again.',
             });

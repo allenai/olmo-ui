@@ -8,7 +8,7 @@ import { fn } from 'storybook/test';
 import { ColorModeContext } from '@/components/ColorModeProvider';
 
 import '../styled-system/styles.css'
-import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 
 
 const preview: Preview = {

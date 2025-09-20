@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { type FieldValues, Path, type UseFormSetError } from 'react-hook-form';
-import { useActionData } from 'react-router-dom';
+import { useActionData } from 'react-router';
 
 import { error } from '@/api/error';
 

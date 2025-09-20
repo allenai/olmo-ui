@@ -1,6 +1,6 @@
 import { parseAbsoluteToLocal } from '@internationalized/date';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useParams, useSubmit } from 'react-router-dom';
+import { useParams, useSubmit } from 'react-router';
 
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { useModelConfigValidationActionData } from '@/api/useModelConfigValidationActionData';

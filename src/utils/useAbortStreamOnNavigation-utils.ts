@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigation } from 'react-router-dom';
+import { useNavigation } from 'react-router';
 
 interface UseAbortStreamOnNavigationProps {
     abortStreams: () => void;

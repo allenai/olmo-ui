@@ -1,6 +1,6 @@
 import { Button, Card, CardHeader, Stack } from '@allenai/varnish-ui';
 import { useDragAndDrop } from 'react-aria-components';
-import { useSubmit } from 'react-router-dom';
+import { useSubmit } from 'react-router';
 import { useListData } from 'react-stately';
 
 import { LinkButton } from '@/components/LinkButton';

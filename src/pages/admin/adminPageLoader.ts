@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { LoaderFunction } from 'react-router-dom';
-import { redirect } from 'react-router-dom';
+import type { LoaderFunction } from 'react-router';
+import { redirect } from 'react-router';
 
 import { getUserModel } from '@/api/getWhoAmIModel';
 import { links } from '@/Links';

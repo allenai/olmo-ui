@@ -1,7 +1,7 @@
 import { FakeQueryContextProvider, render, screen } from '@test-utils';
 import { ComponentProps } from 'react';
-import * as reactRouter from 'react-router-dom';
-import { MemoryRouter } from 'react-router-dom';
+import * as reactRouter from 'react-router';
+import { MemoryRouter } from 'react-router';
 
 import * as AppContext from '@/AppContext';
 import { ThreadViewProvider } from '@/pages/comparison/ThreadViewContext';

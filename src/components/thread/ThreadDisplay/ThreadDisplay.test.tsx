@@ -3,7 +3,7 @@
 
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { render, screen, waitFor } from '@test-utils';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';

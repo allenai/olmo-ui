@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router';
 
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
@@ -40,7 +40,7 @@ const ComparisonPageInner = () => {
 };
 
 export const ComparisonPage = () => {
-    const loaderData = useLoaderData() as ComparisonLoaderData;
+    const loaderData = useLoaderData();
 
     // Convert loader data to initialState format if available
     const initialState = loaderData.comparisonModels

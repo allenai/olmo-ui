@@ -1,6 +1,6 @@
 import { render, waitFor } from '@test-utils';
 import React from 'react';
-import * as ReactRouterDom from 'react-router-dom';
+import * as ReactRouterDom from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 
 import { User } from '@/api/User';

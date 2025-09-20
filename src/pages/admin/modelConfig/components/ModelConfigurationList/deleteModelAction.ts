@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { ActionFunction, redirect } from 'react-router-dom';
+import { ActionFunction, redirect } from 'react-router';
 
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { links } from '@/Links';

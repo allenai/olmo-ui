@@ -11,7 +11,7 @@ import {
     useMemo,
     useState,
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { ThemeProvider } from 'styled-components';
 
 import { olmoThemePaletteMode, uiRefreshOlmoTheme } from '../olmoTheme';

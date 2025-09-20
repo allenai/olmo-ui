@@ -1,5 +1,5 @@
 import { Link, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { links } from '../Links';
 import { formatDateForHistory } from '../utils/formatDateForHistory';

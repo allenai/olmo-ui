@@ -3,7 +3,7 @@ import { IconButton } from '@allenai/varnish-ui';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import { GridListItem } from 'react-aria-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { links } from '@/Links';

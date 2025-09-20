@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { json, LoaderFunction } from 'react-router-dom';
+import { LoaderFunction } from 'react-router';
 
 import { type UserAuthInfo, userAuthInfoLoader } from '@/api/auth/auth-loaders';
 import { appContext } from '@/AppContext';
@@ -26,7 +26,7 @@ export const userInfoLoader =
             userAuthInfoPromise,
         ]);
 
-        return json(
+        return Response.json(
             {
                 playgroundUserInfo: playgroundUserInfo ?? undefined,
                 userAuthInfo: userAuthInfo ?? undefined,

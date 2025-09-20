@@ -8,7 +8,7 @@ import {
     useTheme,
 } from '@mui/material';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import styled from 'styled-components';
 
 import {

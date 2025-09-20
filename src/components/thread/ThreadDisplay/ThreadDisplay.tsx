@@ -1,7 +1,7 @@
 import { Box, Divider } from '@mui/material';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import { ThreadError } from '@/pages/comparison/ThreadError';
 

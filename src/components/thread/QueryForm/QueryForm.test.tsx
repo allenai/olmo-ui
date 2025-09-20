@@ -3,7 +3,7 @@
 import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User } from '@/api/User';

@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
-import { useNavigation } from 'react-router-dom';
+import { useNavigation } from 'react-router';
 
 import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage } from '@/api/playgroundApi/thread';

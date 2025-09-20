@@ -13,7 +13,7 @@
 import Article from '@mui/icons-material/Article';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import { ReactNode, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { FlatMessage } from '@/api/playgroundApi/thread';

@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, Card, CardHeader, Icon, Stack } from '@allenai/varnish-ui';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { LinkButton } from '@/components/LinkButton';
 import { links } from '@/Links';

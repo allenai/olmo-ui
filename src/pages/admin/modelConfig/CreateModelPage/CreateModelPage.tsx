@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSubmit } from 'react-router-dom';
+import { useSubmit } from 'react-router';
 
 import { useModelConfigValidationActionData } from '@/api/useModelConfigValidationActionData';
 import { MetaTags } from '@/components/MetaTags';

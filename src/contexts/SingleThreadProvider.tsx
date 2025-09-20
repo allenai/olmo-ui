@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { UIEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useShallow } from 'zustand/react/shallow';
 
 import { RequestInferenceOpts } from '@/api/Message';

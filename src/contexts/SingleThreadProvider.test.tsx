@@ -3,7 +3,7 @@ import { IDLE_NAVIGATION } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@test-utils';
 // Get the mocked useParams function
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
 import { threadOptions } from '@/api/playgroundApi/thread';

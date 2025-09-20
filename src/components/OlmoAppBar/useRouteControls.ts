@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react';
-import { useMatches } from 'react-router-dom';
+import { useMatches } from 'react-router';
 
 interface HandleWithRouteControls {
     pageControls?: ReactNode;

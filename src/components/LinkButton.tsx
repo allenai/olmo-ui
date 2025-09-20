@@ -1,7 +1,7 @@
 import { Button } from '@allenai/varnish-ui';
 import { type ComponentProps, useCallback } from 'react';
 import type { PressEvent } from 'react-aria-components';
-import { type To, useNavigate } from 'react-router-dom';
+import { type To, useNavigate } from 'react-router';
 
 interface LinkButtonProps extends ComponentProps<typeof Button> {
     to: To;

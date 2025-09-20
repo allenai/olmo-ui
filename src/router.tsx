@@ -1,5 +1,5 @@
 import LinearProgress from '@mui/material/LinearProgress';
-import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouteObject } from 'react-router';
 
 import {
     loginAction,

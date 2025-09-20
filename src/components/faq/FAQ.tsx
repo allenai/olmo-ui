@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { ComponentProps, createRef, useEffect } from 'react';
 import Markdown from 'react-markdown';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import { useDesktopOrUp } from '../dolma/shared';
 import { createFAQId } from './faq-utils';

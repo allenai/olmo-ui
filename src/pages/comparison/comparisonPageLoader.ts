@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { LoaderFunction } from 'react-router-dom';
+import type { LoaderFunction } from 'react-router';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';

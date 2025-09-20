@@ -7,7 +7,7 @@ import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { IconButton, Stack } from '@mui/material';
 import { ComponentProps, type ReactNode } from 'react';
 import { Helmet } from 'react-helmet';
-import { UIMatch, useMatches } from 'react-router-dom';
+import { UIMatch, useMatches } from 'react-router';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';

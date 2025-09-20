@@ -1,5 +1,5 @@
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import { useAppContext } from '@/AppContext';
 import { IconButtonWithTooltip } from '@/components/IconButtonWithTooltip';

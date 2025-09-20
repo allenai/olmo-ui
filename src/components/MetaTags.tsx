@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 interface MetaTagsProps {
     title?: string;

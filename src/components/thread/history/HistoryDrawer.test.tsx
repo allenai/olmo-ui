@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@test-utils';
-import * as reactRouter from 'react-router-dom';
+import * as reactRouter from 'react-router';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';

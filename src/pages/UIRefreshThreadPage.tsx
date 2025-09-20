@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { LoaderFunction, Outlet, ShouldRevalidateFunction, useLoaderData } from 'react-router-dom';
+import { LoaderFunction, Outlet, ShouldRevalidateFunction, useLoaderData } from 'react-router';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext } from '@/AppContext';

@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { type ActionFunction, redirect } from 'react-router-dom';
+import { type ActionFunction, redirect } from 'react-router';
 
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import type { SchemaModelOrder } from '@/api/playgroundApi/playgroundApiSchema';

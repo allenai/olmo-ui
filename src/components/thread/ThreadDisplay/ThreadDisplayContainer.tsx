@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
+import { useLoaderData, useParams, useSearchParams } from 'react-router';
 
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
