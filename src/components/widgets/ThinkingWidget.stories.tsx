@@ -39,3 +39,10 @@ export const ThinkingConstrainedHeight: Story = {
         style: { maxHeight: '300px' },
     },
 };
+
+export const InProgress: Story = {
+    args: {
+        defaultExpanded: false,
+        isThinkingInProgress: true,
+    },
+};

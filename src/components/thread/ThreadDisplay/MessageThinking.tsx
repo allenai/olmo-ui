@@ -21,7 +21,7 @@ export const MessageThinking = ({ messageId }: MessageThinkingProps): ReactNode 
 
     return (
         <ThinkingWidget
-            thinking={!message.final}
+            isThinkingInProgress={!message.final}
             className={css({ marginBottom: '2', maxHeight: '[536px]' })}>
             <MarkdownRenderer>{message.thinking}</MarkdownRenderer>
         </ThinkingWidget>
