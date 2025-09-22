@@ -1,10 +1,9 @@
 // @vitest-environment happy-dom
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IDLE_NAVIGATION } from '@remix-run/router';
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { useParams } from 'react-router';
+import { IDLE_NAVIGATION, useParams } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { User } from '@/api/User';

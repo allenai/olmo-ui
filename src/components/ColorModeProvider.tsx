@@ -49,7 +49,6 @@ export const ColorModeProvider = ({
 
     const combinedTheme = useMemo(() => {
         return olmoThemePaletteMode(
-            // @ts-expect-error - Update to react-router v7 made this a little funky
             getTheme(getRouterOverriddenTheme(Link, theme)),
             themeColorMode
         );

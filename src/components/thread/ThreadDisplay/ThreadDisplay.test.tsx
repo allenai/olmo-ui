@@ -1,9 +1,8 @@
 // @vitest-environment happy-dom
 // jsdom doesn't support IntersectionObserver
 
-import { IDLE_NAVIGATION } from '@remix-run/router';
 import { render, screen, waitFor } from '@test-utils';
-import { MemoryRouter } from 'react-router';
+import { IDLE_NAVIGATION, MemoryRouter } from 'react-router';
 
 import * as authLoaders from '@/api/auth/auth-loaders';
 import { Role } from '@/api/Role';

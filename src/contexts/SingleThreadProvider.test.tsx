@@ -1,9 +1,8 @@
 import { SelectChangeEvent } from '@mui/material';
-import { IDLE_NAVIGATION } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@test-utils';
 // Get the mocked useParams function
-import { useParams } from 'react-router';
+import { IDLE_NAVIGATION, useParams } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
