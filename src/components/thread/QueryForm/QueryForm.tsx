@@ -1,20 +1,15 @@
 import { JSX } from 'react';
-import { SubmitHandler } from 'react-hook-form-mui';
 
 import { useQueryContext } from '@/contexts/QueryContext';
 
-import { QueryFormController, QueryFormValues } from './QueryFormController';
+import { QueryFormController } from './QueryFormController';
 
 export const QueryForm = (): JSX.Element => {
     const queryContext = useQueryContext();
 
-    const handleSubmit: SubmitHandler<QueryFormValues> = async (data) => {
-        await queryContext.onSubmit(data);
-    };
-
     return (
         <QueryFormController
-            handleSubmit={handleSubmit}
+            handleSubmit={queryContext.onSubmit}
             placeholderText={queryContext.placeholderText}
             areFilesAllowed={queryContext.areFilesAllowed}
             autofocus={queryContext.autofocus}

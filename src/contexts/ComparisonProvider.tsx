@@ -1,4 +1,5 @@
 import { SelectChangeEvent } from '@mui/material';
+import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import { produce } from 'immer';
 import React, {
     UIEvent,
@@ -252,6 +253,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const streamMessage = useStreamMessage(streamCallbacks);
 
+    const { executeRecaptcha } = useReCaptcha();
+
     const submitToThreadView = useCallback(
         async (threadViewId: string, data: QueryFormValues) => {
             // these are bad assumptions, by design they are true
@@ -276,6 +279,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 false,
                 bypassSafetyCheck,
                 streamMessage.mutateAsync,
+                executeRecaptcha,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
                 addSnackMessage
@@ -292,6 +296,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             streamMessage.onFirstMessage,
             threadIds,
             bypassSafetyCheck,
+            executeRecaptcha,
         ]
     );
 

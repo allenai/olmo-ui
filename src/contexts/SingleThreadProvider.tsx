@@ -1,4 +1,5 @@
 import { SelectChangeEvent } from '@mui/material';
+import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
 import React, { UIEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -320,6 +321,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setShouldShowModelSwitchWarning(false);
     }, []);
 
+    const { executeRecaptcha } = useReCaptcha();
+
     const submitToThreadView = useCallback(
         async (threadViewId: string, data: QueryFormValues) => {
             // this shouldn't happen
@@ -337,6 +340,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 isToolCallingEnabled,
                 bypassSafetyCheck,
                 streamMessage.mutateAsync,
+                executeRecaptcha,
                 streamMessage.onFirstMessage,
                 streamMessage.completeStream,
                 addSnackMessage
@@ -354,6 +358,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             selectedTools,
             isToolCallingEnabled,
             bypassSafetyCheck,
+            executeRecaptcha,
         ]
     );
 
