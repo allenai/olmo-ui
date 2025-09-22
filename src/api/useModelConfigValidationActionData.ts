@@ -21,6 +21,8 @@ export const useModelConfigValidationActionData = <TFieldValues extends FieldVal
         if (
             actionData != null &&
             typeof actionData === 'object' &&
+            // I don't remember what the actual type is here
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             error.isValidationErrorPayload(actionData)
         ) {
             actionData.validation_errors.forEach((error) => {

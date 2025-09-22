@@ -12,6 +12,7 @@ describe('root playground loader', () => {
             new QueryClient({ defaultOptions: { queries: { retry: false } } })
         )({
             params: { id: undefined },
+            context: undefined,
             request: new Request(new URL('http://localhost:8080/?model=OLMo-peteish-dpo-preview')),
         })) as PlaygroundLoaderData;
 
@@ -23,6 +24,7 @@ describe('root playground loader', () => {
             new QueryClient({ defaultOptions: { queries: { retry: false } } })
         )({
             params: { id: undefined },
+            context: undefined,
             request: new Request(new URL('http://localhost:8080/?model=fake-model')),
         })) as PlaygroundLoaderData;
 
@@ -34,6 +36,7 @@ describe('root playground loader', () => {
             new QueryClient({ defaultOptions: { queries: { retry: false } } })
         )({
             params: { id: 'foo' },
+            context: undefined,
             request: new Request(new URL('http://localhost:8080/thread/foo')),
         })) as PlaygroundLoaderData;
 

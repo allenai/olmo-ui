@@ -147,10 +147,9 @@ type UserPermission = (typeof USER_PERMISSIONS)[keyof typeof USER_PERMISSIONS];
 export const useUserAuthInfo = (): UserAuthInfo & {
     hasPermission: (permission: UserPermission) => boolean;
 } => {
-    const userInfoFromLoader = useRouteLoaderData('userInfoRoot') as
-        | UserInfoLoaderResponse
-        | undefined;
-
+    const userInfoFromLoader = useRouteLoaderData<UserInfoLoaderResponse | undefined>(
+        'userInfoRoot'
+    );
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
 
     const hasPermission = (permission: UserPermission) =>

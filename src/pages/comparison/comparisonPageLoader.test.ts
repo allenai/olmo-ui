@@ -37,6 +37,7 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
         const loader = comparisonPageLoader(queryClient);
         return (await loader({
             params: {},
+            context: {},
             request: new Request('http://localhost:8080/comparison'),
         })) as ComparisonLoaderData;
     };
