@@ -78,6 +78,7 @@ const MultiModalFields = (): ReactNode => {
                         freeSolo
                         fullWidth
                         options={['image/*', 'application/pdf']}
+                        value={field.value as string[] | undefined}
                         onChange={(_e, value) => {
                             field.onChange(value);
                         }}
