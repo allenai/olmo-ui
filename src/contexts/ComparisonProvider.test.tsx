@@ -11,7 +11,7 @@ import { createMockUser, setupThreadInCache } from '@/utils/test/createMockModel
 import { ComparisonProvider } from './ComparisonProvider';
 import { useQueryContext } from './QueryContext';
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
     useNavigate: () => vi.fn(),
     useParams: vi.fn(() => ({ id: undefined })),
     useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
