@@ -85,7 +85,6 @@ export const fakeModelsResponse = [
         can_think: false,
         can_call_tools: true,
     },
-
     {
         description: 'A fake model with thinking and tool calling',
         id: 'thinking-and-tool-calling-model',

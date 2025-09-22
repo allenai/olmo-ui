@@ -6,10 +6,16 @@ import { fakeModelsResponse } from '@/mocks/handlers/modelHandlers';
 import { ModelSelect } from './ModelSelect';
 
 const meta = {
+    title: 'organism/Model Select',
     component: ModelSelect,
     args: {
         models: fakeModelsResponse,
         onModelChange: fn(),
+    },
+    parameters: {
+        controls: {
+            exclude: ['id', 'onModelChange'],
+        },
     },
 } satisfies Meta<typeof ModelSelect>;
 

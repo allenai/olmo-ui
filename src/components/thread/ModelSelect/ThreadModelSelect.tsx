@@ -1,12 +1,12 @@
 import { SelectChangeEvent } from '@mui/material';
-import { useId } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { useQueryContext } from '@/contexts/QueryContext';
 
-import { ModelSelect } from './ModelSelect';
+import { ModelSelect } from './ModelSelectInput';
 
-export const SingleThreadModelSelect = (): JSX.Element => {
+export const SingleThreadModelSelect = (): ReactNode => {
     const selectId = useId();
     const queryContext = useQueryContext();
 
