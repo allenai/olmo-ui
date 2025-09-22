@@ -52,7 +52,7 @@ export const ModelSelectMenuItem = ({ model }: ModelSelectMenuItemProps) => {
                 </Box>
                 <Stack direction="column">
                     <Typography>{model.name}</Typography>
-                    <Typography sx={{ opacity: 0.5 }} component="div">
+                    <Typography sx={{ opacity: 0.55 }} component="div">
                         {model.accepts_files ? 'Multimodal' : 'Text-only'}
                         {model.internal && ' (Internal)'}
                         <ul>

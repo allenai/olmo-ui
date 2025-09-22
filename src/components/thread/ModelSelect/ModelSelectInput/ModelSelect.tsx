@@ -15,7 +15,7 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 
 import { ModelSelectMenuItem } from './ModelSelectMenuItem';
 
-export interface ModelSelectProps {
+export interface ModelSelectProps extends Pick<SelectProps<string>, 'defaultOpen'> {
     models: Model[];
     selectedModelId?: string;
     onModelChange: SelectProps<string>['onChange'];
@@ -26,6 +26,7 @@ export const ModelSelect = ({
     models,
     selectedModelId: maybeSelectedModel,
     onModelChange: handleModelChange,
+    ...rest
 }: ModelSelectProps): ReactNode => {
     const fallbackId = useId();
     const selectId = id ?? fallbackId;
@@ -53,6 +54,7 @@ export const ModelSelect = ({
                     Model:{' '}
                 </Box>
                 <Select
+                    {...rest}
                     id={selectId}
                     labelId={labelId}
                     fullWidth

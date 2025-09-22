@@ -25,7 +25,7 @@ export const ModelSelectFeatureIndicator = ({
 }) => {
     return (
         <li className={listItemStyle}>
-            <Icon className={iconStyle} />
+            <Icon className={iconStyle} aria-hidden="true" />
             {feature}
         </li>
     );

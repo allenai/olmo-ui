@@ -11,10 +11,11 @@ const meta = {
     args: {
         models: fakeModelsResponse,
         onModelChange: fn(),
+        defaultOpen: true,
     },
     parameters: {
         controls: {
-            exclude: ['id', 'onModelChange'],
+            exclude: ['id', 'onModelChange', 'defaultOpen'],
         },
     },
 } satisfies Meta<typeof ModelSelect>;
