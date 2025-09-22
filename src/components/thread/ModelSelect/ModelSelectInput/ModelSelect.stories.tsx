@@ -12,6 +12,7 @@ const meta = {
         models: fakeModelsResponse,
         onModelChange: fn(),
         defaultOpen: true,
+        selectedModelId: fakeModelsResponse[0].id,
     },
     parameters: {
         controls: {
