@@ -57,7 +57,7 @@ const ThreadDisplayContent = () => {
 };
 
 export const ThreadDisplayContainer = () => {
-    const loaderData = useLoaderData() as SelectedThreadLoaderData | null;
+    const loaderData = useLoaderData<SelectedThreadLoaderData | null>();
     const { id: selectedThreadRootId = '' } = useParams();
     const queryContext = useQueryContext();
     const processedThreadRef = useRef<string>('');

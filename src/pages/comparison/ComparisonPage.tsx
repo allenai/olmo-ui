@@ -40,7 +40,7 @@ const ComparisonPageInner = () => {
 };
 
 export const ComparisonPage = () => {
-    const loaderData = useLoaderData();
+    const loaderData = useLoaderData<ComparisonLoaderData>();
 
     // Convert loader data to initialState format if available
     const initialState = loaderData.comparisonModels

@@ -43,7 +43,7 @@ const UIRefreshThreadPageContent = () => {
 };
 
 export const UIRefreshThreadPage = () => {
-    const loaderData = useLoaderData() as PlaygroundLoaderData | null;
+    const loaderData = useLoaderData<PlaygroundLoaderData | null>();
 
     return (
         <SingleThreadProvider
