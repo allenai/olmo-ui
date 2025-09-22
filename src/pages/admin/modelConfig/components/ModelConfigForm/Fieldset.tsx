@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-export const Fieldset = ({ children }: { children: React.ReactNode }) => {
+export const Fieldset = ({ children, legend }: { children: React.ReactNode; legend?: string }) => {
     return (
         <fieldset
             className={css({
@@ -9,6 +9,7 @@ export const Fieldset = ({ children }: { children: React.ReactNode }) => {
                 flexDirection: 'column',
                 gap: '3',
             })}>
+            <legend>{legend}</legend>
             {children}
         </fieldset>
     );

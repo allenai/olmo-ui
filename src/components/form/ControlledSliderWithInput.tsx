@@ -1,7 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { Input, Slider, SliderProps } from '@allenai/varnish-ui';
+import { Slider, SliderProps } from '@allenai/varnish-ui';
 import type { ReactNode } from 'react';
-import { useController, type UseControllerProps } from 'react-hook-form';
+import { useController, type UseControllerProps, useFormContext } from 'react-hook-form';
 
 interface ControlledSliderWithInputProps<T>
     extends Omit<SliderProps<T>, 'onChange' | 'name' | 'errorMessage'> {
@@ -9,7 +9,7 @@ interface ControlledSliderWithInputProps<T>
     controllerProps?: Omit<UseControllerProps, 'name'>;
 }
 
-export const ControlledSliderWithInput = <T extends number | number[]>({
+export const ControlledSliderWithInput = <T extends number>({
     name,
     controllerProps,
     ...rest
@@ -19,10 +19,12 @@ export const ControlledSliderWithInput = <T extends number | number[]>({
         fieldState: { error },
     } = useController({ name, ...controllerProps });
 
-    // NOTE: No number input component in varnish-ui
-    // TODO: add NumberField input component to varnish-ui
-    const handleInputChange = (value: string) => {
-        field.onChange(Number(value));
+    const { setValue, watch } = useFormContext();
+
+    const inputValue = watch(name) as T;
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = Number(event.target.value);
+        setValue(name, newValue);
     };
 
     return (
@@ -39,13 +41,27 @@ export const ControlledSliderWithInput = <T extends number | number[]>({
                 {...field}
                 {...rest}
             />
-            <Input
+            <input
+                aria-label={rest.label}
+                type="number"
+                min={rest.minValue}
+                max={rest.maxValue}
+                step={rest.step}
                 className={css({
                     justifySelf: 'flex-end',
+                    textAlign: 'right',
                     width: '[75px]',
                     flex: '[0 0 75px]',
+                    '&:focus': {
+                        '--outline-width': '1px',
+                        outlineWidth: 'var(--outline-width)',
+                        outlineStyle: 'solid',
+                        outlineColor: 'accent.secondary',
+                        borderRadius: 'md',
+                        outlineOffset: '[calc(var(--outline-width) * -1)]',
+                    },
                 })}
-                {...field}
+                value={inputValue}
                 onChange={handleInputChange}
             />
         </fieldset>
