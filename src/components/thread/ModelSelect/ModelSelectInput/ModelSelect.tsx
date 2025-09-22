@@ -65,22 +65,13 @@ export const ModelSelect = ({
                         slotProps: {
                             paper: {
                                 sx: (theme) => ({
-                                    background: 'transparent',
-                                    paddingInline: theme.spacing(1.5),
-                                    paddingBlock: '0',
-                                    boxShadow: 'none',
-                                    overflow: 'visible',
+                                    borderRadius: theme.spacing(1),
+                                    paddingInline: 0,
+                                    paddingBlock: 0,
+                                    boxShadow: 1,
+                                    backgroundColor: theme.palette.background.drawer.secondary,
                                 }),
                             },
-                        },
-                        MenuListProps: {
-                            sx: (theme) => ({
-                                borderRadius: theme.spacing(1),
-                                backgroundColor: theme.palette.background.drawer.secondary,
-                                overflow: 'hidden',
-                                padding: 0,
-                                boxShadow: 1,
-                            }),
                         },
                     }}
                     value={selectedModelId}
