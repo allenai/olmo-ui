@@ -23,7 +23,7 @@ import {
 
 import { QueryFormContainer } from './QueryFormContainer';
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
     useNavigate: () => vi.fn(),
     useParams: vi.fn(() => ({ id: undefined })),
     useLocation: () => ({

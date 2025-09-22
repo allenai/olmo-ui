@@ -22,9 +22,9 @@ import { ThreadDisplayContainer } from './ThreadDisplayContainer';
 // Use a custom thread ID for the regex test to avoid MSW conflicts
 const regexTestThreadId = 'test_regex_thread';
 
-// Mock react-router-dom functions that ThreadDisplayContainer uses
-vi.mock('react-router-dom', async () => {
-    const actual = await vi.importActual('react-router-dom');
+// Mock react-router functions that ThreadDisplayContainer uses
+vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
     return {
         ...actual,
         useNavigate: () => vi.fn(),
@@ -42,7 +42,7 @@ describe('ThreadDisplay', () => {
     });
 
     it('should highlight spans that contain special regex characters', async () => {
-        const { useParams } = await import('react-router-dom');
+        const { useParams } = await import('react-router');
         vi.mocked(useParams).mockReturnValue({ id: regexTestThreadId });
 
         // Set up MSW handler for our custom thread ID with regex character content
@@ -233,7 +233,7 @@ describe('ThreadDisplay', () => {
     });
 
     it("shouldn't show system messages", async () => {
-        const { useParams } = await import('react-router-dom');
+        const { useParams } = await import('react-router');
         vi.mocked(useParams).mockReturnValue({ id: firstThreadMessageId });
 
         render(

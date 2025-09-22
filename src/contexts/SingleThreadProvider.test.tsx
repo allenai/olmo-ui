@@ -23,7 +23,7 @@ import {
 import { useQueryContext } from './QueryContext';
 import { SingleThreadProvider } from './SingleThreadProvider';
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
     useNavigate: () => vi.fn(),
     useParams: vi.fn(() => ({ id: undefined })),
     useNavigation: () => IDLE_NAVIGATION,

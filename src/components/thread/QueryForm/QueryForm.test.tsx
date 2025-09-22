@@ -21,8 +21,8 @@ import {
 import { QueryForm } from './QueryForm';
 import { QueryFormController } from './QueryFormController';
 
-// Mock react-router-dom with configurable useParams
-vi.mock('react-router-dom', () => ({
+// Mock react-router with configurable useParams
+vi.mock('react-router', () => ({
     useNavigate: () => vi.fn(),
     useParams: vi.fn(() => ({ id: undefined })),
     useLocation: () => ({
