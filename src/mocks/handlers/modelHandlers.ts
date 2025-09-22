@@ -3,7 +3,7 @@ import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchem
 
 import { typedHttp } from './typedHttp';
 
-const fakeModelsResponse = [
+export const fakeModelsResponse = [
     {
         description: "AI2's 7B model trained on the Dolma dataset and fine-tuned for chat.",
         id: 'olmo-7b-chat',
