@@ -8,7 +8,7 @@ import {
     ModelConfigForm,
     type ModelConfigFormValues,
 } from '../components/ModelConfigForm/ModelConfigForm';
-import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
+import { mapModelConfigFormValuesToRequest } from '../mapModelConfigFormValuesToRequest';
 
 export const CreateModelPage = () => {
     const formContext = useForm<ModelConfigFormValues>({
@@ -19,18 +19,26 @@ export const CreateModelPage = () => {
             familyId: 'no_family',
             modelType: 'chat',
             requireFileToPrompt: 'no_requirement',
-            temperatureDefault: 0.7,
-            temperatureUpper: 1,
-            temperatureLower: 0,
-            temperatureStep: 0.01,
-            topPDefault: 1,
-            topPUpper: 1,
-            topPLower: 0.01,
-            topPStep: 0.01,
-            maxTokensDefault: 1024,
-            maxTokensUpper: 2048,
-            maxTokensLower: 1,
-            maxTokensStep: 1,
+            inferenceConstraints: {
+                temperature: {
+                    default: 0.7,
+                    minValue: 0,
+                    maxValue: 1,
+                    step: 0.01,
+                },
+                topP: {
+                    default: 1,
+                    minValue: 0.01,
+                    maxValue: 1,
+                    step: 0.01,
+                },
+                maxTokens: {
+                    default: 2024,
+                    minValue: 1,
+                    maxValue: 2048,
+                    step: 1,
+                },
+            },
         },
         mode: 'onBlur',
     });
@@ -39,7 +47,7 @@ export const CreateModelPage = () => {
     useModelConfigValidationActionData(formContext.setError);
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
-        submit(mapConfigFormDataToRequest(formData), {
+        submit(mapModelConfigFormValuesToRequest(formData), {
             method: 'post',
             encType: 'application/json',
         });
