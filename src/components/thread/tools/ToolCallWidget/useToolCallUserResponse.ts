@@ -35,10 +35,7 @@ export const useToolCallUserResponse = <T extends { content: string }>(
         try {
             clearStreamError(threadViewId);
 
-            await queryContext.submitToThreadView(threadViewId, {
-                ...data,
-                captchaToken: token,
-            });
+            await queryContext.submitToThreadView(threadViewId, data);
         } catch (e) {
             handleFormSubmitException(e, formContext);
             console.error(e);
