@@ -73,6 +73,11 @@ export const ModelSelect = ({
                                 }),
                             },
                         },
+                        MenuListProps: {
+                            sx: {
+                                padding: 0,
+                            },
+                        },
                     }}
                     value={selectedModelId}
                     renderValue={(value) => {

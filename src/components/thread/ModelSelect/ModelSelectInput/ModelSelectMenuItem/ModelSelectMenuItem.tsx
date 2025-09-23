@@ -26,6 +26,7 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
     rowGap: '0.25rem',
 
     paddingInline: theme.spacing(1.5),
+    paddingBlock: theme.spacing(1.25),
 
     background: 'transparent',
 
