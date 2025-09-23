@@ -2,7 +2,7 @@ import { css } from '@allenai/varnish-panda-runtime/css';
 import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import { now, type ZonedDateTime } from '@internationalized/date';
-import { type ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { DisclosureGroup } from 'react-aria-components';
 import { useFormContext } from 'react-hook-form';
 
@@ -13,6 +13,7 @@ import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { ControlledSliderWithInput } from '@/components/form/ControlledSliderWithInput';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';
+import { SliderWithInput } from '@/components/form/SliderWithInput';
 import { ExpandableTextArea } from '@/components/form/TextArea/ExpandableTextArea';
 import { LinkButton } from '@/components/LinkButton';
 import { CollapsibleWidget } from '@/components/widgets/CollapsibleWidget/CollapsibleWidget';
@@ -26,10 +27,24 @@ import { MultiModalFields, MultiModalFormValues } from './MultiModalFields';
 
 const urlRegex = /^(https?:\/\/)([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/;
 
+type MinMaxDefault = {
+    default: number;
+    minValue: number;
+    maxValue: number;
+    step: number;
+};
+type InferenceConstrints = {
+    temperature: MinMaxDefault;
+    topP: MinMaxDefault;
+    maxTokens: MinMaxDefault;
+    stop?: readonly string[];
+};
+
 type BaseModelFormFieldValues = {
     availability: 'public' | 'internal' | 'prerelease';
     availableTime?: ZonedDateTime;
     deprecationTime?: ZonedDateTime;
+    inferenceConstraints: InferenceConstrints;
 } & Partial<
     Pick<
         SchemaRootCreateModelConfigRequest,
@@ -72,29 +87,28 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     const formContext = useFormContext<ModelConfigFormValues>();
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+    const inferenceConstraints = formContext.getValues('inferenceConstraints');
+    const [maxTokenBase2Limit, setMaxTokenBase2Limit] = useState(
+        Math.log2(inferenceConstraints.maxTokens.maxValue)
+    );
+
     const promptTypeState = formContext.watch('promptType');
     const showTimeSection = formContext.watch('availability') === 'prerelease';
-    const modelInferenceOptions = {
-        temperature: {
-            minValue: formContext.getValues('temperatureLower') || undefined,
-            maxValue: formContext.getValues('temperatureUpper') || undefined,
-            step: formContext.getValues('temperatureStep') || undefined,
-        },
-        topP: {
-            minValue: formContext.getValues('topPLower') || undefined,
-            maxValue: formContext.getValues('topPUpper') || undefined,
-            step: formContext.getValues('topPStep') || undefined,
-        },
-        maxTokens: {
-            minValue: formContext.getValues('maxTokensLower') || undefined,
-            maxValue: formContext.getValues('maxTokensUpper') || undefined,
-            step: formContext.getValues('maxTokensStep') || undefined,
-        },
-    };
+    const maxTokensMaxValue = formContext.watch('inferenceConstraints.maxTokens.maxValue');
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
         onSubmit(formData);
     };
+
+    useEffect(() => {
+        const currentInferenceConstraints = formContext.getValues('inferenceConstraints');
+        if (
+            maxTokensMaxValue &&
+            currentInferenceConstraints.maxTokens.default > maxTokensMaxValue
+        ) {
+            formContext.setValue('inferenceConstraints.maxTokens.default', maxTokensMaxValue);
+        }
+    }, [formContext, maxTokensMaxValue]);
 
     return (
         <form
@@ -210,39 +224,61 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                         </ControlledSwitch>
 
                         <ControlledSliderWithInput
-                            name="temperatureDefault"
-                            label="Temperature"
-                            {...modelInferenceOptions.temperature}
+                            name="inferenceConstraints.temperature.default"
+                            label="Default Temperature"
+                            {...inferenceConstraints.temperature}
                             controllerProps={{
                                 rules: {
                                     required: true,
-                                    min: modelInferenceOptions.temperature.minValue,
-                                    max: modelInferenceOptions.temperature.maxValue,
+                                    min: inferenceConstraints.temperature.minValue,
+                                    max: inferenceConstraints.temperature.maxValue,
                                 },
                             }}
                         />
                         <ControlledSliderWithInput
-                            name="topPDefault"
-                            label="Top P"
-                            {...modelInferenceOptions.topP}
+                            name="inferenceConstraints.topP.default"
+                            label="Default Top P"
+                            {...inferenceConstraints.topP}
                             controllerProps={{
                                 rules: {
                                     required: true,
-                                    min: modelInferenceOptions.topP.minValue,
-                                    max: modelInferenceOptions.topP.maxValue,
+                                    min: inferenceConstraints.topP.minValue,
+                                    max: inferenceConstraints.topP.maxValue,
                                 },
                             }}
                         />
                         <ControlledSliderWithInput
-                            name="maxTokensDefault"
-                            label="Max tokens"
-                            {...modelInferenceOptions.maxTokens}
+                            name="inferenceConstraints.maxTokens.default"
+                            label="Default Max Tokens"
+                            {...inferenceConstraints.maxTokens}
                             controllerProps={{
                                 rules: {
                                     required: true,
-                                    min: modelInferenceOptions.maxTokens.minValue,
-                                    max: modelInferenceOptions.maxTokens.maxValue,
+                                    min: inferenceConstraints.maxTokens.minValue,
+                                    max: inferenceConstraints.maxTokens.maxValue,
                                 },
+                            }}
+                        />
+
+                        <SliderWithInput
+                            label="Upper Limit of Max Tokens (Base 2 Exponent)"
+                            minValue={10} // 2^10 = 1,024
+                            maxValue={20} // 2^20 = 1,048,576
+                            step={1}
+                            value={maxTokenBase2Limit}
+                            onChange={(value) => {
+                                const maxAllowed = Math.floor(Math.log2(Number.MAX_SAFE_INTEGER));
+                                // NOTE: don't go over Number.MAX_SAFE_INTEGER, if we bump maxValue too high
+                                if (value > maxAllowed) {
+                                    value = maxAllowed;
+                                }
+                                setMaxTokenBase2Limit(value);
+                                const newMaxTokenLimit = Math.pow(2, value);
+
+                                formContext.setValue(
+                                    'inferenceConstraints.maxTokens.maxValue',
+                                    newMaxTokenLimit
+                                );
                             }}
                         />
                     </Fieldset>
