@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import { useAppContext } from '@/AppContext';
 import {
     type FormContextWithContent,
     handleFormSubmitException,
@@ -25,10 +27,14 @@ export const useToolCallUserResponse = <T extends { content: string }>(
 
     const [isPending, setIsPending] = useState(false);
 
+    const clearStreamError = useAppContext(useShallow((state) => state.clearStreamError));
+
     const submitToolCallResponse = async (data: QueryFormValues) => {
         setIsPending(true);
 
         try {
+            clearStreamError(threadViewId);
+
             await queryContext.submitToThreadView(threadViewId, data);
         } catch (e) {
             handleFormSubmitException(e, formContext);

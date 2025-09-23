@@ -54,7 +54,7 @@ export const FakeQueryContextProvider = ({
         setModelId: () => {},
         inferenceOpts: {},
         updateInferenceOpts: () => {},
-        submitToThreadView: () => new Promise(() => null),
+        submitToThreadView: () => Promise.resolve(null),
         updateIsToolCallingEnabled: () => {},
         updateUserToolDefinitions: () => {},
         updateSelectedTools: () => {},
