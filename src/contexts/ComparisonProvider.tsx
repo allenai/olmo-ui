@@ -32,7 +32,7 @@ import {
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 
-import { QueryContext, QueryContextValue } from './QueryContext';
+import { ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
@@ -119,11 +119,13 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1])
     );
-    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(
         userToolDefinitions !== undefined
     );
 
-    const [bypassSafetyCheck, setBypassSafetyCheck] = React.useState(false);
+    const [extraParameters, setExtraParameters] = useState<ExtraParameters>();
+
+    const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
     // Get available models from API, filtering for visible models
     const models = useModels({
@@ -469,6 +471,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             bypassSafetyCheck,
             updateBypassSafetyCheck: setBypassSafetyCheck,
+            extraParameters,
+            setExtraParameters,
         };
     }, [
         threadIds,
@@ -490,6 +494,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         comparisonState,
         bypassSafetyCheck,
         setBypassSafetyCheck,
+        extraParameters,
     ]);
 
     return (

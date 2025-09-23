@@ -25,7 +25,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { links } from '@/Links';
 import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
-import { QueryContext, QueryContextValue } from './QueryContext';
+import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
@@ -105,6 +105,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
     );
+
+    const [extraParameters, setExtraParameters] = useState<ExtraParameters>();
 
     const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
         // Initialize with values from the last LLM message if available
@@ -439,6 +441,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             selectedTools,
             bypassSafetyCheck,
             updateBypassSafetyCheck: setBypassSafetyCheck,
+            extraParameters,
+            setExtraParameters,
         };
     }, [
         canSubmit,
@@ -466,6 +470,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         updateSelectedTools,
         selectedTools,
         bypassSafetyCheck,
+        extraParameters,
     ]);
 
     return (

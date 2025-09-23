@@ -15,7 +15,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     shouldResetForm: false,
     onModelChange: fn(),
     availableTools: [],
-    getThreadViewModel: () => undefined,
+    getThreadViewModel: fn(),
     transform: fn(),
     onSubmit: fn(),
     onAbort: fn(),
@@ -33,7 +33,10 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     selectedTools: [],
 
     bypassSafetyCheck: false,
-    updateBypassSafetyCheck: () => {},
+    updateBypassSafetyCheck: fn(),
+
+    extraParameters: undefined,
+    setExtraParameters: fn(),
 
     fileUploadProps: {
         isFileUploadDisabled: true,

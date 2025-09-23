@@ -75,6 +75,7 @@
     "dompurify": "^3.0.6",
     "highlight.js": "11.8.0",
     "immer": "^10.0.4",
+    "json-edit-react": "^1.28.2",
     "marked": "^5.1.2",
     "marked-highlight": "^2.0.1",
     "openapi-fetch": "^0.14.0",

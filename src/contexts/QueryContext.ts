@@ -9,6 +9,8 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { RemoteState } from '@/contexts/util';
 
 // Single interface that adapts based on context type
+
+export type ExtraParameters = Record<string, unknown>;
 interface QueryContextValue {
     // Form state properties
     threadStarted: boolean;
@@ -53,6 +55,9 @@ interface QueryContextValue {
 
     bypassSafetyCheck: boolean;
     updateBypassSafetyCheck: (value: boolean) => void;
+
+    extraParameters?: ExtraParameters;
+    setExtraParameters: (extraParameters: ExtraParameters) => void;
 }
 
 // Thread-aware wrapper that removes threadViewId parameter from methods
