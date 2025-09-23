@@ -7,8 +7,8 @@ import {
     ModalActions,
     Tab,
     TabPanel,
+    Tabs,
 } from '@allenai/varnish-ui';
-import * as varnishUi from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
 import type { Key } from 'react-aria-components';
@@ -218,9 +218,9 @@ const TabbedContent = ({
     const items: Items[] = [
         {
             id: 'user-functions',
-            header: (props) => <varnishUi.Tab {...props}>User defined tools</varnishUi.Tab>,
+            header: (props) => <Tab {...props}>User defined tools</Tab>,
             content: (props) => (
-                <varnishUi.TabPanel {...props}>
+                <TabPanel {...props}>
                     <div className={textAreaContainer}>
                         <p className={labelStyle}>
                             Enter a JSON array of tool declarations the model can call. Each tool
@@ -268,14 +268,14 @@ const TabbedContent = ({
                             </ModalActions>
                         )}
                     </div>
-                </varnishUi.TabPanel>
+                </TabPanel>
             ),
         },
         {
             id: 'system-functions',
-            header: (props) => <varnishUi.Tab {...props}>System tools</varnishUi.Tab>,
+            header: (props) => <Tab {...props}>System tools</Tab>,
             content: (props) => (
-                <varnishUi.TabPanel {...props}>
+                <TabPanel {...props}>
                     <div className={textAreaContainer}>
                         <p className={labelStyle}>Tools below will be added to the conversation.</p>
                         <ControlledToolToggleTable
@@ -284,13 +284,13 @@ const TabbedContent = ({
                             tools={tools}
                         />
                     </div>
-                </varnishUi.TabPanel>
+                </TabPanel>
             ),
         },
     ] as const;
 
     return (
-        <varnishUi.Tabs
+        <Tabs
             className={tabHeight}
             onSelectionChange={setTabSelect}
             selectedKey={tabSelected}
@@ -417,7 +417,7 @@ const validateToolDefinitions = (value: string | string[]) => {
         }
         if (e instanceof z.core.$ZodError) {
             // Return the first issue message for simplicity
-            const message = `[${e.issues[0].path}]: ${e.issues[0].message}`;
+            const message = `[${e.issues[0].path.toString()}]: ${e.issues[0].message}`;
             return `Invalid definition: ${message}`;
         }
         return 'Unknown parsing error';
