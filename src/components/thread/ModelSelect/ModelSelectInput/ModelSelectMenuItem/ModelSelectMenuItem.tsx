@@ -1,4 +1,3 @@
-import { DataObject } from '@mui/icons-material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import {
@@ -12,6 +11,7 @@ import {
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import ThinkingSvg from '@/components/assets/thinking.svg?react';
+import { ToolCallIcon } from '@/components/thread/tools/ToolCallWidget/ToolCallWidget';
 
 import { ModelSelectFeatureIndicator } from './ModelSelectFeatureIndicator';
 
@@ -68,7 +68,7 @@ export const ModelSelectMenuItem = ({ model, value, ...rest }: ModelSelectMenuIt
                         <ModelSelectFeatureIndicator Icon={ThinkingSvg} feature="Thinking" />
                     )}
                     {model.can_call_tools && (
-                        <ModelSelectFeatureIndicator Icon={DataObject} feature="Tool calling" />
+                        <ModelSelectFeatureIndicator Icon={ToolCallIcon} feature="Tool calling" />
                     )}
                 </ul>
             </Typography>
