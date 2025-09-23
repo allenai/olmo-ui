@@ -3,6 +3,7 @@ import { cx } from '@allenai/varnish-ui';
 import { PropsWithChildren, useContext, useId } from 'react';
 import { DisclosureStateContext } from 'react-aria-components';
 
+import DotsLoadingIndicator from '@/components/assets/dots-loading-indicator.svg?react';
 import {
     CollapsibleWidgetBase,
     type CollapsibleWidgetBaseProps,
@@ -18,13 +19,17 @@ import { ThinkingIcon } from '../svg/Thinking';
 import { FadeOverflowContent } from './FadeOverflowContent';
 
 const thinkingWidgetRecipe = sva({
-    slots: ['container', 'footer'],
+    slots: ['container', 'footer', 'thinkingInProgressIndicator'],
     base: {
         container: {},
         footer: {
             display: 'grid',
             gridTemplateColumns: '1fr auto',
             justifyItems: 'left',
+        },
+        thinkingInProgressIndicator: {
+            width: '[2rem]',
+            height: '[1lh]',
         },
     },
 });
@@ -33,14 +38,14 @@ interface ThinkingWidgetProps
     extends Omit<CollapsibleWidgetBaseProps, 'children'>,
         PropsWithChildren {
     contentClassName?: string;
-    thinking: boolean;
+    isThinkingInProgress: boolean;
 }
 
 const ThinkingWidget = ({
     className,
     contentClassName,
     children,
-    thinking,
+    isThinkingInProgress,
     ...rest
 }: ThinkingWidgetProps) => {
     const thinkingWidgetClassNames = thinkingWidgetRecipe();
@@ -53,9 +58,15 @@ const ThinkingWidget = ({
             {...rest}>
             <CollapsibleWidgetHeading
                 startAdornment={<ThinkingIcon size="small" />}
-                endAdornment={<StatusIndicator />}
+                endAdornment={
+                    isThinkingInProgress ? (
+                        <DotsLoadingIndicator
+                            className={thinkingWidgetClassNames.thinkingInProgressIndicator}
+                        />
+                    ) : undefined
+                }
                 triggerAriaDescribedBy={footerId}>
-                {thinking ? 'Thinking' : 'Thoughts'}
+                {isThinkingInProgress ? 'Thinking' : 'Thoughts'}
             </CollapsibleWidgetHeading>
             <CollapsibleWidgetPanel>
                 <FadeOverflowContent className={contentClassName} shouldStickToBottom>
@@ -85,10 +96,6 @@ const FooterContent = ({ id }: FooterContentProps) => {
             {isExpanded ? 'Collapse to hide model thoughts' : 'Expand to view model thoughts'}
         </span>
     );
-};
-
-const StatusIndicator = () => {
-    return <span aria-hidden>•••</span>;
 };
 
 export { ThinkingWidget };
