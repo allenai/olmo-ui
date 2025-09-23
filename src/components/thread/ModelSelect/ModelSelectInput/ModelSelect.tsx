@@ -79,7 +79,9 @@ export const ModelSelect = ({
                         return models.find((model) => model.id === value)?.name;
                     }}>
                     {models.map((model) => (
-                        <ModelSelectMenuItem key={model.id} model={model} />
+                        // Value MUST be passed in here to make it work with MUI
+                        // https://github.com/mui/material-ui/issues/31006#issuecomment-1035549630
+                        <ModelSelectMenuItem key={model.id} model={model} value={model.id} />
                     ))}
                 </Select>
             </FormControl>
