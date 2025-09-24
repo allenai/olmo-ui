@@ -691,8 +691,11 @@ export type components = {
             readonly requireFileToPrompt?:
                 | components['schemas']['FileRequiredToPromptOption']
                 | null;
-            /** Stopdefault */
-            readonly stopDefault: readonly string[] | null;
+            /**
+             * Stopdefault
+             * @default null
+             */
+            readonly stopDefault?: readonly string[] | null;
             /**
              * Temperaturedefault
              * @default null
@@ -818,8 +821,11 @@ export type components = {
              * @enum {string}
              */
             readonly promptType: 'text_only';
-            /** Stopdefault */
-            readonly stopDefault: readonly string[] | null;
+            /**
+             * Stopdefault
+             * @default null
+             */
+            readonly stopDefault?: readonly string[] | null;
             /**
              * Temperaturedefault
              * @default null
@@ -1083,14 +1089,14 @@ export type components = {
             readonly logprobs?: number | null;
             /**
              * Maxtokens
-             * @default null
+             * @default 2048
              */
-            readonly maxTokens?: number | null;
+            readonly maxTokens?: number;
             /**
              * N
-             * @default null
+             * @default 1
              */
-            readonly n?: number | null;
+            readonly n?: number;
             /**
              * Stop
              * @default null
@@ -1098,14 +1104,14 @@ export type components = {
             readonly stop?: readonly string[] | null;
             /**
              * Temperature
-             * @default null
+             * @default 0.7
              */
-            readonly temperature?: number | null;
+            readonly temperature?: number;
             /**
              * Topp
-             * @default null
+             * @default 1
              */
-            readonly topP?: number | null;
+            readonly topP?: number;
         };
         /** LabelResponse */
         readonly LabelResponse: {
@@ -1199,14 +1205,26 @@ export type components = {
             readonly is_deprecated: boolean;
             /** Is Visible */
             readonly is_visible: boolean;
-            /** Max Tokens Default */
-            readonly max_tokens_default: number;
-            /** Max Tokens Lower */
-            readonly max_tokens_lower: number;
-            /** Max Tokens Step */
-            readonly max_tokens_step: number;
-            /** Max Tokens Upper */
-            readonly max_tokens_upper: number;
+            /**
+             * Max Tokens Default
+             * @default null
+             */
+            readonly max_tokens_default?: number | null;
+            /**
+             * Max Tokens Lower
+             * @default null
+             */
+            readonly max_tokens_lower?: number | null;
+            /**
+             * Max Tokens Step
+             * @default null
+             */
+            readonly max_tokens_step?: number | null;
+            /**
+             * Max Tokens Upper
+             * @default null
+             */
+            readonly max_tokens_upper?: number | null;
             readonly model_type: components['schemas']['ModelType'];
             /** Name */
             readonly name: string;
@@ -1225,22 +1243,46 @@ export type components = {
              * @default null
              */
             readonly system_prompt?: string | null;
-            /** Temperature Default */
-            readonly temperature_default: number;
-            /** Temperature Lower */
-            readonly temperature_lower: number;
-            /** Temperature Step */
-            readonly temperature_step: number;
-            /** Temperature Upper */
-            readonly temperature_upper: number;
-            /** Top P Default */
-            readonly top_p_default: number;
-            /** Top P Lower */
-            readonly top_p_lower: number;
-            /** Top P Step */
-            readonly top_p_step: number;
-            /** Top P Upper */
-            readonly top_p_upper: number;
+            /**
+             * Temperature Default
+             * @default null
+             */
+            readonly temperature_default?: number | null;
+            /**
+             * Temperature Lower
+             * @default null
+             */
+            readonly temperature_lower?: number | null;
+            /**
+             * Temperature Step
+             * @default null
+             */
+            readonly temperature_step?: number | null;
+            /**
+             * Temperature Upper
+             * @default null
+             */
+            readonly temperature_upper?: number | null;
+            /**
+             * Top P Default
+             * @default null
+             */
+            readonly top_p_default?: number | null;
+            /**
+             * Top P Lower
+             * @default null
+             */
+            readonly top_p_lower?: number | null;
+            /**
+             * Top P Step
+             * @default null
+             */
+            readonly top_p_step?: number | null;
+            /**
+             * Top P Upper
+             * @default null
+             */
+            readonly top_p_upper?: number | null;
         };
         /**
          * ModelAvailability
@@ -1355,14 +1397,26 @@ export type components = {
              * @default null
              */
             readonly max_files_per_message?: number | null;
-            /** Max Tokens Default */
-            readonly max_tokens_default: number;
-            /** Max Tokens Lower */
-            readonly max_tokens_lower: number;
-            /** Max Tokens Step */
-            readonly max_tokens_step: number;
-            /** Max Tokens Upper */
-            readonly max_tokens_upper: number;
+            /**
+             * Max Tokens Default
+             * @default null
+             */
+            readonly max_tokens_default?: number | null;
+            /**
+             * Max Tokens Lower
+             * @default null
+             */
+            readonly max_tokens_lower?: number | null;
+            /**
+             * Max Tokens Step
+             * @default null
+             */
+            readonly max_tokens_step?: number | null;
+            /**
+             * Max Tokens Upper
+             * @default null
+             */
+            readonly max_tokens_upper?: number | null;
             /**
              * Max Total File Size
              * @description The maximum total file size a user is allowed to send. Adds up the size of every file.
@@ -1392,22 +1446,46 @@ export type components = {
              * @default null
              */
             readonly system_prompt?: string | null;
-            /** Temperature Default */
-            readonly temperature_default: number;
-            /** Temperature Lower */
-            readonly temperature_lower: number;
-            /** Temperature Step */
-            readonly temperature_step: number;
-            /** Temperature Upper */
-            readonly temperature_upper: number;
-            /** Top P Default */
-            readonly top_p_default: number;
-            /** Top P Lower */
-            readonly top_p_lower: number;
-            /** Top P Step */
-            readonly top_p_step: number;
-            /** Top P Upper */
-            readonly top_p_upper: number;
+            /**
+             * Temperature Default
+             * @default null
+             */
+            readonly temperature_default?: number | null;
+            /**
+             * Temperature Lower
+             * @default null
+             */
+            readonly temperature_lower?: number | null;
+            /**
+             * Temperature Step
+             * @default null
+             */
+            readonly temperature_step?: number | null;
+            /**
+             * Temperature Upper
+             * @default null
+             */
+            readonly temperature_upper?: number | null;
+            /**
+             * Top P Default
+             * @default null
+             */
+            readonly top_p_default?: number | null;
+            /**
+             * Top P Lower
+             * @default null
+             */
+            readonly top_p_lower?: number | null;
+            /**
+             * Top P Step
+             * @default null
+             */
+            readonly top_p_step?: number | null;
+            /**
+             * Top P Upper
+             * @default null
+             */
+            readonly top_p_upper?: number | null;
         };
         /** MultiModalResponseModel */
         readonly MultiModalResponseModel: {
@@ -1909,8 +1987,11 @@ export type components = {
             readonly requireFileToPrompt?:
                 | components['schemas']['FileRequiredToPromptOption']
                 | null;
-            /** Stopdefault */
-            readonly stopDefault: readonly string[] | null;
+            /**
+             * Stopdefault
+             * @default null
+             */
+            readonly stopDefault?: readonly string[] | null;
             /**
              * Temperaturedefault
              * @default null
@@ -2034,8 +2115,11 @@ export type components = {
              * @enum {string}
              */
             readonly promptType: 'text_only';
-            /** Stopdefault */
-            readonly stopDefault: readonly string[] | null;
+            /**
+             * Stopdefault
+             * @default null
+             */
+            readonly stopDefault?: readonly string[] | null;
             /**
              * Temperaturedefault
              * @default null

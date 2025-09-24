@@ -1,6 +1,10 @@
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 
+import {
+    defaultInferenceConstraintsCamel,
+    defaultInferenceConstraintsSnake,
+} from './defaultInferenceConstraints';
 import { typedHttp } from './typedHttp';
 
 export const fakeModelsResponse = [
@@ -18,6 +22,7 @@ export const fakeModelsResponse = [
         prompt_type: 'text_only',
         internal: false,
         infini_gram_index: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsSnake,
     },
     {
         description: 'A 70B parameter model that is a fine-tuned version of Llama 2.',
@@ -32,6 +37,7 @@ export const fakeModelsResponse = [
         prompt_type: 'text_only',
         internal: false,
         infini_gram_index: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsSnake,
     },
     {
         description: "AI2's 7B model following the 'peteish' thread of improvements.",
@@ -45,6 +51,7 @@ export const fakeModelsResponse = [
         prompt_type: 'text_only',
         internal: false,
         infini_gram_index: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsSnake,
     },
     {
         description: 'Molmo',
@@ -59,6 +66,7 @@ export const fakeModelsResponse = [
         prompt_type: 'multi_modal',
         internal: false,
         infini_gram_index: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsSnake,
     },
     {
         description: 'A fake model with thinking',
@@ -122,6 +130,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         canCallTools: false,
         canThink: false,
         infiniGramIndex: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsCamel,
     },
     {
         availableTime: null,
@@ -144,6 +153,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         canCallTools: false,
         canThink: false,
         infiniGramIndex: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsCamel,
     },
     {
         availableTime: null,
@@ -166,6 +176,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         canCallTools: false,
         canThink: false,
         infiniGramIndex: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsCamel,
     },
     {
         availableTime: null,
@@ -188,6 +199,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         canCallTools: false,
         canThink: false,
         infiniGramIndex: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsCamel,
     },
     {
         acceptedFileTypes: ['image/*', 'application/pdf'],
@@ -215,6 +227,7 @@ const fakeAdminModelsResponse: SchemaResponseModel[] = [
         canCallTools: false,
         canThink: false,
         infiniGramIndex: 'olmoe-0125-1b-7b',
+        ...defaultInferenceConstraintsCamel,
     },
 ];
 
