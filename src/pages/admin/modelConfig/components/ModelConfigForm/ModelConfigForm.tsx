@@ -261,6 +261,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                         />
 
                         <SliderWithInput
+                            name="maxTokensMaxValue"
                             label="Upper Limit of Max Tokens (Base 2 Exponent)"
                             minValue={10} // 2^10 = 1,024
                             maxValue={20} // 2^20 = 1,048,576

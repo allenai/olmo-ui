@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 
 export interface SliderWithInputProps<T> extends Omit<SliderProps<T>, 'outputClassName'> {
     inputProps?: Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'min' | 'max' | 'step'>;
-    adornmentStart?: ReactNode;
+    name?: string;
 }
 
 export const SliderWithInput = <T extends number>({
@@ -25,6 +25,7 @@ export const SliderWithInput = <T extends number>({
             />
             {/* TODO: Add NumberField input to varnish-ui and replace here */}
             <input
+                name={rest.name}
                 aria-label={rest.label}
                 type="number"
                 value={rest.value}
