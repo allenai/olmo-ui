@@ -21,6 +21,19 @@ const createTestModel = (id: string, name: string): Model => ({
     information_url: 'https://allenai.org',
     is_deprecated: false,
     is_visible: true,
+    max_tokens_default: 2048,
+    max_tokens_lower: 1,
+    max_tokens_upper: 2048,
+    max_tokens_step: 1,
+    stop_default: null,
+    temperature_default: 0.7,
+    temperature_lower: 0,
+    temperature_upper: 1,
+    temperature_step: 0.01,
+    top_p_default: 1,
+    top_p_lower: 0.01,
+    top_p_upper: 1,
+    top_p_step: 0.01,
 });
 
 const getInitialState = () =>
