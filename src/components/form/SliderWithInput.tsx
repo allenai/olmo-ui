@@ -1,6 +1,8 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 import { Slider, SliderProps } from '@allenai/varnish-ui';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+
+import { clipToMinMax } from '@/utils/clipToMinMax';
 
 export interface SliderWithInputProps<T> extends Omit<SliderProps<T>, 'outputClassName'> {
     inputProps?: Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'min' | 'max' | 'step'>;
@@ -30,7 +32,13 @@ export const SliderWithInput = <T extends number>({
                 type="number"
                 value={rest.value}
                 onChange={(e) => {
-                    rest.onChange?.(Number(e.target.value) as T);
+                    const { value, min, max } = e.target;
+                    const valueNum = Number(value);
+                    if (isNaN(valueNum)) {
+                        return;
+                    }
+
+                    rest.onChange?.(clipToMinMax(valueNum, Number(min), Number(max)) as T);
                 }}
                 min={rest.minValue}
                 max={rest.maxValue}
