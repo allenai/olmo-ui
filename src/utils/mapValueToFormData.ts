@@ -6,7 +6,8 @@ type AllowedFormValues =
     | undefined
     | boolean
     | FileList
-    | readonly string[];
+    | readonly string[]
+    | Record<string, unknown>;
 
 export const mapValueToFormData = (
     formData: FormData,
@@ -24,6 +25,10 @@ export const mapValueToFormData = (
             formData.append(name, file, file.name);
         }
     } else if (value != null) {
-        formData.append(name, value.toString());
+        if (typeof value === 'object') {
+            formData.append(name, JSON.stringify(value));
+        } else {
+            formData.append(name, value.toString());
+        }
     }
 };

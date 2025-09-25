@@ -25,7 +25,7 @@ import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormControll
 import { links } from '@/Links';
 import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
-import { QueryContext, QueryContextValue } from './QueryContext';
+import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
 import {
     createStreamCallbacks,
@@ -35,6 +35,7 @@ import {
 } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
 import {
+    getExtraParametersFromThread,
     getNonUserToolsFromThread,
     getUserToolDefinitionsFromThread,
 } from './ThreadProviderHelpers';
@@ -104,6 +105,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
         initialState?.selectedModelId ?? undefined
+    );
+
+    const [extraParameters, setExtraParameters] = useState<ExtraParameters | undefined>(
+        getExtraParametersFromThread(threadId)
     );
 
     const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
@@ -329,22 +334,23 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             if (selectedModel == null) {
                 return null;
             }
-            return await processSingleModelSubmission(
+            return await processSingleModelSubmission({
                 data,
-                selectedModel,
-                threadId,
+                model: selectedModel,
+                rootThreadId: threadId,
                 threadViewId,
                 inferenceOpts,
-                userToolDefinitions,
+                toolDefinitions: userToolDefinitions,
                 selectedTools,
                 isToolCallingEnabled,
                 bypassSafetyCheck,
-                streamMessage.mutateAsync,
+                streamMutateAsync: streamMessage.mutateAsync,
                 executeRecaptcha,
-                streamMessage.onFirstMessage,
-                streamMessage.completeStream,
-                addSnackMessage
-            );
+                onFirstMessage: streamMessage.onFirstMessage,
+                onCompleteStream: streamMessage.completeStream,
+                addSnackMessage,
+                extraParameters,
+            });
         },
         [
             addSnackMessage,
@@ -359,6 +365,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             isToolCallingEnabled,
             bypassSafetyCheck,
             executeRecaptcha,
+            extraParameters,
         ]
     );
 
@@ -439,6 +446,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             selectedTools,
             bypassSafetyCheck,
             updateBypassSafetyCheck: setBypassSafetyCheck,
+            extraParameters,
+            setExtraParameters,
         };
     }, [
         canSubmit,
@@ -466,6 +475,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         updateSelectedTools,
         selectedTools,
         bypassSafetyCheck,
+        extraParameters,
     ]);
 
     return (

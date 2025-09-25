@@ -15,6 +15,7 @@ import { DrawerId } from '@/slices/DrawerSlice';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
 import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
+import { ExtraParametersToggle } from './ExtraParametersInput';
 import { ParameterToggle } from './inputs/ParameterToggle';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
@@ -117,6 +118,7 @@ export const ParameterContent = () => {
         bypassSafetyCheck,
         updateBypassSafetyCheck,
     } = useQueryContext();
+
     const canCreateToolDefinitions = canCallTools && !threadStarted;
     const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
 
@@ -255,6 +257,10 @@ export const ParameterContent = () => {
                         });
                     }}
                 />
+
+                {userAuthInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS) && (
+                    <ExtraParametersToggle />
+                )}
             </ParametersList>
         </Stack>
     );

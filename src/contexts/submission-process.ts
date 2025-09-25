@@ -16,6 +16,7 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { errorToAlert, SnackMessage } from '@/slices/SnackMessageSlice';
 import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
 
+import type { ExtraParameters } from './QueryContext';
 import {
     containsMessages,
     isFinalMessage,
@@ -35,6 +36,7 @@ import {
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
+import type { ThreadStreamMutationVariables } from './useStreamMessage';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {
@@ -235,33 +237,47 @@ const handleCaptcha = async (executeRecaptcha?: (action?: string) => Promise<str
     return token;
 };
 
-export const processSingleModelSubmission = async (
-    data: QueryFormValues,
-    model: Model,
-    rootThreadId: string | undefined,
-    threadViewId: ThreadViewId,
-    inferenceOpts: RequestInferenceOpts,
-    toolDefinitions: CreateMessageRequest['toolDefinitions'],
-    selectedTools: string[],
-    isToolCallingEnabled: boolean,
-    bypassSafetyCheck: boolean,
-    streamMutateAsync: (params: {
-        request: StreamMessageRequest;
-        threadViewId: ThreadViewId;
-        model: Model;
-        thread?: StreamingThread;
-        inferenceOpts: RequestInferenceOpts;
-        toolDefinitions: CreateMessageRequest['toolDefinitions'];
-        selectedTools: string[];
-        isToolCallingEnabled: boolean;
-        bypassSafetyCheck: boolean;
-    }) => Promise<{ response: Response; abortController: AbortController }>,
-    executeRecaptcha: ((action?: string) => Promise<string> | null) | undefined,
-    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void,
-    onCompleteStream?: (threadViewId: ThreadViewId) => void,
-    addSnackMessage?: (message: SnackMessage) => void
-): Promise<string | null> => {
+interface ProcessSingleModelSubmissionProps {
+    data: QueryFormValues;
+    model: Model;
+    rootThreadId: string | undefined;
+    threadViewId: ThreadViewId;
+    inferenceOpts: RequestInferenceOpts;
+    toolDefinitions: CreateMessageRequest['toolDefinitions'];
+    selectedTools: string[];
+    isToolCallingEnabled: boolean;
+    bypassSafetyCheck: boolean;
+    extraParameters?: ExtraParameters;
+
+    streamMutateAsync: (params: ThreadStreamMutationVariables) => Promise<{
+        response: Response;
+        abortController: AbortController;
+    }>;
+    executeRecaptcha: ((action?: string) => Promise<string> | null) | undefined;
+    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void;
+    onCompleteStream?: (threadViewId: ThreadViewId) => void;
+    addSnackMessage?: (message: SnackMessage) => void;
+}
+
+export const processSingleModelSubmission = async ({
+    data,
+    model,
+    rootThreadId,
+    threadViewId,
+    inferenceOpts,
+    toolDefinitions,
+    selectedTools,
+    isToolCallingEnabled,
+    bypassSafetyCheck,
+    extraParameters,
+    streamMutateAsync,
+    executeRecaptcha,
+    onFirstMessage,
+    onCompleteStream,
+    addSnackMessage,
+}: ProcessSingleModelSubmissionProps): Promise<string | null> => {
     if (!model) {
+        console.warn('processSingleModelSubmission called without a model');
         return null;
     }
 
@@ -286,8 +302,8 @@ export const processSingleModelSubmission = async (
             toolDefinitions,
             selectedTools,
             isToolCallingEnabled,
-
             bypassSafetyCheck,
+            extraParameters,
         });
 
         // Return the final thread ID for parallel streaming navigation

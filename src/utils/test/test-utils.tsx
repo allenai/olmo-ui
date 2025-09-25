@@ -65,6 +65,8 @@ export const FakeQueryContextProvider = ({
         selectedTools: [],
         bypassSafetyCheck: false,
         updateBypassSafetyCheck: () => {},
+        extraParameters: {},
+        setExtraParameters: vi.fn(),
     };
 
     return <QueryContext.Provider value={mockContextValue}>{children}</QueryContext.Provider>;

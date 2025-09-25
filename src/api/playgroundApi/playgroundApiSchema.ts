@@ -491,6 +491,11 @@ export type components = {
         /** CreateMessageRequest */
         readonly CreateMessageRequest: {
             /**
+             * Bypasssafetycheck
+             * @default false
+             */
+            readonly bypassSafetyCheck?: boolean;
+            /**
              * Captchatoken
              * @default null
              */
@@ -499,9 +504,19 @@ export type components = {
             readonly content: string;
             /**
              * Enabletoolcalling
+             * @default false
+             */
+            readonly enableToolCalling?: boolean;
+            /**
+             * Extraparameters
              * @default null
              */
-            readonly enableToolCalling?: boolean | null;
+            readonly extraParameters?: string | null;
+            /**
+             * Files
+             * @default null
+             */
+            readonly files?: readonly string[] | null;
             /** Host */
             readonly host: string;
             /**
@@ -543,6 +558,8 @@ export type components = {
              * @default null
              */
             readonly selectedTools?: readonly string[] | null;
+            /** Stop */
+            readonly stop?: readonly string[] | null;
             /**
              * Temperature
              * @default 0.7
@@ -720,6 +737,14 @@ export type components = {
              */
             readonly promptType: 'text_only';
         };
+        /** CreateToolDefinition */
+        readonly CreateToolDefinition: {
+            /** Description */
+            readonly description: string;
+            /** Name */
+            readonly name: string;
+            readonly parameters: components['schemas']['ParameterDef'];
+        };
         /**
          * FileRequiredToPromptOption
          * @enum {string}
@@ -769,6 +794,13 @@ export type components = {
              * @default null
              */
             readonly expirationTime?: string | null;
+            /**
+             * Extraparameters
+             * @default null
+             */
+            readonly extraParameters?: {
+                readonly [key: string]: unknown;
+            } | null;
             /**
              * Fileurls
              * @default null
@@ -1277,6 +1309,40 @@ export type components = {
              */
             readonly updatedTime: string;
         };
+        /** ParameterDef */
+        readonly ParameterDef: {
+            /**
+             * Default
+             * @default null
+             */
+            readonly default?: {
+                readonly [key: string]: string;
+            } | null;
+            /**
+             * Description
+             * @default null
+             */
+            readonly description?: string | null;
+            /**
+             * Properties
+             * @default null
+             */
+            readonly properties?: {
+                readonly [key: string]: components['schemas']['ParameterDef'];
+            } | null;
+            /**
+             * Propertyordering
+             * @default null
+             */
+            readonly propertyOrdering?: readonly string[] | null;
+            /**
+             * Required
+             * @default []
+             */
+            readonly required?: readonly string[] | null;
+            /** Type */
+            readonly type: string;
+        };
         /**
          * Rating
          * @enum {integer}
@@ -1655,6 +1721,7 @@ export type SchemaCreateMultiModalModelConfigRequest =
     components['schemas']['CreateMultiModalModelConfigRequest'];
 export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
+export type SchemaCreateToolDefinition = components['schemas']['CreateToolDefinition'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
@@ -1675,6 +1742,7 @@ export type SchemaModelResponseChunk = components['schemas']['ModelResponseChunk
 export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
+export type SchemaParameterDef = components['schemas']['ParameterDef'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
