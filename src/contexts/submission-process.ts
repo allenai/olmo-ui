@@ -36,6 +36,7 @@ import {
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
+import type { ThreadStreamMutationVariables } from './useStreamMessage';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {
@@ -248,17 +249,7 @@ interface ProcessSingleModelSubmissionProps {
     bypassSafetyCheck: boolean;
     extraParameters?: ExtraParameters;
 
-    streamMutateAsync: (params: {
-        request: StreamMessageRequest;
-        threadViewId: ThreadViewId;
-        model: Model;
-        thread?: StreamingThread;
-        inferenceOpts: RequestInferenceOpts;
-        toolDefinitions: CreateMessageRequest['toolDefinitions'];
-        selectedTools: string[];
-        isToolCallingEnabled: boolean;
-        bypassSafetyCheck: boolean;
-    }) => Promise<{
+    streamMutateAsync: (params: ThreadStreamMutationVariables) => Promise<{
         response: Response;
         abortController: AbortController;
     }>;
