@@ -60,18 +60,6 @@ type BaseModelFormFieldValues = {
         | 'promptType'
         | 'canCallTools'
         | 'canThink'
-        | 'temperatureDefault'
-        | 'temperatureLower'
-        | 'temperatureUpper'
-        | 'temperatureStep'
-        | 'topPDefault'
-        | 'topPLower'
-        | 'topPUpper'
-        | 'topPStep'
-        | 'maxTokensDefault'
-        | 'maxTokensLower'
-        | 'maxTokensUpper'
-        | 'maxTokensStep'
         | 'infiniGramIndex'
     >
 >;
@@ -175,6 +163,7 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
                             <SelectListBoxItem text="Chat" id="chat" />
                             <SelectListBoxItem text="Base" id="base" />
                         </ControlledSelect>
+
                         <InfiniGramIndexInput name="infiniGramIndex" label="Infini-gram index" />
 
                         <ControlledRadioGroup name="promptType" label="Prompt type">

@@ -46,8 +46,8 @@ export const SliderWithInput = <T extends number>({
                 className={css({
                     justifySelf: 'flex-end',
                     textAlign: 'right',
-                    width: '[75px]',
-                    flex: '[0 0 75px]',
+                    width: '[5rem]',
+                    flex: '[0 0 5rem]',
                     '&:focus': {
                         '--outline-width': '1px',
                         outlineWidth: 'var(--outline-width)',
