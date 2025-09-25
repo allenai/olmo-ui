@@ -13,17 +13,12 @@ import React, {
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
-import {
-    areModelsCompatibleForThread,
-    isModelVisible,
-    useModels,
-} from '@/components/thread/ModelSelect/useModels';
+import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import {
     DEFAULT_FILE_UPLOAD_PROPS,
     mapCompareFileUploadProps,
@@ -41,7 +36,13 @@ import {
     useStreamEvent,
 } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
-import { getUserToolDefinitionsFromThread } from './ThreadProviderHelpers';
+import {
+    areAllModelsCompatible,
+    getInferenceConstraints,
+    getInitialInferenceParameters,
+    getUserToolDefinitionsFromThread,
+    InferenceParametersRequest,
+} from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
@@ -79,35 +80,24 @@ function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
 // Create curried reducer using immer
 const curriedComparisonReducer = produce(comparisonReducer);
 
-// Check if all selected models are compatible with each other
-const areAllModelsCompatible = (models: readonly Model[]): boolean => {
-    if (models.length < 2) return true;
-
-    for (let i = 0; i < models.length; i++) {
-        for (let j = i + 1; j < models.length; j++) {
-            if (!areModelsCompatibleForThread(models[i], models[j])) {
-                return false;
-            }
-        }
-    }
-    return true;
-};
-
 // TODO: create more nuanced state to avoid unnecessary re-renders
 const ComparisonProviderContent = ({ children, initialState }: ComparisonProviderProps) => {
-    const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
-    const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>({});
-    const firstMessageThreadIdsRef = useRef<Record<string, string>>({});
-
-    // Modal state for compatibility warning
-    const [shouldShowCompatibilityWarning, setShouldShowCompatibilityWarning] = useState(false);
-    const pendingSubmissionRef = useRef<QueryFormValues | null>(null);
-
     const [searchParams] = useSearchParams();
     const threadIds = useMemo(() => {
         const threadsParam = searchParams.get('threads');
         return threadsParam ? threadsParam.split(',') : [];
     }, [searchParams]);
+    const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
+    const [inferenceOpts, setInferenceOpts] = useState<InferenceParametersRequest>(
+        // TODO: for comparison mode, we use don't use model-specific constraints.
+        // This should change when we support separate parameters per thread.
+        getInitialInferenceParameters()
+    );
+    const firstMessageThreadIdsRef = useRef<Record<string, string>>({});
+
+    // Modal state for compatibility warning
+    const [shouldShowCompatibilityWarning, setShouldShowCompatibilityWarning] = useState(false);
+    const pendingSubmissionRef = useRef<QueryFormValues | null>(null);
 
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
@@ -330,7 +320,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         [comparisonState, streamMessage, submitToThreadView]
     );
 
-    const selectedModelsWithIds = useMemo(() => {
+    const selectedModelsWithThreadIds = useMemo(() => {
         return Object.entries(comparisonState)
             .filter(([, state]) => state.modelId)
             .map(([threadViewId, state]) => {
@@ -348,8 +338,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 clearStreamError(threadViewId);
             });
 
-            const modelsOnly = selectedModelsWithIds.map((item) => item.model);
-            const allCompatible = areAllModelsCompatible(modelsOnly);
+            const selectedModels = selectedModelsWithThreadIds.map((item) => item.model);
+            const allCompatible = areAllModelsCompatible(selectedModels);
 
             if (!allCompatible) {
                 // Store the pending submission and show warning
@@ -359,7 +349,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 await processSubmission(data);
             }
         },
-        [selectedModelsWithIds, processSubmission, comparisonState, clearStreamError]
+        [selectedModelsWithThreadIds, processSubmission, comparisonState, clearStreamError]
     );
 
     // Handle confirmation of compatibility warning
@@ -381,18 +371,18 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     }, []);
 
     const { areFilesAllowed, reducedFileUploadProps } = useMemo(() => {
-        if (selectedModelsWithIds.length === 0) {
+        if (selectedModelsWithThreadIds.length === 0) {
             return DEFAULT_FILE_UPLOAD_STATE;
         }
 
-        const mappedProps = mapCompareFileUploadProps(selectedModelsWithIds);
+        const mappedProps = mapCompareFileUploadProps(selectedModelsWithThreadIds);
         const reducedProps = reduceCompareFileUploadProps(mappedProps);
 
         return {
             areFilesAllowed: reducedProps.acceptsFileUpload,
             reducedFileUploadProps: reducedProps,
         };
-    }, [selectedModelsWithIds, comparisonState, models]);
+    }, [selectedModelsWithThreadIds, comparisonState, models]);
 
     const isFileUploadDisabled = useMemo(() => {
         return threadIds.some((threadId) => {
@@ -459,8 +449,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 dispatch({ type: 'setModelId', threadViewId, modelId });
             },
 
+            inferenceConstraints: getInferenceConstraints(),
             inferenceOpts,
-            updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => {
+            updateInferenceOpts: (newOptions: Partial<InferenceParametersRequest>) => {
                 setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
             },
             submitToThreadView,

@@ -4,26 +4,25 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { error } from '@/api/error';
-import { RequestInferenceOpts, StreamBadRequestError, StreamValidationError } from '@/api/Message';
+import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
-import { InferenceOpts } from '@/api/Schema';
 import { useAppContext } from '@/AppContext';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
-import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import type { ExtraParameters } from './QueryContext';
 import type { StreamingMessageResponse, StreamMessageRequest } from './stream-types';
+import { InferenceParametersRequest } from './ThreadProviderHelpers';
 
 export interface ThreadStreamMutationVariables {
     request: StreamMessageRequest;
     threadViewId: ThreadViewId;
     model: Model;
     thread?: Thread;
-    inferenceOpts: RequestInferenceOpts;
+    inferenceOpts: InferenceParametersRequest;
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
@@ -37,20 +36,6 @@ interface StreamCallbacks {
     onCompleteStream?: (threadViewId: string) => void;
     onError?: (threadViewId: string, error: unknown) => void;
 }
-
-// TEMP HACK: Override default inference options for specific models.
-// If a user sets an option in the UI, it takes precedence.
-// Otherwise, we fall back to the defaults defined here.
-// This logic should be revisited.
-// Individual override justifications are documented inline.
-const MODEL_DEFAULT_OVERRIDES: Record<string, NullishPartial<InferenceOpts>> = {
-    // Force Olmo to use a temperature of 0 to avoid variability in outputs.
-    // TODO: Remove once https://github.com/allenai/playground-issues-repo/issues/419 is resolved.
-    'mm-olmo-uber-model-v4-synthetic': { temperature: 0.0 },
-
-    // Add additional model overrides below as needed:
-    // 'some-other-model-id': { top_p: 0.9, temperature: 0.7 },
-};
 
 export const useStreamMessage = (callbacks?: StreamCallbacks) => {
     const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
@@ -153,12 +138,6 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
 
             const { content, captchaToken, parent, files, role = 'user', toolCallId } = request;
 
-            // Refer to the "TEMP HACK" comment above
-            const adjustedInferenceOpts: NullishPartial<InferenceOpts> = {
-                ...inferenceOpts,
-                ...(MODEL_DEFAULT_OVERRIDES[model.id] || {}),
-            };
-
             const result = await playgroundApiClient.POST('/v4/threads/', {
                 parseAs: 'stream',
                 body: {
@@ -171,17 +150,13 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     model: model.id,
                     role,
                     toolCallId,
-                    // Apply adjusted inference options with model-specific overrides
-                    temperature: adjustedInferenceOpts.temperature ?? undefined,
-                    topP: adjustedInferenceOpts.top_p ?? undefined,
-                    maxTokens: adjustedInferenceOpts.max_tokens ?? undefined,
-                    stop: adjustedInferenceOpts.stop ?? undefined,
                     toolDefinitions: toolDefinitions ?? undefined,
                     selectedTools,
                     enableToolCalling: isToolCallingEnabled,
                     bypassSafetyCheck,
                     // @ts-expect-error - Our bodySerializer will map extraParameters to a string before it sends it over
                     extraParameters,
+                    ...inferenceOpts,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();

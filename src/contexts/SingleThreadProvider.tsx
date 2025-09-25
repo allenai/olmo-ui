@@ -1,32 +1,32 @@
 import { SelectChangeEvent } from '@mui/material';
 import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
-import React, { UIEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+    PropsWithChildren,
+    UIEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { threadOptions } from '@/api/playgroundApi/thread';
-import { queryClient } from '@/api/query-client';
-import { Role } from '@/api/Role';
 import { useAppContext } from '@/AppContext';
 import {
     findModelById,
     trackModelSelection,
 } from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
-import {
-    areModelsCompatibleForThread,
-    isModelVisible,
-    useModels,
-} from '@/components/thread/ModelSelect/useModels';
+import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
 import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
-import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
+import { isFirstMessage, StreamingMessageResponse } from './stream-types';
 import {
     createStreamCallbacks,
     StreamEventRegistryProvider,
@@ -36,8 +36,14 @@ import {
 import { processSingleModelSubmission } from './submission-process';
 import {
     getExtraParametersFromThread,
+    getInferenceConstraints,
+    getInitialInferenceParameters,
     getNonUserToolsFromThread,
+    getThread,
     getUserToolDefinitionsFromThread,
+    hasUserTools,
+    InferenceParametersRequest,
+    shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
@@ -50,44 +56,15 @@ interface SingleThreadState {
 // TODO: Implement the logic for valid initial states (currently in the page loaders)
 
 interface SingleThreadProviderProps
-    extends React.PropsWithChildren<{
+    extends PropsWithChildren<{
         initialState?: Partial<SingleThreadState>;
     }> {}
 
-function getThread(threadId: string): StreamingThread | undefined {
-    const { queryKey } = threadOptions(threadId);
-    return queryClient.getQueryData(queryKey);
-}
-
-const shouldShowCompatibilityWarning = (
-    currentModel: Model | undefined,
-    newModel: Model,
-    hasActiveThread: boolean
-): boolean => {
-    return Boolean(
-        hasActiveThread && currentModel && !areModelsCompatibleForThread(currentModel, newModel)
-    );
-};
-
-const hasUserTools = (toolJson: string | undefined) => {
-    if (!toolJson) {
-        return false;
-    }
-    try {
-        const parsed = JSON.parse(toolJson);
-
-        if (!Array.isArray(parsed)) {
-            return false;
-        }
-
-        return parsed.length > 0;
-    } catch {
-        return false;
-    }
-};
-
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
+    const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
+        initialState?.selectedModelId ?? undefined
+    );
 
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThread(threadId)
@@ -97,42 +74,19 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
 
-    const [isToolCallingEnabled, setIsToolCallingEnabled] = React.useState(
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(
         hasUserTools(userToolDefinitions) || selectedTools.length > 0
     );
 
-    const [bypassSafetyCheck, setBypassSafetyCheck] = React.useState(false);
+    const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
-    const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
-        initialState?.selectedModelId ?? undefined
+    const [inferenceOpts, setInferenceOpts] = useState<InferenceParametersRequest>(
+        getInitialInferenceParameters(undefined, getThread(threadId))
     );
 
     const [extraParameters, setExtraParameters] = useState<ExtraParameters | undefined>(
         getExtraParametersFromThread(threadId)
     );
-
-    const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
-        // Initialize with values from the last LLM message if available
-        if (threadId) {
-            const thread = getThread(threadId);
-            const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
-            if (lastLLMMessage?.opts) {
-                // Convert from v4 camelCase to v3 snake_case format
-                return {
-                    temperature: lastLLMMessage.opts.temperature,
-                    top_p: lastLLMMessage.opts.topP,
-                    max_tokens: lastLLMMessage.opts.maxTokens,
-                    n: lastLLMMessage.opts.n,
-                    logprobs: lastLLMMessage.opts.logprobs,
-                    // `stop` is readonly, so it needs to be cloned
-                    stop: lastLLMMessage.opts.stop
-                        ? [...lastLLMMessage.opts.stop]
-                        : lastLLMMessage.opts.stop,
-                };
-            }
-        }
-        return {};
-    });
 
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
@@ -188,7 +142,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             if (found) return found; // Otherwise, fall back to the first visible model
         }
 
-        const firstVisibleModel = availableModels.find((model) => isModelVisible(model));
+        const firstVisibleModel = availableModels.at(0);
         return firstVisibleModel;
     }, [availableModels, selectedModelId]);
 
@@ -234,28 +188,10 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     // Initialize inference options from cached thread data when navigating to a different thread
     useEffect(() => {
-        if (threadId) {
-            const thread = getThread(threadId);
-            if (thread) {
-                const lastLLMMessage = thread.messages
-                    .filter((msg) => msg.role === Role.LLM)
-                    .at(-1);
-                if (lastLLMMessage?.opts && Object.keys(inferenceOpts).length === 0) {
-                    // Convert from v4 camelCase to v3 snake_case format
-                    setInferenceOpts({
-                        temperature: lastLLMMessage.opts.temperature,
-                        top_p: lastLLMMessage.opts.topP,
-                        max_tokens: lastLLMMessage.opts.maxTokens,
-                        n: lastLLMMessage.opts.n,
-                        logprobs: lastLLMMessage.opts.logprobs,
-                        stop: lastLLMMessage.opts.stop
-                            ? [...lastLLMMessage.opts.stop]
-                            : lastLLMMessage.opts.stop,
-                    });
-                }
-            }
-        }
-    }, [threadId]);
+        if (!selectedModel) return;
+        const opts = getInitialInferenceParameters(selectedModel, getThread(threadId));
+        setInferenceOpts(opts);
+    }, [threadId, selectedModel]);
 
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadId);
@@ -280,7 +216,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setSelectedModelId(modelId);
     }, []);
 
-    const updateInferenceOpts = useCallback((newOptions: Partial<RequestInferenceOpts>) => {
+    const updateInferenceOpts = useCallback((newOptions: Partial<InferenceParametersRequest>) => {
         setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
     }, []);
 
@@ -437,6 +373,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             setModelId: (_threadViewId: string, modelId: string) => {
                 setSelectedModelId(modelId);
             },
+            inferenceConstraints: getInferenceConstraints(selectedModel),
             inferenceOpts,
             updateInferenceOpts,
             submitToThreadView,
