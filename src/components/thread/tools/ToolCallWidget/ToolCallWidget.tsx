@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { DataObject } from '@mui/icons-material';
+import { Code } from '@mui/icons-material';
 
 import type { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
 import { CollapsibleWidgetBase } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetBase';
@@ -11,6 +11,8 @@ import { FadeOverflowContent } from '@/components/widgets/FadeOverflowContent';
 import { mapToolCallArgs } from '../mapToolCallArgs';
 import { ToolCallParameters } from './ToolCallParameters';
 import { ToolCallResult } from './ToolCallResult';
+
+export const ToolCallIcon = Code;
 
 interface ToolCallWidgetProps {
     toolCall: SchemaToolCall;
@@ -28,7 +30,7 @@ export const ToolCallWidget = ({ toolCall, answer, defaultExpanded }: ToolCallWi
         <CollapsibleWidgetBase defaultExpanded={defaultWidgetExpanded} data-widget-type="tool-call">
             <CollapsibleWidgetHeading
                 aria-label={`tool call ${toolCall.toolName}`}
-                startAdornment={<DataObject />}
+                startAdornment={<ToolCallIcon />}
                 endAdornment={<ExpandArrowButton />}>
                 {toolCall.toolName}
             </CollapsibleWidgetHeading>
