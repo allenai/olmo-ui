@@ -795,6 +795,13 @@ export type components = {
              */
             readonly expirationTime?: string | null;
             /**
+             * Extraparameters
+             * @default null
+             */
+            readonly extraParameters?: {
+                readonly [key: string]: unknown;
+            } | null;
+            /**
              * Fileurls
              * @default null
              */

@@ -35,6 +35,7 @@ import {
 } from './StreamEventRegistry';
 import { processSingleModelSubmission } from './submission-process';
 import {
+    getExtraParametersFromThread,
     getNonUserToolsFromThread,
     getUserToolDefinitionsFromThread,
 } from './ThreadProviderHelpers';
@@ -106,7 +107,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         initialState?.selectedModelId ?? undefined
     );
 
-    const [extraParameters, setExtraParameters] = useState<ExtraParameters>();
+    const [extraParameters, setExtraParameters] = useState<ExtraParameters | undefined>(
+        getExtraParametersFromThread(threadId)
+    );
 
     const [inferenceOpts, setInferenceOpts] = useState<RequestInferenceOpts>(() => {
         // Initialize with values from the last LLM message if available
