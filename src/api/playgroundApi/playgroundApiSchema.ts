@@ -508,6 +508,11 @@ export type components = {
              */
             readonly enableToolCalling?: boolean;
             /**
+             * Extraparameters
+             * @default null
+             */
+            readonly extraParameters?: string | null;
+            /**
              * Files
              * @default null
              */
@@ -861,14 +866,6 @@ export type components = {
              * @default null
              */
             readonly topPUpper?: number | null;
-        };
-        /** CreateToolDefinition */
-        readonly CreateToolDefinition: {
-            /** Description */
-            readonly description: string;
-            /** Name */
-            readonly name: string;
-            readonly parameters: components['schemas']['ParameterDef'];
         };
         /** CreateToolDefinition */
         readonly CreateToolDefinition: {
