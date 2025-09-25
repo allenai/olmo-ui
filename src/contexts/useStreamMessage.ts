@@ -180,6 +180,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     selectedTools,
                     enableToolCalling: isToolCallingEnabled,
                     bypassSafetyCheck,
+                    // @ts-expect-error - Our bodySerializer will map extraParameters to a string before it sends it over
                     extraParameters,
                 },
                 bodySerializer: (body) => {
