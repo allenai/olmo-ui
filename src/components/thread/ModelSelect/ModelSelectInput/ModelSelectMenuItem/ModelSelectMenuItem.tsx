@@ -31,19 +31,23 @@ const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
     background: 'transparent',
 
     [`&.${menuItemClasses.focusVisible}`]: {
-        backgroundColor: alpha(theme.palette.common.black, 0.12),
+        // @ts-expect-error - we need to type the variants with reversed better
+        backgroundColor: alpha(theme.palette.background.reversed, 0.12),
     },
     ':hover': {
-        backgroundColor: alpha(theme.palette.common.black, 0.04),
+        // @ts-expect-error - we need to type the variants with reversed better
+        backgroundColor: alpha(theme.palette.background.reversed, 0.04),
     },
     [`&.${menuItemClasses.selected}`]: {
         background: alpha(theme.palette.background.paper, 0.6),
         color: theme.palette.text.primary,
         [`&.${menuItemClasses.focusVisible}`]: {
-            backgroundColor: alpha(theme.palette.common.black, 0.12),
+            // @ts-expect-error - we need to type the variants with reversed better
+            backgroundColor: alpha(theme.palette.background.reversed, 0.12),
         },
         ':hover': {
-            backgroundColor: alpha(theme.palette.common.black, 0.04),
+            // @ts-expect-error - we need to type the variants with reversed better
+            backgroundColor: alpha(theme.palette.background.reversed, 0.04),
         },
     },
 }));
