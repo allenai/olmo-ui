@@ -286,6 +286,7 @@ export const processSingleModelSubmission = async ({
     addSnackMessage,
 }: ProcessSingleModelSubmissionProps): Promise<string | null> => {
     if (!model) {
+        console.warn('processSingleModelSubmission called without a model');
         return null;
     }
 

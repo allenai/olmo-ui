@@ -270,22 +270,23 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 return null;
             }
 
-            return await processSingleModelSubmission(
+            return await processSingleModelSubmission({
                 data,
                 model,
-                threadId,
+                rootThreadId: threadId,
                 threadViewId,
                 inferenceOpts,
-                userToolDefinitions,
-                [],
-                false,
+                toolDefinitions: userToolDefinitions,
+                selectedTools: [],
+                isToolCallingEnabled: false,
                 bypassSafetyCheck,
-                streamMessage.mutateAsync,
+                streamMutateAsync: streamMessage.mutateAsync,
                 executeRecaptcha,
-                streamMessage.onFirstMessage,
-                streamMessage.completeStream,
-                addSnackMessage
-            );
+                onFirstMessage: streamMessage.onFirstMessage,
+                onCompleteStream: streamMessage.completeStream,
+                addSnackMessage,
+                extraParameters,
+            });
         },
         [
             addSnackMessage,
@@ -299,6 +300,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             threadIds,
             bypassSafetyCheck,
             executeRecaptcha,
+            extraParameters,
         ]
     );
 
