@@ -511,9 +511,7 @@ export type components = {
              * Extraparameters
              * @default null
              */
-            readonly extraParameters?: {
-                readonly [key: string]: unknown;
-            } | null;
+            readonly extraParameters?: string | null;
             /**
              * Files
              * @default null
