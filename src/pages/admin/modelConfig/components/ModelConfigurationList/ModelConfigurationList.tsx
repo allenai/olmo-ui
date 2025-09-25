@@ -25,7 +25,7 @@ const modelListContainer = css({
 });
 
 interface ModelConfigurationListProps {
-    items: SchemaResponseModel[];
+    items: readonly SchemaResponseModel[];
     dragAndDropHooks?: DragAndDropHooks;
 }
 

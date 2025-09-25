@@ -80,7 +80,7 @@ function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
 const curriedComparisonReducer = produce(comparisonReducer);
 
 // Check if all selected models are compatible with each other
-const areAllModelsCompatible = (models: Model[]): boolean => {
+const areAllModelsCompatible = (models: readonly Model[]): boolean => {
     if (models.length < 2) return true;
 
     for (let i = 0; i < models.length; i++) {

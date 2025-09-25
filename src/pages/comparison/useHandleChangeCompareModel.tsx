@@ -50,7 +50,7 @@ const isCompatibleWithOtherComparisonModels = (
 
 export const useHandleChangeCompareModel = (
     threadViewId: string,
-    models: Model[]
+    models: readonly Model[]
 ): ModelChangeHookResult => {
     const { setSelectedCompareModelAt, setSelectedCompareModels } = useAppContext();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);

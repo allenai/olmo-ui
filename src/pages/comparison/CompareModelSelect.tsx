@@ -6,7 +6,7 @@ import { useQueryContext } from '@/contexts/QueryContext';
 
 interface CompareModelSelectProps {
     threadViewId: string;
-    models: Model[];
+    models: readonly Model[];
 }
 
 export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) => {

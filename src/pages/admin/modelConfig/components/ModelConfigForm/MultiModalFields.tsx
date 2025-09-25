@@ -3,7 +3,7 @@ import { Autocomplete, TextField } from '@mui/material';
 import { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { SchemaCreateMultiModalModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaMultiModalResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';
@@ -14,7 +14,7 @@ const mimeTypeRegex = /^[\w.-]+\/[\w+.-\\*]+$/;
 
 export type MultiModalFormValues = Partial<
     Pick<
-        SchemaCreateMultiModalModelConfigRequest,
+        SchemaMultiModalResponseModel,
         | 'acceptedFileTypes'
         | 'allowFilesInFollowups'
         | 'requireFileToPrompt'

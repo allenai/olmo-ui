@@ -30,7 +30,7 @@ export const SingleThreadModelSelect = (): ReactNode => {
 
 interface ThreadModelSelectProps {
     threadViewId: string;
-    models: Model[];
+    models: readonly Model[];
 }
 
 export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectProps) => {

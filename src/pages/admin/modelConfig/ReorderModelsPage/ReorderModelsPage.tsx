@@ -13,7 +13,7 @@ export const ReorderModelsPage = () => {
     const { data } = useAdminModels();
 
     const list = useListData({
-        initialItems: data,
+        initialItems: [...data], // will not take a readonly array, so spread into a new array
         getKey: (item) => item.id,
     });
 

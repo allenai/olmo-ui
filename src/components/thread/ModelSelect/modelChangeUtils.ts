@@ -8,7 +8,7 @@ export const trackModelSelection = (modelId: string) => {
 };
 
 // Find model by ID in models array
-export const findModelById = (models: Model[], modelId: string): Model | undefined => {
+export const findModelById = (models: readonly Model[], modelId: string): Model | undefined => {
     return models.find((model) => model.id === modelId);
 };
 

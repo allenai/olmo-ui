@@ -21,7 +21,7 @@ export interface ComparisonLoaderData {
 
 // Initialize default comparison models when no URL parameters are provided
 const initializeDefaultComparisonModels = (
-    models: Model[],
+    models: readonly Model[],
     count: number = 2
 ): CompareModelState[] => {
     const results: CompareModelState[] = [];

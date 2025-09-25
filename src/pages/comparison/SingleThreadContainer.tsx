@@ -19,7 +19,7 @@ const singleThreadClasses = css({
 
 interface SingleThreadContainerProps {
     threadViewIdx: string;
-    models: Model[];
+    models: readonly Model[];
     threadRootId?: ThreadId;
 }
 
