@@ -331,22 +331,23 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             if (selectedModel == null) {
                 return null;
             }
-            return await processSingleModelSubmission(
+            return await processSingleModelSubmission({
                 data,
-                selectedModel,
-                threadId,
+                model: selectedModel,
+                rootThreadId: threadId,
                 threadViewId,
                 inferenceOpts,
-                userToolDefinitions,
+                toolDefinitions: userToolDefinitions,
                 selectedTools,
                 isToolCallingEnabled,
                 bypassSafetyCheck,
-                streamMessage.mutateAsync,
+                streamMutateAsync: streamMessage.mutateAsync,
                 executeRecaptcha,
-                streamMessage.onFirstMessage,
-                streamMessage.completeStream,
-                addSnackMessage
-            );
+                onFirstMessage: streamMessage.onFirstMessage,
+                onCompleteStream: streamMessage.completeStream,
+                addSnackMessage,
+                extraParameters,
+            });
         },
         [
             addSnackMessage,
@@ -361,6 +362,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             isToolCallingEnabled,
             bypassSafetyCheck,
             executeRecaptcha,
+            extraParameters,
         ]
     );
 

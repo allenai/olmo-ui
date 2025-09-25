@@ -15,11 +15,12 @@ import { ThreadViewId } from '@/pages/comparison/ThreadViewContext';
 import { NullishPartial } from '@/util';
 import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
+import type { ExtraParameters } from './QueryContext';
 import type { StreamingMessageResponse, StreamMessageRequest } from './stream-types';
 
 export interface ThreadStreamMutationVariables {
     request: StreamMessageRequest;
-    threadViewId: string;
+    threadViewId: ThreadViewId;
     model: Model;
     thread?: Thread;
     inferenceOpts: RequestInferenceOpts;
@@ -27,6 +28,7 @@ export interface ThreadStreamMutationVariables {
     selectedTools: string[];
     isToolCallingEnabled: boolean;
     bypassSafetyCheck: boolean;
+    extraParameters?: ExtraParameters;
 }
 
 interface StreamCallbacks {
@@ -83,7 +85,6 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
 
     const handleErrors = (messageError: unknown, response: Response): void => {
         // @ts-expect-error Our API endpoints aren't properly typed with error responses
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const resultError = messageError?.error as unknown;
         if (error.isErrorDetailsPayload(resultError) && resultError.code === 400) {
             // It's a validation error from our API
@@ -129,24 +130,14 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         request,
         threadViewId,
         model,
-        // messageParent,
-        thread, // maybe this is just parentId? we don't need the whole thread
+        thread,
         inferenceOpts,
         toolDefinitions,
         selectedTools,
         isToolCallingEnabled,
         bypassSafetyCheck,
-    }: {
-        request: StreamMessageRequest;
-        threadViewId: ThreadViewId;
-        model: Model;
-        thread?: Thread;
-        inferenceOpts: RequestInferenceOpts;
-        toolDefinitions: CreateMessageRequest['toolDefinitions'];
-        selectedTools: string[];
-        isToolCallingEnabled: boolean;
-        bypassSafetyCheck: boolean;
-    }) => {
+        extraParameters,
+    }: ThreadStreamMutationVariables) => {
         startStream(threadViewId);
 
         // Create and store abort controller for this thread view
@@ -173,6 +164,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                 body: {
                     content,
                     captchaToken,
+                    // @ts-expect-error - We're uploading a FileList but the schema says it wants strings. Need to figure out how to get those to sync up
                     files,
                     parent,
                     host: model.host,
@@ -188,6 +180,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
                     selectedTools,
                     enableToolCalling: isToolCallingEnabled,
                     bypassSafetyCheck,
+                    extraParameters,
                 },
                 bodySerializer: (body) => {
                     const formData = new FormData();
