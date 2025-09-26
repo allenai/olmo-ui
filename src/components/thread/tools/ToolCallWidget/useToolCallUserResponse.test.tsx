@@ -1,7 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { act, FakeQueryContextProvider, renderHook, waitFor } from '@test-utils';
 import { useForm } from 'react-hook-form';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
