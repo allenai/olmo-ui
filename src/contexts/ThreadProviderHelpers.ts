@@ -117,17 +117,17 @@ export const getInitialInferenceParameters = (
     const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
     const inferenceParams: InferenceParametersRequest = {
         temperature: clipToMinMax(
-            lastLLMMessage?.opts.temperature ?? model?.temperature_default ?? undefined,
+            lastLLMMessage?.opts.temperature ?? model?.temperature_default ?? 0.7,
             constraints.temperature.minValue,
             constraints.temperature.maxValue
         ),
         topP: clipToMinMax(
-            lastLLMMessage?.opts.topP ?? model?.top_p_default ?? undefined,
+            lastLLMMessage?.opts.topP ?? model?.top_p_default ?? 1,
             constraints.topP.minValue,
             constraints.topP.maxValue
         ),
         maxTokens: clipToMinMax(
-            lastLLMMessage?.opts.maxTokens ?? model?.max_tokens_default ?? undefined,
+            lastLLMMessage?.opts.maxTokens ?? model?.max_tokens_default ?? 2048,
             constraints.maxTokens.minValue,
             constraints.maxTokens.maxValue
         ),

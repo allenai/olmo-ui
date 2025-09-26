@@ -875,14 +875,6 @@ export type components = {
             readonly name: string;
             readonly parameters: components['schemas']['ParameterDef'];
         };
-        /** CreateToolDefinition */
-        readonly CreateToolDefinition: {
-            /** Description */
-            readonly description: string;
-            /** Name */
-            readonly name: string;
-            readonly parameters: components['schemas']['ParameterDef'];
-        };
         /**
          * FileRequiredToPromptOption
          * @enum {string}
