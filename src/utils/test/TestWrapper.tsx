@@ -1,8 +1,7 @@
 /* eslint-disable no-restricted-imports, react-refresh/only-export-components */
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
-import { VarnishApp } from '@allenai/varnish2/components';
 import { getTheme } from '@allenai/varnish2/theme';
-import { ThemeProvider as MUIThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions } from '@testing-library/react';
 import { ComponentProps, PropsWithChildren, ReactNode, Suspense } from 'react';
@@ -49,14 +48,11 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
         <QueryClientProvider client={queryClient}>
             <FakeFeatureToggleProvider featureToggles={featureToggles}>
                 <ThemeProvider theme={theme}>
-                    <VarnishApp theme={theme}>
-                        {/* for some reason VarnishApp isn't properly passing the theme in tests */}
-                        <MUIThemeProvider theme={theme}>
-                            <Suspense fallback={<div data-test-id="suspense" />}>
-                                {children}
-                            </Suspense>
-                        </MUIThemeProvider>
-                    </VarnishApp>
+                    {/* for some reason VarnishApp isn't properly passing the theme in tests */}
+                    <MUIThemeProvider theme={theme}>
+                        <CssBaseline />
+                        <Suspense fallback={<div data-test-id="suspense" />}>{children}</Suspense>
+                    </MUIThemeProvider>
                 </ThemeProvider>
             </FakeFeatureToggleProvider>
         </QueryClientProvider>
