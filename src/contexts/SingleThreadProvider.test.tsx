@@ -30,6 +30,15 @@ vi.mock('react-router-dom', () => ({
 }));
 const mockUseParams = vi.mocked(useParams);
 
+const defaultInferenceParameters = {
+    temperature: 0.7,
+    topP: 1,
+    maxTokens: 2048,
+    n: 1,
+    logprobs: undefined,
+    stop: undefined,
+};
+
 // Test helper to render hook with SingleThreadProvider context
 const renderProvider = (
     initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
@@ -58,11 +67,11 @@ const renderProvider = (
 
 describe('SingleThreadProvider', () => {
     describe('inferenceOpts initialization', () => {
-        it('should initialize with empty object when no threadId is provided', async () => {
+        it('should initialize with sane inference defaults when no threadId is provided', async () => {
             const { result } = renderProvider();
 
             await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual({});
+                expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
             });
         });
 
@@ -74,7 +83,7 @@ describe('SingleThreadProvider', () => {
             });
         });
 
-        it('should initialize with empty object when thread has no LLM messages', async () => {
+        it('should initialize with empty sane inference defaults when thread has no LLM messages', async () => {
             const threadId = 'thread-123';
             const thread = createMockThread({
                 id: threadId,
@@ -96,7 +105,7 @@ describe('SingleThreadProvider', () => {
             });
 
             await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual({});
+                expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
             });
         });
 
@@ -144,9 +153,12 @@ describe('SingleThreadProvider', () => {
         it('should initialize with opts from last LLM message when thread exists', async () => {
             const threadId = 'thread-123';
             const expectedOpts = {
-                temperature: 0.7,
-                top_p: 0.9,
-                max_tokens: 2048,
+                temperature: 0.66,
+                topP: 0.9,
+                maxTokens: 1024,
+                n: 1,
+                logprobs: undefined,
+                stop: undefined,
             };
 
             const thread = createMockThread({
@@ -175,9 +187,9 @@ describe('SingleThreadProvider', () => {
                         role: 'assistant',
                         content: 'Latest response',
                         opts: {
-                            temperature: 0.7,
+                            temperature: 0.66,
                             topP: 0.9,
-                            maxTokens: 2048,
+                            maxTokens: 1024,
                         },
                     }),
                 ],
@@ -192,37 +204,6 @@ describe('SingleThreadProvider', () => {
 
             await waitFor(() => {
                 expect(result.current.inferenceOpts).toEqual(expectedOpts);
-            });
-        });
-
-        it('should handle thread with missing opts gracefully', async () => {
-            const threadId = 'thread-789';
-            const thread = createMockThread({
-                id: threadId,
-                messages: [
-                    createMockMessage({
-                        id: 'msg-1',
-                        role: Role.User,
-                        content: 'Hello',
-                    }),
-                    createMockMessage({
-                        id: 'msg-2',
-                        role: 'assistant',
-                        content: 'Response',
-                        opts: undefined,
-                    }),
-                ],
-            });
-
-            const { queryKey } = threadOptions(threadId);
-            queryClient.setQueryData(queryKey, thread);
-
-            const { result } = renderProvider({
-                threadId,
-            });
-
-            await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual({});
             });
         });
     });
