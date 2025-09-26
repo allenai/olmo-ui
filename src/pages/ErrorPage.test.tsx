@@ -2,8 +2,7 @@
 // jsdom doesn't support IntersectionObserver
 
 import { render, screen, waitFor } from '@test-utils';
-import { createMemoryRouter } from 'react-router';
-import { RouterProvider } from 'react-router/dom';
+import { createRoutesStub } from 'react-router';
 
 import { LOGIN_ERROR_TYPE, LoginError } from '@/api/auth/auth-loaders';
 import { AppWrapper } from '@/components/AppWrapper';
@@ -15,17 +14,12 @@ describe('Error Page', () => {
     it('should show a login error when one is thrown from the loader', async () => {
         const redirectTo = '/redirect-to-path';
 
-        const router = createMemoryRouter(
+        const Stub = createRoutesStub(
             [
                 {
                     id: 'test-root',
                     path: '/',
-                    element: <div>shouldnt be here</div>,
-                    errorElement: (
-                        <AppWrapper>
-                            <ErrorPage />
-                        </AppWrapper>
-                    ),
+                    Component: () => <div>shouldnt be here</div>,
                     loader: () => {
                         const responseData: LoginError['data'] = {
                             type: LOGIN_ERROR_TYPE,
@@ -41,12 +35,17 @@ describe('Error Page', () => {
                             statusText: 'Something went wrong when logging in. Please try again.',
                         });
                     },
+                    ErrorBoundary: () => (
+                        <AppWrapper>
+                            <ErrorPage />
+                        </AppWrapper>
+                    ),
                 },
             ],
             { initialEntries: [{ pathname: '/' }] }
         );
 
-        render(<RouterProvider router={router} />);
+        render(<Stub />);
 
         const expectedURL = links.login(redirectTo);
 

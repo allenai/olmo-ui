@@ -2,8 +2,8 @@
 
 import { act, render, screen, waitFor } from '@test-utils';
 import userEvent from '@testing-library/user-event';
-import { IDLE_NAVIGATION, useParams } from 'react-router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { useParams } from 'react-router';
+import { beforeEach, describe, expect, it, type Mock } from 'vitest';
 
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
@@ -20,20 +20,7 @@ import {
 import { QueryForm } from './QueryForm';
 import { QueryFormController } from './QueryFormController';
 
-// Mock react-router with configurable useParams
-vi.mock('react-router', () => ({
-    useNavigate: () => vi.fn(),
-    useParams: vi.fn(() => ({ id: undefined })),
-    useLocation: () => ({
-        pathname: '/',
-        search: '',
-        hash: '',
-        state: 'loaded',
-        key: '',
-    }),
-    useNavigation: () => IDLE_NAVIGATION,
-}));
-const mockUseParams = vi.mocked(useParams);
+vi.mock('react-router');
 
 vi.mock('@/contexts/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
@@ -59,7 +46,7 @@ const renderWithProvider = (
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-    mockUseParams.mockReturnValue({ id: initialState?.threadId });
+    (useParams as Mock).mockReturnValue({ id: initialState?.threadId });
 
     return render(
         <FakeAppContextProvider

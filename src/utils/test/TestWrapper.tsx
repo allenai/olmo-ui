@@ -60,7 +60,7 @@ const TestWrapper = ({ children, featureToggles = { logToggles: false } }: Wrapp
 };
 
 interface CustomRenderOptions extends RenderOptions {
-    wrapperProps: WrapperProps;
+    wrapperProps?: WrapperProps;
 }
 export const customRender = (ui: ReactNode, options?: CustomRenderOptions) =>
     render(ui, {

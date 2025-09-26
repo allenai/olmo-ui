@@ -2,8 +2,8 @@ import { SelectChangeEvent } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@test-utils';
 // Get the mocked useParams function
-import { IDLE_NAVIGATION, useParams } from 'react-router';
-import { describe, expect, it } from 'vitest';
+import { useParams } from 'react-router';
+import { describe, expect, it, type Mock } from 'vitest';
 
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
@@ -22,12 +22,7 @@ import {
 import { useQueryContext } from './QueryContext';
 import { SingleThreadProvider } from './SingleThreadProvider';
 
-vi.mock('react-router', () => ({
-    useNavigate: () => vi.fn(),
-    useParams: vi.fn(() => ({ id: undefined })),
-    useNavigation: () => IDLE_NAVIGATION,
-}));
-const mockUseParams = vi.mocked(useParams);
+vi.mock('react-router');
 
 // Test helper to render hook with SingleThreadProvider context
 const renderProvider = (
@@ -36,7 +31,7 @@ const renderProvider = (
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-    mockUseParams.mockReturnValue({ id: initialState?.threadId });
+    (useParams as Mock).mockReturnValue({ id: initialState?.threadId });
 
     return renderHook(() => useQueryContext(), {
         wrapper: ({ children }) => (
