@@ -11,6 +11,10 @@ import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
+import {
+    defaultInferenceConstraintsCamel,
+    defaultInferenceParametersCamel,
+} from '@/mocks/handlers/defaultInferenceConstraints';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
     convertMessagesForSetup,
@@ -30,13 +34,23 @@ vi.mock('react-router-dom', () => ({
 }));
 const mockUseParams = vi.mocked(useParams);
 
-const defaultInferenceParameters = {
-    temperature: 0.7,
-    topP: 1,
-    maxTokens: 2048,
-    n: 1,
-    logprobs: undefined,
-    stop: undefined,
+const defaultInferenceParameters = defaultInferenceParametersCamel;
+const defaultInferenceConstraints = {
+    maxTokens: {
+        maxValue: defaultInferenceConstraintsCamel.maxTokensUpper,
+        minValue: defaultInferenceConstraintsCamel.maxTokensLower,
+        step: defaultInferenceConstraintsCamel.maxTokensStep,
+    },
+    temperature: {
+        maxValue: defaultInferenceConstraintsCamel.temperatureUpper,
+        minValue: defaultInferenceConstraintsCamel.temperatureLower,
+        step: defaultInferenceConstraintsCamel.temperatureStep,
+    },
+    topP: {
+        maxValue: defaultInferenceConstraintsCamel.topPUpper,
+        minValue: defaultInferenceConstraintsCamel.topPLower,
+        step: defaultInferenceConstraintsCamel.topPStep,
+    },
 };
 
 // Test helper to render hook with SingleThreadProvider context
@@ -75,14 +89,6 @@ describe('SingleThreadProvider', () => {
             });
         });
 
-        it('userToolDefinitions should be undefined when no threadId is provided', async () => {
-            const { result } = renderProvider();
-
-            await waitFor(() => {
-                expect(result.current.userToolDefinitions).toBeUndefined();
-            });
-        });
-
         it('should initialize with empty sane inference defaults when thread has no LLM messages', async () => {
             const threadId = 'thread-123';
             const thread = createMockThread({
@@ -106,47 +112,6 @@ describe('SingleThreadProvider', () => {
 
             await waitFor(() => {
                 expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
-            });
-        });
-
-        it('should return json string for thread containing message with toolDefinition', async () => {
-            const threadId = 'thread-123';
-            const thread = createMockThread({
-                id: threadId,
-                messages: [
-                    createMockMessage({
-                        id: 'msg-1',
-                        role: Role.User,
-                        content: 'Hello',
-                        toolDefinitions: [
-                            {
-                                name: 'getWeather',
-                                toolSource: 'user_defined',
-                                description: 'gets the weather for a requested city',
-                                parameters: {
-                                    type: 'object',
-                                    properties: {
-                                        city: {
-                                            type: 'string',
-                                        },
-                                    },
-                                },
-                            },
-                        ],
-                    }),
-                ],
-            });
-
-            const { queryKey } = threadOptions(threadId);
-            queryClient.setQueryData(queryKey, thread);
-
-            const { result } = renderProvider({
-                threadId,
-            });
-
-            await waitFor(() => {
-                expect(result.current.userToolDefinitions).toContain('getWeather');
-                expect(result.current.userToolDefinitions).not.toContain('toolSource');
             });
         });
 
@@ -204,6 +169,56 @@ describe('SingleThreadProvider', () => {
 
             await waitFor(() => {
                 expect(result.current.inferenceOpts).toEqual(expectedOpts);
+            });
+        });
+    });
+    describe('tool calling initialization', () => {
+        it('userToolDefinitions should be undefined when no threadId is provided', async () => {
+            const { result } = renderProvider();
+
+            await waitFor(() => {
+                expect(result.current.userToolDefinitions).toBeUndefined();
+            });
+        });
+
+        it('should return json string for thread containing message with toolDefinition', async () => {
+            const threadId = 'thread-123';
+            const thread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        role: Role.User,
+                        content: 'Hello',
+                        toolDefinitions: [
+                            {
+                                name: 'getWeather',
+                                toolSource: 'user_defined',
+                                description: 'gets the weather for a requested city',
+                                parameters: {
+                                    type: 'object',
+                                    properties: {
+                                        city: {
+                                            type: 'string',
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    }),
+                ],
+            });
+
+            const { queryKey } = threadOptions(threadId);
+            queryClient.setQueryData(queryKey, thread);
+
+            const { result } = renderProvider({
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(result.current.userToolDefinitions).toContain('getWeather');
+                expect(result.current.userToolDefinitions).not.toContain('toolSource');
             });
         });
     });
@@ -269,6 +284,40 @@ describe('SingleThreadProvider', () => {
             // Should now show the new model
             await waitFor(() => {
                 expect(result.current.placeholderText).toBe('Message OLMo-peteish-dpo-preview');
+            });
+        });
+
+        it('should set new thread inference options with model config defaults when model has changed', async () => {
+            const { result } = renderProvider();
+
+            await waitFor(() => {
+                // From first visible model in list
+                expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
+                expect(result.current.inferenceConstraints).toEqual(defaultInferenceConstraints);
+            });
+
+            // Change model
+            act(() => {
+                const mockEvent: SelectChangeEvent = {
+                    target: { value: 'molmo' },
+                } as SelectChangeEvent;
+                result.current.onModelChange(mockEvent);
+            });
+
+            // Should now show the new model
+            await waitFor(() => {
+                expect(result.current.inferenceOpts).toEqual({
+                    ...defaultInferenceParameters,
+                    temperature: 0,
+                    maxTokens: 1024,
+                });
+                expect(result.current.inferenceConstraints).toEqual({
+                    ...defaultInferenceConstraints,
+                    maxTokens: {
+                        ...defaultInferenceConstraints.maxTokens,
+                        maxValue: 4096,
+                    },
+                });
             });
         });
     });
