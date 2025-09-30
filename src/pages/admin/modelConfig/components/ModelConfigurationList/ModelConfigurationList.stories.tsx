@@ -7,6 +7,35 @@ import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { ModelConfigurationList } from './ModelConfigurationList';
 import { ModelConfigurationListItem } from './ModelConfigurationListItem';
 
+const defaultInferenceConstraints = {
+    maxTokensDefault: 2048,
+    maxTokensLower: 1,
+    maxTokensUpper: 2048,
+    maxTokensStep: 1,
+    stopDefault: null,
+    temperatureDefault: 0.7,
+    temperatureLower: 0,
+    temperatureUpper: 1,
+    temperatureStep: 0.01,
+    topPDefault: 1,
+    topPLower: 0.01,
+    topPUpper: 1,
+    topPStep: 0.01,
+    max_tokens_default: 2048,
+    max_tokens_lower: 1,
+    max_tokens_upper: 2048,
+    max_tokens_step: 1,
+    stop_default: null,
+    temperature_default: 0.7,
+    temperature_lower: 0,
+    temperature_upper: 1,
+    temperature_step: 0.01,
+    top_p_default: 1,
+    top_p_lower: 0.01,
+    top_p_upper: 1,
+    top_p_step: 0.01,
+};
+
 const mockModels: SchemaResponseModel[] = [
     {
         availability: 'internal',
@@ -28,6 +57,7 @@ const mockModels: SchemaResponseModel[] = [
         updatedTime: '2025-04-25T20:16:09.543846+00:00',
         canCallTools: false,
         canThink: false,
+        ...defaultInferenceConstraints,
     },
     {
         availability: 'internal',
@@ -49,6 +79,7 @@ const mockModels: SchemaResponseModel[] = [
         updatedTime: '2025-04-25T21:15:10.861378+00:00',
         canCallTools: false,
         canThink: false,
+        ...defaultInferenceConstraints,
     },
     {
         availability: 'public',
@@ -70,6 +101,7 @@ const mockModels: SchemaResponseModel[] = [
         updatedTime: '2025-04-25T21:26:41.187139+00:00',
         canCallTools: false,
         canThink: false,
+        ...defaultInferenceConstraints,
     },
 ];
 
