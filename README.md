@@ -188,3 +188,13 @@ render(
 ### Testing HEAP events on local
 
 Switch to `local` environment on HEAP Analytics, then have `VITE_IS_ANALYTICS_ENABLED=true` and set `VITE_HEAP_ANALYTICS_ID` to the Heap ID of the `local` environment in your `.env.local`. You will see your local events showing on HEAP dashboard.
+
+# Releasing to production
+
+** Please communicate with the team before releasing to production. **
+
+To merge dev to main and release a new version to production, run:
+
+```
+git push origin dev:main
+```
