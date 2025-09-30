@@ -135,7 +135,7 @@ export const ParameterContent = () => {
                         min={constraints.temperature.minValue}
                         max={constraints.temperature.maxValue}
                         step={constraints.temperature.step}
-                        initialValue={inferenceOpts.temperature}
+                        initialValue={inferenceOpts.temperature || undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'temperature',
@@ -153,7 +153,7 @@ export const ParameterContent = () => {
                         min={constraints.topP.minValue}
                         max={constraints.topP.maxValue}
                         step={constraints.topP.step}
-                        initialValue={inferenceOpts.topP}
+                        initialValue={inferenceOpts.topP || undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'top_p',
@@ -171,7 +171,7 @@ export const ParameterContent = () => {
                         min={constraints.maxTokens.minValue}
                         max={constraints.maxTokens.maxValue}
                         step={100}
-                        initialValue={inferenceOpts.maxTokens}
+                        initialValue={inferenceOpts.maxTokens || undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'max_tokens',

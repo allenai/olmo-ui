@@ -41,7 +41,7 @@ import {
     getInferenceConstraints,
     getInitialInferenceParameters,
     getUserToolDefinitionsFromThread,
-    InferenceParametersRequest,
+    MessageInferenceParameters,
 } from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
@@ -88,7 +88,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         return threadsParam ? threadsParam.split(',') : [];
     }, [searchParams]);
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
-    const [inferenceOpts, setInferenceOpts] = useState<InferenceParametersRequest>(
+    const [inferenceOpts, setInferenceOpts] = useState<MessageInferenceParameters>(
         // TODO: for comparison mode, we use don't use model-specific constraints.
         // This should change when we support separate parameters per thread.
         getInitialInferenceParameters()
@@ -451,7 +451,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
             inferenceConstraints: getInferenceConstraints(),
             inferenceOpts,
-            updateInferenceOpts: (newOptions: Partial<InferenceParametersRequest>) => {
+            updateInferenceOpts: (newOptions: Partial<MessageInferenceParameters>) => {
                 setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
             },
             submitToThreadView,

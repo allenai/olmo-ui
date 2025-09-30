@@ -42,7 +42,7 @@ import {
     getThread,
     getUserToolDefinitionsFromThread,
     hasUserTools,
-    InferenceParametersRequest,
+    MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
@@ -80,7 +80,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
-    const [inferenceOpts, setInferenceOpts] = useState<InferenceParametersRequest>(
+    const [inferenceOpts, setInferenceOpts] = useState<MessageInferenceParameters>(
         getInitialInferenceParameters(undefined, getThread(threadId))
     );
 
@@ -216,7 +216,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setSelectedModelId(modelId);
     }, []);
 
-    const updateInferenceOpts = useCallback((newOptions: Partial<InferenceParametersRequest>) => {
+    const updateInferenceOpts = useCallback((newOptions: Partial<MessageInferenceParameters>) => {
         setInferenceOpts((prev) => ({ ...prev, ...newOptions }));
     }, []);
 

@@ -104,7 +104,7 @@ export function areAllModelsCompatible(models: readonly Model[]): boolean {
     return true;
 }
 
-export type InferenceParametersRequest = Pick<
+export type MessageInferenceParameters = Pick<
     SchemaCreateMessageRequest,
     'temperature' | 'topP' | 'maxTokens' | 'n' | 'logprobs' | 'stop'
 >;
@@ -112,10 +112,10 @@ export type InferenceParametersRequest = Pick<
 export const getInitialInferenceParameters = (
     model?: Model,
     thread?: StreamingThread
-): InferenceParametersRequest => {
+): MessageInferenceParameters => {
     const constraints = getInferenceConstraints(model);
     const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
-    const inferenceParams: InferenceParametersRequest = {
+    const inferenceParams: MessageInferenceParameters = {
         temperature: clipToMinMax(
             lastLLMMessage?.opts.temperature ?? model?.temperature_default ?? 0.7,
             constraints.temperature.minValue,

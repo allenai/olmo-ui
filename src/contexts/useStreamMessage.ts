@@ -15,14 +15,14 @@ import { mapValueToFormData } from '@/utils/mapValueToFormData';
 
 import type { ExtraParameters } from './QueryContext';
 import type { StreamingMessageResponse, StreamMessageRequest } from './stream-types';
-import { InferenceParametersRequest } from './ThreadProviderHelpers';
+import { MessageInferenceParameters } from './ThreadProviderHelpers';
 
 export interface ThreadStreamMutationVariables {
     request: StreamMessageRequest;
     threadViewId: ThreadViewId;
     model: Model;
     thread?: Thread;
-    inferenceOpts: InferenceParametersRequest;
+    inferenceOpts: MessageInferenceParameters;
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;

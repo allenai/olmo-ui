@@ -7,7 +7,7 @@ import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadBut
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
 
-import { InferenceParametersRequest, ModelInferenceConstraints } from './ThreadProviderHelpers';
+import { MessageInferenceParameters, ModelInferenceConstraints } from './ThreadProviderHelpers';
 
 // Single interface that adapts based on context type
 
@@ -45,8 +45,8 @@ interface QueryContextValue {
     setModelId: (threadViewId: string, modelId: string) => void;
 
     inferenceConstraints: ModelInferenceConstraints;
-    inferenceOpts: InferenceParametersRequest;
-    updateInferenceOpts: (newOptions: Partial<InferenceParametersRequest>) => void;
+    inferenceOpts: MessageInferenceParameters;
+    updateInferenceOpts: (newOptions: MessageInferenceParameters) => void;
 
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
     updateIsToolCallingEnabled: (enabled: boolean) => void;

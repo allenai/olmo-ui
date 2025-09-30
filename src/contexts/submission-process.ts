@@ -31,7 +31,7 @@ import {
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
-import { InferenceParametersRequest } from './ThreadProviderHelpers';
+import { MessageInferenceParameters } from './ThreadProviderHelpers';
 import type { ThreadStreamMutationVariables } from './useStreamMessage';
 
 const clearStreamingState = (threadId: string | undefined) => {
@@ -238,7 +238,7 @@ interface ProcessSingleModelSubmissionProps {
     model: Model;
     rootThreadId: string | undefined;
     threadViewId: ThreadViewId;
-    inferenceOpts: InferenceParametersRequest;
+    inferenceOpts: MessageInferenceParameters;
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;
