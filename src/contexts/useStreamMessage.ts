@@ -162,7 +162,7 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
             const result = await playgroundApiClient.POST('/v4/threads/', {
                 parseAs: 'stream',
                 body: {
-                    content,
+                    encodedContent: JSON.stringify(content),
                     captchaToken,
                     // @ts-expect-error - We're uploading a FileList but the schema says it wants strings. Need to figure out how to get those to sync up
                     files,
