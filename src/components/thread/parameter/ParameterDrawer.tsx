@@ -135,7 +135,7 @@ export const ParameterContent = () => {
                         min={constraints.temperature.minValue}
                         max={constraints.temperature.maxValue}
                         step={constraints.temperature.step}
-                        initialValue={inferenceOpts.temperature || undefined}
+                        initialValue={inferenceOpts.temperature ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'temperature',
@@ -153,7 +153,7 @@ export const ParameterContent = () => {
                         min={constraints.topP.minValue}
                         max={constraints.topP.maxValue}
                         step={constraints.topP.step}
-                        initialValue={inferenceOpts.topP || undefined}
+                        initialValue={inferenceOpts.topP ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'top_p',
@@ -171,7 +171,7 @@ export const ParameterContent = () => {
                         min={constraints.maxTokens.minValue}
                         max={constraints.maxTokens.maxValue}
                         step={100}
-                        initialValue={inferenceOpts.maxTokens || undefined}
+                        initialValue={inferenceOpts.maxTokens ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'max_tokens',
@@ -228,7 +228,7 @@ export const ParameterContent = () => {
                     }}
                 />
                 <FunctionDeclarationDialog
-                    jsonData={userToolDefinitions || undefined}
+                    jsonData={userToolDefinitions ?? undefined}
                     availableTools={availableTools}
                     selectedTools={selectedTools}
                     isDisabled={threadStarted}

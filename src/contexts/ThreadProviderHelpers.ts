@@ -10,6 +10,16 @@ import { clipToMinMax } from '@/utils/clipToMinMax';
 import type { ExtraParameters } from './QueryContext';
 import { StreamingThread } from './stream-types';
 
+// TODO: we can probably remove these defaults once we have per-thread settings in comparison mode
+const DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON = {
+    temperature: 0.7,
+    topP: 1,
+    maxTokens: 2048,
+    n: 1,
+    logprobs: undefined,
+    stop: undefined,
+};
+
 export const getThread = (threadId: string | undefined): StreamingThread | undefined => {
     if (!threadId) return;
     const { queryKey } = threadOptions(threadId);
@@ -117,23 +127,30 @@ export const getInitialInferenceParameters = (
     const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
     const inferenceParams: MessageInferenceParameters = {
         temperature: clipToMinMax(
-            lastLLMMessage?.opts.temperature ?? model?.temperature_default ?? 0.7,
+            lastLLMMessage?.opts.temperature ??
+                model?.temperature_default ??
+                DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.temperature,
             constraints.temperature.minValue,
             constraints.temperature.maxValue
         ),
         topP: clipToMinMax(
-            lastLLMMessage?.opts.topP ?? model?.top_p_default ?? 1,
+            lastLLMMessage?.opts.topP ??
+                model?.top_p_default ??
+                DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.topP,
             constraints.topP.minValue,
             constraints.topP.maxValue
         ),
         maxTokens: clipToMinMax(
-            lastLLMMessage?.opts.maxTokens ?? model?.max_tokens_default ?? 2048,
+            lastLLMMessage?.opts.maxTokens ??
+                model?.max_tokens_default ??
+                DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.maxTokens,
             constraints.maxTokens.minValue,
             constraints.maxTokens.maxValue
         ),
-        n: lastLLMMessage?.opts.n ?? 1,
-        logprobs: lastLLMMessage?.opts.logprobs ?? undefined,
-        stop: lastLLMMessage?.opts.stop ?? undefined,
+        n: lastLLMMessage?.opts.n ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.n,
+        logprobs:
+            lastLLMMessage?.opts.logprobs ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.logprobs,
+        stop: lastLLMMessage?.opts.stop ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.stop,
     };
 
     return inferenceParams;

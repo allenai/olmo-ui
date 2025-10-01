@@ -193,6 +193,8 @@ Switch to `local` environment on HEAP Analytics, then have `VITE_IS_ANALYTICS_EN
 
 ** Please communicate with the team before releasing to production. **
 
+Message in Slack to #si-labs-eng channel before releasing.
+
 To merge dev to main and release a new version to production, run:
 
 ```

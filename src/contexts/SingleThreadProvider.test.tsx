@@ -81,7 +81,7 @@ const renderProvider = (
 
 describe('SingleThreadProvider', () => {
     describe('inferenceOpts initialization', () => {
-        it('should initialize with sane inference defaults when no threadId is provided', async () => {
+        it('should initialize with model defaults when no threadId is provided', async () => {
             const { result } = renderProvider();
 
             await waitFor(() => {
@@ -89,7 +89,7 @@ describe('SingleThreadProvider', () => {
             });
         });
 
-        it('should initialize with empty sane inference defaults when thread has no LLM messages', async () => {
+        it('should initialize with empty model defaults when thread has no LLM messages', async () => {
             const threadId = 'thread-123';
             const thread = createMockThread({
                 id: threadId,
