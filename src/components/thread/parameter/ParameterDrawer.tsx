@@ -107,6 +107,7 @@ export const ParameterContent = () => {
         threadStarted,
         availableTools,
         canCallTools,
+        inferenceConstraints: constraints,
         inferenceOpts,
         updateInferenceOpts,
         userToolDefinitions,
@@ -124,15 +125,6 @@ export const ParameterContent = () => {
 
     const userAuthInfo = useUserAuthInfo();
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
-    const schemaData = useAppContext((state) => state.schema);
-    if (schemaData == null) {
-        return null;
-    }
-
-    const opts = schemaData.Message.InferenceOpts;
-    const initialTemperature = inferenceOpts.temperature ?? opts.temperature.default ?? undefined;
-    const initialTopP = inferenceOpts.top_p ?? opts.top_p.default ?? undefined;
-    const maxTokens = inferenceOpts.max_tokens ?? opts.max_tokens.default ?? undefined;
 
     return (
         <Stack>
@@ -140,10 +132,10 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Temperature"
-                        min={opts.temperature.min}
-                        max={opts.temperature.max}
-                        step={opts.temperature.step}
-                        initialValue={initialTemperature}
+                        min={constraints.temperature.minValue}
+                        max={constraints.temperature.maxValue}
+                        step={constraints.temperature.step}
+                        initialValue={inferenceOpts.temperature ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'temperature',
@@ -158,15 +150,15 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Top P"
-                        min={opts.top_p.min}
-                        max={opts.top_p.max}
-                        step={opts.top_p.step}
-                        initialValue={initialTopP}
+                        min={constraints.topP.minValue}
+                        max={constraints.topP.maxValue}
+                        step={constraints.topP.step}
+                        initialValue={inferenceOpts.topP ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'top_p',
                             });
-                            updateInferenceOpts({ top_p: v });
+                            updateInferenceOpts({ topP: v });
                         }}
                         dialogContent={TOP_P_INFO}
                         dialogTitle="Top P"
@@ -176,15 +168,15 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Max tokens"
-                        min={opts.max_tokens.min}
-                        max={opts.max_tokens.max}
+                        min={constraints.maxTokens.minValue}
+                        max={constraints.maxTokens.maxValue}
                         step={100}
-                        initialValue={maxTokens}
+                        initialValue={inferenceOpts.maxTokens ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
                                 parameterUpdated: 'max_tokens',
                             });
-                            updateInferenceOpts({ max_tokens: v });
+                            updateInferenceOpts({ maxTokens: v });
                         }}
                         dialogContent={MAX_TOKENS_INFO}
                         dialogTitle="Max Tokens"
@@ -227,7 +219,7 @@ export const ParameterContent = () => {
                 )}
                 <StopWordsInput
                     id="stop-words"
-                    value={inferenceOpts.stop || []}
+                    value={[...(inferenceOpts.stop ?? [])]} // spread to remove readonly
                     onChange={(_event, value) => {
                         analyticsClient.trackParametersUpdate({
                             parameterUpdated: 'stop',
@@ -236,7 +228,7 @@ export const ParameterContent = () => {
                     }}
                 />
                 <FunctionDeclarationDialog
-                    jsonData={userToolDefinitions || undefined}
+                    jsonData={userToolDefinitions ?? undefined}
                     availableTools={availableTools}
                     selectedTools={selectedTools}
                     isDisabled={threadStarted}

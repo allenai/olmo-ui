@@ -67,6 +67,10 @@ export const fakeModelsResponse = [
         internal: false,
         infini_gram_index: 'olmoe-0125-1b-7b',
         ...defaultInferenceConstraintsSnake,
+        // inference test overrides below
+        temperature_default: 0,
+        max_tokens_default: 1024,
+        max_tokens_upper: 4096,
     },
     {
         description: 'A fake model with thinking',

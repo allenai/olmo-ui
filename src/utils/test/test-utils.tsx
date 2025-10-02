@@ -4,6 +4,7 @@ import { PropsWithChildren } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { QueryContext, QueryContextValue } from '@/contexts/QueryContext';
+import { getInferenceConstraints } from '@/contexts/ThreadProviderHelpers';
 
 import { customRender } from './TestWrapper';
 
@@ -52,6 +53,7 @@ export const FakeQueryContextProvider = ({
         onSubmit: async () => {},
         onAbort: () => {},
         setModelId: () => {},
+        inferenceConstraints: getInferenceConstraints(),
         inferenceOpts: {},
         updateInferenceOpts: () => {},
         submitToThreadView: () => Promise.resolve(null),

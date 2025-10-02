@@ -2,6 +2,7 @@ import type { DecoratorFunction } from 'storybook/internal/types';
 import { fn } from 'storybook/test';
 
 import { QueryContext, type QueryContextValue } from '@/contexts/QueryContext';
+import { getInferenceConstraints } from '@/contexts/ThreadProviderHelpers';
 import { RemoteState } from '@/contexts/util';
 
 const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
@@ -20,6 +21,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     onSubmit: fn(),
     onAbort: fn(),
     setModelId: fn(),
+    inferenceConstraints: getInferenceConstraints(),
     inferenceOpts: {},
     updateInferenceOpts: fn(),
     submitToThreadView: fn(),

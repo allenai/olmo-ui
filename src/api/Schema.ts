@@ -1,7 +1,3 @@
-import { ClientBase } from './ClientBase';
-
-export const SchemaApiUrl = `/v3/schema`;
-
 export interface InferenceOpts {
     max_tokens: number;
     temperature: number;
@@ -41,12 +37,4 @@ export interface PaginationData {
     offset?: number;
     limit?: number;
     sort?: Sort;
-}
-
-export class SchemaClient extends ClientBase {
-    getSchema = () => {
-        const url = this.createURL(SchemaApiUrl);
-
-        return this.fetch<Schema>(url);
-    };
 }

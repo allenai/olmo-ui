@@ -526,16 +526,16 @@ export type components = {
             readonly logprobs?: number | null;
             /**
              * Maxtokens
-             * @default 2048
+             * @default null
              */
-            readonly maxTokens?: number;
+            readonly maxTokens?: number | null;
             /** Model */
             readonly model: string;
             /**
              * N
              * @default 1
              */
-            readonly n?: number;
+            readonly n?: number | null;
             /**
              * Original
              * @default null
@@ -562,9 +562,9 @@ export type components = {
             readonly stop?: readonly string[] | null;
             /**
              * Temperature
-             * @default 0.7
+             * @default null
              */
-            readonly temperature?: number;
+            readonly temperature?: number | null;
             /**
              * Template
              * @default null
@@ -582,9 +582,9 @@ export type components = {
             readonly toolDefinitions?: string | null;
             /**
              * Topp
-             * @default 1
+             * @default null
              */
-            readonly topP?: number;
+            readonly topP?: number | null;
         };
         /** CreateMultiModalModelConfigRequest */
         readonly CreateMultiModalModelConfigRequest: {
@@ -1081,9 +1081,9 @@ export type components = {
             readonly logprobs?: number | null;
             /**
              * Maxtokens
-             * @default 2048
+             * @default null
              */
-            readonly maxTokens?: number;
+            readonly maxTokens?: number | null;
             /**
              * N
              * @default 1
@@ -1096,14 +1096,14 @@ export type components = {
             readonly stop?: readonly string[] | null;
             /**
              * Temperature
-             * @default 0.7
+             * @default null
              */
-            readonly temperature?: number;
+            readonly temperature?: number | null;
             /**
              * Topp
-             * @default 1
+             * @default null
              */
-            readonly topP?: number;
+            readonly topP?: number | null;
         };
         /** LabelResponse */
         readonly LabelResponse: {

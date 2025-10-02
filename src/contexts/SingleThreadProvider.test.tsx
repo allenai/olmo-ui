@@ -11,6 +11,10 @@ import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { User } from '@/api/User';
 import * as AppContext from '@/AppContext';
+import {
+    defaultInferenceConstraintsCamel,
+    defaultInferenceParametersCamel,
+} from '@/mocks/handlers/defaultInferenceConstraints';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
     convertMessagesForSetup,
@@ -29,6 +33,25 @@ vi.mock('react-router-dom', () => ({
     useNavigation: () => IDLE_NAVIGATION,
 }));
 const mockUseParams = vi.mocked(useParams);
+
+const defaultInferenceParameters = defaultInferenceParametersCamel;
+const defaultInferenceConstraints = {
+    maxTokens: {
+        maxValue: defaultInferenceConstraintsCamel.maxTokensUpper,
+        minValue: defaultInferenceConstraintsCamel.maxTokensLower,
+        step: defaultInferenceConstraintsCamel.maxTokensStep,
+    },
+    temperature: {
+        maxValue: defaultInferenceConstraintsCamel.temperatureUpper,
+        minValue: defaultInferenceConstraintsCamel.temperatureLower,
+        step: defaultInferenceConstraintsCamel.temperatureStep,
+    },
+    topP: {
+        maxValue: defaultInferenceConstraintsCamel.topPUpper,
+        minValue: defaultInferenceConstraintsCamel.topPLower,
+        step: defaultInferenceConstraintsCamel.topPStep,
+    },
+};
 
 // Test helper to render hook with SingleThreadProvider context
 const renderProvider = (
@@ -58,23 +81,15 @@ const renderProvider = (
 
 describe('SingleThreadProvider', () => {
     describe('inferenceOpts initialization', () => {
-        it('should initialize with empty object when no threadId is provided', async () => {
+        it('should initialize with model defaults when no threadId is provided', async () => {
             const { result } = renderProvider();
 
             await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual({});
+                expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
             });
         });
 
-        it('userToolDefinitions should be undefined when no threadId is provided', async () => {
-            const { result } = renderProvider();
-
-            await waitFor(() => {
-                expect(result.current.userToolDefinitions).toBeUndefined();
-            });
-        });
-
-        it('should initialize with empty object when thread has no LLM messages', async () => {
+        it('should initialize with empty model defaults when thread has no LLM messages', async () => {
             const threadId = 'thread-123';
             const thread = createMockThread({
                 id: threadId,
@@ -96,7 +111,73 @@ describe('SingleThreadProvider', () => {
             });
 
             await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual({});
+                expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
+            });
+        });
+
+        it('should initialize with opts from last LLM message when thread exists', async () => {
+            const threadId = 'thread-123';
+            const expectedOpts = {
+                temperature: 0.66,
+                topP: 0.9,
+                maxTokens: 1024,
+                n: 1,
+                logprobs: undefined,
+                stop: undefined,
+            };
+
+            const thread = createMockThread({
+                id: threadId,
+                messages: [
+                    createMockMessage({
+                        id: 'msg-1',
+                        role: 'user',
+                        content: 'Hello',
+                        opts: {},
+                    }),
+                    createMockMessage({
+                        id: 'msg-2',
+                        role: 'assistant',
+                        content: 'Hi there!',
+                        opts: { temperature: 0.5, topP: 0.8 },
+                    }),
+                    createMockMessage({
+                        id: 'msg-3',
+                        role: 'user',
+                        content: 'Follow up',
+                        opts: {},
+                    }),
+                    createMockMessage({
+                        id: 'msg-4',
+                        role: 'assistant',
+                        content: 'Latest response',
+                        opts: {
+                            temperature: 0.66,
+                            topP: 0.9,
+                            maxTokens: 1024,
+                        },
+                    }),
+                ],
+            });
+
+            const { queryKey } = threadOptions(threadId);
+            queryClient.setQueryData(queryKey, thread);
+
+            const { result } = renderProvider({
+                threadId,
+            });
+
+            await waitFor(() => {
+                expect(result.current.inferenceOpts).toEqual(expectedOpts);
+            });
+        });
+    });
+    describe('tool calling initialization', () => {
+        it('userToolDefinitions should be undefined when no threadId is provided', async () => {
+            const { result } = renderProvider();
+
+            await waitFor(() => {
+                expect(result.current.userToolDefinitions).toBeUndefined();
             });
         });
 
@@ -138,91 +219,6 @@ describe('SingleThreadProvider', () => {
             await waitFor(() => {
                 expect(result.current.userToolDefinitions).toContain('getWeather');
                 expect(result.current.userToolDefinitions).not.toContain('toolSource');
-            });
-        });
-
-        it('should initialize with opts from last LLM message when thread exists', async () => {
-            const threadId = 'thread-123';
-            const expectedOpts = {
-                temperature: 0.7,
-                top_p: 0.9,
-                max_tokens: 2048,
-            };
-
-            const thread = createMockThread({
-                id: threadId,
-                messages: [
-                    createMockMessage({
-                        id: 'msg-1',
-                        role: 'user',
-                        content: 'Hello',
-                        opts: {},
-                    }),
-                    createMockMessage({
-                        id: 'msg-2',
-                        role: 'assistant',
-                        content: 'Hi there!',
-                        opts: { temperature: 0.5, topP: 0.8 },
-                    }),
-                    createMockMessage({
-                        id: 'msg-3',
-                        role: 'user',
-                        content: 'Follow up',
-                        opts: {},
-                    }),
-                    createMockMessage({
-                        id: 'msg-4',
-                        role: 'assistant',
-                        content: 'Latest response',
-                        opts: {
-                            temperature: 0.7,
-                            topP: 0.9,
-                            maxTokens: 2048,
-                        },
-                    }),
-                ],
-            });
-
-            const { queryKey } = threadOptions(threadId);
-            queryClient.setQueryData(queryKey, thread);
-
-            const { result } = renderProvider({
-                threadId,
-            });
-
-            await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual(expectedOpts);
-            });
-        });
-
-        it('should handle thread with missing opts gracefully', async () => {
-            const threadId = 'thread-789';
-            const thread = createMockThread({
-                id: threadId,
-                messages: [
-                    createMockMessage({
-                        id: 'msg-1',
-                        role: Role.User,
-                        content: 'Hello',
-                    }),
-                    createMockMessage({
-                        id: 'msg-2',
-                        role: 'assistant',
-                        content: 'Response',
-                        opts: undefined,
-                    }),
-                ],
-            });
-
-            const { queryKey } = threadOptions(threadId);
-            queryClient.setQueryData(queryKey, thread);
-
-            const { result } = renderProvider({
-                threadId,
-            });
-
-            await waitFor(() => {
-                expect(result.current.inferenceOpts).toEqual({});
             });
         });
     });
@@ -288,6 +284,40 @@ describe('SingleThreadProvider', () => {
             // Should now show the new model
             await waitFor(() => {
                 expect(result.current.placeholderText).toBe('Message OLMo-peteish-dpo-preview');
+            });
+        });
+
+        it('should set new thread inference options with model config defaults when model has changed', async () => {
+            const { result } = renderProvider();
+
+            await waitFor(() => {
+                // From first visible model in list
+                expect(result.current.inferenceOpts).toEqual(defaultInferenceParameters);
+                expect(result.current.inferenceConstraints).toEqual(defaultInferenceConstraints);
+            });
+
+            // Change model
+            act(() => {
+                const mockEvent: SelectChangeEvent = {
+                    target: { value: 'molmo' },
+                } as SelectChangeEvent;
+                result.current.onModelChange(mockEvent);
+            });
+
+            // Should now show the new model
+            await waitFor(() => {
+                expect(result.current.inferenceOpts).toEqual({
+                    ...defaultInferenceParameters,
+                    temperature: 0,
+                    maxTokens: 1024,
+                });
+                expect(result.current.inferenceConstraints).toEqual({
+                    ...defaultInferenceConstraints,
+                    maxTokens: {
+                        ...defaultInferenceConstraints.maxTokens,
+                        maxValue: 4096,
+                    },
+                });
             });
         });
     });

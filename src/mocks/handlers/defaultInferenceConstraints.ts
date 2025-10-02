@@ -3,7 +3,6 @@ export const defaultInferenceConstraintsSnake = {
     max_tokens_lower: 1,
     max_tokens_upper: 2048,
     max_tokens_step: 1,
-    stop_default: null,
     temperature_default: 0.7,
     temperature_lower: 0,
     temperature_upper: 1,
@@ -12,6 +11,16 @@ export const defaultInferenceConstraintsSnake = {
     top_p_lower: 0.01,
     top_p_upper: 1,
     top_p_step: 0.01,
+    stop_default: undefined,
+};
+
+export const defaultInferenceParametersSnake = {
+    max_tokens: defaultInferenceConstraintsSnake.max_tokens_default,
+    temperature: defaultInferenceConstraintsSnake.temperature_default,
+    top_p: defaultInferenceConstraintsSnake.top_p_default,
+    stop: defaultInferenceConstraintsSnake.stop_default,
+    n: 1,
+    logprobs: undefined,
 };
 
 export const defaultInferenceConstraintsCamel = {
@@ -28,4 +37,13 @@ export const defaultInferenceConstraintsCamel = {
     topPLower: defaultInferenceConstraintsSnake.top_p_lower,
     topPUpper: defaultInferenceConstraintsSnake.top_p_upper,
     topPStep: defaultInferenceConstraintsSnake.top_p_step,
+};
+
+export const defaultInferenceParametersCamel = {
+    maxTokens: defaultInferenceConstraintsSnake.max_tokens_default,
+    temperature: defaultInferenceConstraintsSnake.temperature_default,
+    topP: defaultInferenceConstraintsSnake.top_p_default,
+    stop: defaultInferenceConstraintsSnake.stop_default,
+    n: 1,
+    logprobs: undefined,
 };
