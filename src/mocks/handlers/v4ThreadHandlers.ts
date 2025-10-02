@@ -285,7 +285,9 @@ export const v4ThreadHandlers = [
     http.post(`*/v4/threads/`, async ({ request }) => {
         const formData = await request.formData();
 
-        const content = formData.get('content');
+        const content =
+            formData.get('content') ||
+            (JSON.parse((formData.get('encoded_content') as string) || '') as string);
 
         if (content === 'test-inappropriate') {
             return HttpResponse.json(inappropriateContentErrorResponse, { status: 400 });
