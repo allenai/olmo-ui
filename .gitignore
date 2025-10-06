@@ -33,3 +33,7 @@ styled-system
 dist
 
 prettier.config.js
+
+# Claude
+CLAUDE.md
+.claude
