@@ -1,10 +1,5 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import {
-    MessageStreamError,
-    MessageStreamErrorReason,
-    type RequestInferenceOpts,
-    StreamBadRequestError,
-} from '@/api/Message';
+import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
@@ -36,6 +31,7 @@ import {
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
+import { MessageInferenceParameters } from './ThreadProviderHelpers';
 import type { ThreadStreamMutationVariables } from './useStreamMessage';
 
 const clearStreamingState = (threadId: string | undefined) => {
@@ -242,7 +238,7 @@ interface ProcessSingleModelSubmissionProps {
     model: Model;
     rootThreadId: string | undefined;
     threadViewId: ThreadViewId;
-    inferenceOpts: RequestInferenceOpts;
+    inferenceOpts: MessageInferenceParameters;
     toolDefinitions: CreateMessageRequest['toolDefinitions'];
     selectedTools: string[];
     isToolCallingEnabled: boolean;

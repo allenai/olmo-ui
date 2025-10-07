@@ -1,7 +1,6 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
 import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
-import { Schema, SchemaApiUrl } from '@/api/Schema';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
 import { attributionHandlers } from './attributionHandlers';
@@ -20,10 +19,6 @@ export const handlers = [
     ...v4ThreadHandlers,
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
-
-    http.get(`${process.env.VITE_API_URL}${SchemaApiUrl}`, () => {
-        return HttpResponse.json(fakeSchemaResponse);
-    }),
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
@@ -83,52 +78,3 @@ const fakePromptsResponse: JSONPromptTemplateList = [
         created: '1710371316729',
     },
 ];
-
-const fakeSchemaResponse: Schema = {
-    Message: {
-        InferenceOpts: {
-            logprobs: {
-                default: null,
-                max: 10,
-                min: 0,
-                name: 'logprobs',
-                step: 1,
-            },
-            max_tokens: {
-                default: 2048,
-                max: 2048,
-                min: 1,
-                name: 'max_tokens',
-                step: 1,
-            },
-            n: {
-                default: 1,
-                max: 50,
-                min: 1,
-                name: 'n',
-                step: 1,
-            },
-            stop: {
-                default: null,
-                max: undefined,
-                min: undefined,
-                name: 'stop',
-                step: undefined,
-            },
-            temperature: {
-                default: 1,
-                max: 2,
-                min: 0,
-                name: 'temperature',
-                step: 0.01,
-            },
-            top_p: {
-                default: 1,
-                max: 1,
-                min: 0,
-                name: 'top_p',
-                step: 0.01,
-            },
-        },
-    },
-};

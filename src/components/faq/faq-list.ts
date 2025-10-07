@@ -115,7 +115,7 @@ export const faqs: FAQCategory[] = [
             {
                 question:
                     'I noticed personally identifiable information in a model output or other results in the Playground. Where can I report this?',
-                answer: 'Please submit a request on this [form](https://docs.google.com/forms/d/e/1FAIpQLSeKD4gs_NfizDWhmDmHAsfrZ9uYAmflYWHc3aQQIG-nKfcESw/viewform) and we will review it. We use filtering, data minimization, anonymization and other responsible data privacy practices to prevent the inadvertent communication of PII on the Playground. We respect the rights of data subjects to request removal in compliance with law.',
+                answer: 'Please submit a request on this [form](https://docs.google.com/forms/d/e/1FAIpQLSeW04KYtx8P8RdpMAz1eDouVHdMyXLS0kZ7dwa2GcvBqjfoyA/viewform) and we will review it. We use filtering, data minimization, anonymization and other responsible data privacy practices to prevent the inadvertent communication of PII on the Playground. We respect the rights of data subjects to request removal in compliance with law.',
             },
             {
                 question:

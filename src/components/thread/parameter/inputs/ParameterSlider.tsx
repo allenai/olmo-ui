@@ -9,6 +9,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { useAppContext } from '@/AppContext';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
+import { clipToMinMax } from '@/utils/clipToMinMax';
 
 import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
 
@@ -35,12 +36,10 @@ export const ParameterSlider = ({
     onChange,
     id,
 }: Props) => {
-    const clipToMinMax = (val: number) => Math.min(Math.max(val, min), max);
-
-    const [value, _setValue] = useState(clipToMinMax(initialValue));
+    const [value, _setValue] = useState(clipToMinMax(initialValue, min, max));
 
     const setValue = (newValue: number) => {
-        _setValue(clipToMinMax(newValue));
+        _setValue(clipToMinMax(newValue, min, max));
     };
 
     useEffect(() => {

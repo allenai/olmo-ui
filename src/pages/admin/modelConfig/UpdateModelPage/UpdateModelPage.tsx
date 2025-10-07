@@ -1,8 +1,6 @@
-import { parseAbsoluteToLocal } from '@internationalized/date';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams, useSubmit } from 'react-router';
 
-import type { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { useModelConfigValidationActionData } from '@/api/useModelConfigValidationActionData';
 import { MetaTags } from '@/components/MetaTags';
 import { links } from '@/Links';
@@ -11,25 +9,9 @@ import {
     ModelConfigForm,
     type ModelConfigFormValues,
 } from '../components/ModelConfigForm/ModelConfigForm';
-import { mapConfigFormDataToRequest } from '../mapConfigFormDataToRequest';
+import { mapDataToModelConfigFormValues } from '../mapDataToModelConfigFormValues';
+import { mapModelConfigFormValuesToRequest } from '../mapModelConfigFormValuesToRequest';
 import { useAdminModelById } from '../useGetAdminModels';
-
-const mapModelEditFormData = (model: SchemaResponseModel): ModelConfigFormValues => {
-    const { availableTime, deprecationTime, internal, familyId, ...rest } = model;
-
-    const modifiedAvailableTime = availableTime ? parseAbsoluteToLocal(availableTime) : undefined;
-
-    const modifiedDeprecationTime = deprecationTime
-        ? parseAbsoluteToLocal(deprecationTime)
-        : undefined;
-
-    return {
-        ...rest,
-        familyId: familyId ?? 'no_family',
-        availableTime: modifiedAvailableTime,
-        deprecationTime: modifiedDeprecationTime,
-    };
-};
 
 export const UpdateModelPage = () => {
     const { modelId } = useParams();
@@ -37,7 +19,7 @@ export const UpdateModelPage = () => {
     const submit = useSubmit();
     const formContext = useForm<ModelConfigFormValues>({
         defaultValues: data
-            ? mapModelEditFormData(data)
+            ? mapDataToModelConfigFormValues(data)
             : {
                   promptType: 'text_only',
                   host: 'modal',
@@ -60,7 +42,7 @@ export const UpdateModelPage = () => {
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
         const path = links.editModel(data.id);
-        submit(mapConfigFormDataToRequest(formData), {
+        submit(mapModelConfigFormValuesToRequest(formData), {
             method: 'put',
             action: path,
             encType: 'application/json',

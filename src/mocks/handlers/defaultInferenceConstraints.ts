@@ -1,0 +1,49 @@
+export const defaultInferenceConstraintsSnake = {
+    max_tokens_default: 2048,
+    max_tokens_lower: 1,
+    max_tokens_upper: 2048,
+    max_tokens_step: 1,
+    temperature_default: 0.7,
+    temperature_lower: 0,
+    temperature_upper: 1,
+    temperature_step: 0.01,
+    top_p_default: 1,
+    top_p_lower: 0.01,
+    top_p_upper: 1,
+    top_p_step: 0.01,
+    stop_default: undefined,
+};
+
+export const defaultInferenceParametersSnake = {
+    max_tokens: defaultInferenceConstraintsSnake.max_tokens_default,
+    temperature: defaultInferenceConstraintsSnake.temperature_default,
+    top_p: defaultInferenceConstraintsSnake.top_p_default,
+    stop: defaultInferenceConstraintsSnake.stop_default,
+    n: 1,
+    logprobs: undefined,
+};
+
+export const defaultInferenceConstraintsCamel = {
+    maxTokensDefault: defaultInferenceConstraintsSnake.max_tokens_default,
+    maxTokensLower: defaultInferenceConstraintsSnake.max_tokens_lower,
+    maxTokensUpper: defaultInferenceConstraintsSnake.max_tokens_upper,
+    maxTokensStep: defaultInferenceConstraintsSnake.max_tokens_step,
+    stopDefault: defaultInferenceConstraintsSnake.stop_default,
+    temperatureDefault: defaultInferenceConstraintsSnake.temperature_default,
+    temperatureLower: defaultInferenceConstraintsSnake.temperature_lower,
+    temperatureUpper: defaultInferenceConstraintsSnake.temperature_upper,
+    temperatureStep: defaultInferenceConstraintsSnake.temperature_step,
+    topPDefault: defaultInferenceConstraintsSnake.top_p_default,
+    topPLower: defaultInferenceConstraintsSnake.top_p_lower,
+    topPUpper: defaultInferenceConstraintsSnake.top_p_upper,
+    topPStep: defaultInferenceConstraintsSnake.top_p_step,
+};
+
+export const defaultInferenceParametersCamel = {
+    maxTokens: defaultInferenceConstraintsSnake.max_tokens_default,
+    temperature: defaultInferenceConstraintsSnake.temperature_default,
+    topP: defaultInferenceConstraintsSnake.top_p_default,
+    stop: defaultInferenceConstraintsSnake.stop_default,
+    n: 1,
+    logprobs: undefined,
+};

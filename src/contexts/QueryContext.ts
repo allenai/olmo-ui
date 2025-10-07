@@ -1,12 +1,13 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
-import { RequestInferenceOpts } from '@/api/Message';
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { CreateMessageRequest } from '@/api/playgroundApi/thread';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { RemoteState } from '@/contexts/util';
+
+import { MessageInferenceParameters, ModelInferenceConstraints } from './ThreadProviderHelpers';
 
 // Single interface that adapts based on context type
 
@@ -43,8 +44,9 @@ interface QueryContextValue {
     // Replaces global state setters, doesn't execute business logic like model compatibility checks
     setModelId: (threadViewId: string, modelId: string) => void;
 
-    inferenceOpts: RequestInferenceOpts;
-    updateInferenceOpts: (newOptions: Partial<RequestInferenceOpts>) => void;
+    inferenceConstraints: ModelInferenceConstraints;
+    inferenceOpts: MessageInferenceParameters;
+    updateInferenceOpts: (newOptions: MessageInferenceParameters) => void;
 
     submitToThreadView: (threadViewId: string, data: QueryFormValues) => Promise<string | null>;
     updateIsToolCallingEnabled: (enabled: boolean) => void;

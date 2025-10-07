@@ -67,23 +67,14 @@ const createModelDeprecationNotice = () => {
 export const playgroundLoader =
     (queryClient: QueryClient): LoaderFunction =>
     async ({ params, request }) => {
-        const { resetSelectedThreadState, resetAttribution, getSchema, schema } =
-            appContext.getState();
-
-        const promises = [];
+        const { resetSelectedThreadState, resetAttribution } = appContext.getState();
 
         const models = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
-
-        if (schema == null) {
-            promises.push(getSchema());
-        }
 
         if (params.id === undefined) {
             resetSelectedThreadState();
             resetAttribution();
         }
-
-        await Promise.all(promises);
 
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(
             MODEL_DEPRECATION_NOTICE_GIVEN_KEY

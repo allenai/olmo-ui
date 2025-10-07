@@ -80,28 +80,18 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         const {
             resetSelectedThreadState,
             resetAttribution: _rstAtr,
-            getSchema,
-            schema,
             clearAllStreamErrors,
         } = appContext.getState();
-
-        const promises = [];
 
         const allModels = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
         // Filter models to match ComparisonProvider behavior
         const models = allModels.filter(isModelVisible);
-
-        if (schema == null) {
-            promises.push(getSchema());
-        }
 
         // TODO (bb): reset, but correctly
         // if (params.id === undefined) {
         //     resetAttribution();
         // }
         resetSelectedThreadState();
-
-        await Promise.all(promises);
 
         const searchParams = new URL(request.url).searchParams;
         const threadListString = searchParams.get('threads');

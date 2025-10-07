@@ -12,7 +12,6 @@ import { createGlobalThreadsUISlice, GlobalThreadsUISlice } from './slices/Globa
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
 import { createPromptTemplateSlice, PromptTemplateSlice } from './slices/PromptTemplateSlice';
-import { createSchemaSlice, SchemaSlice } from './slices/SchemaSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
@@ -29,7 +28,6 @@ export type AppContextState = LabelSlice &
     UserSlice &
     ModelSlice &
     CompareModelSlice &
-    SchemaSlice &
     DrawerSlice &
     ThreadUpdateSlice &
     TranscriptionSlice &
@@ -61,7 +59,6 @@ export const createAppContext = (
                         ...createUserSlice(...store),
                         ...createModelSlice(...store),
                         ...createCompareModelSlice(...store),
-                        ...createSchemaSlice(...store),
                         ...createDrawerSlice(...store),
                         ...createThreadUpdateSlice(...store),
                         ...createTranscriptionSlice(...store),

@@ -1,161 +1,50 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import {
-    Button,
-    Link,
-    Radio,
-    SelectListBoxItem,
-    SelectListBoxSection,
-    Stack,
-} from '@allenai/varnish-ui';
+import { Button, Radio, SelectListBoxItem, SelectListBoxSection, Stack } from '@allenai/varnish-ui';
 import { DevTool } from '@hookform/devtools';
 import { now, type ZonedDateTime } from '@internationalized/date';
-import { Autocomplete, TextField } from '@mui/material';
-import { type ReactNode } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { type ReactNode, useEffect, useState } from 'react';
+import { DisclosureGroup } from 'react-aria-components';
+import { useFormContext } from 'react-hook-form';
 
-import {
-    type SchemaCreateMultiModalModelConfigRequest,
-    SchemaRootCreateModelConfigRequest,
-} from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
 import { ControlledSelect } from '@/components/form/ControlledSelect';
+import { ControlledSliderWithInput } from '@/components/form/ControlledSliderWithInput';
 import { ControlledSwitch } from '@/components/form/ControlledSwitch';
+import { SliderWithInput } from '@/components/form/SliderWithInput';
 import { ExpandableTextArea } from '@/components/form/TextArea/ExpandableTextArea';
 import { LinkButton } from '@/components/LinkButton';
+import { CollapsibleWidget } from '@/components/widgets/CollapsibleWidget/CollapsibleWidget';
 import { links } from '@/Links';
 
-import { FileSizeInput } from './inputs/FileSizeInput/FileSizeInput';
+import { Fieldset } from './Fieldset';
 import { InfiniGramIndexInput } from './inputs/InfiniGramIndexInput';
 import { ModelHostSelect } from './inputs/ModelHostSelect';
 import { ModelIdOnHostInput } from './inputs/ModelIdOnHostInput';
+import { MultiModalFields, MultiModalFormValues } from './MultiModalFields';
 
-const inputSizing = css({ maxWidth: '[20rem]' });
-
-const formSizing = css({ maxWidth: '[min(100%, 32rem)]' });
-
-type MultiModalFormValues = Partial<
-    Pick<
-        SchemaCreateMultiModalModelConfigRequest,
-        | 'acceptedFileTypes'
-        | 'allowFilesInFollowups'
-        | 'requireFileToPrompt'
-        | 'maxFilesPerMessage'
-        | 'maxTotalFileSize'
-    >
->;
-
-const mimeTypeRegex = /^[\w.-]+\/[\w+.-\\*]+$/;
 const urlRegex = /^(https?:\/\/)([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/;
 
-const MultiModalFields = (): ReactNode => {
-    const formContext = useFormContext<MultiModalFormValues>();
-
-    return (
-        <>
-            <Controller
-                name="acceptedFileTypes"
-                control={formContext.control}
-                rules={{
-                    validate: (value) => {
-                        const invalidValues =
-                            value?.filter((item) => !mimeTypeRegex.test(item)) ?? [];
-
-                        if (invalidValues.length === 0) {
-                            return true;
-                        }
-
-                        return invalidValues.length === 1
-                            ? `"${invalidValues[0]}" is not a valid file type.`
-                            : `"${invalidValues.join(', ')}" are not valid file types`;
-                    },
-                }}
-                render={({ field, fieldState }) => (
-                    <Autocomplete
-                        id={field.name}
-                        multiple
-                        freeSolo
-                        fullWidth
-                        options={['image/*', 'application/pdf']}
-                        value={field.value as string[] | undefined}
-                        onChange={(_e, value) => {
-                            field.onChange(value);
-                        }}
-                        renderInput={(params) => {
-                            return (
-                                <TextField
-                                    {...params}
-                                    label="Accepted file types"
-                                    error={!!fieldState.error}
-                                    helperText={
-                                        fieldState.error?.message ?? (
-                                            <>
-                                                Must match the{' '}
-                                                <Link href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types#structure_of_a_mime_type">
-                                                    MIME type format
-                                                </Link>
-                                                .
-                                            </>
-                                        )
-                                    }
-                                />
-                            );
-                        }}
-                    />
-                )}
-            />
-            <Controller
-                name="maxTotalFileSize"
-                control={formContext.control}
-                render={({ field }) => <FileSizeInput {...field} />}
-            />
-            <ControlledSelect
-                name="requireFileToPrompt"
-                label="File prompt requirement"
-                controllerProps={{ rules: { required: true } }}>
-                <SelectListBoxItem
-                    id="first_message"
-                    text="First message"
-                    textValue="First message"
-                />
-                <SelectListBoxItem id="all_messages" text="All messages" textValue="All messages" />
-                <SelectListBoxItem
-                    id="no_requirement"
-                    text="No requirement"
-                    textValue="No requirement"
-                />
-            </ControlledSelect>
-            <Stack direction="column" spacing={10}>
-                <ControlledSwitch name="allowFilesInFollowups">
-                    Allow files in followup prompts
-                </ControlledSwitch>
-                <ControlledInput
-                    name="maxFilesPerMessage"
-                    label="Max files per message"
-                    type="number"
-                />
-            </Stack>
-        </>
-    );
+type MinMaxDefault = {
+    default: number;
+    minValue: number;
+    maxValue: number;
+    step: number;
 };
-
-const TimeFields = (): ReactNode => {
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return (
-        <ControlledDatePicker
-            name="availableTime"
-            label="Available time"
-            granularity="minute"
-            placeholderValue={now(userTimeZone)}
-        />
-    );
+type InferenceConstrints = {
+    temperature: MinMaxDefault;
+    topP: MinMaxDefault;
+    maxTokens: MinMaxDefault;
+    stop?: readonly string[];
 };
 
 type BaseModelFormFieldValues = {
     availability: 'public' | 'internal' | 'prerelease';
     availableTime?: ZonedDateTime;
     deprecationTime?: ZonedDateTime;
+    inferenceConstraints: InferenceConstrints;
 } & Partial<
     Pick<
         SchemaRootCreateModelConfigRequest,
@@ -171,6 +60,7 @@ type BaseModelFormFieldValues = {
         | 'promptType'
         | 'canCallTools'
         | 'canThink'
+        | 'infiniGramIndex'
     >
 >;
 
@@ -185,126 +75,245 @@ export const ModelConfigForm = ({ onSubmit, disableIdField = false }: ModelConfi
     const formContext = useFormContext<ModelConfigFormValues>();
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+    const inferenceConstraints = formContext.getValues('inferenceConstraints');
+    const [maxTokenBase2Limit, setMaxTokenBase2Limit] = useState(
+        Math.log2(inferenceConstraints.maxTokens.maxValue)
+    );
+
     const promptTypeState = formContext.watch('promptType');
     const showTimeSection = formContext.watch('availability') === 'prerelease';
+    const maxTokensMaxValue = formContext.watch('inferenceConstraints.maxTokens.maxValue');
 
     const handleSubmit = (formData: ModelConfigFormValues) => {
         onSubmit(formData);
     };
 
+    useEffect(() => {
+        const currentInferenceConstraints = formContext.getValues('inferenceConstraints');
+        if (
+            maxTokensMaxValue &&
+            currentInferenceConstraints.maxTokens.default > maxTokensMaxValue
+        ) {
+            formContext.setValue('inferenceConstraints.maxTokens.default', maxTokensMaxValue);
+        }
+    }, [formContext, maxTokensMaxValue]);
+
     return (
-        <form className={formSizing} onSubmit={formContext.handleSubmit(handleSubmit)}>
-            <Stack fullWidth spacing={12} direction="column">
-                {process.env.NODE_ENV === 'development' && (
-                    <DevTool control={formContext.control} />
+        <form
+            className={css({ maxWidth: '[min(100%, 32rem)]', marginBottom: '8' })}
+            onSubmit={formContext.handleSubmit(handleSubmit)}>
+            <DisclosureGroup
+                className={css({ '& > *': { marginBottom: '4' } })}
+                defaultExpandedKeys={['basic', 'hosting']}
+                allowsMultipleExpanded>
+                <CollapsibleWidget id="basic" heading="Basic">
+                    <Fieldset>
+                        <ControlledInput
+                            name="name"
+                            label="Name"
+                            fullWidth
+                            className={inputSizing}
+                            controllerProps={{ rules: { required: true, minLength: 1 } }}
+                        />
+                        <ControlledInput
+                            name="id"
+                            label="ID"
+                            description="The ID you see when linking to this model"
+                            className={inputSizing}
+                            fullWidth
+                            controllerProps={{ rules: { required: true, minLength: 1 } }}
+                            isDisabled={disableIdField}
+                        />
+
+                        <ControlledSelect
+                            name="familyId"
+                            label="Model family"
+                            controllerProps={{ rules: { required: true } }}>
+                            <SelectListBoxSection>
+                                <SelectListBoxItem text="No family" id="no_family" />
+                                <SelectListBoxItem text="OLMo" id="olmo" />
+                                <SelectListBoxItem text="Tülu" id="tulu" />
+                            </SelectListBoxSection>
+                        </ControlledSelect>
+
+                        <ExpandableTextArea
+                            name="description"
+                            label="Description"
+                            controllerProps={{ rules: { required: true, minLength: 1 } }}
+                        />
+
+                        <ControlledInput
+                            name="informationUrl"
+                            label="Information URL"
+                            description="The link to information about this model."
+                            className={inputSizing}
+                            fullWidth
+                            controllerProps={{
+                                rules: {
+                                    required: false,
+                                    pattern: {
+                                        value: urlRegex,
+                                        message: 'Please enter a valid URL.',
+                                    },
+                                },
+                            }}
+                        />
+
+                        <ControlledSelect name="modelType" label="Model type">
+                            <SelectListBoxItem text="Chat" id="chat" />
+                            <SelectListBoxItem text="Base" id="base" />
+                        </ControlledSelect>
+
+                        <InfiniGramIndexInput name="infiniGramIndex" label="Infini-gram index" />
+
+                        <ControlledRadioGroup name="promptType" label="Prompt type">
+                            <Radio value="text_only">Text only</Radio>
+                            <Radio value="multi_modal">Multimodal</Radio>
+                        </ControlledRadioGroup>
+                    </Fieldset>
+                </CollapsibleWidget>
+
+                <CollapsibleWidget id="hosting" heading="Hosting">
+                    <Fieldset>
+                        <ModelHostSelect
+                            name="host"
+                            label="Model host"
+                            controllerProps={{ rules: { required: true } }}
+                        />
+
+                        <ModelIdOnHostInput
+                            name="modelIdOnHost"
+                            hostKey="host"
+                            className={inputSizing}
+                            fullWidth
+                            controllerProps={{ rules: { required: true } }}
+                        />
+                    </Fieldset>
+                </CollapsibleWidget>
+
+                {promptTypeState === 'multi_modal' && (
+                    <CollapsibleWidget id="multimodal" heading="Multimodal">
+                        <Fieldset>
+                            <MultiModalFields />
+                        </Fieldset>
+                    </CollapsibleWidget>
                 )}
-                <ControlledInput
-                    name="name"
-                    label="Name"
-                    fullWidth
-                    className={inputSizing}
-                    controllerProps={{ rules: { required: true, minLength: 1 } }}
-                />
-                <ControlledInput
-                    name="id"
-                    label="ID"
-                    description="The ID you see when linking to this model"
-                    className={inputSizing}
-                    fullWidth
-                    controllerProps={{ rules: { required: true, minLength: 1 } }}
-                    isDisabled={disableIdField}
-                />
 
-                <ControlledSelect
-                    name="familyId"
-                    label="Model family"
-                    controllerProps={{ rules: { required: true } }}>
-                    <SelectListBoxSection>
-                        <SelectListBoxItem text="No family" id="no_family" />
-                        <SelectListBoxItem text="OLMo" id="olmo" />
-                        <SelectListBoxItem text="Tülu" id="tulu" />
-                    </SelectListBoxSection>
-                </ControlledSelect>
+                <CollapsibleWidget id="advanced" heading="Advanced">
+                    <Fieldset>
+                        <ExpandableTextArea
+                            name="defaultSystemPrompt"
+                            label="Default System Prompt"
+                        />
+                        <ControlledSwitch name="canCallTools" size="large">
+                            This model can call tools
+                        </ControlledSwitch>
+                        <ControlledSwitch name="canThink" size="large">
+                            This model can think
+                        </ControlledSwitch>
 
-                <ModelHostSelect
-                    name="host"
-                    label="Model host"
-                    controllerProps={{ rules: { required: true } }}
-                />
+                        <ControlledSliderWithInput
+                            name="inferenceConstraints.temperature.default"
+                            label="Default Temperature"
+                            {...inferenceConstraints.temperature}
+                            controllerProps={{
+                                rules: {
+                                    required: true,
+                                    min: inferenceConstraints.temperature.minValue,
+                                    max: inferenceConstraints.temperature.maxValue,
+                                },
+                            }}
+                        />
+                        <ControlledSliderWithInput
+                            name="inferenceConstraints.topP.default"
+                            label="Default Top P"
+                            {...inferenceConstraints.topP}
+                            controllerProps={{
+                                rules: {
+                                    required: true,
+                                    min: inferenceConstraints.topP.minValue,
+                                    max: inferenceConstraints.topP.maxValue,
+                                },
+                            }}
+                        />
+                        <ControlledSliderWithInput
+                            name="inferenceConstraints.maxTokens.default"
+                            label="Default Max Tokens"
+                            {...inferenceConstraints.maxTokens}
+                            controllerProps={{
+                                rules: {
+                                    required: true,
+                                    min: inferenceConstraints.maxTokens.minValue,
+                                    max: inferenceConstraints.maxTokens.maxValue,
+                                },
+                            }}
+                        />
 
-                <ModelIdOnHostInput
-                    name="modelIdOnHost"
-                    hostKey="host"
-                    className={inputSizing}
-                    fullWidth
-                    controllerProps={{ rules: { required: true } }}
-                />
+                        <SliderWithInput
+                            name="maxTokensMaxValue"
+                            label="Upper Limit of Max Tokens (Base 2 Exponent)"
+                            minValue={10} // 2^10 = 1,024
+                            maxValue={20} // 2^20 = 1,048,576
+                            step={1}
+                            value={maxTokenBase2Limit}
+                            onChange={(value) => {
+                                const maxAllowed = Math.floor(Math.log2(Number.MAX_SAFE_INTEGER));
+                                // NOTE: don't go over Number.MAX_SAFE_INTEGER, if we bump maxValue too high
+                                if (value > maxAllowed) {
+                                    value = maxAllowed;
+                                }
+                                setMaxTokenBase2Limit(value);
+                                const newMaxTokenLimit = Math.pow(2, value);
 
-                <ControlledInput
-                    name="informationUrl"
-                    label="Information URL"
-                    description="The link to information about this model."
-                    className={inputSizing}
-                    fullWidth
-                    controllerProps={{
-                        rules: {
-                            required: false,
-                            pattern: {
-                                value: urlRegex,
-                                message: 'Please enter a valid URL.',
-                            },
-                        },
-                    }}
-                />
+                                formContext.setValue(
+                                    'inferenceConstraints.maxTokens.maxValue',
+                                    newMaxTokenLimit
+                                );
+                            }}
+                        />
+                    </Fieldset>
+                </CollapsibleWidget>
 
-                <ExpandableTextArea
-                    name="description"
-                    label="Description"
-                    controllerProps={{ rules: { required: true, minLength: 1 } }}
-                />
-
-                <ExpandableTextArea name="defaultSystemPrompt" label="Default System Prompt" />
-
-                <ControlledSelect name="modelType" label="Model type">
-                    <SelectListBoxItem text="Chat" id="chat" />
-                    <SelectListBoxItem text="Base" id="base" />
-                </ControlledSelect>
-
-                <InfiniGramIndexInput name="infiniGramIndex" label="Infini-gram index" />
-
-                <ControlledRadioGroup name="promptType" label="Prompt type">
-                    <Radio value="text_only">Text only</Radio>
-                    <Radio value="multi_modal">Multimodal</Radio>
-                </ControlledRadioGroup>
-                {promptTypeState === 'multi_modal' && <MultiModalFields />}
-                <ControlledSelect name="availability" label="Availability">
-                    <SelectListBoxSection>
-                        <SelectListBoxItem text="Public" id="public" />
-                        <SelectListBoxItem text="Internal" id="internal" />
-                        <SelectListBoxItem text="Pre-release" id="prerelease" />
-                    </SelectListBoxSection>
-                </ControlledSelect>
-                {showTimeSection && <TimeFields />}
-                <ControlledDatePicker
-                    name="deprecationTime"
-                    label="Model expiration time"
-                    granularity="minute"
-                    placeholderValue={now(userTimeZone)}
-                />
-                <ControlledSwitch name="canCallTools" size="large">
-                    This model can call tools
-                </ControlledSwitch>
-                <ControlledSwitch name="canThink" size="large">
-                    This model can think
-                </ControlledSwitch>
-
-                <Stack direction="row" align="center" justify="center" spacing={3}>
-                    <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
-                    <Button variant="contained" type="submit">
-                        Save
-                    </Button>
-                </Stack>
+                <CollapsibleWidget id="availability" heading="Availability">
+                    <Fieldset legend="Availability Configuration for Model">
+                        <ControlledSelect name="availability" label="Availability">
+                            <SelectListBoxSection>
+                                <SelectListBoxItem text="Public" id="public" />
+                                <SelectListBoxItem text="Internal" id="internal" />
+                                <SelectListBoxItem text="Pre-release" id="prerelease" />
+                            </SelectListBoxSection>
+                        </ControlledSelect>
+                        {showTimeSection && <TimeFields />}
+                        <ControlledDatePicker
+                            name="deprecationTime"
+                            label="Model expiration time"
+                            granularity="minute"
+                            placeholderValue={now(userTimeZone)}
+                        />
+                    </Fieldset>
+                </CollapsibleWidget>
+            </DisclosureGroup>
+            <Stack direction="row" align="center" justify="end" spacing={3}>
+                <LinkButton to={links.modelConfiguration}>Cancel</LinkButton>
+                <Button variant="contained" type="submit">
+                    Save
+                </Button>
             </Stack>
+            {process.env.NODE_ENV === 'development' && <DevTool control={formContext.control} />}
         </form>
     );
 };
+
+const TimeFields = (): ReactNode => {
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return (
+        <ControlledDatePicker
+            name="availableTime"
+            label="Available time"
+            granularity="minute"
+            placeholderValue={now(userTimeZone)}
+        />
+    );
+};
+
+const inputSizing = css({ maxWidth: '[20rem]' });
