@@ -1,12 +1,12 @@
 import { SelectChangeEvent } from '@mui/material';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { ModelList } from '@/api/playgroundApi/additionalTypes';
 import { ModelSelect } from '@/components/thread/ModelSelect/ModelSelectInput';
 import { useQueryContext } from '@/contexts/QueryContext';
 
 interface CompareModelSelectProps {
     threadViewId: string;
-    models: Model[];
+    models: ModelList;
 }
 
 export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) => {

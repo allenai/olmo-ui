@@ -1,11 +1,13 @@
-import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
-import { Mutable } from '@/util';
+import {
+    SchemaRootCreateModelConfigRequest,
+    SchemaRootUpdateModelConfigRequest,
+} from '@/api/playgroundApi/playgroundApiSchema';
 
 import { ModelConfigFormValues } from './components/ModelConfigForm/ModelConfigForm';
 
 export const mapModelConfigFormValuesToRequest = (
     formData: ModelConfigFormValues
-): SchemaRootCreateModelConfigRequest => {
+): SchemaRootCreateModelConfigRequest | SchemaRootUpdateModelConfigRequest => {
     const {
         availability,
         availableTime,
@@ -19,7 +21,8 @@ export const mapModelConfigFormValuesToRequest = (
     const internal = availability === 'internal';
     const mappedFamilyId = familyId === 'no_family' ? undefined : familyId;
     const mappedInformationUrl = informationUrl?.trim() === '' ? undefined : informationUrl;
-    const request = {
+
+    const requestData = {
         ...rest,
         temperatureDefault: inferenceConstraints.temperature.default,
         temperatureLower: inferenceConstraints.temperature.minValue,
@@ -39,7 +42,11 @@ export const mapModelConfigFormValuesToRequest = (
         informationUrl: mappedInformationUrl,
         availableTime: availableTime?.toAbsoluteString(),
         deprecationTime: deprecationTime?.toAbsoluteString(),
-    } as Mutable<SchemaRootCreateModelConfigRequest>;
+    };
 
-    return request;
+    if (rest.id) {
+        return requestData as SchemaRootCreateModelConfigRequest;
+    }
+
+    return requestData as SchemaRootUpdateModelConfigRequest;
 };

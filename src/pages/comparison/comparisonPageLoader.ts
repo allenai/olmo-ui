@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { LoaderFunction } from 'react-router-dom';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model, ModelList } from '@/api/playgroundApi/additionalTypes';
 import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
@@ -21,7 +21,7 @@ export interface ComparisonLoaderData {
 
 // Initialize default comparison models when no URL parameters are provided
 const initializeDefaultComparisonModels = (
-    models: Model[],
+    models: ModelList,
     count: number = 2
 ): CompareModelState[] => {
     const results: CompareModelState[] = [];

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ModelList } from '@/api/playgroundApi/additionalTypes';
 import { createMockMessage, createMockModel } from '@/utils/test/createMockModel';
 
 import { selectModelIdForThread } from './modelSelectionUtils';
 
 describe('selectModelIdForThread', () => {
-    const mockModels: readonly Model[] = [
+    const mockModels: ModelList = [
         createMockModel('model-1', { is_visible: true }),
         createMockModel('model-2', { is_visible: true }),
         createMockModel('model-3', { is_visible: false }),
@@ -91,7 +91,7 @@ describe('selectModelIdForThread', () => {
         });
 
         it('selects first available model when others are hidden', () => {
-            const modelsWithInvisibleFirst: readonly Model[] = [
+            const modelsWithInvisibleFirst: ModelList = [
                 createMockModel('invisible-1', { is_visible: false }),
                 createMockModel('invisible-2', { is_visible: false }),
                 createMockModel('visible-1', { is_visible: true }),
@@ -104,7 +104,7 @@ describe('selectModelIdForThread', () => {
         });
 
         it('handles no available models gracefully', () => {
-            const invisibleModels: readonly Model[] = [
+            const invisibleModels: ModelList = [
                 createMockModel('invisible-1', { is_visible: false }),
                 createMockModel('invisible-2', { is_visible: false }),
             ];

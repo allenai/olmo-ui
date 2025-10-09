@@ -1,9 +1,9 @@
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ModelList } from '@/api/playgroundApi/additionalTypes';
 import type { FlatMessage } from '@/api/playgroundApi/thread';
 import { isModelVisible } from '@/components/thread/ModelSelect/useModels';
 
 export function selectModelIdForThread(
-    models: readonly Model[],
+    models: ModelList,
     lastResponse?: FlatMessage,
     modelParamFromURL?: string
 ): string | undefined {
