@@ -38,6 +38,8 @@ import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextAre
 import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
 import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
+import { MCP_SERVER_NAME } from './mcpServerName';
+
 const modalBase = css({
     fontSize: 'sm',
     paddingTop: '4',
@@ -470,11 +472,25 @@ const ToolGroupSection = ({
 
 type GroupedToolList = Record<string, SchemaAvailableTool[]>;
 
+const isMcpServer = (mcpId: string): mcpId is keyof typeof MCP_SERVER_NAME =>
+    Boolean(mcpId in MCP_SERVER_NAME);
+
+const toolGroupNameFromTool = (tool: SchemaAvailableTool) => {
+    const mcpServerId = tool.mcpServerId;
+    if (mcpServerId) {
+        if (isMcpServer(mcpServerId)) {
+            return MCP_SERVER_NAME[mcpServerId];
+        }
+        return 'Unknown';
+    }
+    return 'Internal';
+};
+
 const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
     const groupedTools: GroupedToolList = {};
     if (tools) {
         for (const tool of tools) {
-            const toolGroupName = tool.toolGroupName;
+            const toolGroupName = toolGroupNameFromTool(tool);
             groupedTools[toolGroupName] ??= [];
             groupedTools[toolGroupName].push(tool);
         }

@@ -485,10 +485,13 @@ export type components = {
              * @default null
              */
             readonly description?: string | null;
+            /**
+             * Mcpserverid
+             * @default null
+             */
+            readonly mcpServerId?: string | null;
             /** Name */
             readonly name: string;
-            /** Toolgroupname */
-            readonly toolGroupName: string;
         };
         /** CreateMessageRequest */
         readonly CreateMessageRequest: {
