@@ -14,7 +14,7 @@ import { ABORT_ERROR_MESSAGE } from '@/slices/ThreadUpdateSlice';
 import type { ExtraParameters } from './QueryContext';
 import {
     containsMessages,
-    isFinalMessage,
+    isChunk,
     isFirstMessage,
     isMessageStreamError,
     isModelResponseChunk,
@@ -157,11 +157,13 @@ export const updateCacheWithMessagePart = async (
         }
     }
 
-    if (isFinalMessage(message)) {
-        clearStreamingState(currentThreadId);
+    if (isChunk(message) && message.type === 'end') {
+        clearStreamingState(message.message);
 
         if (isCreatingNewThread) {
-            state.addThreadToAllThreads(message);
+            const { queryKey } = threadOptions(message.message);
+            const currentThread = queryClient.getQueryData(queryKey);
+            state.addThreadToAllThreads(currentThread as StreamingThread);
         }
     }
 

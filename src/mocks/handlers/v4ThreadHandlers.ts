@@ -3,7 +3,7 @@ import { delay, http, HttpResponse } from 'msw';
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
 import { PaginationData } from '@/api/Schema';
-import type { StreamingMessageResponse } from '@/contexts/stream-types';
+import type { Chunk, StreamingMessageResponse } from '@/contexts/stream-types';
 
 import highlightStressTestMessage from './responses/highlightStressTestMessage';
 import documentWithMultipleSnippetsResponse from './responses/v4/documentWithMultipleSnippetsResponse';
@@ -222,7 +222,7 @@ const highlightStressTestResponse = {
 } satisfies Thread;
 
 // Get the last Thread from a mixed-type array
-const getLastThread = (messages: Array<Thread | MessageChunk>): Thread => {
+const getLastThread = (messages: Array<Thread | MessageChunk | Chunk>): Thread => {
     const threads = messages.filter((item): item is Thread => 'messages' in item);
     const lastThread = threads.at(-1);
     if (!lastThread) {

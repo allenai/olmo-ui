@@ -1,9 +1,14 @@
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { Chunk } from '@/contexts/stream-types';
 
 export const MULTI_MODAL_USER_MESSAGE_ID = 'multi-modal-count';
 const MULTI_MODAL_MESSAGE_ID = 'multi-modal-count-response';
-export const fakeMultiModalStreamMessages: Array<Thread | MessageChunk> = [
+export const fakeMultiModalStreamMessages: Array<Thread | MessageChunk | Chunk> = [
+    {
+        message: MULTI_MODAL_USER_MESSAGE_ID,
+        type: 'start',
+    },
     {
         id: MULTI_MODAL_USER_MESSAGE_ID,
         messages: [
@@ -136,4 +141,5 @@ export const fakeMultiModalStreamMessages: Array<Thread | MessageChunk> = [
             },
         ],
     },
+    { message: MULTI_MODAL_USER_MESSAGE_ID, type: 'end' },
 ];

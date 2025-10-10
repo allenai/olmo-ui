@@ -1,9 +1,14 @@
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { Chunk } from '@/contexts/stream-types';
 
 export const compareNewMessageId = 'msg_Z9DK87DSA4';
 export const COMPARE_LOREM_IPSUM_MESSAGE_ID = 'msg_Y289S72SL2';
-export const fakeCompareNewThreadMessages: Array<Thread | MessageChunk> = [
+export const fakeCompareNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
+    {
+        message: compareNewMessageId,
+        type: 'start',
+    },
     {
         id: compareNewMessageId,
         messages: [
@@ -138,4 +143,5 @@ export const fakeCompareNewThreadMessages: Array<Thread | MessageChunk> = [
             },
         ],
     },
+    { message: compareNewMessageId, type: 'end' },
 ];

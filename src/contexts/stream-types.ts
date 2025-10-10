@@ -56,10 +56,6 @@ export const isFirstMessage = (message: StreamingMessageResponse): message is St
     return containsMessages(message) && !message.messages.some((msg) => msg.final);
 };
 
-export const isFinalMessage = (message: StreamingMessageResponse): message is StreamingThread => {
-    return containsMessages(message) && !message.messages.some((msg) => !msg.final);
-};
-
 export const isOldMessageChunk = (message: StreamingMessageResponse): message is MessageChunk => {
     return 'message' in message && !Object.hasOwn(message, 'type');
 };
