@@ -3,6 +3,7 @@ import {
     Button,
     Checkbox,
     IconButton,
+    Link,
     Modal,
     ModalActions,
     Tab,
@@ -342,6 +343,104 @@ const realToolName = css({
     fontSize: 'sm',
 });
 
+const allToolsInGroupSelected = (
+    selectedTools: string[],
+    groupTools: SchemaAvailableTool[]
+): boolean => {
+    const groupToolNames = groupTools.map((tool) => tool.name);
+    return groupToolNames.every((toolName) => selectedTools.includes(toolName));
+};
+
+const removeToolsFromSelected = (selectedTools: string[], toolsToRemove: string[]): string[] => {
+    return selectedTools.filter((toolName) => !toolsToRemove.includes(toolName));
+};
+
+const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]): string[] => {
+    const unselectedToolsToAdd = toolsToAdd.filter((toolName) => !selectedTools.includes(toolName));
+    return selectedTools.concat(unselectedToolsToAdd);
+};
+
+type ToolGroupSectionProps = {
+    toolGroupName: string;
+    groupTools: SchemaAvailableTool[];
+    isDisabled?: boolean;
+    control: ControlledToggleTableProps['control'];
+};
+
+const ToolGroupSection = ({
+    toolGroupName,
+    groupTools,
+    isDisabled,
+    control,
+}: ToolGroupSectionProps) => {
+    const { field } = useController({
+        name: 'tools',
+        ...control,
+        defaultValue: [],
+        rules: {},
+    });
+    const [areAllSelected, setAllSelected] = useState(
+        allToolsInGroupSelected(field.value, groupTools)
+    );
+
+    const handleToggle = (tool: string, isChecked: boolean) => {
+        const selectedTools = field.value;
+
+        const newSelectedTools = isChecked
+            ? addToolsToSelected(selectedTools, [tool])
+            : removeToolsFromSelected(selectedTools, [tool]);
+
+        field.onChange(newSelectedTools);
+        setAllSelected(allToolsInGroupSelected(newSelectedTools, groupTools));
+    };
+
+    const handleSelectAll = () => {
+        const selectedTools = field.value;
+        const groupToolNames = groupTools.map((tool) => tool.name);
+
+        const newSelectedTools = areAllSelected
+            ? removeToolsFromSelected(selectedTools, groupToolNames)
+            : addToolsToSelected(selectedTools, groupToolNames);
+
+        setAllSelected(!areAllSelected);
+        field.onChange(newSelectedTools);
+    };
+
+    return (
+        <Disclosure defaultExpanded className={cx('group', toolCallGroupClassName)}>
+            <div className={toolGroupHeadingClassName}>
+                <Heading>
+                    <AriaButton slot="trigger" className={headingButtonWithArrowClassName}>
+                        <ExpandArrowButton />
+                        {toolGroupName}
+                    </AriaButton>
+                </Heading>
+                <Link onPress={handleSelectAll}>
+                    {areAllSelected ? 'Unselect all' : 'Select all'}
+                </Link>
+            </div>
+            <CollapsibleWidgetPanel>
+                <div className={toolNameGrid}>
+                    {groupTools.map((tool) => (
+                        <div key={tool.name}>
+                            <Checkbox
+                                isDisabled={isDisabled}
+                                isSelected={field.value.includes(tool.name) || false}
+                                onChange={(isChecked) => {
+                                    handleToggle(tool.name, isChecked);
+                                }}
+                                aria-label={`Toggle ${tool.name} tool`}>
+                                <span className={toolName}>{toSpacedCase(tool.name)}</span>
+                            </Checkbox>
+                            <div className={realToolName}>{tool.name}</div>
+                        </div>
+                    ))}
+                </div>
+            </CollapsibleWidgetPanel>
+        </Disclosure>
+    );
+};
+
 type GroupedToolList = Record<string, SchemaAvailableTool[]>;
 
 const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
@@ -387,64 +486,18 @@ export const ControlledToolToggleTable = ({
     tools,
     isDisabled,
 }: ControlledToggleTableProps): ReactNode => {
-    const { field } = useController({
-        name: 'tools',
-        ...control,
-        defaultValue: [],
-        rules: {},
-    });
-
-    const handleToggle = (tool: string, isChecked: boolean) => {
-        const currentTools = field.value;
-        if (isChecked) {
-            if (!currentTools.includes(tool)) {
-                field.onChange([...currentTools, tool]);
-            }
-        } else {
-            field.onChange(currentTools.filter((t) => t !== tool));
-        }
-    };
-
-    if (!tools) {
-        return null;
-    }
-
     const groupedTools = groupTools(tools);
 
     return (
         <div className={toolGroupWrapperClassName}>
             {Object.entries(groupedTools).map(([toolGroupName, tools]) => (
-                <Disclosure
+                <ToolGroupSection
                     key={toolGroupName}
-                    defaultExpanded
-                    className={cx('group', toolCallGroupClassName)}>
-                    <div className={toolGroupHeadingClassName}>
-                        <Heading>
-                            <AriaButton slot="trigger" className={headingButtonWithArrowClassName}>
-                                <ExpandArrowButton />
-                                {toolGroupName}
-                            </AriaButton>
-                        </Heading>
-                    </div>
-                    <CollapsibleWidgetPanel>
-                        <div className={toolNameGrid}>
-                            {tools.map((tool) => (
-                                <div key={tool.name}>
-                                    <Checkbox
-                                        isDisabled={isDisabled}
-                                        isSelected={field.value.includes(tool.name) || false}
-                                        onChange={(isChecked) => {
-                                            handleToggle(tool.name, isChecked);
-                                        }}
-                                        aria-label={`Toggle ${tool.name} tool`}>
-                                        <span className={toolName}>{toSpacedCase(tool.name)}</span>
-                                    </Checkbox>
-                                    <div className={realToolName}>{tool.name}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </CollapsibleWidgetPanel>
-                </Disclosure>
+                    toolGroupName={toolGroupName}
+                    groupTools={tools}
+                    isDisabled={isDisabled}
+                    control={control}
+                />
             ))}
         </div>
     );
