@@ -1,10 +1,15 @@
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { Chunk } from '@/contexts/stream-types';
 
 import { newMessageId } from './default';
 
 export const newMessageWithSystemMessageId = 'msg_A8E5H1X3O4';
-export const streamResponseWithSystemMessage: Array<Thread | MessageChunk> = [
+export const streamResponseWithSystemMessage: Array<Thread | MessageChunk | Chunk> = [
+    {
+        message: newMessageWithSystemMessageId,
+        type: 'start',
+    },
     {
         id: newMessageWithSystemMessageId,
         messages: [
@@ -185,4 +190,5 @@ export const streamResponseWithSystemMessage: Array<Thread | MessageChunk> = [
             },
         ],
     },
+    { message: newMessageWithSystemMessageId, type: 'end' },
 ];
