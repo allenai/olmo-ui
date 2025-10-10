@@ -1784,4 +1784,5 @@ export const thinkingAndToolCallsStreamResponse = [
             },
         ],
     },
+    { message: THINKING_AND_TOOL_CALLS_THREAD_ROOT_ID, type: 'end' },
 ] as const satisfies StreamingMessageResponse[];
