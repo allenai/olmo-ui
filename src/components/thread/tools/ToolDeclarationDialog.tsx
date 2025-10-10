@@ -402,31 +402,24 @@ const ToolGroupSection = ({
         defaultValue: [],
         rules: {},
     });
-    const groupToolNames = groupTools.map((tool) => tool.name);
 
-    const [areAllSelected, setAllSelected] = useState(
-        allToolsInGroupSelected(field.value, groupToolNames)
-    );
+    const selectedTools = field.value;
+    const groupToolNames = groupTools.map((tool) => tool.name);
+    const areAllSelected = allToolsInGroupSelected(field.value, groupToolNames);
 
     const handleToggle = (tool: string, isChecked: boolean) => {
-        const selectedTools = field.value;
-
         const newSelectedTools = isChecked
             ? addToolsToSelected(selectedTools, [tool])
             : removeToolsFromSelected(selectedTools, [tool]);
 
         field.onChange(newSelectedTools);
-        setAllSelected(allToolsInGroupSelected(newSelectedTools, groupToolNames));
     };
 
     const handleSelectAll = () => {
-        const selectedTools = field.value;
-
         const newSelectedTools = areAllSelected
             ? removeToolsFromSelected(selectedTools, groupToolNames)
             : addToolsToSelected(selectedTools, groupToolNames);
 
-        setAllSelected(!areAllSelected);
         field.onChange(newSelectedTools);
     };
 
