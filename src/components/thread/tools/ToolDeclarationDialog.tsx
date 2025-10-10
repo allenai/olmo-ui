@@ -11,7 +11,7 @@ import {
 } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
 import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
-import type { Key } from 'react-aria-components';
+import { Button as AriaButton, Disclosure, Heading, type Key } from 'react-aria-components';
 import {
     Control,
     Resolver,
@@ -23,9 +23,11 @@ import {
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaAvailableTool, SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
+import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
 
 const modalBase = css({
     fontSize: 'sm',
@@ -78,7 +80,7 @@ interface DataFields {
     declaration: string;
     tools: string[];
 }
-export interface FunctionDeclarationDialogProps {
+export interface ToolDeclarationDialogProps {
     availableTools: Model['available_tools'];
     selectedTools: string[];
     jsonData?: string;
@@ -89,7 +91,7 @@ export interface FunctionDeclarationDialogProps {
     onClose?: () => void;
 }
 
-export function FunctionDeclarationDialog({
+export function ToolDeclarationDialog({
     jsonData = '[]',
     availableTools: tools,
     selectedTools,
@@ -98,7 +100,7 @@ export function FunctionDeclarationDialog({
     onSave,
     onReset,
     onClose,
-}: FunctionDeclarationDialogProps) {
+}: ToolDeclarationDialogProps) {
     const { colorMode } = useColorMode();
     const [tabSelected, setTabSelect] = useState<Key>('user-functions');
 
@@ -292,6 +294,11 @@ const TabbedContent = ({
     return (
         <Tabs
             className={tabHeight}
+            tabListClassName={css({
+                borderBottom: '1px solid',
+                borderBottomColor: 'links/50',
+                marginBottom: '2',
+            })}
             onSelectionChange={setTabSelect}
             selectedKey={tabSelected}
             items={items}
@@ -309,10 +316,8 @@ const toolNameGrid = css({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     gap: '4',
-    paddingX: '3',
-    paddingY: '3',
-    borderWidth: '1',
-    borderStyle: 'solid',
+    padding: '3',
+    border: '1px solid',
     borderColor: 'elements.faded.stroke', // or 'text'
     borderRadius: 'sm',
     alignContent: 'start',
@@ -335,6 +340,45 @@ const realToolName = css({
     width: '[300px]',
     marginLeft: '[22px]',
     fontSize: 'sm',
+});
+
+type GroupedToolList = Record<string, SchemaAvailableTool[]>;
+
+const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
+    const groupedTools: GroupedToolList = {};
+    for (const tool of tools) {
+        const toolGroupName = tool.toolGroupName;
+        groupedTools[toolGroupName] ??= [];
+        groupedTools[toolGroupName].push(tool);
+    }
+
+    return groupedTools;
+};
+
+const toolGroupWrapperClassName = css({
+    display: 'grid',
+    gap: '4',
+});
+
+const toolCallGroupClassName = css({
+    display: 'grid',
+    gap: '1',
+});
+
+const toolGroupHeadingClassName = css({
+    display: 'flex',
+    gap: '2',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingInlineEnd: '1',
+});
+
+const headingButtonWithArrowClassName = css({
+    display: 'flex',
+    gap: '1',
+    alignItems: 'center',
+    fontWeight: 'semiBold',
+    cursor: 'pointer',
 });
 
 export const ControlledToolToggleTable = ({
@@ -360,21 +404,46 @@ export const ControlledToolToggleTable = ({
         }
     };
 
+    if (!tools) {
+        return null;
+    }
+
+    const groupedTools = groupTools(tools);
+
     return (
-        <div className={toolNameGrid}>
-            {(tools || []).map((tool) => (
-                <div key={tool.name}>
-                    <Checkbox
-                        isDisabled={isDisabled}
-                        isSelected={field.value.includes(tool.name) || false}
-                        onChange={(isChecked) => {
-                            handleToggle(tool.name, isChecked);
-                        }}
-                        aria-label={`Toggle ${tool.name} tool`}>
-                        <span className={toolName}>{toSpacedCase(tool.name)}</span>
-                    </Checkbox>
-                    <div className={realToolName}>{tool.name}</div>
-                </div>
+        <div className={toolGroupWrapperClassName}>
+            {Object.entries(groupedTools).map(([toolGroupName, tools]) => (
+                <Disclosure
+                    key={toolGroupName}
+                    defaultExpanded
+                    className={cx('group', toolCallGroupClassName)}>
+                    <div className={toolGroupHeadingClassName}>
+                        <Heading>
+                            <AriaButton slot="trigger" className={headingButtonWithArrowClassName}>
+                                <ExpandArrowButton />
+                                {toolGroupName}
+                            </AriaButton>
+                        </Heading>
+                    </div>
+                    <CollapsibleWidgetPanel>
+                        <div className={toolNameGrid}>
+                            {tools.map((tool) => (
+                                <div key={tool.name}>
+                                    <Checkbox
+                                        isDisabled={isDisabled}
+                                        isSelected={field.value.includes(tool.name) || false}
+                                        onChange={(isChecked) => {
+                                            handleToggle(tool.name, isChecked);
+                                        }}
+                                        aria-label={`Toggle ${tool.name} tool`}>
+                                        <span className={toolName}>{toSpacedCase(tool.name)}</span>
+                                    </Checkbox>
+                                    <div className={realToolName}>{tool.name}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </CollapsibleWidgetPanel>
+                </Disclosure>
             ))}
         </div>
     );

@@ -487,6 +487,8 @@ export type components = {
             readonly description?: string | null;
             /** Name */
             readonly name: string;
+            /** Toolgroupname */
+            readonly toolGroupName: string;
         };
         /** CreateMessageRequest */
         readonly CreateMessageRequest: {
