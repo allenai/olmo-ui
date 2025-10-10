@@ -346,12 +346,13 @@ type GroupedToolList = Record<string, SchemaAvailableTool[]>;
 
 const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
     const groupedTools: GroupedToolList = {};
-    for (const tool of tools) {
-        const toolGroupName = tool.toolGroupName;
-        groupedTools[toolGroupName] ??= [];
-        groupedTools[toolGroupName].push(tool);
+    if (tools) {
+        for (const tool of tools) {
+            const toolGroupName = tool.toolGroupName;
+            groupedTools[toolGroupName] ??= [];
+            groupedTools[toolGroupName].push(tool);
+        }
     }
-
     return groupedTools;
 };
 
