@@ -7,23 +7,21 @@ import { ToolDeclarationDialog } from './ToolDeclarationDialog';
 
 const availableTools = [
     {
-        toolGroupName: 'Internal',
         name: 'Get random number',
     },
     {
-        toolGroupName: 'Internal',
         name: 'Get the number five',
     },
     {
-        toolGroupName: 'External MCP',
+        mcpServerId: 's2',
         name: 'Get the temperature',
     },
     {
-        toolGroupName: 'External MCP',
+        mcpServerId: 's2',
         name: 'Get the air pressure',
     },
     {
-        toolGroupName: 'External MCP',
+        mcpServerId: 's2',
         name: 'Get wind direction',
     },
 ] satisfies SchemaAvailableTool[];
@@ -47,7 +45,7 @@ describe('ToolDeclarationDialog', () => {
             screen.getByRole('link', { name: 'Unselect all from Internal' })
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('link', { name: 'Unselect all from External MCP' })
+            screen.getByRole('link', { name: 'Unselect all from Asta tools' })
         ).toBeInTheDocument();
     });
 
@@ -72,7 +70,7 @@ describe('ToolDeclarationDialog', () => {
             screen.getByRole('link', { name: 'Unselect all from Internal' })
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('link', { name: 'Select all from External MCP' })
+            screen.getByRole('link', { name: 'Select all from Asta tools' })
         ).toBeInTheDocument();
     });
 });

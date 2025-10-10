@@ -31,20 +31,20 @@ const jsonData = `[
 const selectedTools = ['get_random_number'];
 
 const availableTools = [
-    { name: 'get_random_number', description: 'get a random number.', toolGroupName: 'Internal' },
+    { name: 'get_random_number', description: 'get a random number.' },
 
-    { name: 'name with spaces', description: 'get a name with spaces.', toolGroupName: 'Internal' },
+    { name: 'name with spaces', description: 'get a name with spaces.' },
     {
         name: 'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
         description:
             'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
-        toolGroupName: 'Long Tools',
+        mcpServerId: 's2',
     },
     {
         name: 'longnamefunctionthatasdfasdfasdfasdfasdfadsfasdfasdfasdfsadfasdfasdfasdfasfasdfdsafasdfasdfasdfsadfis very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
         description:
             'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
-        toolGroupName: 'Long Tools',
+        mcpServerId: 's2',
     },
 ];
 
