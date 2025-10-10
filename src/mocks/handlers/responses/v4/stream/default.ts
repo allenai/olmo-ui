@@ -1,12 +1,17 @@
 import { MessageChunk, Thread } from '@/api/playgroundApi/thread';
 import { Role } from '@/api/Role';
+import { Chunk } from '@/contexts/stream-types';
 
 // tulu2
 // OLMo-peteish-dpo-preview
 
 export const newMessageId = 'msg_A8E5H1X2O4';
 export const LOREM_IPSUM_MESSAGE_ID = 'msg_V6Y0U4H4O9';
-export const fakeNewThreadMessages: Array<Thread | MessageChunk> = [
+export const fakeNewThreadMessages: Array<Thread | MessageChunk | Chunk> = [
+    {
+        message: newMessageId,
+        type: 'start',
+    },
     {
         id: newMessageId,
         messages: [
@@ -141,4 +146,5 @@ export const fakeNewThreadMessages: Array<Thread | MessageChunk> = [
             },
         ],
     },
+    { message: newMessageId, type: 'end' },
 ];
