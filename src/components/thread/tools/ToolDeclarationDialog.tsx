@@ -343,21 +343,16 @@ const realToolName = css({
     fontSize: 'sm',
 });
 
-const allToolsInGroupSelected = (
-    selectedTools: string[],
-    groupTools: SchemaAvailableTool[]
-): boolean => {
-    const groupToolNames = groupTools.map((tool) => tool.name);
-    return groupToolNames.every((toolName) => selectedTools.includes(toolName));
+const allToolsInGroupSelected = (selectedTools: string[], tools: string[]): boolean => {
+    return new Set(tools).isSubsetOf(new Set(selectedTools));
 };
 
 const removeToolsFromSelected = (selectedTools: string[], toolsToRemove: string[]): string[] => {
-    return selectedTools.filter((toolName) => !toolsToRemove.includes(toolName));
+    return Array.from(new Set(selectedTools).difference(new Set(toolsToRemove)));
 };
 
 const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]): string[] => {
-    const unselectedToolsToAdd = toolsToAdd.filter((toolName) => !selectedTools.includes(toolName));
-    return selectedTools.concat(unselectedToolsToAdd);
+    return Array.from(new Set([...selectedTools, ...toolsToAdd]));
 };
 
 type ToolGroupSectionProps = {
@@ -379,8 +374,10 @@ const ToolGroupSection = ({
         defaultValue: [],
         rules: {},
     });
+    const groupToolNames = groupTools.map((tool) => tool.name);
+
     const [areAllSelected, setAllSelected] = useState(
-        allToolsInGroupSelected(field.value, groupTools)
+        allToolsInGroupSelected(field.value, groupToolNames)
     );
 
     const handleToggle = (tool: string, isChecked: boolean) => {
@@ -391,12 +388,11 @@ const ToolGroupSection = ({
             : removeToolsFromSelected(selectedTools, [tool]);
 
         field.onChange(newSelectedTools);
-        setAllSelected(allToolsInGroupSelected(newSelectedTools, groupTools));
+        setAllSelected(allToolsInGroupSelected(newSelectedTools, groupToolNames));
     };
 
     const handleSelectAll = () => {
         const selectedTools = field.value;
-        const groupToolNames = groupTools.map((tool) => tool.name);
 
         const newSelectedTools = areAllSelected
             ? removeToolsFromSelected(selectedTools, groupToolNames)
