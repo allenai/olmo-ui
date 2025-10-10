@@ -159,9 +159,12 @@ export const updateCacheWithMessagePart = async (
 
     if (isChunk(message) && message.type === 'end') {
         clearStreamingState(message.message);
-        const { queryKey } = threadOptions(message.message);
-        const currentThread = queryClient.getQueryData(queryKey);
-        state.addThreadToAllThreads(currentThread as StreamingThread);
+
+        if (isCreatingNewThread) {
+            const { queryKey } = threadOptions(message.message);
+            const currentThread = queryClient.getQueryData(queryKey);
+            state.addThreadToAllThreads(currentThread as StreamingThread);
+        }
     }
 
     return currentThreadId;
