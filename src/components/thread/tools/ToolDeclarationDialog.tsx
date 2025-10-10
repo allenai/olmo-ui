@@ -402,6 +402,8 @@ const ToolGroupSection = ({
         field.onChange(newSelectedTools);
     };
 
+    const selectionLabel = areAllSelected ? 'Unselect all' : 'Select all';
+
     return (
         <Disclosure defaultExpanded className={cx('group', toolCallGroupClassName)}>
             <div className={toolGroupHeadingClassName}>
@@ -411,8 +413,10 @@ const ToolGroupSection = ({
                         {toolGroupName}
                     </AriaButton>
                 </Heading>
-                <Link onPress={handleSelectAll}>
-                    {areAllSelected ? 'Unselect all' : 'Select all'}
+                <Link
+                    onPress={handleSelectAll}
+                    aria-label={`${selectionLabel} from ${toolGroupName}`}>
+                    {selectionLabel}
                 </Link>
             </div>
             <CollapsibleWidgetPanel>
@@ -443,7 +447,7 @@ const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
     const groupedTools: GroupedToolList = {};
     if (tools) {
         for (const tool of tools) {
-            const toolGroupName = tool.toolGroupName;
+            const toolGroupName = tool.toolGroupName ?? 'Unknown';
             groupedTools[toolGroupName] ??= [];
             groupedTools[toolGroupName].push(tool);
         }
