@@ -414,6 +414,7 @@ const ToolGroupSection = ({
                     </AriaButton>
                 </Heading>
                 <Link
+                    isDisabled={isDisabled}
                     onPress={handleSelectAll}
                     aria-label={`${selectionLabel} from ${toolGroupName}`}>
                     {selectionLabel}
@@ -447,7 +448,7 @@ const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
     const groupedTools: GroupedToolList = {};
     if (tools) {
         for (const tool of tools) {
-            const toolGroupName = tool.toolGroupName ?? 'Unknown';
+            const toolGroupName = tool.toolGroupName;
             groupedTools[toolGroupName] ??= [];
             groupedTools[toolGroupName].push(tool);
         }
