@@ -4,6 +4,7 @@ import {
     Checkbox,
     IconButton,
     Link,
+    LinkProps,
     Modal,
     ModalActions,
     Tab,
@@ -11,8 +12,15 @@ import {
     Tabs,
 } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
-import { Button as AriaButton, Disclosure, Heading, type Key } from 'react-aria-components';
+import { type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react';
+import {
+    Button as AriaButton,
+    Disclosure,
+    DisclosureStateContext,
+    Heading,
+    type Key,
+    PressEvent,
+} from 'react-aria-components';
 import {
     Control,
     Resolver,
@@ -355,6 +363,24 @@ const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]): stri
     return Array.from(new Set([...selectedTools, ...toolsToAdd]));
 };
 
+const SelectUnselectLink = ({
+    isDisabled,
+    onPress,
+    'aria-label': ariaLabel,
+    children,
+}: LinkProps) => {
+    const disclosureState = useContext(DisclosureStateContext);
+    const handlePress = (e: PressEvent) => {
+        disclosureState?.expand();
+        onPress?.(e);
+    };
+    return (
+        <Link isDisabled={isDisabled} onPress={handlePress} aria-label={ariaLabel}>
+            {children}
+        </Link>
+    );
+};
+
 type ToolGroupSectionProps = {
     toolGroupName: string;
     groupTools: SchemaAvailableTool[];
@@ -413,12 +439,12 @@ const ToolGroupSection = ({
                         {toolGroupName}
                     </AriaButton>
                 </Heading>
-                <Link
+                <SelectUnselectLink
                     isDisabled={isDisabled}
                     onPress={handleSelectAll}
                     aria-label={`${selectionLabel} from ${toolGroupName}`}>
                     {selectionLabel}
-                </Link>
+                </SelectUnselectLink>
             </div>
             <CollapsibleWidgetPanel>
                 <div className={toolNameGrid}>
