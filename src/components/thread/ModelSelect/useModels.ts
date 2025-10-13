@@ -5,23 +5,30 @@ import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClien
 
 export const getModelsQueryOptions = playgroundApiQueryClient.queryOptions('get', '/v4/models/');
 
-type ModelsData = Parameters<NonNullable<(typeof getModelsQueryOptions)['select']>>[0];
-
-type ModelsSelectFunction<TData> = (data: ModelsData) => TData;
-
-// I feel like there's a better way to handle passing a selector in here but i couldn't figure it out
-// There's a lot of typing I need to do just to make it so we can use a selector that returns anything
-export const useModels = <TData = Model[]>({
-    select,
-}: { select?: ModelsSelectFunction<TData> } = {}) => {
-    const { data } = useSuspenseQuery({ ...getModelsQueryOptions, select }, undefined);
-
+export const useModels = (options: Pick<typeof getModelsQueryOptions, 'select'>) => {
+    const { data } = useSuspenseQuery({
+        ...getModelsQueryOptions,
+        ...options,
+    });
     return data;
 };
 
-export const isModelVisible = (model: Model) => 'is_visible' in model && model.is_visible;
+export const isModelVisible = (model: Model) => model.is_visible;
+
+export const isModelAvailable = (model: Model) => model.is_visible && !model.is_deprecated;
 
 export const modelById = (modelId: string) => (model: Model) => model.id === modelId;
+
+export const selectAvailableModels = (models: readonly Model[]) => {
+    return models.filter(isModelAvailable);
+};
+
+export const selectModelById =
+    (modelId: string, fromAvailable: boolean = true) =>
+    (models: readonly Model[]) =>
+        fromAvailable
+            ? selectAvailableModels(models).filter(modelById(modelId))
+            : models.filter(modelById(modelId));
 
 export const areModelsCompatibleForThread = (model1: Model, model2: Model): boolean => {
     // TODO: We may need to have more detailed checks in the future but this is good enough for Molmo launch

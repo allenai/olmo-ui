@@ -11,7 +11,6 @@ import { createDrawerSlice, DrawerSlice } from './slices/DrawerSlice';
 import { createGlobalThreadsUISlice, GlobalThreadsUISlice } from './slices/GlobalThreadsUISlice';
 import { createLabelSlice, LabelSlice } from './slices/LabelSlice';
 import { createModelSlice, ModelSlice } from './slices/ModelSlice';
-import { createPromptTemplateSlice, PromptTemplateSlice } from './slices/PromptTemplateSlice';
 import { createSelectedThreadSlice, SelectedThreadSlice } from './slices/SelectedThreadSlice';
 import { createSnackMessageSlice, SnackMessageSlice } from './slices/SnackMessageSlice';
 import { createThreadSlice, ThreadSlice } from './slices/ThreadSlice';
@@ -21,7 +20,6 @@ import { createTranscriptionSlice, TranscriptionSlice } from './slices/Transcrip
 import { createUserSlice, UserSlice } from './slices/UserSlice';
 
 export type AppContextState = LabelSlice &
-    PromptTemplateSlice &
     ThreadSlice &
     ThreadStreamSlice &
     SnackMessageSlice &
@@ -51,7 +49,6 @@ export const createAppContext = (
             immer((...store) =>
                 deepmerge(
                     {
-                        ...createPromptTemplateSlice(...store),
                         ...createSnackMessageSlice(...store),
                         ...createThreadSlice(...store),
                         ...createThreadStreamSlice(...store),

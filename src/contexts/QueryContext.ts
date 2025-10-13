@@ -28,7 +28,7 @@ interface QueryContextValue {
     remoteState?: RemoteState;
     shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
-    availableModels: Model[];
+    availableModels: readonly Model[];
 
     onModelChange: (event: SelectChangeEvent, threadViewId?: string) => void;
     getThreadViewModel: (threadViewId?: string) => Model | undefined;
