@@ -485,6 +485,11 @@ export type components = {
              * @default null
              */
             readonly description?: string | null;
+            /**
+             * Mcpserverid
+             * @default null
+             */
+            readonly mcpServerId?: string | null;
             /** Name */
             readonly name: string;
         };

@@ -3,6 +3,8 @@ import {
     Button,
     Checkbox,
     IconButton,
+    Link,
+    LinkProps,
     Modal,
     ModalActions,
     Tab,
@@ -10,8 +12,15 @@ import {
     Tabs,
 } from '@allenai/varnish-ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { type ReactElement, type ReactNode, useEffect, useState } from 'react';
-import type { Key } from 'react-aria-components';
+import { type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react';
+import {
+    Button as AriaButton,
+    Disclosure,
+    DisclosureStateContext,
+    Heading,
+    type Key,
+    PressEvent,
+} from 'react-aria-components';
 import {
     Control,
     Resolver,
@@ -23,9 +32,13 @@ import {
 import * as z from 'zod';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaAvailableTool, SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { useColorMode } from '@/components/ColorModeProvider';
 import { ControlledTextArea } from '@/components/form/TextArea/ControlledTextArea';
+import { CollapsibleWidgetPanel } from '@/components/widgets/CollapsibleWidget/CollapsibleWidgetPanel';
+import { ExpandArrowButton } from '@/components/widgets/CollapsibleWidget/ExpandArrow';
+
+import { MCP_SERVER_NAME } from './mcpServerName';
 
 const modalBase = css({
     fontSize: 'sm',
@@ -78,7 +91,7 @@ interface DataFields {
     declaration: string;
     tools: string[];
 }
-export interface FunctionDeclarationDialogProps {
+export interface ToolDeclarationDialogProps {
     availableTools: Model['available_tools'];
     selectedTools: string[];
     jsonData?: string;
@@ -89,7 +102,7 @@ export interface FunctionDeclarationDialogProps {
     onClose?: () => void;
 }
 
-export function FunctionDeclarationDialog({
+export function ToolDeclarationDialog({
     jsonData = '[]',
     availableTools: tools,
     selectedTools,
@@ -98,7 +111,7 @@ export function FunctionDeclarationDialog({
     onSave,
     onReset,
     onClose,
-}: FunctionDeclarationDialogProps) {
+}: ToolDeclarationDialogProps) {
     const { colorMode } = useColorMode();
     const [tabSelected, setTabSelect] = useState<Key>('user-functions');
 
@@ -292,6 +305,11 @@ const TabbedContent = ({
     return (
         <Tabs
             className={tabHeight}
+            tabListClassName={css({
+                borderBottom: '1px solid',
+                borderBottomColor: 'links/50',
+                marginBottom: '2',
+            })}
             onSelectionChange={setTabSelect}
             selectedKey={tabSelected}
             items={items}
@@ -309,10 +327,8 @@ const toolNameGrid = css({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     gap: '4',
-    paddingX: '3',
-    paddingY: '3',
-    borderWidth: '1',
-    borderStyle: 'solid',
+    padding: '3',
+    border: '1px solid',
     borderColor: 'elements.faded.stroke', // or 'text'
     borderRadius: 'sm',
     alignContent: 'start',
@@ -337,11 +353,49 @@ const realToolName = css({
     fontSize: 'sm',
 });
 
-export const ControlledToolToggleTable = ({
-    control,
-    tools,
+const allToolsInGroupSelected = (selectedTools: string[], tools: string[]): boolean => {
+    return new Set(tools).isSubsetOf(new Set(selectedTools));
+};
+
+const removeToolsFromSelected = (selectedTools: string[], toolsToRemove: string[]): string[] => {
+    return Array.from(new Set(selectedTools).difference(new Set(toolsToRemove)));
+};
+
+const addToolsToSelected = (selectedTools: string[], toolsToAdd: string[]): string[] => {
+    return Array.from(new Set([...selectedTools, ...toolsToAdd]));
+};
+
+const SelectUnselectLink = ({
     isDisabled,
-}: ControlledToggleTableProps): ReactNode => {
+    onPress,
+    'aria-label': ariaLabel,
+    children,
+}: LinkProps) => {
+    const disclosureState = useContext(DisclosureStateContext);
+    const handlePress = (e: PressEvent) => {
+        disclosureState?.expand();
+        onPress?.(e);
+    };
+    return (
+        <Link isDisabled={isDisabled} onPress={handlePress} aria-label={ariaLabel}>
+            {children}
+        </Link>
+    );
+};
+
+type ToolGroupSectionProps = {
+    toolGroupName: string;
+    groupTools: SchemaAvailableTool[];
+    isDisabled?: boolean;
+    control: ControlledToggleTableProps['control'];
+};
+
+const ToolGroupSection = ({
+    toolGroupName,
+    groupTools,
+    isDisabled,
+    control,
+}: ToolGroupSectionProps) => {
     const { field } = useController({
         name: 'tools',
         ...control,
@@ -349,32 +403,137 @@ export const ControlledToolToggleTable = ({
         rules: {},
     });
 
+    const selectedTools = field.value;
+    const groupToolNames = groupTools.map((tool) => tool.name);
+    const areAllSelected = allToolsInGroupSelected(field.value, groupToolNames);
+
     const handleToggle = (tool: string, isChecked: boolean) => {
-        const currentTools = field.value;
-        if (isChecked) {
-            if (!currentTools.includes(tool)) {
-                field.onChange([...currentTools, tool]);
-            }
-        } else {
-            field.onChange(currentTools.filter((t) => t !== tool));
-        }
+        const newSelectedTools = isChecked
+            ? addToolsToSelected(selectedTools, [tool])
+            : removeToolsFromSelected(selectedTools, [tool]);
+
+        field.onChange(newSelectedTools);
     };
 
+    const handleSelectAll = () => {
+        const newSelectedTools = areAllSelected
+            ? removeToolsFromSelected(selectedTools, groupToolNames)
+            : addToolsToSelected(selectedTools, groupToolNames);
+
+        field.onChange(newSelectedTools);
+    };
+
+    const selectionLabel = areAllSelected ? 'Unselect all' : 'Select all';
+
     return (
-        <div className={toolNameGrid}>
-            {(tools || []).map((tool) => (
-                <div key={tool.name}>
-                    <Checkbox
-                        isDisabled={isDisabled}
-                        isSelected={field.value.includes(tool.name) || false}
-                        onChange={(isChecked) => {
-                            handleToggle(tool.name, isChecked);
-                        }}
-                        aria-label={`Toggle ${tool.name} tool`}>
-                        <span className={toolName}>{toSpacedCase(tool.name)}</span>
-                    </Checkbox>
-                    <div className={realToolName}>{tool.name}</div>
+        <Disclosure defaultExpanded className={cx('group', toolCallGroupClassName)}>
+            <div className={toolGroupHeadingClassName}>
+                <Heading>
+                    <AriaButton slot="trigger" className={headingButtonWithArrowClassName}>
+                        <ExpandArrowButton />
+                        {toolGroupName}
+                    </AriaButton>
+                </Heading>
+                <SelectUnselectLink
+                    isDisabled={isDisabled}
+                    onPress={handleSelectAll}
+                    aria-label={`${selectionLabel} from ${toolGroupName}`}>
+                    {selectionLabel}
+                </SelectUnselectLink>
+            </div>
+            <CollapsibleWidgetPanel>
+                <div className={toolNameGrid}>
+                    {groupTools.map((tool) => (
+                        <div key={tool.name}>
+                            <Checkbox
+                                isDisabled={isDisabled}
+                                isSelected={field.value.includes(tool.name) || false}
+                                onChange={(isChecked) => {
+                                    handleToggle(tool.name, isChecked);
+                                }}
+                                aria-label={`Toggle ${tool.name} tool`}>
+                                <span className={toolName}>{toSpacedCase(tool.name)}</span>
+                            </Checkbox>
+                            <div className={realToolName}>{tool.name}</div>
+                        </div>
+                    ))}
                 </div>
+            </CollapsibleWidgetPanel>
+        </Disclosure>
+    );
+};
+
+type GroupedToolList = Record<string, SchemaAvailableTool[]>;
+
+const isMcpServer = (mcpId: string): mcpId is keyof typeof MCP_SERVER_NAME =>
+    Boolean(mcpId in MCP_SERVER_NAME);
+
+const toolGroupNameFromTool = (tool: SchemaAvailableTool) => {
+    const mcpServerId = tool.mcpServerId;
+    if (mcpServerId) {
+        if (isMcpServer(mcpServerId)) {
+            return MCP_SERVER_NAME[mcpServerId];
+        }
+        return 'Unknown';
+    }
+    return 'Internal';
+};
+
+const groupTools = (tools: Model['available_tools'] = []): GroupedToolList => {
+    const groupedTools: GroupedToolList = {};
+    if (tools) {
+        for (const tool of tools) {
+            const toolGroupName = toolGroupNameFromTool(tool);
+            groupedTools[toolGroupName] ??= [];
+            groupedTools[toolGroupName].push(tool);
+        }
+    }
+    return groupedTools;
+};
+
+const toolGroupWrapperClassName = css({
+    display: 'grid',
+    gap: '4',
+});
+
+const toolCallGroupClassName = css({
+    display: 'grid',
+    gap: '1',
+});
+
+const toolGroupHeadingClassName = css({
+    display: 'flex',
+    gap: '2',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingInlineEnd: '1',
+});
+
+const headingButtonWithArrowClassName = css({
+    display: 'flex',
+    gap: '1',
+    alignItems: 'center',
+    fontWeight: 'semiBold',
+    cursor: 'pointer',
+});
+
+export const ControlledToolToggleTable = ({
+    control,
+    tools,
+    isDisabled,
+}: ControlledToggleTableProps): ReactNode => {
+    const groupedTools = groupTools(tools);
+
+    return (
+        <div className={toolGroupWrapperClassName}>
+            {Object.entries(groupedTools).map(([toolGroupName, tools]) => (
+                <ToolGroupSection
+                    key={toolGroupName}
+                    toolGroupName={toolGroupName}
+                    groupTools={tools}
+                    isDisabled={isDisabled}
+                    control={control}
+                />
             ))}
         </div>
     );

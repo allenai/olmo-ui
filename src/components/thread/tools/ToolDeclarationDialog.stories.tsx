@@ -3,14 +3,11 @@ import { useState } from 'react';
 import { Button } from 'react-aria-components';
 import { fn } from 'storybook/test';
 
-import {
-    FunctionDeclarationDialog,
-    FunctionDeclarationDialogProps,
-} from './FunctionDeclarationDialog';
+import { ToolDeclarationDialog, ToolDeclarationDialogProps } from './ToolDeclarationDialog';
 
 const meta = {
-    component: FunctionDeclarationDialog,
-} satisfies Meta<typeof FunctionDeclarationDialog>;
+    component: ToolDeclarationDialog,
+} satisfies Meta<typeof ToolDeclarationDialog>;
 
 export default meta;
 
@@ -36,16 +33,18 @@ const selectedTools = ['get_random_number'];
 const availableTools = [
     { name: 'get_random_number', description: 'get a random number.' },
 
-    { name: 'name with spaces', description: 'get a random number.' },
+    { name: 'name with spaces', description: 'get a name with spaces.' },
     {
         name: 'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
         description:
             'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
+        mcpServerId: 's2',
     },
     {
         name: 'longnamefunctionthatasdfasdfasdfasdfasdfadsfasdfasdfasdfsadfasdfasdfasdfasfasdfdsafasdfasdfasdfsadfis very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
         description:
             'long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name long name function that is very long and could cause issues. keep in mind with mcp anyone could add a name',
+        mcpServerId: 's2',
     },
 ];
 
@@ -73,7 +72,7 @@ export const Disabled: Story = {
     },
 };
 
-const Triggered = (props: FunctionDeclarationDialogProps) => {
+const Triggered = (props: ToolDeclarationDialogProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -84,7 +83,7 @@ const Triggered = (props: FunctionDeclarationDialogProps) => {
                 }}>
                 Open Dialog
             </Button>
-            <FunctionDeclarationDialog
+            <ToolDeclarationDialog
                 {...props}
                 onClose={() => {
                     setIsOpen(false);

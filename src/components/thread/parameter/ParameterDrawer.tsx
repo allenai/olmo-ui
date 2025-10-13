@@ -12,11 +12,10 @@ import { ParameterSlider } from '@/components/thread/parameter/inputs/ParameterS
 import { StopWordsInput } from '@/components/thread/parameter/inputs/StopWordsInput';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { DrawerId } from '@/slices/DrawerSlice';
-import { SnackMessageType } from '@/slices/SnackMessageSlice';
 
-import { FunctionDeclarationDialog } from '../tools/FunctionDeclarationDialog';
 import { ExtraParametersToggle } from './ExtraParametersInput';
 import { ParameterToggle } from './inputs/ParameterToggle';
+import { ToolCallingToggle } from './ToolCallingInput';
 
 export const PARAMETERS_DRAWER_ID: DrawerId = 'parameters';
 
@@ -28,9 +27,6 @@ const TOP_P_INFO =
 
 const MAX_TOKENS_INFO =
     'Determines the maximum amount of text output from one prompt. Specifying this can help prevent long or irrelevant responses and control costs. One token is approximately 4 characters for standard English text.';
-
-const FUNCTION_CALLING_INFO =
-    'If enabled, this allows you to define functions that the model can call. Use the edit or view button to create or modify the function definitions.';
 
 const BYPASS_SAFETY_CHECKS = 'Bypass our premodel safety checks for both prompt and image.';
 
@@ -104,27 +100,15 @@ const ParametersListItem = ({ children }: React.PropsWithChildren) => (
 
 export const ParameterContent = () => {
     const {
-        threadStarted,
-        availableTools,
         canCallTools,
         inferenceConstraints: constraints,
         inferenceOpts,
         updateInferenceOpts,
-        userToolDefinitions,
-        updateUserToolDefinitions,
-        updateSelectedTools,
-        selectedTools,
-        isToolCallingEnabled,
-        updateIsToolCallingEnabled,
         bypassSafetyCheck,
         updateBypassSafetyCheck,
     } = useQueryContext();
 
-    const canCreateToolDefinitions = canCallTools && !threadStarted;
-    const [shouldShowFunctionDialog, setShouldShowFunctionDialog] = React.useState(false);
-
     const userAuthInfo = useUserAuthInfo();
-    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     return (
         <Stack>
@@ -185,21 +169,7 @@ export const ParameterContent = () => {
                 </ParametersListItem>
                 {canCallTools && (
                     <ParametersListItem>
-                        <ParameterToggle
-                            value={isToolCallingEnabled}
-                            label="Tool calling"
-                            dialogContent={FUNCTION_CALLING_INFO}
-                            dialogTitle="Tool Calling"
-                            disableToggle={!canCreateToolDefinitions}
-                            disableEditButton={threadStarted ? false : !isToolCallingEnabled}
-                            id="tool-calling"
-                            onEditClick={() => {
-                                setShouldShowFunctionDialog(true);
-                            }}
-                            onToggleChange={(v) => {
-                                updateIsToolCallingEnabled(v);
-                            }}
-                        />
+                        <ToolCallingToggle />
                     </ParametersListItem>
                 )}
                 {userAuthInfo.hasPermission(USER_PERMISSIONS.WRITE_BYPASS_SAFETY_CHECKS) && (
@@ -227,29 +197,6 @@ export const ParameterContent = () => {
                         updateInferenceOpts({ stop: value });
                     }}
                 />
-                <FunctionDeclarationDialog
-                    jsonData={userToolDefinitions ?? undefined}
-                    availableTools={availableTools}
-                    selectedTools={selectedTools}
-                    isDisabled={threadStarted}
-                    isOpen={shouldShowFunctionDialog}
-                    onClose={() => {
-                        setShouldShowFunctionDialog(false);
-                    }}
-                    onSave={({ declaration, tools }) => {
-                        analyticsClient.trackParametersUpdate({
-                            parameterUpdated: 'tool_definitions',
-                        });
-                        updateUserToolDefinitions(declaration);
-                        updateSelectedTools(tools);
-                        addSnackMessage({
-                            id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
-                            type: SnackMessageType.Brief,
-                            message: 'Tools Saved',
-                        });
-                    }}
-                />
-
                 {userAuthInfo.hasPermission(USER_PERMISSIONS.READ_INTERNAL_MODELS) && (
                     <ExtraParametersToggle />
                 )}
