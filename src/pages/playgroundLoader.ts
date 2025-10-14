@@ -1,10 +1,10 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, ShouldRevalidateFunction } from 'react-router-dom';
 
-import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import { threadOptions } from '@/api/playgroundApi/thread';
 import { appContext } from '@/AppContext';
 import { getModelsQueryOptions } from '@/components/thread/ModelSelect/useModels';
+import { getPromptTemplatesQueryOptions } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { links } from '@/Links';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
 const MODEL_DEPRECATION_NOTICE_GIVEN_KEY = 'model-deprecation-notice-2025-06-10T22:00:00Z';
@@ -15,11 +15,6 @@ const createModelDeprecationNotice = () => {
 
     return `We are reworking our model hosting system and will be removing the following model(s) on ${MODEL_DEPRECATION_DATE.toLocaleDateString()}: ${modelsBeingDeprecated.join(', ')}`;
 };
-
-const getPromptTemplatesQueryOptions = playgroundApiQueryClient.queryOptions(
-    'get',
-    '/v4/prompt-templates/'
-);
 
 export interface PlaygroundLoaderData {
     threadId?: string;
@@ -34,22 +29,25 @@ export const playgroundLoader =
 
         const searchParams = new URL(request.url).searchParams;
 
-        const promptTemplateId = searchParams.get('template');
-        const modelId = searchParams.get('model');
         const { id: threadId } = params;
+        const promptTemplateId = !threadId ? searchParams.get('template') : null; // only for new threads
+        const modelId = searchParams.get('model');
 
         await queryClient.ensureQueryData(getModelsQueryOptions);
 
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        queryClient.prefetchQuery(getPromptTemplatesQueryOptions);
+        if (threadId === undefined) {
+            resetSelectedThreadState();
+            resetAttribution();
+        }
+
         if (threadId) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             queryClient.prefetchQuery(threadOptions(threadId));
         }
 
-        if (threadId === undefined) {
-            resetSelectedThreadState();
-            resetAttribution();
+        if (promptTemplateId) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            queryClient.prefetchQuery(getPromptTemplatesQueryOptions);
         }
 
         const hasModelDeprecationNoticeBeenGiven = localStorage.getItem(

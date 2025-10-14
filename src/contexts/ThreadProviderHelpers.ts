@@ -5,6 +5,7 @@ import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
+import { PromptTemplate } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { clipToMinMax } from '@/utils/clipToMinMax';
 
 import type { ExtraParameters } from './QueryContext';
@@ -121,13 +122,15 @@ export type MessageInferenceParameters = Pick<
 
 export const getInitialInferenceParameters = (
     model?: Model,
-    thread?: StreamingThread
+    thread?: StreamingThread,
+    promptTemplate?: PromptTemplate
 ): MessageInferenceParameters => {
     const constraints = getInferenceConstraints(model);
     const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
     const inferenceParams: MessageInferenceParameters = {
         temperature: clipToMinMax(
             lastLLMMessage?.opts.temperature ??
+                promptTemplate?.opts.temperature ??
                 model?.temperature_default ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.temperature,
             constraints.temperature.minValue,
@@ -135,6 +138,7 @@ export const getInitialInferenceParameters = (
         ),
         topP: clipToMinMax(
             lastLLMMessage?.opts.topP ??
+                promptTemplate?.opts.topP ??
                 model?.top_p_default ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.topP,
             constraints.topP.minValue,
@@ -142,15 +146,24 @@ export const getInitialInferenceParameters = (
         ),
         maxTokens: clipToMinMax(
             lastLLMMessage?.opts.maxTokens ??
+                promptTemplate?.opts.maxTokens ??
                 model?.max_tokens_default ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.maxTokens,
             constraints.maxTokens.minValue,
             constraints.maxTokens.maxValue
         ),
-        n: lastLLMMessage?.opts.n ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.n,
+        n:
+            lastLLMMessage?.opts.n ??
+            promptTemplate?.opts.n ??
+            DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.n,
         logprobs:
-            lastLLMMessage?.opts.logprobs ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.logprobs,
-        stop: lastLLMMessage?.opts.stop ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.stop,
+            lastLLMMessage?.opts.logprobs ??
+            promptTemplate?.opts.logprobs ??
+            DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.logprobs,
+        stop:
+            lastLLMMessage?.opts.stop ??
+            promptTemplate?.opts.stop ??
+            DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.stop,
     };
 
     return inferenceParams;

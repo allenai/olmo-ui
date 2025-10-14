@@ -1,3 +1,4 @@
+import { DevTool } from '@hookform/devtools';
 import { Box, Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
@@ -8,7 +9,9 @@ import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
+import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
+import { PromptTemplate } from '../promptTemplates/usePromptTemplates';
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
@@ -29,6 +32,7 @@ export interface QueryFormValues {
 
 interface QueryFormControllerProps {
     handleSubmit: SubmitHandler<QueryFormValues>;
+    promptTemplate?: PromptTemplate;
     canEditThread: boolean;
     placeholderText: string;
     autofocus: boolean;
@@ -44,6 +48,7 @@ export const QueryFormController = ({
     handleSubmit,
     // props
     canEditThread,
+    promptTemplate,
     placeholderText,
     autofocus,
     areFilesAllowed,
@@ -89,10 +94,26 @@ export const QueryFormController = ({
     });
 
     useEffect(() => {
+        if (promptTemplate) {
+            formContext.setValue('content', promptTemplate.content);
+        }
+    }, [formContext, promptTemplate]);
+
+    useEffect(() => {
         if (!areFilesAllowed) {
             formContext.setValue('files', undefined);
+        } else if (promptTemplate?.fileUrls && promptTemplate.fileUrls.length) {
+            fetchFilesByUrls([...promptTemplate.fileUrls])
+                .then((downloadedFiles) => {
+                    const dataTransfer = new DataTransfer();
+                    downloadedFiles.forEach((file) => {
+                        dataTransfer.items.add(file);
+                    });
+                    formContext.setValue('files', dataTransfer.files);
+                })
+                .catch(() => undefined);
         }
-    }, [formContext, areFilesAllowed]);
+    }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
     const files = formContext.watch('files');
 
@@ -135,6 +156,7 @@ export const QueryFormController = ({
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
                 <Stack gap={1} alignItems="flex-start" width={1} position="relative">
+                    <DevTool control={formContext.control} />
                     <FileUploadThumbnails files={files} onRemoveFile={handleRemoveFile} />
                     <Controller
                         control={formContext.control}

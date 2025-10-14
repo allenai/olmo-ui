@@ -1696,7 +1696,7 @@ export type components = {
                 readonly [key: string]: unknown;
             };
             /** Tooldefinitions */
-            readonly toolDefinitions: unknown;
+            readonly toolDefinitions: readonly components['schemas']['ToolDefinition'][];
             /**
              * Updated
              * Format: date-time

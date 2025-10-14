@@ -17,6 +17,7 @@ import { useAppContext } from '@/AppContext';
 import { trackModelSelection } from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { selectAvailableModels, useModels } from '@/components/thread/ModelSelect/useModels';
+import { usePromptTemplateById } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
@@ -79,6 +80,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const availableModels = useModels({
         select: selectAvailableModels,
     });
+
+    const { data: promptTemplate } = usePromptTemplateById(initialState.promptTemplateId);
 
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
@@ -163,13 +166,20 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     // Initialize inference options from cached thread data when navigating to a different thread
     useEffect(() => {
-        const opts = getInitialInferenceParameters(selectedModel, getThread(threadId));
+        const opts = getInitialInferenceParameters(
+            selectedModel,
+            getThread(threadId),
+            promptTemplate
+        );
         setInferenceOpts(opts);
-    }, [threadId, selectedModel]);
+    }, [threadId, selectedModel, promptTemplate]);
 
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadId);
-        setUserToolDefinitions(userTools);
+        const promptDefinitionTools = promptTemplate?.toolDefinitions
+            ? JSON.stringify(promptTemplate.toolDefinitions)
+            : undefined;
+        setUserToolDefinitions(promptDefinitionTools ?? userTools);
 
         const selectedSystemTools = threadId
             ? getNonUserToolsFromThread(threadId).map((t) => t.name)
@@ -178,7 +188,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setSelectedTools(selectedSystemTools);
 
         setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
-    }, [threadId, selectedModel]);
+    }, [threadId, selectedModel, promptTemplate?.toolDefinitions]);
 
     // Sync local state with any necessary global UI state
     useEffect(() => {
@@ -310,6 +320,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             threadStarted: Boolean(threadId),
+            promptTemplate,
             canSubmit,
             autofocus,
             placeholderText,
@@ -353,15 +364,17 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             setExtraParameters,
         };
     }, [
+        threadId,
+        promptTemplate,
         canSubmit,
         autofocus,
         placeholderText,
         canCallTools,
+        selectedModel,
         isToolCallingEnabled,
         userToolDefinitions,
         areFilesAllowed,
         availableModels,
-        selectedModel,
         streamMessage.canPause,
         streamMessage.remoteState,
         isLimitReached,
@@ -369,7 +382,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         onModelChange,
         onSubmit,
         handleAbort,
-        threadId,
         inferenceOpts,
         updateInferenceOpts,
         submitToThreadView,
