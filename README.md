@@ -10,18 +10,14 @@ If you'd like to have linting on commit, run `yarn run add-git-hooks`. This will
 
 ### Local Development (without Docker)
 
-For the fastest and simplest development experience, you can run the application locally while connected to production APIs:
+By default olmo points to a local instance of olmo-api which must be running.
 
-Settings for running dev server against prod apis:
+If you would like to point your local playground to the production olmo-api. Be careful doing this as your changes will affect the production playground.
+Update the following Settings:
 
-- recaptcha should be enabled by adding `VITE_IS_RECAPTCHA_ENABLED=true` in your .env.local
-- you should remove `LOCAL_PLAYGROUND_API_URL` from your .env.local
-- you must logged in, otherwise you will get an error in the ui
-
-Settings for running against olmo-api running locally:
-
-- recaptcha should be disabled by removing `VITE_IS_RECAPTCHA_ENABLED` from your .env.local
-- you should set `LOCAL_PLAYGROUND_API_URL=http://localhost:8000` in your .env.local to connect to the local olmo-api
+-   recaptcha should be enabled by adding `VITE_IS_RECAPTCHA_ENABLED=true` in your .env.local
+-   you should update `LOCAL_PLAYGROUND_API_URL` to point to production in your .env.local
+-   you must logged in, otherwise you will get an error in the ui
 
 ```
 yarn dev
@@ -29,9 +25,9 @@ yarn dev
 
 This command:
 
-- Starts the development server on `http://localhost:8080`
-- Connects directly to production APIs
-- Provides hot reload for development
+-   Starts the development server on `http://localhost:8080`
+-   Connects directly to production APIs
+-   Provides hot reload for development
 
 #### Running Locally With Docker
 
@@ -43,28 +39,28 @@ to the production API to get things working.
 
 1. Start by connecting to the Kubernetes cluster:
 
-   ```
-   gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
-   ```
+    ```
+    gcloud container clusters get-credentials --project ai2-reviz --zone us-west1-b skiff-prod
+    ```
 
-   You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
-   If it happens, install the plugin as it suggests with this command:
+    You might encounter this error message in your terminal: "CRITICAL: ACTION REQUIRED: gke-gcloud-auth-plugin, which is needed for continued use of kubectl, was not found or is not executable..."
+    If it happens, install the plugin as it suggests with this command:
 
-   ```
-   gcloud components install gke-gcloud-auth-plugin
-   ```
+    ```
+    gcloud components install gke-gcloud-auth-plugin
+    ```
 
 2. Then port forward `8000` to the API:
 
-   ```
-   kubectl port-forward -n olmo-api service/olmo-api-prod 8000
-   ```
+    ```
+    kubectl port-forward -n olmo-api service/olmo-api-prod 8000
+    ```
 
 3. Next open another terminal and launch the application like so:
 
-   ```
-   docker compose up --build
-   ```
+    ```
+    docker compose up --build
+    ```
 
 ### Running Tests
 
@@ -87,21 +83,21 @@ The `E2E_TEST_PASSWORD` can be found in 1Password: https://start.1password.com/o
 
 1. Start the E2E development server:
 
-   ```
-   yarn test:e2e:server
-   ```
+    ```
+    yarn test:e2e:server
+    ```
 
 2. Run the tests (in a separate terminal):
 
-   ```
-   yarn test:e2e:local:chromium  # Run only Chromium tests
-   yarn test:e2e:local           # Run all browser tests
-   ```
+    ```
+    yarn test:e2e:local:chromium  # Run only Chromium tests
+    yarn test:e2e:local           # Run all browser tests
+    ```
 
 3. Run an individual test file:
-   ```
-   yarn test:e2e:local:chromium e2e/olmo.spec.ts
-   ```
+    ```
+    yarn test:e2e:local:chromium e2e/olmo.spec.ts
+    ```
 
 The scripts automatically configure all necessary environment variables for E2E testing (mocking, Auth0 dev environment, feature flags, etc.).
 
@@ -109,16 +105,16 @@ More Playwright commands: https://playwright.dev/docs/test-cli
 
 **To update e2e test screenshots for CI:**
 
-- `docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v{CURRENT_PLAYWRIGHT_VERSION}-focal /bin/bash`
-- `yarn test:e2e --update-screenshots`
+-   `docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v{CURRENT_PLAYWRIGHT_VERSION}-focal /bin/bash`
+-   `yarn test:e2e --update-screenshots`
 
 #### Unit Tests
 
 To start running unit tests use the command belows:
 
-- Run the command `yarn test` will perform a single run without watch node
-- Run the command `yarn test:watch` will enter the watch mode in development environment and run mode in CI automatically
-- More commands: https://vitest.dev/guide/cli
+-   Run the command `yarn test` will perform a single run without watch node
+-   Run the command `yarn test:watch` will enter the watch mode in development environment and run mode in CI automatically
+-   More commands: https://vitest.dev/guide/cli
 
 ### Changing the Local User
 
