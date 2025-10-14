@@ -19,6 +19,7 @@ import { queryClient } from '@/api/query-client';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
 import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
+import { usePromptTemplateById } from '@/components/thread/promptTemplates/usePromptTemplates';
 import {
     DEFAULT_FILE_UPLOAD_PROPS,
     mapCompareFileUploadProps,
@@ -26,6 +27,7 @@ import {
 } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import { parseComparisonSearchParams } from '@/pages/comparison/parseComparisonSearchParams';
 
 import { ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
@@ -59,6 +61,7 @@ type ComparisonAction = { type: 'setModelId'; threadViewId: string; modelId: str
 interface ComparisonProviderProps {
     children: React.ReactNode;
     initialState?: ComparisonState;
+    promptTemplateId?: string;
 }
 
 const DEFAULT_FILE_UPLOAD_STATE = {
@@ -81,12 +84,22 @@ function comparisonReducer(draft: ComparisonState, action: ComparisonAction) {
 const curriedComparisonReducer = produce(comparisonReducer);
 
 // TODO: create more nuanced state to avoid unnecessary re-renders
-const ComparisonProviderContent = ({ children, initialState }: ComparisonProviderProps) => {
+const ComparisonProviderContent = ({
+    children,
+    initialState,
+    promptTemplateId,
+}: ComparisonProviderProps) => {
     const [searchParams] = useSearchParams();
+    const threadParamsList = parseComparisonSearchParams(searchParams);
+
     const threadIds = useMemo(() => {
-        const threadsParam = searchParams.get('threads');
-        return threadsParam ? threadsParam.split(',') : [];
-    }, [searchParams]);
+        return threadParamsList.reduce<string[]>((acc, p) => {
+            if (p.threadId) {
+                acc = [...acc, p.threadId];
+            }
+            return acc;
+        }, []);
+    }, [threadParamsList]);
     const [comparisonState, dispatch] = useReducer(curriedComparisonReducer, initialState ?? {});
     const [inferenceOpts, setInferenceOpts] = useState<MessageInferenceParameters>(
         // TODO: for comparison mode, we use don't use model-specific constraints.
@@ -115,6 +128,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
+    const { data: promptTemplate } = usePromptTemplateById(promptTemplateId);
     // Get available models from API, filtering for visible models
     const models = useModels({
         select: (data) => data.filter((model) => isModelVisible(model)),
@@ -137,7 +151,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
     const autofocus = useMemo(() => {
         return threadIds.length === 0;
-    }, [threadIds]);
+    }, [threadIds.length]);
 
     const canCallTools = useMemo(() => {
         const modelsWithTools = Object.values(comparisonState)
@@ -164,7 +178,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
 
         const actionText = threadIds.length > 0 ? 'Reply to' : 'Message';
         return `${actionText} ${modelNames.length ? modelNames.join(' and ') : 'the model'}`;
-    }, [comparisonState, models, threadIds]);
+    }, [comparisonState, models, threadIds.length]);
 
     const isLimitReached = useMemo(() => {
         return threadIds.some((threadId) => {
@@ -176,13 +190,34 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         return threadIds.length > 0 && threadIds.every((threadId) => threadId != null);
     }, [threadIds]);
 
+    // TODO: when we support per-thread parameters, pass in each model to stay within
+    // each thread's model constraints
     useEffect(() => {
-        setUserToolDefinitions(getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1]));
-        if (!threadIds) {
+        if (threadIds.length === 0 && promptTemplate) {
+            const opts = getInitialInferenceParameters(undefined, undefined, promptTemplate);
+            setInferenceOpts(opts);
+        }
+    }, [threadIds.length, promptTemplate]);
+
+    // TODO: uncomment when extra parameters are added to prompt templates
+    // useEffect(() => {
+    //     if (promptTemplate) {
+    //         setExtraParameters(promptTemplate.extraParameters);
+    //     }
+    // }, [promptTemplate]);
+
+    useEffect(() => {
+        const userTools = getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1]);
+        const toolDefs = promptTemplate?.toolDefinitions
+            ? JSON.stringify(promptTemplate.toolDefinitions)
+            : userTools;
+        setUserToolDefinitions(toolDefs);
+
+        if (threadIds.length === 0) {
             // reset on new thread
             setIsToolCallingEnabled(false);
         }
-    }, [threadIds]);
+    }, [promptTemplate?.toolDefinitions, threadIds]);
 
     // Sync local state with any necessary global UI state
     useEffect(() => {
@@ -213,10 +248,17 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             nonErroredThreadViews.length > 0
         ) {
             const successfulThreadIds = Object.values(firstMessageThreadIdsRef.current);
-            const compareUrl = `/comparison?threads=${successfulThreadIds.join(',')}`;
+            const searchParams = new URLSearchParams();
+            successfulThreadIds.forEach((threadId, idx) => {
+                if (threadId) {
+                    searchParams.append(`thread-${idx + 1}`, threadId);
+                }
+            });
+
+            const compareUrl = `/comparison?${searchParams.toString()}`;
             navigate(compareUrl);
         }
-    }, [comparisonState, streamErrors, threadIds, navigate]);
+    }, [comparisonState, streamErrors, threadIds.length, navigate]);
 
     useStreamEvent(
         'onFirstMessage',
@@ -380,7 +422,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             areFilesAllowed: reducedProps.acceptsFileUpload,
             reducedFileUploadProps: reducedProps,
         };
-    }, [selectedModelsWithThreadIds, comparisonState, models]);
+    }, [selectedModelsWithThreadIds]);
 
     const isFileUploadDisabled = useMemo(() => {
         return threadIds.some((threadId) => {
@@ -395,6 +437,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             threadStarted: threadIds.length > 0,
+            promptTemplate,
             canSubmit,
             autofocus,
             canCallTools,
@@ -467,6 +510,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         };
     }, [
         threadIds,
+        promptTemplate,
         canSubmit,
         autofocus,
         canCallTools,
@@ -503,10 +547,16 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     );
 };
 
-export const ComparisonProvider = ({ children, initialState }: ComparisonProviderProps) => {
+export const ComparisonProvider = ({
+    children,
+    initialState,
+    promptTemplateId,
+}: ComparisonProviderProps) => {
     return (
         <StreamEventRegistryProvider>
-            <ComparisonProviderContent initialState={initialState}>
+            <ComparisonProviderContent
+                initialState={initialState}
+                promptTemplateId={promptTemplateId}>
                 {children}
             </ComparisonProviderContent>
         </StreamEventRegistryProvider>

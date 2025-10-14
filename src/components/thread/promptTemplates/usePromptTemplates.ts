@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import {
@@ -27,17 +27,16 @@ export const getPromptTemplatesQueryOptions = playgroundApiQueryClient.queryOpti
 export const usePromptTemplates = (
     options: Pick<typeof getPromptTemplatesQueryOptions, 'select' | 'enabled'>
 ) => {
-    return useQuery({
+    return useSuspenseQuery({
         ...getPromptTemplatesQueryOptions,
         ...options,
     });
 };
 
 export const usePromptTemplateById = (id: string | undefined) => {
-    return useQuery({
+    return useSuspenseQuery({
         ...getPromptTemplatesQueryOptions,
         select: selectPromptTemplateById(id),
-        enabled: Boolean(id),
     });
 };
 

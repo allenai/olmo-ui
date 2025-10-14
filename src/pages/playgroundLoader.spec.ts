@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 
-import { playgroundLoader } from './UIRefreshThreadPage';
+import { playgroundLoader } from './playgroundLoader';
 
 interface PlaygroundLoaderData {
     preselectedModelId?: string;

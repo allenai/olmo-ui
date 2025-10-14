@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
@@ -14,10 +14,9 @@ export const useModels = (options: Pick<typeof getModelsQueryOptions, 'select' |
 };
 
 export const useModelById = (modelId: string | undefined, availableOnly: boolean = true) => {
-    return useQuery({
+    return useSuspenseQuery({
         ...getModelsQueryOptions,
         select: selectModelById(modelId, availableOnly),
-        enabled: Boolean(modelId),
     });
 };
 

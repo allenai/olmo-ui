@@ -47,12 +47,12 @@ import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
 type SingleThreadProviderProps = PropsWithChildren<{
-    initialState: PlaygroundLoaderData;
+    initialState?: PlaygroundLoaderData;
 }>;
 
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
-    const [selectedModelId, setSelectedModelId] = useState(initialState.modelId);
+    const [selectedModelId, setSelectedModelId] = useState(initialState?.modelId);
 
     const [userToolDefinitions, setUserToolDefinitions] = useState(
         getUserToolDefinitionsFromThread(threadId)
@@ -81,7 +81,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         select: selectAvailableModels,
     });
 
-    const { data: promptTemplate } = usePromptTemplateById(initialState.promptTemplateId);
+    const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
@@ -164,7 +164,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return Boolean(threadId);
     }, [threadId]);
 
-    // Initialize inference options from cached thread data when navigating to a different thread
     useEffect(() => {
         const opts = getInitialInferenceParameters(
             selectedModel,
@@ -174,12 +173,19 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setInferenceOpts(opts);
     }, [threadId, selectedModel, promptTemplate]);
 
+    // TODO: uncomment when extra parameters are added to prompt templates
+    // useEffect(() => {
+    //     if (promptTemplate) {
+    //         setExtraParameters(promptTemplate.extraParameters);
+    //     }
+    // }, [promptTemplate]);
+
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadId);
-        const promptDefinitionTools = promptTemplate?.toolDefinitions
+        const toolDefs = promptTemplate?.toolDefinitions
             ? JSON.stringify(promptTemplate.toolDefinitions)
-            : undefined;
-        setUserToolDefinitions(promptDefinitionTools ?? userTools);
+            : userTools;
+        setUserToolDefinitions(toolDefs);
 
         const selectedSystemTools = threadId
             ? getNonUserToolsFromThread(threadId).map((t) => t.name)

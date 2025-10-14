@@ -30,7 +30,7 @@ export const playgroundLoader =
         const searchParams = new URL(request.url).searchParams;
 
         const { id: threadId } = params;
-        const promptTemplateId = !threadId ? searchParams.get('template') : null; // only for new threads
+        const promptTemplateId = !threadId ? searchParams.get('template') : null; // only apply to new threads
         const modelId = searchParams.get('model');
 
         await queryClient.ensureQueryData(getModelsQueryOptions);

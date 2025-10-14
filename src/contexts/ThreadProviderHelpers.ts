@@ -187,6 +187,11 @@ export type ModelInferenceConstraints = {
     };
 };
 
+/**
+ * Get inference constraints for a specific model
+ * @param model - If undefined, returns general constraints as fallback
+ * @returns Inference constraints with min, max, and step values
+ */
 export const getInferenceConstraints = (model?: Model): ModelInferenceConstraints => {
     return {
         temperature: {

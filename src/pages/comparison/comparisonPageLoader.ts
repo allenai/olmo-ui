@@ -13,10 +13,12 @@ import {
 } from '@/components/thread/ModelSelect/useModels';
 import { selectModelIdForThread } from '@/contexts/modelSelectionUtils';
 import { CompareModelState } from '@/slices/CompareModelSlice';
-import { arrayZip } from '@/utils/arrayZip';
+
+import { parseComparisonSearchParams } from './parseComparisonSearchParams';
 
 export interface ComparisonLoaderData {
     comparisonModels?: CompareModelState[];
+    promptTemplateId?: string;
 }
 
 // Initialize default comparison models when no URL parameters are provided
@@ -75,17 +77,28 @@ const initializeDefaultComparisonModels = (
 };
 
 export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction => {
-    return async ({ params: _params, request }) => {
-        // from playgroundLoader.ts
+    return async ({ params: _params, request }): Promise<ComparisonLoaderData> => {
         const {
             resetSelectedThreadState,
             resetAttribution: _rstAtr,
             clearAllStreamErrors,
         } = appContext.getState();
 
-        const allModels = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
-        // Filter models to match ComparisonProvider behavior
-        const models = allModels.filter(isModelVisible);
+        const visibleModels = (await queryClient.ensureQueryData(getModelsQueryOptions)).filter(
+            isModelVisible
+        );
+
+        const searchParams = new URL(request.url).searchParams;
+        // If no URL parameters provided, initialize with default models for comparison
+        if (searchParams.size === 0 || (searchParams.size === 1 && searchParams.has('template'))) {
+            const comparisonModels = initializeDefaultComparisonModels(visibleModels);
+            return {
+                comparisonModels,
+                promptTemplateId: searchParams.get('template') ?? undefined, // only apply to new threads
+            };
+        }
+
+        const threadParamsList = parseComparisonSearchParams(searchParams);
 
         // TODO (bb): reset, but correctly
         // if (params.id === undefined) {
@@ -93,62 +106,45 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         // }
         resetSelectedThreadState();
 
-        const searchParams = new URL(request.url).searchParams;
-        const threadListString = searchParams.get('threads');
-        const threadListStrArray = threadListString?.split(',').map((m) => m.trim()) ?? [];
-
         // Clear stream errors only for fresh comparison (no threads in URL)
-        if (threadListStrArray.length === 0) {
+        if (threadParamsList.every((p) => !p.threadId)) {
             clearAllStreamErrors();
         }
 
-        const modelListString = searchParams.get('models');
-        const modelListStrArray = modelListString?.split(',').map((m) => m.trim()) ?? [];
+        const threadsAndModelPromises = threadParamsList.map(async ({ threadId, modelId }, idx) => {
+            let lastResponse: FlatMessage | undefined;
 
-        // If no URL parameters provided, initialize with default models for comparison
-        if (threadListStrArray.length === 0 && modelListStrArray.length === 0) {
-            const comparisonModels = initializeDefaultComparisonModels(models);
-            return { comparisonModels } as ComparisonLoaderData;
-        }
-
-        const threadsAndModelPromises = arrayZip(threadListStrArray, modelListStrArray).map(
-            async ([threadId, modelIdParam], idx) => {
-                let lastResponse: FlatMessage | undefined;
-
-                if (threadId) {
-                    try {
-                        const { messages } = await queryClient.ensureQueryData(
-                            threadOptions(threadId)
-                        );
-                        lastResponse = messages.findLast(({ role }) => role === Role.LLM);
-                    } catch (error) {
-                        console.log(
-                            `ComparisonPageLoader - Failed to load thread ${threadId}:`,
-                            error
-                        );
-                    }
+            if (threadId) {
+                try {
+                    const { messages } = await queryClient.ensureQueryData(threadOptions(threadId));
+                    lastResponse = messages.findLast(({ role }) => role === Role.LLM);
+                } catch (error) {
+                    console.error(
+                        `ComparisonPageLoader - Failed to load thread ${threadId}:`,
+                        error
+                    );
                 }
-
-                const selectedModelId = selectModelIdForThread(models, lastResponse, modelIdParam);
-
-                const modelObj = selectedModelId
-                    ? models.find(modelById(selectedModelId))
-                    : models[0];
-
-                const result = {
-                    threadViewId: String(idx),
-                    model: modelObj,
-                    rootThreadId: threadId,
-                };
-
-                return result;
             }
-        );
+
+            const selectedModelId = selectModelIdForThread(visibleModels, lastResponse, modelId);
+
+            const modelObj = selectedModelId
+                ? visibleModels.find(modelById(selectedModelId))
+                : visibleModels[0];
+
+            const result = {
+                threadViewId: String(idx),
+                model: modelObj,
+                rootThreadId: threadId,
+            };
+
+            return result;
+        });
 
         const comparisonModels = await Promise.all(threadsAndModelPromises);
 
         // TODO (bb): attribition on load
 
-        return { comparisonModels } as ComparisonLoaderData;
+        return { comparisonModels };
     };
 };
