@@ -32,7 +32,7 @@ import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/Updat
 import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
-import { ErrorPage } from './pages/ErrorPage';
+import { ErrorPage } from './pages/errorPage/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
 import {
     handleRevalidation,
