@@ -5,7 +5,7 @@ import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClien
 
 export const getModelsQueryOptions = playgroundApiQueryClient.queryOptions('get', '/v4/models/');
 
-export const useModels = (options: Pick<typeof getModelsQueryOptions, 'select' | 'enabled'>) => {
+export const useModels = (options: Pick<typeof getModelsQueryOptions, 'select'>) => {
     const { data } = useSuspenseQuery({
         ...getModelsQueryOptions,
         ...options,

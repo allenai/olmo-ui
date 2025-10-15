@@ -49,7 +49,7 @@ import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
 // Internal state for comparison mode, holds all threads
-interface ComparisonState {
+export interface ComparisonState {
     [threadViewId: string]: {
         modelId?: string;
     };
@@ -199,12 +199,11 @@ const ComparisonProviderContent = ({
         }
     }, [threadIds.length, promptTemplate]);
 
-    // TODO: uncomment when extra parameters are added to prompt templates
-    // useEffect(() => {
-    //     if (promptTemplate) {
-    //         setExtraParameters(promptTemplate.extraParameters);
-    //     }
-    // }, [promptTemplate]);
+    useEffect(() => {
+        if (promptTemplate?.extraParameters) {
+            setExtraParameters(promptTemplate.extraParameters);
+        }
+    }, [promptTemplate?.extraParameters]);
 
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1]);

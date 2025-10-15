@@ -2,20 +2,13 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import {
+    SchemaInferenceOptionsResponse,
     SchemaPromptTemplateResponse,
     SchemaPromptTemplateResponseList,
 } from '@/api/playgroundApi/playgroundApiSchema';
-import { InferenceOpts } from '@/api/Schema';
 
 export interface PromptTemplate extends Omit<SchemaPromptTemplateResponse, 'opts'> {
-    opts: {
-        temperature?: InferenceOpts['temperature'];
-        topP?: InferenceOpts['top_p'];
-        maxTokens?: InferenceOpts['max_tokens'];
-        n?: InferenceOpts['n'];
-        logprobs?: InferenceOpts['logprobs'];
-        stop?: InferenceOpts['stop'];
-    };
+    opts: SchemaInferenceOptionsResponse;
 }
 export type PromptTemplateList = readonly PromptTemplate[];
 
@@ -25,7 +18,7 @@ export const getPromptTemplatesQueryOptions = playgroundApiQueryClient.queryOpti
 );
 
 export const usePromptTemplates = (
-    options: Pick<typeof getPromptTemplatesQueryOptions, 'select' | 'enabled'>
+    options: Pick<typeof getPromptTemplatesQueryOptions, 'select'>
 ) => {
     return useSuspenseQuery({
         ...getPromptTemplatesQueryOptions,

@@ -3,12 +3,14 @@ import { http, HttpResponse, passthrough } from 'msw';
 import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
+import {} from './';
 import { attributionHandlers } from './attributionHandlers';
 import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v4ModelsHandlers } from './v4ModelsHandlers';
+import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
 import { v4ThreadHandlers } from './v4ThreadHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
 
@@ -19,6 +21,7 @@ export const handlers = [
     ...v4ThreadHandlers,
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
+    ...v4PromptTemplatesHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({

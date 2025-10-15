@@ -1684,6 +1684,13 @@ export type components = {
             readonly created: string;
             /** Creator */
             readonly creator: string;
+            /**
+             * Extraparameters
+             * @default null
+             */
+            readonly extraParameters?: {
+                readonly [key: string]: unknown;
+            } | null;
             /** Fileurls */
             readonly fileUrls: readonly string[] | null;
             /** Id */

@@ -15,6 +15,7 @@ import {
     defaultInferenceConstraintsCamel,
     defaultInferenceParametersCamel,
 } from '@/mocks/handlers/defaultInferenceConstraints';
+import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
     convertMessagesForSetup,
@@ -54,10 +55,7 @@ const defaultInferenceConstraints = {
 };
 
 // Test helper to render hook with SingleThreadProvider context
-const renderProvider = (
-    initialState?: Partial<{ modelId?: string; threadId?: string }>,
-    mockUserInfo?: User | null
-) => {
+const renderProvider = (initialState?: PlaygroundLoaderData, mockUserInfo?: User | null) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
     mockUseParams.mockReturnValue({ id: initialState?.threadId });

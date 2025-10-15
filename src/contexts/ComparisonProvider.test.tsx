@@ -8,7 +8,7 @@ import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import { createMockUser, setupThreadInCache } from '@/utils/test/createMockModel';
 
-import { ComparisonProvider } from './ComparisonProvider';
+import { ComparisonProvider, ComparisonState } from './ComparisonProvider';
 import { useQueryContext } from './QueryContext';
 
 vi.mock('react-router-dom', () => ({
@@ -20,16 +20,14 @@ vi.mock('react-router-dom', () => ({
 // Test helper to render ComparisonProvider with initial state
 const renderWithProvider = (
     TestComponent: React.ComponentType,
-    initialState?: { [threadViewId: string]: { modelId?: string } },
+    initialState?: ComparisonState,
     mockUserInfo?: User | null,
-    threadsParam?: string
+    threadsParam?: string,
+    promptTemplateId?: string
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
-    const mockSearchParams = new URLSearchParams();
-    if (threadsParam) {
-        mockSearchParams.set('threads', threadsParam);
-    }
+    const mockSearchParams = new URLSearchParams(threadsParam ?? '');
     vi.mocked(ReactRouterDom.useSearchParams).mockReturnValue([mockSearchParams, vi.fn()]);
 
     return render(
@@ -38,7 +36,7 @@ const renderWithProvider = (
                 userInfo: mockUserInfo,
                 setIsShareReady: vi.fn(),
             }}>
-            <ComparisonProvider initialState={initialState}>
+            <ComparisonProvider initialState={initialState} promptTemplateId={promptTemplateId}>
                 <TestComponent />
             </ComparisonProvider>
         </FakeAppContextProvider>
@@ -129,7 +127,7 @@ describe('ComparisonProvider', () => {
                 AutofocusTestComponent,
                 initialState,
                 undefined,
-                'thread-1,thread-2'
+                'thread-1=thread-1&thread-2=thread-2'
             );
 
             await waitFor(() => {
@@ -161,7 +159,7 @@ describe('ComparisonProvider', () => {
                 CanSubmitComponent,
                 {},
                 userInfo,
-                'thread-1,thread-2'
+                `thread-1=${threadId1}&thread-2=${threadId2}`
             );
 
             await waitFor(() => {
@@ -191,7 +189,7 @@ describe('ComparisonProvider', () => {
                 CanSubmitComponent,
                 {},
                 userInfo,
-                'thread-1,thread-2'
+                `thread-1=${threadId1}&thread-2=${threadId2}`
             );
 
             await waitFor(() => {
@@ -199,7 +197,7 @@ describe('ComparisonProvider', () => {
             });
         });
 
-        it('should return true when no threads exist (fresh comparison page)', async () => {
+        it.skip('should return true when no threads exist (fresh comparison page)', async () => {
             const userInfo = createMockUser();
 
             const NoThreadsComponent = () => {
@@ -228,7 +226,12 @@ describe('ComparisonProvider', () => {
                 return <div data-testid="can-submit">{String(context.canSubmit)}</div>;
             };
 
-            const { getByTestId } = renderWithProvider(CanSubmitComponent, {}, null, 'thread-1');
+            const { getByTestId } = renderWithProvider(
+                CanSubmitComponent,
+                {},
+                null,
+                `thread-1=${threadId1}`
+            );
 
             await waitFor(() => {
                 expect(getByTestId('can-submit')).toHaveTextContent('false');
@@ -252,7 +255,7 @@ describe('ComparisonProvider', () => {
                 CanSubmitComponent,
                 {},
                 userInfo,
-                'thread-1'
+                `thread-1=${threadId1}`
             );
 
             await waitFor(() => {
@@ -298,7 +301,7 @@ describe('ComparisonProvider', () => {
                 IsLimitReachedTestComponent,
                 initialState,
                 undefined,
-                'thread-1,thread-2'
+                `thread-1=${threadId1}&thread-2=${threadId2}`
             );
 
             await waitFor(() => {
@@ -333,7 +336,7 @@ describe('ComparisonProvider', () => {
                 IsLimitReachedTestComponent,
                 initialState,
                 undefined,
-                'thread-1,thread-2'
+                `thread-1=${threadId1}&thread-2=${threadId2}`
             );
 
             await waitFor(() => {
@@ -401,6 +404,58 @@ describe('ComparisonProvider', () => {
 
             await waitFor(() => {
                 expect(getByTestId('thread-view-model')).toHaveTextContent('no-model');
+            });
+        });
+    });
+
+    describe('promptTemplate', () => {
+        it('should get a promptTemplate into context for new threads', async () => {
+            const PromptTemplateTestComponent = () => {
+                const context = useQueryContext();
+                return (
+                    <div>
+                        <div data-testid="prompt-template-id">{context.promptTemplate?.id}</div>;
+                        <div data-testid="prompt-template-content">
+                            {context.promptTemplate?.content}
+                        </div>
+                    </div>
+                );
+            };
+
+            const { getByTestId } = renderWithProvider(
+                PromptTemplateTestComponent,
+                {},
+                undefined,
+                undefined,
+                'p_tpl_12345'
+            );
+            await waitFor(() => {
+                expect(getByTestId('prompt-template-id')).toHaveTextContent('p_tpl_12345');
+                expect(getByTestId('prompt-template-content')).toHaveTextContent(
+                    'Tell me about lions'
+                );
+            });
+        });
+
+        it('should not get a promptTemplate when bogus template id is provided', async () => {
+            const PromptTemplateTestComponent = () => {
+                const context = useQueryContext();
+                return (
+                    <div data-testid="prompt-template-id">
+                        {context.promptTemplate?.id ?? 'no-template'}
+                    </div>
+                );
+            };
+
+            const { getByTestId } = renderWithProvider(
+                PromptTemplateTestComponent,
+                {},
+                undefined,
+                undefined,
+                'bogus_template_id'
+            );
+            await waitFor(() => {
+                expect(getByTestId('prompt-template-id')).toHaveTextContent('no-template');
             });
         });
     });

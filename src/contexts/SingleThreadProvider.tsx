@@ -16,7 +16,7 @@ import { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { trackModelSelection } from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
-import { selectAvailableModels, useModels } from '@/components/thread/ModelSelect/useModels';
+import { isModelAvailable, useModels } from '@/components/thread/ModelSelect/useModels';
 import { usePromptTemplateById } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -77,9 +77,11 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
 
-    const availableModels = useModels({
-        select: selectAvailableModels,
-    });
+    const allModels = useModels({});
+
+    const availableModels = useMemo(() => {
+        return allModels.filter((model) => isModelAvailable(model) || model.id === selectedModelId);
+    }, [allModels, selectedModelId]);
 
     const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
@@ -120,8 +122,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     });
 
     const selectedModel = useMemo(() => {
-        const firstVisibleModel = availableModels[0];
-        return availableModels.find((model) => model.id === selectedModelId) || firstVisibleModel;
+        const firstAvailable = availableModels[0];
+        return availableModels.find((model) => model.id === selectedModelId) || firstAvailable;
     }, [availableModels, selectedModelId]);
 
     const canSubmit = useMemo(() => {
@@ -173,12 +175,11 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         setInferenceOpts(opts);
     }, [threadId, selectedModel, promptTemplate]);
 
-    // TODO: uncomment when extra parameters are added to prompt templates
-    // useEffect(() => {
-    //     if (promptTemplate) {
-    //         setExtraParameters(promptTemplate.extraParameters);
-    //     }
-    // }, [promptTemplate]);
+    useEffect(() => {
+        if (promptTemplate?.extraParameters) {
+            setExtraParameters(promptTemplate.extraParameters);
+        }
+    }, [promptTemplate?.extraParameters]);
 
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadId);
