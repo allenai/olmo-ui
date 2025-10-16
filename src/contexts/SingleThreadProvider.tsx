@@ -12,7 +12,7 @@ import {
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { type Agent, Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import {
     findModelById,
@@ -60,6 +60,9 @@ interface SingleThreadProviderProps extends PropsWithChildren {
     initialState?: Partial<SingleThreadState>;
     isAgentThread?: boolean;
 }
+
+const shouldModelBeShown = (selectedModelId: string | undefined) => (model: Model) =>
+    (isModelVisible(model) && !model.is_deprecated) || model.id === selectedModelId;
 
 const SingleThreadProviderContent = ({
     children,
@@ -139,27 +142,42 @@ const SingleThreadProviderContent = ({
         abortStreams: streamMessage.abortAllStreams,
     });
 
-    // Get available models from API, filtering for visible and non-deprecated models
-    const availableModels = useModels({
-        select: (data) =>
-            data.filter(
-                (model) =>
-                    (isModelVisible(model) && !model.is_deprecated) ||
-                    model.id === selectedModelOrAgentId
-            ),
+    const { availableAgents, selectedAgent } = useAgents({
+        select: (data) => {
+            const availableAgents = data;
+
+            let selectedAgent: Agent | undefined;
+            if (isAgentThread && selectedModelOrAgentId) {
+                const found = availableAgents.find((agent) => agent.id === selectedModelOrAgentId);
+                if (found != null) {
+                    selectedAgent = found;
+                } else {
+                    selectedAgent = availableAgents.at(0);
+                }
+            }
+
+            return { availableAgents, selectedAgent };
+        },
     });
 
-    const availableAgents = useAgents();
+    const { availableModels, selectedModel } = useModels({
+        select: (data) => {
+            const availableModels = data.filter(shouldModelBeShown(selectedModelOrAgentId));
 
-    const selectedModel = useMemo(() => {
-        if (selectedModelOrAgentId) {
-            const found = availableModels.find((model) => model.id === selectedModelOrAgentId);
-            if (found) return found; // Otherwise, fall back to the first visible model
-        }
+            let selectedModel: Model | undefined;
+            if (selectedModelOrAgentId && !isAgentThread) {
+                const found = availableModels.find((model) => model.id === selectedModelOrAgentId);
+                if (found != null) {
+                    selectedModel = found;
+                } else {
+                    // Otherwise, fall back to the first visible model
+                    selectedModel = availableModels.at(0);
+                }
+            }
 
-        const firstVisibleModel = availableModels.at(0);
-        return firstVisibleModel;
-    }, [availableModels, selectedModelOrAgentId]);
+            return { availableModels, selectedModel };
+        },
+    });
 
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
@@ -380,12 +398,12 @@ const SingleThreadProviderContent = ({
                 },
                 onModelOrAgentChange: onModelChange,
                 getThreadViewModelOrAgent: (_threadViewId: string = '0') => {
-                    return selectedModel;
+                    return selectedModel || selectedAgent;
                 },
                 transform: <T,>(
-                    fn: (threadViewId: string, model?: Model, threadId?: string) => T
+                    fn: (threadViewId: string, modelOrAgent?: Model | Agent, threadId?: string) => T
                 ) => {
-                    return [fn('0', selectedModel, threadId)];
+                    return [fn('0', selectedModel || selectedAgent, threadId)];
                 },
                 onSubmit,
                 onAbort: handleAbort,
@@ -422,6 +440,7 @@ const SingleThreadProviderContent = ({
             onModelChange,
             onSubmit,
             placeholderText,
+            selectedAgent,
             selectedModel,
             selectedTools,
             streamMessage.canPause,
