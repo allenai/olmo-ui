@@ -29,6 +29,7 @@ import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
+import { AgentChatPage } from './pages/agent/AgentChatPage';
 import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
@@ -96,6 +97,20 @@ export const routes: RouteObject[] = [
                         ],
                         loader: playgroundLoader(queryClient),
                         shouldRevalidate: handleRevalidation,
+                    },
+                    {
+                        path: links.agent.root,
+                        element: <UIRefreshThreadPage />,
+                        children: [
+                            {
+                                path: links.agent.agent,
+                                element: <AgentChatPage />,
+                            },
+                            {
+                                path: links.agent.thread,
+                                element: <AgentChatPage />,
+                            },
+                        ],
                     },
                     {
                         path: links.faqs,
