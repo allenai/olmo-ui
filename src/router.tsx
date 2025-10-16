@@ -100,15 +100,15 @@ export const routes: RouteObject[] = [
                     },
                     {
                         path: links.agent.root,
-                        element: <UIRefreshThreadPage />,
+                        element: <AgentChatPage />,
                         children: [
                             {
                                 path: links.agent.agent,
-                                element: <AgentChatPage />,
+                                // element: <AgentChatPage />,
                             },
                             {
                                 path: links.agent.thread,
-                                element: <AgentChatPage />,
+                                element: <ThreadDisplayContainer />,
                             },
                         ],
                     },

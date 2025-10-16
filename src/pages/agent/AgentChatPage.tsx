@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
@@ -9,8 +9,10 @@ import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormConta
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';
 
 export const AgentChatPage = (): ReactNode => {
+    const { agentId } = useParams<{ agentId: string; threadId: string }>();
+
     return (
-        <SingleThreadProvider>
+        <SingleThreadProvider initialState={{ selectedModelOrAgentId: agentId }} isAgentThread>
             <MetaTags />
             <PageContainer>
                 <ContentContainer>

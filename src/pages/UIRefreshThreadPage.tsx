@@ -48,7 +48,7 @@ export const UIRefreshThreadPage = () => {
     return (
         <SingleThreadProvider
             initialState={{
-                selectedModelId: loaderData?.preselectedModelId,
+                selectedModelOrAgentId: loaderData?.preselectedModelId,
             }}>
             <UIRefreshThreadPageContent />
         </SingleThreadProvider>

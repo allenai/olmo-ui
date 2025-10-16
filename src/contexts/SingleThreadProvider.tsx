@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -50,21 +50,25 @@ import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
 interface SingleThreadState {
-    selectedModelId?: string;
+    selectedModelOrAgentId?: string;
     threadId?: string;
 }
 
 // TODO: Implement the logic for valid initial states (currently in the page loaders)
 
-interface SingleThreadProviderProps
-    extends PropsWithChildren<{
-        initialState?: Partial<SingleThreadState>;
-    }> {}
+interface SingleThreadProviderProps extends PropsWithChildren {
+    initialState?: Partial<SingleThreadState>;
+    isAgentThread?: boolean;
+}
 
-const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
+const SingleThreadProviderContent = ({
+    children,
+    initialState,
+    isAgentThread,
+}: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
-    const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
-        initialState?.selectedModelId ?? undefined
+    const [selectedModelOrAgentId, setSelectedModelOrAgentId] = useState<string | undefined>(
+        initialState?.selectedModelOrAgentId ?? undefined
     );
 
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
@@ -107,18 +111,25 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         [callbackRegistryRef]
     );
 
-    // Handle nav on first message
-    useStreamEvent(
-        'onFirstMessage',
-        useCallback(
-            (_threadViewId: string, message: StreamingMessageResponse) => {
-                if (isFirstMessage(message) && !threadId) {
+    const navigateOnFirstMessage = useCallback(
+        (_threadViewId: string, message: StreamingMessageResponse) => {
+            if (isFirstMessage(message) && !threadId) {
+                if (isAgentThread) {
+                    navigate(
+                        generatePath(links.agent.thread, {
+                            agentId: selectedModelOrAgentId ?? null,
+                            threadId: message.id,
+                        })
+                    );
+                } else {
                     navigate(links.thread(message.id));
                 }
-            },
-            [threadId, navigate]
-        )
+            }
+        },
+        [threadId, isAgentThread, navigate, selectedModelOrAgentId]
     );
+
+    useStreamEvent('onFirstMessage', navigateOnFirstMessage);
 
     const streamMessage = useStreamMessage(streamCallbacks);
 
@@ -133,21 +144,22 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         select: (data) =>
             data.filter(
                 (model) =>
-                    (isModelVisible(model) && !model.is_deprecated) || model.id === selectedModelId
+                    (isModelVisible(model) && !model.is_deprecated) ||
+                    model.id === selectedModelOrAgentId
             ),
     });
 
     const availableAgents = useAgents();
 
     const selectedModel = useMemo(() => {
-        if (selectedModelId) {
-            const found = availableModels.find((model) => model.id === selectedModelId);
+        if (selectedModelOrAgentId) {
+            const found = availableModels.find((model) => model.id === selectedModelOrAgentId);
             if (found) return found; // Otherwise, fall back to the first visible model
         }
 
         const firstVisibleModel = availableModels.at(0);
         return firstVisibleModel;
-    }, [availableModels, selectedModelId]);
+    }, [availableModels, selectedModelOrAgentId]);
 
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
@@ -216,7 +228,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const selectModel = useCallback((modelId: string) => {
         trackModelSelection(modelId);
-        setSelectedModelId(modelId);
+        setSelectedModelOrAgentId(modelId);
     }, []);
 
     const updateInferenceOpts = useCallback((newOptions: Partial<MessageInferenceParameters>) => {
@@ -378,7 +390,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 onSubmit,
                 onAbort: handleAbort,
                 setModelOrAgentId: (_threadViewId: string, modelId: string) => {
-                    setSelectedModelId(modelId);
+                    setSelectedModelOrAgentId(modelId);
                 },
                 inferenceConstraints: getInferenceConstraints(selectedModel),
                 inferenceOpts,

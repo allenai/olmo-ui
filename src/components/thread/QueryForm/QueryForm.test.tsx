@@ -259,7 +259,7 @@ describe('QueryForm', () => {
                     userInfo: createMockUser(),
                     addSnackMessage: vi.fn(),
                 }}>
-                <SingleThreadProvider initialState={{ selectedModelId: 'molmo' }}>
+                <SingleThreadProvider initialState={{ selectedModelOrAgentId: 'molmo' }}>
                     <QueryForm />
                 </SingleThreadProvider>
             </FakeAppContextProvider>,
