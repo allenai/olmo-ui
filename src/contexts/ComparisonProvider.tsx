@@ -43,6 +43,7 @@ import {
     getInferenceConstraints,
     getInitialInferenceParameters,
     getUserToolDefinitionsFromThread,
+    getUserToolDefinitionsFromToolList,
     MessageInferenceParameters,
 } from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
@@ -208,7 +209,7 @@ const ComparisonProviderContent = ({
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1]);
         const toolDefs = promptTemplate?.toolDefinitions
-            ? JSON.stringify(promptTemplate.toolDefinitions, null, 2)
+            ? getUserToolDefinitionsFromToolList(promptTemplate.toolDefinitions)
             : userTools;
         setUserToolDefinitions(toolDefs);
 

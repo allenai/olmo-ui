@@ -47,6 +47,16 @@ export const getNonUserToolsFromThread = (threadId: string | undefined): SchemaT
     return userToolDefs;
 };
 
+export const getUserToolDefinitionsFromToolList = (toolDefs: readonly SchemaToolDefinition[]) => {
+    const userToolDefs = toolDefs
+        .filter((def) => def.toolSource === 'user_defined')
+        .map(({ toolSource, ...def }) => def); // Remove toolSource property
+
+    console.log('userToolDefs', userToolDefs);
+
+    return JSON.stringify(userToolDefs, null, 2);
+};
+
 export const getUserToolDefinitionsFromThread = (
     threadId: string | undefined
 ): string | undefined => {

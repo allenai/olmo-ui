@@ -40,6 +40,8 @@ import {
     getNonUserToolsFromThread,
     getThread,
     getUserToolDefinitionsFromThread,
+    getUserToolDefinitionsFromToolList,
+    hasUserTools,
     MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
@@ -184,7 +186,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadId);
         const toolDefs = promptTemplate?.toolDefinitions
-            ? JSON.stringify(promptTemplate.toolDefinitions, null, 2)
+            ? getUserToolDefinitionsFromToolList(promptTemplate.toolDefinitions)
             : userTools;
         setUserToolDefinitions(toolDefs);
 
