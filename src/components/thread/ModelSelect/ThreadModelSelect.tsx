@@ -10,12 +10,12 @@ export const SingleThreadModelSelect = (): ReactNode => {
     const selectId = useId();
     const queryContext = useQueryContext();
 
-    const selectedModel = queryContext.getThreadViewModel();
+    const selectedModel = queryContext.getThreadViewModelOrAgent();
     const selectedModelId = selectedModel?.id;
     const models = queryContext.availableModels;
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        queryContext.onModelChange(event);
+        queryContext.onModelOrAgentChange(event);
     };
 
     return (
@@ -36,14 +36,14 @@ interface ThreadModelSelectProps {
 export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectProps) => {
     const queryContext = useQueryContext();
 
-    const selectedModel = queryContext.getThreadViewModel(threadViewId);
+    const selectedModel = queryContext.getThreadViewModelOrAgent(threadViewId);
     const selectedModelId = selectedModel?.id;
 
     const handleModelChange = (e: SelectChangeEvent) => {
         // TODO: are all models compatible https://github.com/allenai/playground-issues-repo/issues/411
         const selectedModel = models.find((model) => model.id === e.target.value);
         if (selectedModel) {
-            queryContext.setModelId(threadViewId, selectedModel.id);
+            queryContext.setModelOrAgentId(threadViewId, selectedModel.id);
         }
     };
 

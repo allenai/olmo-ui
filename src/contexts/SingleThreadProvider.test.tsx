@@ -278,7 +278,7 @@ describe('SingleThreadProvider', () => {
                 const mockEvent: SelectChangeEvent = {
                     target: { value: 'OLMo-peteish-dpo-preview' },
                 } as SelectChangeEvent;
-                result.current.onModelChange(mockEvent);
+                result.current.onModelOrAgentChange(mockEvent);
             });
 
             // Should now show the new model
@@ -301,7 +301,7 @@ describe('SingleThreadProvider', () => {
                 const mockEvent: SelectChangeEvent = {
                     target: { value: 'molmo' },
                 } as SelectChangeEvent;
-                result.current.onModelChange(mockEvent);
+                result.current.onModelOrAgentChange(mockEvent);
             });
 
             // Should now show the new model

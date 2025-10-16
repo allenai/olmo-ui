@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { type Agent, Model } from '@/api/playgroundApi/additionalTypes';
 import { CreateMessageRequest } from '@/api/playgroundApi/thread';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -29,20 +29,23 @@ interface QueryContextValue {
     shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
     availableModels: Model[];
+    availableAgents: Agent[];
 
-    onModelChange: (event: SelectChangeEvent, threadViewId?: string) => void;
-    getThreadViewModel: (threadViewId?: string) => Model | undefined;
+    onModelOrAgentChange: (event: SelectChangeEvent, threadViewId?: string) => void;
+    getThreadViewModelOrAgent: (threadViewId?: string) => Model | Agent | undefined;
 
     // Transform function that applies to each thread view context
     // Required by CompareThreadDisplay, but might be useful elsewhere
-    transform: <T>(fn: (threadViewId: string, model?: Model, threadId?: string) => T) => T[];
+    transform: <T>(
+        fn: (threadViewId: string, modelOrAgent?: Model | Agent, threadId?: string) => T
+    ) => T[];
 
     // Form submission: each context implements its own logic
     onSubmit: (data: QueryFormValues) => Promise<void>;
     onAbort: (e: UIEvent) => void;
 
     // Replaces global state setters, doesn't execute business logic like model compatibility checks
-    setModelId: (threadViewId: string, modelId: string) => void;
+    setModelOrAgentId: (threadViewId: string, modelId: string) => void;
 
     inferenceConstraints: ModelInferenceConstraints;
     inferenceOpts: MessageInferenceParameters;
@@ -65,7 +68,7 @@ interface QueryContextValue {
 // Thread-aware wrapper that removes threadViewId parameter from methods
 type ThreadAwareQueryContextValue = Omit<QueryContextValue, 'onModelChange'> & {
     // Override these methods to automatically provide thread information
-    onModelChange: (event: SelectChangeEvent) => void;
+    onModelOrAgentChange: (event: SelectChangeEvent) => void;
 };
 
 // Context definition

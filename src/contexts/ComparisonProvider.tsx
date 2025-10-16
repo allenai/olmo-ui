@@ -26,6 +26,7 @@ import {
 } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { isInappropriateFormError } from '@/components/thread/QueryForm/handleFormSubmitException';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import { useAgents } from '@/pages/agent/useAgents';
 
 import { ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
 import { isFirstMessage, StreamingMessageResponse, StreamingThread } from './stream-types';
@@ -121,6 +122,8 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const models = useModels({
         select: (data) => data.filter((model) => isModelVisible(model)),
     });
+
+    const agents = useAgents();
 
     const canSubmit = useMemo(() => {
         if (!userInfo?.client) return false;
@@ -404,6 +407,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             isToolCallingEnabled,
             placeholderText,
             availableModels: models,
+            availableAgents: agents,
             availableTools: [],
             selectedTools: [],
             updateSelectedTools: () => {},
@@ -419,12 +423,12 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 acceptedFileTypes: Array.from(reducedFileUploadProps.acceptedFileTypes),
             },
 
-            onModelChange: (event: SelectChangeEvent, threadViewId?: string) => {
+            onModelOrAgentChange: (event: SelectChangeEvent, threadViewId?: string) => {
                 if (!threadViewId) return;
                 dispatch({ type: 'setModelId', threadViewId, modelId: event.target.value });
             },
 
-            getThreadViewModel: (threadViewId?: string) => {
+            getThreadViewModelOrAgent: (threadViewId?: string) => {
                 if (!threadViewId) return undefined;
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const modelId = comparisonState[threadViewId]?.modelId;
@@ -445,7 +449,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
                 streamMessage.abortAllStreams();
             },
 
-            setModelId: (threadViewId: string, modelId: string) => {
+            setModelOrAgentId: (threadViewId: string, modelId: string) => {
                 dispatch({ type: 'setModelId', threadViewId, modelId });
             },
 
@@ -466,7 +470,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
             updateBypassSafetyCheck: setBypassSafetyCheck,
             extraParameters,
             setExtraParameters,
-        };
+        } satisfies QueryContextValue;
     }, [
         threadIds,
         canSubmit,
@@ -476,6 +480,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         isToolCallingEnabled,
         placeholderText,
         models,
+        agents,
         areFilesAllowed,
         streamMessage,
         isLimitReached,
@@ -484,10 +489,9 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
         checkCompatibilityAndSubmit,
         inferenceOpts,
         submitToThreadView,
-        comparisonState,
         bypassSafetyCheck,
-        setBypassSafetyCheck,
         extraParameters,
+        comparisonState,
     ]);
 
     return (

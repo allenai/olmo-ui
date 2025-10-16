@@ -2,7 +2,7 @@
 /* this is the one file allowed to import @testing-library/react since it needs to modify it */
 import { PropsWithChildren } from 'react';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { type Agent, Model } from '@/api/playgroundApi/additionalTypes';
 import { QueryContext, QueryContextValue } from '@/contexts/QueryContext';
 import { getInferenceConstraints } from '@/contexts/ThreadProviderHelpers';
 
@@ -11,6 +11,7 @@ import { customRender } from './TestWrapper';
 interface FakeQueryContextProviderProps extends PropsWithChildren {
     selectedModel?: Partial<Model>;
     availableModels?: Model[];
+    availableAgents?: Agent[];
     canSubmit?: boolean;
     autofocus?: boolean;
     placeholderText?: string;
@@ -22,6 +23,7 @@ export const FakeQueryContextProvider = ({
     children,
     selectedModel,
     availableModels = [],
+    availableAgents = [],
     canSubmit = true,
     autofocus = false,
     placeholderText = 'Test placeholder',
@@ -34,6 +36,7 @@ export const FakeQueryContextProvider = ({
         placeholderText,
         areFilesAllowed,
         availableModels,
+        availableAgents,
         availableTools: [],
         canPauseThread: false,
         isLimitReached,
@@ -47,12 +50,12 @@ export const FakeQueryContextProvider = ({
             acceptsMultiple: false,
             allowFilesInFollowups: false,
         },
-        onModelChange: () => {},
-        getThreadViewModel: () => selectedModel as Model | undefined,
+        onModelOrAgentChange: () => {},
+        getThreadViewModelOrAgent: () => selectedModel as Model,
         transform: () => [],
         onSubmit: async () => {},
         onAbort: () => {},
-        setModelId: () => {},
+        setModelOrAgentId: () => {},
         inferenceConstraints: getInferenceConstraints(),
         inferenceOpts: {},
         updateInferenceOpts: () => {},

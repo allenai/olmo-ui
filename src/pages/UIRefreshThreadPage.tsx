@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction, useLoaderData } from 'react-router-dom';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { isModel, type Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext } from '@/AppContext';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
@@ -23,8 +23,8 @@ interface PlaygroundLoaderData {
 const UIRefreshThreadPageContent = () => {
     const queryContext = useQueryContext();
 
-    const selectedModel = queryContext.getThreadViewModel();
-    const selectedModelFamilyId = selectedModel?.family_id;
+    const selectedModel = queryContext.getThreadViewModelOrAgent();
+    const selectedModelFamilyId = isModel(selectedModel) ? selectedModel.family_id : undefined;
 
     return (
         <>

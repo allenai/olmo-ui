@@ -11,11 +11,11 @@ interface CompareModelSelectProps {
 
 export const CompareModelSelect = ({ threadViewId, models }: CompareModelSelectProps) => {
     const queryContext = useQueryContext();
-    const selectedModel = queryContext.getThreadViewModel(threadViewId);
+    const selectedModel = queryContext.getThreadViewModelOrAgent(threadViewId);
     const selectedModelId = selectedModel?.id;
 
     const handleModelChange = (event: SelectChangeEvent) => {
-        queryContext.onModelChange(event, threadViewId);
+        queryContext.onModelOrAgentChange(event, threadViewId);
     };
 
     return (

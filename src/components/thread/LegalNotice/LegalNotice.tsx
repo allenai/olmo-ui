@@ -1,6 +1,7 @@
 import { alpha, Theme, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
+import { isModel } from '@/api/playgroundApi/additionalTypes';
 import { TermAndConditionsLink } from '@/components/TermsAndConditionsLink';
 import { useQueryContext } from '@/contexts/QueryContext';
 
@@ -43,9 +44,11 @@ export const SmallLegalNotice = () => {
 export const LegalNotice = () => {
     const queryContext = useQueryContext();
 
-    const selectedModel = queryContext.getThreadViewModel();
-    const selectedModelFamilyId = selectedModel?.family_id;
-    const selectedModelId = selectedModel?.id;
+    const selectedModelOrAgent = queryContext.getThreadViewModelOrAgent();
+    const selectedModelFamilyId = isModel(selectedModelOrAgent)
+        ? selectedModelOrAgent.family_id
+        : undefined;
+    const selectedModelId = selectedModelOrAgent?.id;
 
     const FamilySpecificLegalNotice =
         selectedModelFamilyId != null

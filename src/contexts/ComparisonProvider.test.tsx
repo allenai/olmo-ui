@@ -356,7 +356,7 @@ describe('ComparisonProvider', () => {
     describe('getThreadViewModel', () => {
         const GetThreadViewModelTestComponent = ({ threadViewId }: { threadViewId: string }) => {
             const context = useQueryContext();
-            const model = context.getThreadViewModel(threadViewId);
+            const model = context.getThreadViewModelOrAgent(threadViewId);
             return <div data-testid="thread-view-model">{model?.name || 'no-model'}</div>;
         };
 
@@ -393,7 +393,7 @@ describe('ComparisonProvider', () => {
         ])('should return undefined when $case', async ({ initialState, threadViewId }) => {
             const TestComponent = () => {
                 const context = useQueryContext();
-                const model = context.getThreadViewModel(threadViewId);
+                const model = context.getThreadViewModelOrAgent(threadViewId);
                 return <div data-testid="thread-view-model">{model?.name || 'no-model'}</div>;
             };
 

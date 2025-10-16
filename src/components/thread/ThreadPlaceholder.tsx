@@ -10,8 +10,8 @@ import { LegalNotice } from './LegalNotice/LegalNotice';
 import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
 
 export const ThreadPlaceholder = () => {
-    const { remoteState, getThreadViewModel } = useQueryContext();
-    const selectedModel = getThreadViewModel();
+    const { remoteState, getThreadViewModelOrAgent: getThreadViewModel } = useQueryContext();
+    const selectedModelOrAgent = getThreadViewModel();
     const isLoading = remoteState === RemoteState.Loading;
 
     return (
@@ -51,16 +51,16 @@ export const ThreadPlaceholder = () => {
                         alt=""
                     />
                     <Box minHeight={40} textAlign="center">
-                        {!!selectedModel?.information_url && (
+                        {!!selectedModelOrAgent?.information_url && (
                             <ButtonLink
                                 variant="text"
                                 color="primary"
-                                href={selectedModel.information_url || undefined}
+                                href={selectedModelOrAgent.information_url || undefined}
                                 target="_blank"
                                 rel="noopener"
                                 startIcon={<WysiwygOutlined />}
                                 endIcon={<ArrowOutwardOutlined />}>
-                                {`Read more about ${selectedModel.name}`}
+                                {`Read more about ${selectedModelOrAgent.name}`}
                             </ButtonLink>
                         )}
                     </Box>

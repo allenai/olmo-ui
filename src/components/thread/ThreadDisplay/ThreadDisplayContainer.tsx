@@ -65,7 +65,7 @@ export const ThreadDisplayContainer = () => {
     useEffect(() => {
         // Only set model from loaderData if we're navigating to a new thread
         if (loaderData?.selectedModelId && selectedThreadRootId !== processedThreadRef.current) {
-            queryContext.setModelId('0', loaderData.selectedModelId);
+            queryContext.setModelOrAgentId('0', loaderData.selectedModelId);
             processedThreadRef.current = selectedThreadRootId;
         }
     }, [selectedThreadRootId, loaderData?.selectedModelId, queryContext]);

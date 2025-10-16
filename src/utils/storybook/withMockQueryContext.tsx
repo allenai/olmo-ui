@@ -14,13 +14,13 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
     isLimitReached: false,
     remoteState: RemoteState.Loaded,
     shouldResetForm: false,
-    onModelChange: fn(),
+    onModelOrAgentChange: fn(),
     availableTools: [],
-    getThreadViewModel: fn(),
+    getThreadViewModelOrAgent: fn(),
     transform: fn(),
     onSubmit: fn(),
     onAbort: fn(),
-    setModelId: fn(),
+    setModelOrAgentId: fn(),
     inferenceConstraints: getInferenceConstraints(),
     inferenceOpts: {},
     updateInferenceOpts: fn(),
@@ -75,6 +75,7 @@ const DEFAULT_QUERY_CONTEXT: QueryContextValue = {
             top_p_step: 0.01,
         },
     ],
+    availableAgents: [],
 };
 
 export const withMockQueryContext: DecoratorFunction = (

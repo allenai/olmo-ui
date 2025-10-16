@@ -1,7 +1,7 @@
 import { useMutationState } from '@tanstack/react-query';
 import { createContext, useContext, useMemo } from 'react';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import { isModel, type Model } from '@/api/playgroundApi/additionalTypes';
 import type { ThreadId } from '@/api/playgroundApi/thread';
 import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
@@ -100,5 +100,10 @@ export const useSelectedModel = (): Model | undefined => {
     const { threadViewId } = useThreadView();
     const queryContext = useQueryContext();
 
-    return queryContext.getThreadViewModel(threadViewId);
+    const selectedModelOrAgent = queryContext.getThreadViewModelOrAgent(threadViewId);
+    if (isModel(selectedModelOrAgent)) {
+        return selectedModelOrAgent;
+    } else {
+        return undefined;
+    }
 };

@@ -23,6 +23,7 @@ import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useMo
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
+import { useAgents } from '@/pages/agent/useAgents';
 import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
@@ -135,6 +136,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                     (isModelVisible(model) && !model.is_deprecated) || model.id === selectedModelId
             ),
     });
+
+    const availableAgents = useAgents();
 
     const selectedModel = useMemo(() => {
         if (selectedModelId) {
@@ -341,79 +344,85 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return (thread?.messages.length ?? 0) > 1 && !uploadProps.allowFilesInFollowups;
     }, [threadId, selectedModel]);
 
-    const contextValue: QueryContextValue = useMemo(() => {
-        return {
-            threadStarted: Boolean(threadId),
-            canSubmit,
-            autofocus,
-            placeholderText,
-            canCallTools,
-            availableTools: selectedModel?.available_tools,
-            isToolCallingEnabled,
-            userToolDefinitions,
+    const contextValue: QueryContextValue = useMemo(
+        () =>
+            ({
+                threadStarted: Boolean(threadId),
+                canSubmit,
+                autofocus,
+                placeholderText,
+                canCallTools,
+                availableTools: selectedModel?.available_tools,
+                isToolCallingEnabled,
+                userToolDefinitions,
+                areFilesAllowed,
+                availableModels,
+                availableAgents,
+                canPauseThread: streamMessage.canPause,
+                isLimitReached,
+                remoteState: streamMessage.remoteState,
+                fileUploadProps: {
+                    ...convertToFileUploadProps(selectedModel),
+                    isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
+                    isFileUploadDisabled,
+                },
+                onModelOrAgentChange: onModelChange,
+                getThreadViewModelOrAgent: (_threadViewId: string = '0') => {
+                    return selectedModel;
+                },
+                transform: <T,>(
+                    fn: (threadViewId: string, model?: Model, threadId?: string) => T
+                ) => {
+                    return [fn('0', selectedModel, threadId)];
+                },
+                onSubmit,
+                onAbort: handleAbort,
+                setModelOrAgentId: (_threadViewId: string, modelId: string) => {
+                    setSelectedModelId(modelId);
+                },
+                inferenceConstraints: getInferenceConstraints(selectedModel),
+                inferenceOpts,
+                updateInferenceOpts,
+                submitToThreadView,
+                updateUserToolDefinitions,
+                updateIsToolCallingEnabled,
+                updateSelectedTools,
+                selectedTools,
+                bypassSafetyCheck,
+                updateBypassSafetyCheck: setBypassSafetyCheck,
+                extraParameters,
+                setExtraParameters,
+            }) satisfies QueryContextValue,
+        [
             areFilesAllowed,
+            autofocus,
+            availableAgents,
             availableModels,
-            canPauseThread: streamMessage.canPause,
-            isLimitReached,
-            remoteState: streamMessage.remoteState,
-            fileUploadProps: {
-                ...convertToFileUploadProps(selectedModel),
-                isSendingPrompt: streamMessage.remoteState === RemoteState.Loading,
-                isFileUploadDisabled,
-            },
-            onModelChange,
-            getThreadViewModel: (_threadViewId: string = '0') => {
-                return selectedModel;
-            },
-            transform: <T,>(fn: (threadViewId: string, model?: Model, threadId?: string) => T) => {
-                return [fn('0', selectedModel, threadId)];
-            },
-            onSubmit,
-            onAbort: handleAbort,
-            setModelId: (_threadViewId: string, modelId: string) => {
-                setSelectedModelId(modelId);
-            },
-            inferenceConstraints: getInferenceConstraints(selectedModel),
+            bypassSafetyCheck,
+            canCallTools,
+            canSubmit,
+            extraParameters,
+            handleAbort,
             inferenceOpts,
-            updateInferenceOpts,
+            isFileUploadDisabled,
+            isLimitReached,
+            isToolCallingEnabled,
+            onModelChange,
+            onSubmit,
+            placeholderText,
+            selectedModel,
+            selectedTools,
+            streamMessage.canPause,
+            streamMessage.remoteState,
             submitToThreadView,
-            updateUserToolDefinitions,
+            threadId,
+            updateInferenceOpts,
             updateIsToolCallingEnabled,
             updateSelectedTools,
-            selectedTools,
-            bypassSafetyCheck,
-            updateBypassSafetyCheck: setBypassSafetyCheck,
-            extraParameters,
-            setExtraParameters,
-        };
-    }, [
-        canSubmit,
-        autofocus,
-        placeholderText,
-        canCallTools,
-        isToolCallingEnabled,
-        userToolDefinitions,
-        areFilesAllowed,
-        availableModels,
-        selectedModel,
-        streamMessage.canPause,
-        streamMessage.remoteState,
-        isLimitReached,
-        isFileUploadDisabled,
-        onModelChange,
-        onSubmit,
-        handleAbort,
-        threadId,
-        inferenceOpts,
-        updateInferenceOpts,
-        submitToThreadView,
-        updateUserToolDefinitions,
-        updateIsToolCallingEnabled,
-        updateSelectedTools,
-        selectedTools,
-        bypassSafetyCheck,
-        extraParameters,
-    ]);
+            updateUserToolDefinitions,
+            userToolDefinitions,
+        ]
+    );
 
     return (
         <QueryContext.Provider value={contextValue}>
