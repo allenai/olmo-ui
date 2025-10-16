@@ -1,4 +1,3 @@
-import { DevTool } from '@hookform/devtools';
 import { Box, Stack, Typography } from '@mui/material';
 import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
@@ -158,7 +157,6 @@ export const QueryFormController = ({
         <Box marginBlockStart="auto" width={1} paddingInline={2}>
             <FormContainer formContext={formContext} onSuccess={handleSubmitController}>
                 <Stack gap={1} alignItems="flex-start" width={1} position="relative">
-                    <DevTool control={formContext.control} />
                     <FileUploadThumbnails files={files} onRemoveFile={handleRemoveFile} />
                     <Controller
                         control={formContext.control}
