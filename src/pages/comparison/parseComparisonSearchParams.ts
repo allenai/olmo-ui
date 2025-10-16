@@ -5,9 +5,13 @@ type ThreadParams = {
 export const MIN_COMPARE_THREAD_COUNT = 2;
 export const MAX_COMPARE_THREAD_COUNT = 3;
 
-export function parseComparisonSearchParams(search: URLSearchParams) {
+export function parseComparisonSearchParams(
+    search: URLSearchParams,
+    minCount = MIN_COMPARE_THREAD_COUNT,
+    maxCount = MAX_COMPARE_THREAD_COUNT
+): ThreadParams[] {
     const threadParamsList: ThreadParams[] = Array.from({
-        length: MIN_COMPARE_THREAD_COUNT,
+        length: minCount,
     }).map(() => ({}));
     search.forEach((value, key) => {
         // Expected key format is `paramType-position` (starts at 1), e.g. thread-1, model-2, template-1
@@ -15,7 +19,7 @@ export function parseComparisonSearchParams(search: URLSearchParams) {
         // needing to rely on a specific order of parameters passed in the URL
         const [paramType, position] = key.split('-');
         const idx = position ? parseInt(position, 10) - 1 : -1;
-        if (idx < 0 || idx > MAX_COMPARE_THREAD_COUNT - 1) {
+        if (idx < 0 || idx > maxCount - 1) {
             // Invalid position, ignore
             return;
         }
@@ -32,5 +36,5 @@ export function parseComparisonSearchParams(search: URLSearchParams) {
         }
     });
 
-    return threadParamsList.slice(0, MAX_COMPARE_THREAD_COUNT);
+    return threadParamsList.slice(0, maxCount);
 }
