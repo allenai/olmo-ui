@@ -184,7 +184,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadId);
         const toolDefs = promptTemplate?.toolDefinitions
-            ? JSON.stringify(promptTemplate.toolDefinitions)
+            ? JSON.stringify(promptTemplate.toolDefinitions, null, 2)
             : userTools;
         setUserToolDefinitions(toolDefs);
 

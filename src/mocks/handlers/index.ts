@@ -2,7 +2,6 @@ import { http, HttpResponse, passthrough } from 'msw';
 
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
-import {} from './';
 import { attributionHandlers } from './attributionHandlers';
 import { messageHandlers } from './messageHandlers';
 import { messageStreamHandlers } from './messageStreamHandlers';

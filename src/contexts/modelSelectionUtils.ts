@@ -22,7 +22,6 @@ export function selectModelIdForThread(
     }
 
     // Fallback: first visible model (matches original selectedThreadPageLoader logic)
-    // QUESTION: should this filter for model.is_deprecated as well?
     const visibleModels = models.filter(isModelVisible);
     return visibleModels[0]?.id;
 }

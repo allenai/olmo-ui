@@ -208,7 +208,7 @@ const ComparisonProviderContent = ({
     useEffect(() => {
         const userTools = getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1]);
         const toolDefs = promptTemplate?.toolDefinitions
-            ? JSON.stringify(promptTemplate.toolDefinitions)
+            ? JSON.stringify(promptTemplate.toolDefinitions, null, 2)
             : userTools;
         setUserToolDefinitions(toolDefs);
 
