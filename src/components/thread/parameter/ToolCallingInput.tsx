@@ -2,7 +2,10 @@ import { useState } from 'react';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { useAppContext } from '@/AppContext';
-import { ParameterToggle } from '@/components/thread/parameter/inputs/ParameterToggle';
+import {
+    ParameterToggle,
+    type ParameterToggleProps,
+} from '@/components/thread/parameter/inputs/ParameterToggle';
 import { ToolDeclarationDialog } from '@/components/thread/tools/ToolDeclarationDialog';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { SnackMessageType } from '@/slices/SnackMessageSlice';
@@ -50,11 +53,24 @@ const ToolsDialog = ({
     );
 };
 
-export const ToolCallingToggle = () => {
+interface ToolCallingToggleProps {
+    label?: string;
+    dialogContent?: string;
+    tooltipPlacement?: ParameterToggleProps['tooltipPlacement'];
+    disabled?: boolean;
+}
+
+export const ToolCallingToggle = ({
+    label = 'Tool calling',
+    dialogContent = TOOL_CALLING_INFO,
+    tooltipPlacement = 'left',
+    disabled: componentDisabled = false, // component wide disable
+}: ToolCallingToggleProps) => {
     const { threadStarted, canCallTools, isToolCallingEnabled, updateIsToolCallingEnabled } =
         useQueryContext();
 
-    const canCreateToolDefinitions = canCallTools && !threadStarted;
+    const canCreateToolDefinitions = !componentDisabled && canCallTools && !threadStarted;
+    const canEditToolDefinitions = !componentDisabled && !threadStarted && isToolCallingEnabled;
 
     const [shouldShowToolsDialog, setShouldShowToolsDialog] = useState(false);
 
@@ -66,11 +82,12 @@ export const ToolCallingToggle = () => {
         <>
             <ParameterToggle
                 value={isToolCallingEnabled}
-                label="Tool calling"
-                dialogContent={TOOL_CALLING_INFO}
+                label={label}
+                dialogContent={dialogContent}
                 dialogTitle="Tool Calling"
                 disableToggle={!canCreateToolDefinitions}
-                disableEditButton={threadStarted ? false : !isToolCallingEnabled}
+                tooltipPlacement={tooltipPlacement}
+                disableEditButton={!canEditToolDefinitions}
                 id="tool-calling"
                 onEditClick={() => {
                     setShouldShowToolsDialog(true);

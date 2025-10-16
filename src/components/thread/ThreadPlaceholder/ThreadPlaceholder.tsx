@@ -6,8 +6,9 @@ import { ImageSpinner } from '@/components/ImageSpinner';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { RemoteState } from '@/contexts/util';
 
-import { LegalNotice } from './LegalNotice/LegalNotice';
-import { ThreadMaxWidthContainer } from './ThreadDisplay/ThreadMaxWidthContainer';
+import { LegalNotice } from '../LegalNotice/LegalNotice';
+import { ThreadMaxWidthContainer } from '../ThreadDisplay/ThreadMaxWidthContainer';
+import { ToolCallDisplay } from './ToolCallDisplay';
 
 export const ThreadPlaceholder = () => {
     const { remoteState, getThreadViewModel } = useQueryContext();
@@ -64,6 +65,7 @@ export const ThreadPlaceholder = () => {
                             </ButtonLink>
                         )}
                     </Box>
+                    <ToolCallDisplay />
                 </Box>
                 <Typography variant="body1">
                     <br />

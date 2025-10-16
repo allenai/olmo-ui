@@ -11,7 +11,7 @@ import { ComponentProps } from 'react';
 
 import { useSmallLayoutOrUp } from '../dolma/shared';
 
-type ResponsiveTooltipProps = {
+export type ResponsiveTooltipProps = {
     isTooltipOpen: boolean;
     onTooltipClose: () => void;
     dialogTitle: string;
