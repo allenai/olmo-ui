@@ -89,7 +89,7 @@ export const comparisonPageLoader = (queryClient: QueryClient): LoaderFunction =
         );
 
         const searchParams = new URL(request.url).searchParams;
-        // If no URL parameters provided, initialize with default models for comparison
+        // If no thread parameters provided in url search, initialize with default models for comparison
         if (searchParams.size === 0 || (searchParams.size === 1 && searchParams.has('template'))) {
             const comparisonModels = initializeDefaultComparisonModels(visibleModels);
             return {
