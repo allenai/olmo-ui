@@ -19,7 +19,7 @@ import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
-import { adminPageLoader } from './pages/admin/adminPageLoader';
+import { adminPageLoader, handleRevalidateAdmin } from './pages/admin/adminPageLoader';
 import { adminModelsLoader } from './pages/admin/modelConfig/adminModelsLoader';
 import { deleteModelAction } from './pages/admin/modelConfig/components/ModelConfigurationList/deleteModelAction';
 import { createModelAction } from './pages/admin/modelConfig/CreateModelPage/createModelAction';
@@ -118,6 +118,7 @@ export const routes: RouteObject[] = [
                     {
                         path: links.admin,
                         loader: adminPageLoader(queryClient),
+                        shouldRevalidate: handleRevalidateAdmin,
                         element: <AdminLayout />,
                         handle: { pageControls: <ThreadPageControls /> },
                         children: [

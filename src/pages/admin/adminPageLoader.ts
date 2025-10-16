@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { LoaderFunction } from 'react-router-dom';
+import type { LoaderFunction, ShouldRevalidateFunction } from 'react-router-dom';
 import { redirect } from 'react-router-dom';
 
 import { getUserModel } from '@/api/getWhoAmIModel';
@@ -24,4 +24,11 @@ export const adminPageLoader = (queryClient: QueryClient): LoaderFunction => {
 
         return null;
     };
+};
+
+// this is to handle that /admin redirects, if we add a 2xx response to /admin
+// we can remove this and let it resolve. This prevents clicking Admin from the /admin/models
+// page and getting a blank page.
+export const handleRevalidateAdmin: ShouldRevalidateFunction = ({ nextUrl }) => {
+    return nextUrl.pathname === links.admin;
 };
