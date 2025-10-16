@@ -933,6 +933,7 @@ export type components = {
             | 'model overloaded'
             | 'bad connection'
             | 'value error'
+            | 'tool error'
             | 'unknown';
         /** FlatMessage */
         readonly FlatMessage: {
@@ -1698,10 +1699,7 @@ export type components = {
             readonly modelType: components['schemas']['ModelType'];
             /** Name */
             readonly name: string;
-            /** Opts */
-            readonly opts: {
-                readonly [key: string]: unknown;
-            };
+            readonly opts: components['schemas']['InferenceOptionsResponse'];
             /** Tooldefinitions */
             readonly toolDefinitions: readonly components['schemas']['ToolDefinition'][];
             /**
@@ -2328,6 +2326,7 @@ export const finishReasonValues: ReadonlyArray<components['schemas']['FinishReas
     'model overloaded',
     'bad connection',
     'value error',
+    'tool error',
     'unknown',
 ];
 export const modelPrompt_typeValues: ReadonlyArray<components['schemas']['Model']['prompt_type']> =

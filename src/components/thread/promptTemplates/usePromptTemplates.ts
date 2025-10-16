@@ -2,15 +2,9 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { playgroundApiQueryClient } from '@/api/playgroundApi/playgroundApiClient';
 import {
-    SchemaInferenceOptionsResponse,
     SchemaPromptTemplateResponse,
     SchemaPromptTemplateResponseList,
 } from '@/api/playgroundApi/playgroundApiSchema';
-
-export interface PromptTemplate extends Omit<SchemaPromptTemplateResponse, 'opts'> {
-    opts: SchemaInferenceOptionsResponse;
-}
-export type PromptTemplateList = readonly PromptTemplate[];
 
 export const getPromptTemplatesQueryOptions = playgroundApiQueryClient.queryOptions(
     'get',
@@ -33,8 +27,9 @@ export const usePromptTemplateById = (id: string | undefined) => {
     });
 };
 
-export const templateById = (templateId: string | undefined) => (template: PromptTemplate) =>
-    template.id === templateId;
+export const templateById =
+    (templateId: string | undefined) => (template: SchemaPromptTemplateResponse) =>
+        template.id === templateId;
 
 export const selectPromptTemplateById =
     (templateId: string | undefined) => (templates: SchemaPromptTemplateResponseList) =>

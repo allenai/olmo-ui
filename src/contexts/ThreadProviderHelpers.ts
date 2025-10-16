@@ -1,11 +1,13 @@
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import type { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
+import type {
+    SchemaPromptTemplateResponse,
+    SchemaToolDefinition,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { SchemaCreateMessageRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { areModelsCompatibleForThread } from '@/components/thread/ModelSelect/useModels';
-import { PromptTemplate } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { clipToMinMax } from '@/utils/clipToMinMax';
 
 import type { ExtraParameters } from './QueryContext';
@@ -123,7 +125,7 @@ export type MessageInferenceParameters = Pick<
 export const getInitialInferenceParameters = (
     model?: Model,
     thread?: StreamingThread,
-    promptTemplate?: PromptTemplate
+    promptTemplate?: SchemaPromptTemplateResponse
 ): MessageInferenceParameters => {
     const constraints = getInferenceConstraints(model);
     const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);

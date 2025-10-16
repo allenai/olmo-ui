@@ -197,7 +197,7 @@ describe('ComparisonProvider', () => {
             });
         });
 
-        it.skip('should return true when no threads exist (fresh comparison page)', async () => {
+        it('should return true when no threads exist (fresh comparison page)', async () => {
             const userInfo = createMockUser();
 
             const NoThreadsComponent = () => {

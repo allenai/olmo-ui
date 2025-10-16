@@ -4,14 +4,16 @@ import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
-import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import {
+    SchemaPromptTemplateResponse,
+    SchemaToolCall,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
 import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
-import { PromptTemplate } from '../promptTemplates/usePromptTemplates';
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
 import { FileUploadButton, FileuploadPropsBase } from './FileUploadButton';
@@ -32,7 +34,7 @@ export interface QueryFormValues {
 
 interface QueryFormControllerProps {
     handleSubmit: SubmitHandler<QueryFormValues>;
-    promptTemplate?: PromptTemplate;
+    promptTemplate?: SchemaPromptTemplateResponse;
     canEditThread: boolean;
     placeholderText: string;
     autofocus: boolean;
