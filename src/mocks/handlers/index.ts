@@ -1,6 +1,5 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
-import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
 import {} from './';
@@ -41,10 +40,6 @@ export const handlers = [
         });
     }),
 
-    http.get(`${process.env.VITE_API_URL}${PromptTemplatesApiUrl}`, () => {
-        return HttpResponse.json(fakePromptsResponse);
-    }),
-
     http.get(`${process.env.VITE_DOLMA_API_URL}/v1/search`, ({ request }) => {
         const searchParams = new URL(request.url).searchParams;
         const query = searchParams.get('query');
@@ -70,14 +65,4 @@ export const handlers = [
             return HttpResponse.json(datasetDocumentResponse);
         }
     ),
-];
-
-const fakePromptsResponse: JSONPromptTemplateList = [
-    {
-        id: 'id',
-        name: 'name',
-        content: 'This is a prompt template',
-        creator: 'creator',
-        created: '1710371316729',
-    },
 ];

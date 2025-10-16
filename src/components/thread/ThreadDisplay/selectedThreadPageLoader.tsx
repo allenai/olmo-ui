@@ -2,7 +2,6 @@ import { defer, LoaderFunction, redirect } from 'react-router-dom';
 
 import { error } from '@/api/error';
 import { Thread, threadOptions } from '@/api/playgroundApi/thread';
-import { PromptTemplate } from '@/api/PromptTemplate';
 import { queryClient } from '@/api/query-client';
 import { Role } from '@/api/Role';
 import { appContext } from '@/AppContext';
@@ -19,7 +18,6 @@ export interface SelectedThreadLoaderData {
     selectedThread: Thread;
     attributions?: Promise<unknown>;
     selectedModelId?: string;
-    promptTemplate: PromptTemplate | null;
 }
 
 const handleThreadLoadError = (caughtError: unknown, threadId: string): never => {
