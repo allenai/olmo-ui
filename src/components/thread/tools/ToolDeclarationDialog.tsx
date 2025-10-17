@@ -127,7 +127,8 @@ export function ToolDeclarationDialog({
     onClose,
 }: ToolDeclarationDialogProps) {
     const { colorMode } = useColorMode();
-    const [tabSelected, setTabSelect] = useState<Key>('system-functions');
+    const initialTab = tools && tools.length > 0 ? 'system-functions' : 'user-functions';
+    const [tabSelected, setTabSelect] = useState<Key>(initialTab);
 
     const resolver: Resolver<DataFields> = (data) => {
         const validJson = validateToolDefinitions(data.declaration);
@@ -244,23 +245,25 @@ const TabbedContent = ({
     setTabSelect,
     tabSelected,
 }: TabbedContentProps) => {
+    const systemToolsTabItem: Items = {
+        id: 'system-functions',
+        header: (props) => <Tab {...props}>System tools</Tab>,
+        content: (props) => (
+            <TabPanel {...props} className={tabPanelClassName}>
+                <div className={tabContentContainer}>
+                    <p className={labelStyle}>Tools below will be added to the conversation.</p>
+                    <ControlledToolToggleTable
+                        isDisabled={isDisabled}
+                        control={{ control }}
+                        tools={tools}
+                    />
+                </div>
+            </TabPanel>
+        ),
+    };
+
     const items: Items[] = [
-        {
-            id: 'system-functions',
-            header: (props) => <Tab {...props}>System tools</Tab>,
-            content: (props) => (
-                <TabPanel {...props} className={tabPanelClassName}>
-                    <div className={tabContentContainer}>
-                        <p className={labelStyle}>Tools below will be added to the conversation.</p>
-                        <ControlledToolToggleTable
-                            isDisabled={isDisabled}
-                            control={{ control }}
-                            tools={tools}
-                        />
-                    </div>
-                </TabPanel>
-            ),
-        },
+        ...(tools && tools.length > 0 ? [systemToolsTabItem] : []),
         {
             id: 'user-functions',
             header: (props) => <Tab {...props}>User defined tools</Tab>,
