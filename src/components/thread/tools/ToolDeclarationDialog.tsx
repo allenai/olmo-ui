@@ -449,7 +449,7 @@ const ToolGroupSection = ({
     const selectionLabel = areAllSelected ? 'Unselect all' : 'Select all';
 
     return (
-        <Disclosure defaultExpanded className={cx('group', toolCallGroupClassName)}>
+        <Disclosure defaultExpanded className={toolCallGroupClassName}>
             <div className={toolGroupHeadingClassName}>
                 <Heading>
                     <AriaButton slot="trigger" className={headingButtonWithArrowClassName}>
