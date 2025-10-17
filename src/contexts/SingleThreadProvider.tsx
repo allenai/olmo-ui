@@ -41,7 +41,6 @@ import {
     getNonUserToolsFromThread,
     getThread,
     getUserToolDefinitionsFromThread,
-    hasUserTools,
     MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
