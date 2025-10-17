@@ -45,12 +45,19 @@ const modalBase = css({
     paddingTop: '4',
     paddingBottom: '6',
     paddingInline: '2',
+    height: '[750px]',
 });
 
 const modalHeading = css({
     color: 'accent.primary',
     fontSize: 'sm',
     fontWeight: 'regular',
+});
+
+const modalContentContainerClassName = css({
+    paddingInline: '0',
+    overflowY: 'hidden',
+    flexGrow: '1',
 });
 
 const labelStyle = css({
@@ -79,9 +86,16 @@ const modalInput = css({
 
 const fullHeight = css({ height: '[100%]' });
 
-const tabHeight = css({ height: '[min(60dvh, 600px)]' });
+const tabHeight = css({
+    height: '[100%]',
+});
 
-const textAreaContainer = css({
+const tabPanelClassName = css({
+    overflowY: 'auto',
+    paddingInline: '4',
+});
+
+const tabContentContainer = css({
     display: 'flex',
     flexDirection: 'column',
     height: '[100%]',
@@ -113,7 +127,7 @@ export function ToolDeclarationDialog({
     onClose,
 }: ToolDeclarationDialogProps) {
     const { colorMode } = useColorMode();
-    const [tabSelected, setTabSelect] = useState<Key>('user-functions');
+    const [tabSelected, setTabSelect] = useState<Key>('system-functions');
 
     const resolver: Resolver<DataFields> = (data) => {
         const validJson = validateToolDefinitions(data.declaration);
@@ -157,12 +171,14 @@ export function ToolDeclarationDialog({
     return (
         <Modal
             className={cx(colorMode, modalBase)}
+            contentClassName={modalContentContainerClassName}
             isOpen={isOpen}
             isDismissable
             fullWidth
             size="large"
             heading="Tool declarations"
             headingClassName={modalHeading}
+            dialogClassName={css({ height: '[100%]' })}
             closeButton={
                 <IconButton onClick={onClose} aria-label="Close tool declarations dialog">
                     <CloseIcon />
@@ -190,7 +206,7 @@ export function ToolDeclarationDialog({
                     </Button>
                 </ModalActions>
             }>
-            <form id={formId} onSubmit={handleSave}>
+            <form id={formId} onSubmit={handleSave} className={css({ height: '[100%]' })}>
                 <TabbedContent
                     tabSelected={tabSelected}
                     setTabSelect={setTabSelect}
@@ -230,11 +246,27 @@ const TabbedContent = ({
 }: TabbedContentProps) => {
     const items: Items[] = [
         {
+            id: 'system-functions',
+            header: (props) => <Tab {...props}>System tools</Tab>,
+            content: (props) => (
+                <TabPanel {...props} className={tabPanelClassName}>
+                    <div className={tabContentContainer}>
+                        <p className={labelStyle}>Tools below will be added to the conversation.</p>
+                        <ControlledToolToggleTable
+                            isDisabled={isDisabled}
+                            control={{ control }}
+                            tools={tools}
+                        />
+                    </div>
+                </TabPanel>
+            ),
+        },
+        {
             id: 'user-functions',
             header: (props) => <Tab {...props}>User defined tools</Tab>,
             content: (props) => (
-                <TabPanel {...props}>
-                    <div className={textAreaContainer}>
+                <TabPanel {...props} className={tabPanelClassName}>
+                    <div className={tabContentContainer}>
                         <p className={labelStyle}>
                             Enter a JSON array of tool declarations the model can call. Each tool
                             should include a name, description, and JSON Schema parameters. Start
@@ -284,22 +316,6 @@ const TabbedContent = ({
                 </TabPanel>
             ),
         },
-        {
-            id: 'system-functions',
-            header: (props) => <Tab {...props}>System tools</Tab>,
-            content: (props) => (
-                <TabPanel {...props}>
-                    <div className={textAreaContainer}>
-                        <p className={labelStyle}>Tools below will be added to the conversation.</p>
-                        <ControlledToolToggleTable
-                            isDisabled={isDisabled}
-                            control={{ control }}
-                            tools={tools}
-                        />
-                    </div>
-                </TabPanel>
-            ),
-        },
     ] as const;
 
     return (
@@ -309,6 +325,7 @@ const TabbedContent = ({
                 borderBottom: '1px solid',
                 borderBottomColor: 'links/50',
                 marginBottom: '2',
+                marginInline: '4',
             })}
             onSelectionChange={setTabSelect}
             selectedKey={tabSelected}
@@ -326,6 +343,9 @@ interface ControlledToggleTableProps {
 const toolNameGrid = css({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    smDown: {
+        gridTemplateColumns: '1fr',
+    },
     gap: '4',
     padding: '3',
     border: '1px solid',
@@ -348,7 +368,7 @@ const realToolName = css({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    width: '[300px]',
+    maxWidth: '[300px]',
     marginLeft: '[22px]',
     fontSize: 'sm',
 });
