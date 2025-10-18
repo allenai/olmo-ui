@@ -14,11 +14,14 @@ export function parseComparisonSearchParams(
         length: minCount,
     }).map(() => ({}));
     search.forEach((value, key) => {
-        // Expected key format is `paramType-position` (starts at 1), e.g. thread-1, model-2, template-1
+        // Expected key format is `paramType-position` (starts at 1), e.g. thread-1=, model-2=, template-1=
         // This is to allow multiple threads/models/templates to be specified in the URL without
         // needing to rely on a specific order of parameters passed in the URL
         const [paramType, position] = key.split('-');
-        const idx = position ? parseInt(position, 10) - 1 : -1;
+        const positionNumber = Number(position || '1'); // thread= or model= defaults to position 1
+
+        // if not an integer, set to invalid index (filters out NaN, undefined, Infinity, floats)
+        const idx = Number.isInteger(positionNumber) ? positionNumber - 1 : -1;
         if (idx < 0 || idx > maxCount - 1) {
             // Invalid position, ignore
             return;
