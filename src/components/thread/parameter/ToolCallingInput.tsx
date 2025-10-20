@@ -70,7 +70,16 @@ export const ToolCallingToggle = ({
         useQueryContext();
 
     const canCreateToolDefinitions = !componentDisabled && canCallTools && !threadStarted;
-    const canEditToolDefinitions = !componentDisabled && !threadStarted && isToolCallingEnabled;
+    const canEditToolDefinitions = !componentDisabled && isToolCallingEnabled;
+
+    console.log('ToolCallingToggle render', {
+        componentDisabled,
+        threadStarted,
+        canCallTools,
+        isToolCallingEnabled,
+        canCreateToolDefinitions,
+        canEditToolDefinitions,
+    });
 
     const [shouldShowToolsDialog, setShouldShowToolsDialog] = useState(false);
 
