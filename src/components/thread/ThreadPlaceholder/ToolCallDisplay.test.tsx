@@ -32,7 +32,7 @@ const mockModelsApi = (models: ReturnType<typeof createMockModel>[]) => {
 const renderWithProvider = ({ selectedModelId }: { selectedModelId: string }) => {
     return render(
         <FakeAppContextProvider initialState={{}}>
-            <SingleThreadProvider initialState={{ selectedModelId }}>
+            <SingleThreadProvider initialState={{ modelId: selectedModelId }}>
                 <ToolCallDisplay />
             </SingleThreadProvider>
         </FakeAppContextProvider>
