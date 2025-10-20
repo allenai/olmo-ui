@@ -12,7 +12,7 @@ export const getPromptTemplatesQueryOptions = playgroundApiQueryClient.queryOpti
 );
 
 export const usePromptTemplates = (
-    options: Pick<typeof getPromptTemplatesQueryOptions, 'select'>
+    options?: Pick<typeof getPromptTemplatesQueryOptions, 'select'>
 ) => {
     return useSuspenseQuery({
         ...getPromptTemplatesQueryOptions,

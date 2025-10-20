@@ -98,4 +98,17 @@ describe('parseCompareSearchParams', () => {
             { threadId: 'thread4-id', modelId: 'model4-id' },
         ]);
     });
+
+    it('should support legacy comma-separated thread and model params', () => {
+        const searchParams = new URLSearchParams();
+        searchParams.append('threads', 'thread1-id,thread2-id,thread3-id');
+        searchParams.append('models', 'model1-id,model2-id,model3-id');
+
+        const result = parseComparisonSearchParams(searchParams, minCount, maxCount);
+        expect(result).toEqual([
+            { threadId: 'thread1-id', modelId: 'model1-id' },
+            { threadId: 'thread2-id', modelId: 'model2-id' },
+            { threadId: 'thread3-id', modelId: 'model3-id' },
+        ]);
+    });
 });

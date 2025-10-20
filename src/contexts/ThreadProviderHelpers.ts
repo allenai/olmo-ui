@@ -52,8 +52,6 @@ export const getUserToolDefinitionsFromToolList = (toolDefs: readonly SchemaTool
         .filter((def) => def.toolSource === 'user_defined')
         .map(({ toolSource, ...def }) => def); // Remove toolSource property
 
-    console.log('userToolDefs', userToolDefs);
-
     return JSON.stringify(userToolDefs, null, 2);
 };
 
