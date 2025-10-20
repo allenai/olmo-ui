@@ -72,15 +72,6 @@ export const ToolCallingToggle = ({
     const canCreateToolDefinitions = !componentDisabled && canCallTools && !threadStarted;
     const canEditToolDefinitions = !componentDisabled && isToolCallingEnabled;
 
-    console.log('ToolCallingToggle render', {
-        componentDisabled,
-        threadStarted,
-        canCallTools,
-        isToolCallingEnabled,
-        canCreateToolDefinitions,
-        canEditToolDefinitions,
-    });
-
     const [shouldShowToolsDialog, setShouldShowToolsDialog] = useState(false);
 
     const handleClose = () => {
