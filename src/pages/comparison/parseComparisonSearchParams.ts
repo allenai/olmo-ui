@@ -4,15 +4,16 @@ type ThreadParams = {
 };
 export const MIN_COMPARE_THREAD_COUNT = 2;
 export const MAX_COMPARE_THREAD_COUNT = 3;
+export const PARAMS_REGEX = /^(thread|model)-(\d+)$/;
 
 export function parseComparisonSearchParams(
     search: URLSearchParams,
     minCount = MIN_COMPARE_THREAD_COUNT,
     maxCount = MAX_COMPARE_THREAD_COUNT
 ): ThreadParams[] {
-    const threadParamsList: ThreadParams[] = Array.from({
-        length: minCount,
-    }).map(() => ({}));
+    const threadParamsList = Array.from({ length: minCount }, () => {
+        return {} as ThreadParams;
+    });
 
     search.forEach((value, key) => {
         // Legacy support for comma-separated thread/model lists
@@ -34,10 +35,14 @@ export function parseComparisonSearchParams(
             return;
         }
 
-        // Expected key format is `paramType-position` (starts at 1), e.g. thread-1=, model-2=, template-1=
+        // Expected key format is `paramType[position]` (starts at 1), e.g. thread[1]= and model[2]=
         // This is to allow multiple threads/models/templates to be specified in the URL without
         // needing to rely on a specific order of parameters passed in the URL
-        const [paramType, position] = key.split('-');
+        const match = key.match(PARAMS_REGEX);
+        if (!match) {
+            return;
+        }
+        const [_match, paramType, position] = match;
         const positionNumber = Number(position);
 
         // if not an integer, set to invalid index (filters out NaN, undefined, Infinity, floats)

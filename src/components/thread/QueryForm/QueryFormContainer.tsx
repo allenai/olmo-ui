@@ -1,5 +1,5 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 import { QueryForm } from './QueryForm';
 import { QueryFormNotice, type QueryFormNoticeProps } from './QueryFormNotices';
@@ -16,7 +16,7 @@ interface QueryFormContainerProps extends QueryFormNoticeProps {}
 
 export const QueryFormContainer = ({
     selectedModelFamilyId,
-}: QueryFormContainerProps): ReactElement => {
+}: QueryFormContainerProps): ReactNode => {
     return (
         <div className={queryFormContainerClassName}>
             <QueryForm />
