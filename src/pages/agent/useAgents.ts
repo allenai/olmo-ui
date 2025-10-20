@@ -1,4 +1,6 @@
 import type { Agent } from '@/api/playgroundApi/additionalTypes';
+// temp image:
+import placeholderImage from '@/assets/dolma-research.jpg';
 
 const availableAgents: Agent[] = [
     {
@@ -6,6 +8,7 @@ const availableAgents: Agent[] = [
         name: 'Deep Research',
         description: 'Deep Research agent',
         accepts_files: false,
+        card_image: placeholderImage,
     },
 ];
 
