@@ -12,7 +12,6 @@ const toolCallResponseRecipe = sva({
     slots: ['widget', 'wrapper', 'inputContainer', 'label', 'input', 'error'],
     base: {
         widget: {
-            // display: 'flex',
             display: 'grid',
             gridTemplateAreas: '"label ." "input button" "error ."',
             gridTemplateColumns: '1fr auto',
