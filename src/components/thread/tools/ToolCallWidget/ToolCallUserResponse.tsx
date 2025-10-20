@@ -13,8 +13,7 @@ const toolCallResponseRecipe = sva({
     base: {
         widget: {
             display: 'grid',
-            gridTemplateAreas: '"label ." "input button" "error ."',
-            gridTemplateColumns: '1fr auto',
+            gridTemplateAreas: '"label" "input" "error"',
             gridTemplateRows: 'repeat(3, min-content)',
             gap: '2',
             alignItems: 'center',
@@ -30,13 +29,15 @@ const toolCallResponseRecipe = sva({
         },
         inputContainer: {
             gridArea: 'input',
+            paddingInlineEnd: '1',
             backgroundColor: 'elements.overrides.form.input.fill',
-            borderColor: 'elements.overrides.form.input.stroke',
+            borderColor: 'elements.overrides.form.input.hovered.stroke',
         },
         label: {
             gridArea: 'label',
             _groupInvalid: {
-                color: 'text', // just prevents error reda
+                // just prevents error red - seems like overkill with error message being red too
+                color: 'text',
             },
         },
         input: {
@@ -88,22 +89,22 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         inputClassName={classNames.input}
                         errorClassName={classNames.error}
                         isDisabled={isPending}
+                        endControls={
+                            <QueryFormButton
+                                sx={{
+                                    color: 'secondary.main',
+                                    '&:hover': {
+                                        // should this be the default for this control?
+                                        color: 'secondary.dark',
+                                    },
+                                }}
+                                type="submit"
+                                aria-label="Submit function response"
+                                disabled={isPending}>
+                                <Send />
+                            </QueryFormButton>
+                        }
                     />
-                    <QueryFormButton
-                        sx={{
-                            color: 'secondary.main',
-                            '&:hover': {
-                                // should this be the default for this control?
-                                color: 'secondary.dark',
-                            },
-                            alignSelf: 'center',
-                            gridArea: 'button',
-                        }}
-                        type="submit"
-                        aria-label="Submit function response"
-                        disabled={isPending}>
-                        <Send />
-                    </QueryFormButton>
                 </CollapsibleWidgetContent>
             </form>
         </FormProvider>
