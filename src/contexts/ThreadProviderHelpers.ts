@@ -1,4 +1,4 @@
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { Model, ModelList } from '@/api/playgroundApi/additionalTypes';
 import type { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
 import { SchemaCreateMessageRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
@@ -101,7 +101,7 @@ export const hasUserTools = (toolJson: string | undefined) => {
     }
 };
 
-export function areAllModelsCompatible(models: readonly Model[]): boolean {
+export function areAllModelsCompatible(models: ModelList): boolean {
     if (models.length < 2) return true;
 
     for (let i = 0; i < models.length; i++) {

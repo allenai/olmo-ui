@@ -1,5 +1,5 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model, ModelList } from '@/api/playgroundApi/additionalTypes';
 import { CompareModelState } from '@/slices/CompareModelSlice';
 
 // Track model selection for analytics
@@ -8,7 +8,7 @@ export const trackModelSelection = (modelId: string) => {
 };
 
 // Find model by ID in models array
-export const findModelById = (models: Model[], modelId: string): Model | undefined => {
+export const findModelById = (models: ModelList, modelId: string): Model | undefined => {
     return models.find((model) => model.id === modelId);
 };
 

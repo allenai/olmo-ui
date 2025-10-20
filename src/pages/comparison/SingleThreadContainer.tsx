@@ -1,6 +1,6 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
 
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { ModelList } from '@/api/playgroundApi/additionalTypes';
 import { ThreadId, useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
@@ -19,7 +19,7 @@ const singleThreadClasses = css({
 
 interface SingleThreadContainerProps {
     threadViewIdx: string;
-    models: Model[];
+    models: ModelList;
     threadRootId?: ThreadId;
 }
 

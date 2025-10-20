@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import { useRef, useState } from 'react';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { Model, ModelList } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
 import { ModelChangeHookResult } from '@/components/thread/ModelSelect/modelChangeTypes';
 import {
@@ -50,7 +50,7 @@ const isCompatibleWithOtherComparisonModels = (
 
 export const useHandleChangeCompareModel = (
     threadViewId: string,
-    models: Model[]
+    models: ModelList
 ): ModelChangeHookResult => {
     const { setSelectedCompareModelAt, setSelectedCompareModels } = useAppContext();
     const selectedCompareModels = useAppContext((state) => state.selectedCompareModels);

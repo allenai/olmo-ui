@@ -6,7 +6,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { DisclosureGroup } from 'react-aria-components';
 import { useFormContext } from 'react-hook-form';
 
-import { SchemaRootCreateModelConfigRequest } from '@/api/playgroundApi/playgroundApiSchema';
+import { SchemaResponseModel } from '@/api/playgroundApi/playgroundApiSchema';
 import { ControlledDatePicker } from '@/components/form/ControlledDatePicker';
 import { ControlledInput } from '@/components/form/ControlledInput';
 import { ControlledRadioGroup } from '@/components/form/ControlledRadioGroup';
@@ -47,7 +47,7 @@ type BaseModelFormFieldValues = {
     inferenceConstraints: InferenceConstrints;
 } & Partial<
     Pick<
-        SchemaRootCreateModelConfigRequest,
+        SchemaResponseModel,
         | 'defaultSystemPrompt'
         | 'description'
         | 'familyId'

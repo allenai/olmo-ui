@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from '@mui/material';
 import { type ReactNode, useId } from 'react';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ModelList } from '@/api/playgroundApi/additionalTypes';
 import { useQueryContext } from '@/contexts/QueryContext';
 
 import { ModelSelect } from './ModelSelectInput';
@@ -30,7 +30,7 @@ export const SingleThreadModelSelect = (): ReactNode => {
 
 interface ThreadModelSelectProps {
     threadViewId: string;
-    models: Model[];
+    models: ModelList;
 }
 
 export const ThreadModelSelect = ({ threadViewId, models }: ThreadModelSelectProps) => {

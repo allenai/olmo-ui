@@ -1,7 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { LoaderFunction, Outlet, ShouldRevalidateFunction, useLoaderData } from 'react-router-dom';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { appContext } from '@/AppContext';
 import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
@@ -69,7 +68,7 @@ export const playgroundLoader =
     async ({ params, request }) => {
         const { resetSelectedThreadState, resetAttribution } = appContext.getState();
 
-        const models = (await queryClient.ensureQueryData(getModelsQueryOptions)) as Model[];
+        const models = await queryClient.ensureQueryData(getModelsQueryOptions);
 
         if (params.id === undefined) {
             resetSelectedThreadState();

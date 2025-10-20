@@ -11,12 +11,12 @@ import {
 } from '@mui/material';
 import { type ReactNode, useId } from 'react';
 
-import type { Model } from '@/api/playgroundApi/additionalTypes';
+import type { ModelList } from '@/api/playgroundApi/additionalTypes';
 
 import { ModelSelectMenuItem } from './ModelSelectMenuItem';
 
 export interface ModelSelectProps extends Pick<SelectProps<string>, 'defaultOpen'> {
-    models: Model[];
+    models: ModelList;
     selectedModelId?: string;
     onModelChange: SelectProps<string>['onChange'];
     id?: string;

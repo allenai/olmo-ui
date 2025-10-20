@@ -7,7 +7,3 @@ export const formatValueAsPercentage = (value: number, totalSum: number) => {
 };
 
 export type NullishPartial<T> = { [P in keyof T]?: T[P] | null };
-
-export type Mutable<T> = {
-    -readonly [P in keyof T]: T[P];
-};
