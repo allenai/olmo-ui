@@ -9,16 +9,9 @@ export const QueryForm = (): JSX.Element => {
 
     return (
         <QueryFormController
+            {...queryContext}
             handleSubmit={queryContext.onSubmit}
-            placeholderText={queryContext.placeholderText}
-            areFilesAllowed={queryContext.areFilesAllowed}
-            autofocus={queryContext.autofocus}
             canEditThread={queryContext.canSubmit}
-            onAbort={queryContext.onAbort}
-            canPauseThread={queryContext.canPauseThread}
-            isLimitReached={queryContext.isLimitReached}
-            remoteState={queryContext.remoteState}
-            fileUploadProps={queryContext.fileUploadProps}
         />
     );
 };

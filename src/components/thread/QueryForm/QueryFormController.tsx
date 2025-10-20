@@ -3,11 +3,15 @@ import { KeyboardEvent, UIEvent, useEffect, useState } from 'react';
 import { Controller, FormContainer, SubmitHandler, useForm } from 'react-hook-form-mui';
 import { useNavigation } from 'react-router-dom';
 
-import { SchemaToolCall } from '@/api/playgroundApi/playgroundApiSchema';
+import {
+    SchemaPromptTemplateResponse,
+    SchemaToolCall,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { FlatMessage } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
 import { RemoteState } from '@/contexts/util';
+import { fetchFilesByUrls } from '@/utils/fetchFilesByUrl';
 
 import { AudioInputButton } from './AudioTranscription/AudioInputButton';
 import { Waveform } from './AudioTranscription/Waveform';
@@ -29,6 +33,7 @@ export interface QueryFormValues {
 
 interface QueryFormControllerProps {
     handleSubmit: SubmitHandler<QueryFormValues>;
+    promptTemplate?: SchemaPromptTemplateResponse;
     canEditThread: boolean;
     placeholderText: string;
     autofocus: boolean;
@@ -44,6 +49,7 @@ export const QueryFormController = ({
     handleSubmit,
     // props
     canEditThread,
+    promptTemplate,
     placeholderText,
     autofocus,
     areFilesAllowed,
@@ -89,10 +95,26 @@ export const QueryFormController = ({
     });
 
     useEffect(() => {
+        if (promptTemplate && !formContext.formState.isDirty) {
+            formContext.setValue('content', promptTemplate.content);
+        }
+    }, [formContext, promptTemplate]);
+
+    useEffect(() => {
         if (!areFilesAllowed) {
             formContext.setValue('files', undefined);
+        } else if (promptTemplate?.fileUrls && promptTemplate.fileUrls.length) {
+            fetchFilesByUrls([...promptTemplate.fileUrls])
+                .then((downloadedFiles) => {
+                    const dataTransfer = new DataTransfer();
+                    downloadedFiles.forEach((file) => {
+                        dataTransfer.items.add(file);
+                    });
+                    formContext.setValue('files', dataTransfer.files);
+                })
+                .catch(() => undefined);
         }
-    }, [formContext, areFilesAllowed]);
+    }, [formContext, areFilesAllowed, promptTemplate?.fileUrls]);
 
     const files = formContext.watch('files');
 

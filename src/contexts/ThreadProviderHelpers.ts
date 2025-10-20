@@ -1,5 +1,8 @@
 import { Model } from '@/api/playgroundApi/additionalTypes';
-import type { SchemaToolDefinition } from '@/api/playgroundApi/playgroundApiSchema';
+import type {
+    SchemaPromptTemplateResponse,
+    SchemaToolDefinition,
+} from '@/api/playgroundApi/playgroundApiSchema';
 import { SchemaCreateMessageRequest } from '@/api/playgroundApi/playgroundApiSchema';
 import { type FlatMessage, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
@@ -42,6 +45,14 @@ export const getNonUserToolsFromThread = (threadId: string | undefined): SchemaT
     const toolDefs = lastMessage?.toolDefinitions || [];
     const userToolDefs = toolDefs.filter((def) => def.toolSource !== 'user_defined');
     return userToolDefs;
+};
+
+export const getUserToolDefinitionsFromToolList = (toolDefs: readonly SchemaToolDefinition[]) => {
+    const userToolDefs = toolDefs
+        .filter((def) => def.toolSource === 'user_defined')
+        .map(({ toolSource, ...def }) => def); // Remove toolSource property
+
+    return JSON.stringify(userToolDefs, null, 2);
 };
 
 export const getUserToolDefinitionsFromThread = (
@@ -121,13 +132,15 @@ export type MessageInferenceParameters = Pick<
 
 export const getInitialInferenceParameters = (
     model?: Model,
-    thread?: StreamingThread
+    thread?: StreamingThread,
+    promptTemplate?: SchemaPromptTemplateResponse
 ): MessageInferenceParameters => {
     const constraints = getInferenceConstraints(model);
     const lastLLMMessage = thread?.messages.filter((msg) => msg.role === Role.LLM).at(-1);
     const inferenceParams: MessageInferenceParameters = {
         temperature: clipToMinMax(
             lastLLMMessage?.opts.temperature ??
+                promptTemplate?.opts.temperature ??
                 model?.temperature_default ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.temperature,
             constraints.temperature.minValue,
@@ -135,6 +148,7 @@ export const getInitialInferenceParameters = (
         ),
         topP: clipToMinMax(
             lastLLMMessage?.opts.topP ??
+                promptTemplate?.opts.topP ??
                 model?.top_p_default ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.topP,
             constraints.topP.minValue,
@@ -142,15 +156,24 @@ export const getInitialInferenceParameters = (
         ),
         maxTokens: clipToMinMax(
             lastLLMMessage?.opts.maxTokens ??
+                promptTemplate?.opts.maxTokens ??
                 model?.max_tokens_default ??
                 DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.maxTokens,
             constraints.maxTokens.minValue,
             constraints.maxTokens.maxValue
         ),
-        n: lastLLMMessage?.opts.n ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.n,
+        n:
+            lastLLMMessage?.opts.n ??
+            promptTemplate?.opts.n ??
+            DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.n,
         logprobs:
-            lastLLMMessage?.opts.logprobs ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.logprobs,
-        stop: lastLLMMessage?.opts.stop ?? DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.stop,
+            lastLLMMessage?.opts.logprobs ??
+            promptTemplate?.opts.logprobs ??
+            DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.logprobs,
+        stop:
+            lastLLMMessage?.opts.stop ??
+            promptTemplate?.opts.stop ??
+            DEFAULT_INFERENCE_OPTS_FOR_MODEL_COMPARISON.stop,
     };
 
     return inferenceParams;
@@ -174,6 +197,11 @@ export type ModelInferenceConstraints = {
     };
 };
 
+/**
+ * Get inference constraints for a specific model
+ * @param model - If undefined, returns general constraints as fallback
+ * @returns Inference constraints with min, max, and step values
+ */
 export const getInferenceConstraints = (model?: Model): ModelInferenceConstraints => {
     return {
         temperature: {

@@ -15,6 +15,7 @@ import {
     defaultInferenceConstraintsCamel,
     defaultInferenceParametersCamel,
 } from '@/mocks/handlers/defaultInferenceConstraints';
+import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 import {
     convertMessagesForSetup,
@@ -54,10 +55,7 @@ const defaultInferenceConstraints = {
 };
 
 // Test helper to render hook with SingleThreadProvider context
-const renderProvider = (
-    initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
-    mockUserInfo?: User | null
-) => {
+const renderProvider = (initialState?: PlaygroundLoaderData, mockUserInfo?: User | null) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
 
     mockUseParams.mockReturnValue({ id: initialState?.threadId });
@@ -234,7 +232,7 @@ describe('SingleThreadProvider', () => {
 
         it('should return "Message Tülu" when Tulu model is selected', async () => {
             const { result } = renderProvider({
-                selectedModelId: 'tulu2',
+                modelId: 'tulu2',
             });
 
             await waitFor(() => {
@@ -244,7 +242,7 @@ describe('SingleThreadProvider', () => {
 
         it('should return "Reply to Tülu" when model is selected and thread exists', async () => {
             const { result } = renderProvider({
-                selectedModelId: 'tulu2',
+                modelId: 'tulu2',
                 threadId: 'existing-thread-123',
             });
 
@@ -349,7 +347,7 @@ describe('SingleThreadProvider', () => {
 
         it('should include deprecated models if they are selected', async () => {
             const { result } = renderProvider({
-                selectedModelId: 'olmo-7b-chat', // This is deprecated and not visible
+                modelId: 'olmo-7b-chat', // This is deprecated and not visible
             });
 
             await waitFor(() => {
@@ -366,7 +364,7 @@ describe('SingleThreadProvider', () => {
     describe('areFilesAllowed', () => {
         it('should return true when selected model accepts files', async () => {
             const { result } = renderProvider({
-                selectedModelId: 'molmo', // molmo model has accepts_files: true
+                modelId: 'molmo', // molmo model has accepts_files: true
             });
 
             await waitFor(() => {
@@ -376,7 +374,7 @@ describe('SingleThreadProvider', () => {
 
         it('should return false when selected model does not accept files', async () => {
             const { result } = renderProvider({
-                selectedModelId: 'tulu2', // tulu2 model has accepts_files: false
+                modelId: 'tulu2', // tulu2 model has accepts_files: false
             });
 
             await waitFor(() => {
@@ -627,7 +625,7 @@ describe('SingleThreadProvider', () => {
                 messages: convertMessagesForSetup(mockThread.messages),
             });
 
-            const { result } = renderProvider({ threadId, selectedModelId: 'molmo' }, mockUser);
+            const { result } = renderProvider({ threadId, modelId: 'molmo' }, mockUser);
 
             await waitFor(() => {
                 expect(result.current.fileUploadProps.isFileUploadDisabled).toBe(false);
@@ -660,7 +658,7 @@ describe('SingleThreadProvider', () => {
             });
 
             const { result } = renderProvider(
-                { threadId, selectedModelId: 'test-multi-modal-model-16' },
+                { threadId, modelId: 'test-multi-modal-model-16' },
                 mockUser
             );
 

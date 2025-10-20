@@ -33,11 +33,13 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
         );
     };
 
-    const loadComparisonPage = async () => {
+    const loadComparisonPage = async (searchParams?: string) => {
         const loader = comparisonPageLoader(queryClient);
         return (await loader({
             params: {},
-            request: new Request('http://localhost:8080/comparison'),
+            request: new Request(
+                `http://localhost:8080/comparison${searchParams ? `?${searchParams}` : ''}`
+            ),
         })) as ComparisonLoaderData;
     };
 
@@ -169,6 +171,22 @@ describe('comparisonPageLoader: Model Selection Behaviors', () => {
                 // The fallback behavior: when no compatible models found, use the first model
                 expect(comparisonModels[1].model!.id).toBe(firstModel.id);
             });
+        });
+    });
+
+    describe('Prompt Template Handling', () => {
+        it('should return a promptTemplateId for new threads', async () => {
+            const result = await loadComparisonPage('template=tpl_12345');
+
+            expect(result.promptTemplateId).toBe('tpl_12345');
+        });
+
+        it('should not return a promptTemplateId for existing threads', async () => {
+            const result = await loadComparisonPage(
+                'thread-1=thread-1&thread-2=thread-2&template=tpl_12345'
+            );
+
+            expect(result.promptTemplateId).toBeUndefined();
         });
     });
 });

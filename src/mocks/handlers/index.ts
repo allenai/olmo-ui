@@ -1,6 +1,5 @@
 import { http, HttpResponse, passthrough } from 'msw';
 
-import { JSONPromptTemplateList, PromptTemplatesApiUrl } from '@/api/PromptTemplate';
 import { MigrateFromAnonymousUserUrl, WhoamiApiUrl } from '@/api/User';
 
 import { attributionHandlers } from './attributionHandlers';
@@ -9,6 +8,7 @@ import { messageStreamHandlers } from './messageStreamHandlers';
 import { datasetDocumentResponse } from './responses/datasetDocumentResponse';
 import { datasetSearchResponse } from './responses/datasetSearchResponse';
 import { v4ModelsHandlers } from './v4ModelsHandlers';
+import { v4PromptTemplatesHandlers } from './v4PromptTemplatesHandlers';
 import { v4ThreadHandlers } from './v4ThreadHandlers';
 import { v4TranscriptionHandlers } from './v4TranscriptionHandlers';
 
@@ -19,6 +19,7 @@ export const handlers = [
     ...v4ThreadHandlers,
     ...v4ModelsHandlers,
     ...v4TranscriptionHandlers,
+    ...v4PromptTemplatesHandlers,
 
     http.get(`${process.env.VITE_API_URL}${WhoamiApiUrl}`, () => {
         return HttpResponse.json({
@@ -36,10 +37,6 @@ export const handlers = [
             },
             messages_updated_count: 0,
         });
-    }),
-
-    http.get(`${process.env.VITE_API_URL}${PromptTemplatesApiUrl}`, () => {
-        return HttpResponse.json(fakePromptsResponse);
     }),
 
     http.get(`${process.env.VITE_DOLMA_API_URL}/v1/search`, ({ request }) => {
@@ -67,14 +64,4 @@ export const handlers = [
             return HttpResponse.json(datasetDocumentResponse);
         }
     ),
-];
-
-const fakePromptsResponse: JSONPromptTemplateList = [
-    {
-        id: 'id',
-        name: 'name',
-        content: 'This is a prompt template',
-        creator: 'creator',
-        created: '1710371316729',
-    },
 ];

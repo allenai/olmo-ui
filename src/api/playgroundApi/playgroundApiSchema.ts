@@ -301,6 +301,42 @@ export type paths = {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly '/v4/prompt-templates/': {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /** Get available prompt templates */
+        readonly get: {
+            readonly parameters: {
+                readonly query?: never;
+                readonly header?: never;
+                readonly path?: never;
+                readonly cookie?: never;
+            };
+            readonly requestBody?: never;
+            readonly responses: {
+                /** @description A PromptTemplateResponseList */
+                readonly 200: {
+                    headers: {
+                        readonly [name: string]: unknown;
+                    };
+                    content: {
+                        readonly 'application/json': components['schemas']['PromptTemplateResponseList'];
+                    };
+                };
+            };
+        };
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly '/v4/threads/': {
         readonly parameters: {
             readonly query?: never;
@@ -897,6 +933,7 @@ export type components = {
             | 'model overloaded'
             | 'bad connection'
             | 'value error'
+            | 'tool error'
             | 'unknown';
         /** FlatMessage */
         readonly FlatMessage: {
@@ -1637,6 +1674,42 @@ export type components = {
             /** Type */
             readonly type: string;
         };
+        /** PromptTemplateResponse */
+        readonly PromptTemplateResponse: {
+            /** Content */
+            readonly content: string;
+            /**
+             * Created
+             * Format: date-time
+             */
+            readonly created: string;
+            /** Creator */
+            readonly creator: string;
+            /**
+             * Extraparameters
+             * @default null
+             */
+            readonly extraParameters?: {
+                readonly [key: string]: unknown;
+            } | null;
+            /** Fileurls */
+            readonly fileUrls: readonly string[] | null;
+            /** Id */
+            readonly id: string;
+            readonly modelType: components['schemas']['ModelType'];
+            /** Name */
+            readonly name: string;
+            readonly opts: components['schemas']['InferenceOptionsResponse'];
+            /** Tooldefinitions */
+            readonly toolDefinitions: readonly components['schemas']['ToolDefinition'][];
+            /**
+             * Updated
+             * Format: date-time
+             */
+            readonly updated: string;
+        };
+        /** PromptTemplateResponseList */
+        readonly PromptTemplateResponseList: readonly components['schemas']['PromptTemplateResponse'][];
         /**
          * Rating
          * @enum {integer}
@@ -2196,6 +2269,8 @@ export type SchemaModelType = components['schemas']['ModelType'];
 export type SchemaMultiModalModel = components['schemas']['MultiModalModel'];
 export type SchemaMultiModalResponseModel = components['schemas']['MultiModalResponseModel'];
 export type SchemaParameterDef = components['schemas']['ParameterDef'];
+export type SchemaPromptTemplateResponse = components['schemas']['PromptTemplateResponse'];
+export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemplateResponseList'];
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
@@ -2251,6 +2326,7 @@ export const finishReasonValues: ReadonlyArray<components['schemas']['FinishReas
     'model overloaded',
     'bad connection',
     'value error',
+    'tool error',
     'unknown',
 ];
 export const modelPrompt_typeValues: ReadonlyArray<components['schemas']['Model']['prompt_type']> =

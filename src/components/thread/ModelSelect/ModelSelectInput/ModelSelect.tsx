@@ -16,7 +16,7 @@ import type { Model } from '@/api/playgroundApi/additionalTypes';
 import { ModelSelectMenuItem } from './ModelSelectMenuItem';
 
 export interface ModelSelectProps extends Pick<SelectProps<string>, 'defaultOpen'> {
-    models: Model[];
+    models: readonly Model[];
     selectedModelId?: string;
     onModelChange: SelectProps<string>['onChange'];
     id?: string;

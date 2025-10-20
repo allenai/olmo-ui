@@ -107,7 +107,7 @@ export const CompareThreadDisplay = () => {
                 <SingleThreadContainer
                     threadViewIdx={threadViewId}
                     threadRootId={threadId}
-                    models={models}
+                    models={[...models]}
                 />
             </ComparisonTabPanel>
         );

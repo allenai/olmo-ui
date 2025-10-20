@@ -2,6 +2,7 @@ import { SelectChangeEvent } from '@mui/material';
 import React, { UIEvent } from 'react';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
+import { SchemaPromptTemplateResponse } from '@/api/playgroundApi/playgroundApiSchema';
 import { CreateMessageRequest } from '@/api/playgroundApi/thread';
 import { FileuploadPropsBase } from '@/components/thread/QueryForm/FileUploadButton';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
@@ -15,6 +16,7 @@ export type ExtraParameters = Record<string, unknown>;
 interface QueryContextValue {
     // Form state properties
     threadStarted: boolean;
+    promptTemplate?: SchemaPromptTemplateResponse;
     canSubmit: boolean;
     autofocus: boolean;
     placeholderText: string;
@@ -28,7 +30,7 @@ interface QueryContextValue {
     remoteState?: RemoteState;
     shouldResetForm?: boolean;
     fileUploadProps: FileuploadPropsBase;
-    availableModels: Model[];
+    availableModels: readonly Model[];
 
     onModelChange: (event: SelectChangeEvent, threadViewId?: string) => void;
     getThreadViewModel: (threadViewId?: string) => Model | undefined;

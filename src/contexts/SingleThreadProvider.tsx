@@ -14,15 +14,14 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
 import { useAppContext } from '@/AppContext';
-import {
-    findModelById,
-    trackModelSelection,
-} from '@/components/thread/ModelSelect/modelChangeUtils';
+import { trackModelSelection } from '@/components/thread/ModelSelect/modelChangeUtils';
 import { ModelChangeWarningModal } from '@/components/thread/ModelSelect/ModelChangeWarningModal';
-import { isModelVisible, useModels } from '@/components/thread/ModelSelect/useModels';
+import { isModelAvailable, useModels } from '@/components/thread/ModelSelect/useModels';
+import { usePromptTemplateById } from '@/components/thread/promptTemplates/usePromptTemplates';
 import { convertToFileUploadProps } from '@/components/thread/QueryForm/compareFileUploadProps';
 import { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { links } from '@/Links';
+import { PlaygroundLoaderData } from '@/pages/playgroundLoader';
 import { useAbortStreamOnNavigation } from '@/utils/useAbortStreamOnNavigation-utils';
 
 import { type ExtraParameters, QueryContext, QueryContextValue } from './QueryContext';
@@ -41,35 +40,27 @@ import {
     getNonUserToolsFromThread,
     getThread,
     getUserToolDefinitionsFromThread,
+    getUserToolDefinitionsFromToolList,
+    hasUserTools,
     MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
 import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
-interface SingleThreadState {
-    selectedModelId?: string;
-    threadId?: string;
-}
-
-// TODO: Implement the logic for valid initial states (currently in the page loaders)
-
-interface SingleThreadProviderProps
-    extends PropsWithChildren<{
-        initialState?: Partial<SingleThreadState>;
-    }> {}
+type SingleThreadProviderProps = PropsWithChildren<{
+    initialState?: PlaygroundLoaderData;
+}>;
 
 const SingleThreadProviderContent = ({ children, initialState }: SingleThreadProviderProps) => {
     const { id: threadId } = useParams<{ id: string }>();
-    const [selectedModelId, setSelectedModelId] = useState<string | undefined>(
-        initialState?.selectedModelId ?? undefined
-    );
+    const [selectedModelId, setSelectedModelId] = useState(initialState?.modelId);
 
-    const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
+    const [userToolDefinitions, setUserToolDefinitions] = useState(
         getUserToolDefinitionsFromThread(threadId)
     );
 
-    const [selectedTools, setSelectedTools] = useState<string[]>(
+    const [selectedTools, setSelectedTools] = useState(
         getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
 
@@ -87,6 +78,14 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const [shouldShowModelSwitchWarning, setShouldShowModelSwitchWarning] = useState(false);
     const modelIdToSwitchTo = useRef<string>();
+
+    const allModels = useModels({});
+
+    const availableModels = useMemo(() => {
+        return allModels.filter((model) => isModelAvailable(model) || model.id === selectedModelId);
+    }, [allModels, selectedModelId]);
+
+    const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
     const navigate = useNavigate();
     const userInfo = useAppContext(useShallow((state) => state.userInfo));
@@ -124,23 +123,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         abortStreams: streamMessage.abortAllStreams,
     });
 
-    // Get available models from API, filtering for visible and non-deprecated models
-    const availableModels = useModels({
-        select: (data) =>
-            data.filter(
-                (model) =>
-                    (isModelVisible(model) && !model.is_deprecated) || model.id === selectedModelId
-            ),
-    });
-
     const selectedModel = useMemo(() => {
-        if (selectedModelId) {
-            const found = availableModels.find((model) => model.id === selectedModelId);
-            if (found) return found; // Otherwise, fall back to the first visible model
-        }
-
-        const firstVisibleModel = availableModels.at(0);
-        return firstVisibleModel;
+        const firstAvailable = availableModels[0];
+        return availableModels.find((model) => model.id === selectedModelId) || firstAvailable;
     }, [availableModels, selectedModelId]);
 
     const canSubmit = useMemo(() => {
@@ -159,16 +144,16 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const placeholderText = useMemo(() => {
         const actionText = threadId ? 'Reply to' : 'Message';
-        const modelText = selectedModel?.family_name || selectedModel?.name || 'the model';
+        const modelText = selectedModel.family_name || selectedModel.name || 'the model';
         return `${actionText} ${modelText}`;
     }, [threadId, selectedModel]);
 
     const canCallTools = useMemo(() => {
-        return Boolean(selectedModel?.can_call_tools);
+        return Boolean(selectedModel.can_call_tools);
     }, [selectedModel]);
 
     const areFilesAllowed = useMemo(() => {
-        return Boolean(selectedModel?.accepts_files);
+        return Boolean(selectedModel.accepts_files);
     }, [selectedModel]);
 
     const isLimitReached = useMemo(() => {
@@ -183,12 +168,44 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         return Boolean(threadId);
     }, [threadId]);
 
-    // Initialize inference options from cached thread data when navigating to a different thread
     useEffect(() => {
-        if (!selectedModel) return;
-        const opts = getInitialInferenceParameters(selectedModel, getThread(threadId));
+        const opts = getInitialInferenceParameters(
+            selectedModel,
+            getThread(threadId),
+            promptTemplate
+        );
         setInferenceOpts(opts);
-    }, [threadId, selectedModel]);
+    }, [threadId, selectedModel, promptTemplate]);
+
+    useEffect(() => {
+        if (promptTemplate?.extraParameters) {
+            setExtraParameters(promptTemplate.extraParameters);
+        }
+    }, [promptTemplate?.extraParameters]);
+
+    useEffect(() => {
+        if (threadId) {
+            const userTools = getUserToolDefinitionsFromThread(threadId);
+            setUserToolDefinitions(userTools);
+
+            const selectedSystemTools = getNonUserToolsFromThread(threadId).map((t) => t.name);
+            setSelectedTools(selectedSystemTools);
+
+            setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
+            return;
+        }
+
+        const toolDefs = promptTemplate?.toolDefinitions
+            ? getUserToolDefinitionsFromToolList(promptTemplate.toolDefinitions)
+            : undefined;
+        setUserToolDefinitions(toolDefs);
+
+        const selectedSystemTools = selectedModel.available_tools?.map((t) => t.name) || [];
+
+        setSelectedTools(selectedSystemTools);
+
+        setIsToolCallingEnabled(Boolean(toolDefs));
+    }, [threadId, selectedModel, promptTemplate?.toolDefinitions]);
 
     // Sync local state with any necessary global UI state
     useEffect(() => {
@@ -218,7 +235,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const onModelChange = useCallback(
         (event: SelectChangeEvent, _threadViewId?: string) => {
-            const newModel = findModelById(availableModels, event.target.value);
+            const newModel = availableModels.find((model) => model.id === event.target.value);
             if (!newModel) return;
 
             const hasActiveThread = Boolean(threadId);
@@ -250,10 +267,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const submitToThreadView = useCallback(
         async (threadViewId: string, data: QueryFormValues) => {
-            // this shouldn't happen
-            if (selectedModel == null) {
-                return null;
-            }
             return await processSingleModelSubmission({
                 data,
                 model: selectedModel,
@@ -291,10 +304,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const onSubmit = useCallback(
         async (data: QueryFormValues): Promise<void> => {
-            if (!selectedModel) {
-                return;
-            }
-
             // this should not be assumed
             // TODO: Fix comparison (all of it)
             const threadViewId = '0';
@@ -306,7 +315,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
             await submitToThreadView(threadViewId, data);
         },
-        [clearStreamError, selectedModel, streamMessage, submitToThreadView]
+        [clearStreamError, streamMessage, submitToThreadView]
     );
 
     const handleAbort = useCallback(
@@ -318,7 +327,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     );
 
     const isFileUploadDisabled = useMemo(() => {
-        if (!threadId || !selectedModel) return false;
+        if (!threadId) return false;
 
         const thread = getThread(threadId);
         const uploadProps = convertToFileUploadProps(selectedModel);
@@ -328,11 +337,12 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const contextValue: QueryContextValue = useMemo(() => {
         return {
             threadStarted: Boolean(threadId),
+            promptTemplate,
             canSubmit,
             autofocus,
             placeholderText,
             canCallTools,
-            availableTools: selectedModel?.available_tools,
+            availableTools: selectedModel.available_tools,
             isToolCallingEnabled,
             userToolDefinitions,
             areFilesAllowed,
@@ -371,15 +381,17 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             setExtraParameters,
         };
     }, [
+        threadId,
+        promptTemplate,
         canSubmit,
         autofocus,
         placeholderText,
         canCallTools,
+        selectedModel,
         isToolCallingEnabled,
         userToolDefinitions,
         areFilesAllowed,
         availableModels,
-        selectedModel,
         streamMessage.canPause,
         streamMessage.remoteState,
         isLimitReached,
@@ -387,7 +399,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         onModelChange,
         onSubmit,
         handleAbort,
-        threadId,
         inferenceOpts,
         updateInferenceOpts,
         submitToThreadView,

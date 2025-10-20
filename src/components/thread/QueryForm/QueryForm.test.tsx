@@ -55,7 +55,7 @@ beforeEach(() => {
 });
 
 const renderWithProvider = (
-    initialState?: Partial<{ selectedModelId?: string; threadId?: string }>,
+    initialState?: Partial<{ modelId?: string; threadId?: string; promptTemplateId?: string }>,
     mockUserInfo?: User | null
 ) => {
     vi.spyOn(AppContext, 'useAppContext').mockImplementation(useFakeAppContext);
@@ -162,7 +162,7 @@ describe('QueryForm', () => {
 
     it("should show a model's family name in the placeholder and label", async () => {
         renderWithProvider({
-            selectedModelId: 'tulu2', // Tulu model has family_name: 'Tülu'
+            modelId: 'tulu2', // Tulu model has family_name: 'Tülu'
         });
 
         await waitFor(() => {
@@ -216,7 +216,7 @@ describe('QueryForm', () => {
 
         renderWithProvider(
             {
-                selectedModelId: 'tulu2',
+                modelId: 'tulu2',
                 threadId,
             },
             userInfo
@@ -259,7 +259,7 @@ describe('QueryForm', () => {
                     userInfo: createMockUser(),
                     addSnackMessage: vi.fn(),
                 }}>
-                <SingleThreadProvider initialState={{ selectedModelId: 'molmo' }}>
+                <SingleThreadProvider initialState={{ modelId: 'molmo' }}>
                     <QueryForm />
                 </SingleThreadProvider>
             </FakeAppContextProvider>,

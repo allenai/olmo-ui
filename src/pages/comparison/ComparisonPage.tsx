@@ -48,7 +48,9 @@ export const ComparisonPage = () => {
         : undefined;
 
     return (
-        <ComparisonProvider initialState={initialState}>
+        <ComparisonProvider
+            initialState={initialState}
+            promptTemplateId={loaderData.promptTemplateId}>
             <ComparisonPageInner />
         </ComparisonProvider>
     );

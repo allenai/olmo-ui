@@ -34,11 +34,8 @@ import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
 import { ErrorPage } from './pages/errorPage/ErrorPage';
 import { FAQsPage } from './pages/FAQsPage';
-import {
-    handleRevalidation,
-    playgroundLoader,
-    UIRefreshThreadPage,
-} from './pages/UIRefreshThreadPage';
+import { handleRevalidation, playgroundLoader } from './pages/playgroundLoader';
+import { UIRefreshThreadPage } from './pages/UIRefreshThreadPage';
 
 export const routes: RouteObject[] = [
     {
