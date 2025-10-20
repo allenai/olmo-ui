@@ -30,8 +30,8 @@ const toolCallResponseRecipe = sva({
         },
         inputContainer: {
             gridArea: 'input',
-            backgroundColor: 'elements.faded.fill',
-            borderColor: 'elements.faded.stroke',
+            backgroundColor: 'elements.overrides.form.input.fill',
+            borderColor: 'elements.overrides.form.input.stroke',
         },
         label: {
             gridArea: 'label',
@@ -78,6 +78,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         controllerProps={{
                             rules: { required: 'A tool response is required', minLength: 1 },
                         }}
+                        // TODO: https://github.com/allenai/varnish/issues/1209
                         // @ts-expect-error placeholder not in prop types, but is passed to component
                         placeholder="Tool response"
                         variant="contained"
