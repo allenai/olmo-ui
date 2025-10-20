@@ -184,19 +184,27 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     }, [promptTemplate?.extraParameters]);
 
     useEffect(() => {
-        const userTools = getUserToolDefinitionsFromThread(threadId);
+        if (threadId) {
+            const userTools = getUserToolDefinitionsFromThread(threadId);
+            setUserToolDefinitions(userTools);
+
+            const selectedSystemTools = getNonUserToolsFromThread(threadId).map((t) => t.name);
+            setSelectedTools(selectedSystemTools);
+
+            setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
+            return;
+        }
+
         const toolDefs = promptTemplate?.toolDefinitions
             ? getUserToolDefinitionsFromToolList(promptTemplate.toolDefinitions)
-            : userTools;
+            : undefined;
         setUserToolDefinitions(toolDefs);
 
-        const selectedSystemTools = threadId
-            ? getNonUserToolsFromThread(threadId).map((t) => t.name)
-            : selectedModel.available_tools?.map((t) => t.name) || [];
+        const selectedSystemTools = selectedModel.available_tools?.map((t) => t.name) || [];
 
         setSelectedTools(selectedSystemTools);
 
-        setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
+        setIsToolCallingEnabled(Boolean(toolDefs));
     }, [threadId, selectedModel, promptTemplate?.toolDefinitions]);
 
     // Sync local state with any necessary global UI state
