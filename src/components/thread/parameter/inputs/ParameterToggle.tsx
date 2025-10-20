@@ -1,15 +1,19 @@
 import { stack } from '@allenai/varnish-panda-runtime/patterns';
 import { Button, Switch } from '@allenai/varnish-ui';
 
-import { ParameterDrawerInputWrapper } from './ParameterDrawerInputWrapper';
+import {
+    ParameterDrawerInputWrapper,
+    type ParameterDrawerInputWrapperProps,
+} from './ParameterDrawerInputWrapper';
 
-interface Props {
+export interface ParameterToggleProps {
     label: string;
     value?: boolean;
     dialogContent: string;
     dialogTitle: string;
     disableEditButton?: boolean;
     disableToggle?: boolean;
+    tooltipPlacement?: ParameterDrawerInputWrapperProps['tooltipPlacement'];
     hideEdit?: boolean;
     onEditClick?: () => void;
     onToggleChange?: (value: boolean) => void;
@@ -23,11 +27,12 @@ export const ParameterToggle = ({
     dialogTitle,
     disableEditButton = false,
     disableToggle = false,
+    tooltipPlacement,
     hideEdit = false,
     onEditClick,
     onToggleChange,
     id,
-}: Props) => {
+}: ParameterToggleProps) => {
     const viewOnly = disableToggle && !disableEditButton;
 
     return (
@@ -39,7 +44,8 @@ export const ParameterToggle = ({
             gridTemplateAreas="'label input'"
             aria-label={`Show description for ${label}`}
             tooltipContent={dialogContent}
-            tooltipTitle={dialogTitle}>
+            tooltipTitle={dialogTitle}
+            tooltipPlacement={tooltipPlacement}>
             {({ inputLabelId }) => (
                 <div
                     className={stack({

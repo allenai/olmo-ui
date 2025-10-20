@@ -109,9 +109,7 @@ const ComparisonProviderContent = ({ children, initialState }: ComparisonProvide
     const [userToolDefinitions, setUserToolDefinitions] = useState<string | undefined>(
         getUserToolDefinitionsFromThread(threadIds[0] || threadIds[1])
     );
-    const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(
-        userToolDefinitions !== undefined
-    );
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(false);
 
     const [extraParameters, setExtraParameters] = useState<ExtraParameters>();
 

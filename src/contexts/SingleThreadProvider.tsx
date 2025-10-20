@@ -41,7 +41,6 @@ import {
     getNonUserToolsFromThread,
     getThread,
     getUserToolDefinitionsFromThread,
-    hasUserTools,
     MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
@@ -74,9 +73,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         getNonUserToolsFromThread(threadId).map((t) => t.name)
     );
 
-    const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(
-        hasUserTools(userToolDefinitions) || selectedTools.length > 0
-    );
+    const [isToolCallingEnabled, setIsToolCallingEnabled] = useState(false);
 
     const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
@@ -191,19 +188,6 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
         if (!selectedModel) return;
         const opts = getInitialInferenceParameters(selectedModel, getThread(threadId));
         setInferenceOpts(opts);
-    }, [threadId, selectedModel]);
-
-    useEffect(() => {
-        const userTools = getUserToolDefinitionsFromThread(threadId);
-        setUserToolDefinitions(userTools);
-
-        const selectedSystemTools = threadId
-            ? getNonUserToolsFromThread(threadId).map((t) => t.name)
-            : selectedModel?.available_tools?.map((t) => t.name) || [];
-
-        setSelectedTools(selectedSystemTools);
-
-        setIsToolCallingEnabled(hasUserTools(userTools) || selectedSystemTools.length > 0);
     }, [threadId, selectedModel]);
 
     // Sync local state with any necessary global UI state

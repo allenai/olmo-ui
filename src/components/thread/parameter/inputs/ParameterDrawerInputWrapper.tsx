@@ -2,20 +2,26 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, BoxProps, IconButton, Typography } from '@mui/material';
 import { ReactNode, useRef, useState } from 'react';
 
-import { ResponsiveTooltip } from '@/components/thread/ResponsiveTooltip';
+import {
+    ResponsiveTooltip,
+    type ResponsiveTooltipProps,
+} from '@/components/thread/ResponsiveTooltip';
 
-interface ParameterDrawerInputWrapperProps extends Omit<BoxProps, 'children' | 'aria-label'> {
+export interface ParameterDrawerInputWrapperProps
+    extends Omit<BoxProps, 'children' | 'aria-label'> {
     label: string;
     'aria-label': string;
     inputId: string;
     children: ReactNode | ((props: { inputLabelId: string }) => ReactNode);
     tooltipContent?: string;
     tooltipTitle?: string;
+    tooltipPlacement?: ResponsiveTooltipProps['placement'];
 }
 
 export const ParameterDrawerInputWrapper = ({
     tooltipContent,
     tooltipTitle,
+    tooltipPlacement,
     children,
     label,
     inputId,
@@ -60,7 +66,8 @@ export const ParameterDrawerInputWrapper = ({
                         dialogContent={tooltipContent}
                         isTooltipOpen={isTooltipOpen}
                         onTooltipClose={handleTooltipClose}
-                        tooltipIdSuffix={`${inputId}-description`}>
+                        tooltipIdSuffix={`${inputId}-description`}
+                        placement={tooltipPlacement}>
                         <IconButton
                             tabIndex={0}
                             aria-expanded={isTooltipOpen}

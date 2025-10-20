@@ -15,7 +15,7 @@ import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplayContainer } from './components/thread/ThreadDisplay/ThreadDisplayContainer';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
-import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder';
+import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder/ThreadPlaceholder';
 import { links } from './Links';
 import { uiRefreshOlmoTheme } from './olmoTheme';
 import { AdminLayout } from './pages/admin/AdminLayout';
