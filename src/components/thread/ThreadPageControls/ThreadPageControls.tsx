@@ -1,7 +1,4 @@
-import { useLocation } from 'react-router-dom';
-
 import { useFeatureToggles } from '@/FeatureToggleContext';
-import { links } from '@/Links';
 
 import { AvatarMenuIconButton } from './AvatarMenuIconButton';
 import { CorpusLinkIconButton } from './CorpusLinkIconButton';
@@ -10,21 +7,15 @@ import { ParameterIconButton } from './ParameterIconButton';
 import { ShareThreadIconButton } from './ShareThreadIconButton';
 
 export const ThreadPageControls = (): React.ReactNode => {
-    const { isCorpusLinkEnabled, isModelConfigEnabled } = useFeatureToggles();
-    const { pathname } = useLocation();
-    switch (true) {
-        case pathname === links.modelConfiguration && isModelConfigEnabled:
-            return <AvatarMenuIconButton />;
+    const { isCorpusLinkEnabled } = useFeatureToggles();
 
-        default:
-            return (
-                <>
-                    <AvatarMenuIconButton />
-                    <ParameterIconButton />
-                    {isCorpusLinkEnabled && <CorpusLinkIconButton />}
-                    <NewThreadIconButton />
-                    <ShareThreadIconButton />
-                </>
-            );
-    }
+    return (
+        <>
+            <AvatarMenuIconButton />
+            <ParameterIconButton />
+            {isCorpusLinkEnabled && <CorpusLinkIconButton />}
+            <NewThreadIconButton />
+            <ShareThreadIconButton />
+        </>
+    );
 };
