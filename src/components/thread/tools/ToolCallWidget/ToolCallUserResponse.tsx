@@ -9,26 +9,46 @@ import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget
 import { ToolCallUserResponseFormValues, useToolCallUserResponse } from './useToolCallUserResponse';
 
 const toolCallResponseRecipe = sva({
-    slots: ['widget', 'wrapper', 'inputContainer', 'input'],
+    slots: ['widget', 'wrapper', 'inputContainer', 'label', 'input', 'error'],
     base: {
         widget: {
-            display: 'flex',
+            // display: 'flex',
+            display: 'grid',
+            gridTemplateAreas: '"label ." "input button" "error ."',
+            gridTemplateColumns: '1fr auto',
+            gridTemplateRows: 'repeat(3, min-content)',
             gap: '2',
             alignItems: 'center',
-            paddingInline: '0',
-            paddingBlock: '0',
+            paddingInline: 'var(--padding-inline)',
+            paddingBlock: '2',
         },
         wrapper: {
-            flexGrow: '1',
+            display: 'grid',
+            gridTemplateColumns: 'subgrid',
+            gridTemplateRows: 'subgrid',
+            gap: '2',
+            gridArea: 'label / label / error / label',
         },
         inputContainer: {
-            backgroundColor: '[transparent]',
-            paddingInlineEnd: 'var(--padding-inline)',
+            gridArea: 'input',
+            backgroundColor: 'elements.faded.fill',
+            borderColor: 'elements.faded.stroke',
+        },
+        label: {
+            gridArea: 'label',
+            _groupInvalid: {
+                color: 'text', // just prevents error reda
+            },
         },
         input: {
-            width: '[100%]',
-            paddingInlineStart: '4!', // this is poorly set in varnish-ui -- so I'm cheating
-            paddingBlock: '3!', // also can't use important with var, so not re-using those vars()
+            color: {
+                // white passes AAA (default text in dark mode is only AA)
+                base: 'text',
+                _dark: 'white',
+            },
+        },
+        error: {
+            gridArea: 'error',
         },
     },
 });
@@ -46,9 +66,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     const { submitToolCallResponse, isPending } = useToolCallUserResponse(formContext);
 
     const classNames = toolCallResponseRecipe();
-    const labelAndPlaceholder = 'Function response';
-
-    const isSubmitDisabled = isPending || !formContext.formState.isValid;
+    const labelAndPlaceholder = 'Enter tool response:';
 
     return (
         <FormProvider {...formContext}>
@@ -58,30 +76,34 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         name="content"
                         className={classNames.wrapper}
                         fullWidth
-                        controllerProps={{ rules: { required: true, minLength: 1 } }}
+                        controllerProps={{
+                            rules: { required: 'A tool response is required', minLength: 1 },
+                        }}
+                        // @ts-expect-error placeholder not in prop types, but is passed to component
+                        placeholder="Tool response"
                         variant="contained"
+                        label={labelAndPlaceholder}
+                        labelClassName={classNames.label}
                         containerClassName={classNames.inputContainer}
                         inputClassName={classNames.input}
-                        aria-label={labelAndPlaceholder}
-                        // @ts-expect-error Placeholder is appearantly not on the varnish-ui component, but it _does_get passed
-                        placeholder={labelAndPlaceholder}
+                        errorClassName={classNames.error}
                         isDisabled={isPending}
-                        endControls={
-                            <QueryFormButton
-                                sx={{
-                                    color: 'secondary.main',
-                                    '&:hover': {
-                                        // should this be the default for this control?
-                                        color: 'secondary.dark',
-                                    },
-                                }}
-                                type="submit"
-                                aria-label="Submit function response"
-                                disabled={isSubmitDisabled}>
-                                <Send />
-                            </QueryFormButton>
-                        }
                     />
+                    <QueryFormButton
+                        sx={{
+                            color: 'secondary.main',
+                            '&:hover': {
+                                // should this be the default for this control?
+                                color: 'secondary.dark',
+                            },
+                            alignSelf: 'center',
+                            gridArea: 'button',
+                        }}
+                        type="submit"
+                        aria-label="Submit function response"
+                        disabled={isPending}>
+                        <Send />
+                    </QueryFormButton>
                 </CollapsibleWidgetContent>
             </form>
         </FormProvider>
