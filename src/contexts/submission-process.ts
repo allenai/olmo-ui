@@ -1,6 +1,6 @@
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { MessageStreamError, MessageStreamErrorReason, StreamBadRequestError } from '@/api/Message';
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { type Agent, Model } from '@/api/playgroundApi/additionalTypes';
 import { CreateMessageRequest, threadOptions } from '@/api/playgroundApi/thread';
 import { queryClient } from '@/api/query-client';
 import { ReadableJSONLStream } from '@/api/ReadableJSONLStream';
@@ -325,6 +325,61 @@ export const processSingleModelSubmission = async ({
 
         if (addSnackMessage) {
             return handleSubmissionError(error, model.id, addSnackMessage);
+        } else {
+            throw error;
+        }
+    }
+};
+
+interface AgentStreamMutationVariables {}
+
+interface ProcessAgentSubmissionProps {
+    data: QueryFormValues;
+    agent: Agent;
+    rootThreadId: string | undefined;
+    threadViewId: ThreadViewId;
+    bypassSafetyCheck: boolean;
+    streamMutateAsync: (
+        params: AgentStreamMutationVariables
+    ) => Promise<{ response: Response; abortController: AbortController }>;
+    executeRecaptcha: ((action?: string) => Promise<string> | null) | undefined;
+    onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void;
+    onCompleteStream?: (threadViewId: ThreadViewId) => void;
+    addSnackMessage?: (message: SnackMessage) => void;
+}
+
+export const processAgentSubmission = async ({
+    data,
+    agent,
+    rootThreadId,
+    threadViewId,
+    bypassSafetyCheck,
+    streamMutateAsync,
+    executeRecaptcha,
+    onFirstMessage,
+    onCompleteStream,
+    addSnackMessage,
+}: ProcessAgentSubmissionProps) => {
+    let thread: StreamingThread | undefined;
+
+    if (rootThreadId) {
+        const { queryKey } = threadOptions(rootThreadId);
+        thread = queryClient.getQueryData(queryKey);
+    }
+
+    analyticsClient.trackQueryFormSubmission(agent.id, Boolean(rootThreadId));
+
+    try {
+        const captchaToken = await handleCaptcha(executeRecaptcha);
+        const dataWithCaptchaToken = { ...data, captchaToken };
+    } catch (error: unknown) {
+        onCompleteStream?.(threadViewId);
+
+        const state = appContext.getState();
+        state.setStreamError(threadViewId, error);
+
+        if (addSnackMessage) {
+            return handleSubmissionError(error, agent.id, addSnackMessage);
         } else {
             throw error;
         }
