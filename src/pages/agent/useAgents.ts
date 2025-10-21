@@ -5,6 +5,7 @@ const availableAgents: Agent[] = [
         id: 'deep-research',
         name: 'Deep Research',
         description: 'Deep Research agent',
+        accepts_files: false,
     },
 ];
 
