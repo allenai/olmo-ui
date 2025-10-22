@@ -116,9 +116,9 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Temperature"
-                        min={constraints.temperature.minValue}
-                        max={constraints.temperature.maxValue}
-                        step={constraints.temperature.step}
+                        min={constraints?.temperature.minValue}
+                        max={constraints?.temperature.maxValue}
+                        step={constraints?.temperature.step}
                         initialValue={inferenceOpts.temperature ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
@@ -134,9 +134,9 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Top P"
-                        min={constraints.topP.minValue}
-                        max={constraints.topP.maxValue}
-                        step={constraints.topP.step}
+                        min={constraints?.topP.minValue}
+                        max={constraints?.topP.maxValue}
+                        step={constraints?.topP.step}
                         initialValue={inferenceOpts.topP ?? undefined}
                         onChange={(v) => {
                             analyticsClient.trackParametersUpdate({
@@ -152,8 +152,8 @@ export const ParameterContent = () => {
                 <ParametersListItem>
                     <ParameterSlider
                         label="Max tokens"
-                        min={constraints.maxTokens.minValue}
-                        max={constraints.maxTokens.maxValue}
+                        min={constraints?.maxTokens.minValue}
+                        max={constraints?.maxTokens.maxValue}
                         step={100}
                         initialValue={inferenceOpts.maxTokens ?? undefined}
                         onChange={(v) => {

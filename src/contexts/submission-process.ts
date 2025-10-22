@@ -32,7 +32,10 @@ import {
     updateThreadWithToolCall,
 } from './stream-update-handlers';
 import { MessageInferenceParameters } from './ThreadProviderHelpers';
-import type { ThreadStreamMutationVariables } from './useStreamMessage';
+import type {
+    AgentChatStreamMutationVariables,
+    ThreadStreamMutationVariables,
+} from './useStreamMessage';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {
@@ -331,8 +334,6 @@ export const processSingleModelSubmission = async ({
     }
 };
 
-interface AgentStreamMutationVariables {}
-
 interface ProcessAgentSubmissionProps {
     data: QueryFormValues;
     agent: Agent;
@@ -340,7 +341,7 @@ interface ProcessAgentSubmissionProps {
     threadViewId: ThreadViewId;
     bypassSafetyCheck: boolean;
     streamMutateAsync: (
-        params: AgentStreamMutationVariables
+        params: AgentChatStreamMutationVariables
     ) => Promise<{ response: Response; abortController: AbortController }>;
     executeRecaptcha: ((action?: string) => Promise<string> | null) | undefined;
     onFirstMessage?: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void;
@@ -348,7 +349,7 @@ interface ProcessAgentSubmissionProps {
     addSnackMessage?: (message: SnackMessage) => void;
 }
 
-export const processAgentSubmission = async ({
+export const processSingleAgentSubmission = async ({
     data,
     agent,
     rootThreadId,
@@ -372,6 +373,26 @@ export const processAgentSubmission = async ({
     try {
         const captchaToken = await handleCaptcha(executeRecaptcha);
         const dataWithCaptchaToken = { ...data, captchaToken };
+
+        const { response, abortController } = await streamMutateAsync({
+            request: dataWithCaptchaToken,
+            threadViewId,
+            agent,
+            thread,
+            bypassSafetyCheck,
+        });
+
+        // Return the final thread ID for parallel streaming navigation
+        const result = await processStreamResponse(
+            response,
+            abortController,
+            rootThreadId,
+            threadViewId,
+            onFirstMessage,
+            onCompleteStream
+        );
+
+        return result ?? null;
     } catch (error: unknown) {
         onCompleteStream?.(threadViewId);
 

@@ -19,7 +19,8 @@
       "@/styled-system/*": ["styled-system/*"],
       "@/*": ["src/*"]
     },
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "outDir": "dist"
   },
   "include": [
     "src/**/*",

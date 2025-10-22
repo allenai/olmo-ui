@@ -1,12 +1,15 @@
-import { type type PropsWithChildren, type type ReactNode, type UIEvent, useCallback } from 'react';
+import { useReCaptcha } from '@wojtekmaj/react-recaptcha-v3';
+import { type PropsWithChildren, type ReactNode, type UIEvent, useState } from 'react';
 
+import { useAppContext } from '@/AppContext';
 import { DEFAULT_FILE_UPLOAD_PROPS } from '@/components/thread/QueryForm/compareFileUploadProps';
+import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
 import { useAgents } from '@/pages/agent/useAgents';
 
 import { QueryContext, type QueryContextValue } from '../QueryContext';
+import { processSingleAgentSubmission } from '../submission-process';
 import { useCanSubmitThread } from '../util/hooks/useCanSubmit';
-import { useChatStreamMessage } from '../util/hooks/useChatStreamMessage';
-import type { QueryFormValues } from '@/components/thread/QueryForm/QueryFormController';
+import { useAgentChatStreamMessage } from '../util/hooks/useChatStreamMessage';
 import { useOnSingleChatSubmit } from '../util/hooks/useOnSingleChatSubmit';
 const noOp = () => undefined;
 
@@ -38,16 +41,37 @@ export const AgentChatQueryContextProvider = ({
 
     const placeholderText = `${isNewThread ? 'Start interacting with' : 'Follow up with'} ${selectedAgent.name}`;
 
-    const streamMessage = useChatStreamMessage(threadId);
+    const streamMessage = useAgentChatStreamMessage(threadId);
 
     const handleAbort = (e: UIEvent) => {
         e.preventDefault();
         streamMessage.abortAllStreams();
     };
 
-    const submitToThreadView = () => {}
+    const [bypassSafetyCheck, setBypassSafetyCheck] = useState(false);
 
-    const onSubmit = useOnSingleChatSubmit(streamMessage.prepareForNewSubmission, submitToThreadView)
+    const { executeRecaptcha } = useReCaptcha();
+    const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+
+    const submitToThreadView = async (threadViewId: string, data: QueryFormValues) => {
+        return processSingleAgentSubmission({
+            data,
+            agent: selectedAgent,
+            rootThreadId: threadId,
+            threadViewId,
+            bypassSafetyCheck,
+            streamMutateAsync: streamMessage.mutateAsync,
+            executeRecaptcha,
+            onFirstMessage: streamMessage.onFirstMessage,
+            onCompleteStream: streamMessage.completeStream,
+            addSnackMessage,
+        });
+    };
+
+    const onSubmit = useOnSingleChatSubmit(
+        streamMessage.prepareForNewSubmission,
+        submitToThreadView
+    );
 
     const contextValue: QueryContextValue = {
         threadStarted: Boolean(threadId),
@@ -93,6 +117,9 @@ export const AgentChatQueryContextProvider = ({
         updateIsToolCallingEnabled: noOp,
         updateUserToolDefinitions: noOp,
         updateSelectedTools: noOp,
+
+        bypassSafetyCheck,
+        updateBypassSafetyCheck: setBypassSafetyCheck,
 
         selectedTools: [],
 

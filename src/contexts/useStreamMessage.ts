@@ -1,11 +1,15 @@
-import { useMutation } from '@tanstack/react-query';
-import { useCallback, useRef, useState } from 'react';
+import {
+    type MutationObserverResult,
+    useMutation,
+    type UseMutationResult,
+} from '@tanstack/react-query';
+import { type MutableRefObject, useCallback, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { analyticsClient } from '@/analytics/AnalyticsClient';
 import { error } from '@/api/error';
 import { StreamBadRequestError, StreamValidationError } from '@/api/Message';
-import { Model } from '@/api/playgroundApi/additionalTypes';
+import { type Agent, Model } from '@/api/playgroundApi/additionalTypes';
 import { playgroundApiClient } from '@/api/playgroundApi/playgroundApiClient';
 import { CreateMessageRequest, Thread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
@@ -37,8 +41,10 @@ interface StreamCallbacks {
     onError?: (threadViewId: string, error: unknown) => void;
 }
 
-export const useStreamMessage = (callbacks?: StreamCallbacks) => {
-    const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+const useStreamTracking = (
+    abortControllersRef: MutableRefObject<Map<string, AbortController>>,
+    callbacks: StreamCallbacks = {}
+) => {
     const [hasReceivedFirstResponse, setHasReceivedFirstResponse] = useState(false);
 
     // Track active streams with zustand
@@ -62,8 +68,8 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
 
     const handleFirstMessage = useCallback(
         (threadViewId: ThreadViewId, message: StreamingMessageResponse) => {
-            callbacks?.onNewUserMessage?.(threadViewId);
-            callbacks?.onFirstMessage?.(threadViewId, message);
+            callbacks.onNewUserMessage?.(threadViewId);
+            callbacks.onFirstMessage?.(threadViewId, message);
         },
         [callbacks]
     );
@@ -109,6 +115,95 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         // This isn't a known error, throw something
         throw new Error(`Error creating a message: ${response.status} ${response.statusText}`);
     };
+
+    // Abort functionality
+    const abortAllStreams = useCallback(() => {
+        abortControllersRef.current.forEach((controller, _threadViewId) => {
+            controller.abort();
+        });
+        abortControllersRef.current.clear();
+        clearAllActiveStreams();
+    }, [clearAllActiveStreams]);
+
+    // Function to clean up a specific stream when it completes
+    const completeStream = useCallback(
+        (threadViewId: ThreadViewId) => {
+            stopStream(threadViewId);
+            callbacks.onCompleteStream?.(threadViewId);
+        },
+        [callbacks, stopStream]
+    );
+
+    return {
+        activeStreams,
+        startStream,
+        stopStream,
+        prepareForNewSubmission,
+        handleFirstMessage,
+        handleErrors,
+        hasReceivedFirstResponse,
+        abortAllStreams,
+        completeStream,
+    };
+};
+
+const mapToRemoteState = (
+    mutationStatus: MutationObserverResult['status'],
+    activeStreams: string[]
+) => {
+    switch (true) {
+        case mutationStatus === 'pending' || activeStreams.length > 0:
+            return RemoteState.Loading;
+        case mutationStatus === 'error':
+            return RemoteState.Error;
+        case activeStreams.length === 0:
+            return RemoteState.Loaded;
+        default:
+            return RemoteState.Loaded;
+    }
+};
+
+export type StreamMessageControls<TVariables = unknown> = UseMutationResult<
+    { response: Response; abortController: AbortController },
+    Error,
+    TVariables
+> & {
+    // Operations
+    abortAllStreams: () => void;
+    completeStream: (threadViewId: ThreadViewId) => void;
+    prepareForNewSubmission: () => void;
+
+    // Callback to call on first message
+    // This is currently necessary because stream processing is done externally
+    onFirstMessage: (threadViewId: ThreadViewId, message: StreamingMessageResponse) => void;
+
+    // State
+    canPause: boolean;
+    activeStreamCount: number;
+    hasReceivedFirstResponse: boolean;
+    remoteState: RemoteState;
+};
+
+export type UseStreamMessage<TVariables = unknown> = (
+    callbacks?: StreamCallbacks
+) => StreamMessageControls<TVariables>;
+
+export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> = (
+    callbacks?: StreamCallbacks
+) => {
+    const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+
+    const {
+        activeStreams,
+        abortAllStreams,
+        completeStream,
+        startStream,
+        stopStream,
+        prepareForNewSubmission,
+        handleFirstMessage,
+        handleErrors,
+        hasReceivedFirstResponse,
+    } = useStreamTracking(abortControllersRef, callbacks);
 
     // imperative
     const queryToThreadOrView = async ({
@@ -208,23 +303,141 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         },
     });
 
-    // Abort functionality
-    const abortAllStreams = useCallback(() => {
-        abortControllersRef.current.forEach((controller, _threadViewId) => {
-            controller.abort();
-        });
-        abortControllersRef.current.clear();
-        clearAllActiveStreams();
-    }, [clearAllActiveStreams]);
+    return {
+        // Original mutation interface
+        ...mutation,
 
-    // Function to clean up a specific stream when it completes
-    const completeStream = useCallback(
-        (threadViewId: ThreadViewId) => {
+        // Operations
+        abortAllStreams,
+        completeStream,
+        prepareForNewSubmission,
+
+        // Callback to call on first message
+        // This is currently necessary because stream processing is done externally
+        onFirstMessage: handleFirstMessage,
+
+        // State
+        canPause: mutation.isPending || activeStreams.length > 0,
+        activeStreamCount: activeStreams.length,
+        hasReceivedFirstResponse,
+        remoteState: mapToRemoteState(mutation.status, activeStreams),
+    };
+};
+
+export interface AgentChatStreamMutationVariables {
+    request: {
+        content: string;
+        captchaToken?: string | null;
+        parent?: string;
+        files?: FileList;
+    };
+    threadViewId: string;
+    agent: Agent;
+    thread?: Thread;
+    bypassSafetyCheck: boolean;
+}
+
+export const useStreamAgentMessage: UseStreamMessage<AgentChatStreamMutationVariables> = (
+    callbacks?: StreamCallbacks
+) => {
+    const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+
+    const {
+        activeStreams,
+        abortAllStreams,
+        completeStream,
+        startStream,
+        stopStream,
+        prepareForNewSubmission,
+        handleFirstMessage,
+        handleErrors,
+        hasReceivedFirstResponse,
+    } = useStreamTracking(abortControllersRef, callbacks);
+
+    // imperative
+    const queryToThreadOrView = async ({
+        request,
+        threadViewId,
+        agent,
+        thread,
+        bypassSafetyCheck,
+    }: AgentChatStreamMutationVariables) => {
+        startStream(threadViewId);
+
+        // Create and store abort controller for this thread view
+        const abortController = new AbortController();
+        abortControllersRef.current.set(threadViewId, abortController);
+
+        try {
+            // do any request setup
+            if (thread) {
+                const lastMessageId = thread.messages.at(-1)?.id;
+                request.parent = lastMessageId;
+            }
+
+            const { content, captchaToken, parent, files } = request;
+
+            // @ts-expect-error - this isn't properly typed yet
+            const result = await playgroundApiClient.POST('/v4/agent/chat', {
+                parseAs: 'stream',
+                body: {
+                    content,
+                    captchaToken,
+                    files,
+                    parent,
+                    agent,
+                    bypassSafetyCheck,
+                },
+                bodySerializer: (body) => {
+                    const formData = new FormData();
+                    // @ts-expect-error - this isn't properly typed yet
+                    for (const property in body) {
+                        const value = body[property as keyof CreateMessageRequest];
+                        mapValueToFormData(formData, property, value);
+                    }
+
+                    return formData;
+                },
+                signal: abortController.signal, // Add abort signal to the request
+            });
+
+            // Our API endpoints aren't properly typed with error responses
+            const resultError = result.error as unknown;
+            if (resultError != null) {
+                // Since we're using react-query with this we need to throw errors instead of returning them
+                // Even though we told openapi-fetch to give us the raw response it parses the response if !response.ok
+                handleErrors(resultError, result.response);
+            }
+
+            return { response: result.response, abortController };
+        } catch (error) {
+            // Clean up on error
             stopStream(threadViewId);
-            callbacks?.onCompleteStream?.(threadViewId);
+            throw error;
+        }
+    };
+
+    const mutation = useMutation<
+        { response: Response; abortController: AbortController },
+        Error,
+        AgentChatStreamMutationVariables
+    >({
+        mutationKey: ['agent-stream'],
+        mutationFn: queryToThreadOrView,
+        onMutate(variables) {
+            startStream(variables.threadViewId);
         },
-        [callbacks, stopStream]
-    );
+        onSuccess(_data, _variables) {
+            // Stream is now active (not completed)
+        },
+        onSettled(_data, _error, _variables, _context) {
+            // We might not need onComplete to be called in submission-process
+        },
+        onError(error, variables, _context) {
+            stopStream(variables.threadViewId);
+            callbacks?.onError?.(variables.threadViewId, error);
+        },
+    });
 
     return {
         // Original mutation interface
@@ -243,18 +456,6 @@ export const useStreamMessage = (callbacks?: StreamCallbacks) => {
         canPause: mutation.isPending || activeStreams.length > 0,
         activeStreamCount: activeStreams.length,
         hasReceivedFirstResponse,
-        remoteState: (() => {
-            // Compatibility with RemoteState
-            switch (true) {
-                case mutation.isPending || activeStreams.length > 0:
-                    return RemoteState.Loading;
-                case mutation.isError:
-                    return RemoteState.Error;
-                case activeStreams.length === 0:
-                    return RemoteState.Loaded;
-                default:
-                    return RemoteState.Loaded;
-            }
-        })(),
+        remoteState: mapToRemoteState(mutation.status, activeStreams),
     };
 };
