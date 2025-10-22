@@ -66,7 +66,6 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     const { submitToolCallResponse, isPending } = useToolCallUserResponse(formContext);
 
     const classNames = toolCallResponseRecipe();
-    const labelAndPlaceholder = 'Enter tool response:';
 
     return (
         <FormProvider {...formContext}>
@@ -79,11 +78,11 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         controllerProps={{
                             rules: { required: 'A tool response is required', minLength: 1 },
                         }}
+                        variant="contained"
                         // TODO: https://github.com/allenai/varnish/issues/1209
                         // @ts-expect-error placeholder not in prop types, but is passed to component
                         placeholder="Tool response"
-                        variant="contained"
-                        label={labelAndPlaceholder}
+                        label="Enter tool response:"
                         labelClassName={classNames.label}
                         containerClassName={classNames.inputContainer}
                         inputClassName={classNames.input}
