@@ -6,7 +6,7 @@ import { ModelHostSelect } from './ModelHostSelect';
 
 const meta = {
     component: ModelHostSelect,
-    decorators: [withReactHookForm],
+    decorators: [withReactHookForm()],
 } satisfies Meta<typeof ModelHostSelect>;
 
 export default meta;

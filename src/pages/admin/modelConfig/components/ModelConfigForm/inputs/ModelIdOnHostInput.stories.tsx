@@ -6,7 +6,7 @@ import { ModelIdOnHostInput } from './ModelIdOnHostInput';
 
 const meta = {
     component: ModelIdOnHostInput,
-    decorators: [withReactHookForm],
+    decorators: [withReactHookForm()],
 } satisfies Meta<typeof ModelIdOnHostInput>;
 
 export default meta;
