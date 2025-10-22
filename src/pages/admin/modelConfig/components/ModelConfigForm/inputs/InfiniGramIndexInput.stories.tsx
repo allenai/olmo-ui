@@ -6,7 +6,7 @@ import { InfiniGramIndexInput } from './InfiniGramIndexInput';
 
 const meta = {
     component: InfiniGramIndexInput,
-    decorators: [withReactHookForm],
+    decorators: [withReactHookForm()],
 } satisfies Meta<typeof InfiniGramIndexInput>;
 
 export default meta;

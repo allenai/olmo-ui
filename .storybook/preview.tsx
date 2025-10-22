@@ -8,7 +8,13 @@ import { fn } from 'storybook/test';
 import { ColorModeContext } from '@/components/ColorModeProvider';
 
 import '../styled-system/styles.css'
-import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, MemoryRouter, RouterProvider, useRouteError } from 'react-router-dom';
+
+// Taken from https://github.com/remix-run/react-router/discussions/10166#discussioncomment-5985748
+const BubbleError = () => {
+  const error = useRouteError();
+  throw error;
+}
 
 
 const preview: Preview = {
@@ -62,7 +68,7 @@ const preview: Preview = {
       // @ts-expect-error - Provider is typed as `any`, we're assuming that it accepts `theme` and `children` props
        Provider: ({ theme, children }) => <ColorModeContext.Provider value={theme}>{children}</ColorModeContext.Provider>
     }),
-    (Story) => { const router = createMemoryRouter([{ path: '/', element: <Story />}]); return <RouterProvider router={router} />}
+    (Story) => { const router = createMemoryRouter([{ path: '/', element: <Story />, errorElement: <BubbleError />}]); return <RouterProvider router={router} />}
   ]
 };
 

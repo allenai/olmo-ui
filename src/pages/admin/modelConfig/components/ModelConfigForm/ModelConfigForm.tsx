@@ -33,7 +33,7 @@ type MinMaxDefault = {
     maxValue: number;
     step: number;
 };
-type InferenceConstrints = {
+type InferenceConstraints = {
     temperature: MinMaxDefault;
     topP: MinMaxDefault;
     maxTokens: MinMaxDefault;
@@ -44,7 +44,7 @@ type BaseModelFormFieldValues = {
     availability: 'public' | 'internal' | 'prerelease';
     availableTime?: ZonedDateTime;
     deprecationTime?: ZonedDateTime;
-    inferenceConstraints: InferenceConstrints;
+    inferenceConstraints: InferenceConstraints;
 } & Partial<
     Pick<
         SchemaRootCreateModelConfigRequest,
