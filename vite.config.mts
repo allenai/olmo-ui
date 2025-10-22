@@ -1,6 +1,6 @@
 import { loadEnv } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { configDefaults, defineConfig, defineProject } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react-swc'
 import svgr from "vite-plugin-svgr";
 import checker from 'vite-plugin-checker';
