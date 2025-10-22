@@ -68,9 +68,10 @@ test.describe('Thinking and tool calling', () => {
 
         await expect(userToolCallWidget.getByText('"city": "Seattle"')).toBeVisible();
 
-        await expect(userToolCallWidget.getByLabel('Submit function response')).toBeDisabled();
+        await userToolCallWidget.getByLabel('Submit function response').click();
+        await expect(userToolCallWidget.getByRole('textbox')).toHaveAttribute('data-invalid');
+        await expect(userToolCallWidget).toContainText('A tool response is required');
 
-        // await userToolCallWidget.getByLabel(/^Function response$/).fill('rainy');
         await userToolCallWidget.getByRole('textbox').fill('rainy');
         await userToolCallWidget.getByLabel('Submit function response').click();
 

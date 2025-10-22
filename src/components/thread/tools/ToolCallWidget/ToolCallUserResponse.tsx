@@ -9,26 +9,46 @@ import { CollapsibleWidgetContent } from '@/components/widgets/CollapsibleWidget
 import { ToolCallUserResponseFormValues, useToolCallUserResponse } from './useToolCallUserResponse';
 
 const toolCallResponseRecipe = sva({
-    slots: ['widget', 'wrapper', 'inputContainer', 'input'],
+    slots: ['widget', 'wrapper', 'inputContainer', 'label', 'input', 'error'],
     base: {
         widget: {
-            display: 'flex',
+            display: 'grid',
+            gridTemplateAreas: '"label" "input" "error"',
+            gridTemplateRows: 'repeat(3, min-content)',
             gap: '2',
             alignItems: 'center',
-            paddingInline: '0',
-            paddingBlock: '0',
+            paddingInline: 'var(--padding-inline)',
+            paddingBlock: '2',
         },
         wrapper: {
-            flexGrow: '1',
+            display: 'grid',
+            gridTemplateColumns: 'subgrid',
+            gridTemplateRows: 'subgrid',
+            gap: '2',
+            gridArea: 'label / label / error / label',
         },
         inputContainer: {
-            backgroundColor: '[transparent]',
-            paddingInlineEnd: 'var(--padding-inline)',
+            gridArea: 'input',
+            paddingInlineEnd: '1',
+            backgroundColor: 'elements.overrides.form.input.fill',
+            borderColor: 'elements.overrides.form.input.hovered.stroke',
+        },
+        label: {
+            gridArea: 'label',
+            _groupInvalid: {
+                // just prevents error red - seems like overkill with error message being red too
+                color: 'text',
+            },
         },
         input: {
-            width: '[100%]',
-            paddingInlineStart: '4!', // this is poorly set in varnish-ui -- so I'm cheating
-            paddingBlock: '3!', // also can't use important with var, so not re-using those vars()
+            color: {
+                // white passes AAA (default text in dark mode is only AA)
+                base: 'text',
+                _dark: 'white',
+            },
+        },
+        error: {
+            gridArea: 'error',
         },
     },
 });
@@ -46,9 +66,6 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
     const { submitToolCallResponse, isPending } = useToolCallUserResponse(formContext);
 
     const classNames = toolCallResponseRecipe();
-    const labelAndPlaceholder = 'Function response';
-
-    const isSubmitDisabled = isPending || !formContext.formState.isValid;
 
     return (
         <FormProvider {...formContext}>
@@ -58,13 +75,18 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                         name="content"
                         className={classNames.wrapper}
                         fullWidth
-                        controllerProps={{ rules: { required: true, minLength: 1 } }}
+                        controllerProps={{
+                            rules: { required: 'A tool response is required', minLength: 1 },
+                        }}
                         variant="contained"
+                        // TODO: https://github.com/allenai/varnish/issues/1209
+                        // @ts-expect-error placeholder not in prop types, but is passed to component
+                        placeholder="Tool response"
+                        label="Enter tool response:"
+                        labelClassName={classNames.label}
                         containerClassName={classNames.inputContainer}
                         inputClassName={classNames.input}
-                        aria-label={labelAndPlaceholder}
-                        // @ts-expect-error Placeholder is appearantly not on the varnish-ui component, but it _does_get passed
-                        placeholder={labelAndPlaceholder}
+                        errorClassName={classNames.error}
                         isDisabled={isPending}
                         endControls={
                             <QueryFormButton
@@ -77,7 +99,7 @@ const ToolCallUserResponse = ({ toolCallId }: { toolCallId: string }) => {
                                 }}
                                 type="submit"
                                 aria-label="Submit function response"
-                                disabled={isSubmitDisabled}>
+                                disabled={isPending}>
                                 <Send />
                             </QueryFormButton>
                         }
