@@ -3,20 +3,12 @@ import { fn } from 'storybook/test';
 
 import { withReactHookForm } from '@/utils/storybook/withReactHookForm';
 
-import { ModelConfigForm, type ModelConfigFormValues } from './ModelConfigForm';
+import { DEFAULT_CREATE_MODEL_VALUES } from '../../CreateModelPage/createModelConstants';
+import { ModelConfigForm } from './ModelConfigForm';
 
 const meta = {
     component: ModelConfigForm,
-    decorators: [
-        withReactHookForm<ModelConfigFormValues>({
-            inferenceConstraints: {
-                temperature: { default: 0, minValue: 0, maxValue: 2 },
-                topP: { default: 1, minValue: 1, maxValue: 1 },
-                maxTokens: { default: 2048, minValue: 1, maxValue: 4096 },
-                stop: [],
-            },
-        }),
-    ],
+    decorators: [withReactHookForm(DEFAULT_CREATE_MODEL_VALUES)],
 } satisfies Meta<typeof ModelConfigForm>;
 
 export default meta;
