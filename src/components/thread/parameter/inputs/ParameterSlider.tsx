@@ -51,7 +51,8 @@ export const ParameterSlider = ({
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
 
     const handleChange = useDebouncedCallback((value: number) => {
-        onChange?.(value);
+        const clippedValue = clipToMinMax(value, min, max);
+        onChange?.(clippedValue);
 
         addSnackMessage({
             id: `parameters-saved-${new Date().getTime()}`.toLowerCase(),
