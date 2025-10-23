@@ -8,7 +8,6 @@ import { Agent } from '@/api/playgroundApi/additionalTypes';
 import { agentImages } from './agentLinks';
 
 const cardClassName = css({
-    // generic card styles
     display: 'grid',
     gridColumn: {
         base: '1/-1',
