@@ -1,5 +1,5 @@
-import { useMutationState } from '@tanstack/react-query';
-import { createContext, useContext, useMemo } from 'react';
+import { type MutationKey, useMutationState } from '@tanstack/react-query';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import type { Model } from '@/api/playgroundApi/additionalTypes';
 import type { ThreadId } from '@/api/playgroundApi/thread';
@@ -7,7 +7,11 @@ import { useThread } from '@/api/playgroundApi/thread';
 import { useAppContext } from '@/AppContext';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { StreamingThread } from '@/contexts/stream-types';
-import { ThreadStreamMutationVariables } from '@/contexts/streamMessage/useStreamMessage';
+import type { AgentChatStreamMutationVariables } from '@/contexts/streamMessage/useStreamAgentMessage';
+import {
+    THREAD_STREAM_MUTATION_KEY,
+    ThreadStreamMutationVariables,
+} from '@/contexts/streamMessage/useStreamMessage';
 import { RemoteState } from '@/contexts/util';
 
 export type ThreadViewId = string;
@@ -18,15 +22,20 @@ export interface ThreadViewContextProps {
     streamingMessageId?: string;
     isUpdatingMessageContent?: boolean;
     remoteState: RemoteState;
+    mutationKey?: MutationKey;
 }
 
 export const ThreadViewContext = createContext<ThreadViewContextProps | null>(null);
+
+type ThreadViewProviderProps = PropsWithChildren &
+    Pick<ThreadViewContextProps, 'threadId' | 'threadViewId' | 'mutationKey'>;
 
 export const ThreadViewProvider = ({
     threadId,
     threadViewId,
     children,
-}: React.PropsWithChildren<Pick<ThreadViewContextProps, 'threadId' | 'threadViewId'>>) => {
+    mutationKey = THREAD_STREAM_MUTATION_KEY,
+}: ThreadViewProviderProps) => {
     const { data: thread } = useThread(threadId, (thread) => thread as StreamingThread);
 
     const streamingMessageId = thread?.streamingMessageId;
@@ -42,18 +51,24 @@ export const ThreadViewProvider = ({
     //  Currently only used to track errors, but could be used for more
     const mutationStates = useMutationState({
         filters: {
-            mutationKey: ['thread-stream'],
+            // TODO: Look into making the mutation key more robust and filtering on that vs using the predicate
+            mutationKey,
             predicate: (mutation) => {
-                const variables = mutation.state.variables as
-                    | ThreadStreamMutationVariables
-                    | undefined;
-                return variables?.threadViewId === threadViewId;
+                return (
+                    mutation.state.variables != null &&
+                    typeof mutation.state.variables === 'object' &&
+                    'threadViewId' in mutation.state.variables &&
+                    mutation.state.variables.threadViewId === threadViewId
+                );
             },
         },
         // This is how to add types to output according to TKdodo
         select: (mutation) => ({
             status: mutation.state.status,
-            variables: mutation.state.variables as ThreadStreamMutationVariables | undefined,
+            variables: mutation.state.variables as
+                | ThreadStreamMutationVariables
+                | AgentChatStreamMutationVariables
+                | undefined,
         }),
     });
 
@@ -81,6 +96,7 @@ export const ThreadViewProvider = ({
         streamingMessageId,
         isUpdatingMessageContent,
         remoteState,
+        mutationKey,
     };
 
     return <ThreadViewContext.Provider value={value}>{children}</ThreadViewContext.Provider>;

@@ -26,6 +26,8 @@ export interface AgentChatStreamMutationVariables {
     bypassSafetyCheck: boolean;
 }
 
+export const AGENT_CHAT_STREAM_MUTATION_KEY = ['agent-stream'];
+
 export const useStreamAgentMessage: UseStreamMessage<AgentChatStreamMutationVariables> = (
     callbacks?: StreamCallbacks
 ) => {
@@ -111,7 +113,7 @@ export const useStreamAgentMessage: UseStreamMessage<AgentChatStreamMutationVari
         Error,
         AgentChatStreamMutationVariables
     >({
-        mutationKey: ['agent-stream'],
+        mutationKey: AGENT_CHAT_STREAM_MUTATION_KEY,
         mutationFn: queryToThreadOrView,
         onMutate(variables) {
             startStream(variables.threadViewId);

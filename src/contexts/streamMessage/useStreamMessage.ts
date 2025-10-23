@@ -30,6 +30,8 @@ export interface ThreadStreamMutationVariables {
     extraParameters?: ExtraParameters;
 }
 
+export const THREAD_STREAM_MUTATION_KEY = ['thread-stream'];
+
 export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> = (
     callbacks?: StreamCallbacks
 ) => {
@@ -128,7 +130,7 @@ export const useStreamMessage: UseStreamMessage<ThreadStreamMutationVariables> =
         Error,
         ThreadStreamMutationVariables
     >({
-        mutationKey: ['thread-stream'],
+        mutationKey: THREAD_STREAM_MUTATION_KEY,
         mutationFn: queryToThreadOrView,
         onMutate(variables) {
             startStream(variables.threadViewId);

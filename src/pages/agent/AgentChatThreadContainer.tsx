@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useThread } from '@/api/playgroundApi/thread';
 import { ThreadDisplay } from '@/components/thread/ThreadDisplay/ThreadDisplay';
 import { useStreamEvent } from '@/contexts/StreamEventRegistry';
+import { AGENT_CHAT_STREAM_MUTATION_KEY } from '@/contexts/streamMessage/useStreamAgentMessage';
 import { RemoteState } from '@/contexts/util';
 import { ThreadViewProvider, useThreadView } from '@/pages/comparison/ThreadViewContext';
 
@@ -46,7 +47,10 @@ export const AgentChatThreadContainer = () => {
     const { threadId = '' } = useParams<AgentChatPageParams>();
 
     return (
-        <ThreadViewProvider threadId={threadId} threadViewId="0">
+        <ThreadViewProvider
+            threadId={threadId}
+            threadViewId="0"
+            mutationKey={AGENT_CHAT_STREAM_MUTATION_KEY}>
             <ThreadDisplayContent />
         </ThreadViewProvider>
     );
