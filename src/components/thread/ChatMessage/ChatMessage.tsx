@@ -69,13 +69,13 @@ export const RawMessage = ({ messageId }: MessageProps): ReactNode => {
     );
 };
 
-export const InlineErrorMessage = ({ messageId }: MessageProps): ReactNode => {
+export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
     const { threadId } = useThreadView();
     const { message } = useMessage(threadId, messageId);
     if (!message?.errorDescription) return null;
 
     return (
-        <Alert variant="outlined" severity="warning">
+        <Alert variant="outlined" severity="warning" sx={{ marginBottom: 2 }}>
             {message.errorDescription || 'An error occurred.'}
         </Alert>
     );
@@ -165,7 +165,7 @@ export const ChatMessage = ({ messageId, isLastMessageInThread }: ChatMessagePro
                     ))}
                 </ImageList>
                 <AllToolCalls toolCalls={message.toolCalls ?? undefined} threadId={threadId} />
-                <InlineErrorMessage messageId={messageId} />
+                <InlineAlertMessage messageId={messageId} />
 
                 <MessageInteraction
                     role={role as Role}
