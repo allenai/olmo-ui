@@ -18,6 +18,7 @@ export enum FeatureToggle {
     isMultiModalEnabled = 'isMultiModalEnabled',
     isModelConfigEnabled = 'isModelConfigEnabled',
     isOLMoASREnabled = 'isOLMoASREnabled',
+    isAgentPageEnabled = 'isAgentPageEnabled',
 }
 
 export type FeatureToggles = Record<FeatureToggle, boolean>;
@@ -32,6 +33,7 @@ export const defaultFeatureToggles: FeatureToggles = {
     [FeatureToggle.isMultiModalEnabled]: false,
     [FeatureToggle.isModelConfigEnabled]: false,
     [FeatureToggle.isOLMoASREnabled]: false,
+    [FeatureToggle.isAgentPageEnabled]: false,
 };
 
 const localStorageKey = 'feature-toggles';
@@ -92,6 +94,7 @@ function createToggles(initialToggles = defaultFeatureToggles) {
         isMultiModalEnabled: process.env.VITE_IS_MULTI_MODAL_ENABLED,
         isModelConfigEnabled: process.env.VITE_IS_MODEL_CONFIG_ENABLED,
         isOLMoASREnabled: process.env.VITE_IS_OLMO_ASR_ENABLED,
+        isAgentPageEnabled: process.env.VITE_IS_AGENT_PAGE_ENABLED,
     });
 
     const toggles = {

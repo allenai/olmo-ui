@@ -11,6 +11,7 @@ import { UIMatch, useMatches } from 'react-router-dom';
 
 import { USER_PERMISSIONS, useUserAuthInfo } from '@/api/auth/auth-loaders';
 import { useAppContext } from '@/AppContext';
+import { useFeatureToggles } from '@/FeatureToggleContext';
 import { links } from '@/Links';
 import { useCloseDrawerOnNavigation } from '@/utils/useClosingDrawerOnNavigation-utils';
 
@@ -50,6 +51,7 @@ export const NavigationDrawer = ({
     const deepestMatch = matches[matches.length - 1];
     const toggleDrawer = useAppContext((state) => state.toggleDrawer);
     const userAuthInfo = useUserAuthInfo();
+    const { isAgentPageEnabled } = useFeatureToggles();
 
     const curriedDoesMatchPath = (...paths: string[]) => doesMatchPath(deepestMatch, ...paths);
 
@@ -86,6 +88,16 @@ export const NavigationDrawer = ({
                             DisclosureIcon={ArrowForwardIosOutlined}>
                             Thread history
                         </NavigationLink>
+                        {isAgentPageEnabled ? (
+                            <NavigationLink
+                                icon={<ViewColumnIcon />}
+                                selected={curriedDoesMatchPath('/agent')}
+                                href={`/agent`}
+                                DisclosureIcon={ScienceIcon}
+                                experimental>
+                                Agents
+                            </NavigationLink>
+                        ) : null}
                         <NavigationLink
                             icon={<ViewColumnIcon />}
                             selected={curriedDoesMatchPath(links.comparison)}

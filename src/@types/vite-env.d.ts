@@ -25,6 +25,7 @@ interface ImportMetaEnv {
     readonly E2E_TEST_USER: string;
     readonly E2E_TEST_PASSWORD: string;
     readonly VITE_IS_MULTI_MODAL_ENABLED: string;
+    readonly VITE_IS_AGENT_PAGE_ENABLED: string;
 }
 
 interface ImportMeta {

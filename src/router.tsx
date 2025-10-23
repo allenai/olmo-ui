@@ -14,6 +14,7 @@ import { MetaTags } from './components/MetaTags';
 import { NewApp } from './components/NewApp';
 import { selectedThreadPageLoader } from './components/thread/ThreadDisplay/selectedThreadPageLoader';
 import { ThreadDisplayContainer } from './components/thread/ThreadDisplay/ThreadDisplayContainer';
+import { AvatarMenuIconButton } from './components/thread/ThreadPageControls/AvatarMenuIconButton';
 import { ThreadPageControls } from './components/thread/ThreadPageControls/ThreadPageControls';
 import { ThreadPlaceholder } from './components/thread/ThreadPlaceholder/ThreadPlaceholder';
 import { links } from './Links';
@@ -29,6 +30,11 @@ import { reorderModelsAction } from './pages/admin/modelConfig/ReorderModelsPage
 import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/ReorderModelsPage';
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
+import { AgentChatPage } from './pages/agent/AgentChatPage';
+import { AgentPage } from './pages/agent/AgentPage';
+import { AgentPageControls } from './pages/agent/AgentPageControls';
+import { agentPageLoader } from './pages/agent/agentPageLoader';
+import { AgentPlaceholder } from './pages/agent/AgentPlaceholder';
 import { CompareThreadDisplay } from './pages/comparison/CompareThreadDisplay';
 import { ComparisonPage } from './pages/comparison/ComparisonPage';
 import { comparisonPageLoader } from './pages/comparison/comparisonPageLoader';
@@ -95,6 +101,33 @@ export const routes: RouteObject[] = [
                         shouldRevalidate: handleRevalidation,
                     },
                     {
+                        path: '/agent',
+                        handle: { pageControls: <AvatarMenuIconButton /> },
+                        children: [
+                            {
+                                path: '/agent',
+                                loader: agentPageLoader(queryClient),
+                                element: <AgentPage />,
+                            },
+                            {
+                                path: '/agent/:agentId',
+                                element: <AgentChatPage />,
+                                children: [
+                                    {
+                                        path: '/agent/:agentId',
+                                        element: <AgentPlaceholder />,
+                                        handle: { pageControls: <AgentPageControls /> },
+                                    },
+                                    {
+                                        path: '/agent/:agentId/:threadId',
+                                        element: <ThreadDisplayContainer />,
+                                        handle: { pageControls: <AgentPageControls /> },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
                         path: links.faqs,
                         element: <FAQsPage />,
                         handle: {
@@ -117,7 +150,7 @@ export const routes: RouteObject[] = [
                         loader: adminPageLoader(queryClient),
                         shouldRevalidate: handleRevalidateAdmin,
                         element: <AdminLayout />,
-                        handle: { pageControls: <ThreadPageControls /> },
+                        handle: { pageControls: <AvatarMenuIconButton /> },
                         children: [
                             {
                                 path: links.modelConfiguration,
