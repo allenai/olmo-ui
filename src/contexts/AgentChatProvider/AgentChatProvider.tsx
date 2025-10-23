@@ -18,7 +18,7 @@ interface AgentChatQueryContextProviderProps extends PropsWithChildren {
     threadId: string | undefined;
 }
 
-export const AgentChatQueryContextProvider = ({
+export const AgentChatProvider = ({
     children,
     threadId,
     agentId,
