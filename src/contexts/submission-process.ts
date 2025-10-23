@@ -31,11 +31,9 @@ import {
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
+import type { AgentChatStreamMutationVariables } from './streamMessage/useStreamAgentMessage';
+import type { ThreadStreamMutationVariables } from './streamMessage/useStreamMessage';
 import { MessageInferenceParameters } from './ThreadProviderHelpers';
-import type {
-    AgentChatStreamMutationVariables,
-    ThreadStreamMutationVariables,
-} from './useStreamMessage';
 
 const clearStreamingState = (threadId: string | undefined) => {
     if (!threadId) {

@@ -32,6 +32,7 @@ import {
     useStreamCallbackRegistry,
     useStreamEvent,
 } from './StreamEventRegistry';
+import { useStreamMessage } from './streamMessage/useStreamMessage';
 import { processSingleModelSubmission } from './submission-process';
 import {
     getExtraParametersFromThread,
@@ -45,7 +46,6 @@ import {
     MessageInferenceParameters,
     shouldShowCompatibilityWarning,
 } from './ThreadProviderHelpers';
-import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
 type SingleThreadProviderProps = PropsWithChildren<{

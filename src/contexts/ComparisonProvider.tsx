@@ -37,6 +37,7 @@ import {
     useStreamCallbackRegistry,
     useStreamEvent,
 } from './StreamEventRegistry';
+import { useStreamMessage } from './streamMessage/useStreamMessage';
 import { processSingleModelSubmission } from './submission-process';
 import {
     areAllModelsCompatible,
@@ -46,7 +47,6 @@ import {
     getUserToolDefinitionsFromToolList,
     MessageInferenceParameters,
 } from './ThreadProviderHelpers';
-import { useStreamMessage } from './useStreamMessage';
 import { RemoteState } from './util';
 
 // Internal state for comparison mode, holds all threads

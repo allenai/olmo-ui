@@ -13,6 +13,7 @@
     "sourceMap": true,
     "allowJs": true,
     "baseUrl": ".",
+    "noEmit": true,
     "paths": {
       "@test-utils": ["src/utils/test/test-utils"],
       "@playwright-utils": ["e2e/playwright-utils"],

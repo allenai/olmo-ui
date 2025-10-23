@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useStreamAgentMessage, useStreamMessage } from '@/contexts/useStreamMessage';
+import { useStreamAgentMessage, useStreamMessage } from '@/contexts/streamMessage';
 import { links } from '@/Links';
 
 import { isFirstMessage, type StreamingMessageResponse } from '../../stream-types';
