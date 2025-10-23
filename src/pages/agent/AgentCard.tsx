@@ -18,13 +18,10 @@ const cardClassName = css({
         md: '1fr',
     },
     gap: '4',
-    // this looks like I'm using the wrong token (maybe I am)
-    backgroundColor: 'elements.overrides.form.input.fill',
-    // this looks less cheating, but requires specific light/dark overrides
-    // backgroundColor: {
-    //     base: 'white',
-    //     _dark: 'elements.overlay.background',
-    // },
+    backgroundColor: {
+        base: 'white',
+        _dark: 'elements.overlay.background',
+    },
     padding: '4',
     borderRadius: 'lg',
     fontWeight: 'medium',
@@ -32,7 +29,7 @@ const cardClassName = css({
 });
 
 const cardTitle = css({
-    font: 'telegraf',
+    fontFamily: 'heading',
     display: 'flex',
     justifyContent: 'space-between',
 });
