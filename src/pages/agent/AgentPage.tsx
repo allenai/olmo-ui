@@ -16,12 +16,13 @@ const agentPageContentWrapper = css({
     paddingBlockStart: '4',
     paddingInline: '4',
     overflow: 'auto',
+    alignItems: 'center',
 });
 
 const agentCardListClassName = css({
     display: 'grid',
     gridTemplateColumns: {
-        base: '1fr',
+        base: '1fr 2fr',
         md: 'repeat(3, 1fr)',
     },
     gap: '3',
@@ -47,6 +48,9 @@ export const AgentPage = () => {
                     />
                     <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
                         Agents
+                    </Typography>
+                    <Typography variant="h4" component="p">
+                        Explore our agents
                     </Typography>
                     <div className={agentCardListClassName}>
                         {agentPageData.agents.map((agent) => (

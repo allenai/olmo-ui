@@ -10,6 +10,14 @@ import { agentImages } from './agentLinks';
 const cardClassName = css({
     // generic card styles
     display: 'grid',
+    gridColumn: {
+        base: '1/-1',
+        md: 'auto',
+    },
+    gridTemplateColumns: {
+        base: 'subgrid',
+        md: '1fr',
+    },
     gap: '4',
     appearance: 'none',
     backgroundColor: 'elements.overlay.background',
@@ -48,11 +56,13 @@ export const AgentCard = ({
     return (
         <Link href={url} color="inherit" className={cardClassName}>
             <img src={imageUrl} alt={name} className={css({ width: '[100%]' })} />
-            <div className={cardTitle}>
-                <Typography variant="h3">{name}</Typography>
-                {isExternal ? <ArrowOutward /> : null}
+            <div>
+                <div className={cardTitle}>
+                    <Typography variant="h3">{name}</Typography>
+                    {isExternal ? <ArrowOutward /> : null}
+                </div>
+                <p>{description}</p>
             </div>
-            <p>{description}</p>
         </Link>
     );
 };
