@@ -28,8 +28,8 @@ export const AgentPlaceholder = () => {
                 flexDirection="column"
                 justifyContent="start"
                 alignItems="center"
-                marginTop="5dvh"
-                marginBottom={4}
+                paddingTop="5dvh"
+                paddingBottom={4}
                 height={1}
                 gap={8}
                 flex={1}
