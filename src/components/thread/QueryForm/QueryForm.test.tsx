@@ -36,7 +36,7 @@ vi.mock('react-router-dom', () => ({
 }));
 const mockUseParams = vi.mocked(useParams);
 
-vi.mock('@/contexts/useStreamMessage', () => ({
+vi.mock('@/contexts/streamMessage/useStreamMessage', () => ({
     useStreamMessage: vi.fn(),
 }));
 
