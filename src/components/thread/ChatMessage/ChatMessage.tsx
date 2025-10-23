@@ -75,8 +75,11 @@ export const InlineAlertMessage = ({ messageId }: MessageProps): ReactNode => {
     if (!message?.errorDescription) return null;
 
     return (
-        <Alert variant="outlined" severity="warning" sx={{ marginBottom: 2 }}>
-            {message.errorDescription || 'An error occurred.'}
+        <Alert
+            variant="outlined"
+            severity={message.errorSeverity ?? 'error'}
+            sx={{ marginBottom: 2 }}>
+            {message.errorDescription}
         </Alert>
     );
 };

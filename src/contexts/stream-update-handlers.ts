@@ -80,6 +80,7 @@ export const updateThreadWithResponseWithError =
     updateThreadWithChunk<SchemaResponseWithErrorChunk>((messageToUpdate, chunk) => {
         messageToUpdate.errorCode = chunk.errorCode;
         messageToUpdate.errorDescription = chunk.errorDescription;
+        messageToUpdate.errorSeverity = chunk.errorSeverity;
     });
 
 export const updateThreadWithThinking = updateThreadWithChunk<SchemaThinkingChunk>(

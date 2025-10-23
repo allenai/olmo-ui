@@ -922,6 +922,11 @@ export type components = {
          */
         readonly ErrorCode: 'toolCallError';
         /**
+         * ErrorSeverity
+         * @enum {string}
+         */
+        readonly ErrorSeverity: 'warning' | 'error' | 'info';
+        /**
          * FileRequiredToPromptOption
          * @enum {string}
          */
@@ -966,16 +971,15 @@ export type components = {
              * @default null
              */
             readonly deleted?: string | null;
-            /**
-             * Errorcode
-             * @default null
-             */
-            readonly errorCode?: string | null;
+            /** @default null */
+            readonly errorCode?: components['schemas']['ErrorCode'] | null;
             /**
              * Errordescription
              * @default null
              */
             readonly errorDescription?: string | null;
+            /** @default null */
+            readonly errorSeverity?: components['schemas']['ErrorSeverity'] | null;
             /**
              * Expirationtime
              * @default null
@@ -1744,6 +1748,8 @@ export type components = {
             readonly errorCode: components['schemas']['ErrorCode'];
             /** Errordescription */
             readonly errorDescription: string;
+            /** @default error */
+            readonly errorSeverity?: components['schemas']['ErrorSeverity'];
             /** Message */
             readonly message: string;
             /**
@@ -2277,6 +2283,7 @@ export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
 export type SchemaCreateToolDefinition = components['schemas']['CreateToolDefinition'];
 export type SchemaErrorCode = components['schemas']['ErrorCode'];
+export type SchemaErrorSeverity = components['schemas']['ErrorSeverity'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
@@ -2346,6 +2353,11 @@ export const createTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['CreateTextOnlyModelConfigRequest']['promptType']
 > = ['text_only'];
 export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = ['toolCallError'];
+export const errorSeverityValues: ReadonlyArray<components['schemas']['ErrorSeverity']> = [
+    'warning',
+    'error',
+    'info',
+];
 export const fileRequiredToPromptOptionValues: ReadonlyArray<
     components['schemas']['FileRequiredToPromptOption']
 > = ['first_message', 'all_messages', 'no_requirement'];
