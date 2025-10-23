@@ -105,21 +105,21 @@ export const routes: RouteObject[] = [
                         handle: { pageControls: <AvatarMenuIconButton /> },
                         children: [
                             {
-                                path: '/agent',
+                                path: links.agent.root,
                                 loader: agentPageLoader(queryClient),
                                 element: <AgentPage />,
                             },
                             {
-                                path: '/agent/:agentId',
+                                path: links.agent.agent,
                                 element: <AgentChatPage />,
                                 children: [
                                     {
-                                        path: '/agent/:agentId',
+                                        path: links.agent.agent,
                                         element: <AgentPlaceholder />,
                                         handle: { pageControls: <AgentPageControls /> },
                                     },
                                     {
-                                        path: '/agent/:agentId/:threadId',
+                                        path: links.agent.thread,
                                         element: <ThreadDisplayContainer />,
                                         handle: { pageControls: <AgentPageControls /> },
                                     },

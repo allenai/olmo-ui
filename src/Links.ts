@@ -1,3 +1,9 @@
+const agentLinks = {
+    root: '/agent',
+    agent: '/agent/:agentId',
+    thread: '/agent/:agentId/:threadId',
+} as const;
+
 export const links = {
     ai2: 'https://allenai.org/',
     admin: '/admin',
@@ -44,4 +50,5 @@ export const links = {
     privacyPolicy: 'https://allenai.org/privacy-policy',
     terms: 'https://allenai.org/terms',
     responsibleUseGuidelines: 'https://allenai.org/responsible-use',
+    agent: agentLinks,
 } as const;

@@ -91,8 +91,8 @@ export const NavigationDrawer = ({
                         {isAgentPageEnabled ? (
                             <NavigationLink
                                 icon={<ViewColumnIcon />}
-                                selected={curriedDoesMatchPath('/agent')}
-                                href={`/agent`}
+                                selected={curriedDoesMatchPath(links.agent.root)}
+                                href={links.agent.root}
                                 DisclosureIcon={ScienceIcon}
                                 experimental>
                                 Agents
