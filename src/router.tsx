@@ -31,6 +31,7 @@ import { ReorderModelsPage } from './pages/admin/modelConfig/ReorderModelsPage/R
 import { updateModelAction } from './pages/admin/modelConfig/UpdateModelPage/updateModelAction';
 import { UpdateModelPage } from './pages/admin/modelConfig/UpdateModelPage/UpdateModelPage';
 import { AgentChatPage } from './pages/agent/AgentChatPage';
+import { AgentChatThreadContainer } from './pages/agent/AgentChatThreadContainer';
 import { AgentPage } from './pages/agent/AgentPage';
 import { AgentPageControls } from './pages/agent/AgentPageControls';
 import { agentPageLoader } from './pages/agent/agentPageLoader';
@@ -120,7 +121,7 @@ export const routes: RouteObject[] = [
                                     },
                                     {
                                         path: links.agent.thread,
-                                        element: <ThreadDisplayContainer />,
+                                        element: <AgentChatThreadContainer />,
                                         handle: { pageControls: <AgentPageControls /> },
                                     },
                                 ],

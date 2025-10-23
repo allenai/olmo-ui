@@ -41,7 +41,7 @@ export const AgentChatProvider = ({
 
     const placeholderText = `${isNewThread ? 'Start interacting with' : 'Follow up with'} ${selectedAgent.name}`;
 
-    const streamMessage = useAgentChatStreamMessage(threadId);
+    const streamMessage = useAgentChatStreamMessage(threadId, selectedAgent);
 
     const handleAbort = (e: UIEvent) => {
         e.preventDefault();

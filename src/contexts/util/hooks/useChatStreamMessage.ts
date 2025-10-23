@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, type To, useNavigate } from 'react-router-dom';
 
+import type { Agent } from '@/api/playgroundApi/additionalTypes';
 import { useStreamAgentMessage, useStreamMessage } from '@/contexts/streamMessage';
 import { links } from '@/Links';
 
@@ -11,7 +12,10 @@ import {
     useStreamEvent,
 } from '../../StreamEventRegistry';
 
-const useChatStreamMessageBase = (threadId: string | undefined) => {
+const useChatStreamMessageBase = (
+    threadId: string | undefined,
+    pathGenerator: (messageId: string) => To
+) => {
     const callbackRegistryRef = useStreamCallbackRegistry();
 
     const streamCallbacks = useMemo(
@@ -24,7 +28,7 @@ const useChatStreamMessageBase = (threadId: string | undefined) => {
     const handleFirstMessage = useCallback(
         (_threadViewId: string, message: StreamingMessageResponse) => {
             if (isFirstMessage(message) && !threadId) {
-                navigate(links.thread(message.id));
+                navigate(pathGenerator(message.id));
             }
         },
         [threadId, navigate]
@@ -37,14 +41,16 @@ const useChatStreamMessageBase = (threadId: string | undefined) => {
 };
 
 export const useChatStreamMessage = (threadId: string | undefined) => {
-    const streamCallbacks = useChatStreamMessageBase(threadId);
+    const streamCallbacks = useChatStreamMessageBase(threadId, links.thread);
     const streamMessage = useStreamMessage(streamCallbacks);
 
     return streamMessage;
 };
 
-export const useAgentChatStreamMessage = (threadId: string | undefined) => {
-    const streamCallbacks = useChatStreamMessageBase(threadId);
+export const useAgentChatStreamMessage = (threadId: string | undefined, selectedAgent: Agent) => {
+    const streamCallbacks = useChatStreamMessageBase(threadId, (messageId) =>
+        generatePath(links.agent.thread, { agentId: selectedAgent.id, threadId: messageId })
+    );
     const streamMessage = useStreamAgentMessage(streamCallbacks);
 
     return streamMessage;
