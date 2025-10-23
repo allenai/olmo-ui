@@ -19,6 +19,7 @@ import {
     isMessageStreamError,
     isModelResponseChunk,
     isOldMessageChunk,
+    isResponseWithErrorChunk,
     isThinkingChunk,
     isToolCallChunk,
     type StreamingMessageResponse,
@@ -28,6 +29,7 @@ import {
 import {
     mergeMessages,
     updateThreadWithMessageContent,
+    updateThreadWithResponseWithError,
     updateThreadWithThinking,
     updateThreadWithToolCall,
 } from './stream-update-handlers';
@@ -151,6 +153,8 @@ export const updateCacheWithMessagePart = async (
             queryClient.setQueryData(queryKey, mergeMessages(message));
         } else if (isToolCallChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithToolCall(message));
+        } else if (isResponseWithErrorChunk(message)) {
+            queryClient.setQueryData(queryKey, updateThreadWithResponseWithError(message));
         } else if (isThinkingChunk(message)) {
             queryClient.setQueryData(queryKey, updateThreadWithThinking(message));
         } else if (isModelResponseChunk(message) || isOldMessageChunk(message)) {

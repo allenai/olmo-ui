@@ -917,6 +917,11 @@ export type components = {
             readonly parameters: components['schemas']['ParameterDef'];
         };
         /**
+         * ErrorCode
+         * @enum {string}
+         */
+        readonly ErrorCode: 'toolCallError';
+        /**
          * FileRequiredToPromptOption
          * @enum {string}
          */
@@ -961,6 +966,16 @@ export type components = {
              * @default null
              */
             readonly deleted?: string | null;
+            /**
+             * Errorcode
+             * @default null
+             */
+            readonly errorCode?: string | null;
+            /**
+             * Errordescription
+             * @default null
+             */
+            readonly errorDescription?: string | null;
             /**
              * Expirationtime
              * @default null
@@ -1724,6 +1739,19 @@ export type components = {
         readonly ResponseModel:
             | components['schemas']['TextOnlyResponseModel']
             | components['schemas']['MultiModalResponseModel'];
+        /** ResponseWithErrorChunk */
+        readonly ResponseWithErrorChunk: {
+            readonly errorCode: components['schemas']['ErrorCode'];
+            /** Errordescription */
+            readonly errorDescription: string;
+            /** Message */
+            readonly message: string;
+            /**
+             * Type
+             * @constant
+             */
+            readonly type: 'responseWithError';
+        };
         /**
          * Role
          * @enum {string}
@@ -2248,6 +2276,7 @@ export type SchemaCreateMultiModalModelConfigRequest =
 export type SchemaCreateTextOnlyModelConfigRequest =
     components['schemas']['CreateTextOnlyModelConfigRequest'];
 export type SchemaCreateToolDefinition = components['schemas']['CreateToolDefinition'];
+export type SchemaErrorCode = components['schemas']['ErrorCode'];
 export type SchemaFileRequiredToPromptOption = components['schemas']['FileRequiredToPromptOption'];
 export type SchemaFinishReason = components['schemas']['FinishReason'];
 export type SchemaFlatMessage = components['schemas']['FlatMessage'];
@@ -2274,6 +2303,7 @@ export type SchemaPromptTemplateResponseList = components['schemas']['PromptTemp
 export type SchemaRating = components['schemas']['Rating'];
 export type SchemaReorderModelConfigRequest = components['schemas']['ReorderModelConfigRequest'];
 export type SchemaResponseModel = components['schemas']['ResponseModel'];
+export type SchemaResponseWithErrorChunk = components['schemas']['ResponseWithErrorChunk'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRootCreateModelConfigRequest =
     components['schemas']['RootCreateModelConfigRequest'];
@@ -2315,6 +2345,7 @@ export const createMultiModalModelConfigRequestPromptTypeValues: ReadonlyArray<
 export const createTextOnlyModelConfigRequestPromptTypeValues: ReadonlyArray<
     components['schemas']['CreateTextOnlyModelConfigRequest']['promptType']
 > = ['text_only'];
+export const errorCodeValues: ReadonlyArray<components['schemas']['ErrorCode']> = ['toolCallError'];
 export const fileRequiredToPromptOptionValues: ReadonlyArray<
     components['schemas']['FileRequiredToPromptOption']
 > = ['first_message', 'all_messages', 'no_requirement'];
