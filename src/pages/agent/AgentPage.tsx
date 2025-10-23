@@ -14,9 +14,14 @@ const agentPageContentWrapper = css({
     flexDirection: 'column',
     gap: '8',
     paddingBlockStart: '4',
-    paddingInline: '4',
+    paddingInline: {
+        base: '4',
+        md: '8',
+    },
     overflow: 'auto',
     alignItems: 'center',
+    maxWidth: 'breakpoint-lg',
+    marginInline: 'auto',
 });
 
 const agentCardListClassName = css({
@@ -29,8 +34,6 @@ const agentCardListClassName = css({
     alignSelf: 'center',
     justifyItems: 'center',
     width: '[100%]',
-    maxWidth: 'breakpoint-lg',
-    marginInline: 'auto',
 });
 
 export const AgentPage = () => {
