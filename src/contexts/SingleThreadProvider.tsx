@@ -124,7 +124,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     });
 
     const selectedModel = useMemo(() => {
-        const firstAvailable = availableModels[0];
+        const firstAvailable = availableModels.at(0);
         return availableModels.find((model) => model.id === selectedModelId) || firstAvailable;
     }, [availableModels, selectedModelId]);
 
@@ -144,16 +144,16 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const placeholderText = useMemo(() => {
         const actionText = threadId ? 'Reply to' : 'Message';
-        const modelText = selectedModel.family_name || selectedModel.name || 'the model';
+        const modelText = selectedModel?.family_name || selectedModel?.name || 'the model';
         return `${actionText} ${modelText}`;
     }, [threadId, selectedModel]);
 
     const canCallTools = useMemo(() => {
-        return Boolean(selectedModel.can_call_tools);
+        return Boolean(selectedModel?.can_call_tools);
     }, [selectedModel]);
 
     const areFilesAllowed = useMemo(() => {
-        return Boolean(selectedModel.accepts_files);
+        return Boolean(selectedModel?.accepts_files);
     }, [selectedModel]);
 
     const isLimitReached = useMemo(() => {
@@ -200,7 +200,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             : undefined;
         setUserToolDefinitions(toolDefs);
 
-        const selectedSystemTools = selectedModel.available_tools?.map((t) => t.name) || [];
+        const selectedSystemTools = selectedModel?.available_tools?.map((t) => t.name) || [];
 
         setSelectedTools(selectedSystemTools);
 
@@ -267,6 +267,9 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const submitToThreadView = useCallback(
         async (threadViewId: string, data: QueryFormValues) => {
+            if (!selectedModel) {
+                throw new Error('No model selected');
+            }
             return await processSingleModelSubmission({
                 data,
                 model: selectedModel,
@@ -342,7 +345,7 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
             autofocus,
             placeholderText,
             canCallTools,
-            availableTools: selectedModel.available_tools,
+            availableTools: selectedModel?.available_tools,
             isToolCallingEnabled,
             userToolDefinitions,
             areFilesAllowed,

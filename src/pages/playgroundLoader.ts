@@ -33,8 +33,8 @@ export const playgroundLoader =
         const promptTemplateId = !threadId ? searchParams.get('template') : null; // only apply to new threads
         const modelId = searchParams.get('model');
 
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        queryClient.prefetchQuery(getModelsQueryOptions);
+        // Ensure models are loaded before rendering -- use cache if available
+        await queryClient.ensureQueryData(getModelsQueryOptions);
 
         if (threadId === undefined) {
             resetSelectedThreadState();
