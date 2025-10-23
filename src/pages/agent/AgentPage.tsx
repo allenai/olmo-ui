@@ -3,10 +3,11 @@ import { Typography } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
 import { ContentContainer } from '@/components/ContentContainer';
+import { MetaTags } from '@/components/MetaTags';
+import { PageContainer } from '@/components/PageContainer';
 import { Ai2MarkLogoSVG } from '@/components/svg/Ai2MarkLogoSVG';
 
 import { AgentCard } from './AgentCard';
-import { AgentLayout } from './AgentLayout';
 import { type AgentLoaderData } from './agentPageLoader';
 
 const agentPageContentWrapper = css({
@@ -39,32 +40,35 @@ const agentCardListClassName = css({
 export const AgentPage = () => {
     const agentPageData = useLoaderData() as AgentLoaderData;
     return (
-        <AgentLayout>
-            <ContentContainer>
-                <div className={agentPageContentWrapper}>
-                    <Ai2MarkLogoSVG
-                        title="Ai2"
-                        sx={{
-                            display: { xs: 'none', lg: 'block' },
-                            marginInline: 'auto',
-                        }}
-                    />
-                    <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
-                        Agents
-                    </Typography>
-                    <Typography variant="h4" component="p">
-                        Explore our agents
-                    </Typography>
-                    <div className={agentCardListClassName}>
-                        {agentPageData.agents.map((agent) => (
-                            <AgentCard key={agent.name} type="playground" {...agent} />
-                        ))}
-                        {agentPageData.agentLinks.map((agent) => (
-                            <AgentCard key={agent.name} type="link" {...agent} isExternal />
-                        ))}
+        <>
+            <MetaTags />
+            <PageContainer>
+                <ContentContainer>
+                    <div className={agentPageContentWrapper}>
+                        <Ai2MarkLogoSVG
+                            title="Ai2"
+                            sx={{
+                                display: { xs: 'none', lg: 'block' },
+                                marginInline: 'auto',
+                            }}
+                        />
+                        <Typography variant="h1" component="h2" sx={{ textAlign: 'center' }}>
+                            Agents
+                        </Typography>
+                        <Typography variant="h4" component="p">
+                            Explore our agents
+                        </Typography>
+                        <div className={agentCardListClassName}>
+                            {agentPageData.agents.map((agent) => (
+                                <AgentCard key={agent.name} type="playground" {...agent} />
+                            ))}
+                            {agentPageData.agentLinks.map((agent) => (
+                                <AgentCard key={agent.name} type="link" {...agent} isExternal />
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </ContentContainer>
-        </AgentLayout>
+                </ContentContainer>
+            </PageContainer>
+        </>
     );
 };
