@@ -42,6 +42,7 @@ import { RemoteState } from './util';
 import { useCanSubmitThread } from './util/hooks/useCanSubmit';
 import { useChatStreamMessage } from './util/hooks/useChatStreamMessage';
 import { useOnSingleChatSubmit } from './util/hooks/useOnSingleChatSubmit';
+import { useSetShareableForSingleThread } from './util/hooks/useSetShareableForSingleThread';
 
 type SingleThreadProviderProps = PropsWithChildren<{
     initialState?: PlaygroundLoaderData;
@@ -86,6 +87,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
 
     const navigate = useNavigate();
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
+
+    useSetShareableForSingleThread(threadId);
 
     const streamMessage = useChatStreamMessage(threadId);
 

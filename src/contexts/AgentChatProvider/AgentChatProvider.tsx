@@ -11,6 +11,7 @@ import { processSingleAgentSubmission } from '../submission-process';
 import { useCanSubmitThread } from '../util/hooks/useCanSubmit';
 import { useAgentChatStreamMessage } from '../util/hooks/useChatStreamMessage';
 import { useOnSingleChatSubmit } from '../util/hooks/useOnSingleChatSubmit';
+import { useSetShareableForSingleThread } from '../util/hooks/useSetShareableForSingleThread';
 const noOp = () => undefined;
 
 interface AgentChatQueryContextProviderProps extends PropsWithChildren {
@@ -52,6 +53,8 @@ export const AgentChatProvider = ({
 
     const { executeRecaptcha } = useReCaptcha();
     const addSnackMessage = useAppContext((state) => state.addSnackMessage);
+
+    useSetShareableForSingleThread(threadId);
 
     const submitToThreadView = async (threadViewId: string, data: QueryFormValues) => {
         return processSingleAgentSubmission({
