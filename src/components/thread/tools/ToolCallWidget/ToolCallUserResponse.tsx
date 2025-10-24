@@ -46,14 +46,8 @@ const toolCallResponseRecipe = sva({
                 base: 'text',
                 _dark: 'white',
             },
-            // text.placeholder-more-contrast from varnish-theme
             _placeholder: {
-                color: 'gray.70',
-            },
-            _dark: {
-                _placeholder: {
-                    color: 'cream.100/55',
-                },
+                color: 'text.placeholder-55',
             },
         },
         error: {
