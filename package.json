@@ -43,9 +43,9 @@
   },
   "dependencies": {
     "@allenai/varnish-panda-runtime": "^1.2.13-alpha.7",
-    "@allenai/varnish-theme": "^3.0.7-alpha.5",
-    "@allenai/varnish-ui": "^1.2.13-alpha.7",
-    "@allenai/varnish2": "^3.0.7-alpha.6",
+    "@allenai/varnish-theme": "^3.0.8-alpha.0",
+    "@allenai/varnish-ui": "^1.2.14-alpha.0",
+    "@allenai/varnish2": "^3.0.8-alpha.0",
     "@auth0/auth0-spa-js": "^2.6.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
