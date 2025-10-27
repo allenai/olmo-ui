@@ -8,7 +8,7 @@ import { Role } from '@/api/Role';
 import * as AppContext from '@/AppContext';
 import { FakeAppContextProvider, useFakeAppContext } from '@/utils/FakeAppContext';
 
-import { SingleThreadModelSelect } from './ThreadModelSelect';
+import { SingleThreadModelSelect } from './SingleThreadModelSelect';
 
 const createTestModel = (id: string, name: string): Model => ({
     id,

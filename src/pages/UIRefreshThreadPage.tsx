@@ -4,7 +4,7 @@ import { ContentContainer } from '@/components/ContentContainer';
 import { MetaTags } from '@/components/MetaTags';
 import { PageContainer } from '@/components/PageContainer';
 import { ResponsiveControlsDrawer } from '@/components/ResponsiveControlsDrawer';
-import { SingleThreadModelSelect } from '@/components/thread/ModelSelect/ThreadModelSelect';
+import { SingleThreadModelSelect } from '@/components/thread/ModelSelect/SingleThreadModelSelect';
 import { QueryFormContainer } from '@/components/thread/QueryForm/QueryFormContainer';
 import { useQueryContext } from '@/contexts/QueryContext';
 import { SingleThreadProvider } from '@/contexts/SingleThreadProvider';

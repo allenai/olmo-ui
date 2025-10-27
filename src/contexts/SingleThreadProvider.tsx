@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 
 import { Model } from '@/api/playgroundApi/additionalTypes';
@@ -86,6 +86,8 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
     const { data: promptTemplate } = usePromptTemplateById(initialState?.promptTemplateId);
 
     const navigate = useNavigate();
+    const [_, setSearchParams] = useSearchParams();
+    const userInfo = useAppContext(useShallow((state) => state.userInfo));
     const addSnackMessage = useAppContext(useShallow((state) => state.addSnackMessage));
 
     useSetShareableForSingleThread(threadId);
@@ -188,10 +190,16 @@ const SingleThreadProviderContent = ({ children, initialState }: SingleThreadPro
                 modelIdToSwitchTo.current = event.target.value;
                 setShouldShowModelSwitchWarning(true);
             } else {
-                selectModel(event.target.value);
+                // Single Thread handling
+                const modelId = event.target.value;
+                setSearchParams((searchParams) => {
+                    searchParams.set('model', modelId);
+                    return searchParams.toString();
+                });
+                selectModel(modelId);
             }
         },
-        [availableModels, selectedModel, threadId, selectModel]
+        [availableModels, threadId, selectedModel, setSearchParams, selectModel]
     );
 
     const handleModelSwitchWarningConfirm = useCallback(() => {
