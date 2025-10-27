@@ -90,6 +90,15 @@ export const uiRefreshOlmoTheme = {
                 }),
             },
         },
+        MuiSelect: {
+            styleOverrides: {
+                select: ({ theme }) => ({
+                    '&&': {
+                        paddingRight: theme.spacing(6),
+                    },
+                }),
+            },
+        },
         MuiStack: {
             defaultProps: {
                 useFlexGap: true,
