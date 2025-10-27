@@ -374,14 +374,17 @@ const ComparisonProviderContent = ({
         (event: SelectChangeEvent, eventThreadViewId?: string) => {
             const modelId = event.target.value;
 
-            const threadIdx = Object.keys(comparisonState).findIndex(
-                (threadViewId) => threadViewId === eventThreadViewId
-            );
+            const modelSearchParams = new URLSearchParams(window.location.search);
 
-            setSearchParams((searchParams) => {
-                searchParams.set(`model-${threadIdx + 1}`, modelId);
-                return searchParams.toString();
+            Object.entries(comparisonState).forEach(([threadViewId, state], idx) => {
+                const modelIdForParam =
+                    threadViewId === eventThreadViewId ? modelId : state.modelId;
+                if (modelIdForParam) {
+                    modelSearchParams.set(`model-${idx + 1}`, modelIdForParam);
+                }
             });
+
+            setSearchParams(modelSearchParams);
 
             if (eventThreadViewId) {
                 dispatch({ type: 'setModelId', threadViewId: eventThreadViewId, modelId });
