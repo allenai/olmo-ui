@@ -34,6 +34,7 @@ vi.mock('react-router-dom', () => ({
         key: '',
     }),
     useNavigation: () => IDLE_NAVIGATION,
+    useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
 }));
 const mockUseParams = vi.mocked(useParams);
 
