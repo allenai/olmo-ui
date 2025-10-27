@@ -1,8 +1,8 @@
 import { MessageStreamErrorType } from '@/api/Message';
 import type {
+    SchemaErrorChunk,
     SchemaFlatMessage,
     SchemaModelResponseChunk,
-    SchemaResponseWithErrorChunk,
     SchemaStreamEndChunk,
     SchemaStreamStartChunk,
     SchemaThinkingChunk,
@@ -31,7 +31,7 @@ export type MessageChunk = Pick<SchemaFlatMessage, 'content'> & {
 };
 
 export type Chunk =
-    | SchemaResponseWithErrorChunk
+    | SchemaErrorChunk
     | SchemaModelResponseChunk
     | SchemaThinkingChunk
     | SchemaToolCallChunk
@@ -72,9 +72,7 @@ export const isToolCallChunk = (
     return isChunk(message) && message.type === 'toolCall';
 };
 
-export const isResponseWithErrorChunk = (
-    message: StreamingMessageResponse
-): message is SchemaResponseWithErrorChunk => {
+export const isErrorChunk = (message: StreamingMessageResponse): message is SchemaErrorChunk => {
     return isChunk(message) && message.type === 'responseWithError';
 };
 
