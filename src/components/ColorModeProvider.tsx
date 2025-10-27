@@ -62,6 +62,8 @@ export const ColorModeProvider = ({
                 color === 'system' ? (prefersDarkMode ? 'dark' : 'light') : color;
             if (newThemeColorMode !== themeColorMode) {
                 setThemeColorMode(newThemeColorMode);
+                document.body.classList.add(newThemeColorMode);
+                document.body.classList.remove(themeColorMode);
             }
         },
         [prefersDarkMode, themeColorMode]

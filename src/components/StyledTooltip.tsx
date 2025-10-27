@@ -1,8 +1,7 @@
 import { css } from '@allenai/varnish-panda-runtime/css';
-import { cx, Tooltip, TooltipProps } from '@allenai/varnish-ui';
+import { Tooltip, TooltipProps } from '@allenai/varnish-ui';
 import { ReactNode } from 'react';
 
-import { useColorMode } from './ColorModeProvider';
 import { useDesktopOrUp } from './dolma/shared';
 
 interface StyledTooltipProps extends Omit<TooltipProps, 'children' | 'arrow'> {
@@ -17,13 +16,12 @@ const StyledTooltip = ({
     arrow = true,
     ...props
 }: StyledTooltipProps) => {
-    const { colorMode } = useColorMode();
     const isDesktop = useDesktopOrUp();
     const responsivePlacement = isDesktop ? desktopPlacement : placement;
 
     return (
         <Tooltip
-            className={cx(colorMode, tooltipClass)}
+            className={tooltipClass}
             arrow={arrow}
             {...props}
             placement={responsivePlacement}
