@@ -1,8 +1,8 @@
 import { type Draft, produce } from 'immer';
 
 import type {
+    SchemaErrorChunk,
     SchemaModelResponseChunk,
-    SchemaResponseWithErrorChunk,
     SchemaThinkingChunk,
     SchemaToolCall,
     SchemaToolCallChunk,
@@ -76,12 +76,13 @@ export const updateThreadWithToolCall = updateThreadWithChunk<SchemaToolCallChun
     }
 );
 
-export const updateThreadWithResponseWithError =
-    updateThreadWithChunk<SchemaResponseWithErrorChunk>((messageToUpdate, chunk) => {
+export const updateThreadWithError = updateThreadWithChunk<SchemaErrorChunk>(
+    (messageToUpdate, chunk) => {
         messageToUpdate.errorCode = chunk.errorCode;
         messageToUpdate.errorDescription = chunk.errorDescription;
         messageToUpdate.errorSeverity = chunk.errorSeverity;
-    });
+    }
+);
 
 export const updateThreadWithThinking = updateThreadWithChunk<SchemaThinkingChunk>(
     (messageToUpdate, chunk) => {
