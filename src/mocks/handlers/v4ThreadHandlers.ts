@@ -30,6 +30,7 @@ import { internalToolCallsStreamResponse } from './responses/v4/stream/internalT
 import { fakeMultiModalStreamMessages } from './responses/v4/stream/multiModal';
 import { thinkingAndToolCallsStreamResponse } from './responses/v4/stream/thinkingAndToolCalls';
 import {
+    bogusToolCallsStreamErrorResponse,
     userToolCallsStreamResponse,
     userToolCallsStreamToolResponse,
 } from './responses/v4/stream/userToolCalls';
@@ -313,6 +314,8 @@ export const v4ThreadHandlers = [
             response = internalToolCallsStreamResponse;
         } else if (content === 'userToolCalls') {
             response = userToolCallsStreamResponse;
+        } else if (content === 'bogusToolCallWithError') {
+            response = bogusToolCallsStreamErrorResponse;
         } else {
             response = fakeNewThreadMessages;
         }
