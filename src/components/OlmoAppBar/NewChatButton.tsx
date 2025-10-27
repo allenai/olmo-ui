@@ -2,16 +2,27 @@ import { AddBoxOutlined } from '@mui/icons-material';
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { alpha } from '@mui/system';
 import { ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { links } from '@/Links';
 
-export const NewChatButton = (): ReactNode => {
+export const NewChatButton = ({
+    includeModelIdParam = true,
+}: {
+    includeModelIdParam?: boolean;
+}): ReactNode => {
+    const [searchParams] = useSearchParams();
+    const modelId = searchParams.get('model');
+
+    const urlToGoto =
+        modelId && includeModelIdParam ? `${links.playground}?model=${modelId}` : links.playground;
+
     return (
         <ListItem disablePadding dense>
             <ListItemButton
                 alignItems="center"
                 disableGutters
-                href={links.playground}
+                href={urlToGoto}
                 sx={(theme) => ({
                     minHeight: theme.spacing(5),
                     marginInline: theme.spacing(2),
